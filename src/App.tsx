@@ -1,359 +1,871 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Plus, History, Folder, Chrome, MessageSquare, Sparkles, Minus, Square, X,
-  ChevronDown, Search, FolderOpen, Play, ChevronLeft, ChevronRight, RotateCw, Home, MoreVertical,
-  Mic, Camera, Bot, Activity, TerminalSquare, AtSign, Box, Send, Database, Zap, LayoutTemplate, Monitor, FileText, LayoutGrid
+  Building2, Database, Zap, Sparkles, ArrowUp, Activity, 
+  ChevronDown, ChevronLeft, ChevronRight, ArrowUpFromLine, 
+  LayoutGrid, Search, Star, FolderOpen, Monitor, 
+  FileText, Download, Image as ImageIcon, Film, Music, Cloud,
+  PanelLeftClose, PanelRightClose, Plus, MoreVertical,
+  History, Compass, MessageSquare, AtSign, LayoutTemplate,
+  Bot, TerminalSquare, RotateCw, Home, X,
+  PackagePlus, FileSpreadsheet, FileIcon, Component,
+  CheckCircle2, AlertCircle, FileBox, FileQuestion, Flame, Link2,
+  CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
-const BRAND = {
-  primary: '#06b6d4' // Cyan color matching the reference image's active states
+// --- Types & Config ---
+interface Message {
+  id: string;
+  role: 'user' | 'agent' | 'system';
+  content: string | React.ReactNode;
+  contextList?: string[];
+}
+
+type Workspace = {
+  id: string;
+  name: string;
+  type: 'personal' | 'merchant';
 };
 
+type AppTab = {
+  id: string;
+  name: string;
+  isEditing?: boolean;
+};
+
+const BRAND = {
+  primary: '#605EA7',
+  secondary: '#CEC8E2'
+};
+
+const SKILLS_MARKET = [
+  { id: '1', name: '小红书爆款文案生成器', desc: '支持视觉拆解和情绪价值拉满的文案结构分析', installed: false },
+  { id: '2', name: '全域矩阵分发引擎', desc: '一键将生成的素材同步发布到各大自媒体平台', installed: true },
+  { id: '3', name: '蓝海词挖掘探针', desc: '深度整合关键词搜索频次及竞争激烈度，日更', installed: false },
+];
+
+const AGENTS_LIST = [
+  { id: 'a1', name: '笔记流控大师' },
+  { id: 'a2', name: '商户大盘私有巡检' }
+];
+
 export default function App() {
+  // --- View States ---
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [showLeftPanel, setShowLeftPanel] = useState(true);
+  const [activeLeftMenu, setActiveLeftMenu] = useState<'cloud'|'server'|'calendar'|'chart'|'users'|'explorer'>('explorer');
+  const [showBrowser, setShowBrowser] = useState(true);
+  const [showChat, setShowChat] = useState(true);
+  const [showSkills, setShowSkills] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  
+  // --- Local Component States ---
+  // Workspaces
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([
+    { id: 'personal', name: '本机默认资源大盘 (Personal)', type: 'personal' },
+    { id: 'm1', name: '杭州万象城店', type: 'merchant' },
+    { id: 'm2', name: '上海环球港店', type: 'merchant' },
+  ]);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState('m1');
+  const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  // Top App Tabs
+  const [appTabs, setAppTabs] = useState<AppTab[]>([
+    { id: 't1', name: '日常运营流' },
+    { id: 't2', name: '爆款素材提取' },
+  ]);
+  const [activeAppTabId, setActiveAppTabId] = useState('t1');
+  const [tabRenameVal, setTabRenameVal] = useState('');
+
+  const [skillTab, setSkillTab] = useState<'market' | 'installed'>('market');
+  const [messages, setMessages] = useState<Message[]>([]);
+  
+  // Chat Input & Context
   const [inputValue, setInputValue] = useState('');
+  const [contextItems, setContextItems] = useState<string[]>([]);
+  
+  // Mention Panels
+  const [showMentionMenu, setShowMentionMenu] = useState<'skill' | 'agent' | null>(null);
+
+  // --- Drag & Drop Context ---
+  const [isGlobalDragging, setIsGlobalDragging] = useState(false);
+  const [isDragHoveringChat, setIsDragHoveringChat] = useState(false);
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // --- Input Handlers ---
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setInputValue(val);
+    
+    if (val.endsWith('@')) {
+      setShowMentionMenu('skill');
+    } else {
+      setShowMentionMenu(null);
+    }
+  };
+
+  const insertMention = (tag: string, prefix: '@') => {
+    const formattedStr = `${prefix}${tag}`;
+    if (!contextItems.includes(formattedStr)) {
+      setContextItems(prev => [...prev, formattedStr]);
+    }
+    setInputValue(prev => prev.slice(0, -1).trim() + ' '); 
+    setShowMentionMenu(null);
+  };
+
+  // --- Tab Handlers ---
+  const handleTabDoubleClick = (tabId: string, currentName: string) => {
+    setTabRenameVal(currentName);
+    setAppTabs(prev => prev.map(t => t.id === tabId ? { ...t, isEditing: true } : t));
+  };
+
+  const commitTabRename = (tabId: string) => {
+    setAppTabs(prev => prev.map(t => t.id === tabId ? { ...t, name: tabRenameVal || t.name, isEditing: false } : t));
+  };
+
+  // --- Handlers ---
+  const handleAppToggle = (appType: 'explorer' | 'browser' | 'chat' | 'skills') => {
+    const states = { explorer: showLeftPanel, browser: showBrowser, chat: showChat, skills: showSkills };
+    const activeCount = Object.values(states).filter(Boolean).length;
+    if (states[appType] && activeCount === 1) return;
+
+    if (appType === 'explorer') {
+       if (!showLeftPanel) {
+          setShowLeftPanel(true);
+          setActiveLeftMenu('explorer');
+       } else if (activeLeftMenu !== 'explorer') {
+          setActiveLeftMenu('explorer');
+       } else {
+          setShowLeftPanel(false);
+       }
+    }
+    else if (appType === 'browser') setShowBrowser(!showBrowser);
+    else if (appType === 'chat') setShowChat(!showChat);
+    else if (appType === 'skills') {
+      setShowSkills(!showSkills);
+      if (!showSkills) setShowHistory(false);
+    }
+  };
+
+  const handleLeftMenuClick = (menu: 'cloud'|'server'|'calendar'|'chart'|'users') => {
+     if (!showLeftPanel) setShowLeftPanel(true);
+     else if (activeLeftMenu === menu) {
+        setShowLeftPanel(false);
+        return;
+     }
+     setActiveLeftMenu(menu);
+  };
+
+  // Drag handlers
+  const handleBrowserDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    e.dataTransfer.setData('source', 'browser');
+    e.dataTransfer.setData('value', '笔记: 春季穿搭绝绝子...');
+    setIsGlobalDragging(true);
+  };
+
+  const handleTreeDragStart = (e: React.DragEvent<HTMLDivElement>, type: string, name: string) => {
+    e.stopPropagation();
+    e.dataTransfer.setData('source', 'tree');
+    e.dataTransfer.setData('type', type);
+    e.dataTransfer.setData('value', name);
+    setIsGlobalDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsGlobalDragging(false);
+    setIsDragHoveringChat(false);
+  };
+
+  const handleChatDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!isGlobalDragging) return;
+    setIsDragHoveringChat(true);
+  };
+
+  const handleChatDragLeave = (e: React.DragEvent) => {
+    setIsDragHoveringChat(false);
+  };
+
+  const handleChatDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragHoveringChat(false);
+    setIsGlobalDragging(false);
+    
+    const source = e.dataTransfer.getData('source');
+    const value = e.dataTransfer.getData('value');
+    const type = e.dataTransfer.getData('type');
+
+    if (value) {
+       let formattedStr = '';
+       if (source === 'browser') formattedStr = `🔗 ${value}`;
+       else formattedStr = `📦 [${type}] ${value}`;
+       
+       if (!contextItems.includes(formattedStr)) {
+         setContextItems(prev => [...prev, formattedStr]);
+       }
+    }
+  };
+
+  const handleSend = () => {
+    if (!inputValue.trim() && contextItems.length === 0) return;
+    const userMsg: Message = { 
+      id: Date.now().toString(), 
+      role: 'user', 
+      content: inputValue || '基于已载入的工作上下文执行目标任务',
+      contextList: [...contextItems]
+    };
+    setMessages(prev => [...prev, userMsg]);
+    setInputValue('');
+    setContextItems([]);
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        id: Date.now().toString() + 'bot',
+        role: 'agent',
+        content: `已接收当前上下文，正在针对 [${workspaces.find(w => w.id === activeWorkspaceId)?.name}] 隔离空间执行任务流...`
+      }]);
+    }, 800);
+  };
+
+  // Shared Chat Input Component
+  const ChatInputArea = ({ isFloat = false }) => (
+    <div className={`relative bg-white border ${isFloat ? 'shadow-xl' : 'shadow-sm'} border-zinc-300 rounded-2xl overflow-visible transition-all focus-within:ring-4 focus-within:ring-[#605EA7]/10 focus-within:border-[#605EA7] flex flex-col z-20`}>
+      
+      <AnimatePresence>
+         {showMentionMenu && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-full mb-3 left-0 w-[240px] bg-white rounded-xl shadow-xl border border-zinc-200 overflow-hidden z-50 flex flex-col max-h-[220px]">
+               <div className="px-3 py-2 text-[10px] uppercase font-bold text-zinc-400 border-b border-zinc-100 bg-zinc-50">
+                  调用已有 Skill 能力
+               </div>
+               <div className="overflow-y-auto w-full flex-1 p-1 custom-scrollbar">
+                  {SKILLS_MARKET.map(s => (
+                    <div key={s.id} onClick={() => insertMention(s.name, '@')} className="px-3 py-2 flex items-center gap-2 hover:bg-[#605EA7]/10 hover:text-[#605EA7] rounded-lg cursor-pointer text-[13px] font-bold text-zinc-700 transition-colors">
+                       <Component size={14} />{s.name}
+                    </div>
+                  ))}
+               </div>
+            </motion.div>
+         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {contextItems.length > 0 && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="px-4 pt-3 pb-1 flex flex-wrap gap-2">
+            {contextItems.map((ctx, i) => (
+               <span key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-[#605EA7] text-white border-transparent rounded-md text-[11px] font-bold border relative group whitespace-nowrap">
+                 {ctx}
+                 <X size={12} className="cursor-pointer ml-1 hover:text-red-300 opacity-60 group-hover:opacity-100 transition-colors" onClick={() => setContextItems(contextItems.filter(c => c !== ctx))} />
+               </span>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <textarea rows={isFloat ? 3 : 2} value={inputValue} onChange={handleInputChange} onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder="输入 @ 唤起技能，或拖放左侧资料与上方网页至此..." className={`w-full bg-transparent border-none px-4 ${contextItems.length > 0 ? 'pt-2' : 'pt-3'} pb-12 text-[14px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none resize-none font-sans font-medium`} />
+      
+      <div className="absolute left-3 bottom-3 flex items-center gap-1">
+        <button onClick={() => setShowMentionMenu('skill')} className="p-1.5 text-zinc-400 hover:text-[#605EA7] hover:bg-[#605EA7]/10 rounded-md transition-colors group relative font-bold text-sm" title="添加 Skill">
+          @
+        </button>               
+      </div>
+      
+      <div className="absolute right-3 bottom-3 flex items-center gap-2">
+        <button onClick={handleSend} disabled={!inputValue.trim() && contextItems.length === 0} className="p-2 rounded-lg text-white disabled:opacity-50 transition-all shadow border flex items-center justify-center bg-[#605EA7] hover:bg-[#4d4a8e] disabled:bg-zinc-200 disabled:shadow-none">
+          <ArrowUp size={16} strokeWidth={3} />
+        </button>
+      </div>
+    </div>
+  );
+
+  let expClass = "w-[280px]";
+  if (showLeftPanel && !showBrowser && !showChat && !showSkills) expClass = "flex-1";
+
+  let chatClass = "w-[500px]";
+  if (showChat && !showBrowser && (showLeftPanel || showSkills)) chatClass = "flex-1";
+  if (showChat && !showBrowser && !showLeftPanel && !showSkills) chatClass = "flex-1";
+
+  let skillsClass = "w-[340px]";
+  if (showSkills && !showBrowser && !showChat && !showLeftPanel) skillsClass = "flex-1";
+
+  const [cloudAuthModal, setCloudAuthModal] = useState<'netdisk' | 'feishu' | null>(null);
+
+  const renderLeftPanelContent = () => {
+    switch (activeLeftMenu) {
+       case 'cloud':
+          return (
+             <div className="p-4 flex flex-col items-center justify-start h-full text-center relative">
+                <div className="flex gap-4 mt-8 mb-6">
+                  <div className="w-16 h-16 bg-[#605EA7]/10 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-[#605EA7]/20 transition-colors shadow-sm" onClick={() => setCloudAuthModal('netdisk')}>
+                     <Cloud size={28} className="text-[#605EA7]"/>
+                  </div>
+                  <div className="w-16 h-16 bg-[#605EA7]/10 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-[#605EA7]/20 transition-colors shadow-sm" onClick={() => setCloudAuthModal('feishu')}>
+                     <FileText size={28} className="text-[#605EA7]"/>
+                  </div>
+                </div>
+                <h3 className="font-bold text-zinc-800 mb-2">云端资产挂载</h3>
+                <p className="text-[13px] text-zinc-500 max-w-[200px] leading-relaxed">点击图标绑定您的外部网盘或企业协同文档。</p>
+                
+                {/* Modals for auth */}
+                <AnimatePresence>
+                  {cloudAuthModal && (
+                    <div className="absolute inset-0 bg-white/90 backdrop-blur-sm shadow-xl border-t border-zinc-200 z-10 flex flex-col p-6 items-center">
+                      <X size={16} className="absolute top-4 right-4 cursor-pointer text-zinc-400 hover:text-zinc-800" onClick={() => setCloudAuthModal(null)} />
+                      {cloudAuthModal === 'netdisk' ? (
+                        <div className="flex flex-col items-center mt-6">
+                           <div className="w-32 h-32 bg-zinc-100 border border-zinc-200 rounded-xl mb-4 flex items-center justify-center shadow-inner">
+                              <span className="text-[10px] text-zinc-400 font-mono">SCAN TO LOGIN</span>
+                           </div>
+                           <h4 className="font-bold text-[14px]">授权网盘读取权限</h4>
+                           <button onClick={() => { alert('绑定成功 (Mock)'); setCloudAuthModal(null); }} className="mt-6 font-bold text-white bg-[#605EA7] hover:bg-[#4d4a8e] px-6 py-2 rounded-lg text-[13px] transition-colors shadow-sm">
+                             模拟扫码绑定
+                           </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center mt-6 w-full">
+                           <h4 className="font-bold text-[14px] mb-4">企业协同文档绑定</h4>
+                           <input type="text" placeholder="输入 AppID" className="w-full bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg text-[12px] mb-3 focus:outline-none focus:border-[#605EA7]" />
+                           <input type="password" placeholder="输入 Secret" className="w-full bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg text-[12px] mb-4 focus:outline-none focus:border-[#605EA7]" />
+                           <p className="text-[11px] text-[#605EA7] bg-[#605EA7]/5 p-2 rounded-lg text-left border border-[#605EA7]/20 leading-relaxed">
+                             请前往开放平台后台配置回调 URL (https://taptik.com/oauth/callback) 以完成打通。
+                           </p>
+                           <button onClick={() => { alert('应用连通测试成功 (Mock)'); setCloudAuthModal(null); }} className="mt-4 font-bold text-[#605EA7] bg-[#605EA7]/10 hover:bg-[#605EA7]/20 border border-[#605EA7]/20 w-full py-2 rounded-lg text-[13px] transition-colors shadow-sm">
+                             完成打通
+                           </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </AnimatePresence>
+             </div>
+          );
+       case 'server':
+          return (
+             <div className="flex flex-col h-full bg-[#fafafa]">
+                <div className="p-3 border-b border-zinc-200 bg-white flex items-center gap-2">
+                   <Server size={14} className="text-[#605EA7]" />
+                   <span className="text-[13px] font-bold text-zinc-700">本地挂载: MacHD/Data</span>
+                </div>
+                <div className="flex-1 p-2 overflow-y-auto custom-scrollbar flex flex-col gap-1">
+                   <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-black/5 rounded cursor-pointer group">
+                      <FolderOpen size={14} className="text-[#605EA7]/80 group-hover:text-[#605EA7]"/>
+                      <span className="text-[12px] font-medium text-zinc-700">小红书视频图集打包</span>
+                   </div>
+                   <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-black/5 rounded cursor-pointer group pl-6">
+                      <FolderOpen size={14} className="text-[#605EA7]/80 group-hover:text-[#605EA7]"/>
+                      <span className="text-[12px] font-medium text-zinc-700">10月大促</span>
+                   </div>
+                   <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-black/5 rounded cursor-pointer group pl-10 border-l border-zinc-200 ml-4 lg">
+                      <ImageIcon size={14} className="text-zinc-400 group-hover:text-[#605EA7]"/>
+                      <span className="text-[12px] font-medium text-zinc-700">product_shot_01.raw</span>
+                   </div>
+                   <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-black/5 rounded cursor-pointer group">
+                      <FolderOpen size={14} className="text-[#605EA7]/80 group-hover:text-[#605EA7]"/>
+                      <span className="text-[12px] font-medium text-zinc-700">PR 剪辑工程文件源</span>
+                   </div>
+                </div>
+             </div>
+          );
+       case 'calendar':
+          return (
+             <div className="flex flex-col h-full">
+                <div className="p-4 border-b border-zinc-100 bg-white shadow-sm z-10">
+                   <h3 className="font-bold text-[14px] text-zinc-800">发文与任务日历</h3>
+                   <p className="text-[11px] text-zinc-500 mt-1">11/7 本店任务执行清单</p>
+                </div>
+                <div className="p-3 flex-1 overflow-y-auto bg-zinc-50/50 flex flex-col gap-3">
+                   <div className="bg-white p-3 border border-zinc-200 rounded-xl shadow-sm">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[12px] font-bold text-zinc-800">矩阵分发：春季穿搭</span>
+                        <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">已完成 100%</span>
+                      </div>
+                      <div className="text-[11px] text-zinc-500 line-clamp-1">已成功推送至 14 个挂载点</div>
+                   </div>
+                   <div className="bg-white p-3 border border-red-200/50 rounded-xl shadow-sm relative overflow-hidden">
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-400"></div>
+                      <div className="flex items-center justify-between mb-2 pl-2">
+                        <span className="text-[12px] font-bold text-zinc-800">直播预热：活动爆款探店</span>
+                        <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">未完成 0%</span>
+                      </div>
+                      <div className="text-[11px] text-zinc-500 line-clamp-1 pl-2 mb-3">素材尚缺图文切片...</div>
+                      <button className="ml-2 w-[calc(100%-8px)] py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded text-[11px] font-bold transition-colors">
+                         一键催发执行
+                      </button>
+                   </div>
+                </div>
+             </div>
+          );
+       case 'chart':
+          return (
+             <div className="flex flex-col h-full bg-zinc-50">
+                <div className="p-4 border-b border-zinc-200 bg-white">
+                   <h3 className="font-bold text-[14px] text-zinc-800">多账号体系数据监控</h3>
+                </div>
+                <div className="p-4 flex flex-col gap-4">
+                   <div className="bg-white rounded-xl border border-zinc-200 shadow-sm p-4">
+                      <div className="text-[11px] font-bold text-zinc-400 mb-1 tracking-wider uppercase">全局阅读量预估 (7日)</div>
+                      <div className="text-2xl font-black text-[#605EA7]">14.2W <span className="text-[12px] text-emerald-500 border border-emerald-200 bg-emerald-50 px-1 py-0.5 rounded ml-2">+12%</span></div>
+                   </div>
+                   <div className="bg-white rounded-xl border border-zinc-200 shadow-sm p-4">
+                      <div className="text-[11px] font-bold text-zinc-400 mb-3 tracking-wider uppercase">各平台流量占比</div>
+                      <div className="flex h-4 rounded-full overflow-hidden mb-2">
+                         <div className="w-[60%] bg-[#605EA7]"></div>
+                         <div className="w-[30%] bg-[#CEC8E2]"></div>
+                         <div className="w-[10%] bg-zinc-200"></div>
+                      </div>
+                      <div className="flex gap-3 text-[10px] font-bold text-zinc-500">
+                         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded bg-[#605EA7]"></div> 体系主号</div>
+                         <div className="flex items-center gap-1"><div className="w-2 h-2 rounded bg-[#CEC8E2]"></div> 达人矩阵</div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          );
+       case 'users':
+          return (
+             <div className="flex flex-col h-full bg-white">
+                <div className="p-4 border-b border-zinc-100 shadow-sm z-10 flex items-center justify-between">
+                   <h3 className="font-bold text-[14px] text-zinc-800">矩阵账号健康组</h3>
+                </div>
+                <div className="flex-1 overflow-y-auto px-2 py-3 custom-scrollbar flex flex-col gap-2">
+                   {['主店官方蓝V', '穿搭达人小号', '同城探店导流_01', '同城探店导流_02'].map((name, i) => {
+                     const isBad = i === 2;
+                     return (
+                        <div key={name} className="flex items-center justify-between p-3 border border-zinc-100 rounded-lg hover:border-[#605EA7]/30 transition-colors cursor-pointer group">
+                           <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center">
+                                 <Users size={14} className="text-zinc-400 group-hover:text-[#605EA7]" />
+                              </div>
+                              <div className="flex flex-col">
+                                 <span className="text-[12px] font-bold text-zinc-800 group-hover:text-[#605EA7] transition-colors">{name}</span>
+                                 <span className="text-[10px] text-zinc-500 mt-0.5">设备: {isBad ? '被风控脱机' : '在线稳跑'}</span>
+                              </div>
+                           </div>
+                           {isBad ? (
+                              <div className="w-2 h-2 rounded-full bg-red-400 ring-2 ring-red-100" title="限流/异常"></div>
+                           ) : (
+                              <div className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-emerald-100" title="健康在线"></div>
+                           )}
+                        </div>
+                     );
+                   })}
+                </div>
+             </div>
+          );
+       case 'explorer':
+       default:
+          return (
+             <div className="flex flex-col h-full">
+                <div className="p-2 border-b border-zinc-100 flex gap-2 shrink-0">
+                   <div className="flex-1 bg-zinc-100 rounded-lg flex items-center px-2 py-1.5 border border-transparent focus-within:border-[#605EA7] focus-within:bg-white transition-colors">
+                     <Search size={14} className="text-zinc-400 shrink-0" />
+                     <input type="text" placeholder="全局搜索当前空间资产..." className="bg-transparent border-none outline-none w-full ml-2 text-[13px] font-medium text-zinc-700" />
+                   </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-1 py-3 custom-scrollbar user-select-none">
+                   {workspaces.find(w => w.id === activeWorkspaceId)?.type === 'merchant' ? (
+                     <>
+                        <div className="text-[10px] font-black text-zinc-400 px-3 py-1 flex items-center justify-between group select-none">
+                           <span>运营工作流与自动任务 (TASKS)</span>
+                           <Plus size={12} className="opacity-0 group-hover:opacity-100 cursor-pointer hover:text-zinc-800 transition-opacity"/>
+                        </div>
+                        <div draggable onDragStart={(e) => handleTreeDragStart(e, 'Task', '今日分发动作')} className="flex items-center gap-2 px-3 py-1.5 mx-1 hover:bg-[#605EA7]/5 rounded-md cursor-grab active:cursor-grabbing text-[13px] font-medium text-zinc-700 select-none group">
+                           <Workflow size={14} className="text-[#605EA7] opacity-80 group-hover:opacity-100" /> 自动生成群发钩子
+                        </div>
+
+                        <div className="text-[10px] font-black text-zinc-400 px-3 py-1 mt-4 flex items-center justify-between group select-none">
+                           <span>专属商家知识包 (RAG)</span>
+                           <Plus size={12} className="opacity-0 group-hover:opacity-100 cursor-pointer hover:text-zinc-800 transition-opacity"/>
+                        </div>
+                        <div draggable onDragStart={(e) => handleTreeDragStart(e, 'RAG', '酒店标准话术.rag')} className="flex items-center gap-2 px-3 py-1.5 mx-1 hover:bg-[#605EA7]/5 rounded-md cursor-grab active:cursor-grabbing text-[13px] font-medium text-zinc-700 select-none group">
+                           <Database size={14} className="text-[#605EA7] opacity-80 group-hover:opacity-100" /> 本店私域客服QA合集.rag
+                        </div>
+
+                        <div className="text-[10px] font-black text-zinc-400 px-3 py-1 mt-4 flex items-center justify-between group select-none">
+                           <span>资产与图库引擎 (FOLDERS)</span>
+                           <Plus size={12} className="opacity-0 group-hover:opacity-100 cursor-pointer hover:text-zinc-800 transition-opacity"/>
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                           <div draggable onDragStart={(e) => handleTreeDragStart(e, 'Folder', '活动原图分类库')} className="flex items-center justify-between px-3 py-1.5 mx-1 hover:bg-[#605EA7]/5 rounded-md cursor-grab active:cursor-grabbing text-[13px] font-bold text-zinc-700 select-none group">
+                              <div className="flex items-center gap-2">
+                                 <FolderOpen size={14} className="text-[#605EA7] opacity-80 group-hover:opacity-100" /> 当前主推大促物料
+                              </div>
+                              <ChevronDown size={14} className="text-zinc-300" />
+                           </div>
+                           <div draggable onDragStart={(e) => handleTreeDragStart(e, 'File', '海报底图A.jpg')} className="flex items-center gap-2 pl-7 pr-3 py-1.5 mx-1 hover:bg-[#605EA7]/5 rounded-md cursor-grab active:cursor-grabbing text-[13px] font-medium text-zinc-600 select-none border-l-2 border-[#605EA7]/20 ml-4 group transition-colors">
+                              <ImageIcon size={14} className="text-[#605EA7] opacity-80 group-hover:opacity-100" /> 高转转化底图A.jpg
+                           </div>
+                        </div>
+
+                        <div className="text-[10px] font-black text-zinc-400 px-3 py-1 mt-4 flex items-center justify-between group select-none">
+                           <span>预配自动化技能 (SKILLS)</span>
+                           <Plus size={12} className="opacity-0 group-hover:opacity-100 cursor-pointer hover:text-zinc-800 transition-opacity"/>
+                        </div>
+                        <div draggable onDragStart={(e) => handleTreeDragStart(e, 'Skill', '全网矩阵分发引擎')} className="flex items-center gap-2 px-3 py-1.5 mx-1 hover:bg-[#605EA7]/5 rounded-md cursor-grab active:cursor-grabbing text-[13px] font-medium text-zinc-700 select-none group">
+                           <Component size={14} className="text-[#605EA7] opacity-80 group-hover:opacity-100" /> 多平台快速分发流
+                        </div>
+                     </>
+                   ) : (
+                     <div draggable onDragStart={(e) => handleTreeDragStart(e, 'File', '通用全局规范.pdf')} className="flex items-center gap-2 px-3 py-1.5 mx-1 hover:bg-[#605EA7]/5 rounded-md cursor-grab active:cursor-grabbing select-none group">
+                        <FileIcon size={14} className="text-[#605EA7] opacity-80 group-hover:opacity-100"/>
+                        <div className="text-[13px] font-medium text-zinc-700">全体通用指引指南.pdf</div>
+                     </div>
+                   )}
+                </div>
+             </div>
+          );
+    }
+  };
 
   return (
-    <div className="flex flex-col w-full h-[100dvh] bg-[#0A0A0A] text-zinc-300 font-sans overflow-hidden">
-      
-      {/* 1. TOP BAR */}
-      <div className="h-[40px] flex items-center justify-between border-b border-zinc-800 shrink-0 px-2 pl-3 bg-[#0a0a0a]">
-        
-        {/* Left Actions */}
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 rounded-full bg-emerald-900 border border-emerald-500 flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-emerald-500/20">
-            h
+    <div className="flex flex-col h-[100dvh] w-full bg-zinc-50 font-sans text-zinc-900 overflow-hidden relative">
+      {/* Top Navbar */}
+      <div className="flex-none h-[52px] bg-white flex items-end justify-between px-2 z-[60] shrink-0 border-b border-zinc-200/80 shadow-sm relative">
+        <div className="flex flex-row items-center gap-3 pb-2 px-2 relative z-10 w-[260px] shrink-0">
+          <div className="relative">
+            <button onClick={() => setShowProfileMenu(!showProfileMenu)} className="w-8 h-8 rounded-xl bg-[#605EA7] flex items-center justify-center text-white font-bold text-sm shadow-md hover:bg-[#4d4a8e] transition-colors relative z-10 cursor-pointer">
+              W
+            </button>
+            <AnimatePresence>
+               {showProfileMenu && (
+                 <>
+                   <div className="fixed inset-0 z-40" onClick={() => setShowProfileMenu(false)}></div>
+                   <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="absolute top-10 left-0 w-48 bg-white border border-zinc-200 shadow-xl rounded-xl z-50 overflow-hidden">
+                      <div className="px-4 py-3 border-b border-zinc-100 font-bold text-zinc-800 text-[13px]">
+                        操作手主账号 (sheaw)
+                      </div>
+                      <div className="py-1">
+                        <div className="px-4 py-2 text-[13px] text-zinc-700 hover:bg-[#605EA7]/5 hover:text-[#605EA7] cursor-pointer font-medium transition-colors">个人信息</div>
+                        <div className="px-4 py-2 text-[13px] text-zinc-700 hover:bg-[#605EA7]/5 hover:text-[#605EA7] cursor-pointer font-medium transition-colors">管理商家</div>
+                        <div className="px-4 py-2 text-[13px] text-zinc-700 hover:bg-[#605EA7]/5 hover:text-[#605EA7] cursor-pointer font-medium transition-colors">我的积分 (1024)</div>
+                        <div className="px-4 py-2 text-[13px] text-zinc-700 hover:bg-[#605EA7]/5 hover:text-[#605EA7] cursor-pointer font-medium transition-colors">系统设置</div>
+                      </div>
+                   </motion.div>
+                 </>
+               )}
+            </AnimatePresence>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 bg-[#1e1e1e] border border-zinc-700/50 hover:bg-zinc-800 text-[11px] font-bold text-white px-3 py-1.5 rounded-full transition-colors">
-              New Workspace <Plus size={10} className="text-zinc-500 ml-1" />
-            </button>
-            <button className="text-zinc-500 hover:text-zinc-300">
-              <Plus size={14} />
-            </button>
+          <div className="relative">
+             <button onClick={() => setShowWorkspaceMenu(!showWorkspaceMenu)} className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm font-bold text-zinc-800 hover:bg-[#605EA7]/5 transition-colors group">
+               <span className="truncate max-w-[150px]">{workspaces.find(w => w.id === activeWorkspaceId)?.name}</span> 
+               <ChevronDown size={14} className="text-zinc-400 group-hover:text-[#605EA7] transition-colors"/>
+             </button>
+             <AnimatePresence>
+                {showWorkspaceMenu && (
+                   <>
+                     <div className="fixed inset-0 z-40" onClick={() => setShowWorkspaceMenu(false)}></div>
+                     <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="absolute top-10 left-0 w-64 bg-white border border-zinc-200 shadow-xl rounded-xl z-50 overflow-hidden">
+                        <div className="px-3 py-2 text-[10px] uppercase font-bold text-zinc-400 bg-zinc-50 border-b border-zinc-100">切换工作空间</div>
+                        {workspaces.map(w => (
+                           <div key={w.id} onClick={() => { setActiveWorkspaceId(w.id); setShowWorkspaceMenu(false); }} className={`px-4 py-3 text-[13px] font-bold cursor-pointer transition-colors flex items-center justify-between border-b border-zinc-50 last:border-none ${w.id === activeWorkspaceId ? 'bg-[#605EA7]/5 text-[#605EA7]' : 'text-zinc-700 hover:bg-zinc-50 hover:text-[#605EA7]'}`}>
+                              {w.name}
+                              {w.id === activeWorkspaceId && <Check size={14} />}
+                           </div>
+                        ))}
+                        <div className="border-t border-zinc-100 pt-1 pb-1">
+                           <div onClick={() => {
+                              const newId = 'w_' + Date.now();
+                              setWorkspaces([...workspaces, { id: newId, name: `新增商户组织 ${Math.floor(Math.random()*1000)}`, type: 'merchant' }]);
+                              setActiveWorkspaceId(newId);
+                              setShowWorkspaceMenu(false);
+                           }} className="px-4 py-3 text-[12px] font-bold text-[#605EA7] flex items-center gap-2 hover:bg-[#605EA7]/10 cursor-pointer transition-colors">
+                              <Plus size={14}/> 新建工作空间
+                           </div>
+                        </div>
+                     </motion.div>
+                   </>
+                )}
+             </AnimatePresence>
           </div>
         </div>
         
-        <div className="w-[1px] h-4 bg-zinc-800 mx-2"></div>
+        <div className="flex-1 flex px-4">
+          <div className="flex w-full items-end gap-1 overflow-x-auto no-scrollbar relative min-h-[38px]">
+             {appTabs.map(t => (
+                <div key={t.id} onDoubleClick={() => handleTabDoubleClick(t.id, t.name)} onClick={() => setActiveAppTabId(t.id)} className={`group px-4 py-2 flex items-center min-w-28 text-sm font-bold cursor-pointer rounded-t-xl transition-colors relative z-10 select-none border-t border-x overflow-hidden ${activeAppTabId === t.id ? `bg-zinc-50 text-[${BRAND.primary}] border-zinc-200/80 shadow-sm pb-2.5 mb-[-1px]` : 'text-zinc-500 bg-transparent border-transparent hover:bg-zinc-100/50'}`}>
+                   {t.isEditing ? (
+                      <input autoFocus className="bg-transparent border-none outline-none w-full text-zinc-900 min-w-20" value={tabRenameVal} onChange={e=>setTabRenameVal(e.target.value)} onBlur={()=>commitTabRename(t.id)} onKeyDown={e => e.key === 'Enter' && commitTabRename(t.id)} />
+                   ) : (
+                      <>
+                        <span className="flex-1 truncate text-center px-1 pr-4">{t.name}</span>
+                        {activeAppTabId === t.id && <span className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-zinc-50 z-20"></span>}
+                        <X size={14} className={`absolute right-3 ${activeAppTabId === t.id ? 'opacity-50 hover:opacity-100 text-[#605EA7]' : 'opacity-0 group-hover:opacity-40 hover:!opacity-100 hover:text-zinc-800'} transition-opacity`} onClick={(e) => { e.stopPropagation(); if(appTabs.length > 1) { const newTabs = appTabs.filter(tab => tab.id !== t.id); setAppTabs(newTabs); if(activeAppTabId === t.id) setActiveAppTabId(newTabs[0].id); } }}/>
+                      </>
+                   )}
+                </div>
+             ))}
+             <button onClick={() => { const n = { id: Date.now().toString(), name: '新任务流' }; setAppTabs([...appTabs, n]); setActiveAppTabId(n.id); }} className="p-2 ml-1 text-[#605EA7] hover:bg-[#605EA7]/10 mb-1 rounded-lg transition-colors shrink-0" title="新建工作流"><Plus size={16} /></button>
+          </div>
+        </div>
 
-        {/* Center Tabs */}
-        <div className="flex items-end h-[40px] flex-1 pl-4 gap-0.5">
-           <div className="flex items-center gap-2 px-4 pb-2 pt-2 text-[12px] text-zinc-500 font-bold hover:bg-zinc-800/50 cursor-pointer rounded-t-lg transition-colors border-x border-transparent">
-             <span className="w-2 h-2 rounded-full bg-zinc-600"></span> New Chat
-           </div>
-           <div className="flex items-center gap-2 px-4 pb-2 pt-2 text-[12px] text-zinc-500 font-bold hover:bg-zinc-800/50 cursor-pointer rounded-t-lg transition-colors border-x border-transparent">
-             <span className="w-2 h-2 rounded-full bg-zinc-600"></span> New Chat
+        <div className="flex items-center gap-1.5 pb-2 px-2 relative z-10 shrink-0">
+           {/* History Popup */}
+           <div className="relative">
+             <button onClick={() => { setShowHistory(!showHistory); setShowSkills(false); }} className={`p-1.5 rounded-md transition-all font-bold ${showHistory ? 'bg-[#605EA7] text-white shadow-md' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-[#605EA7]/10'}`} title="展现历史对话">
+               <History size={18} />
+             </button>
+             <AnimatePresence>
+               {showHistory && (
+                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute top-12 right-0 w-80 bg-white border border-zinc-200 shadow-2xl rounded-2xl flex flex-col z-[100] overflow-hidden">
+                   <div className="p-4 border-b border-zinc-100 font-bold flex justify-between items-center text-zinc-800">
+                     <span>会话与运行历史</span>
+                     <X size={16} className="cursor-pointer text-zinc-400 hover:text-[#605EA7]" onClick={() => setShowHistory(false)}/>
+                   </div>
+                   <div className="p-2 max-h-96 overflow-y-auto">
+                     {[1,2,3].map(i => (
+                       <div key={i} className="p-3 hover:bg-[#605EA7]/5 rounded-xl cursor-pointer transition-colors mb-1 group">
+                         <div className="font-bold text-[13px] text-zinc-800 group-hover:text-[#605EA7] mb-1 transition-colors">自动归档：素材提取与重置动作...</div>
+                         <div className="text-[11px] text-zinc-400 font-medium">{i} 小时前</div>
+                       </div>
+                     ))}
+                   </div>
+                 </motion.div>
+               )}
+             </AnimatePresence>
            </div>
            
-           {/* Active Tab */}
-           <div className="flex items-center gap-2 px-4 pb-2 pt-2.5 text-[12px] text-white font-bold bg-[#111111] rounded-t-lg cursor-default relative border-t border-x border-[#06b6d4] z-10 translate-y-[1px]">
-             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: BRAND.primary }}></span> New Chat
-             {/* Hide bottom border using a pseudo element */}
-             <div className="absolute -bottom-[2px] left-0 right-0 h-[3px] bg-[#111111]"></div>
-           </div>
-           <button className="px-3 pb-2 pt-2 text-zinc-500 hover:text-zinc-300 transition-colors">
-             <Plus size={14} />
-           </button>
-        </div>
+           <div className="w-px h-4 bg-zinc-300 mx-1"></div>
 
-        {/* Right Nav Icons */}
-        <div className="flex items-center gap-3.5 text-zinc-400">
-          <History size={14} className="hover:text-zinc-200 cursor-pointer" />
-          <Folder size={14} className="hover:text-zinc-200 cursor-pointer text-[#06b6d4]" />
-          <Chrome size={14} className="hover:text-zinc-200 cursor-pointer" />
-          <MessageSquare size={14} className="hover:text-zinc-200 cursor-pointer text-[#06b6d4]" />
-          <Sparkles size={14} className="hover:text-zinc-200 cursor-pointer" />
-          <div className="w-[1px] h-4 bg-zinc-700 mx-1"></div>
-          <Minus size={14} className="cursor-pointer hover:text-white" />
-          <Square size={11} className="cursor-pointer hover:text-white" />
-          <X size={14} className="cursor-pointer hover:text-white" />
+           <button onClick={() => handleAppToggle('explorer')} className={`p-1.5 rounded-md transition-all font-bold ${showLeftPanel ? `bg-[#605EA7]/10 text-[${BRAND.primary}] shadow-sm border border-[#605EA7]/20` : 'text-zinc-500 hover:text-[#605EA7] hover:bg-[#605EA7]/10'}`} title="全局资源主控板">
+            <FolderOpen size={18} />
+           </button>
+           <button onClick={() => handleAppToggle('browser')} className={`p-1.5 rounded-md transition-all font-bold ${showBrowser ? `bg-[#605EA7]/10 text-[${BRAND.primary}] shadow-sm border border-[#605EA7]/20` : 'text-zinc-500 hover:text-[#605EA7] hover:bg-[#605EA7]/10'}`} title="内置目标浏览器">
+            <Compass size={18} />
+           </button>
+           <button onClick={() => handleAppToggle('chat')} className={`p-1.5 rounded-md transition-all font-bold ${showChat ? `bg-[#605EA7]/10 text-[${BRAND.primary}] shadow-sm border border-[#605EA7]/20` : 'text-zinc-500 hover:text-[#605EA7] hover:bg-[#605EA7]/10'}`} title="流控制作组">
+            <MessageSquare size={18} />
+           </button>
+           <div className="w-px h-4 bg-zinc-300 mx-1"></div>
+           <button onClick={() => handleAppToggle('skills')} className={`p-1.5 rounded-md transition-all font-bold ${showSkills ? `bg-[${BRAND.primary}] text-white shadow-md` : 'text-zinc-500 hover:text-[#605EA7] hover:bg-[#605EA7]/10'}`} title="全局独立技能资产库">
+            <Component size={18} />
+           </button>
         </div>
       </div>
 
-      {/* 2. MAIN LAYOUT FLEX */}
-      <div className="flex-1 flex overflow-hidden min-h-0 bg-[#000000]">
-        
-        {/* A. Far Left Thin Sidebar */}
-        <div className="w-[42px] flex flex-col items-center py-4 bg-[#0A0A0A] border-r border-[#1a1a1a] gap-5 text-zinc-500 shrink-0 select-none">
-           <div className="w-5 h-5 rounded flex items-center justify-center border border-zinc-700 text-zinc-400 mb-2 cursor-pointer hover:bg-zinc-800">
-             <FolderOpen size={12} />
-           </div>
-           <LayoutTemplate size={16} className="cursor-pointer hover:text-zinc-300" />
-           <div className="w-5 border-b border-zinc-800 my-1"></div>
-           <Folder size={16} className="text-amber-500 cursor-pointer" fill="currentColor" fillOpacity={0.2} />
-           <Chrome size={16} className="text-blue-500 cursor-pointer" />
-           <Database size={16} className="text-emerald-500 cursor-pointer" />
-           <div className="w-5 border-b border-zinc-800 my-1"></div>
-           <div className="text-[10px] scale-75 text-zinc-600 bg-zinc-900 rounded px-1 -my-2 tracking-widest border border-zinc-800">个人</div>
-           <Monitor size={16} className="cursor-pointer hover:text-zinc-300 text-[#06b6d4]" />
-           <FileText size={16} className="cursor-pointer hover:text-zinc-300" />
-           <Box size={16} className="cursor-pointer hover:text-zinc-300" />
-        </div>
+      <div className="w-full h-px z-50 relative" style={{ backgroundColor: BRAND.primary }}></div>
 
-        {/* B. File Explorer */}
-        <div className="w-[280px] bg-[#111111] flex flex-col border-r border-zinc-800/80 shrink-0">
-           <div className="px-3 py-2 border-b border-zinc-800 flex items-center justify-between text-zinc-400">
-             <div className="flex items-center gap-3">
-               <ChevronLeft size={16} className="cursor-pointer hover:text-white" />
-               <ChevronRight size={16} className="cursor-pointer hover:text-white" />
-               <ArrowUp size={16} className="cursor-pointer hover:text-white" />
-               <span className="text-[13px] text-zinc-300 font-medium ml-1 flex items-center gap-1 cursor-pointer">
-                 <ChevronDown size={14}/> 私域
-               </span>
+      <div className="flex-1 flex min-h-0 bg-zinc-100/50 relative">
+        {/* Far Left Shortcut Bar */}
+        <motion.div layout animate={{ width: isSidebarExpanded ? 160 : 48 }} className="bg-white border-r border-zinc-200 flex flex-col py-1 gap-1 shrink-0 z-20 shadow-sm overflow-hidden">
+           <button onClick={() => setIsSidebarExpanded(!isSidebarExpanded)} className="w-full h-10 flex items-center px-1 text-zinc-400 hover:text-[#605EA7] hover:bg-[#605EA7]/5 transition-colors justify-start group">
+             <div className="w-10 shrink-0 flex justify-center text-zinc-400 group-hover:text-[#605EA7] transition-transform">
+               {isSidebarExpanded ? <PanelLeftClose size={16}/> : <PanelRightClose size={16}/>}
              </div>
-             <div className="flex items-center gap-2">
-               <LayoutGrid size={14} className="cursor-pointer hover:text-white" />
-               <Search size={14} className="cursor-pointer hover:text-white" />
-             </div>
-           </div>
-           <div className="flex text-[12px] font-bold text-zinc-400 border-b border-zinc-800">
-              <div className="flex-1 py-2 px-3 border-b-[3px] border-[#06b6d4] text-[#06b6d4] flex items-center gap-2 bg-zinc-800/30">
-                <Folder size={14}/> 私域
-              </div>
-              <div className="flex-1 py-1.5 px-3 hover:bg-zinc-800/50 cursor-pointer border-b-2 border-transparent">
-                Des...
-              </div>
-           </div>
+             {isSidebarExpanded && <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest whitespace-nowrap opacity-100 ml-1">快速收起</span>}
+           </button>
+           <div className="h-px bg-zinc-200 mx-2 my-1"></div>
            
-           <div className="flex-1 overflow-y-auto custom-scrollbar p-1">
-              <div className="flex items-start gap-3 px-2 py-2.5 hover:bg-zinc-800/50 cursor-pointer rounded-lg bg-zinc-800/30">
-                <Folder size={20} className="text-amber-500 mt-1" fill="currentColor" fillOpacity={0.8} />
-                <div className="flex flex-col">
-                  <div className="text-[13px] font-bold text-[#06b6d4] mb-0.5">日报周报月报</div>
-                  <div className="text-[11px] text-zinc-500">4天前 17:20</div>
+           <button onClick={() => handleLeftMenuClick('cloud')} className={`h-10 flex items-center justify-start rounded-lg mx-1 transition-colors group ${activeLeftMenu === 'cloud' && showLeftPanel ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-500 hover:bg-[#605EA7]/5 hover:text-[#605EA7]'}`} title="远程云盘资产同步">
+              <div className="w-10 shrink-0 flex justify-center"><Cloud size={18} /></div>
+              {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">远程资产云盘</span>}
+           </button>
+           <button onClick={() => handleLeftMenuClick('server')} className={`h-10 flex items-center justify-start rounded-lg mx-1 transition-colors group ${activeLeftMenu === 'server' && showLeftPanel ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-500 hover:bg-[#605EA7]/5 hover:text-[#605EA7]'}`} title="本地挂载盘">
+              <div className="w-10 shrink-0 flex justify-center"><Server size={18} /></div>
+              {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">本地挂载硬盘</span>}
+           </button>
+           
+           <div className="h-px bg-zinc-200 mx-2 my-2"></div>
+
+           <button onClick={() => handleLeftMenuClick('calendar')} className={`h-10 flex items-center justify-start rounded-lg mx-1 transition-colors group ${activeLeftMenu === 'calendar' && showLeftPanel ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-500 hover:bg-[#605EA7]/5 hover:text-[#605EA7]'}`} title="发文组日历计划">
+             <div className="w-10 shrink-0 flex justify-center"><CalendarDays size={18} /></div>
+             {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">发文排期日历</span>}
+           </button>
+           <button onClick={() => handleLeftMenuClick('chart')} className={`h-10 flex items-center justify-start rounded-lg mx-1 transition-colors group ${activeLeftMenu === 'chart' && showLeftPanel ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-500 hover:bg-[#605EA7]/5 hover:text-[#605EA7]'}`} title="大盘数据中心">
+             <div className="w-10 shrink-0 flex justify-center"><LineChart size={18} /></div>
+             {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">大盘监控中心</span>}
+           </button>
+           <button onClick={() => handleLeftMenuClick('users')} className={`h-10 flex items-center justify-start rounded-lg mx-1 transition-colors group ${activeLeftMenu === 'users' && showLeftPanel ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-500 hover:bg-[#605EA7]/5 hover:text-[#605EA7]'}`} title="达人矩阵管理">
+             <div className="w-10 shrink-0 flex justify-center"><Users size={18} /></div>
+             {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">自持达人与矩阵</span>}
+           </button>
+        </motion.div>
+
+        {/* 1. Left Panel Component (Explorer or other views) */}
+        <AnimatePresence>
+          {showLeftPanel && (
+            <motion.div 
+              layout
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: expClass === 'flex-1' ? 'auto' : 280, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              className={`bg-white border-r border-zinc-200 flex flex-col shrink-0 relative transition-all z-10 ${expClass}`}
+            >
+              {renderLeftPanelContent()}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 2. Center View (Browser) */}
+        <AnimatePresence>
+          {showBrowser && (
+            <motion.div layout className="flex-1 flex flex-col min-w-0 relative z-10 bg-white shadow-[-1px_0_12px_rgba(0,0,0,0.01)] border-r border-zinc-200/50">
+              <div className="h-[46px] bg-zinc-100 flex items-center px-4 gap-4 border-b border-zinc-200">
+                <div className="flex gap-4">
+                  <ChevronLeft size={16} className="text-zinc-500 cursor-pointer hover:text-[#605EA7]" />
+                  <ChevronRight size={16} className="text-zinc-300 cursor-not-allowed" />
+                  <RotateCw size={14} className="text-zinc-500 cursor-pointer hover:text-[#605EA7]" />
+                </div>
+                <div className="flex-1 bg-white border border-zinc-200/80 rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-sm focus-within:border-[#605EA7]/50 focus-within:ring-2 focus-within:ring-[#605EA7]/10 transition-colors">
+                   <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                   <input type="text" readOnly value="https://www.xiaohongshu.com/explore/12345abcdef" className="text-[12px] bg-transparent flex-1 outline-none text-zinc-600 font-medium font-mono" />
                 </div>
               </div>
-              
-              {[
-                { icon: Chrome, color: "text-blue-500", name: "五一活动选品方案_30款.html", sub: "今天 16:17 · 31.0 KB" },
-                { icon: Database, color: "text-emerald-500", name: "私域部门月报计划.xlsx", sub: "02/02 11:00 · 94.6 KB" },
-                { icon: Database, color: "text-emerald-500", name: "香港5000以下优势货盘表.xlsx", sub: "01/15 09:28 · 1.2 GB" },
-                { icon: FileText, color: "text-rose-500", name: "徐华展开168x264mm双面2折包心折+展...", sub: "01/13 10:36 · 3.7 MB" },
-                { icon: Box, color: "text-blue-400", name: "c5fbe4f680496772329c130ffb664dff.jpg", sub: "01/07 12:41 · 6.1 MB" },
-                { icon: Database, color: "text-emerald-500", name: "国内部周报模板.xlsx", sub: "01/06 09:57 · 1.4 MB" },
-                { icon: Database, color: "text-emerald-500", name: "2025年私域业绩.xlsx", sub: "01/04 12:04 · 2.9 MB" },
-                { icon: FileText, color: "text-rose-500", name: "私域1月计划和执行 (12月30日私域会议) .pdf", sub: "2025/12/29 · 492.1 KB" }
-              ].map((file, i) => (
-                <div key={i} className="flex items-start gap-3 px-2 py-2.5 hover:bg-zinc-800/50 cursor-pointer rounded-lg">
-                  <file.icon size={18} className={`${file.color} mt-1`} />
-                  <div className="flex flex-col overflow-hidden">
-                    <div className="text-[13px] text-zinc-300 truncate mb-0.5">{file.name}</div>
-                    <div className="text-[11px] text-zinc-500">{file.sub}</div>
-                  </div>
-                </div>
-              ))}
-           </div>
-           
-           <div className="px-4 py-2 border-t border-zinc-800 text-[10px] text-zinc-500 flex justify-between bg-[#0a0a0a]">
-             <span>41 个项目</span>
-             <span>906.5 GB 可用  2 GB</span>
-           </div>
-        </div>
-
-        {/* C. Middle Panel (Browser) */}
-        <div className="flex-1 min-w-[300px] flex flex-col border-r border-[#1a1a1a] bg-[#1a1a1a] shrink-0 relative z-0">
-          <div className="flex items-center bg-[#0a0a0a] h-[40px] px-2 gap-2 shrink-0 border-b border-zinc-800">
-            <div className="flex items-center px-4 py-2 bg-[#1a1a1a] rounded-t-lg gap-2 text-zinc-200 text-[12px] w-48 relative border-t border-x border-[#06b6d4] translate-y-[1px]">
-              <div className="w-3.5 h-3.5 rounded-full bg-white flex items-center justify-center p-[2px]">
-                <div className="w-full h-full rounded-full border-[3px] border-blue-500 border-t-red-500 border-l-yellow-500 border-r-green-500"></div>
-              </div>
-              <span className="flex-1 truncate font-medium">Google</span>
-              <X size={12} className="text-zinc-500 hover:text-white cursor-pointer" />
-              <div className="absolute -bottom-[2px] left-0 right-0 h-[3px] bg-[#1a1a1a]"></div>
-            </div>
-            <Plus size={16} className="text-zinc-600 hover:text-white cursor-pointer" />
-          </div>
-          
-          <div className="flex items-center gap-3 px-3 py-1.5 border-b border-zinc-800 bg-[#1a1a1a] shrink-0">
-            <ChevronLeft size={16} className="text-zinc-500 cursor-pointer hover:text-white" />
-            <ChevronRight size={16} className="text-zinc-600 cursor-pointer hover:text-white" />
-            <RotateCw size={14} className="text-zinc-400 cursor-pointer hover:text-white" />
-            <Home size={16} className="text-zinc-400 cursor-pointer hover:text-white" />
-            <div className="flex-1 bg-[#111111] rounded-full h-7 flex items-center px-4 border border-zinc-800 text-[12px] text-zinc-300 justify-center">
-              www.google.com
-            </div>
-            <MoreVertical size={16} className="text-zinc-400 cursor-pointer hover:text-white" />
-            <X size={16} className="text-zinc-400 cursor-pointer hover:text-white" />
-          </div>
-
-          <div className="flex-1 flex flex-col items-center justify-center relative bg-[#1c1c1c]">
-             {/* Top Links */}
-             <div className="absolute top-4 right-6 flex items-center gap-5 text-[13px] text-zinc-300">
-               <span className="cursor-pointer hover:underline">Gmail</span>
-               <span className="cursor-pointer hover:underline">图片</span>
-               <LayoutGrid size={18} className="cursor-pointer opacity-80 hover:opacity-100" />
-               <button className="bg-blue-100/90 text-blue-900 font-bold px-6 py-1.5 rounded-full hover:bg-white transition-colors">登录</button>
-             </div>
-             
-             {/* Google Logo Mock */}
-             <div className="text-[76px] font-bold text-white tracking-tighter mb-8 font-sans flex items-center gap-1 select-none">
-               <span>G</span>
-               <span>o</span>
-               <span>o</span>
-               <span>g</span>
-               <span>l</span>
-               <span>e</span>
-             </div>
-             
-             {/* Search Bar */}
-             <div className="w-full max-w-[580px] h-[48px] bg-[#303030] rounded-full flex items-center px-5 border border-zinc-600 gap-4 shadow-lg focus-within:bg-[#404040]">
-               <Plus size={22} className="text-zinc-400 font-light" />
-               <div className="flex-1"></div>
-               <Mic size={18} className="text-zinc-400 cursor-pointer hover:text-white" />
-               <Camera size={18} className="text-zinc-400 cursor-pointer hover:text-white" />
-               <div className="bg-zinc-700/80 px-4 py-1.5 rounded-full text-[13px] font-bold text-zinc-200 flex items-center gap-1.5 cursor-pointer hover:bg-zinc-600">
-                 <Search size={14} /> AI 模式
-               </div>
-             </div>
-
-             <div className="flex gap-4 mt-8">
-               <button className="bg-[#303030] px-5 py-2.5 text-[13px] text-zinc-300 rounded hover:border-zinc-500 border border-transparent transition-colors shadow">Google 搜索</button>
-               <button className="bg-[#303030] px-5 py-2.5 text-[13px] text-zinc-300 rounded hover:border-zinc-500 border border-transparent transition-colors shadow">手气不错</button>
-             </div>
-
-             <div className="text-[12px] text-zinc-400 mt-8">
-               Google 提供: <span className="text-blue-400 cursor-pointer hover:underline">English</span>
-             </div>
-             
-             {/* Footer Links */}
-             <div className="absolute bottom-0 left-0 right-0 py-3 border-t border-zinc-800 flex justify-around px-20 text-[12px] text-zinc-400 bg-[#141414]">
-                <span className="cursor-pointer hover:underline">关于 Google</span>
-                <span className="cursor-pointer hover:underline">广告</span>
-                <span className="cursor-pointer hover:underline">商务</span>
-                <span className="cursor-pointer hover:underline">Google 搜索的运作方式</span>
-                <span className="cursor-pointer hover:underline">隐私权</span>
-                <span className="cursor-pointer hover:underline">条款</span>
-                <span className="cursor-pointer hover:underline">设置</span>
-             </div>
-          </div>
-        </div>
-
-        {/* D. Right Panel (Chat) */}
-        <div className="w-[380px] bg-[#111111] flex flex-col shrink-0 relative border-x border-[#06b6d4] z-10 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-6 pt-16 flex flex-col items-center">
-             
-             <h1 className="text-[32px] font-bold text-zinc-100 font-serif mb-10 w-full text-center flex items-center justify-center tracking-tight">
-                晚上好, <span className="font-sans font-black ml-2 tracking-tighter text-white">hua xu</span>
-             </h1>
-             
-             <div className="bg-[#1a1a1a] rounded-[20px] border border-zinc-800 p-5 mb-6 shadow-sm w-full">
-                <textarea 
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className="w-full bg-transparent border-none text-[13px] text-zinc-300 placeholder:text-zinc-600 resize-none focus:outline-none mb-6 font-medium leading-relaxed"
-                  placeholder="你可以直接开始，或者选择一个 combo 完成特定任务，或者将历史对话整理成一个 combo"
-                  rows={3}
-                />
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-4 text-zinc-500">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-zinc-800 cursor-pointer"><AtSign size={16} className="text-zinc-400" /></div>
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-zinc-800 cursor-pointer"><Box size={16} className="text-zinc-400" /></div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 bg-[#222222] px-3 py-1.5 rounded-full hover:bg-zinc-800 cursor-pointer transition-colors border border-zinc-800/50">
-                      claude-sonnet-4-6 <ChevronDown size={12} />
+              <div className="flex-1 overflow-y-auto bg-[#fafafa] flex justify-center p-8 custom-scrollbar">
+                 <div className="w-[100%] max-w-[500px] flex flex-col bg-white rounded-2xl shadow-sm border border-zinc-200/60 overflow-hidden h-fit relative group">
+                    <div className="absolute top-3 right-3 text-white/50 group-hover:text-white transition-colors bg-black/20 p-2 rounded-full backdrop-blur-md cursor-grab z-10 shadow-sm"><ImageIcon size={18} /></div>
+                    <div draggable onDragStart={handleBrowserDragStart} onDragEnd={handleDragEnd} className="w-full aspect-[3/4] relative group/img cursor-grab active:cursor-grabbing bg-zinc-100">
+                       <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover pointer-events-none" alt="Red Sneaker" />
+                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-6 shadow-inner backdrop-blur-[2px] pointer-events-none">
+                          <Compass size={48} className="mb-4 drop-shadow-md text-white/90" />
+                          <h3 className="font-bold text-lg mb-2">拖拽我至指令台</h3>
+                          <p className="text-xs text-white/80 text-center leading-relaxed">提供当前浏览记录给工作流</p>
+                       </div>
                     </div>
-                    <button className="text-zinc-500 hover:text-white transition-colors p-1.5">
-                      <Send size={16} />
-                    </button>
-                  </div>
-                </div>
-             </div>
+                    <div className="p-5 relative">
+                       <h2 className="text-lg font-bold text-zinc-900 mb-2 leading-tight">绝美神仙穿搭🔥最新必入</h2>
+                       <p className="text-sm text-zinc-600 mb-4 leading-relaxed font-medium">真的太神仙了家人们，刚拿到新款忍不住安利！</p>
+                    </div>
+                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-             <div className="flex flex-wrap gap-2 mb-6 w-full px-2">
-                <span className="px-3 py-1.5 rounded-full text-[12px] font-bold bg-[#06b6d4]/10 text-[#06b6d4] flex items-center gap-1.5 cursor-pointer border border-[#06b6d4]/20 hover:bg-[#06b6d4]/20 transition-colors">
-                  <Sparkles size={12}/> 推荐
+        {/* 3. Right View (Chat Panel) */}
+        <AnimatePresence>
+          {showChat && (
+            <motion.div 
+               layout
+               initial={{ width: 0, opacity: 0 }}
+               animate={{ width: chatClass === 'flex-1' ? 'auto' : 500, opacity: 1 }}
+               exit={{ width: 0, opacity: 0 }}
+               className={`bg-white border-l border-zinc-200 flex flex-col shrink-0 relative z-30 shadow-[-4px_0_24px_rgba(0,0,0,0.02)] overflow-hidden ${chatClass}`}
+            >
+              <AnimatePresence>
+                {isGlobalDragging && (
+                  <motion.div 
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    onDragOver={handleChatDragOver} onDragLeave={handleChatDragLeave} onDrop={handleChatDrop}
+                    className={`absolute inset-0 z-50 flex items-center justify-center m-4 rounded-3xl border-4 transition-colors backdrop-blur-[2px] ${isDragHoveringChat ? `border-[#605EA7] bg-[#605EA7]/5` : `border-dashed border-[#605EA7]/50 bg-[#605EA7]/5`}`}
+                  >
+                     <div className="flex flex-col items-center justify-center p-8 bg-white/90 rounded-2xl shadow-xl pointer-events-none transform transform-gpu border border-white">
+                        {isDragHoveringChat ? <ArrowUp size={48} className="text-[#605EA7] mb-4 animate-bounce" /> : <LayersDropIcon className={`mb-4 w-12 h-12 text-[#605EA7]`} />}
+                        <h2 className={`text-xl font-black text-[#605EA7]`}>
+                           {isDragHoveringChat ? '松开以装载资产' : '放置以注入上下文'}
+                        </h2>
+                     </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="h-[46px] px-3 border-b border-zinc-200 shrink-0 flex items-center justify-between bg-zinc-50 relative z-10">
+                <span className="font-bold text-[13px] text-[#605EA7] font-mono tracking-tight flex items-center gap-2">
+                  <Flame size={14} /> TapTik 工作流控制台
                 </span>
-                <span className="px-3 py-1.5 rounded-full text-[12px] font-bold text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 cursor-pointer flex items-center gap-1.5 transition-colors border border-transparent">
-                  <Sparkles size={12}/> 自定义
-                </span>
-                <span className="px-3 py-1.5 rounded-full text-[12px] font-bold text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 cursor-pointer flex items-center gap-1.5 transition-colors border border-transparent">
-                  <Activity size={12}/> 分析
-                </span>
-             </div>
+                <div className="flex gap-1">
+                  <button className="p-1.5 rounded bg-white border border-zinc-200 text-[#605EA7] hover:bg-[#605EA7]/5 shadow-sm flex items-center justify-center transition-colors group relative" title="整理为技能"><PackagePlus size={14}/></button>
+                  <button onClick={() => {setMessages([]); setContextItems([]);}} className="p-1.5 rounded bg-white border border-zinc-200 text-zinc-500 hover:bg-[#605EA7]/5 shadow-sm flex items-center justify-center transition-colors hover:text-[#605EA7] group relative" title="清空聊天"><RotateCw size={14}/></button>
+                </div>
+              </div>
 
-             <div className="space-y-3 w-full">
-                <div className="px-5 py-4 rounded-[16px] border border-zinc-800 bg-transparent hover:bg-zinc-800/50 hover:border-zinc-700 cursor-pointer text-[13px] text-zinc-300 font-medium transition-all shadow-sm">
-                  根据我选中的文档，写一个漂亮的 PPT 汇报用
-                </div>
-                <div className="px-5 py-4 rounded-[16px] border border-zinc-800 bg-transparent hover:bg-zinc-800/50 hover:border-zinc-700 cursor-pointer text-[13px] text-zinc-300 font-medium transition-all shadow-sm">
-                  分析这个目录结构，帮我做一个整理计划
-                </div>
-                <div className="px-5 py-4 rounded-[16px] border border-zinc-800 bg-transparent hover:bg-zinc-800/50 hover:border-zinc-700 cursor-pointer text-[13px] text-zinc-300 font-medium transition-all shadow-sm">
-                  根据目录内的表格文件，给出一些洞察
-                </div>
-                <div className="px-5 py-4 rounded-[16px] border border-zinc-800 bg-transparent hover:bg-zinc-800/50 hover:border-zinc-700 cursor-pointer text-[13px] text-zinc-300 font-medium transition-all shadow-sm">
-                  根据 PDF 报告，生成一个信息图
-                </div>
-             </div>
-          </div>
-        </div>
+              {messages.length === 0 ? (
+                 <div className="flex-1 overflow-y-auto px-6 sm:px-10 py-12 custom-scrollbar bg-white flex flex-col justify-center min-h-0">
+                    <div className="max-w-[420px] mx-auto w-full">
+                      <div className="mb-8">
+                         <div className="w-12 h-12 rounded-2xl bg-[#605EA7] flex items-center justify-center text-white mb-6 shadow-lg shadow-[#605EA7]/20 border border-[#605EA7]">
+                           <Sparkles size={24} />
+                         </div>
+                         <h1 className="text-[20px] font-black text-zinc-900 mb-2">早上好，sheaw</h1>
+                         <p className="text-[14px] text-zinc-500 font-medium leading-relaxed">你可以直接开始，或@选择一个技能完成特定任务。</p>
+                      </div>
+                      <div className="mb-6"><ChatInputArea isFloat={true} /></div>
+                    </div>
+                 </div>
+              ) : (
+                 <>
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-zinc-50/50">
+                       {messages.map((msg, idx) => (
+                         <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                           {msg.role === 'user' ? (
+                             <div className="flex flex-col items-end max-w-[90%]">
+                                {msg.contextList && msg.contextList.length > 0 && (
+                                   <div className="mb-2 bg-[#605EA7]/5 border border-[#605EA7]/20 p-2 rounded-lg text-[11px] font-bold text-[#605EA7] shadow-sm flex flex-col gap-1 items-start">
+                                      {msg.contextList.map((c, i) => (
+                                         <span key={i} className="flex items-center gap-1.5 opacity-90"><Link2 size={10} /> {c}</span>
+                                      ))}
+                                   </div>
+                                )}
+                                <div className="px-5 py-3.5 rounded-2xl bg-[#18181b] text-white border border-zinc-800 shadow-md rounded-br-sm text-[14px] leading-relaxed font-medium">{msg.content}</div>
+                             </div>
+                           ) : (
+                             <div className="max-w-[90%]">
+                                <div className="flex items-center gap-2 mb-2 px-1">
+                                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-sm ${msg.role === 'system' ? 'bg-[#CEC8E2] text-[#605EA7]' : 'bg-[#605EA7]'}`}>
+                                      {msg.role === 'system' ? 'SYS' : 'L0'}
+                                   </div>
+                                   <span className="text-[11px] font-bold text-zinc-500 tracking-wide uppercase">{msg.role === 'system' ? '提示' : '后台执行引擎'}</span>
+                                </div>
+                                <div className={`px-5 py-3.5 rounded-2xl bg-white border border-zinc-200 shadow-sm text-[14px] text-zinc-800 leading-relaxed rounded-bl-sm font-medium ${msg.role === 'system' ? 'bg-zinc-50/80' : ''}`}>{msg.content}</div>
+                             </div>
+                           )}
+                         </motion.div>
+                       ))}
+                       <div ref={chatEndRef} className="h-2" />
+                    </div>
+                    <div className="p-4 bg-white border-t border-zinc-200 z-20"><ChatInputArea isFloat={false} /></div>
+                 </>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* E. Far Right Panel (Combo Skills) */}
-        <div className="w-[280px] bg-[#0A0A0A] flex flex-col shrink-0 border-l border-[#1a1a1a]">
-          <div className="h-[48px] px-5 flex items-center justify-between border-b border-[#1a1a1a] shrink-0 pt-2">
-             <span className="text-zinc-100 font-bold flex items-center gap-2 text-[15px]">
-               <Sparkles size={16} className="text-[#06b6d4]" /> Combo <br/>Skills
-             </span>
-             <div className="flex gap-4 text-zinc-500">
-                <Home size={14} className="cursor-pointer hover:text-white" />
-                <RotateCw size={14} className="cursor-pointer hover:text-white" />
-             </div>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-             <h4 className="text-[13px] font-bold text-zinc-400 mb-4 px-1">推荐</h4>
-             
-             {/* Special Skill Card */}
-             <div className="rounded-[16px] p-[1.5px] bg-gradient-to-br from-[#06b6d4]/40 via-blue-500/20 to-purple-500/10 mb-4 cursor-pointer hover:from-[#06b6d4]/60 transition-colors">
-                <div className="bg-[#111111] rounded-[15px] p-5 h-full relative overflow-hidden flex flex-col">
-                   <h3 className="text-white font-bold text-[15px] mb-2 relative z-10 w-4/5 leading-snug">你希望 Floatboat 做些什么？</h3>
-                   <p className="text-zinc-400 text-[11px] mb-6 font-medium leading-relaxed relative z-10 w-4/5">说出你的目标，让我们帮你实现它们</p>
-                   <button className="bg-zinc-800/90 text-zinc-300 text-[11px] font-bold px-4 py-2 rounded-xl border border-zinc-700/50 hover:bg-zinc-700 hover:text-white transition-colors relative z-10 shadow-sm w-fit">填写你的目标</button>
-                   {/* Background aura decoration */}
-                   <div className="absolute right-[-30px] bottom-[-20px] w-28 h-28 bg-[#06b6d4]/5 rounded-full blur-2xl"></div>
-                </div>
-             </div>
-             
-             {/* Standard Skill Card 1 */}
-             <div className="rounded-[16px] p-5 bg-[#141414] border border-zinc-800/80 mb-3 cursor-pointer hover:border-zinc-700 hover:bg-[#1a1a1a] transition-all">
-                <div className="flex items-start justify-between mb-4">
-                   <h4 className="text-zinc-100 font-bold text-[14px]">PPT ...</h4>
-                   <button className="bg-[#06b6d4] text-[#0A0A0A] text-[11px] font-bold px-3 py-1 rounded-full hover:bg-cyan-400 transition-colors">安装</button>
-                </div>
-                <div className="flex gap-2 mb-4">
-                   <span className="text-[10px] font-bold text-zinc-500 flex items-center pr-1">v0...</span>
-                   <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/50">加密</span>
-                   <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/50">用户</span>
-                </div>
-                <p className="text-[12px] text-zinc-500 font-medium leading-relaxed">
-                  A professional PPT creation tool: supports image OCR, semantic restructuring, and the generation of HTML slides in a warm academic style.
-                </p>
-             </div>
-
-             {/* Standard Skill Card 2 */}
-             <div className="rounded-[16px] p-5 bg-[#141414] border border-zinc-800/80 mb-3 cursor-pointer hover:border-zinc-700 hover:bg-[#1a1a1a] transition-all">
-                <div className="flex items-start justify-between mb-4">
-                   <h4 className="text-zinc-100 font-bold text-[14px]">Noti...</h4>
-                   <button className="bg-[#06b6d4] text-[#0A0A0A] text-[11px] font-bold px-3 py-1 rounded-full hover:bg-cyan-400 transition-colors">安装</button>
-                </div>
-                <div className="flex gap-2 mb-4">
-                   <span className="text-[10px] font-bold text-zinc-500 flex items-center pr-1">v0...</span>
-                   <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/50">加密</span>
-                   <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/50">官方</span>
-                </div>
-                <p className="text-[12px] text-zinc-500 font-medium leading-relaxed">
-                  Comprehensive Notion integration for managing pages and...
-                </p>
-             </div>
-          </div>
-          
-          <div className="p-3 border-t border-[#1a1a1a] text-[11px] text-zinc-500 font-medium flex items-center pl-5">
-             已安装 0 个Combo
-          </div>
-        </div>
+        {/* 4. Skill Market Panel */}
+        <AnimatePresence>
+          {showSkills && (
+            <motion.div 
+              layout
+              initial={{ width: 0, opacity: 0, borderLeftWidth: 0 }}
+              animate={{ width: skillsClass === 'flex-1' ? 'auto' : 340, opacity: 1, borderLeftWidth: 1 }}
+              exit={{ width: 0, opacity: 0, borderLeftWidth: 0 }}
+              className={`bg-zinc-50 border-zinc-200 flex flex-col shrink-0 relative z-40 shadow-[-10px_0_40px_rgba(0,0,0,0.08)] overflow-hidden h-full ${skillsClass}`}
+            >
+              <div className="h-[46px] flex px-2 py-2 border-b border-zinc-200 shrink-0 bg-zinc-100/50 w-full gap-1">
+                 <div onClick={() => setSkillTab('market')} className={`flex-1 flex justify-center items-center text-[12px] font-bold rounded-md cursor-pointer transition-colors ${skillTab === 'market' ? 'bg-white text-[#605EA7] shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-white/50'}`}>应用市场全盘</div>
+                 <div onClick={() => setSkillTab('installed')} className={`flex-1 flex justify-center items-center text-[12px] font-bold rounded-md cursor-pointer transition-colors ${skillTab === 'installed' ? 'bg-white text-[#605EA7] shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-white/50'}`}>当前包裹已安装</div>
+              </div>
+              <div className="w-full flex-1 p-4 flex flex-col overflow-y-auto">
+                 {SKILLS_MARKET.filter(s => skillTab === 'market' ? true : s.installed).map(skill => (
+                   <div key={skill.id} className="bg-white border border-zinc-200/80 rounded-xl p-4 shadow-sm mb-3 group hover:border-[#605EA7]/40 hover:shadow-md transition-all">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-[14px] text-zinc-900 group-hover:text-[#605EA7] transition-colors">{skill.name}</h4>
+                        {skill.installed ? (
+                           <span className="text-[10px] font-bold text-[#605EA7] bg-[#605EA7]/10 px-2 py-0.5 rounded border border-[#605EA7]/20 shrink-0 ml-2">本包裹装载</span>
+                        ) : (
+                           <button className="text-[11px] font-bold text-white bg-[#18181b] hover:bg-[#605EA7] px-3 py-1 rounded shadow-sm transition-colors shrink-0 ml-2">获取</button>
+                        )}
+                      </div>
+                      <p className="text-[12px] text-zinc-500 font-medium leading-relaxed">{skill.desc}</p>
+                   </div>
+                 ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>
   );
 }
+
+const LayersDropIcon = ({className}:{className?:string}) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 12 12 17 22 12"></polyline>
+    <polyline points="2 17 12 22 22 17"></polyline>
+  </svg>
+)
