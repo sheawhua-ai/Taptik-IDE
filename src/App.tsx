@@ -6,10 +6,11 @@ import {
   FileText, Download, Image as ImageIcon, Film, Music, Cloud,
   PanelLeftClose, PanelRightClose, Plus, MoreVertical,
   History, Compass, MessageSquare, AtSign, LayoutTemplate,
-  Bot, TerminalSquare, RotateCw, Home, X,
+  Bot, TerminalSquare, RotateCw, Home, X, Brain,
   PackagePlus, FileSpreadsheet, FileIcon, Component,
   CheckCircle2, AlertCircle, FileBox, FileQuestion, Flame, Link2,
-  CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check
+  CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check,
+  Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -49,11 +50,49 @@ const AGENTS_LIST = [
   { id: 'a2', name: '商户大盘私有巡检' }
 ];
 
+const SHORTCUT_CATEGORIES = [
+  { id: 'recommend', name: '推荐', icon: Sparkles },
+  { id: 'lead_gen', name: '获客引流', icon: Target },
+  { id: 'copywriting', name: '爆款洗稿', icon: PenTool },
+  { id: 'distribution', name: '多渠分发', icon: Share2 },
+  { id: 'visual', name: '视觉生成', icon: ImageIcon },
+  { id: 'analysis', name: '大盘分析', icon: BarChart2 },
+];
+
+const SHORTCUT_TASKS: Record<string, string[]> = {
+  recommend: [
+    "使用 @小红书爆款洗稿网 分析这个竞品链接，提取高转化卖点并生成新话术。",
+    "调用 @高转化实拍生成包 将网盘中的单品白底图处理成具有真实网感的探店图。",
+    "帮我总结昨日所有矩阵账号的发文完成进度，并列出异常流。",
+    "一键执行昨天的剩余任务队列，并通知相关责任人。"
+  ],
+  lead_gen: [
+    "配置一个针对本地生活商家的自动拓客流，包含自动回复与线索收集。",
+    "使用 @竞品痛点提取分析 抓取大众点评上的差评，生成差异化引流文案。"
+  ],
+  copywriting: [
+    "调用 @小红书爆款洗稿网，基于当前工作区的爆款参考，批量生成10条探店文案。",
+    "将拖入的这篇长图文转化为适合视频口播的短句脚本文案。"
+  ],
+  distribution: [
+    "使用全网矩阵分发引擎，将工作区内最新的 3 个图文包下发至所有主号。",
+    "清理失效授权的子达人号，并重新生成绑定邀请链接。"
+  ],
+  visual: [
+    "调用 @高转化实拍生成包 ，把这批生硬的商品渲染图做成胶片风返图。",
+    "批量去除视频水印，并添加符合我们账号风格的封面黑字排版。"
+  ],
+  analysis: [
+    "对比分析本周同城探店引流与纯商品分发的获客转化率差异。",
+    "输出一份包含所有矩阵号组的健康度与活跃封禁预警报告。"
+  ]
+};
+
 export default function App() {
   // --- View States ---
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [showLeftPanel, setShowLeftPanel] = useState(true);
-  const [activeLeftMenu, setActiveLeftMenu] = useState<'cloud'|'server'|'calendar'|'chart'|'users'|'explorer'>('explorer');
+  const [activeLeftMenu, setActiveLeftMenu] = useState<'cloud'|'server'|'calendar'|'chart'|'users'|'explorer'|'operator_skills'>('explorer');
   const [showBrowser, setShowBrowser] = useState(true);
   const [showChat, setShowChat] = useState(true);
   const [showSkills, setShowSkills] = useState(false);
@@ -69,6 +108,7 @@ export default function App() {
   const [activeWorkspaceId, setActiveWorkspaceId] = useState('m1');
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [activeShortcutCategory, setActiveShortcutCategory] = useState<string>('recommend');
 
   // Top App Tabs
   const [appTabs, setAppTabs] = useState<AppTab[]>([
@@ -87,6 +127,7 @@ export default function App() {
   
   // Mention Panels
   const [showMentionMenu, setShowMentionMenu] = useState<'skill' | 'agent' | null>(null);
+  const [activeBuilderSkillId, setActiveBuilderSkillId] = useState<string | null>(null);
 
   // --- Drag & Drop Context ---
   const [isGlobalDragging, setIsGlobalDragging] = useState(false);
@@ -153,7 +194,7 @@ export default function App() {
     }
   };
 
-  const handleLeftMenuClick = (menu: 'cloud'|'server'|'calendar'|'chart'|'users') => {
+  const handleLeftMenuClick = (menu: 'cloud'|'server'|'calendar'|'chart'|'users'|'operator_skills') => {
      if (!showLeftPanel) setShowLeftPanel(true);
      else if (activeLeftMenu === menu) {
         setShowLeftPanel(false);
@@ -204,6 +245,7 @@ export default function App() {
     if (value) {
        let formattedStr = '';
        if (source === 'browser') formattedStr = `🔗 ${value}`;
+       else if (type === 'Skill' && value.startsWith('@')) formattedStr = value;
        else formattedStr = `📦 [${type}] ${value}`;
        
        if (!contextItems.includes(formattedStr)) {
@@ -456,6 +498,41 @@ export default function App() {
                 </div>
              </div>
           );
+       case 'operator_skills':
+          return (
+             <div className="flex flex-col h-full bg-zinc-50 relative z-20">
+                <div className="p-4 border-b border-zinc-200 bg-white flex flex-col gap-3 z-10 shadow-sm">
+                   <h3 className="font-bold text-[14px] text-zinc-800">技能目录仓库</h3>
+                   <button onClick={() => setActiveBuilderSkillId('new')} className="w-full bg-[#605EA7] text-white py-2 rounded-lg font-bold text-[12px] flex items-center justify-center gap-1.5 hover:bg-[#4d4a8e] shadow-sm transition-colors">
+                      <Plus size={14}/> 新建自动化技能
+                   </button>
+                </div>
+                <div className="flex-1 overflow-y-auto px-2 py-3 custom-scrollbar flex flex-col gap-4">
+                   
+                   <div>
+                     <div className="text-[10px] font-black text-zinc-400 px-2 py-1 mb-1">视觉类 (VISION)</div>
+                     <div onClick={() => setActiveBuilderSkillId('skill_1')} className={`flex items-center gap-2 px-2 py-2 mx-1 rounded-md cursor-pointer text-[12px] font-medium transition-colors ${activeBuilderSkillId === 'skill_1' ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-700 hover:bg-[#605EA7]/5'}`}>
+                        <ImageIcon size={14} className={activeBuilderSkillId === 'skill_1' ? 'text-[#605EA7]' : 'text-zinc-400'}/> 高转化实拍生成包
+                     </div>
+                   </div>
+
+                   <div>
+                     <div className="text-[10px] font-black text-zinc-400 px-2 py-1 mb-1">文案类 (COPYWRITING)</div>
+                     <div onClick={() => setActiveBuilderSkillId('skill_2')} className={`flex items-center gap-2 px-2 py-2 mx-1 rounded-md cursor-pointer text-[12px] font-medium transition-colors ${activeBuilderSkillId === 'skill_2' ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-700 hover:bg-[#605EA7]/5'}`}>
+                        <FileText size={14} className={activeBuilderSkillId === 'skill_2' ? 'text-[#605EA7]' : 'text-zinc-400'}/> 小红书爆款洗稿网
+                     </div>
+                   </div>
+
+                   <div>
+                     <div className="text-[10px] font-black text-zinc-400 px-2 py-1 mb-1">策略类 (STRATEGY)</div>
+                     <div onClick={() => setActiveBuilderSkillId('skill_3')} className={`flex items-center gap-2 px-2 py-2 mx-1 rounded-md cursor-pointer text-[12px] font-medium transition-colors ${activeBuilderSkillId === 'skill_3' ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-700 hover:bg-[#605EA7]/5'}`}>
+                        <Lightbulb size={14} className={activeBuilderSkillId === 'skill_3' ? 'text-[#605EA7]' : 'text-zinc-400'}/> 竞品痛点提取分析
+                     </div>
+                   </div>
+
+                </div>
+             </div>
+          );
        case 'explorer':
        default:
           return (
@@ -683,6 +760,13 @@ export default function App() {
              <div className="w-10 shrink-0 flex justify-center"><Users size={18} /></div>
              {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">自持达人与矩阵</span>}
            </button>
+           
+           <div className="h-px bg-zinc-200 mx-2 my-2"></div>
+           
+           <button onClick={() => handleLeftMenuClick('operator_skills')} className={`h-10 flex items-center justify-start rounded-lg mx-1 transition-colors group ${activeLeftMenu === 'operator_skills' && showLeftPanel ? 'bg-[#605EA7]/10 text-[#605EA7]' : 'text-zinc-500 hover:bg-[#605EA7]/5 hover:text-[#605EA7]'}`} title="操盘手技能库">
+             <div className="w-10 shrink-0 flex justify-center"><LayoutTemplate size={18} /></div>
+             {isSidebarExpanded && <span className="text-[13px] font-bold whitespace-nowrap">操盘手技能库</span>}
+           </button>
         </motion.div>
 
         {/* 1. Left Panel Component (Explorer or other views) */}
@@ -700,10 +784,109 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* 2. Center View (Browser) */}
-        <AnimatePresence>
-          {showBrowser && (
-            <motion.div layout className="flex-1 flex flex-col min-w-0 relative z-10 bg-white shadow-[-1px_0_12px_rgba(0,0,0,0.01)] border-r border-zinc-200/50">
+         {/* Main Workspace Overrides */}
+         {(activeLeftMenu === 'operator_skills' && activeBuilderSkillId !== null) ? (
+            <div className="flex-1 flex overflow-hidden bg-zinc-50 relative z-20">
+               {/* Middle: Copilot Chat */}
+               <div className="w-[400px] border-r border-zinc-200 bg-white flex flex-col shrink-0">
+                  <div className="h-[46px] flex items-center px-4 border-b border-zinc-100 bg-zinc-50 shrink-0">
+                     <Bot size={16} className="text-[#605EA7] mr-2"/>
+                     <span className="font-bold text-zinc-800 text-[13px]">Skill Builder Agent</span>
+  					 <span className="ml-auto text-[10px] text-zinc-400 bg-zinc-200 px-2 py-0.5 rounded font-mono">v1.2</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col gap-4">
+                     <div className="flex items-start gap-2 max-w-[90%]">
+                        <div className="w-6 h-6 rounded-md bg-[#605EA7] flex items-center justify-center shrink-0 shadow-sm"><Bot size={12} className="text-white"/></div>
+                        <div className="bg-zinc-100 px-3 py-2 rounded-xl rounded-tl-sm text-[12px] text-zinc-700 leading-relaxed">
+                           你好，我是协助你编排自动化流的专属助手。你想创建什么类型的技能？请描述一下核心流程。
+                        </div>
+                     </div>
+                     <div className="flex flex-col items-end gap-1 max-w-[90%] self-end">
+                        <div className="bg-[#18181b] text-white px-3 py-2 rounded-xl rounded-tr-sm text-[12px] shadow-sm leading-relaxed">
+                           帮我建个批量清洗竞品文案的提取流。
+                        </div>
+                     </div>
+                     <div className="flex items-start gap-2 max-w-[90%]">
+                        <div className="w-6 h-6 rounded-md bg-[#605EA7] flex items-center justify-center shrink-0 shadow-sm"><Bot size={12} className="text-white"/></div>
+                        <div className="bg-zinc-100 px-3 py-2 rounded-xl rounded-tl-sm text-[12px] text-zinc-700 leading-relaxed shadow-sm ring-1 ring-zinc-200">
+                           好的，正在为您在右侧工作区生技能白盒规格书。请查看骨架并随时提出微调要求。
+                        </div>
+                     </div>
+                  </div>
+                  <div className="p-3 border-t border-zinc-100 bg-white shrink-0">
+                     <div className="bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2 flex items-center shadow-sm focus-within:border-[#605EA7]/40 focus-within:bg-white transition-colors">
+                        <input type="text" placeholder="提出修改意见或增加参数约束..." className="flex-1 bg-transparent border-none outline-none text-[12px] text-zinc-800" />
+                        <button className="text-[#605EA7] hover:bg-[#605EA7]/10 p-1.5 rounded-lg transition-colors ml-1"><Send size={14}/></button>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Right: Dynamic Canvas (Skill Spec & Sandbox) */}
+               <div className="flex-1 overflow-y-auto px-10 py-8 custom-scrollbar">
+                  <div className="max-w-[700px] mx-auto">
+                     <div className="mb-8">
+                       <h2 className="text-2xl font-black text-zinc-900 flex items-center gap-2">
+                         小红书洗稿提取流
+                         <span className="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded-full font-bold ml-2 -translate-y-1">编辑中 Draft</span>
+                       </h2>
+                       <p className="text-[13px] text-zinc-500 mt-2 font-medium">依据系统解析，您正在编辑该技能的执行标准。您可以在此处修改白盒配置，或通过左侧助手进行自然语言更新。</p>
+                     </div>
+
+                     <div className="space-y-6 mb-12">
+                        {/* 1. Trigger */}
+                        <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                           <h4 className="text-[13px] font-bold text-zinc-800 mb-4 flex items-center gap-2"><Zap size={14} className="text-[#605EA7]"/> 触发器与路由层 (Trigger)</h4>
+                           <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                 <label className="block text-[11px] font-bold text-zinc-500 mb-1">行业与标签</label>
+                                 <input type="text" defaultValue="通用, 洗稿, 矩阵分发" readOnly className="w-full bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg text-[12px] text-zinc-700 outline-none" />
+                              </div>
+                              <div>
+                                 <label className="block text-[11px] font-bold text-zinc-500 mb-1">交互快捷唤醒</label>
+                                 <input type="text" defaultValue="@竞品洗稿" readOnly className="w-full bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg text-[12px] text-zinc-700 font-mono outline-none" />
+                              </div>
+                           </div>
+                        </div>
+
+                        {/* 2. Prompt & Constraints */}
+                        <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative overflow-hidden">
+                           <div className="absolute top-0 right-0 w-24 h-24 bg-[#605EA7]/5 rounded-bl-full -z-10"></div>
+                           <h4 className="text-[13px] font-bold text-zinc-800 mb-4 flex items-center gap-2"><TerminalSquare size={14} className="text-[#605EA7]"/> 执行动作与白盒规则 (Rules)</h4>
+                           <div className="space-y-3">
+                              <div>
+                                 <label className="block text-[11px] font-bold text-zinc-500 mb-1">结构化指令 System Prompt</label>
+                                 <textarea rows={4} defaultValue="你是一个资深的内容操盘手。你需要将用户提供的原文案打碎，提取其痛点、卖点、情绪价值点，并使用全新的句式和案例进行洗稿输出。要求：禁止使用“总而言之”等AI特征词；必须保留原文的核心转化逻辑段。" className="w-full bg-zinc-50 border border-zinc-200 px-3 py-2 rounded-lg text-[12px] text-zinc-700 font-mono resize-none focus:bg-white focus:border-[#605EA7]/50 focus:ring-1 focus:ring-[#605EA7]/20 outline-none transition-colors" />
+                              </div>
+                              <div>
+                                 <label className="block text-[11px] font-bold text-zinc-500 mb-1">强制约束红线 Redlines</label>
+                                 <div className="flex gap-2">
+                                    <input type="text" defaultValue="字数限 300内，带 emoji，首图要有视觉冲击" className="flex-1 bg-red-50/50 border border-red-200 px-3 py-2 rounded-lg text-[12px] text-red-700 outline-none focus:bg-white" />
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Sandbox / Dry Run Area */}
+                     <div className="bg-zinc-100 border border-zinc-200 rounded-2xl p-5 shadow-inner">
+                        <h4 className="text-[14px] font-black text-zinc-800 mb-4 flex items-center gap-2"><FlaskConical size={16} className="text-[#605EA7]"/> 沙盘模拟测试 (Dry Run)</h4>
+                        <div className="flex flex-col gap-4">
+                           <textarea rows={3} placeholder="拖拽或粘贴测试用例样本至此 （例如一篇真实的竞品笔记）..." className="w-full bg-white border border-zinc-300 px-4 py-3 rounded-xl text-[13px] text-zinc-800 resize-none focus:border-[#605EA7] outline-none shadow-sm"></textarea>
+                           <button className="self-end bg-[#18181b] hover:bg-[#605EA7] text-white px-5 py-2.5 rounded-xl text-[12px] font-bold transition-colors shadow-sm flex items-center gap-1.5">
+                              <Play size={14} className="fill-current text-white/80" /> 开始执行模拟
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         ) : (
+           <>
+             {/* 2. Center View (Browser) */}
+             <AnimatePresence>
+               {showBrowser && (
+                 <motion.div layout className="flex-1 flex flex-col min-w-0 relative z-10 bg-white shadow-[-1px_0_12px_rgba(0,0,0,0.01)] border-r border-zinc-200/50">
+                   {/* ... browser code ... */}
               <div className="h-[46px] bg-zinc-100 flex items-center px-4 gap-4 border-b border-zinc-200">
                 <div className="flex gap-4">
                   <ChevronLeft size={16} className="text-zinc-500 cursor-pointer hover:text-[#605EA7]" />
@@ -775,7 +958,7 @@ export default function App() {
 
               {messages.length === 0 ? (
                  <div className="flex-1 overflow-y-auto px-6 sm:px-10 py-12 custom-scrollbar bg-white flex flex-col justify-center min-h-0">
-                    <div className="max-w-[420px] mx-auto w-full">
+                    <div className="max-w-[800px] mx-auto w-full">
                       <div className="mb-8">
                          <div className="w-12 h-12 rounded-2xl bg-[#605EA7] flex items-center justify-center text-white mb-6 shadow-lg shadow-[#605EA7]/20 border border-[#605EA7]">
                            <Sparkles size={24} />
@@ -783,7 +966,44 @@ export default function App() {
                          <h1 className="text-[20px] font-black text-zinc-900 mb-2">早上好，sheaw</h1>
                          <p className="text-[14px] text-zinc-500 font-medium leading-relaxed">你可以直接开始，或@选择一个技能完成特定任务。</p>
                       </div>
-                      <div className="mb-6"><ChatInputArea isFloat={true} /></div>
+                      <div className="mb-6 w-full">
+                        <ChatInputArea isFloat={true} />
+                      </div>
+
+                      <div className="flex flex-col gap-4 mt-8">
+                        <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
+                          {SHORTCUT_CATEGORIES.map(cat => {
+                            const Icon = cat.icon;
+                            return (
+                              <button 
+                                key={cat.id} 
+                                onClick={() => setActiveShortcutCategory(cat.id)}
+                                className={`px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap transition-colors border flex items-center justify-center gap-1.5 ${
+                                  activeShortcutCategory === cat.id 
+                                    ? 'bg-[#18181b] text-white border-[#18181b] shadow-md' 
+                                    : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50 hover:text-zinc-900 group'
+                                }`}
+                              >
+                                <Icon size={14} className={activeShortcutCategory === cat.id ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600 transition-colors'} />
+                                {cat.name}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {SHORTCUT_TASKS[activeShortcutCategory]?.map((task, i) => (
+                             <button 
+                               key={i}
+                               onClick={() => {
+                                 setInputValue(task);
+                               }}
+                               className="text-left px-5 py-4 bg-white border border-zinc-200 hover:border-[#605EA7]/40 hover:bg-[#605EA7]/5 hover:shadow-sm rounded-2xl text-[13px] text-zinc-700 transition-all font-medium leading-relaxed"
+                             >
+                               {task}
+                             </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                  </div>
               ) : (
@@ -835,16 +1055,24 @@ export default function App() {
               className={`bg-zinc-50 border-zinc-200 flex flex-col shrink-0 relative z-40 shadow-[-10px_0_40px_rgba(0,0,0,0.08)] overflow-hidden h-full ${skillsClass}`}
             >
               <div className="h-[46px] flex px-2 py-2 border-b border-zinc-200 shrink-0 bg-zinc-100/50 w-full gap-1">
-                 <div onClick={() => setSkillTab('market')} className={`flex-1 flex justify-center items-center text-[12px] font-bold rounded-md cursor-pointer transition-colors ${skillTab === 'market' ? 'bg-white text-[#605EA7] shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-white/50'}`}>应用市场全盘</div>
-                 <div onClick={() => setSkillTab('installed')} className={`flex-1 flex justify-center items-center text-[12px] font-bold rounded-md cursor-pointer transition-colors ${skillTab === 'installed' ? 'bg-white text-[#605EA7] shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-white/50'}`}>当前包裹已安装</div>
+                 <div onClick={() => setSkillTab('market')} className={`flex-1 flex justify-center items-center text-[12px] font-bold rounded-md cursor-pointer transition-colors ${skillTab === 'market' ? 'bg-white text-[#605EA7] shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-white/50'}`}>技能市场</div>
+                 <div onClick={() => setSkillTab('installed')} className={`flex-1 flex justify-center items-center text-[12px] font-bold rounded-md cursor-pointer transition-colors ${skillTab === 'installed' ? 'bg-white text-[#605EA7] shadow-sm border border-zinc-200/50' : 'text-zinc-500 hover:text-[#605EA7] hover:bg-white/50'}`}>已安装</div>
               </div>
               <div className="w-full flex-1 p-4 flex flex-col overflow-y-auto">
                  {SKILLS_MARKET.filter(s => skillTab === 'market' ? true : s.installed).map(skill => (
-                   <div key={skill.id} className="bg-white border border-zinc-200/80 rounded-xl p-4 shadow-sm mb-3 group hover:border-[#605EA7]/40 hover:shadow-md transition-all">
+                   <div draggable={skillTab === 'installed'} onDragStart={(e) => handleTreeDragStart(e, 'Skill', `@${skill.name}`)} key={skill.id} className={`bg-white border border-zinc-200/80 rounded-xl p-4 shadow-sm mb-3 group hover:border-[#605EA7]/40 hover:shadow-md transition-all ${skillTab === 'installed' ? 'cursor-grab active:cursor-grabbing' : ''}`}>
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-bold text-[14px] text-zinc-900 group-hover:text-[#605EA7] transition-colors">{skill.name}</h4>
-                        {skill.installed ? (
-                           <span className="text-[10px] font-bold text-[#605EA7] bg-[#605EA7]/10 px-2 py-0.5 rounded border border-[#605EA7]/20 shrink-0 ml-2">本包裹装载</span>
+                        <h4 className={`font-bold text-[14px] ${skillTab === 'installed' ? 'text-[#605EA7]' : 'text-zinc-900'} group-hover:text-[#605EA7] transition-colors flex items-center gap-1.5`}>
+                          {skillTab === 'installed' && <AlertCircle size={10} className="text-emerald-500"/>}
+                          {skill.name}
+                        </h4>
+                        {skillTab === 'installed' ? (
+                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button className="p-1 text-zinc-400 hover:text-[#605EA7] bg-zinc-100 hover:bg-[#605EA7]/10 rounded transition-colors" title="查看详情"><FileQuestion size={12}/></button>
+                              <button className="p-1 text-zinc-400 hover:text-red-500 bg-zinc-100 hover:bg-red-50 rounded transition-colors" title="删除卸载"><X size={12}/></button>
+                           </div>
+                        ) : skill.installed ? (
+                           <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 shrink-0 ml-2">已安装</span>
                         ) : (
                            <button className="text-[11px] font-bold text-white bg-[#18181b] hover:bg-[#605EA7] px-3 py-1 rounded shadow-sm transition-colors shrink-0 ml-2">获取</button>
                         )}
@@ -856,6 +1084,8 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
+        </>
+        )}
 
       </div>
     </div>
