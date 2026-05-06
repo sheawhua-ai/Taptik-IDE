@@ -45,6 +45,10 @@ export default function App() {
   // -- New Global Layout States --
   const [activeNav, setActiveNav] = useState('ai');
   const [subSidebarOpen, setSubSidebarOpen] = useState(true);
+  const [aiSidebarTab, setAiSidebarTab] = useState<'chat' | 'files'>('chat');
+  const [dataSubNav, setDataSubNav] = useState('roi');
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isProjectSelectorOpen, setIsProjectSelectorOpen] = useState(false);
   
   const NAV_ITEMS = [
     { id: 'ai', name: 'AI 工作台', icon: Zap },
@@ -122,7 +126,7 @@ export default function App() {
       if (part.startsWith('@')) {
         return (
            <span key={index} className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded text-[12px] font-bold ${role === 'user' ? 'bg-[#605EA7] text-white border border-[#4d4a8e]' : 'bg-[#605EA7]/10 text-[#605EA7]'}`}>
-              <Component size={12} className={role === 'user' ? "text-purple-200" : "text-[#605EA7]"} /> {part.substring(1)}
+              <Component size={12} className={role === 'user' ? "text-[#605EA7]" : "text-[#605EA7]"} /> {part.substring(1)}
            </span>
         );
       } else if (part.startsWith('「')) {
@@ -216,40 +220,118 @@ export default function App() {
         </div>
 
         {/* Project Selector */}
-        <div className="px-2 xl:px-3 py-2 cursor-pointer">
-          <div className="text-[11px] font-bold text-zinc-400 mb-1.5 px-1 xl:px-2 hidden xl:block">当前管理商家</div>
-          <button className="w-full flex items-center justify-center xl:justify-between hover:bg-zinc-100 rounded-lg p-2 xl:px-2 xl:py-1.5 text-sm font-bold text-zinc-700 transition-colors">
+        <div className="px-2 xl:px-3 py-2 cursor-pointer relative">
+          <button 
+             onClick={() => setIsProjectSelectorOpen(!isProjectSelectorOpen)}
+             className={`w-full flex items-center justify-center xl:justify-between hover:bg-zinc-100 rounded-lg p-2 xl:px-2 xl:py-1.5 text-sm font-bold text-zinc-700 transition-colors ${isProjectSelectorOpen ? 'bg-zinc-100' : ''}`}>
              <div className="flex items-center gap-2">
                <div className="w-6 h-6 xl:w-5 xl:h-5 rounded bg-[#F4ECF6] text-[#605EA7] flex items-center justify-center font-black text-[10px] shrink-0">宠</div>
                <span className="hidden xl:block truncate text-left max-w-[90px]">商家A:宠物...</span>
              </div>
              <ChevronDown size={14} className="text-zinc-400 hidden xl:block" />
           </button>
+          
+          {/* Project Switcher Modal */}
+          {isProjectSelectorOpen && (
+             <div className="absolute top-12 left-2 xl:left-4 w-[240px] bg-white border border-zinc-200 shadow-xl rounded-xl z-50 overflow-hidden">
+                <div className="p-2 border-b border-zinc-100 bg-zinc-50/50">
+                    <div className="relative">
+                       <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                       <input type="text" placeholder="搜索商家项目..." className="w-full bg-white border border-zinc-200 rounded-md py-1.5 pl-7 pr-2 text-[12px] focus:outline-none focus:border-[#605EA7] transition-colors" />
+                    </div>
+                </div>
+                <div className="max-h-[300px] overflow-y-auto p-1 custom-scrollbar">
+                   <button className="w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors bg-[#605EA7]/5 text-left group">
+                      <div className="w-6 h-6 rounded bg-[#F4ECF6] text-[#605EA7] flex items-center justify-center font-black text-[10px] shrink-0">宠</div>
+                      <div className="flex-1 overflow-hidden">
+                          <div className="text-[12px] font-bold text-zinc-900 group-hover:text-[#605EA7] transition-colors truncate">商家A: 猫粮冲刺</div>
+                          <div className="text-[10px] font-medium text-zinc-500">618爆发期项目</div>
+                      </div>
+                      <Check size={14} className="text-[#605EA7] shrink-0" />
+                   </button>
+                   <button className="w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors text-left group">
+                      <div className="w-6 h-6 rounded bg-zinc-100 text-zinc-600 flex items-center justify-center font-black text-[10px] shrink-0">美</div>
+                      <div className="flex-1 overflow-hidden">
+                          <div className="text-[12px] font-bold text-zinc-700 group-hover:text-zinc-900 transition-colors truncate">商家B: 护肤精华</div>
+                          <div className="text-[10px] font-medium text-zinc-500">种草防重分发矩阵</div>
+                      </div>
+                   </button>
+                   <button className="w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors text-left group">
+                      <div className="w-6 h-6 rounded bg-zinc-100 text-zinc-600 flex items-center justify-center font-black text-[10px] shrink-0">服</div>
+                      <div className="flex-1 overflow-hidden">
+                          <div className="text-[12px] font-bold text-zinc-700 group-hover:text-zinc-900 transition-colors truncate">商家C: 瑜伽服测款</div>
+                          <div className="text-[10px] font-medium text-zinc-500">A/B Testing 流转</div>
+                      </div>
+                   </button>
+                </div>
+                <div className="p-2 border-t border-zinc-100 bg-zinc-50/50">
+                    <button className="w-full py-1.5 flex items-center justify-center gap-1 text-[11px] font-bold text-[#605EA7] hover:bg-[#605EA7]/10 rounded-md transition-colors"><Plus size={12}/> 新建商家项目</button>
+                </div>
+             </div>
+          )}
         </div>
 
         {/* Nav Links */}
-        <nav className="flex-1 px-2 py-3 space-y-1 overflow-y-auto custom-scrollbar mt-2">
-          {NAV_ITEMS.map((item) => (
-            <button 
-              key={item.id} 
-              onClick={() => setActiveNav(item.id)}
-              className={`w-full flex items-center justify-center xl:justify-start gap-3 p-2 xl:px-3 xl:py-2.5 rounded-lg text-[13px] font-bold transition-all relative ${
-                activeNav === item.id 
-                  ? 'text-[#605EA7] bg-[#605EA7]/10' 
-                  : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
-              }`}
-              title={item.name}
-            >
-              {activeNav === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#605EA7] rounded-r-full" />}
-              <item.icon size={18} strokeWidth={activeNav === item.id ? 2.5 : 2} className="shrink-0" />
-              <span className="hidden xl:block truncate">{item.name}</span>
-            </button>
-          ))}
+        <nav className="flex-1 px-2 py-2 space-y-4 overflow-y-auto custom-scrollbar mt-2">
+          
+          <div>
+            <div className="px-1 xl:px-3 text-[11px] font-bold text-zinc-400 mb-1.5 hidden xl:block">当前业务</div>
+            <div className="space-y-1">
+              {[
+                { id: 'ai', name: 'AI 工作台', icon: Zap },
+                { id: 'data', name: '业务数据看板', icon: BarChart2 },
+                { id: 'pipeline', name: '资产管道 (RPA)', icon: Workflow },
+              ].map((item) => (
+                <button 
+                  key={item.id} 
+                  onClick={() => setActiveNav(item.id)}
+                  className={`w-full flex items-center justify-center xl:justify-start gap-3 p-2 xl:px-3 xl:py-2.5 rounded-lg text-[13px] font-bold transition-all relative ${
+                    activeNav === item.id 
+                      ? 'text-[#605EA7] bg-[#605EA7]/10' 
+                      : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                  }`}
+                  title={item.name}
+                >
+                  {activeNav === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#605EA7] rounded-r-full" />}
+                  <item.icon size={18} strokeWidth={activeNav === item.id ? 2.5 : 2} className="shrink-0" />
+                  <span className="hidden xl:block truncate">{item.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="px-1 xl:px-3 text-[11px] font-bold text-zinc-400 mb-1.5 hidden xl:block">全局管理</div>
+            <div className="space-y-1">
+              {[
+                { id: 'files', name: '全局资产库', icon: FolderOpen },
+                { id: 'skills', name: 'Skill 市场', icon: LayoutGrid },
+                { id: 'settings', name: '系统设置', icon: Settings },
+              ].map((item) => (
+                <button 
+                  key={item.id} 
+                  onClick={() => setActiveNav(item.id)}
+                  className={`w-full flex items-center justify-center xl:justify-start gap-3 p-2 xl:px-3 xl:py-2.5 rounded-lg text-[13px] font-bold transition-all relative ${
+                    activeNav === item.id 
+                      ? 'text-[#605EA7] bg-[#605EA7]/10' 
+                      : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                  }`}
+                  title={item.name}
+                >
+                  {activeNav === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#605EA7] rounded-r-full" />}
+                  <item.icon size={18} strokeWidth={activeNav === item.id ? 2.5 : 2} className="shrink-0" />
+                  <span className="hidden xl:block truncate">{item.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </nav>
 
         {/* Commander Dashboard / Global Alerts */}
-        <div className="px-2 xl:px-4 py-3 border-t border-zinc-200">
-           <button className="w-full flex flex-col xl:flex-row items-center xl:items-start gap-2 p-2 hover:bg-zinc-100 rounded-lg transition-colors group relative cursor-pointer">
+        <div className="px-2 xl:px-4 py-3 border-t border-zinc-200 relative">
+           <button 
+              onClick={() => setIsAlertOpen(!isAlertOpen)}
+              className={`w-full flex flex-col xl:flex-row items-center xl:items-start gap-2 p-2 rounded-lg transition-colors group relative cursor-pointer ${isAlertOpen ? 'bg-zinc-100' : 'hover:bg-zinc-100'}`}>
               <div className="relative shrink-0">
                  <AlertCircle size={18} className="text-red-500" />
                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
@@ -259,6 +341,40 @@ export default function App() {
                  <span className="text-[10px] text-zinc-500 mt-0.5 line-clamp-1">某商家Cookie失效...</span>
               </div>
            </button>
+           
+           {/* Alerts Popover */}
+           {isAlertOpen && (
+              <div className="absolute bottom-14 left-4 xl:left-20 w-[300px] bg-white border border-red-200 shadow-2xl rounded-xl z-50 overflow-hidden flex flex-col max-h-[400px]">
+                 <div className="p-3 bg-red-50 border-b border-red-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-red-600 font-bold text-[13px]">
+                        <AlertCircle size={16} /> 异常巡检拦截 (2)
+                    </div>
+                    <button onClick={() => setIsAlertOpen(false)} className="text-red-400 hover:text-red-700"><X size={14}/></button>
+                 </div>
+                 <div className="flex-1 overflow-y-auto p-2 space-y-2 pointer-events-auto">
+                    <div className="bg-white border border-red-100 rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer">
+                        <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">Token 失效</span>
+                            <span className="text-[10px] text-zinc-400">10 分钟前</span>
+                        </div>
+                        <h4 className="text-[13px] font-bold text-zinc-900 leading-tight">商家A(猫粮): 小红书本地节点 Cookie 过期</h4>
+                        <p className="text-[11px] text-zinc-500 mt-1 line-clamp-2">Mutator 分发任务中断，请前往「设置 - 平台绑定」使用 Tauri 容器重新扫码授权以恢复自动投流分发信道。</p>
+                        <button className="mt-2 text-[11px] font-bold text-[#605EA7] hover:underline flex items-center gap-1">前往恢复连接 <ChevronRight size={10} /></button>
+                    </div>
+                    <div className="bg-white border border-red-100 rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer">
+                        <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">RPA 巡检预警</span>
+                            <span className="text-[10px] text-zinc-400">2 小时前</span>
+                        </div>
+                        <h4 className="text-[13px] font-bold text-zinc-900 leading-tight">竞品摘要仿写 RPA 抓取被限流</h4>
+                        <p className="text-[11px] text-zinc-500 mt-1">云拨测检测到目标账号防爬虫升级，系统已自动切换至代理池尝试重试，当前进度 2/3，建议降低巡检频率至 12 小时一次。</p>
+                    </div>
+                 </div>
+                 <div className="p-2 border-t border-zinc-100 bg-zinc-50 text-center">
+                     <button className="text-[11px] font-bold text-zinc-500 hover:text-zinc-800 transition-colors">忽略全部</button>
+                 </div>
+              </div>
+           )}
         </div>
 
         {/* User Profile */}
@@ -276,65 +392,68 @@ export default function App() {
             {/* Context Sub-Sidebar for AI */}
             {subSidebarOpen && (
               <div className="w-[200px] xl:w-[240px] border-r border-zinc-200 bg-white flex flex-col h-full shrink-0 relative transition-all">
-                <div className="p-4 flex items-center justify-between border-b border-zinc-100 shrink-0">
-                  <span className="text-[13px] font-bold text-zinc-900">项目文件系统</span>
-                  <div className="flex gap-1">
-                     <button className="p-1 hover:bg-zinc-100 rounded text-zinc-400 hover:text-[#605EA7] transition-colors"><Plus size={14}/></button>
-                     <button className="p-1 hover:bg-zinc-100 rounded text-zinc-400 hover:text-zinc-600 transition-colors"><RefreshCw size={14}/></button>
+                <div className="p-3 border-b border-zinc-100 flex items-center justify-between shrink-0">
+                  <div className="flex gap-4 px-2 w-full">
+                     <button onClick={() => setAiSidebarTab('chat')} className={`text-[12px] font-bold pb-2 border-b-2 flex-1 relative top-[13px] ${aiSidebarTab === 'chat' ? 'border-[#605EA7] text-[#605EA7]' : 'border-transparent text-zinc-500 hover:text-zinc-800'}`}>会话历史</button>
+                     <button onClick={() => setAiSidebarTab('files')} className={`text-[12px] font-bold pb-2 border-b-2 flex-1 relative top-[13px] ${aiSidebarTab === 'files' ? 'border-[#605EA7] text-[#605EA7]' : 'border-transparent text-zinc-500 hover:text-zinc-800'}`}>项目资产</button>
                   </div>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-2 pb-10 flex flex-col gap-0.5">
-                  <div className="text-[11px] font-bold text-zinc-400 px-3 py-2 mt-1">工作区暂存 (Artifacts)</div>
-                  
-                  {/* Current Active Workflow File */}
-                  <div className="w-full text-left flex items-center justify-between gap-2 px-3 py-2 bg-[#605EA7]/5 rounded-lg transition-colors border-l-2 border-[#605EA7] cursor-pointer group">
-                      <div className="flex items-center gap-2 overflow-hidden flex-1">
-                         <FileText size={14} className="text-[#605EA7] shrink-0" />
-                         <span className="text-[13px] font-bold text-[#605EA7] truncate">618爆发期话术_草稿.md</span>
-                      </div>
-                      <div className="flex items-center gap-1 shrink-0">
-                         <span className="flex h-2 w-2 relative">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#605EA7] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#605EA7]"></span>
-                         </span>
-                         <span className="text-[9px] font-bold text-[#605EA7] uppercase">编辑中</span>
-                      </div>
-                  </div>
-                  
-                  {chatHistory.map(h => (
-                    <button key={h.id} className="w-full text-left flex flex-col gap-1 px-3 py-2 hover:bg-zinc-50 rounded-lg transition-colors group">
-                      <div className="flex gap-2 items-center">
-                         <FileIcon size={14} className="text-zinc-400 group-hover:text-zinc-600" />
-                         <span className="text-[13px] font-bold text-zinc-600 group-hover:text-zinc-800 truncate">{h.title}.json</span>
-                      </div>
-                    </button>
-                  ))}
-
-                  <div className="text-[11px] font-bold text-zinc-400 px-3 py-2 mt-4">持久化库 (Cloud)</div>
-                  {UNIFIED_FILE_TREE.map((node, i) => (
-                    <div key={i} className="flex flex-col gap-0.5">
-                      <div className="flex items-center gap-2 px-2 py-1.5 text-[12px] font-bold text-zinc-700 select-none">
-                         <FolderOpen size={12} className="text-[#605EA7]/60" /> {node.name}
-                      </div>
-                      <div className="pl-5 flex flex-col gap-0.5 relative">
-                         <div className="absolute left-[13px] top-0 bottom-2 w-px bg-zinc-200 rounded"></div>
-                         {node.children.map((child, j) => (
-                            <div key={j} draggable onDragStart={(e) => handleTreeDragStart(e, child.type, child.name)} className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#605EA7]/10 rounded-md cursor-grab active:cursor-grabbing text-[12px] font-medium text-zinc-600 select-none group transition-colors relative">
-                               <div className="absolute left-[-11px] top-1/2 -translate-y-1/2 w-2 h-px bg-zinc-200"></div>
-                               {child.type === 'Folder' ? (
-                                  <FolderOpen size={13} className="text-[#605EA7]/70 group-hover:text-[#605EA7]" />
-                               ) : child.type === 'RAG' ? (
-                                  <Brain size={13} className="text-[#605EA7]/70 group-hover:text-[#605EA7]" />
-                               ) : (
-                                  <FileIcon size={13} className="text-[#605EA7]/70 group-hover:text-[#605EA7]" />
-                               )}
-                               <span className="truncate">{child.name}</span>
+                  {aiSidebarTab === 'chat' ? (
+                     <>
+                        {chatHistory.map(h => (
+                          <button key={h.id} className="w-full text-left flex flex-col gap-1 px-3 py-2 hover:bg-zinc-50 rounded-lg transition-colors group">
+                            <div className="flex gap-2 items-center">
+                               <MessageSquare size={14} className="text-zinc-400 group-hover:text-[#605EA7]" />
+                               <span className="text-[13px] font-bold text-zinc-600 group-hover:text-zinc-800 truncate">{h.title}</span>
                             </div>
-                         ))}
-                      </div>
-                    </div>
-                  ))}
+                            <span className="text-[10px] text-zinc-400 pl-6">{h.time}</span>
+                          </button>
+                        ))}
+                     </>
+                  ) : (
+                     <>
+                        {/* Current Active Workflow File */}
+                        <div className="w-full text-left flex items-center justify-between gap-2 px-3 py-2 bg-[#605EA7]/5 rounded-lg transition-colors border-l-2 border-[#605EA7] cursor-pointer group mb-4 mt-2">
+                            <div className="flex items-center gap-2 overflow-hidden flex-1">
+                               <FileText size={14} className="text-[#605EA7] shrink-0" />
+                               <span className="text-[13px] font-bold text-[#605EA7] truncate">618爆发期话术_草稿.md</span>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                               <span className="flex h-2 w-2 relative">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#605EA7] opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#605EA7]"></span>
+                               </span>
+                               <span className="text-[9px] font-bold text-[#605EA7] uppercase">编辑中</span>
+                            </div>
+                        </div>
+
+                        {UNIFIED_FILE_TREE.map((node, i) => (
+                          <div key={i} className="flex flex-col gap-0.5">
+                            <div className="flex items-center gap-2 px-2 py-1.5 text-[12px] font-bold text-zinc-700 select-none">
+                               <FolderOpen size={12} className="text-[#605EA7]/60" /> {node.name}
+                            </div>
+                            <div className="pl-5 flex flex-col gap-0.5 relative">
+                               <div className="absolute left-[13px] top-0 bottom-2 w-px bg-zinc-200 rounded"></div>
+                               {node.children.map((child, j) => (
+                                  <div key={j} draggable onDragStart={(e) => handleTreeDragStart(e, child.type, child.name)} className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#605EA7]/10 rounded-md cursor-grab active:cursor-grabbing text-[12px] font-medium text-zinc-600 select-none group transition-colors relative">
+                                     <div className="absolute left-[-11px] top-1/2 -translate-y-1/2 w-2 h-px bg-zinc-200"></div>
+                                     {child.type === 'Folder' ? (
+                                        <FolderOpen size={13} className="text-[#605EA7]/70 group-hover:text-[#605EA7]" />
+                                     ) : child.type === 'RAG' ? (
+                                        <Brain size={13} className="text-[#605EA7]/70 group-hover:text-[#605EA7]" />
+                                     ) : (
+                                        <FileIcon size={13} className="text-[#605EA7]/70 group-hover:text-[#605EA7]" />
+                                     )}
+                                     <span className="truncate">{child.name}</span>
+                                  </div>
+                               ))}
+                            </div>
+                          </div>
+                        ))}
+                     </>
+                  )}
                 </div>
               </div>
             )}
@@ -480,7 +599,7 @@ export default function App() {
                    <button className="text-[12px] font-bold text-zinc-600 bg-white border border-zinc-200 hover:text-zinc-900 px-4 py-2 rounded-xl shadow-sm transition-colors flex items-center gap-2">
                        <LayoutTemplate size={14}/> 视图设置
                    </button>
-                   <button className="bg-[#18181b] hover:bg-[#605EA7] text-white px-4 py-2 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                   <button className="bg-[#605EA7] hover:bg-[#4d4a8e] text-white px-4 py-2 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                        <Plus size={16}/> 导入离线资产
                    </button>
                 </div>
@@ -493,7 +612,7 @@ export default function App() {
                 <div className="flex shrink-0 flex-col w-[320px] h-full">
                    <div className="flex items-center justify-between mb-4 px-1">
                       <div className="flex items-center gap-2">
-                         <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                         <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
                          <span className="text-[14px] font-bold text-zinc-800">待 AI 重写/洗稿</span>
                          <span className="text-[11px] font-bold bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full">3</span>
                       </div>
@@ -503,7 +622,7 @@ export default function App() {
                       {/* Card */}
                       <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm p-4 hover:border-[#605EA7]/40 hover:shadow-md transition-all cursor-move group">
                          <div className="flex items-start justify-between mb-2">
-                            <span className="text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-100 px-2 py-0.5 rounded">需降重处理</span>
+                            <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded">需降重处理</span>
                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                <button className="text-zinc-400 hover:text-zinc-700 p-0.5"><Edit size={12}/></button>
                             </div>
@@ -523,7 +642,7 @@ export default function App() {
                 <div className="flex shrink-0 flex-col w-[320px] h-full">
                    <div className="flex items-center justify-between mb-4 px-1">
                       <div className="flex items-center gap-2">
-                         <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                          <span className="text-[14px] font-bold text-zinc-800">待人工合规盲审</span>
                          <span className="text-[11px] font-bold bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full">12</span>
                       </div>
@@ -532,7 +651,7 @@ export default function App() {
                       {/* Card */}
                       <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm p-4 hover:border-[#605EA7]/40 hover:shadow-md transition-all cursor-move group">
                          <div className="flex items-start justify-between mb-2">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded">等待人工核查</span>
+                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">等待人工核查</span>
                          </div>
                          <h3 className="text-[13px] font-bold text-zinc-900 mb-1 leading-snug break-words">双11宠物用品囤货节：教你如何薅羊毛最划算</h3>
                          <p className="text-[11px] text-zinc-500 line-clamp-2 mt-1">一年一度的双11又来了！宠物主人们准备好钱包了吗？今天整理了一份...</p>
@@ -547,7 +666,7 @@ export default function App() {
                 <div className="flex shrink-0 flex-col w-[320px] h-full">
                    <div className="flex items-center justify-between mb-4 px-1">
                       <div className="flex items-center gap-2">
-                         <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+                         <div className="w-2.5 h-2.5 rounded-full bg-[#605EA7]" />
                          <span className="text-[14px] font-bold text-zinc-800">队列排期中 (挂机)</span>
                          <span className="text-[11px] font-bold bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full">44</span>
                       </div>
@@ -556,7 +675,7 @@ export default function App() {
                       {/* Card */}
                       <div className="bg-zinc-50 border border-zinc-200 border-dashed rounded-2xl p-4 cursor-default">
                          <div className="flex items-start justify-between mb-2">
-                            <span className="text-[10px] font-bold text-purple-600 bg-purple-100 border border-purple-200 px-2 py-0.5 rounded flex gap-1 items-center"><Workflow size={10}/> 系统排期 10.24 18:00</span>
+                            <span className="text-[10px] font-bold text-[#605EA7] bg-[#605EA7]/10 border border-[#605EA7]/20 px-2 py-0.5 rounded flex gap-1 items-center"><Workflow size={10}/> 系统排期 10.24 18:00</span>
                          </div>
                          <h3 className="text-[13px] font-bold text-zinc-700 mb-1 leading-snug break-words opacity-80">秋冬季节流浪猫救助指南，给它们一个温暖的家</h3>
                          <div className="flex items-center justify-between mt-3 text-[11px] text-zinc-500">
@@ -605,7 +724,7 @@ export default function App() {
                       <div className="flex items-center gap-4">
                          <button onClick={() => setCreatingSkill(false)} className="w-8 h-8 flex items-center justify-center rounded-xl bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors"><ChevronLeft size={16}/></button>
                          <div>
-                            <h1 className="text-lg font-black text-zinc-900 flex items-center gap-2">工作流技能蒸馏大模型构建器 <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded uppercase font-bold">Beta</span></h1>
+                            <h1 className="text-lg font-black text-zinc-900 flex items-center gap-2">工作流技能蒸馏大模型构建器 <span className="text-[10px] bg-[#605EA7]/10 text-[#605EA7] px-1.5 py-0.5 rounded uppercase font-bold">Beta</span></h1>
                             <p className="text-[11px] text-zinc-500 font-medium">配置 Prompt、提取用户级配置表单，并打包为独立的 Skill 模块。</p>
                          </div>
                       </div>
@@ -639,7 +758,7 @@ export default function App() {
                             {/* Chat History Mock */}
                             <div className="space-y-4 pt-4 border-t border-zinc-100">
                                <div className="flex gap-3">
-                                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0"><User size={14}/></div>
+                                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0"><User size={14}/></div>
                                   <div className="bg-zinc-100 rounded-2xl p-3 text-[13px] text-zinc-800 rounded-tl-none">我想要一个能根据产品功效，自动生成不同平台（小红书/抖音）种草文案的工具。</div>
                                </div>
                                <div className="flex gap-3">
@@ -680,7 +799,7 @@ export default function App() {
                             <h3 className="text-[13px] font-bold text-zinc-500 mb-4 text-center uppercase tracking-widest">终端表单呈现预览</h3>
                             
                             <div className="bg-white rounded-2xl shadow-xl border border-zinc-200/60 overflow-hidden">
-                               <div className="bg-gradient-to-r from-purple-600 to-[#605EA7] p-5 pb-6">
+                               <div className="bg-gradient-to-r from-[#4d4a8e] to-[#605EA7] p-5 pb-6">
                                   <div className="flex items-center gap-3">
                                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm shadow-sm ring-1 ring-white/30 text-white"><FlaskConical size={20}/></div>
                                      <div className="text-white">
@@ -705,7 +824,7 @@ export default function App() {
                                         <option>测评对比</option>
                                      </select>
                                   </div>
-                                  <button className="w-full bg-[#18181b] hover:bg-[#605EA7] text-white py-3 rounded-xl text-[13px] font-bold transition-all shadow-md hover:shadow-lg mt-2 flex justify-center items-center gap-2">
+                                  <button className="w-full bg-[#605EA7] hover:bg-[#4d4a8e] text-white py-3 rounded-xl text-[13px] font-bold transition-all shadow-md hover:shadow-lg mt-2 flex justify-center items-center gap-2">
                                     <Play size={14} className="fill-current" /> 运行并输出内容
                                   </button>
                                </div>
@@ -727,7 +846,7 @@ export default function App() {
                        </div>
                        <p className="text-[13px] text-zinc-500 font-medium">配置、管理你专属的 AI 技能节点</p>
                     </div>
-                    <button onClick={() => setCreatingSkill(true)} className="bg-[#18181b] hover:bg-[#605EA7] text-white px-4 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                    <button onClick={() => setCreatingSkill(true)} className="bg-[#605EA7] hover:bg-[#4d4a8e] text-white px-4 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
                         <Plus size={16}/> 创建技能模块
                     </button>
                  </div>
@@ -742,18 +861,18 @@ export default function App() {
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                              {[
                                  { name: 'KOC/KOS 异构矩阵引擎', cat: '内容核心', mode: 'Cloud', catCol: 'emerald', active: true, desc: '自动注入 Geo-Delta(地理差分)变量与破冰话术，纯 Python(LangGraph) 逻辑实现。' },
-                                 { name: '本地物理级图文洗稿裂变 (Mutator)', cat: '防重视觉', mode: 'Tauri', catCol: 'orange', active: true, desc: '调取本地 CPU/GPU，结合本地环境注入微小噪点、防重写元素，彻底转移视觉算力成本。' },
-                                 { name: '边缘无头浏览器引擎', cat: '数据巡检', mode: 'Tauri', catCol: 'pink', active: false, desc: '利用真实本地设备环境特征调度自动化动作，绕过云拨测检测策略。' },
-                                 { name: '内容方案 RAG 动态调度预判', cat: '云端中枢', mode: 'Cloud', catCol: 'indigo', active: false, desc: '基于商家资料 RAG 动态下发任务预判，实现“对话即资产”流转。' }
+                                 { name: '本地物理级图文洗稿裂变 (Mutator)', cat: '防重视觉', mode: 'Tauri', catCol: 'red', active: true, desc: '调取本地 CPU/GPU，结合本地环境注入微小噪点、防重写元素，彻底转移视觉算力成本。' },
+                                 { name: '边缘无头浏览器引擎', cat: '数据巡检', mode: 'Tauri', isCustomMain: true, active: false, desc: '利用真实本地设备环境特征调度自动化动作，绕过云拨测检测策略。' },
+                                 { name: '内容方案 RAG 动态调度预判', cat: '云端中枢', mode: 'Cloud', isCustomMain: true, active: false, desc: '基于商家资料 RAG 动态下发任务预判，实现“对话即资产”流转。' }
                              ].map(sk => (
                                  <div className={`bg-white border ${sk.active ? 'border-zinc-200 hover:border-[#605EA7]/30' : 'border-zinc-100 opacity-70'} rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer`} key={sk.name}>
                                     <div>
                                        <div className="flex justify-between items-start mb-3">
-                                          <span className={`text-[10px] font-bold text-${sk.catCol}-600 bg-${sk.catCol}-50 border border-${sk.catCol}-100 px-2.5 py-0.5 rounded-md`}>{sk.cat}</span>
+                                          <span className="text-[10px] font-bold text-[#605EA7] bg-[#605EA7]/10 border border-[#605EA7]/20 px-2.5 py-0.5 rounded-md">{sk.cat}</span>
                                           {sk.mode === 'Tauri' ? (
-                                              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded flex items-center gap-1"><Cpu size={10}/> Tauri 算力</span>
+                                              <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded flex items-center gap-1"><Cpu size={10}/> Tauri 算力</span>
                                           ) : (
-                                              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded flex items-center gap-1"><Cloud size={10}/> 云端集群</span>
+                                              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-1"><Cloud size={10}/> 云端集群</span>
                                           )}
                                        </div>
                                        <h3 className="text-[15px] font-bold text-zinc-900 mb-2 truncate group-hover:text-[#605EA7] transition-colors">{sk.name}</h3>
@@ -786,7 +905,7 @@ export default function App() {
                              <div onClick={() => setCreatingSkill(true)} className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm relative group hover:border-[#605EA7]/30 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer">
                                 <div>
                                     <div className="flex justify-between items-start mb-3">
-                                       <span className="text-[11px] font-bold text-purple-600 bg-purple-50 border border-purple-100 px-2.5 py-0.5 rounded-md flex items-center gap-1"><TerminalSquare size={10}/> 本地部署</span>
+                                       <span className="text-[11px] font-bold text-[#605EA7] bg-[#605EA7]/5 border border-[#605EA7]/20 px-2.5 py-0.5 rounded-md flex items-center gap-1"><TerminalSquare size={10}/> 本地部署</span>
                                        <div className="flex items-center gap-2">
                                           <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-1"><Clock size={10}/> 无人值守 (RPA)</span>
                                        </div>
@@ -813,30 +932,30 @@ export default function App() {
         {/* FILES (项目资源) */}
         {activeNav === 'files' && (
           <div className="flex-1 flex h-full">
-            <div className="w-[200px] xl:w-[240px] border-r border-zinc-200 bg-white flex flex-col shrink-0">
+             <div className="w-[200px] xl:w-[240px] border-r border-zinc-200 bg-white flex flex-col shrink-0">
                <div className="p-4 border-b border-zinc-100 shrink-0">
-                  <span className="text-[12px] font-bold text-zinc-500 uppercase tracking-wide">资源目录</span>
+                  <span className="text-[12px] font-bold text-zinc-500 uppercase tracking-wide">项目资源目录</span>
                </div>
                <div className="flex-1 overflow-y-auto p-2 space-y-4">
                   <div>
                     <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-400">商家项目 (独立隔离)</div>
                     <div className="space-y-0.5">
                        <div className="px-3 py-2 bg-[#F4ECF6] text-[#605EA7] rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <FolderOpen size={14} /> 商家A：宠物食品组
+                          <FolderOpen size={14} /> 商家A：猫粮冲刺
                        </div>
                        <div className="px-3 py-2 text-zinc-700 hover:bg-zinc-50 rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <FolderOpen size={14} className="text-zinc-400" /> 商家B：美妆旗舰店
+                          <FolderOpen size={14} className="text-zinc-400" /> 商家B：护肤精华
                        </div>
                     </div>
                   </div>
                   <div>
-                    <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-400">全局资源</div>
+                    <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-400">全局空间</div>
                     <div className="space-y-0.5">
                        <div className="px-3 py-2 text-zinc-700 hover:bg-zinc-50 rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <Monitor size={14} className="text-zinc-400" /> 本地电脑文件 (全局)
+                          <Monitor size={14} className="text-zinc-400" /> Tauri 挂载盘
                        </div>
                        <div className="px-3 py-2 text-zinc-700 hover:bg-zinc-50 rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <Cloud size={14} className="text-zinc-400" /> TAPTIK 云盘
+                          <Cloud size={14} className="text-zinc-400" /> Taptik 云端知识库
                        </div>
                     </div>
                   </div>
@@ -848,22 +967,68 @@ export default function App() {
                </div>
             </div>
             
-            <div className="flex-1 flex flex-col bg-white min-w-0">
-               <div className="p-4 border-b border-zinc-100 flex items-center justify-between shrink-0">
+            <div className="flex-1 flex flex-col bg-[#fbfbfb] min-w-0">
+               <div className="p-6 border-b border-zinc-200 flex items-center justify-between shrink-0 bg-white">
                   <div className="flex flex-col">
-                     <span className="text-[15px] font-bold text-zinc-900">商家A：宠物食品组</span>
-                     <span className="text-[12px] text-zinc-500">24 个文件 · 1.2 GB</span>
+                     <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-wider">Cloud</span>
+                     </div>
+                     <span className="text-[18px] font-black text-zinc-900 flex items-center gap-2">
+                        商家A：猫粮冲刺 (文件系统 & RAG 知识库)
+                     </span>
+                     <p className="text-[12px] text-zinc-500 font-medium mt-1">这里的文件将作为全局资产自动挂载至 AI 工作台，并成为默认检索的 RAG 知识范围。</p>
                   </div>
-                  <div className="flex gap-2 shrink-0">
+                  <div className="flex gap-2 shrink-0 items-center">
                      <button className="px-4 py-2 bg-white border border-zinc-200 text-zinc-700 rounded-lg text-[12px] font-bold shadow-sm hover:bg-zinc-50 flex items-center gap-2">
-                       <ArrowUpFromLine size={14} /> 上传本地文件
+                       <Plus size={14} /> 上传文件或素材
                      </button>
                      <button className="px-4 py-2 bg-[#605EA7] text-white rounded-lg text-[12px] font-bold shadow-sm hover:bg-[#4d4a8e] flex items-center gap-2">
-                       <Cloud size={14} /> 一键同步到云端
+                       <Brain size={14} /> 配置提取清洗规则
                      </button>
                   </div>
                </div>
-               <div className="flex-1 p-6 overflow-y-auto">
+               <div className="flex-1 p-6 overflow-y-auto space-y-6">
+                 
+                 {/* Tree structure representation */}
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                     {UNIFIED_FILE_TREE.map((node, i) => (
+                        <div key={i} className="bg-white border text-left border-zinc-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between">
+                           <div>
+                               <div className="flex items-center justify-between mb-3">
+                                  <div className="w-10 h-10 rounded-lg bg-[#605EA7]/5 text-[#605EA7] flex items-center justify-center shrink-0">
+                                     <FolderOpen size={20} />
+                                  </div>
+                                  <div className="flex gap-1">
+                                     <button className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors"><ChevronRight size={14}/></button>
+                                  </div>
+                               </div>
+                               <h3 className="text-[14px] font-bold text-zinc-800">{node.name}</h3>
+                               <p className="text-[11px] text-zinc-500 mt-1">{node.children.length} 个资产节点</p>
+                           </div>
+                           <div className="mt-4 pt-4 border-t border-zinc-100 space-y-2">
+                              {node.children.slice(0, 3).map((child, j) => (
+                                 <div key={j} className="flex items-center gap-2 text-[12px] text-zinc-600 font-medium group/item cursor-pointer">
+                                     {child.type === 'RAG' ? (
+                                        <Brain size={12} className="text-[#605EA7] shrink-0" />
+                                     ) : (
+                                        <FileIcon size={12} className="text-emerald-500 shrink-0" />
+                                     )}
+                                     <span className="truncate group-hover/item:text-[#605EA7] transition-colors">{child.name}</span>
+                                     {child.type === 'RAG' && <span className="ml-auto text-[9px] bg-[#605EA7]/10 text-[#605EA7] px-1 rounded font-bold">RAG</span>}
+                                 </div>
+                              ))}
+                              {node.children.length > 3 && (
+                                 <div className="text-[11px] text-zinc-400 font-bold ml-5">
+                                    + {node.children.length - 3} 更多...
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+
+                  {/* List View Details */}
+                  <h3 className="text-[14px] font-bold text-zinc-800 mt-8 mb-4 flex items-center gap-2">详细资产流清单</h3>
                   <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white">
                      <table className="w-full text-left border-collapse">
                         <thead>
@@ -872,30 +1037,30 @@ export default function App() {
                               <th className="py-3 px-4 font-bold">文件名称</th>
                               <th className="py-3 px-4 font-bold">大小</th>
                               <th className="py-3 px-4 font-bold">更新时间</th>
-                              <th className="py-3 px-4 font-bold">状态</th>
+                              <th className="py-3 px-4 font-bold text-right">RAG 向量状态</th>
                            </tr>
                         </thead>
                         <tbody className="text-[13px] text-zinc-700">
                            <tr className="border-b border-zinc-50 hover:bg-zinc-50 cursor-pointer">
                               <td className="py-3 px-2 text-center"><input type="checkbox" className="rounded border-zinc-300" defaultChecked /></td>
-                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FileText size={14} className="text-blue-500 shrink-0" /> <span className="truncate">猫粮成分表分析.pdf</span></td>
+                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FileText size={14} className="text-emerald-500 shrink-0" /> <span className="truncate max-w-[150px]">猫粮成分表分析.pdf</span> <span className="text-[9px] bg-[#605EA7]/10 text-[#605EA7] px-1.5 py-0.5 rounded font-bold">源文件</span></td>
                               <td className="py-3 px-4 text-zinc-500">2.4 MB</td>
                               <td className="py-3 px-4 text-zinc-500">今天 10:23</td>
-                              <td className="py-3 px-4"><span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">已同步</span></td>
+                              <td className="py-3 px-4 text-right"><span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md inline-flex items-center gap-1"><CheckCircle2 size={12}/> 已向量化提取</span></td>
                            </tr>
                            <tr className="border-b border-zinc-50 hover:bg-zinc-50 cursor-pointer">
                               <td className="py-3 px-2 text-center"><input type="checkbox" className="rounded border-zinc-300" defaultChecked /></td>
-                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><ImageIcon size={14} className="text-orange-500 shrink-0" /> <span className="truncate">包装产品原图_1.png</span></td>
+                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FolderOpen size={14} className="text-red-500 shrink-0 fill-red-100" /> <span className="truncate">包装产品合集</span></td>
                               <td className="py-3 px-4 text-zinc-500">14.2 MB</td>
                               <td className="py-3 px-4 text-zinc-500">昨天 16:45</td>
-                              <td className="py-3 px-4"><span className="text-[11px] font-bold text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded-md">本地</span></td>
+                              <td className="py-3 px-4 text-right"><span className="text-[11px] font-bold text-zinc-400">不支持 RAG</span></td>
                            </tr>
                            <tr className="border-b border-zinc-50 hover:bg-zinc-50 cursor-pointer">
                               <td className="py-3 px-2 text-center"><input type="checkbox" className="rounded border-zinc-300" /></td>
                               <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FileSpreadsheet size={14} className="text-green-500 shrink-0" /> <span className="truncate">Q2销售数据总结.xlsx</span></td>
                               <td className="py-3 px-4 text-zinc-500">125 KB</td>
                               <td className="py-3 px-4 text-zinc-500">昨天 11:20</td>
-                              <td className="py-3 px-4"><span className="text-[11px] font-bold text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded-md">本地</span></td>
+                              <td className="py-3 px-4 text-right"><span className="text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md inline-flex items-center gap-1"><RotateCw size={12} className="animate-spin"/> 清洗解析中...</span></td>
                            </tr>
                         </tbody>
                      </table>
@@ -929,12 +1094,12 @@ export default function App() {
                       <div className="text-[11px] font-bold text-emerald-500 mt-2 flex items-center gap-1"><ArrowUp size={12}/> 8.1% 较上周</div>
                    </div>
                    <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm">
-                      <div className="text-[12px] font-bold text-zinc-500 mb-2 flex items-center justify-between">小红书净涨粉 <Target size={14} className="text-blue-500" /></div>
+                      <div className="text-[12px] font-bold text-zinc-500 mb-2 flex items-center justify-between">小红书净涨粉 <Target size={14} className="text-emerald-500" /></div>
                       <div className="text-2xl font-black text-zinc-900">845 人</div>
                       <div className="text-[11px] font-bold text-rose-500 mt-2 flex items-center gap-1"><ArrowUpFromLine size={12} className="rotate-180"/> 2.3% 较上周</div>
                    </div>
                    <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm">
-                      <div className="text-[12px] font-bold text-zinc-500 mb-2 flex items-center justify-between">新增私信/评论圈客 <MessageSquare size={14} className="text-orange-500" /></div>
+                      <div className="text-[12px] font-bold text-zinc-500 mb-2 flex items-center justify-between">新增私信/评论圈客 <MessageSquare size={14} className="text-red-500" /></div>
                       <div className="text-2xl font-black text-zinc-900">412 条</div>
                       <div className="text-[11px] font-bold text-emerald-500 mt-2 flex items-center gap-1"><ArrowUp size={12}/> 21.5% 较上周</div>
                    </div>
@@ -943,8 +1108,12 @@ export default function App() {
                 {/* Sub Nav */}
                 <div className="flex items-center justify-between border-b border-zinc-200">
                    <div className="flex items-center gap-6">
-                      <button className="pb-3 text-[14px] font-bold text-[#605EA7] border-b-2 border-[#605EA7]">跨域归因 ROI 引擎</button>
-                      <button className="pb-3 text-[14px] font-bold text-zinc-500 hover:text-zinc-800">蓝海词巡检大盘</button>
+                      <button 
+                         onClick={() => setDataSubNav('roi')}
+                         className={`pb-3 text-[14px] font-bold ${dataSubNav === 'roi' ? 'text-[#605EA7] border-b-2 border-[#605EA7]' : 'text-zinc-500 hover:text-zinc-800'}`}>跨域归因 ROI 引擎</button>
+                      <button 
+                         onClick={() => setDataSubNav('blueocean')}
+                         className={`pb-3 text-[14px] font-bold ${dataSubNav === 'blueocean' ? 'text-[#605EA7] border-b-2 border-[#605EA7]' : 'text-zinc-500 hover:text-zinc-800'}`}>蓝海词巡检大盘</button>
                    </div>
                    <div className="pb-3 flex items-center gap-2">
                        <span className="text-[12px] font-bold text-zinc-400">数据中间件状态:</span>
@@ -952,6 +1121,7 @@ export default function App() {
                    </div>
                 </div>
 
+                {dataSubNav === 'roi' ? (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                    {/* Funnel */}
                    <div className="md:col-span-1 bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm flex flex-col items-center">
@@ -968,8 +1138,8 @@ export default function App() {
                           </div>
                           <div className="w-px h-6 bg-zinc-200"></div>
                           {/* Funnel Step 2 */}
-                          <div className="w-[85%] bg-blue-50 border border-blue-100 p-3 rounded-lg text-center z-10">
-                              <div className="text-[11px] font-bold text-blue-600">高意向评论 ("求链接")</div>
+                          <div className="w-[85%] bg-emerald-50 border border-emerald-100 p-3 rounded-lg text-center z-10">
+                              <div className="text-[11px] font-bold text-emerald-600">高意向评论 ("求链接")</div>
                               <div className="text-xl font-black text-zinc-900 mt-1">1,240</div>
                           </div>
                           <div className="w-px h-6 bg-zinc-200"></div>
@@ -1021,6 +1191,60 @@ export default function App() {
                       </div>
                    </div>
                 </div>
+                ) : (
+                   <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-sm flex flex-col">
+                      <div className="p-4 border-b border-zinc-100 bg-zinc-50/50 flex items-center justify-between">
+                         <span className="text-[13px] font-bold text-zinc-800">蓝海词矩阵探测趋势排榜 (RPA 抓取)</span>
+                         <button className="text-[11px] font-bold flex items-center gap-1 text-[#605EA7] bg-[#605EA7]/10 px-2 py-1 rounded"><RefreshCw size={12}/> 强制刷新</button>
+                      </div>
+                      <div className="p-6">
+                         <div className="flex gap-4 mb-6">
+                             <div className="flex-1 bg-emerald-50 border border-emerald-100 rounded-xl p-4">
+                                <div className="text-[12px] font-bold text-emerald-600 mb-1">近期高潜力增长词</div>
+                                <div className="text-[18px] font-black text-zinc-900">#无谷烘焙冻干猫粮</div>
+                                <div className="text-[11px] text-emerald-500 mt-2 font-medium flex items-center gap-1"><ArrowUp size={12}/> 搜索热度日环比 +42%</div>
+                             </div>
+                             <div className="flex-1 bg-red-50 border border-red-100 rounded-xl p-4">
+                                <div className="text-[12px] font-bold text-red-600 mb-1">竞争红海词 (建议避让)</div>
+                                <div className="text-[18px] font-black text-zinc-900">#猫粮推荐</div>
+                                <div className="text-[11px] text-red-500 mt-2 font-medium">前排均点赞量 &gt; 5w+，流量挤压</div>
+                             </div>
+                         </div>
+                         <table className="w-full text-left border-collapse min-w-[500px]">
+                           <thead className="bg-zinc-50 border-b border-zinc-100 text-[11px] text-zinc-500">
+                              <tr>
+                                 <th className="py-3 px-4 font-bold">探测关键词 (Keyword)</th>
+                                 <th className="py-3 px-4 font-bold text-right">热度指数 (24h)</th>
+                                 <th className="py-3 px-4 font-bold text-right">长尾竞争规模</th>
+                                 <th className="py-3 px-4 font-bold text-right">建议操作</th>
+                              </tr>
+                           </thead>
+                           <tbody className="text-[12px] text-zinc-800 font-medium">
+                              <tr className="border-b border-zinc-50 hover:bg-zinc-50">
+                                 <td className="py-3 px-4 flex items-center gap-2">
+                                     <span className="font-bold text-zinc-900 truncate">#新手养幼猫必囤</span>
+                                 </td>
+                                 <td className="py-3 px-4 text-right font-mono text-[13px] text-emerald-600 flex justify-end items-center gap-1"><ArrowUp size={12}/> 8,420</td>
+                                 <td className="py-3 px-4 text-right font-mono text-[13px]">520 篇</td>
+                                 <td className="py-3 px-4 text-right">
+                                    <button className="text-[11px] font-bold text-white bg-[#605EA7] hover:bg-[#4d4a8e] px-3 py-1.5 rounded transition-colors">生成选题组</button>
+                                 </td>
+                              </tr>
+                              <tr className="border-b border-zinc-50 hover:bg-zinc-50">
+                                 <td className="py-3 px-4 flex items-center gap-2">
+                                     <span className="font-bold text-zinc-900 truncate">#多猫家庭护毛猫粮</span>
+                                 </td>
+                                 <td className="py-3 px-4 text-right font-mono text-[13px] text-emerald-600 flex justify-end items-center gap-1"><ArrowUp size={12}/> 4,115</td>
+                                 <td className="py-3 px-4 text-right font-mono text-[13px]">128 篇</td>
+                                 <td className="py-3 px-4 text-right">
+                                    <button className="text-[11px] font-bold text-white bg-[#605EA7] hover:bg-[#4d4a8e] px-3 py-1.5 rounded transition-colors">生成选题组</button>
+                                 </td>
+                              </tr>
+                           </tbody>
+                         </table>
+                      </div>
+                   </div>
+                )}
               </div>
           </div>
         )}
@@ -1073,7 +1297,7 @@ export default function App() {
                        </div>
                        <div className="flex items-center gap-2">
                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 border border-emerald-100 rounded-full flex items-center gap-1"><Check size={10}/> IP防风控正常</span>
-                         <button className="text-[12px] font-bold text-white bg-[#18181b] hover:bg-zinc-800 px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1">
+                         <button className="text-[12px] font-bold text-white bg-[#605EA7] hover:bg-[#4d4a8e] px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1">
                             <Plus size={14}/> 录入新节点
                          </button>
                        </div>
@@ -1119,7 +1343,7 @@ export default function App() {
                              <input type="text" maxLength={6} placeholder="例: 8A9B2C" className="w-32 text-center p-3 border border-zinc-200 rounded-xl text-[14px] tracking-widest bg-zinc-50 font-bold focus:bg-white focus:outline-none focus:border-[#605EA7]" />
                              <span className="text-[12px] text-zinc-500 self-center">输入系统给商家生成的通道连接编号</span>
                           </div>
-                          <button className="px-5 py-2.5 bg-[#18181b] text-white rounded-xl text-[13px] font-bold hover:bg-[#605EA7] transition-colors shadow-sm">验证与绑定</button>
+                          <button className="px-5 py-2.5 bg-[#605EA7] text-white rounded-xl text-[13px] font-bold hover:bg-[#4d4a8e] transition-colors shadow-sm">验证与绑定</button>
                        </div>
                     </div>
                  </div>
