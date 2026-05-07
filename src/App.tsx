@@ -11,7 +11,7 @@ import {
   CheckCircle2, AlertCircle, FileBox, FileQuestion, Flame, Link2,
   CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check,
   Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2,
-  Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock
+  Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -23,11 +23,47 @@ interface Message {
 }
 
 const SHORTCUT_CATEGORIES = [
-  { id: 'recommend', name: '推荐', icon: Star },
-  { id: 'content', name: '内容创作', icon: PenTool },
-  { id: 'data', name: '数据分析', icon: BarChart2 },
-  { id: 'publish', name: '全域分发', icon: Share2 },
-  { id: 'market', name: '获客转化', icon: Target },
+  { 
+    id: 'common', 
+    name: '我常用的', 
+    icon: Star,
+    items: [
+      { text: '提取竞品核心痛点', type: 'prompt' },
+      { text: '一键洗稿(3平台)', type: 'prompt' },
+      { text: '调用: KOC分发引擎', type: 'skill' }
+    ]
+  },
+  { 
+    id: 'content', 
+    name: '内容创作', 
+    icon: PenTool,
+    items: [
+      { text: '小红书高赞网感改写', type: 'prompt' },
+      { text: '抖音/快手短视频脚本生成', type: 'prompt' },
+      { text: '商品种草/测评大纲搭建', type: 'prompt' },
+      { text: '多平台人设隔离生成', type: 'prompt' }
+    ]
+  },
+  { 
+    id: 'workflow', 
+    name: '逻辑与流转', 
+    icon: Workflow,
+    items: [
+      { text: '调用: 本地Tauri防重巡检', type: 'skill' },
+      { text: '分析: 蓝海词RAG洞察', type: 'skill' },
+      { text: '配置: 跨平台分发工作流', type: 'prompt' }
+    ]
+  },
+  { 
+    id: 'data', 
+    name: '数据分析', 
+    icon: BarChart2,
+    items: [
+      { text: '分析昨日大盘回收效果', type: 'prompt' },
+      { text: '统计各子商家月度 T币开销', type: 'prompt' },
+      { text: '导出笔记爆文率报表', type: 'prompt' }
+    ]
+  }
 ];
 
 export default function App() {
@@ -306,6 +342,7 @@ export default function App() {
               {[
                 { id: 'files', name: '全局资产库', icon: FolderOpen },
                 { id: 'skills', name: 'Skill 市场', icon: LayoutGrid },
+                { id: 'billing', name: '资源与消耗', icon: CreditCard },
                 { id: 'settings', name: '系统设置', icon: Settings },
               ].map((item) => (
                 <button 
@@ -496,18 +533,7 @@ export default function App() {
                           <Zap size={28} className="fill-current opacity-80" />
                        </div>
                        <h2 className="text-2xl font-black text-zinc-900 mb-2">欢迎来到 TAPTIK IDE</h2>
-                       <p className="text-[13px] font-medium text-zinc-500 mb-10 text-center">输入对话触发流程，使用 @ 引用内置 AI 资产，或拖拽文件到窗口</p>
-
-                       <div className="grid grid-cols-2 gap-4 w-full">
-                          <div onClick={() => insertMention('KOC_KOS异构引擎', '@')} className="bg-white border text-left border-zinc-200 p-4 rounded-xl shadow-sm hover:border-[#605EA7]/40 hover:shadow-md cursor-pointer transition-all group">
-                             <h3 className="text-[13px] font-bold text-zinc-900 mb-1 group-hover:text-[#605EA7] transition-colors flex gap-1 items-center"><Component size={14} className="text-[#605EA7]"/> 蓝海词驱动：KOC/KOS 异构引擎</h3>
-                             <p className="text-[11px] text-zinc-500 font-medium leading-relaxed">底层解耦内容生成逻辑，并引入 Geo-Delta 地理差分变量注入破冰话术，实现高成活率</p>
-                          </div>
-                          <div onClick={() => insertMention('内容方案AI策划', '@')} className="bg-white border text-left border-zinc-200 p-4 rounded-xl shadow-sm hover:border-[#605EA7]/40 hover:shadow-md cursor-pointer transition-all group">
-                             <h3 className="text-[13px] font-bold text-zinc-900 mb-1 group-hover:text-[#605EA7] transition-colors flex gap-1 items-center"><Component size={14} className="text-[#605EA7]"/> 内容方案 RAG 动态指派</h3>
-                             <p className="text-[11px] text-zinc-500 font-medium leading-relaxed">基于商家资料库 RAG 下发智能预测任务，实现对话即资产沉淀与 IDE 工具台无缝结合</p>
-                          </div>
-                       </div>
+                       <p className="text-[13px] font-medium text-zinc-500 mb-2 text-center">直接对话触发智能流转，输入 @ 召唤内置资产，或拖拽左侧文件至此</p>
                     </div>
                  ) : (
                     <div className="max-w-4xl mx-auto space-y-6 pb-2">
@@ -515,7 +541,7 @@ export default function App() {
                          <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                            {msg.role === 'user' ? (
                              <div className="flex flex-col items-end max-w-[90%]">
-                                <div className="px-5 py-3.5 rounded-2xl bg-[#18181b] text-[#f1f1f4] border border-zinc-800 shadow-md rounded-br-sm text-[14px] leading-relaxed font-medium">{renderMessageContent(msg.content as string, msg.role)}</div>
+                                <div className="px-5 py-3.5 rounded-2xl bg-[#605EA7] text-[#f1f1f4] border border-[#4d4a8e] shadow-md rounded-br-sm text-[14px] leading-relaxed font-medium">{renderMessageContent(msg.content as string, msg.role)}</div>
                              </div>
                            ) : (
                              <div className="max-w-[90%]">
@@ -536,7 +562,7 @@ export default function App() {
               </div>
 
               {/* Input Area */}
-              <div className="p-4 pt-0 shrink-0 max-w-4xl mx-auto w-full relative">
+              <div className="p-4 pt-0 shrink-0 max-w-5xl mx-auto w-full relative">
                  <AnimatePresence>
                    {showMentionMenu && (
                      <motion.div initial={{ opacity: 0, y: 10, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.98 }} className="absolute bottom-full left-4 mb-2 w-72 bg-white border border-zinc-200 shadow-xl rounded-xl z-50 overflow-hidden flex flex-col max-h-64">
@@ -558,7 +584,7 @@ export default function App() {
                    )}
                  </AnimatePresence>
 
-                 <div className="bg-white rounded-[14px] border border-zinc-200 shadow-sm overflow-hidden flex relative transition-all focus-within:border-[#605EA7]/50 focus-within:shadow-md ring-1 ring-transparent focus-within:ring-[#605EA7]/10">
+                 <div className="bg-white rounded-[14px] border border-zinc-200 shadow-sm overflow-hidden flex relative transition-all focus-within:border-[#605EA7]/50 focus-within:shadow-md ring-1 ring-transparent focus-within:ring-[#605EA7]/10 mb-3">
                    <textarea 
                       rows={1}
                       value={inputValue}
@@ -577,10 +603,36 @@ export default function App() {
                       </button>
                    </div>
                  </div>
-                 <div className="px-2 mt-2 text-[10px] font-medium text-zinc-400 text-center flex items-center justify-center gap-4">
-                    <span>快捷键: @召唤辅助智能体/Skill</span>
-                    <span>/执行预置操作</span>
-                    <span>支持拖拽任意文件或链接至窗口</span>
+
+                 {/* Categorized Shortcuts Below Input */}
+                 <div className="bg-white/50 rounded-xl border border-zinc-100 p-3 flex flex-wrap gap-x-6 gap-y-4">
+                    {SHORTCUT_CATEGORIES.map(cat => (
+                      <div key={cat.id} className="flex flex-col gap-2 min-w-[200px] flex-1">
+                         <div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400 select-none uppercase tracking-wider pl-1">
+                            <cat.icon size={12} className={cat.id === 'common' ? 'text-amber-500' : 'text-zinc-400'} />
+                            {cat.name}
+                         </div>
+                         <div className="flex flex-col gap-1.5">
+                            {cat.items.map((item, idx) => (
+                               <button 
+                                 key={idx}
+                                 onClick={() => {
+                                   if (item.type === 'skill') {
+                                      setInputValue(prev => prev + (prev.endsWith(' ') ? '' : ' ') + '@' + item.text.replace('调用: ', '') + ' ');
+                                   } else {
+                                      setInputValue(prev => prev + (prev ? '\n' : '') + item.text);
+                                   }
+                                   // Keep focus or something similar, but simple state update is fine here
+                                 }}
+                                 className="text-left text-[12px] font-medium text-zinc-600 hover:text-[#605EA7] hover:bg-[#605EA7]/5 px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#605EA7]/20 truncate flex items-center gap-1.5"
+                               >
+                                  {item.type === 'skill' ? <Component size={12} className="text-[#605EA7]/60 shrink-0" /> : <Plus size={12} className="text-zinc-400 shrink-0" />}
+                                  <span className="truncate">{item.text}</span>
+                               </button>
+                            ))}
+                         </div>
+                      </div>
+                    ))}
                  </div>
               </div>
             </div>
@@ -1250,6 +1302,143 @@ export default function App() {
         )}
 
         {/* SETTINGS (系统配置) */}
+        {activeNav === 'billing' && (
+          <div className="flex-1 flex flex-col h-full bg-[#fbfbfb] overflow-y-auto custom-scrollbar">
+             <div className="p-6 xl:px-8 border-b border-zinc-200 bg-white shrink-0 shadow-sm relative z-10">
+                 <h1 className="text-2xl font-black text-zinc-900">资产与计费</h1>
+                 <p className="text-[13px] text-zinc-500 font-medium mt-1">管理资金池、T币消耗记录，以及商户订阅和资源扣费。1 元 = 1 T币。</p>
+             </div>
+             
+             <div className="flex-1 p-6 xl:p-8 max-w-5xl space-y-8">
+                 {/* 账户余额概览 */}
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="md:col-span-2 bg-gradient-to-br from-[#605EA7] to-[#4d4a8e] rounded-2xl p-6 text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[200px]">
+                       <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-white opacity-10 blur-[50px] rounded-full pointer-events-none"></div>
+                       <div className="relative z-10">
+                          <div className="flex items-center gap-2 text-[#CEC8E2] font-bold text-[13px] mb-2"><Coins size={16} /> 组织 T币可用余额</div>
+                          <div className="text-[42px] font-black tracking-tight leading-none mb-1">4,720 <span className="text-[20px] text-[#CEC8E2] font-bold ml-1 tracking-normal">T币</span></div>
+                          <div className="text-[12px] text-[#CEC8E2] font-medium mt-3 flex items-center gap-2">
+                             <div className="px-2 py-1 bg-white/10 rounded-md">包含年度订阅赠送的 6,000 T币池</div>
+                          </div>
+                       </div>
+                       <div className="relative z-10 flex items-center gap-3 mt-6">
+                          <button onClick={() => window.open('https://pay.taptik.com/recharge', '_blank')} className="bg-white text-[#605EA7] hover:bg-zinc-50 px-5 py-2.5 rounded-xl text-[13px] font-bold shadow-md transition-colors">立刻充值 (前往 Web)</button>
+                          <button className="bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-xl text-[13px] font-bold transition-colors">账单明细</button>
+                       </div>
+                    </div>
+                    
+                    <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm p-6 flex flex-col justify-between">
+                       <div>
+                          <div className="text-[13px] font-bold text-zinc-500 flex items-center gap-2 mb-4"><CreditCard size={16} /> 当前订阅方案</div>
+                          <div className="flex justify-between items-end">
+                              <div className="text-[24px] font-black text-[#605EA7]">企业年卡</div>
+                              <div className="text-[13px] font-bold text-zinc-500 mb-1">¥ 3,990 / 年</div>
+                          </div>
+                          <div className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md inline-block mt-2 border border-emerald-100">生效中 · 2027-05-01 到期</div>
+                       </div>
+                       <button onClick={() => window.open('https://pay.taptik.com/subscribe', '_blank')} className="w-full mt-6 bg-zinc-50 border border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 py-2.5 rounded-xl text-[13px] font-bold transition-colors shadow-sm">续费或升级方案</button>
+                    </div>
+                 </div>
+
+                 {/* 消耗记录表 */}
+                 <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm hover:border-[#605EA7]/30 transition-colors">
+                    <div className="p-5 border-b border-zinc-100 bg-zinc-50/50 flex items-center justify-between">
+                       <div>
+                         <h2 className="text-[15px] font-bold text-zinc-900 flex items-center gap-2"><Activity size={16} className="text-[#605EA7]"/> 商家动态分发与调用消耗</h2>
+                         <p className="text-[12px] text-zinc-500 mt-1">混合模型调度：笔记固定扣费 2 T币/篇。其余按大模型(海外/国内)执行规模独立计费。</p>
+                       </div>
+                       <button className="text-[12px] font-bold text-zinc-600 border border-zinc-200 bg-white hover:bg-zinc-50 px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-1">
+                          <Download size={14}/> 导出对账单
+                       </button>
+                    </div>
+                    <div className="p-0">
+                       <table className="w-full text-left border-collapse min-w-[700px]">
+                          <thead className="bg-zinc-50">
+                             <tr className="text-[12px] text-zinc-500">
+                                <th className="py-4 px-6 font-bold border-b border-zinc-100">消耗时间</th>
+                                <th className="py-4 px-6 font-bold border-b border-zinc-100">关联商家/项目</th>
+                                <th className="py-4 px-6 font-bold border-b border-zinc-100">活动业务类型</th>
+                                <th className="py-4 px-6 font-bold border-b border-zinc-100">调用模型引擎</th>
+                                <th className="py-4 px-6 font-bold border-b border-zinc-100 text-right">消耗 T币数</th>
+                             </tr>
+                          </thead>
+                          <tbody className="text-[13px] text-zinc-900 font-medium">
+                             <tr className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="py-4 px-6 border-b border-zinc-50 text-zinc-500 font-mono text-[12px]">05-07 10:24</td>
+                                <td className="py-4 px-6 border-b border-zinc-50">
+                                  <div className="flex flex-col">
+                                    <span className="font-bold">商家A：宠物食品组</span>
+                                    <span className="text-[11px] text-zinc-500">KOC矩阵分发</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 border-b border-zinc-50"><span className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded text-[11px] font-bold">小红书代写 (15篇)</span></td>
+                                <td className="py-4 px-6 border-b border-zinc-50">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#605EA7]"></div>
+                                    <span>DeepSeek-V3</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 border-b border-zinc-50 text-right font-mono text-red-600 font-bold">-30</td>
+                             </tr>
+                             <tr className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="py-4 px-6 border-b border-zinc-50 text-zinc-500 font-mono text-[12px]">05-07 09:12</td>
+                                <td className="py-4 px-6 border-b border-zinc-50">
+                                  <div className="flex flex-col">
+                                    <span className="font-bold">商家B：美妆旗舰店</span>
+                                    <span className="text-[11px] text-zinc-500">新品高赞仿写</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 border-b border-zinc-50"><span className="bg-amber-50 text-amber-600 border border-amber-100 px-2 py-0.5 rounded text-[11px] font-bold">深度图文改写 (5个)</span></td>
+                                <td className="py-4 px-6 border-b border-zinc-50">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#605EA7]"></div>
+                                    <span>GPT-4o (海外节点)</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 border-b border-zinc-50 text-right font-mono text-red-600 font-bold">-45</td>
+                             </tr>
+                             <tr className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="py-4 px-6 border-b border-zinc-50 text-zinc-500 font-mono text-[12px]">05-07 08:33</td>
+                                <td className="py-4 px-6 border-b border-zinc-50">
+                                  <div className="flex flex-col">
+                                    <span className="font-bold">全局共享资源</span>
+                                    <span className="text-[11px] text-zinc-500">蓝海词巡检大盘</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 border-b border-zinc-50"><span className="bg-[#605EA7]/10 text-[#605EA7] border border-[#605EA7]/20 px-2 py-0.5 rounded text-[11px] font-bold">RAG 全局分析生成</span></td>
+                                <td className="py-4 px-6 border-b border-zinc-50">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#605EA7]"></div>
+                                    <span>Claude 3.5 Sonnet</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 border-b border-zinc-50 text-right font-mono text-red-600 font-bold">-28</td>
+                             </tr>
+                             <tr className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="py-4 px-6 text-zinc-500 font-mono text-[12px]">05-06 20:15</td>
+                                <td className="py-4 px-6">
+                                  <div className="flex flex-col">
+                                    <span className="font-bold">商家C：瑜伽服测款</span>
+                                    <span className="text-[11px] text-zinc-500">自动带货短视频流转</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6"><span className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded text-[11px] font-bold">视频口播分发 (20篇)</span></td>
+                                <td className="py-4 px-6">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#605EA7]"></div>
+                                    <span>Qwen-Max</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 text-right font-mono text-red-600 font-bold">-40</td>
+                             </tr>
+                          </tbody>
+                       </table>
+                    </div>
+                 </div>
+              </div>
+          </div>
+        )}
+
         {activeNav === 'settings' && (
           <div className="flex-1 flex flex-col h-full bg-[#fbfbfb] overflow-y-auto custom-scrollbar">
              <div className="p-6 xl:px-8 border-b border-zinc-200 bg-white shrink-0 shadow-sm relative z-10">
