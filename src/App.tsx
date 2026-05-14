@@ -66,8 +66,100 @@ const SHORTCUT_CATEGORIES = [
   }
 ];
 
+const MOCK_PROJECTS = {
+  'project-a': {
+    id: 'project-a',
+    name: '商家A：宠物食品组',
+    initial: '宠',
+    color: '#EDEAF2',
+    textColor: '#685FAB',
+    fileTree: [
+      {
+        type: 'Folder',
+        name: '营销物料库 (云端)',
+        children: [
+          { type: 'Folder', name: '活动原图分类库' },
+          { type: 'File', name: '海报底图A.jpg' }
+        ]
+      },
+      {
+        type: 'Folder',
+        name: '本地上传资料',
+        children: [
+           { type: 'File', name: '通用全局规范.pdf' },
+           { type: 'RAG', name: '宠物标准话术.rag' }
+        ]
+      }
+    ],
+    chatHistory: [
+      { id: '1', title: '执行 Skill: 竞品标题仿写助手', time: '30 分钟前' },
+      { id: '2', title: '分析狗粮销售数据', time: '1 小时前' },
+      { id: '3', title: '你好', time: '2 小时前' }
+    ]
+  },
+  'project-b': {
+    id: 'project-b',
+    name: '商家B：美妆旗舰店',
+    initial: '美',
+    color: '#fee2e2',
+    textColor: '#ef4444',
+    fileTree: [
+      {
+        type: 'Folder',
+        name: '美妆图库',
+        children: [
+          { type: 'File', name: '口红试色图集.png' },
+          { type: 'Folder', name: '视频素材' }
+        ]
+      },
+      {
+        type: 'Folder',
+        name: '话术大纲',
+        children: [
+           { type: 'RAG', name: '防敏感词过滤包.rag' },
+           { type: 'File', name: '竞品拆解.md' }
+        ]
+      }
+    ],
+    chatHistory: [
+      { id: '4', title: '短视频带货脚本生成', time: '1 小时前' },
+      { id: '5', title: '提取核心卖点', time: '3 小时前' }
+    ]
+  },
+  'project-c': {
+    id: 'project-c',
+    name: '商家C：瑜伽服测款',
+    initial: '瑜',
+    color: '#dcfce7',
+    textColor: '#22c55e',
+    fileTree: [
+       {
+          type: 'Folder',
+          name: '运动装备资料',
+          children: [
+             { type: 'File', name: '款式详情规格表.xlsx' }
+          ]
+       }
+    ],
+    chatHistory: [
+       { id: '6', title: 'KOC种草文案批量生产', time: '5 小时前' }
+    ]
+  }
+};
+
 export default function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [activeProjectId, setActiveProjectId] = useState<keyof typeof MOCK_PROJECTS>('project-a');
+  const [messagesMap, setMessagesMap] = useState<Record<string, Message[]>>({});
+  
+  const activeProject = MOCK_PROJECTS[activeProjectId];
+  const messages = messagesMap[activeProjectId] || [];
+  const setMessages = (setter: (prev: Message[]) => Message[] | Message[]) => {
+    setMessagesMap(prev => ({
+      ...prev,
+      [activeProjectId]: typeof setter === 'function' ? setter(prev[activeProjectId] || []) : setter
+    }));
+  };
+
   const [inputValue, setInputValue] = useState('');
   const [showMentionMenu, setShowMentionMenu] = useState<'skill' | 'agent' | null>(null);
   const [contextItems, setContextItems] = useState<string[]>([]);
@@ -95,30 +187,8 @@ export default function App() {
     { id: 'settings', name: '设置', icon: Settings },
   ];
 
-  const UNIFIED_FILE_TREE = [
-    {
-      type: 'Folder',
-      name: '营销物料库 (云端)',
-      children: [
-        { type: 'Folder', name: '活动原图分类库' },
-        { type: 'File', name: '海报底图A.jpg' }
-      ]
-    },
-    {
-      type: 'Folder',
-      name: '本地上传资料',
-      children: [
-         { type: 'File', name: '通用全局规范.pdf' },
-         { type: 'RAG', name: '酒店标准话术.rag' }
-      ]
-    }
-  ];
-
-  const chatHistory = [
-    { id: '1', title: '执行 Skill: 竞品标题仿写助手', time: '30 分钟前' },
-    { id: '2', title: '你好', time: '37 分钟前' },
-    { id: '3', title: '你好', time: '46 分钟前' }
-  ];
+  const UNIFIED_FILE_TREE = activeProject.fileTree;
+  const chatHistory = activeProject.chatHistory;
 
   const [activePlanId, setActivePlanId] = useState('2');
   const [skillMarketTab, setSkillMarketTab] = useState<'market' | 'my'>('my');
@@ -261,8 +331,8 @@ export default function App() {
              onClick={() => setIsProjectSelectorOpen(!isProjectSelectorOpen)}
              className={`w-full flex items-center justify-center xl:justify-between hover:bg-zinc-100 rounded-lg p-2 xl:px-2 xl:py-1.5 text-sm font-bold text-zinc-700 transition-colors ${isProjectSelectorOpen ? 'bg-zinc-100' : ''}`}>
              <div className="flex items-center gap-2">
-               <div className="w-6 h-6 xl:w-5 xl:h-5 rounded bg-[#EDEAF2] text-[#685FAB] flex items-center justify-center font-black text-[10px] shrink-0">宠</div>
-               <span className="hidden xl:block truncate text-left max-w-[90px]">商家A:宠物...</span>
+               <div className="w-6 h-6 xl:w-5 xl:h-5 rounded flex items-center justify-center font-black text-[10px] shrink-0" style={{ backgroundColor: activeProject.color, color: activeProject.textColor }}>{activeProject.initial}</div>
+               <span className="hidden xl:block truncate text-left max-w-[90px]">{activeProject.name}</span>
              </div>
              <ChevronDown size={14} className="text-zinc-400 hidden xl:block" />
           </button>
@@ -277,28 +347,21 @@ export default function App() {
                     </div>
                 </div>
                 <div className="max-h-[300px] overflow-y-auto p-1 custom-scrollbar">
-                   <button className="w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors bg-[#685FAB]/5 text-left group">
-                      <div className="w-6 h-6 rounded bg-[#EDEAF2] text-[#685FAB] flex items-center justify-center font-black text-[10px] shrink-0">宠</div>
-                      <div className="flex-1 overflow-hidden">
-                          <div className="text-[12px] font-bold text-zinc-900 group-hover:text-[#685FAB] transition-colors truncate">商家A: 猫粮冲刺</div>
-                          <div className="text-[10px] font-medium text-zinc-500">618爆发期项目</div>
-                      </div>
-                      <Check size={14} className="text-[#685FAB] shrink-0" />
-                   </button>
-                   <button className="w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors text-left group">
-                      <div className="w-6 h-6 rounded bg-zinc-100 text-zinc-600 flex items-center justify-center font-black text-[10px] shrink-0">美</div>
-                      <div className="flex-1 overflow-hidden">
-                          <div className="text-[12px] font-bold text-zinc-700 group-hover:text-zinc-900 transition-colors truncate">商家B: 护肤精华</div>
-                          <div className="text-[10px] font-medium text-zinc-500">种草防重分发矩阵</div>
-                      </div>
-                   </button>
-                   <button className="w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors text-left group">
-                      <div className="w-6 h-6 rounded bg-zinc-100 text-zinc-600 flex items-center justify-center font-black text-[10px] shrink-0">服</div>
-                      <div className="flex-1 overflow-hidden">
-                          <div className="text-[12px] font-bold text-zinc-700 group-hover:text-zinc-900 transition-colors truncate">商家C: 瑜伽服测款</div>
-                          <div className="text-[10px] font-medium text-zinc-500">A/B Testing 流转</div>
-                      </div>
-                   </button>
+                   {Object.values(MOCK_PROJECTS).map(proj => (
+                       <button 
+                          key={proj.id}
+                          onClick={() => {
+                              setActiveProjectId(proj.id as keyof typeof MOCK_PROJECTS);
+                              setIsProjectSelectorOpen(false);
+                          }}
+                          className={`w-full flex items-center gap-2 px-2 py-2 hover:bg-zinc-50 rounded-lg transition-colors text-left group ${activeProjectId === proj.id ? 'bg-[#685FAB]/5' : ''}`}>
+                          <div className="w-6 h-6 rounded flex items-center justify-center font-black text-[10px] shrink-0" style={{ backgroundColor: proj.color, color: proj.textColor }}>{proj.initial}</div>
+                          <div className="flex-1 overflow-hidden">
+                              <div className={`text-[12px] font-bold transition-colors truncate ${activeProjectId === proj.id ? 'text-zinc-900 group-hover:text-[#685FAB]' : 'text-zinc-700 group-hover:text-zinc-900'}`}>{proj.name}</div>
+                          </div>
+                          {activeProjectId === proj.id && <Check size={14} className="text-[#685FAB] shrink-0" />}
+                       </button>
+                   ))}
                 </div>
                 <div className="p-2 border-t border-zinc-100 bg-zinc-50/50">
                     <button className="w-full py-1.5 flex items-center justify-center gap-1 text-[11px] font-bold text-[#685FAB] hover:bg-[#685FAB]/10 rounded-md transition-colors"><Plus size={12}/> 新建商家项目</button>
@@ -529,11 +592,11 @@ export default function App() {
 
                  {messages.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
-                       <div className="w-14 h-14 bg-[#EDEAF2] text-[#685FAB] rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-[#685FAB]/20">
-                          <Zap size={28} className="fill-current opacity-80" />
+                       <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm border" style={{ backgroundColor: activeProject.color, color: activeProject.textColor, borderColor: 'rgba(0,0,0,0.05)' }}>
+                          <Hexagon size={28} className="fill-current opacity-80" />
                        </div>
-                       <h2 className="text-2xl font-black text-zinc-900 mb-2">欢迎来到 TAPTIK IDE</h2>
-                       <p className="text-[13px] font-medium text-zinc-500 mb-2 text-center">直接对话触发智能流转，输入 @ 召唤内置资产，或拖拽左侧文件至此</p>
+                       <h2 className="text-2xl font-black text-zinc-900 mb-2">{activeProject.name} <span className="text-zinc-400 font-normal ml-2">工作区</span></h2>
+                       <p className="text-[13px] font-medium text-zinc-500 mb-2 text-center">直接对话触发智能流转，输入 @ 召唤本项目资产，或拖拽左侧文件至此</p>
                     </div>
                  ) : (
                     <div className="max-w-4xl mx-auto space-y-6 pb-2">
