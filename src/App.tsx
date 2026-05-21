@@ -11,7 +11,7 @@ import {
   CheckCircle2, AlertCircle, FileBox, FileQuestion, Flame, Link2,
   CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check,
   Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2,
-  Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins
+  Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins, GitBranch, BookOpen, DownloadCloud, Import, Lock, UploadCloud, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -153,10 +153,10 @@ export default function App() {
   
   const activeProject = MOCK_PROJECTS[activeProjectId];
   const messages = messagesMap[activeProjectId] || [];
-  const setMessages = (setter: (prev: Message[]) => Message[] | Message[]) => {
+  const setMessages = (setter: React.SetStateAction<Message[]>) => {
     setMessagesMap(prev => ({
       ...prev,
-      [activeProjectId]: typeof setter === 'function' ? setter(prev[activeProjectId] || []) : setter
+      [activeProjectId]: typeof setter === 'function' ? (setter as any)(prev[activeProjectId] || []) : setter
     }));
   };
 
@@ -177,10 +177,11 @@ export default function App() {
   const [dataSubNav, setDataSubNav] = useState('roi');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProjectSelectorOpen, setIsProjectSelectorOpen] = useState(false);
+  const [activeDoc, setActiveDoc] = useState<string | null>(null);
   
   const NAV_ITEMS = [
     { id: 'ai', name: 'AI 工作台', icon: Zap },
-    { id: 'files', name: '项目文件', icon: FolderOpen },
+    { id: 'files', name: '知识资产', icon: BookOpen },
     { id: 'pipeline', name: '资产管道', icon: Workflow },
     { id: 'data', name: '数据中心', icon: BarChart2 },
     { id: 'skills', name: 'Skill 市场', icon: LayoutGrid },
@@ -193,6 +194,7 @@ export default function App() {
   const [activePlanId, setActivePlanId] = useState('2');
   const [skillMarketTab, setSkillMarketTab] = useState<'market' | 'my'>('my');
   const [creatingSkill, setCreatingSkill] = useState(false);
+  const [filesTab, setFilesTab] = useState<'project' | 'knowledge'>('project');
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -861,11 +863,14 @@ export default function App() {
                             <div className="space-y-3">
                                <div className="text-[11px] font-bold text-zinc-400">试试这样说：</div>
                                <div className="grid grid-cols-1 gap-2">
-                                  <button className="text-left text-[12px] p-3 rounded-xl border border-zinc-200 hover:border-[#685FAB]/40 hover:bg-[#685FAB]/5 text-zinc-600 transition-colors">
-                                     “我需要一个工具，输入小红书爆款链接，提取其核心痛点，然后按【引发共鸣-提出方案-背书-行动呼唤】的结构，帮我洗稿成3篇不同人设的笔记。”
+                                  <button className="text-left text-[12px] p-3 rounded-xl border border-zinc-200 hover:border-[#685FAB]/40 hover:bg-[#685FAB]/5 text-[#685FAB] font-bold transition-colors shadow-sm bg-white">
+                                     “我需要一个工具，输入小红书爆款链接，提取其核心痛点，然后按结构帮我洗稿成3篇不同人设的笔记...”
                                   </button>
-                                  <button className="text-left text-[12px] p-3 rounded-xl border border-zinc-200 hover:border-[#685FAB]/40 hover:bg-[#685FAB]/5 text-zinc-600 transition-colors">
-                                     “帮我做一个小红书评论区控评话术生成器，让我输入网民的负面评论，自动生成高情商、懂梗、且带产品植入的回复。”
+                                  <button className="text-left text-[12px] p-3 rounded-xl border border-zinc-200 hover:border-[#685FAB]/40 hover:bg-[#685FAB]/5 text-zinc-600 transition-colors bg-white">
+                                     “帮我做一个小红书评论区控评话术生成器，输入负面评论能自动生成高情商、懂梗、带产品植入的回复...”
+                                  </button>
+                                  <button className="text-left text-[12px] p-3 rounded-xl border border-zinc-200 hover:border-[#685FAB]/40 hover:bg-[#685FAB]/5 text-zinc-600 transition-colors bg-white">
+                                     “做个自动化脚本，每12小时去爬取这几个对标账号的最新图文，把图存到资源库里...”
                                   </button>
                                </div>
                             </div>
@@ -874,11 +879,11 @@ export default function App() {
                             <div className="space-y-4 pt-4 border-t border-zinc-100">
                                <div className="flex gap-3">
                                   <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0"><User size={14}/></div>
-                                  <div className="bg-zinc-100 rounded-2xl p-3 text-[13px] text-zinc-800 rounded-tl-none">我想要一个能根据产品功效，自动生成不同平台（小红书/抖音）种草文案的工具。</div>
+                                  <div className="bg-zinc-100 rounded-2xl p-3 text-[13px] text-zinc-800 rounded-tl-none leading-relaxed">我想要一个能根据产品功效，自动生成不同平台（小红书/抖音）种草文案的工具。</div>
                                </div>
                                <div className="flex gap-3">
                                   <div className="w-8 h-8 rounded-full bg-[#685FAB] flex items-center justify-center text-white shrink-0"><Bot size={14}/></div>
-                                  <div className="bg-[#EDEAF2] border border-[#685FAB]/20 rounded-2xl p-4 text-[13px] text-zinc-800 rounded-tl-none space-y-3">
+                                  <div className="bg-[#EDEAF2] border border-[#685FAB]/20 rounded-2xl p-4 text-[13px] text-zinc-800 rounded-tl-none space-y-3 leading-relaxed">
                                      <p>没问题！为了让这个工具好用，我设计了以下表单让运营同学填写：</p>
                                      <ol className="list-decimal pl-4 space-y-1 text-[#685FAB] font-bold text-[12px]">
                                         <li>产品核心卖点 (长文本)</li>
@@ -950,243 +955,474 @@ export default function App() {
                 </div>
              ) : (
                 <>
-                 <div className="p-6 xl:px-8 border-b border-zinc-200 bg-white flex items-center justify-between shrink-0 shadow-sm relative z-10">
-                    <div>
-                       <div className="flex items-center gap-4 mb-2 mt-1">
-                         <h1 className="text-2xl font-black text-zinc-900 border-b-2 border-[#685FAB] pb-1 inline-block">生态工具库</h1>
-                         <div className="flex items-center bg-zinc-100 rounded-lg p-1 text-[13px] font-bold">
-                            <button onClick={() => setSkillMarketTab('my')} className={`px-4 py-1.5 rounded-md transition-all shadow-sm ${skillMarketTab === 'my' ? 'bg-white text-zinc-800' : 'text-zinc-500 hover:text-zinc-700 shadow-none'}`}>我的 Skills</button>
-                            <button onClick={() => setSkillMarketTab('market')} className={`px-4 py-1.5 rounded-md transition-all shadow-sm ${skillMarketTab === 'market' ? 'bg-white text-zinc-800' : 'text-zinc-500 hover:text-zinc-700 shadow-none'}`}>发现市场</button>
-                         </div>
-                       </div>
-                       <p className="text-[13px] text-zinc-500 font-medium">配置、管理你专属的 AI 技能节点</p>
-                    </div>
-                    <button onClick={() => setCreatingSkill(true)} className="bg-[#685FAB] hover:bg-[#504886] text-white px-4 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
-                        <Plus size={16}/> 创建技能模块
-                    </button>
-                 </div>
-
-                 <div className="flex-1 overflow-y-auto custom-scrollbar p-6 xl:p-8 flex flex-col items-center">
-                    <div className="max-w-5xl w-full">
-                       
-                       <div className="mb-10">
-                          <h2 className="text-[15px] font-black text-zinc-800 flex items-center gap-2 mb-4">
-                             官方预置能力引擎 <span className="text-[11px] font-bold bg-[#685FAB]/10 text-[#685FAB] px-2 py-0.5 rounded-md">稳定版</span>
-                          </h2>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                             {[
-                                 { name: 'KOC/KOS 异构矩阵引擎', cat: '内容核心', mode: 'Cloud', catCol: 'emerald', active: true, desc: '自动注入 Geo-Delta(地理差分)变量与破冰话术，纯 Python(LangGraph) 逻辑实现。' },
-                                 { name: '本地物理级图文洗稿裂变 (Mutator)', cat: '防重视觉', mode: 'Tauri', catCol: 'red', active: true, desc: '调取本地 CPU/GPU，结合本地环境注入微小噪点、防重写元素，彻底转移视觉算力成本。' },
-                                 { name: '边缘无头浏览器引擎', cat: '数据巡检', mode: 'Tauri', isCustomMain: true, active: false, desc: '利用真实本地设备环境特征调度自动化动作，绕过云拨测检测策略。' },
-                                 { name: '内容方案 RAG 动态调度预判', cat: '云端中枢', mode: 'Cloud', isCustomMain: true, active: false, desc: '基于商家资料 RAG 动态下发任务预判，实现“对话即资产”流转。' }
-                             ].map(sk => (
-                                 <div className={`bg-white border ${sk.active ? 'border-zinc-200 hover:border-[#685FAB]/30' : 'border-zinc-100 opacity-70'} rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer`} key={sk.name}>
-                                    <div>
-                                       <div className="flex justify-between items-start mb-3">
-                                          <span className="text-[10px] font-bold text-[#685FAB] bg-[#685FAB]/10 border border-[#685FAB]/20 px-2.5 py-0.5 rounded-md">{sk.cat}</span>
-                                          {sk.mode === 'Tauri' ? (
-                                              <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded flex items-center gap-1"><Cpu size={10}/> Tauri 算力</span>
-                                          ) : (
-                                              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-1"><Cloud size={10}/> 云端集群</span>
-                                          )}
-                                       </div>
-                                       <h3 className="text-[15px] font-bold text-zinc-900 mb-2 truncate group-hover:text-[#685FAB] transition-colors">{sk.name}</h3>
-                                       <p className="text-[12px] text-zinc-500 font-medium leading-relaxed min-h-[36px]">{sk.desc}</p>
-                                    </div>
-                                    <div className="flex justify-between items-center border-t border-zinc-100 pt-3 mt-4">
-                                       {sk.active ? (
-                                          <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#685FAB]">
-                                              <div className="w-1.5 h-1.5 rounded-full bg-[#685FAB] animate-pulse" /> 服务连通正常
-                                          </div>
-                                       ) : (
-                                          <div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
-                                              <div className="w-1.5 h-1.5 rounded-full bg-zinc-300" /> 未就绪
-                                          </div>
-                                       )}
-                                       {!sk.active && (
-                                           <button className="text-[11px] font-bold text-zinc-500 bg-zinc-100 hover:bg-zinc-200 px-2.5 py-1 rounded transition-colors">激活本地引擎</button>
-                                       )}
-                                    </div>
-                                 </div>
-                             ))}
-                          </div>
-                       </div>
-
+                 <div className="flex-none p-6 border-b border-zinc-200 bg-white shadow-sm relative z-10">
+                    <div className="flex items-center justify-between">
                        <div>
-                          <h2 className="text-[15px] font-black text-zinc-800 flex items-center gap-2 mb-4">
-                             用户自定义节点 <span className="text-[12px] font-medium text-zinc-500 font-normal">· 基于工作流蒸馏生成</span>
-                          </h2>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                             <div onClick={() => setCreatingSkill(true)} className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm relative group hover:border-[#685FAB]/30 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer">
-                                <div>
-                                    <div className="flex justify-between items-start mb-3">
-                                       <span className="text-[11px] font-bold text-[#685FAB] bg-[#685FAB]/5 border border-[#685FAB]/20 px-2.5 py-0.5 rounded-md flex items-center gap-1"><TerminalSquare size={10}/> 本地部署</span>
-                                       <div className="flex items-center gap-2">
-                                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-1"><Clock size={10}/> 无人值守 (RPA)</span>
-                                       </div>
-                                    </div>
-                                    <h3 className="text-[15px] font-bold text-zinc-900 mb-2 group-hover:text-[#685FAB] transition-colors leading-tight">竞品摘要仿写 RPA 助手</h3>
-                                    <p className="text-[12px] text-zinc-500 font-medium leading-relaxed mb-4 line-clamp-3">自动抓取3个固定竞品账号在指定关键词下的最热笔记标题，分析爆款规律格式结构规律，并作为素材下发到Pipeline中。</p>
-                                </div>
-                                <div className="flex items-center justify-between border-t border-zinc-100 pt-3">
-                                   <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-500">
-                                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> 每 6 小时巡检
-                                   </div>
-                                   <button className="text-[12px] font-bold text-[#685FAB] bg-[#685FAB]/5 hover:bg-[#685FAB]/10 px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#685FAB]/20 flex items-center gap-1"><Settings size={12}/> RPA配置</button>
-                                </div>
-                             </div>
+                          <div className="flex items-center gap-4 mb-2">
+                            <h1 className="text-2xl font-black text-zinc-900 border-[#685FAB] pb-1 inline-block">Skill 节点中心</h1>
+                            <div className="flex items-center bg-zinc-100 rounded-lg p-1 text-[13px] font-bold">
+                               <button onClick={() => setSkillMarketTab('my')} className={`px-4 py-1.5 rounded-md transition-all shadow-sm ${skillMarketTab === 'my' ? 'bg-white text-zinc-800' : 'text-zinc-500 hover:text-zinc-700 shadow-none'}`}>我的 Skills</button>
+                               <button onClick={() => setSkillMarketTab('market')} className={`px-4 py-1.5 rounded-md transition-all shadow-sm ${skillMarketTab === 'market' ? 'bg-[#685FAB] text-white' : 'text-zinc-500 hover:text-zinc-700 shadow-none'}`}>发现市场</button>
+                            </div>
                           </div>
+                          <p className="text-[13px] text-zinc-500 font-medium">配置、管理或安装来自社区和官方的生态能力引擎。</p>
                        </div>
+                       <button onClick={() => setCreatingSkill(true)} className="bg-zinc-900 hover:bg-zinc-800 text-white px-5 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2">
+                           <Plus size={16}/> 构建自定义 Skill
+                       </button>
                     </div>
                  </div>
+
+                 {skillMarketTab === 'my' ? (
+                   <div className="flex-1 overflow-y-auto custom-scrollbar p-6 xl:p-8 flex flex-col items-center">
+                      <div className="max-w-5xl w-full">
+                         <div className="mb-10">
+                            <h2 className="text-[15px] font-black text-zinc-800 flex items-center gap-2 mb-4">
+                               官方预置能力引擎 <span className="text-[11px] font-bold bg-[#685FAB]/10 text-[#685FAB] px-2 py-0.5 rounded-md">稳定版</span>
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                               {[
+                                   { name: 'KOC/KOS 异构矩阵引擎', cat: '内容核心', mode: 'Cloud', catCol: 'emerald', active: true, desc: '自动注入 Geo-Delta(地理差分)变量与破冰话术，纯 Python(LangGraph) 逻辑实现。' },
+                                   { name: '物理级图文洗稿裂变 (Mutator)', cat: '防重视觉', mode: 'Tauri', catCol: 'red', active: true, desc: '调取本地 CPU/GPU，结合本地环境注入微小噪点、防重写元素，彻底转移视觉算力成本。' },
+                                   { name: '边缘无头浏览器引擎', cat: '数据巡检', mode: 'Tauri', isCustomMain: true, active: false, desc: '利用真实本地设备环境特征调度自动化动作，绕过云拨测检测策略。' },
+                               ].map(sk => (
+                                   <div className={`bg-white border ${sk.active ? 'border-zinc-200 hover:border-[#685FAB]/30' : 'border-zinc-100 opacity-70'} rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer`} key={sk.name}>
+                                      <div>
+                                         <div className="flex justify-between items-start mb-3">
+                                            <span className="text-[10px] font-bold text-[#685FAB] bg-[#685FAB]/10 border border-[#685FAB]/20 px-2.5 py-0.5 rounded-md">{sk.cat}</span>
+                                            {sk.mode === 'Tauri' ? (
+                                                <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded flex items-center gap-1"><Cpu size={10}/> Tauri 算力</span>
+                                            ) : (
+                                                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-1"><Cloud size={10}/> 云端集群</span>
+                                            )}
+                                         </div>
+                                         <h3 className="text-[15px] font-bold text-zinc-900 mb-2 truncate group-hover:text-[#685FAB] transition-colors">{sk.name}</h3>
+                                         <p className="text-[12px] text-zinc-500 font-medium leading-relaxed min-h-[36px]">{sk.desc}</p>
+                                      </div>
+                                      <div className="flex justify-between items-center border-t border-zinc-100 pt-3 mt-4">
+                                         {sk.active ? (
+                                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#685FAB]">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#685FAB] animate-pulse" /> 服务连通正常
+                                            </div>
+                                         ) : (
+                                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-zinc-300" /> 未就绪
+                                            </div>
+                                         )}
+                                         {!sk.active && (
+                                             <button className="text-[11px] font-bold text-zinc-500 bg-zinc-100 hover:bg-zinc-200 px-2.5 py-1 rounded transition-colors">激活引擎</button>
+                                         )}
+                                      </div>
+                                   </div>
+                               ))}
+                            </div>
+                         </div>
+
+                         <div>
+                            <h2 className="text-[15px] font-black text-zinc-800 flex items-center gap-2 mb-4">
+                               用户自定义节点 <span className="text-[12px] font-medium text-zinc-500 font-normal">· 基于工作流蒸馏生成</span>
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                               <div onClick={() => setCreatingSkill(true)} className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm relative group hover:border-[#685FAB]/30 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer">
+                                  <div>
+                                      <div className="flex justify-between items-start mb-3">
+                                         <span className="text-[11px] font-bold text-[#685FAB] bg-[#685FAB]/5 border border-[#685FAB]/20 px-2.5 py-0.5 rounded-md flex items-center gap-1"><TerminalSquare size={10}/> 本地部署</span>
+                                         <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded flex items-center gap-1"><Clock size={10}/> 无人值守 (RPA)</span>
+                                         </div>
+                                      </div>
+                                      <h3 className="text-[15px] font-bold text-zinc-900 mb-2 group-hover:text-[#685FAB] transition-colors leading-tight">竞品摘要仿写 RPA 助手</h3>
+                                      <p className="text-[12px] text-zinc-500 font-medium leading-relaxed mb-4 line-clamp-3">自动抓取3个固定竞品账号在指定关键词下的最热笔记标题，分析爆款规律格式结构规律，并作为素材下发到Pipeline中。</p>
+                                  </div>
+                                  <div className="flex items-center justify-between border-t border-zinc-100 pt-3">
+                                     <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-500">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> 每 6 小时巡检
+                                     </div>
+                                     <button className="text-[12px] font-bold text-[#685FAB] bg-[#685FAB]/5 hover:bg-[#685FAB]/10 px-2.5 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#685FAB]/20 flex items-center gap-1"><Settings size={12}/> RPA配置</button>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                 ) : (
+                   /* MARKET VIEW */
+                   <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#fbfbfb] flex flex-col pt-6 pb-6 w-full">
+                      
+                      {/* Publish & Monetization Banner */}
+                      <div className="max-w-[1200px] mx-auto w-full px-8 mb-8">
+                         <div className="bg-gradient-to-r from-[#1A1829] to-[#2D2A4A] rounded-3xl p-6 md:p-8 flex items-center justify-between shadow-xl relative overflow-hidden">
+                            <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_right,_var(--tw-gradient-stops))] from-[#685FAB]/20 to-transparent"></div>
+                            <div className="relative z-10 max-w-2xl">
+                               <div className="flex items-center gap-2 mb-4">
+                                  <span className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">开发者创收计划</span>
+                                  <span className="text-zinc-300 text-[12px] font-medium flex items-center gap-1"><Lock size={12}/> 黑盒级代码保护</span>
+                               </div>
+                               <h2 className="text-2xl lg:text-3xl font-black text-white mb-3">发布自定义 Skill 到资源中心</h2>
+                               <p className="text-[14px] text-zinc-300 font-medium leading-relaxed mb-6">
+                                  将你构建的本地工作流或云端引擎封转发布。你可以自由设置<strong className="text-white">「包月订阅」</strong>或<strong className="text-white">「按次调用」</strong>模式。系统提供沙盒执行环境，<strong className="text-emerald-400">所有底层代码和Prompt对购买者完全不可见</strong>。
+                                  <br/><span className="text-[12px] text-zinc-400 mt-2 block flex items-start gap-1.5"><Info size={14} className="mt-0.5 shrink-0"/> 平台提成规则：扣除基础设施成本及 20% 平台服务费后，80%净收益实时结算至创作者钱包。</span>
+                               </p>
+                               <div className="flex items-center gap-4">
+                                   <button className="bg-[#685FAB] hover:bg-[#504886] text-white px-6 py-3 rounded-xl text-[14px] font-bold shadow-md transition-colors flex items-center gap-2">
+                                      <UploadCloud size={18}/> 上架发布我的 Skill
+                                   </button>
+                                   <button className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl text-[14px] font-bold shadow-none transition-colors flex items-center gap-2">
+                                      <Activity size={18}/> 我的收益面板
+                                   </button>
+                               </div>
+                            </div>
+                            <div className="hidden lg:flex flex-col gap-3 relative z-10 justify-center h-full pr-4">
+                               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 w-[260px]">
+                                  <div className="flex items-center justify-between mb-2">
+                                     <div className="text-[12px] text-zinc-300 font-bold">上月预估总收益</div>
+                                     <Coins size={14} className="text-yellow-400"/>
+                                  </div>
+                                  <div className="text-3xl font-black text-white font-mono tracking-tight">￥ 12,450.00</div>
+                                  <div className="text-[11px] font-bold text-emerald-400 mt-3 flex items-center gap-1 bg-emerald-500/10 w-fit px-2 py-0.5 rounded-md border border-emerald-500/20"><ArrowUpRight size={12}/> +14.2% 环比增长</div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="max-w-[1200px] mx-auto w-full px-8 pb-10 flex-1 space-y-12">
+                         {/* Category: Official Paid */}
+                         <div>
+                            <div className="flex items-center justify-between mb-6">
+                               <div className="flex items-center gap-3">
+                                  <h2 className="text-[18px] font-black text-zinc-900 flex items-center gap-2">
+                                     官方团队旗舰生态区
+                                  </h2>
+                                  <span className="flex items-center gap-1 text-[11px] font-bold bg-[#685FAB] text-white px-2 py-0.5 rounded-md shadow-sm"><Activity size={12}/> 高优算力 SLA 保障</span>
+                               </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                               {[
+                                  { name: 'KOC/KOS 全域异构矩阵引擎', cat: '内容核心', desc: '该引擎解决了一个核心痛点：多账号矩阵发布内容被平台判定为重复违规。通过引入真实的「地理差分数据」与「用户微行为模拟」，结合边缘计算算力，为每一篇下发的素材进行深度的、千人千面的物理级改写。', price: '￥0.05', billing: '基准资源 / 次调用', isSub: false, icon: Workflow, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+                                  { name: '本地图像物理级脱敏与伪原创', cat: '视觉防重', desc: '利用本地 GPU 环境注入微小高斯噪点并切分重组掩码，确保每一张从云端下载的竞品素材或网图，平台 MD5 和指纹识别特征彻底改变，适合高并发的高危账号矩阵批量操作发布。', price: '￥29.9', billing: '标准版包月无限用', isSub: true, icon: ImageIcon, color: 'text-blue-600', bg: 'bg-blue-50' },
+                                  { name: '边缘无头自动化巡检集群', cat: '数据清洗', desc: '突破主流平台防火墙拦截。模拟真实设备的底层指纹差异(包含 Canvas, WebGL, 字体偏好组合)，利用服务器伪装高匿动态IP集群进行无缝轮询抓取，并利用 CV模型 自动绕过滑动拼图验证码校验。', price: '￥0.1', billing: '包含10次组合调用', isSub: false, icon: Cpu, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                                  { name: '小红书反封禁规避词即时热更库', cat: '内容安全', desc: '依托全网数据实时抓取的敏感行业禁用词、限流词大全库。一键编排部署后，可作为所有内容发布的最后一道守门员，拦截风险并自动替换为安全的发音词及形近字。防止账号降权。', price: '￥39.9', billing: '专业版包月授权', isSub: true, icon: BookOpen, color: 'text-rose-600', bg: 'bg-rose-50' }
+                               ].map((sk, idx) => {
+                                  const Icon = sk.icon;
+                                  return (
+                                     <div key={idx} className="bg-white border-2 border-transparent hover:border-[#685FAB]/40 rounded-3xl p-6 shadow-sm hover:shadow-[0_10px_40px_-10px_rgba(104,95,171,0.2)] transition-all duration-300 group flex flex-col justify-between cursor-pointer relative overflow-hidden">
+                                        {/* Background accent */}
+                                        <div className="absolute -right-8 -top-8 w-32 h-32 bg-gradient-to-bl from-[#685FAB]/5 to-transparent rounded-bl-full group-hover:from-[#685FAB]/10 transition-colors pointer-events-none"></div>
+                                        
+                                        <div>
+                                           <div className="flex justify-between items-start mb-5 relative z-10">
+                                              <div className="flex items-center gap-4">
+                                                 <div className={"w-12 h-12 rounded-2xl flex items-center justify-center " + sk.bg + " " + sk.color + " group-hover:scale-110 group-hover:bg-[#685FAB] group-hover:text-white transition-all duration-300 shadow-sm"}>
+                                                    <Icon size={22} strokeWidth={2.5}/>
+                                                 </div>
+                                                 <div>
+                                                    <h3 className="text-[16px] font-bold text-zinc-900 group-hover:text-[#685FAB] transition-colors leading-tight">{sk.name}</h3>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                       <span className="text-[11px] font-bold text-[#685FAB] flex items-center gap-1"><CheckCircle2 size={10} className="fill-[#685FAB] text-white"/> 官方团队</span>
+                                                       <span className="text-[10px] font-bold bg-zinc-100 text-zinc-500 px-1.5 py-0.5 rounded">{sk.cat}</span>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                           <p className="text-[13px] text-zinc-500 font-medium leading-relaxed mb-6 relative z-10 min-h-[60px]">
+                                              {sk.desc}
+                                           </p>
+                                        </div>
+
+                                        <div className="pt-5 border-t border-zinc-100 flex items-center justify-between mt-auto relative z-10">
+                                           <div className="flex flex-col gap-0.5">
+                                              <div className="flex items-end gap-1.5 line-height-none">
+                                                 <span className="font-black text-[#685FAB] text-[18px] leading-none">{sk.price}</span>
+                                                 <span className="text-[11px] text-zinc-400 font-bold mb-0.5">/ {sk.billing}</span>
+                                              </div>
+                                              <span className="text-[10px] font-bold text-emerald-500 flex items-center gap-1"><Lock size={10}/> 黑盒且安全隔离执行</span>
+                                           </div>
+                                           <button className="bg-zinc-100 group-hover:bg-zinc-900 group-hover:text-white text-zinc-800 px-5 py-2.5 rounded-xl text-[13px] font-bold shadow-sm transition-colors flex items-center gap-2 relative overflow-hidden">
+                                              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none rounded-xl"></div>
+                                              {sk.isSub ? <><CreditCard size={16} className="relative z-10"/> <span className="relative z-10">立即订阅</span></> : <><ShoppingCart size={16} className="relative z-10"/> <span className="relative z-10">加购安装</span></>}
+                                           </button>
+                                        </div>
+                                     </div>
+                                  )
+                               })}
+                            </div>
+                         </div>
+
+                         {/* Category: Community */}
+                         <div>
+                            <div className="flex items-center justify-between mb-6">
+                               <h2 className="text-[18px] font-black text-zinc-900 flex items-center gap-2">社区精选工具市场</h2>
+                               <div className="flex items-center gap-1.5 bg-zinc-100 p-1.5 rounded-xl">
+                                  <button className="bg-white text-zinc-900 px-4 py-1.5 rounded-lg text-[13px] font-bold shadow-sm cursor-default">最新发布</button>
+                                  <button className="text-zinc-500 hover:text-zinc-900 hover:bg-white/50 px-4 py-1.5 rounded-lg text-[13px] font-bold transition-all">最多安装</button>
+                                  <button className="text-zinc-500 hover:text-zinc-900 hover:bg-white/50 px-4 py-1.5 rounded-lg text-[13px] font-bold transition-all">免费专享区</button>
+                               </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                               {[
+                                  { name: '跨平台竞品数据追踪', author: '@DataMiner', downloads: '1.2w+', rating: '4.9', icon: BarChart2, type: '数据挖掘', price: '￥1.0', billing: '次', isFree: false, desc: '静默抓取全网竞品达人的多渠道橱窗销售数据，并在本地清洗去重后生成预估趋势图表与ROI建议。' },
+                                  { name: '高情商自动控评机器人', author: '@SocialGenius_VIP', downloads: '5.6k+', rating: '4.8', icon: MessageSquare, type: '智能交互', price: '免费', billing: '无限制开源', isFree: true, desc: '24小时实时监控核心帖子的评论区趋势与负面词汇，秒级触发带软植入的高情商幽默回复动作。' },
+                                  { name: '全链路达人 BD 邀约引擎', author: '@MCN_King', downloads: '9.8k+', rating: '4.9', icon: Users, type: 'RPA流水线', price: '￥9.9', billing: '包月', isFree: false, desc: '系统性一键抓取平台热门达人的主页邮箱或MCN方式，自动分发或构建定制化合作邀约邮件。' },
+                                  { name: '对标爆款视频文案抽骨架', author: '@CopyCat_v2', downloads: '2.1w+', rating: '4.5', icon: Target, type: '内容工程', price: '免费', billing: '无限制调用', isFree: true, desc: '黏贴外部热门视频链接，由AI引擎自动提取转写为文字：抽取黄金三秒引出、情绪拐点及完播钩子，反编译出结构骨架。' },
+                                  { name: '多维矩阵复盘自动化生成', author: '@AnalyticaAI', downloads: '8.4k+', rating: '4.7', icon: Activity, type: '汇报复盘', price: '￥0.5', billing: '次/报表', isFree: false, desc: '工作流挂载在每个周末晚上，自动将所有跑通关联矩阵号的流水数据脱水分析成可汇报的数据透视PPT并发给负责人微信。' },
+                                  { name: '企业财务内部发票OCR校验', author: '@Finance_Wu', downloads: '1.1k+', rating: '5.0', icon: CreditCard, type: '通用效率', price: '￥59.9', billing: '企业版/月', isFree: false, desc: '全本地离线提取发票核心要素信息，并自动联网核总局验真，校验完成后触发系统 RPA 自动回填至指定财务报表内。' }
+                               ].map((item, idx) => {
+                                  const IconComponent = item.icon;
+                                  return (
+                                  <div key={idx} className="bg-white border hover:border-[#685FAB]/50 border-zinc-200 rounded-2xl p-6 transition-all duration-300 group flex flex-col justify-between overflow-hidden relative cursor-pointer hover:shadow-lg">
+                                     <div className="relative z-10 flex flex-col h-full">
+                                        <div className="flex items-start justify-between mb-5">
+                                           <div className="w-12 h-12 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-600 group-hover:-translate-y-1 group-hover:bg-[#685FAB] group-hover:text-white group-hover:border-[#685FAB] transition-all duration-300 shadow-sm">
+                                              <IconComponent size={20} className="stroke-[2.5]" />
+                                           </div>
+                                           <div className="flex flex-col items-end gap-1">
+                                              <span className="text-[10px] font-semibold bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded uppercase tracking-wide">{item.type}</span>
+                                           </div>
+                                        </div>
+                                        <h3 className="text-[15px] font-bold text-zinc-900 mb-1 leading-tight group-hover:text-[#685FAB] transition-colors">{item.name}</h3>
+                                        <span className="text-[11px] font-bold text-zinc-400 mb-3 block flex items-center gap-1"><User size={10}/> {item.author}</span>
+                                        <p className="text-[12px] text-zinc-500 font-medium leading-relaxed mb-6 flex-1 line-clamp-3">
+                                           {item.desc}
+                                        </p>
+                                        
+                                        <div className="pt-4 border-t border-zinc-100 flex items-center justify-between mt-auto">
+                                           <div className="flex flex-col">
+                                              {item.isFree ? (
+                                                  <span className="font-extrabold text-emerald-600 text-[15px]">免费共享</span>
+                                              ) : (
+                                                  <div className="flex items-end gap-1">
+                                                     <span className="font-extrabold text-[#685FAB] text-[15px] leading-none">{item.price}</span>
+                                                     <span className="text-[10px] text-zinc-400 font-bold mb-[1px]">/ {item.billing}</span>
+                                                  </div>
+                                              )}
+                                              <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 mt-1.5">
+                                                 <span className="flex items-center gap-0.5"><DownloadCloud size={10}/> {item.downloads}</span>
+                                                 <span className="flex items-center gap-0.5 text-yellow-500"><Star size={10} className="fill-current"/> {item.rating}</span>
+                                              </div>
+                                           </div>
+                                           
+                                           <button className="text-[12px] font-bold text-zinc-700 bg-zinc-100 group-hover:bg-[#685FAB] group-hover:text-white px-4 py-2 rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                                               {item.isFree ? '获取' : '安装'}
+                                           </button>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  );
+                               })}
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                 )}
                 </>
              )}
           </div>
         )}
 
-        {/* FILES (项目资源) */}
+
+{/* FILES (本地知识库与资产) */}
         {activeNav === 'files' && (
-          <div className="flex-1 flex h-full">
-             <div className="w-[200px] xl:w-[240px] border-r border-zinc-200 bg-white flex flex-col shrink-0">
-               <div className="p-4 border-b border-zinc-100 shrink-0">
-                  <span className="text-[12px] font-bold text-zinc-500 uppercase tracking-wide">项目资源目录</span>
-               </div>
-               <div className="flex-1 overflow-y-auto p-2 space-y-4">
-                  <div>
-                    <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-400">商家项目 (独立隔离)</div>
-                    <div className="space-y-0.5">
-                       <div className="px-3 py-2 bg-[#EDEAF2] text-[#685FAB] rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <FolderOpen size={14} /> 商家A：猫粮冲刺
-                       </div>
-                       <div className="px-3 py-2 text-zinc-700 hover:bg-zinc-50 rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <FolderOpen size={14} className="text-zinc-400" /> 商家B：护肤精华
-                       </div>
-                    </div>
+          <div className="flex-1 flex h-full bg-white overflow-hidden">
+             {/* Left Sidebar: Generic Local RAG File Tree */}
+             <div className="w-[240px] xl:w-[260px] border-r border-zinc-200 bg-[#FAFAFA] flex flex-col shrink-0">
+               <div className="h-14 border-b border-zinc-200 shrink-0 flex flex-col justify-end px-4 relative">
+                  <div className="flex items-center gap-5 text-[13px] font-bold text-zinc-500">
+                     <button onClick={() => setFilesTab('project')} className={`pb-3 border-b-2 relative top-[1px] transition-colors ${filesTab === 'project' ? 'border-[#685FAB] text-[#685FAB]' : 'border-transparent hover:text-zinc-800'}`}>项目资源目录</button>
+                     <button onClick={() => setFilesTab('knowledge')} className={`pb-3 border-b-2 relative top-[1px] transition-colors ${filesTab === 'knowledge' ? 'border-[#685FAB] text-[#685FAB]' : 'border-transparent hover:text-zinc-800'}`}>全局资产库</button>
                   </div>
-                  <div>
-                    <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-400">全局空间</div>
-                    <div className="space-y-0.5">
-                       <div className="px-3 py-2 text-zinc-700 hover:bg-zinc-50 rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <Monitor size={14} className="text-zinc-400" /> Tauri 挂载盘
-                       </div>
-                       <div className="px-3 py-2 text-zinc-700 hover:bg-zinc-50 rounded-lg text-[13px] font-bold cursor-pointer flex items-center gap-2">
-                          <Cloud size={14} className="text-zinc-400" /> Taptik 云端知识库
-                       </div>
-                    </div>
+                  <div className="absolute right-4 top-3 flex items-center gap-1">
+                     <button className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-800 hover:bg-zinc-200 transition-colors"><Plus size={14}/></button>
                   </div>
                </div>
-               <div className="p-3 border-t border-zinc-100 shrink-0">
-                  <button className="w-full py-2 bg-[#685FAB]/5 text-[#685FAB] border border-[#685FAB]/20 rounded-lg text-[12px] font-bold hover:bg-[#685FAB]/10 transition-colors flex items-center justify-center gap-2">
-                     <Plus size={14} /> 新增项目空间
-                  </button>
+               
+               <div className="p-3 shrink-0 flex gap-2 border-b border-zinc-100">
+                  <div className="relative flex-1">
+                     <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                     <input type="text" placeholder={filesTab === 'project' ? "搜索项目资源..." : "搜索全局资产..."} className="w-full bg-white border border-zinc-200 rounded-md py-1.5 pl-7 pr-2 text-[11px] focus:outline-none focus:border-[#685FAB] transition-colors" />
+                  </div>
+               </div>
+
+               <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar select-none">
+                  {filesTab === 'project' ? (
+                     <>
+                        <div className="px-2 py-1.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1 mt-2">本项目文档</div>
+                        {UNIFIED_FILE_TREE.map((node, i) => (
+                          <div key={'pf-'+i}>
+                             <div 
+                               className="flex items-center gap-1.5 px-2 py-1.5 text-[13px] font-bold text-zinc-700 hover:bg-zinc-200 rounded-md cursor-pointer transition-colors"
+                               onClick={() => setActiveDoc(null)}
+                             >
+                                <ChevronDown size={14} className="text-zinc-400"/>
+                                <FolderOpen size={14} className="text-[#685FAB]/80" /> {node.name}
+                             </div>
+                             <div className="flex flex-col ml-[22px] mt-0.5 border-l border-zinc-200 pl-1">
+                                {node.children.map((child, j) => (
+                                   <div 
+                                     key={'pc-'+j} 
+                                     onClick={() => child.name.endsWith('.rag') || child.name.endsWith('.md') ? setActiveDoc(child.name) : null}
+                                     className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[12px] font-medium transition-colors ${activeDoc === child.name ? 'bg-[#685FAB]/10 text-[#685FAB] font-bold' : 'text-zinc-600 hover:bg-zinc-200'}`}
+                                   >
+                                      {child.type === 'RAG' || child.name.endsWith('.md') ? (
+                                         <FileText size={13} className={activeDoc === child.name ? "text-[#685FAB]" : "text-zinc-400"} />
+                                      ) : (
+                                         <ImageIcon size={13} className="text-emerald-500/70" />
+                                      )}
+                                      <span className="truncate">{child.name}</span>
+                                   </div>
+                                ))}
+                             </div>
+                          </div>
+                        ))}
+                     </>
+                  ) : (
+                     <>
+                        <div className="px-2 py-1.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1 mt-2">全局知识与资产</div>
+                        <div className="flex flex-col ml-1">
+                           <div className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[12px] font-medium text-zinc-600 hover:bg-zinc-200 transition-colors">
+                              <FolderOpen size={14} className="text-zinc-400" /> <span className="truncate">企业标准SOP库</span>
+                           </div>
+                           <div className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[12px] font-medium text-zinc-600 hover:bg-zinc-200 transition-colors">
+                              <FolderOpen size={14} className="text-zinc-400" /> <span className="truncate">跨项目通用语料</span>
+                           </div>
+                           <div className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[12px] font-medium text-zinc-600 hover:bg-zinc-200 transition-colors">
+                              <FolderOpen size={14} className="text-zinc-400" /> <span className="truncate">公共视觉资产包</span>
+                           </div>
+                           <div className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[12px] font-medium text-zinc-600 hover:bg-zinc-200 transition-colors">
+                              <Brain size={14} className="text-[#685FAB]/80" /> <span className="truncate">公司统一敏感词库</span>
+                           </div>
+                        </div>
+                     </>
+                  )}
+               </div>
+
+               <div className="p-3 border-t border-zinc-200 shrink-0 bg-white">
+                  <div className="flex items-center justify-between text-[11px] font-medium text-zinc-500 mb-2">
+                     <span className="flex items-center gap-1"><GitBranch size={12}/> 本地 Git 守护</span>
+                     <span className="text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">实时同步</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-medium text-zinc-500">
+                     <span className="flex items-center gap-1"><Database size={12}/> LanceDB 索引</span>
+                     <span className="text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">832 个块</span>
+                  </div>
                </div>
             </div>
             
-            <div className="flex-1 flex flex-col bg-[#fbfbfb] min-w-0">
-               <div className="p-6 border-b border-zinc-200 flex items-center justify-between shrink-0 bg-white">
-                  <div className="flex flex-col">
-                     <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-wider">Cloud</span>
-                     </div>
-                     <span className="text-[18px] font-black text-zinc-900 flex items-center gap-2">
-                        商家A：猫粮冲刺 (文件系统 & RAG 知识库)
-                     </span>
-                     <p className="text-[12px] text-zinc-500 font-medium mt-1">这里的文件将作为全局资产自动挂载至 AI 工作台，并成为默认检索的 RAG 知识范围。</p>
-                  </div>
-                  <div className="flex gap-2 shrink-0 items-center">
-                     <button className="px-4 py-2 bg-white border border-zinc-200 text-zinc-700 rounded-lg text-[12px] font-bold shadow-sm hover:bg-zinc-50 flex items-center gap-2">
-                       <Plus size={14} /> 上传文件或素材
-                     </button>
-                     <button className="px-4 py-2 bg-[#685FAB] text-white rounded-lg text-[12px] font-bold shadow-sm hover:bg-[#504886] flex items-center gap-2">
-                       <Brain size={14} /> 配置提取清洗规则
-                     </button>
-                  </div>
-               </div>
-               <div className="flex-1 p-6 overflow-y-auto space-y-6">
-                 
-                 {/* Tree structure representation */}
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                     {UNIFIED_FILE_TREE.map((node, i) => (
-                        <div key={i} className="bg-white border text-left border-zinc-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between">
-                           <div>
-                               <div className="flex items-center justify-between mb-3">
-                                  <div className="w-10 h-10 rounded-lg bg-[#685FAB]/5 text-[#685FAB] flex items-center justify-center shrink-0">
-                                     <FolderOpen size={20} />
-                                  </div>
-                                  <div className="flex gap-1">
-                                     <button className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors"><ChevronRight size={14}/></button>
-                                  </div>
-                               </div>
-                               <h3 className="text-[14px] font-bold text-zinc-800">{node.name}</h3>
-                               <p className="text-[11px] text-zinc-500 mt-1">{node.children.length} 个资产节点</p>
+            {/* Right Pane: Editor or Dashboard */}
+            <div className="flex-1 flex flex-col min-w-0 bg-white relative">
+               {!activeDoc ? (
+                  // DASHBOARD
+                  <div className="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar">
+                     <div className="max-w-4xl mx-auto">
+                        <div className="mb-10">
+                           <h1 className="text-3xl font-black text-zinc-900 mb-3 flex items-center gap-3">
+                              本地知识库 <span className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100 uppercase tracking-wider align-middle">离线优先</span>
+                           </h1>
+                           <p className="text-[14px] text-zinc-500 font-medium leading-relaxed max-w-2xl">
+                              基于 Tauri 的物理级离线存储，内置 LanceDB Serverless 向量引擎。无需上传云端，本地毫秒级索引。文件变更自动 Git 提交，并实时注入到 AI 工作台的 RAG 知识检索范围。
+                           </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                           <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm hover:border-[#685FAB]/40 hover:shadow-md transition-all cursor-pointer group">
+                              <div className="w-10 h-10 bg-purple-50 text-[#685FAB] rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                 <Import size={20} />
+                              </div>
+                              <h3 className="text-[15px] font-bold text-zinc-900 mb-1">挂载本地文件夹同步</h3>
+                              <p className="text-[12px] text-zinc-500">自动实时静默扫描本地文件变更，3秒完成语义切片与向量建库同步，实现无感融合。</p>
                            </div>
-                           <div className="mt-4 pt-4 border-t border-zinc-100 space-y-2">
-                              {node.children.slice(0, 3).map((child, j) => (
-                                 <div key={j} className="flex items-center gap-2 text-[12px] text-zinc-600 font-medium group/item cursor-pointer">
-                                     {child.type === 'RAG' ? (
-                                        <Brain size={12} className="text-[#685FAB] shrink-0" />
-                                     ) : (
-                                        <FileIcon size={12} className="text-emerald-500 shrink-0" />
-                                     )}
-                                     <span className="truncate group-hover/item:text-[#685FAB] transition-colors">{child.name}</span>
-                                     {child.type === 'RAG' && <span className="ml-auto text-[9px] bg-[#685FAB]/10 text-[#685FAB] px-1 rounded font-bold">RAG</span>}
-                                 </div>
-                              ))}
-                              {node.children.length > 3 && (
-                                 <div className="text-[11px] text-zinc-400 font-bold ml-5">
-                                    + {node.children.length - 3} 更多...
-                                 </div>
-                              )}
+                           <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm hover:border-[#685FAB]/40 hover:shadow-md transition-all cursor-pointer group">
+                              <div className="w-10 h-10 bg-zinc-50 text-zinc-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                 <DownloadCloud size={20} />
+                              </div>
+                              <h3 className="text-[15px] font-bold text-zinc-900 mb-1">导入外部归档数据集</h3>
+                              <p className="text-[12px] text-zinc-500">支持 HTML/PDF/Markdown 等外部来源压缩包，系统将自动清洗排版噪音，转换为标准原生大模型语料格式。</p>
                            </div>
                         </div>
-                     ))}
-                  </div>
 
-                  {/* List View Details */}
-                  <h3 className="text-[14px] font-bold text-zinc-800 mt-8 mb-4 flex items-center gap-2">详细资产流清单</h3>
-                  <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white">
-                     <table className="w-full text-left border-collapse">
-                        <thead>
-                           <tr className="border-b border-zinc-100 text-[12px] text-zinc-400 bg-zinc-50">
-                              <th className="py-3 px-2 font-bold w-12 text-center"><input type="checkbox" className="rounded border-zinc-300" defaultChecked /></th>
-                              <th className="py-3 px-4 font-bold">文件名称</th>
-                              <th className="py-3 px-4 font-bold">大小</th>
-                              <th className="py-3 px-4 font-bold">更新时间</th>
-                              <th className="py-3 px-4 font-bold text-right">RAG 向量状态</th>
-                           </tr>
-                        </thead>
-                        <tbody className="text-[13px] text-zinc-700">
-                           <tr className="border-b border-zinc-50 hover:bg-zinc-50 cursor-pointer">
-                              <td className="py-3 px-2 text-center"><input type="checkbox" className="rounded border-zinc-300" defaultChecked /></td>
-                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FileText size={14} className="text-emerald-500 shrink-0" /> <span className="truncate max-w-[150px]">猫粮成分表分析.pdf</span> <span className="text-[9px] bg-[#685FAB]/10 text-[#685FAB] px-1.5 py-0.5 rounded font-bold">源文件</span></td>
-                              <td className="py-3 px-4 text-zinc-500">2.4 MB</td>
-                              <td className="py-3 px-4 text-zinc-500">今天 10:23</td>
-                              <td className="py-3 px-4 text-right"><span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md inline-flex items-center gap-1"><CheckCircle2 size={12}/> 已向量化提取</span></td>
-                           </tr>
-                           <tr className="border-b border-zinc-50 hover:bg-zinc-50 cursor-pointer">
-                              <td className="py-3 px-2 text-center"><input type="checkbox" className="rounded border-zinc-300" defaultChecked /></td>
-                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FolderOpen size={14} className="text-red-500 shrink-0 fill-red-100" /> <span className="truncate">包装产品合集</span></td>
-                              <td className="py-3 px-4 text-zinc-500">14.2 MB</td>
-                              <td className="py-3 px-4 text-zinc-500">昨天 16:45</td>
-                              <td className="py-3 px-4 text-right"><span className="text-[11px] font-bold text-zinc-400">不支持 RAG</span></td>
-                           </tr>
-                           <tr className="border-b border-zinc-50 hover:bg-zinc-50 cursor-pointer">
-                              <td className="py-3 px-2 text-center"><input type="checkbox" className="rounded border-zinc-300" /></td>
-                              <td className="py-3 px-4 flex items-center gap-2 font-medium truncate max-w-[200px]"><FileSpreadsheet size={14} className="text-green-500 shrink-0" /> <span className="truncate">Q2销售数据总结.xlsx</span></td>
-                              <td className="py-3 px-4 text-zinc-500">125 KB</td>
-                              <td className="py-3 px-4 text-zinc-500">昨天 11:20</td>
-                              <td className="py-3 px-4 text-right"><span className="text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md inline-flex items-center gap-1"><RotateCw size={12} className="animate-spin"/> 清洗解析中...</span></td>
-                           </tr>
-                        </tbody>
-                     </table>
+                        <h3 className="text-[16px] font-bold text-zinc-900 mb-4 border-b border-zinc-100 pb-2">最近同步机制日志</h3>
+                        <div className="space-y-3">
+                           {[
+                              { action: '自动构建索引', target: '防敏感词过滤包.rag', time: '10分钟前', status: '完成' },
+                              { action: 'Git Auto-Commit', target: '~/TapTik-Workspace/商家A', time: '1 小时前', status: '成功' },
+                              { action: 'LanceDB 更新', target: '+ 42 Blocks', time: '3 小时前', status: '成功' }
+                           ].map((log, i) => (
+                              <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-zinc-50/50 rounded-lg border border-zinc-100 text-[13px]">
+                                 <div className="flex items-center gap-3">
+                                    {log.action.includes('Git') ? <GitBranch size={14} className="text-zinc-400" /> : <Database size={14} className="text-zinc-400" />}
+                                    <span className="font-bold text-zinc-700">{log.action}</span>
+                                    <span className="text-zinc-500 text-[12px]">{log.target}</span>
+                                 </div>
+                                 <div className="flex items-center gap-3 mt-2 sm:mt-0">
+                                    <span className="text-[11px] text-zinc-400 font-medium">{log.time}</span>
+                                    <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">{log.status}</span>
+                                 </div>
+                              </div>
+                           ))}
+                        </div>
+                     </div>
                   </div>
-               </div>
+               ) : (
+                  // EDITOR
+                  <div className="flex-1 flex flex-col h-full bg-white relative">
+                     {/* Editor Topbar */}
+                     <div className="h-14 border-b border-zinc-100 flex items-center justify-between px-6 shrink-0 relative z-10">
+                        <div className="flex items-center gap-2 text-[12px] font-bold text-zinc-500">
+                           <span className="hover:bg-zinc-100 px-2 py-1 rounded cursor-pointer transition-colors" onClick={() => setActiveDoc(null)}>根目录</span>
+                           <span className="text-zinc-300">/</span>
+                           <span className="text-zinc-800">{activeDoc}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <span className="text-[11px] text-zinc-400 font-medium flex items-center gap-1"><CheckCircle2 size={12} className="text-emerald-500" /> 已自动同步至 LanceDB</span>
+                           <button className="p-1.5 text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 rounded transition-colors"><MoreVertical size={16}/></button>
+                        </div>
+                     </div>
+                     {/* Editor Canvas */}
+                     <div className="flex-1 overflow-y-auto p-8 lg:p-16 custom-scrollbar">
+                        <div className="max-w-3xl mx-auto pb-48">
+                           <h1 className="text-4xl font-black text-zinc-900 mb-8 border-none outline-none" contentEditable suppressContentEditableWarning>
+                              {activeDoc.replace('.md', '').replace('.rag', '')}
+                           </h1>
+                           
+                           {/* Notion-like interactive blocks */}
+                           <div className="space-y-4 text-[15px] leading-relaxed text-zinc-700 font-medium">
+                              <p className="outline-none hover:bg-zinc-50 transition-colors p-1 -mx-1 rounded" contentEditable suppressContentEditableWarning>
+                                 这里是我们对于该类目商品的核心话术拆解。在遇到客诉或者破冰时，优先使用以下结构进行回复。
+                              </p>
+
+                              <div className="group relative">
+                                 <div className="absolute -left-6 top-1 opacity-0 group-hover:opacity-100 cursor-grab text-zinc-400 hover:text-zinc-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-grip-vertical"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                                 </div>
+                                 <div className="bg-[#685FAB]/5 border-l-2 border-[#685FAB] p-4 rounded-r-lg text-[#504886]">
+                                    <strong>注意：</strong> 宠物食品需要规避“医疗”色彩的宣称词汇，改用“健康、呵护、营养”等蓝海词。
+                                 </div>
+                              </div>
+
+                              <p className="outline-none hover:bg-zinc-50 transition-colors p-1 -mx-1 rounded text-zinc-400 focus:text-zinc-700" contentEditable suppressContentEditableWarning data-placeholder="输入 '/' 唤醒块菜单...">
+                                 输入 '/' 唤醒块菜单...
+                              </p>
+                              
+                              <div className="border border-zinc-200 rounded-lg p-4 bg-zinc-50/50 mt-8 group relative">
+                                <div className="absolute -left-6 top-4 opacity-0 group-hover:opacity-100 cursor-grab text-zinc-400 hover:text-zinc-600">
+                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-grip-vertical"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                                </div>
+                                <h4 className="text-[13px] font-bold text-zinc-900 mb-2 flex items-center gap-1"><Brain size={14} className="text-[#685FAB]"/> 动态 RAG 节点指令</h4>
+                                <ul className="list-disc pl-5 space-y-1 text-[13px] text-zinc-600">
+                                   <li>针对【成猫】，提取卖点侧重点：亮泽毛发</li>
+                                   <li>结合《通用全局规范.pdf》中的违禁词做排除</li>
+                                </ul>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               )}
             </div>
           </div>
         )}
 
-
-        
         {/* DATA (数据中心) */}
         {activeNav === 'data' && (
           <div className="flex-1 flex flex-col h-full bg-white overflow-y-auto custom-scrollbar">
