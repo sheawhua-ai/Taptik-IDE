@@ -36,6 +36,10 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
     { id: 'customer_seg', name: '高潜客群动态分群', category: 'data', price: '￥299/月', stats: '3w+', desc: '基于实时公域行为数据，为品牌动态标记核心决策客群。', author: 'Market Intelligence' },
   ];
 
+  const MY_SKILLS = [
+    { id: 'my_1', name: '全域视觉去重工具', category: 'vision', price: '免费', stats: '42 / 500', desc: '基于视觉特征哈希的深度去重，当前处于冷启动期。', author: 'hua xu', progress: 42 },
+  ];
+
   const CATEGORIES = [
     { id: 'all', name: '全部能力' },
     { id: 'content', name: '内容创意' },
@@ -121,33 +125,92 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                    </div>
                 </div>
 
-                <div className="flex-1 bg-zinc-50 p-12 flex justify-center overflow-y-auto relative">
-                   <div className="w-full max-w-[420px]">
-                      <div className="bg-white rounded-[32px] shadow-2xl border border-zinc-200/50 overflow-hidden min-h-[500px]">
-                         <div className="bg-zinc-900 p-7 pb-8 text-white relative">
-                            <h2 className="text-xl font-black tracking-tight">AI 种草文案引擎</h2>
-                            <p className="text-[12px] opacity-60 mt-1 font-medium">全平台爆款逻辑蒸馏</p>
-                         </div>
-                         <div className="p-8 space-y-6 bg-white rounded-t-[32px] -mt-6 relative z-20">
-                            <div className="space-y-2.5">
-                               <label className="text-[12px] font-black text-zinc-700 block px-1">产品核心卖点 *</label>
-                               <textarea className="w-full border border-zinc-200 rounded-2xl p-4 text-[13px] h-[100px] resize-none outline-none focus:border-[#685FAB] bg-white transition-all" />
-                            </div>
-                            <div className="space-y-2.5">
-                               <label className="text-[12px] font-black text-zinc-700 block px-1">目标情绪风格 *</label>
-                               <select className="w-full border border-zinc-200 rounded-2xl p-3.5 text-[13px] font-bold outline-none focus:border-[#685FAB] bg-white transition-all appearance-none">
-                                  <option value="">点击选择风格...</option>
-                                  <option>纯干货输出</option>
-                                  <option>感性发声</option>
-                               </select>
-                            </div>
-                            <button className="w-full bg-[#685FAB] text-white py-4 rounded-2xl text-[14px] font-black shadow-xl flex justify-center items-center gap-3 hover:bg-[#504886] transition-all">
-                               <Play size={16} className="fill-current" /> 一键生成内容
-                            </button>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+                 <div className="flex-1 bg-zinc-50 p-12 flex flex-col items-center overflow-y-auto relative custom-scrollbar">
+                    <div className="w-full max-w-2xl space-y-12 pb-24">
+                       {/* UI Preview Section */}
+                       <div className="max-w-[420px] mx-auto">
+                          <div className="bg-white rounded-[32px] shadow-2xl border border-zinc-200/50 overflow-hidden min-h-[500px]">
+                             <div className="bg-zinc-900 p-7 pb-8 text-white relative">
+                                <h2 className="text-xl font-black tracking-tight">AI 种草文案引擎</h2>
+                                <p className="text-[12px] opacity-60 mt-1 font-medium">全平台爆款逻辑蒸馏</p>
+                             </div>
+                             <div className="p-8 space-y-6 bg-white rounded-t-[32px] -mt-6 relative z-20">
+                                <div className="space-y-2.5">
+                                   <label className="text-[12px] font-black text-zinc-700 block px-1">产品核心卖点 *</label>
+                                   <textarea className="w-full border border-zinc-200 rounded-2xl p-4 text-[13px] h-[100px] resize-none outline-none focus:border-[#685FAB] bg-white transition-all" />
+                                </div>
+                                <div className="space-y-2.5">
+                                   <label className="text-[12px] font-black text-zinc-700 block px-1">目标情绪风格 *</label>
+                                   <select className="w-full border border-zinc-200 rounded-2xl p-3.5 text-[13px] font-bold outline-none focus:border-[#685FAB] bg-white transition-all appearance-none">
+                                      <option value="">点击选择风格...</option>
+                                      <option>纯干货输出</option>
+                                      <option>感性发声</option>
+                                   </select>
+                                </div>
+                                <button className="w-full bg-[#685FAB] text-white py-4 rounded-2xl text-[14px] font-black shadow-xl flex justify-center items-center gap-3 hover:bg-[#504886] transition-all">
+                                   <Play size={16} className="fill-current" /> 一键生成内容
+                                </button>
+                             </div>
+                          </div>
+                          <p className="text-center text-[11px] text-zinc-400 font-bold mt-4 uppercase tracking-widest">Interactive UI Preview</p>
+                       </div>
+
+                       {/* Monetization & Config Section */}
+                       <div className="bg-white rounded-[32px] p-10 border border-zinc-200 shadow-sm relative overflow-hidden group">
+                          <div className="absolute -top-4 -right-4 p-8 opacity-[0.03] group-hover:scale-110 transition-transform">
+                             <Coins size={120} className="text-[#685FAB]" />
+                          </div>
+                          <div className="relative z-10">
+                             <div className="flex items-center justify-between mb-8">
+                                <div>
+                                   <h3 className="text-xl font-black text-zinc-900 tracking-tight">商业化准入配置</h3>
+                                   <p className="text-[12px] text-zinc-400 font-bold mt-1">设置您的 Skill 变现规则（需满足平台门槛）</p>
+                                </div>
+                                <div className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-amber-100 flex items-center gap-2">
+                                   <Activity size={14}/> 准入阈值：500 次
+                                </div>
+                             </div>
+
+                             <div className="bg-zinc-50 border border-zinc-200/50 rounded-2xl p-6 mb-8">
+                                <div className="flex items-center gap-3 mb-4">
+                                   <div className="w-8 h-8 bg-zinc-900 text-white rounded-lg flex items-center justify-center text-[10px] font-black">!</div>
+                                   <p className="text-[12px] text-zinc-600 font-bold">
+                                      根据平台协议，您的新 Skill 在累计获得 <span className="text-zinc-900">500 次</span> 调用前将保持 <span className="text-emerald-500">免费开源状态</span>。
+                                   </p>
+                                </div>
+                                <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
+                                   <div className="h-full bg-zinc-400 w-[0%] rounded-full" />
+                                </div>
+                             </div>
+
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-40 pointer-events-none grayscale">
+                                <div className="p-5 border-2 border-zinc-100 rounded-2xl flex flex-col gap-3 bg-zinc-50">
+                                   <div className="flex items-center justify-between">
+                                      <span className="text-[13px] font-black text-zinc-900">按次计费</span>
+                                      <div className="w-4 h-4 rounded-full border-2 border-zinc-300" />
+                                   </div>
+                                   <div className="flex items-baseline gap-1">
+                                      <span className="text-[11px] font-bold text-zinc-400">建议定价：</span>
+                                      <span className="text-[12px] font-black text-zinc-900">￥0.05 ~ 0.5</span>
+                                   </div>
+                                </div>
+                                <div className="p-5 border-2 border-zinc-100 rounded-2xl flex flex-col gap-3 bg-zinc-50">
+                                   <div className="flex items-center justify-between">
+                                      <span className="text-[13px] font-black text-zinc-900">按月订阅</span>
+                                      <div className="w-4 h-4 rounded-full border-2 border-zinc-300" />
+                                   </div>
+                                   <div className="flex items-baseline gap-1">
+                                      <span className="text-[11px] font-bold text-zinc-400">建议定价：</span>
+                                      <span className="text-[12px] font-black text-zinc-900">￥99 ~ 299</span>
+                                   </div>
+                                </div>
+                             </div>
+
+                             <p className="text-[10px] text-zinc-400 font-bold mt-6 text-center italic">达成 500 次调用后，以上定价选项将自动激活</p>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
              </div>
           </div>
        ) : (
@@ -192,8 +255,39 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
 
             <div className="flex-1 overflow-y-auto bg-white p-10 custom-scrollbar">
                <div className="max-w-6xl mx-auto">
+                  {skillMarketTab === 'my' && (
+                     <div className="mb-12 p-8 bg-zinc-900 rounded-[32px] text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none group-hover:scale-110 transition-transform">
+                           <TrendingUp size={140} className="text-[#685FAB]" />
+                        </div>
+                        <div className="relative z-10 max-w-xl">
+                           <div className="flex items-center gap-2 text-[#685FAB] text-[10px] font-black uppercase tracking-widest mb-4">
+                              <ShieldCheck size={14} /> Developer Dashboard
+                           </div>
+                           <h2 className="text-3xl font-black tracking-tight mb-4">开发者准入进度</h2>
+                           <p className="text-zinc-400 text-[14px] font-bold mb-8 leading-relaxed">
+                              平台鼓励高质量 Skill 的自主变现。当您的 Skill 在社区累计被使用超过 <span className="text-white">500 次</span> 后，即可解锁定价权（按次/按月）。
+                           </p>
+                           
+                           <div className="space-y-4">
+                              <div className="flex items-center justify-between text-[12px] font-bold">
+                                 <span className="text-zinc-500">当前最佳 Skill：全域视觉去重工具</span>
+                                 <span>8.4% 达成率</span>
+                              </div>
+                              <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden">
+                                 <div className="h-full bg-gradient-to-r from-[#685FAB] to-emerald-400 w-[8.4%] rounded-full shadow-[0_0_15px_rgba(104,95,171,0.5)]" />
+                              </div>
+                              <div className="flex justify-between text-[11px] font-black text-zinc-500 uppercase tracking-tighter">
+                                 <span>0 次调用</span>
+                                 <span className="text-[#685FAB]">目标：500 次</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  )}
+
                   <div className="grid grid-cols-1 gap-4 mb-20">
-                     {filteredSkills.map(sk => (
+                     {(skillMarketTab === 'market' ? filteredSkills : MY_SKILLS).map(sk => (
                         <div key={sk.id} onClick={() => setSelectedSkill(sk)} className="flex items-center gap-6 p-6 rounded-3xl border border-zinc-100 hover:border-[#685FAB]/30 hover:bg-[#685FAB]/[0.02] transition-all cursor-pointer group bg-white shadow-sm hover:shadow-2xl hover:translate-y-[-2px]">
                            <div className="flex-1">
                               <div className="flex items-center gap-3 mb-1.5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">

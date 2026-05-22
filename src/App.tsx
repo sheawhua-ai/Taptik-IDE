@@ -44,7 +44,8 @@ export default function App() {
       setMessagesMap({
         'project-a': [
           { id: 'start-1', role: 'agent', content: '您好，Agent 已就绪。您可以尝试输入指令开始运营任务。' },
-          { id: 'start-2', role: 'agent', content: '监测到您正在处理 2024 夏季新品增长任务。{recommend_skill:爆文逻辑蒸馏器}' }
+          { id: 'start-2', role: 'agent', content: '监测到您正在处理 2024 夏季新品增长任务。{recommend_skill_paid:爆文逻辑蒸馏器:50信用点/次:原创度提升 +42.5%}' },
+          { id: 'start-3', role: 'agent', content: '由于当前笔记被系统识别出高度“AI味”，建议安装相关改写工具。{recommend_skill_free:去 AI 味改写:6:原创度提升 30-45%}' }
         ]
       });
     }
@@ -104,7 +105,7 @@ export default function App() {
   };
 
   const renderMessageContent = (content: string, role: string) => {
-    const parts = content.split(/(@[\u4e00-\u9fa5a-zA-Z0-9_-]+)|(「(?:🔗|📄|📁|🧠|📦) [^」]+」)|(\{recommend_skill:[^}]+\})/);
+    const parts = content.split(/(@[\u4e00-\u9fa5a-zA-Z0-9_-]+)|(「(?:🔗|📄|📁|🧠|📦) [^」]+」)|({recommend_skill_paid:[^}]+})|({recommend_skill_free:[^}]+})/);
     return parts.map((part, index) => {
       if (!part) return null;
       if (part.startsWith('@')) return <span key={index} className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded text-[12px] font-bold ${role === 'user' ? 'bg-[#685FAB] text-white border border-[#504886]' : 'bg-[#685FAB]/10 text-[#685FAB]'}`}><Component size={12}/> {part.substring(1)}</span>;
@@ -115,8 +116,10 @@ export default function App() {
          else if (part.startsWith('「🧠')) icon = <Brain size={12} />;
          return <span key={index} className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-[4px] text-[12px] font-bold border ${role === 'user' ? 'bg-[#2a2a2e] text-zinc-200 border-zinc-700' : 'bg-zinc-100 text-zinc-700 border-zinc-200'}`}>{icon} {part.slice(3, -1)}</span>;
       }
-      if (part.startsWith('{recommend_skill:')) {
-        const skillName = part.split(':')[1].replace('}', '');
+
+      // 情况 1 — 命中付费 Skill
+      if (part.startsWith('{recommend_skill_paid:')) {
+        const [_, name, price, benefit] = part.replace('}', '').split(':');
         return (
           <div key={index} className="mt-5 mb-2 p-6 bg-white border-2 border-[#685FAB]/10 rounded-[32px] shadow-xl shadow-[#685FAB]/5 relative overflow-hidden group">
             <div className="absolute -top-6 -right-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
@@ -126,27 +129,29 @@ export default function App() {
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-[#685FAB]/10 rounded-2xl flex items-center justify-center text-[#685FAB]">
-                    <Cpu size={20} />
+                    <AlertCircle size={20} />
                   </div>
                   <div>
-                    <h4 className="text-[14px] font-black text-zinc-900 tracking-tight">Agent 决策建议：注入增强能力</h4>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                       <p className="text-[9px] text-zinc-400 font-black uppercase tracking-widest leading-none">Intelligence Optimization Active</p>
-                    </div>
+                    <h4 className="text-[14px] font-black text-zinc-900 tracking-tight">🔔 Agent 决策建议</h4>
+                    <p className="text-[9px] text-zinc-400 font-extrabold uppercase tracking-widest mt-0.5">Critical Optimization Required</p>
                   </div>
                 </div>
-                <div className="px-2.5 py-1 bg-amber-50 text-amber-600 text-[9px] font-black rounded-lg border border-amber-100 uppercase tracking-tighter">Recommended</div>
+                <div className="px-2 py-1 bg-amber-50 text-amber-600 text-[9px] font-black rounded-lg border border-amber-100 uppercase tracking-tighter">Paid Skill</div>
               </div>
               
-              <div className="bg-zinc-50/80 rounded-2xl p-4 border border-zinc-100 mb-6">
-                <p className="text-[13px] text-zinc-600 font-bold leading-relaxed">
-                  监测到当前任务涉及大量异构内容生成。建议注入 <span className="text-[#685FAB] font-black">「{skillName}」</span> 以强化去 AI 味能力。
+              <div className="space-y-4 mb-8">
+                <p className="text-[13px] text-zinc-600 font-bold leading-relaxed px-1">
+                  当前笔记原创度偏低，建议安装 <span className="text-[#685FAB] font-black">「{name}」</span>。
                 </p>
-                <div className="mt-2 flex items-center gap-3 text-[11px] font-black text-zinc-400 whitespace-nowrap overflow-hidden">
-                   <span className="text-[#685FAB]/80">预期原创度 +42.5%</span>
-                   <span className="opacity-30">|</span>
-                   <span>按量结算 (Pay-as-you-go)</span>
+                <div className="flex flex-col gap-2 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 shadow-inner">
+                  <div className="flex items-center justify-between text-[11px] font-black">
+                     <span className="text-zinc-400 uppercase tracking-tighter">💰 付费详情</span>
+                     <span className="text-zinc-900 font-mono">{price}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-black">
+                     <span className="text-zinc-400 uppercase tracking-tighter">📈 预计提升</span>
+                     <span className="text-[#685FAB] font-mono">{benefit}</span>
+                  </div>
                 </div>
               </div>
 
@@ -155,22 +160,67 @@ export default function App() {
                   onClick={(e) => {
                     const target = e.currentTarget;
                     target.disabled = true;
-                    target.innerHTML = '<span class="flex items-center gap-2"><svg class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> 注入中...</span>';
+                    target.innerHTML = '<span class="animate-spin h-3.5 w-3.5 border-2 border-white/30 border-t-white rounded-full"></span>';
                     setTimeout(() => {
-                      target.parentElement?.parentElement?.parentElement?.classList.add('opacity-60', 'scale-[0.98]');
-                      target.outerHTML = '<div class="flex items-center gap-2 text-emerald-500 font-black text-[12px]"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 能力挂载成功</div>';
-                    }, 1000);
+                      target.parentElement?.parentElement?.parentElement?.classList.add('opacity-70', 'bg-zinc-50');
+                      target.outerHTML = '<div class="flex items-center gap-2 text-emerald-600 font-black text-[12px] bg-emerald-50 px-5 py-2.5 rounded-xl border border-emerald-200 shadow-sm"><Check size={16}/> 能力已挂载并应用</div>';
+                    }, 800);
                   }}
-                  className="px-8 py-3 bg-zinc-900 text-white rounded-2xl text-[12px] font-black shadow-lg shadow-zinc-200 hover:translate-y-[-2px] hover:shadow-xl active:scale-95 transition-all"
+                  className="flex-1 px-8 py-3.5 bg-zinc-900 text-white rounded-2xl text-[13px] font-black shadow-lg shadow-zinc-200 hover:translate-y-[-2px] active:scale-95 transition-all text-center"
                 >
-                  立即注入能力
+                  安装并应用
                 </button>
-                <button className="px-6 py-3 bg-white border border-zinc-200 text-zinc-400 rounded-2xl text-[12px] font-black hover:text-zinc-900 hover:bg-zinc-50 transition-all">暂时忽略</button>
+                <button className="px-6 py-3.5 bg-white border border-zinc-200 text-zinc-400 rounded-2xl text-[13px] font-black hover:text-zinc-900 transition-all">忽略</button>
               </div>
             </div>
           </div>
         );
       }
+
+      // 情况 2 — 只有免费 Skill
+      if (part.startsWith('{recommend_skill_free:')) {
+        const [_, category, count, benefit] = part.replace('}', '').split(':');
+        return (
+          <div key={index} className="mt-5 mb-2 p-6 bg-white border-2 border-dashed border-zinc-200 rounded-[32px] relative overflow-hidden group">
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-400">
+                    <Compass size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-[14px] font-black text-zinc-900 tracking-tight">🔔 Agent 执行建议</h4>
+                    <p className="text-[9px] text-zinc-400 font-extrabold uppercase tracking-widest mt-0.5">Community Resource Discovery</p>
+                  </div>
+                </div>
+                <div className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black rounded-lg border border-emerald-100 uppercase tracking-tighter">🆓 Free</div>
+              </div>
+              
+              <div className="space-y-4 mb-8 px-1">
+                <p className="text-[13px] text-zinc-600 font-bold leading-relaxed">
+                  当前笔记原创度偏低，建议安装 <span className="text-zinc-900 font-black">「{category}」</span> 类工具。
+                  <br/>
+                  市场上已有 <span className="text-[#685FAB] font-black">{count} 款</span> 成熟可选。
+                </p>
+                <div className="flex items-center gap-2 text-zinc-400 text-[11px] font-black">
+                   <Zap size={12} className="text-amber-500 fill-current"/>
+                   <span>📈 预期原创度提升 {benefit}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setActiveNav('skills')}
+                  className="flex-1 px-8 py-3.5 bg-white border-2 border-zinc-900 text-zinc-900 rounded-2xl text-[13px] font-black shadow-md hover:bg-zinc-900 hover:text-white transition-all text-center"
+                >
+                  去市场中查看
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       return <span key={index}>{part}</span>;
     });
   };
@@ -344,7 +394,24 @@ export default function App() {
               <div className="p-4 pt-0 shrink-0 max-w-5xl mx-auto w-full relative">
                  <AnimatePresence>{showMentionMenu && (<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-full left-4 mb-2 w-72 bg-white border border-zinc-200 shadow-xl rounded-xl z-50 overflow-hidden flex flex-col p-1"><div className="px-3 py-2 text-[10px] uppercase font-bold text-zinc-400 border-b border-zinc-100 bg-zinc-50 mb-1">调用 Skill 能力</div><div onClick={() => insertMention('KOC/KOS异构引擎', '@')} className="px-3 py-2 hover:bg-[#685FAB]/10 hover:text-[#685FAB] rounded-lg cursor-pointer text-[13px] font-bold text-zinc-700 flex items-center gap-2 transition-colors"><Component size={14}/>KOC/KOS 异构引擎</div></motion.div>)}</AnimatePresence>
                  <div className="bg-white rounded-[14px] border border-zinc-200 shadow-sm overflow-hidden flex relative focus-within:border-[#685FAB]/50 ring-1 ring-transparent focus-within:ring-[#685FAB]/10 mb-3"><textarea rows={1} value={inputValue} onChange={handleInputChange} onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder="输入运营指令 (@召唤Skill)" className="flex-1 min-h-[56px] py-4 pl-4 pr-16 resize-none bg-transparent text-[14px] focus:outline-none" /><div className="absolute right-2 bottom-2"><button onClick={handleSend} disabled={!inputValue.trim()} className="w-10 h-10 rounded-[10px] bg-[#685FAB] hover:bg-[#504886] disabled:bg-[#f1f1f4] disabled:text-zinc-400 text-white flex items-center justify-center transition-all shadow-sm"><ArrowUp size={18} strokeWidth={2.5}/></button></div></div>
-                 <div className="bg-white/50 rounded-xl border border-zinc-100 p-3 flex flex-wrap gap-x-6 gap-y-4">{SHORTCUT_CATEGORIES.map(cat => (<div key={cat.id} className="flex flex-col gap-2 min-w-[200px] flex-1"><div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400 select-none uppercase tracking-wider pl-1"><cat.icon size={12}/>{cat.name}</div><div className="flex flex-col gap-1.5">{cat.items.map((item, idx) => (<button key={idx} onClick={() => setInputValue(prev => prev + (prev ? '\n' : '') + item.text)} className="text-left text-[12px] font-medium text-zinc-600 hover:text-[#685FAB] hover:bg-[#685FAB]/5 px-2.5 py-1.5 rounded-lg transition-colors truncate flex items-center gap-1.5">{item.type === 'skill' ? <Component size={12}/> : <Plus size={12}/>}<span className="truncate">{item.text}</span></button>))}</div></div>))}</div>
+                 <div className="bg-white/50 rounded-xl border border-zinc-100 p-3 flex flex-wrap gap-x-6 gap-y-4">{SHORTCUT_CATEGORIES.map(cat => (<div key={cat.id} className="flex flex-col gap-2 min-w-[200px] flex-1"><div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400 select-none uppercase tracking-wider pl-1"><cat.icon size={12}/>{cat.name}</div><div className="flex flex-col gap-1.5">{cat.items.map((item, idx) => {
+                        const isInstalled = item.text.includes('KOC') || item.text.includes('Tauri');
+                        const isRecommended = item.text.includes('RAG');
+                        return (
+                          <button 
+                            key={idx} 
+                            onClick={() => setInputValue(prev => prev + (prev ? '\n' : '') + item.text)} 
+                            className={`text-left text-[12px] font-medium px-2.5 py-1.5 rounded-lg transition-colors truncate flex items-center justify-between group ${isRecommended ? 'border border-[#685FAB]/20 bg-[#685FAB]/[0.02] text-[#685FAB]' : 'text-zinc-600 hover:text-[#685FAB] hover:bg-[#685FAB]/5'}`}
+                          >
+                            <div className="flex items-center gap-1.5 truncate">
+                              {item.type === 'skill' ? <Component size={12} className={isInstalled ? 'text-emerald-500' : ''}/> : <Plus size={12}/>}
+                              <span className="truncate">{item.text}</span>
+                            </div>
+                            {isInstalled && <span className="bg-emerald-500/10 text-emerald-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase shrink-0">已挂载</span>}
+                            {isRecommended && <span className="text-[10px]"><Sparkles size={10} className="fill-current"/></span>}
+                          </button>
+                        );
+                      })}</div></div>))}</div>
               </div>
             </div>
           </div>
