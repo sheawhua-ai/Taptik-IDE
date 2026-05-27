@@ -305,26 +305,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* 扩展能力 */}
-          <div>
-            <div className="px-1 xl:px-2 text-[10px] font-black text-neutral-400 mb-3 hidden xl:block uppercase tracking-[0.2em]">Internal Skill</div>
-            <div className="space-y-1.5">
-              {[ 
-                { id: 'skills', name: 'Skill 商店', icon: LayoutGrid }, 
-              ].map((item) => (
-                <button 
-                  key={item.id} 
-                  onClick={() => setActiveNav(item.id)} 
-                  className={`w-full flex items-center justify-center xl:justify-start gap-3 p-2 xl:px-4 xl:py-3 rounded-2xl text-[14px] font-bold transition-all relative group ${ activeNav === item.id ? 'text-primary-500 bg-primary-50' : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900'}`}
-                >
-                  <item.icon size={19} className={`${activeNav === item.id ? 'text-primary-500' : 'text-neutral-400 group-hover:text-neutral-900'}`}/>
-                  <span className="hidden xl:block truncate tracking-tight">{item.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-                 {/* 集约化用量卡片 - 现在被移动到 Popup 中 */}
+          {/* 集约化用量卡片 - 现在被移动到 Popup 中 */}
         </nav>
 
         <div className="p-3 xl:p-4 border-t border-neutral-100 flex flex-col gap-1 mt-auto bg-neutral-0 relative">
@@ -631,17 +612,6 @@ export default function App() {
               </div>
               <div className="p-4 pt-0 shrink-0 max-w-5xl mx-auto w-full relative">
                  <AnimatePresence>{showMentionMenu && (<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-full left-4 mb-2 w-72 bg-neutral-0 border border-neutral-200 shadow-xl rounded-xl z-50 overflow-hidden flex flex-col p-1"><div className="px-3 py-2 text-[10px] uppercase font-bold text-neutral-400 border-b border-neutral-100 bg-neutral-50 mb-1">调用 Skill 能力</div><div onClick={() => insertMention('KOC/KOS异构引擎', '@')} className="px-3 py-2 hover:bg-primary-50/10 hover:text-primary-500 rounded-lg cursor-pointer text-[13px] font-bold text-neutral-700 flex items-center gap-2 transition-colors"><Component size={14}/>KOC/KOS 异构引擎</div></motion.div>)}</AnimatePresence>
-                 
-                 <div className="flex justify-start mb-2 pl-2">
-                    <div className="px-3 py-1 bg-neutral-0 border border-neutral-200 rounded-lg shadow-sm flex items-center gap-2 cursor-pointer hover:bg-neutral-50 transition-colors">
-                       <span className="text-[12px] font-black text-neutral-600">审查</span>
-                       <div className="flex items-center gap-1.5 font-bold text-[11px]">
-                          <span className="text-success-600">+773</span>
-                          <span className="text-neutral-300">/</span>
-                          <span className="text-danger-500">-0</span>
-                       </div>
-                    </div>
-                 </div>
 
                  <div className="bg-neutral-0 rounded-[20px] border border-neutral-200 shadow-xl shadow-neutral-900/5 overflow-hidden flex flex-col relative focus-within:border-primary-500/30 transition-all mb-4">
                     <textarea 
