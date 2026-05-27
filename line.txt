@@ -1,0 +1,1 @@
+                     <div className="p-8 bg-zinc-900 rounded-[32px] text-white relative overflow-hidden group">
