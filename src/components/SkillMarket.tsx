@@ -38,14 +38,54 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
   ];
 
   const MY_SKILLS = [
-    { id: 'my_1', name: '全域视觉去重工具', category: 'vision', price: '免费', stats: '42 / 500', desc: '基于视觉特征哈希的深度去重，当前处于冷启动期。', author: 'hua xu', progress: 42, icon: Dna },
+    { 
+      id: 'my_1', 
+      name: '全域视觉去重工具', 
+      category: 'vision', 
+      price: '免费', 
+      stats: '42 / 500', 
+      desc: '基于视觉特征哈希的深度去重，当前处于冷启动期。', 
+      author: 'hua xu', 
+      progress: 8.4, 
+      icon: Dna,
+      isSelfCreated: true,
+      revenue: 0,
+      calls: 42,
+      targetCalls: 500
+    },
+    {
+      id: 'my_2',
+      name: 'AI 爆文逻辑蒸馏器',
+      category: 'content',
+      price: '￥0.05/次',
+      stats: '1.2w+',
+      desc: '输入 5 篇对标笔记，自动提取其情绪钩子、排版逻辑与关键词分布。',
+      author: 'hua xu',
+      progress: 100,
+      icon: Filter,
+      isSelfCreated: true,
+      revenue: 12450.50,
+      calls: 12400,
+      targetCalls: 500
+    },
+    { 
+      id: 'rag_node', 
+      name: '全域 RAG 知识中心', 
+      category: 'data', 
+      price: '￥0.05/次', 
+      stats: '1.2w+', 
+      desc: '实时检索品牌私域文档，减少 AI 幻觉，确保输出合规。', 
+      author: 'Zenith Labs', 
+      icon: Filter,
+      isSelfCreated: false
+    },
   ];
 
   const CATEGORIES = [
-    { id: 'all', name: '全部能力', icon: Grid },
-    { id: 'content', name: '内容创意', icon: Filter },
-    { id: 'vision', name: '视觉生成', icon: Dna },
-    { id: 'data', name: '数据决策', icon: Target },
+    { id: 'all', name: '全部技能', icon: Grid },
+    { id: 'content', name: '内容创作', icon: Filter },
+    { id: 'vision', name: '视觉创作', icon: Dna },
+    { id: 'data', name: '数据策略', icon: Target },
   ];
 
   const filteredSkills = MARKET_SKILLS.filter(sk => {
@@ -219,10 +259,10 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
             <div className="flex-none p-6 px-10 border-b border-neutral-100 bg-neutral-0 shadow-sm relative z-10">
                <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-6">
-                    <h1 className="text-2xl font-black text-neutral-900 tracking-tight">能力增强中心</h1>
+                    <h1 className="text-2xl font-black text-neutral-900 tracking-tight">技能增强中心</h1>
                     <div className="flex bg-neutral-50 rounded-[14px] p-1 text-[13px] font-extrabold border border-neutral-200">
-                       <button onClick={() => setSkillMarketTab('my')} className={`px-6 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'my' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500'}`}>我的能力轴</button>
-                       <button onClick={() => setSkillMarketTab('market')} className={`px-6 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'market' ? 'bg-neutral-900 text-neutral-0 shadow-md' : 'text-neutral-500'}`}>能力商店</button>
+                       <button onClick={() => setSkillMarketTab('my')} className={`px-6 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'my' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500'}`}>我的技能</button>
+                       <button onClick={() => setSkillMarketTab('market')} className={`px-6 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'market' ? 'bg-neutral-900 text-neutral-0 shadow-md' : 'text-neutral-500'}`}>技能市场</button>
                     </div>
                   </div>
                   <button onClick={() => setCreatingSkill(true)} className="bg-primary-500 text-white px-6 py-2.5 rounded-2xl text-[13px] font-black shadow-xl shadow-primary-500/20 flex items-center gap-3 hover:scale-[1.02] transition-all active:scale-95">
@@ -245,37 +285,56 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                         <button 
                            key={cat.id} 
                            onClick={() => setActiveCategory(cat.id)}
-                           className={`px-5 py-2.5 rounded-2xl text-[12px] font-black transition-all flex items-center gap-2 border ${activeCategory === cat.id ? 'bg-neutral-900 text-neutral-0 border-neutral-900 shadow-lg' : 'text-neutral-500 bg-neutral-0 border-neutral-200 hover:bg-neutral-50'}`}
+                           className={`px-5 py-2.5 rounded-xl text-[13px] font-black transition-all flex items-center gap-2 ${activeCategory === cat.id ? 'bg-neutral-900 text-white shadow-lg' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'}`}
                         >
-                           {cat.icon && <cat.icon size={14} />}
-                           {cat.name}
+                           <cat.icon size={16} /> {cat.name}
                         </button>
                      ))}
                   </div>
                </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-neutral-0 p-10 custom-scrollbar">
-               <div className="max-w-6xl mx-auto">
+            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+               <div className="max-w-7xl mx-auto">
                   {skillMarketTab === 'my' && (
-                     <div className="mb-12 p-10 bg-neutral-900 rounded-[32px] text-neutral-0 relative overflow-hidden group shadow-2xl">
-                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] pointer-events-none group-hover:scale-110 transition-all duration-700">
-                           <Workflow size={280} className="text-primary-500" />
+                     <div className="mb-12 bg-neutral-900 rounded-[40px] p-12 text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:scale-110 transition-transform">
+                           <Workflow size={240} className="text-primary-500" />
                         </div>
                         <div className="relative z-10 max-w-xl">
                            <div className="flex items-center gap-2 text-primary-400 text-[10px] font-black uppercase tracking-[0.2em] mb-5">
                               <ShieldCheck size={14} /> Developer Dashboard
                            </div>
-                           <h2 className="text-4xl font-black tracking-tight mb-5 leading-tight">开发者准入进度</h2>
+                           <h2 className="text-4xl font-black tracking-tight mb-5 leading-tight">自建技能变现概览</h2>
                            <p className="text-neutral-400 text-[15px] font-bold mb-10 leading-relaxed max-w-md">
-                               TAPTIK 致力于构建具有业务隐喻的高质量生态。当您的 Skill 累计被调用超过 <span className="text-white underline decoration-primary-500 underline-offset-4 decoration-4">500 次</span> 后，即可解锁按次/按月定价权。
+                                TAPTIK 鼓励开发者构建高价值资产。当您的技能累计被调用超过 <span className="text-white underline decoration-primary-500 underline-offset-4 decoration-4">500 次</span> 后，即可解锁商业计费权限。
                            </p>
                            
-                           <div className="space-y-5 bg-white/5 p-6 rounded-[24px] border border-white/10 backdrop-blur-sm">
-                              <div className="flex items-center justify-between text-[13px] font-black">
+                           <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-white/5 p-6 rounded-[24px] border border-white/10 backdrop-blur-sm">
+                                 <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-2">累计变现收入</p>
+                                 <div className="flex items-baseline gap-1">
+                                    <span className="text-2xl font-black text-white">￥12,450</span>
+                                    <span className="text-[14px] font-bold text-neutral-400">.50</span>
+                                 </div>
+                              </div>
+                              <div className="bg-white/5 p-6 rounded-[24px] border border-white/10 backdrop-blur-sm">
+                                 <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-2">待解锁门槛</p>
                                  <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-success-400 animate-pulse"></div>
-                                    <span className="text-neutral-300">当前最佳 Skill：全域视觉去重工具</span>
+                                    <span className="text-2xl font-black text-warning-400">1</span>
+                                    <span className="text-[14px] font-bold text-neutral-400">个技能审核中</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                        {/* Progress Visualization */}
+                        <div className="mt-12 max-w-2xl bg-white/5 rounded-[32px] p-8 border border-white/10 backdrop-blur-md">
+                           <div className="space-y-4">
+                              <div className="flex items-center justify-between text-[12px] font-black uppercase tracking-wider mb-2">
+                                 <div className="flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
+                                    <span className="text-white">当前最佳 Skill：全域视觉去重工具</span>
                                  </div>
                                  <span className="text-primary-400">8.4% 达成</span>
                               </div>
@@ -355,7 +414,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                     </div>
 
                     <div className="flex gap-4">
-                       <button className="flex-1 bg-neutral-900 hover:bg-neutral-800 text-neutral-0 py-5 rounded-3xl font-black text-[15px] shadow-2xl transition-all active:scale-95">开启并挂载此能力</button>
+                       <button className="flex-1 bg-neutral-900 hover:bg-neutral-800 text-neutral-0 py-5 rounded-3xl font-black text-[15px] shadow-2xl transition-all active:scale-95">开启并挂载此技能</button>
                     </div>
                   </motion.div>
                 </motion.div>

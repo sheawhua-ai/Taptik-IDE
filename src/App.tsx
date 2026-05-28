@@ -6,15 +6,21 @@ import {
   FileText, Download, Image as ImageIcon, Film, Music, Cloud,
   PanelLeftClose, PanelRightClose, Plus, MoreVertical,
   History, Compass, MessageSquare, AtSign, LayoutTemplate, Trash2,
-  Bot, TerminalSquare, RotateCw, RefreshCw, Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins, GitBranch, BookOpen, DownloadCloud, Import, Lock, UploadCloud, ArrowUpRight, Component, Brain, Link2, FileBox, FileQuestion, Flame, CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check, Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2, AlertCircle, FileIcon, Filter, Layers, Orbit, Dna, ShieldHalf, Route, X, Gauge, Mic, AlignLeft
+  Bot, TerminalSquare, RotateCw, RefreshCw, Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins, GitBranch, BookOpen, DownloadCloud, Import, Lock, UploadCloud, ArrowUpRight, Component, Brain, Link2, FileBox, FileQuestion, Flame, CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check, Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2, AlertCircle, FileIcon, Filter, Layers, Orbit, Dna, ShieldHalf, ShieldCheck, Route, X, Gauge, Mic, AlignLeft,
+  FolderPlus, ExternalLink, FileEdit, Folder
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { SkillMarket } from './components/SkillMarket';
 import { DataCenter } from './components/DataCenter';
-import { Pipeline } from './components/Pipeline';
 import { FileManager } from './components/FileManager';
 import { Billing } from './components/Billing';
+import { ServiceManagement } from './components/ServiceManagement';
+
+// Modular Merchant Components
+import { SchemeManager } from './components/merchant/SchemeManager';
+import { StaffManager } from './components/merchant/StaffManager';
+import { AccountDetails } from './components/merchant/AccountDetails';
 
 // --- Types & Config ---
 interface Message {
@@ -65,6 +71,7 @@ export default function App() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const [activeNav, setActiveNav] = useState('ai');
+  const [selectedMerchant, setSelectedMerchant] = useState<any>(null);
   const [subSidebarOpen, setSubSidebarOpen] = useState(true);
   const [aiSidebarTab, setAiSidebarTab] = useState<'chat' | 'files'>('chat');
   const [dataSubNav, setDataSubNav] = useState<'roi' | 'blueocean' | 'auto_views' | 'scheduled'>('roi');
@@ -166,7 +173,7 @@ export default function App() {
                     target.innerHTML = '<span class="animate-spin h-3.5 w-3.5 border-2 border-white/30 border-t-white rounded-full"></span>';
                     setTimeout(() => {
                       target.parentElement?.parentElement?.parentElement?.classList.add('opacity-70', 'bg-neutral-50/50');
-                      target.outerHTML = '<div class="flex items-center gap-2 text-success-600 font-black text-[13px] bg-success-50 px-6 py-3 rounded-2xl border border-success-200 shadow-sm"><Check size={18}/> 能力已挂载并应用</div>';
+                      target.outerHTML = '<div class="flex items-center gap-2 text-success-600 font-black text-[13px] bg-success-50 px-6 py-3 rounded-2xl border border-success-200 shadow-sm"><Check size={18}/> 技能已挂载并应用</div>';
                     }, 800);
                   }}
                   className="flex-1 px-8 py-4 bg-neutral-900 text-white rounded-2xl text-[14px] font-black shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-2px] active:scale-95 transition-all text-center"
@@ -290,8 +297,8 @@ export default function App() {
             <div className="space-y-1.5">
               {[ 
                 { id: 'ai', name: 'AI 工作台', icon: Zap }, 
-                { id: 'pipeline', name: '全链路流水线', icon: Workflow },
-                { id: 'data', name: '业务数据看板', icon: BarChart2 },
+                { id: 'schemes', name: '业务管理', icon: LayoutGrid },
+                { id: 'data', name: '业务数据', icon: BarChart2 },
               ].map((item) => (
                 <button 
                   key={item.id} 
@@ -316,7 +323,7 @@ export default function App() {
                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
                  animate={{ opacity: 1, y: 0, scale: 1 }}
                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                 className="absolute bottom-full right-[52px] mb-2 w-80 bg-neutral-0 border border-neutral-200 shadow-2xl rounded-2xl overflow-hidden z-50 p-5 origin-bottom-right"
+                 className="absolute bottom-full left-4 mb-2 w-80 bg-neutral-0 border border-neutral-200 shadow-2xl rounded-[24px] overflow-hidden z-[100] p-6 origin-bottom-left"
                >
                   <div className="flex items-center justify-between mb-5">
                      <h4 className="text-[14px] font-black text-neutral-800">用量概览</h4>
@@ -375,7 +382,7 @@ export default function App() {
                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
                  animate={{ opacity: 1, y: 0, scale: 1 }}
                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                 className="absolute bottom-full right-4 mb-2 w-56 bg-neutral-0 border border-neutral-200 shadow-2xl rounded-2xl overflow-hidden z-50 p-1 origin-bottom-right"
+                 className="absolute bottom-full left-4 mb-2 w-64 bg-neutral-0 border border-neutral-200 shadow-2xl rounded-[24px] overflow-hidden z-[100] p-2 origin-bottom-left"
                >
                   <div className="space-y-0.5">
                     {[
@@ -429,7 +436,31 @@ export default function App() {
                 className={`w-full flex items-center justify-center xl:justify-start gap-3 p-2.5 xl:px-4 xl:py-2 rounded-xl text-[14px] font-bold transition-all ${activeNav === 'skills' ? 'text-primary-500 bg-primary-50' : 'text-neutral-600 hover:bg-neutral-50'}`}
               >
                  <ShoppingCart size={18} className={activeNav === 'skills' ? 'text-primary-500' : 'text-neutral-400'} />
-                 <span className="hidden xl:block tracking-tight text-neutral-700">插件市场</span>
+                 <span className="hidden xl:block tracking-tight text-neutral-700">技能市场</span>
+              </button>
+           </div>
+           
+           <div className="px-1 xl:px-2 py-3 mb-1 border-t border-neutral-100 flex items-center justify-around xl:justify-start gap-1">
+              <button 
+                onClick={() => { setIsUsagePopupOpen(!isUsagePopupOpen); setIsSettingsPopupOpen(false); }}
+                className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${isUsagePopupOpen ? 'text-primary-500 bg-primary-50 shadow-sm border border-primary-100' : 'text-neutral-400 hover:text-neutral-900 hover:bg-neutral-50 border border-transparent'}`}
+                title="用量概览"
+              >
+                 <Gauge size={20}/>
+              </button>
+              <button 
+                onClick={() => { setActiveNav('management'); setIsUsagePopupOpen(false); setIsSettingsPopupOpen(false); }}
+                className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${activeNav === 'management' ? 'text-primary-500 bg-primary-50 shadow-sm border border-primary-100' : 'text-neutral-400 hover:text-neutral-900 hover:bg-neutral-50 border border-transparent'}`}
+                title="服务商管理"
+              >
+                 <ShieldCheck size={20}/>
+              </button>
+              <button 
+                onClick={() => { setIsSettingsPopupOpen(!isSettingsPopupOpen); setIsUsagePopupOpen(false); }}
+                className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${isSettingsPopupOpen ? 'text-primary-500 bg-primary-50 shadow-sm border border-primary-100' : 'text-neutral-400 hover:text-neutral-900 hover:bg-neutral-50 border border-transparent'}`}
+                title="系统设置"
+              >
+                 <Settings size={20}/>
               </button>
            </div>
            
@@ -440,18 +471,7 @@ export default function App() {
                  <p className="text-[11px] font-bold text-neutral-400 uppercase tracking-tighter">Teams</p>
               </div>
               <div className="hidden xl:flex items-center gap-1.5 text-neutral-400">
-                 <button 
-                   onClick={() => { setIsUsagePopupOpen(!isUsagePopupOpen); setIsSettingsPopupOpen(false); }}
-                   className={`p-2 rounded-lg transition-all ${isUsagePopupOpen ? 'text-neutral-900 bg-neutral-100' : 'hover:text-neutral-900 hover:bg-neutral-50'}`}
-                 >
-                    <Gauge size={18}/>
-                 </button>
-                 <button 
-                   onClick={() => { setIsSettingsPopupOpen(!isSettingsPopupOpen); setIsUsagePopupOpen(false); }}
-                   className={`p-2 rounded-lg transition-all ${isSettingsPopupOpen ? 'text-neutral-900 bg-neutral-100' : 'hover:text-neutral-900 hover:bg-neutral-50'}`}
-                 >
-                    <Settings size={18}/>
-                 </button>
+                 <div className="w-1.5 h-1.5 rounded-full bg-success-500 mr-2" />
               </div>
            </div>
         </div>
@@ -459,13 +479,96 @@ export default function App() {
 
       {/* Main View Switcher */}
       <div className="flex-1 min-w-0 h-full bg-white relative">
+        {/* Merchant Context indicator */}
+        {selectedMerchant && (
+          <div className="absolute top-4 right-8 z-[100]">
+             <div className="flex items-center gap-3 px-4 py-2 bg-neutral-900 text-white rounded-2xl shadow-2xl border border-white/10">
+                <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
+                <span className="text-[12px] font-black">正在管理: {selectedMerchant.name}</span>
+                <button 
+                  onClick={() => { setSelectedMerchant(null); setActiveNav('management'); }}
+                  className="ml-2 p-1 hover:bg-white/10 rounded-lg transition-colors"
+                  title="退出管理模式"
+                >
+                  <X size={14}/>
+                </button>
+             </div>
+          </div>
+        )}
+
         {activeNav === 'ai' && (
           <div className="flex-1 min-w-0 h-full flex relative z-10 bg-white">
             {subSidebarOpen && (
-              <div className="w-[200px] xl:w-[240px] border-r border-neutral-200 bg-neutral-0 flex flex-col h-full shrink-0 relative transition-all">
-                <div className="p-3 border-b border-neutral-100 flex items-center justify-between shrink-0"><div className="flex gap-4 px-2 w-full"><button onClick={() => setAiSidebarTab('chat')} className={`text-[12px] font-bold pb-2 border-b-2 flex-1 relative top-[13px] ${aiSidebarTab === 'chat' ? 'border-primary-500 text-primary-500' : 'border-transparent text-neutral-500 hover:text-neutral-800'}`}>会话历史</button><button onClick={() => setAiSidebarTab('files')} className={`text-[12px] font-bold pb-2 border-b-2 flex-1 relative top-[13px] ${aiSidebarTab === 'files' ? 'border-primary-500 text-primary-500' : 'border-transparent text-neutral-500 hover:text-neutral-800'}`}>项目资产</button></div></div>
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-2 pb-10 flex flex-col gap-0.5">
-                  {aiSidebarTab === 'chat' ? activeProject.chatHistory.map(h => (<button key={h.id} className="w-full text-left flex flex-col gap-1 px-3 py-2 hover:bg-neutral-50 rounded-lg transition-colors group"><div className="flex gap-2 items-center"><MessageSquare size={14} className="text-neutral-400 group-hover:text-primary-500" /><span className="text-[13px] font-bold text-neutral-600 group-hover:text-neutral-800 truncate">{h.title}</span></div><span className="text-[10px] text-neutral-400 pl-6">{h.time}</span></button>)) : activeProject.fileTree.map((node, i) => (<div key={i} className="flex flex-col gap-0.5"><div className="flex items-center gap-2 px-2 py-1.5 text-[12px] font-bold text-neutral-700 shrink-0"><FolderOpen size={12} className="text-primary-500/60" /> {node.name}</div><div className="pl-5 flex flex-col gap-0.5 relative"><div className="absolute left-[13px] top-0 bottom-2 w-px bg-neutral-200 rounded"></div>{node.children.map((child: any, j: number) => (<div key={j} className="flex items-center gap-2 px-2 py-1.5 hover:bg-primary-50 rounded-md cursor-grab text-[12px] font-medium text-neutral-600 transition-colors relative"><div className="absolute left-[-11px] top-1/2 -translate-y-1/2 w-2 h-px bg-neutral-200"></div>{child.type === 'Folder' ? <FolderOpen size={13} className="text-primary-500/70"/> : child.type === 'RAG' ? <Brain size={13} className="text-primary-500/70"/> : <FileIcon size={13} className="text-primary-500/70"/>}<span className="truncate">{child.name}</span></div>))}</div></div>))}
+              <div className="w-[200px] xl:w-[260px] border-r border-neutral-200 bg-neutral-0 flex flex-col h-full shrink-0 relative transition-all">
+                {/* Tabs Area */}
+                <div className="border-b border-neutral-100 shrink-0">
+                  <div className="flex w-full">
+                    <button 
+                      onClick={() => setAiSidebarTab('chat')} 
+                      className={`flex items-center justify-center gap-2 py-3.5 flex-1 text-[13px] font-bold transition-all relative ${aiSidebarTab === 'chat' ? 'text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                    >
+                      <MessageSquare size={16} className={aiSidebarTab === 'chat' ? 'text-neutral-400' : 'text-neutral-300'} />
+                      <span>对话</span>
+                      {aiSidebarTab === 'chat' && <motion.div layoutId="sidebarTab" className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary-500" />}
+                    </button>
+                    <button 
+                      onClick={() => setAiSidebarTab('files')} 
+                      className={`flex items-center justify-center gap-2 py-3.5 flex-1 text-[13px] font-bold transition-all relative ${aiSidebarTab === 'files' ? 'text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                    >
+                      <Folder size={18} className={aiSidebarTab === 'files' ? 'text-neutral-900' : 'text-neutral-300'} />
+                      <span>文件</span>
+                      {aiSidebarTab === 'files' && <motion.div layoutId="sidebarTab" className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary-500" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Project Header Area (Only for Files Tab) */}
+                {aiSidebarTab === 'files' && (
+                  <div className="px-4 py-3.5 flex items-center justify-between border-b border-neutral-50 shrink-0">
+                    <h3 className="text-[15px] font-black text-neutral-800 tracking-tight">{activeProject.name}</h3>
+                    <div className="flex items-center gap-2 text-neutral-400">
+                      <button className="p-0.5 hover:text-neutral-900 transition-colors"><Plus size={16}/></button>
+                      <button className="p-0.5 hover:text-neutral-900 transition-colors"><FolderPlus size={16}/></button>
+                      <button className="p-0.5 hover:text-neutral-900 transition-colors"><RotateCw size={14}/></button>
+                      <button className="p-0.5 hover:text-neutral-900 transition-colors"><ExternalLink size={14}/></button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-0 flex flex-col">
+                  {aiSidebarTab === 'chat' ? (
+                    <div className="p-2 flex flex-col gap-0.5">
+                      {activeProject.chatHistory.map(h => (
+                        <button key={h.id} className="w-full text-left flex flex-col gap-1 px-3 py-2.5 hover:bg-neutral-50 rounded-xl transition-colors group">
+                          <div className="flex gap-2.5 items-center">
+                            <MessageSquare size={14} className="text-neutral-400 group-hover:text-primary-500" />
+                            <span className="text-[13px] font-bold text-neutral-600 group-hover:text-neutral-800 truncate">{h.title}</span>
+                          </div>
+                          <span className="text-[10px] text-neutral-400 pl-7 font-medium">{h.time}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-2 space-y-1">
+                      {activeProject.fileTree.map((node, i) => (
+                        <div key={i} className="flex flex-col gap-1">
+                          <button className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-neutral-50 rounded-lg group text-[14px] font-bold text-neutral-700 transition-colors text-left">
+                            <ChevronRight size={14} className="text-neutral-400 shrink-0" />
+                            <Folder size={18} className="text-amber-400 fill-amber-400" />
+                            <span className="truncate">{node.name}</span>
+                          </button>
+                          <div className="flex flex-col gap-0.5 ml-8 border-l border-transparent">
+                            {node.children.map((child: any, j: number) => (
+                              <button key={j} className="flex items-center gap-2 px-2 py-1.5 hover:bg-neutral-50 rounded-lg group text-[14px] font-bold text-neutral-600 transition-colors text-left">
+                                <FileEdit size={16} className="text-blue-400 shrink-0" />
+                                <span className="truncate">{child.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -619,27 +722,26 @@ export default function App() {
                       value={inputValue} 
                       onChange={handleInputChange} 
                       onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} 
-                      placeholder="描述计划，@ 引用上下文，/ 使用命令" 
-                      className="flex-1 min-h-[72px] pt-4 pb-2 px-6 resize-none bg-transparent text-[14px] font-medium focus:outline-none placeholder:text-neutral-300" 
+                      placeholder="输入你的需求... （@ 引用上下文 · Ctrl+V 粘贴图片）" 
+                      className="flex-1 min-h-[72px] pt-4 pb-2 px-6 resize-none bg-transparent text-[15px] font-medium focus:outline-none placeholder:text-neutral-300" 
                     />
                     
-                    <div className="flex items-center justify-between px-4 pb-3">
-                       <div className="flex items-center gap-1">
-                          <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-neutral-50 transition-all group">
-                             <Link2 size={13} className="text-neutral-400 group-hover:text-neutral-600" />
-                             <span className="text-[12px] font-bold text-neutral-500 group-hover:text-neutral-900">智能体</span>
-                             <ChevronDown size={12} className="text-neutral-400" />
+                    <div className="flex items-center justify-between px-4 pb-4">
+                       <div className="flex items-center gap-2">
+                          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-50/50 hover:bg-neutral-100 transition-all group">
+                             <span className="text-[13px] font-bold text-neutral-600 group-hover:text-neutral-900">DeepSeek V4 Pro</span>
+                             <ChevronDown size={14} className="text-neutral-400 group-hover:text-neutral-600" />
                           </button>
-                          <div className="w-px h-3 bg-neutral-200 mx-1"></div>
-                          <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-neutral-50 transition-all group">
-                             <span className="text-[12px] font-bold text-neutral-600 group-hover:text-neutral-900">DeepSeek-V4-Pro</span>
-                             <ChevronDown size={12} className="text-neutral-400" />
-                          </button>
-                          <div className="w-px h-3 bg-neutral-200 mx-1"></div>
-                          <button className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-all"><Menu size={16}/></button>
+                          
+                          <div className="flex items-center gap-2 text-[13px] font-medium text-neutral-400 ml-1">
+                             <span className="opacity-60">·</span>
+                             <span>Enter 发送</span>
+                             <span className="opacity-60">·</span>
+                             <span>Shift+Enter 换行</span>
+                          </div>
                        </div>
                        
-                       <div className="flex items-center gap-0.5">
+                       <div className="flex items-center gap-1">
                           <button className="p-2 text-neutral-300 hover:text-neutral-900 rounded-lg transition-all"><AlignLeft size={16}/></button>
                           <button className="p-2 text-neutral-300 hover:text-neutral-900 rounded-lg transition-all"><Sparkles size={16}/></button>
                           <button className="p-2 text-neutral-300 hover:text-neutral-900 rounded-lg transition-all"><Mic size={16}/></button>
@@ -676,10 +778,11 @@ export default function App() {
           </div>
         )}
 
-        {activeNav === 'pipeline' && <Pipeline />}
+        {activeNav === 'schemes' && <SchemeManager />}
         {activeNav === 'skills' && <SkillMarket creatingSkill={creatingSkill} setCreatingSkill={setCreatingSkill} skillMarketTab={skillMarketTab} setSkillMarketTab={setSkillMarketTab} selectedSkill={selectedSkill} setSelectedSkill={setSelectedSkill} />}
         {activeNav === 'files' && <FileManager filesTab={filesTab} setFilesTab={setFilesTab} activeProject={activeProject} activeDoc={activeDoc} setActiveDoc={setActiveDoc} />}
         {activeNav === 'data' && <DataCenter dataSubNav={dataSubNav} setDataSubNav={setDataSubNav} setActiveNav={setActiveNav} />}
+        {activeNav === 'management' && <ServiceManagement onSelectMerchant={(m: any) => setSelectedMerchant(m)} selectedMerchant={selectedMerchant} onBack={() => setSelectedMerchant(null)} />}
         {activeNav === 'settings' && <div className="p-10"><h1 className="text-2xl font-black mb-4">系统设置</h1><p className="text-neutral-500">正在针对商家生命周期做深度适配...</p></div>}
       </div>
     </div>

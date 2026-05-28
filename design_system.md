@@ -44,24 +44,35 @@ This document outlines the visual standards and interaction patterns for the Tap
   - Includes common links (Help, Update Log, Support).
   - Footer: "Log Out" with `text-danger-500`.
 
-## 3. AI Chat Interface (Main Workspace)
+## 3. AI Sidebar (Sub-Sidebar)
+- **Width**: `200px` to `260px` (responsive).
+- **Tabs**: Dual-tab system at top ("对话" and "文件").
+  - Icons: `MessageSquare` and `Folder`.
+  - Active State: `Neutral-900` text with a `Primary-500` bottom border line (2px).
+- **File Tab Header**: Includes project name (Black weight) and a set of utility icons (`Plus`, `FolderPlus`, `RotateCw`, `ExternalLink`).
+- **File Tree Interactions**:
+  - **Folders**: `ChevronRight` (neutral-400) + solid yellow `Folder` (amber-400 + fill).
+  - **Files**: Solid blue `FileEdit`.
+  - **Typography**: `Inter` Bold, size `14px`, text `neutral-700`.
+  - **Hover**: Subtle `bg-neutral-50` and rounded corners (`rounded-lg`).
+
+## 4. AI Chat Interface (Main Workspace)
 ### Input Console (Floating Input)
 - **Design**: Rounded (20px), border (neutral-200), background (white), shadow-xl.
 - **Interactions**:
   - **Textarea**: Auto-expanding height (min 72px).
-  - **Placeholder**: "描述计划，@ 引用上下文，/ 使用命令".
+  - **Placeholder**: "输入你的需求... （@ 引用上下文 · Ctrl+V 粘贴图片）".
   - **Skill Trigger (`@`)**: Shows a popup menu to select available Skills/Engines.
   - **Command Trigger (`/`)**: Shows a popup for system commands.
-  - **Model Selector**: Left side of the input footer. Displays current model (e.g., DeepSeek-V4-Pro) with a dropdown icon.
-  - **Agent Selector**: Left side, allows switching active AI persona.
-  - **Utility Icons**: Right side footer includes "Formatting", "Enhance Prompt" (Sparkles), and "Voice Input" (Mic).
+  - **Model Selector & Hints**: Left side of the input footer. Displays current model (e.g., DeepSeek V4 Pro) in a neutral-0/50 pill and includes middle-dot separated hints: "Enter 发送" and "Shift+Enter 换行".
+  - **Utility Icons**: Right side footer includes "Formatting" (AlignLeft), "Enhance Prompt" (Sparkles), and "Voice Input" (Mic).
   - **Send Button**: Right side, dark primary (Neutral-900), active only when text exists.
 
 ### Shortcuts Room
 - Below the input console, a grid of "Shortcut Categories" (Content, Strategy, etc.) allowing quick insertion of prompt templates.
 - **Badges**: Items may have "已挂载" (Installed) or AI Recommended indicators.
 
-## 4. Knowledge Center (File Manager)
+## 5. Knowledge Center (File Manager)
 - **View Modes**:
   - **Project Directory**: Tree-based view of local files.
   - **Knowledge Library**: Corporate level global assets.
@@ -73,13 +84,13 @@ This document outlines the visual standards and interaction patterns for the Tap
     - Chips for active filters (e.g., "成熟度: 高").
     - Content grouped by origin (User, Program, Workspace).
 
-## 5. Billing & Consumption Logic
+## 6. Billing & Consumption Logic
 - **UI Element**: Centralized in the `Billing` view and the `Usage Overview` popup.
 - **Credits**: Displayed with 2 decimal precision.
 - **Unit**: T-Credits.
 - **Logs**: Table-based tracking of agent executions, including timestamps and cost per action.
 
-## 6. Interaction Best Practices (Frontend)
+## 7. Interaction Best Practices (Frontend)
 - **Haptic Feedback**: Subtle scale changes on button press (`active:scale-95`).
 - **Loading States**: Use "skeleton" style placeholders for content loading rather than full-page spinners.
 - **Responsiveness**: All padding should adjust between `p-4` (mobile/small tablet) and `p-8/12` (large desktop).
