@@ -3,7 +3,7 @@ import {
   Plus, Search, SlidersHorizontal, MoreHorizontal, 
   ArrowUpRight, LayoutGrid, CheckCircle2, Clock,
   MessageSquare, Share2, Trash2, Edit3, Settings,
-  Zap, Workflow, ImageIcon, FileBox
+  Zap, Workflow, ImageIcon, FileBox, PlusCircle, Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SchemeOperation } from './SchemeOperation';
@@ -28,17 +28,24 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
   const [activeTab, setActiveTab] = useState<'schemes' | 'assets'>('schemes');
   const [selectedScheme, setSelectedScheme] = useState<Scheme | null>(null);
   const [isOperationMode, setIsOperationMode] = useState(false);
+  const [commandValue, setCommandValue] = useState('');
 
   if (isOperationMode && selectedScheme) {
     return <SchemeOperation schemeName={selectedScheme.name} onBack={() => setIsOperationMode(false)} />;
   }
 
+  const COMMAND_SUGGESTIONS = [
+    "帮我创建一个夏季大促推广方案",
+    "找出最近 7 天互动量最高的方案",
+    "对比素材转化率，优化分发权重"
+  ];
+
   return (
     <div className={`flex flex-col h-full bg-neutral-50 ${embedded ? '' : 'overflow-hidden'}`}>
-      {/* Header with Navigation - Only show if not embedded in a view that already has headers */}
+      {/* Header with Navigation */}
       {!embedded && (
-        <div className="px-8 pt-8 pb-4 shrink-0 bg-neutral-50">
-          <div className="flex items-center justify-between mb-8">
+        <div className="px-8 pt-8 pb-4 shrink-0 bg-neutral-50 border-b border-neutral-100">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-8">
               <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">业务管理中心</h2>
               <div className="flex bg-neutral-100 p-1 rounded-xl border border-neutral-200">
@@ -56,16 +63,51 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
                  </button>
               </div>
             </div>
-            {activeTab === 'schemes' && (
-              <div className="flex items-center gap-3">
-                <button className="px-6 py-2.5 bg-neutral-0 border border-neutral-200 rounded-xl text-[13px] font-black hover:bg-neutral-50 shadow-sm transition-all">
-                   导入模版
-                </button>
-                <button className="px-6 py-2.5 bg-primary-500 text-white rounded-xl text-[13px] font-black shadow-lg shadow-primary-500/20 hover:bg-primary-600 transition-all flex items-center gap-2">
-                   <Plus size={18}/> 创建新方案
-                </button>
+            
+            <div className="flex items-center gap-3">
+              <div className="flex bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-neutral-400">
+                 <button className="px-3 py-1 bg-white shadow-sm rounded-lg text-[11px] font-black text-neutral-900 border border-neutral-200/50">标准视图</button>
+                 <button className="px-3 py-1 rounded-lg text-[11px] font-black hover:text-neutral-600">看板模式</button>
               </div>
-            )}
+            </div>
+          </div>
+
+          {/* Smart Action Bar - The Hybrid bridge */}
+          <div className="relative group max-w-4xl mx-auto mb-4">
+            <div className="absolute inset-x-0 -top-px -bottom-px rounded-2xl bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-primary-500/20 blur-md opacity-0 group-focus-within:opacity-100 transition-opacity" />
+            <div className="relative flex items-center bg-neutral-0 border-2 border-neutral-200 group-focus-within:border-primary-500/50 rounded-2xl p-1.5 transition-all shadow-xl shadow-neutral-200/50">
+               <div className="flex items-center gap-2 pl-3 pr-4 border-r border-neutral-100 shrink-0">
+                  <Sparkles size={16} className="text-primary-500 animate-pulse" />
+                  <span className="text-[11px] font-black text-primary-500 uppercase tracking-widest">操盘指令</span>
+               </div>
+               <input 
+                 value={commandValue}
+                 onChange={(e) => setCommandValue(e.target.value)}
+                 placeholder="输入业务意图... (例如: 帮我创建一个针对 618 的美妆方案)" 
+                 className="flex-1 bg-transparent border-none outline-none px-4 text-[14px] font-bold text-neutral-800 placeholder:text-neutral-300"
+               />
+               <div className="flex items-center gap-2 pr-2">
+                 <kbd className="px-2 py-1 bg-neutral-100 rounded-lg text-[10px] font-bold text-neutral-400 border border-neutral-200">⌘ K</kbd>
+                 <button className="bg-neutral-900 hover:bg-primary-600 text-white w-9 h-9 flex items-center justify-center rounded-xl transition-all shadow-lg active:scale-95">
+                    <Plus size={20} />
+                 </button>
+               </div>
+            </div>
+            
+            <div className="flex items-center gap-4 mt-3 pl-4">
+              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">推荐尝试:</span>
+              <div className="flex gap-2">
+                {COMMAND_SUGGESTIONS.map((msg, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => setCommandValue(msg)}
+                    className="text-[11px] font-bold text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-3 py-1 rounded-full border border-neutral-200 bg-neutral-0 transition-all"
+                  >
+                    {msg}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -82,29 +124,35 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
         </div>
       )}
 
-      <div className={`flex-1 overflow-y-auto ${embedded ? 'px-8 pb-8' : 'px-8 pb-8 custom-scrollbar'}`}>
+      <div className={`flex-1 overflow-y-auto ${embedded ? 'px-8 pb-8' : 'px-8 pt-6 pb-8 custom-scrollbar'}`}>
         {activeTab === 'schemes' ? (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full"
+            className="w-full max-w-7xl mx-auto"
           >
             <div className="flex items-center justify-between mb-6">
                <div className="flex items-center gap-4">
                   <div className="flex bg-neutral-0 p-1 rounded-xl border border-neutral-200">
                      <button className="px-4 py-1.5 bg-neutral-900 text-white rounded-lg text-[12px] font-black">进行中</button>
-                     <button className="px-4 py-1.5 text-neutral-400 hover:text-neutral-900 rounded-lg text-[12px] font-black">已完成</button>
+                     <button className="px-4 py-1.5 text-neutral-400 hover:text-neutral-900 rounded-lg text-[12px] font-black">已预设</button>
+                     <button className="px-4 py-1.5 text-neutral-400 hover:text-neutral-900 rounded-lg text-[12px] font-black">已沉淀</button>
                   </div>
+                  <div className="w-px h-6 bg-neutral-200 mx-1" />
                   <div className="relative">
                      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
                      <input 
                        type="text" 
-                       placeholder="按名称或 ID 搜索..." 
-                       className="pl-10 pr-4 py-2 bg-neutral-0 border border-neutral-200 rounded-xl text-[13px] font-bold focus:outline-none focus:border-primary-500 w-64"
+                       placeholder="快速定位方案..." 
+                       className="pl-10 pr-4 py-2 bg-neutral-0 border border-neutral-200 rounded-xl text-[13px] font-bold focus:outline-none focus:border-primary-500 w-64 transition-all"
                      />
                   </div>
                </div>
-               <button className="p-2.5 bg-neutral-0 border border-neutral-200 rounded-xl text-neutral-500 hover:text-neutral-900"><SlidersHorizontal size={18}/></button>
+               <div className="flex items-center gap-3">
+                 <button className="flex items-center gap-2 px-4 py-2 bg-neutral-0 border border-neutral-200 rounded-xl text-[12px] font-black text-neutral-500 hover:border-neutral-900 hover:text-neutral-900 transition-all">
+                    <SlidersHorizontal size={14}/> 筛选排序
+                 </button>
+               </div>
             </div>
 
             <div className="bg-neutral-0 rounded-[32px] border border-neutral-200 shadow-sm overflow-hidden">

@@ -6,7 +6,7 @@ import {
   FileText, Download, Image as ImageIcon, Film, Music, Cloud,
   PanelLeftClose, PanelRightClose, Plus, MoreVertical,
   History, Compass, MessageSquare, AtSign, LayoutTemplate, Trash2,
-  Bot, TerminalSquare, RotateCw, RefreshCw, Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins, GitBranch, BookOpen, DownloadCloud, Import, Lock, UploadCloud, ArrowUpRight, Component, Brain, Link2, FileBox, FileQuestion, Flame, CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check, Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2, AlertCircle, FileIcon, Filter, Layers, Orbit, Dna, ShieldHalf, ShieldCheck, Route, X, Gauge, Mic, AlignLeft,
+  Bot, TerminalSquare, RotateCw, RefreshCw, Hexagon, LogOut, Menu, ShoppingCart, Edit, User, Info, Cpu, Clock, CreditCard, Coins, GitBranch, BookOpen, DownloadCloud, Import, Lock, UploadCloud, ArrowUpRight, Component, Brain, Link2, FileBox, FileQuestion, Flame, CalendarDays, Workflow, Server, LineChart, Users, Settings, PlusCircle, Check, Play, FlaskConical, Lightbulb, Send, PenTool, Code, Share2, Target, BarChart2, AlertCircle, FileIcon, Filter, Layers, Orbit, Dna, ShieldHalf, ShieldCheck, Route, X, Gauge, Mic,
   FolderPlus, ExternalLink, FileEdit, Folder
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -74,7 +74,7 @@ export default function App() {
   const [selectedMerchant, setSelectedMerchant] = useState<any>(null);
   const [subSidebarOpen, setSubSidebarOpen] = useState(true);
   const [aiSidebarTab, setAiSidebarTab] = useState<'chat' | 'files'>('chat');
-  const [dataSubNav, setDataSubNav] = useState<'roi' | 'blueocean' | 'auto_views' | 'scheduled'>('roi');
+  const [dataSubNav, setDataSubNav] = useState<'overview' | 'roi_attribution' | 'auto_views' | 'scheduled' | 'blueocean'>('overview');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProjectSelectorOpen, setIsProjectSelectorOpen] = useState(false);
   const [activeDoc, setActiveDoc] = useState<string | null>(null);
@@ -742,8 +742,8 @@ export default function App() {
                        </div>
                        
                        <div className="flex items-center gap-1">
-                          <button className="p-2 text-neutral-300 hover:text-neutral-900 rounded-lg transition-all"><AlignLeft size={16}/></button>
-                          <button className="p-2 text-neutral-300 hover:text-neutral-900 rounded-lg transition-all"><Sparkles size={16}/></button>
+                          
+                          
                           <button className="p-2 text-neutral-300 hover:text-neutral-900 rounded-lg transition-all"><Mic size={16}/></button>
                           <button 
                             onClick={handleSend} 
@@ -781,7 +781,60 @@ export default function App() {
         {activeNav === 'schemes' && <SchemeManager />}
         {activeNav === 'skills' && <SkillMarket creatingSkill={creatingSkill} setCreatingSkill={setCreatingSkill} skillMarketTab={skillMarketTab} setSkillMarketTab={setSkillMarketTab} selectedSkill={selectedSkill} setSelectedSkill={setSelectedSkill} />}
         {activeNav === 'files' && <FileManager filesTab={filesTab} setFilesTab={setFilesTab} activeProject={activeProject} activeDoc={activeDoc} setActiveDoc={setActiveDoc} />}
-        {activeNav === 'data' && <DataCenter dataSubNav={dataSubNav} setDataSubNav={setDataSubNav} setActiveNav={setActiveNav} />}
+        {activeNav === 'data' && (
+          <div className="flex-1 min-w-0 h-full flex relative z-10 bg-white">
+            {subSidebarOpen && (
+              <div className="w-[200px] xl:w-[260px] border-r border-neutral-200 bg-neutral-0 flex flex-col h-full shrink-0">
+                <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+                   <h3 className="text-[15px] font-black text-neutral-900 tracking-tight">数据中心导航</h3>
+                </div>
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+                   {[
+                     { id: 'overview', label: '核心概览', icon: LayoutGrid },
+                     { id: 'roi_attribution', label: '全链路归因', icon: Workflow },
+                     { id: 'blueocean', label: '蓝海词探测', icon: Compass },
+                     { id: 'auto_views', label: 'AI 指令分析', icon: Sparkles },
+                     { id: 'scheduled', label: '定时报表', icon: Clock },
+                   ].map(item => (
+                     <button 
+                       key={item.id}
+                       onClick={() => setDataSubNav(item.id as any)}
+                       className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-bold transition-all ${dataSubNav === item.id ? 'bg-primary-50 text-primary-500' : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900'}`}
+                     >
+                       <item.icon size={16} />
+                       {item.label}
+                     </button>
+                   ))}
+                </div>
+                <div className="p-4 border-t border-neutral-100">
+                   <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200">
+                      <p className="text-[11px] font-black text-neutral-400 uppercase tracking-widest mb-2">模型状态</p>
+                      <div className="flex items-center gap-2">
+                         <div className="w-2 h-2 rounded-full bg-success-500" />
+                         <span className="text-[12px] font-bold text-neutral-700">实时计算引擎已就绪</span>
+                      </div>
+                   </div>
+                </div>
+              </div>
+            )}
+            <div className="flex-1 h-full overflow-hidden flex flex-col relative">
+               <div className="h-16 flex items-center gap-4 px-6 border-b border-neutral-100 bg-neutral-0 shrink-0">
+                  <button onClick={() => setSubSidebarOpen(!subSidebarOpen)} className="text-neutral-400 hover:text-primary-500 hover:bg-primary-50 p-1.5 rounded-lg transition-colors">
+                     <LayoutTemplate size={20} />
+                  </button>
+                  <div className="h-4 w-px bg-neutral-200 mx-2" />
+                  <span className="text-[14px] font-black text-neutral-900">
+                    {dataSubNav === 'overview' && '核心数据指标'}
+                    {dataSubNav === 'roi_attribution' && '全链路 ROI 归因模型'}
+                    {dataSubNav === 'blueocean' && '蓝海词矩阵探测'}
+                    {dataSubNav === 'auto_views' && 'AI 生成式分析视图'}
+                    {dataSubNav === 'scheduled' && '自动化订阅报表'}
+                  </span>
+               </div>
+               <DataCenter dataSubNav={dataSubNav} setDataSubNav={setDataSubNav} setActiveNav={setActiveNav} />
+            </div>
+          </div>
+        )}
         {activeNav === 'management' && <ServiceManagement onSelectMerchant={(m: any) => setSelectedMerchant(m)} selectedMerchant={selectedMerchant} onBack={() => setSelectedMerchant(null)} />}
         {activeNav === 'settings' && <div className="p-10"><h1 className="text-2xl font-black mb-4">系统设置</h1><p className="text-neutral-500">正在针对商家生命周期做深度适配...</p></div>}
       </div>
