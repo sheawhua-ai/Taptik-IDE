@@ -1,111 +1,91 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* TAPTIK Core Colors */
-  --color-taptik-cream: #f8f1e7;
-  --color-taptik-paper: #fffaf2;
-  --color-taptik-ink: #17130f;
-  --color-taptik-muted: #6f665b;
-  --color-taptik-line: rgba(54, 43, 32, 0.12);
-  --color-taptik-ember: #e85d2a;
-  --color-taptik-rust: #9b3f22;
-  --color-taptik-moss: #767e5a; /* Refined to be more Sage/Olive for harmony */
+  /* Primary - Crimson Rose */
+  --color-primary-50: #FFF1F4;
+  --color-primary-100: #FFE0E9;
+  --color-primary-200: #FFC2D4;
+  --color-primary-300: #FF94B3;
+  --color-primary-400: #FF5C87;
+  --color-primary-500: #E63560;
+  --color-primary-600: #CC1E4A;
+  --color-primary-700: #AB1640;
+  --color-primary-800: #8E1537;
+  --color-primary-900: #501024;
 
-  /* Primary - Now mapped to Ember/Brand scale */
-  --color-primary-50: #fff7ed;
-  --color-primary-100: #ffedd5;
-  --color-primary-200: #fed7aa;
-  --color-primary-300: #fdba74;
-  --color-primary-400: #fb923c;
-  --color-primary-500: #f97316;
-  --color-primary-600: #ea580c;
-  --color-primary-700: #c2410c;
-  --color-primary-800: #9a3412;
-  --color-primary-900: #7c2d12;
+  /* Accent - Cyan */
+  --color-accent-50: #ECFEFF;
+  --color-accent-100: #CFFAFE;
+  --color-accent-200: #A5F3FC;
+  --color-accent-300: #67E8F9;
+  --color-accent-400: #22D3EE;
+  --color-accent-500: #06B6D4;
+  --color-accent-600: #0891B2;
+  --color-accent-700: #0E7490;
+  --color-accent-800: #155E75;
+  --color-accent-900: #164E63;
 
-  /* Neutral - Mapped to Ink/Muted tones */
+  /* Neutral - Slate */
   --color-neutral-0: #FFFFFF;
-  --color-neutral-50: #faf7f2;
-  --color-neutral-100: #f3eee6;
-  --color-neutral-200: #e9e2d6;
-  --color-neutral-300: #d4c8b8;
-  --color-neutral-400: #9e8f7c;
-  --color-neutral-500: #6f665b;
-  --color-neutral-600: #544b41;
-  --color-neutral-700: #362b20;
-  --color-neutral-800: #251d16;
-  --color-neutral-900: #17130f;
+  --color-neutral-50: #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-500: #64748B;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1E293B;
+  --color-neutral-900: #0F172A;
+  --color-neutral-950: #020617;
 
-  /* Semantic - mapped to Taptik Palette */
-  --color-success-50: #f4f6ec;
-  --color-success-100: #e5ead4;
-  --color-success-400: #8ba055;
-  --color-success-500: #6f7e44;
-  --color-success-600: #586536;
+  /* Semantic */
+  --color-success-50: #ECFDF5;
+  --color-success-100: #D1FAE5;
+  --color-success-400: #34D399;
+  --color-success-500: #10B981;
+  --color-success-600: #059669;
 
-  --color-danger-50: #fdf2f2;
-  --color-danger-100: #fde2e2;
-  --color-danger-500: #dc2626;
+  --color-warning-50: #FFFBEB;
+  --color-warning-100: #FEF3C7;
+  --color-warning-400: #FBBF24;
+  --color-warning-500: #F59E0B;
+  --color-warning-600: #D97706;
 
-  --radius-taptik-card: 24px;
-  --radius-taptik-panel: 32px;
-  --radius-taptik-xl: 48px;
+  --color-danger-50: #FEF2F2;
+  --color-danger-100: #FEE2E2;
+  --color-danger-400: #F87171;
+  --color-danger-500: #DC2626;
+  --color-danger-600: #B91C1C;
 
-  --shadow-taptik-soft: 0 24px 80px rgba(79, 47, 21, 0.14);
-  --shadow-taptik-hard: 0 18px 50px rgba(29, 20, 12, 0.22);
-  --shadow-taptik-cta: 0 16px 38px rgba(232, 93, 42, 0.28);
+  --color-info-50: #EFF6FF;
+  --color-info-500: #3B82F6;
+  --color-info-600: #2563EB;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Noto+Serif+SC:wght@200..900&display=swap');
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-taptik-cream);
-  color: var(--color-taptik-ink);
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
 }
 
-.taptik-glass {
-  border: 1px solid var(--color-taptik-line);
-  background: linear-gradient(145deg, rgba(255, 250, 242, 0.84), rgba(255, 247, 235, 0.62));
-  box-shadow: var(--shadow-taptik-soft);
-  backdrop-filter: blur(24px);
-}
-
-.taptik-dark-panel {
-  border: 1px solid rgba(255, 250, 242, 0.14);
-  background: linear-gradient(145deg, rgba(32, 25, 19, 0.94), rgba(58, 38, 24, 0.88));
-  box-shadow: var(--shadow-taptik-hard);
-  color: #fff7ed;
-}
-
-.taptik-cta-gradient {
-  background: linear-gradient(135deg, #f97316 0%, #dc3f1f 54%, #9b3f22 100%);
-}
-
-.taptik-text-gradient {
-  background: linear-gradient(120deg, #9b3f22 0%, #e85d2a 42%, #f6a34f 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Custom Scrollbar for Taptik Theme */
+/* Custom Scrollbar for light mode */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-neutral-300);
-  border-radius: 10px;
+  background: var(--color-neutral-200);
+  border-radius: 3px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-taptik-ember);
+  background: var(--color-neutral-400);
 }
 
 .no-scrollbar::-webkit-scrollbar {
