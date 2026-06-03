@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Taptik 作业流水线 (Workflow Pipeline) 功能架构图</title>
+</head>
+<body>
+    <!-- 
+        MODULE: 作业流水线 (Workflow Pipeline)
+        ROLE: 高效执行层 / 任务落地中心
+        CAPABILITY: 将「智控中心」下达的编排任务，转化为具体的标准化运营动作。
+    -->
+    <section id="workflow-pipeline">
+        <header>
+            <h1>作业流水线 (Operation Pipeline)</h1>
+            <p>智控落地中心：从蓝海蓝图到变现转化的全自动化分工体系</p>
+        </header>
+
+        <article id="step-strategy">
+            <h2>STEP 1: 全域巡航 & 运营蓝图</h2>
+            <ul class="sub-agents">
+                <li><strong>Blueprint Agent:</strong> 负责巡航全网热搜，自动更新任务池的流量槽位，分配平台权重。</li>
+                <li><strong>Blueprint Orchestrator:</strong> 生成本周运营作战蓝图，确保任务不偏离业务指标。</li>
+            </ul>
+        </article>
+
+        <article id="step-production">
+            <h2>STEP 2: 内容智造工场 (Content Factory)</h2>
+            <ul class="sub-agents">
+                <li><strong>Copywriter Agent:</strong> 基于 LangGraph 的多轮博弈迭代，支持内容生产流程化。</li>
+                <li><strong>Human-in-the-loop:</strong> 核心干预节点，支持运营人对 AI 的输出进行详调（可见即可调）。</li>
+            </ul>
+        </article>
+
+        <article id="step-interaction">
+            <h2>STEP 3: 触达变现中心 (Conversion Center)</h2>
+            <ul class="sub-agents">
+                <li><strong>CRM Agent:</strong> 自动捕获高净值线索，识别评论区购买意图。</li>
+                <li><strong>Account Matrix:</strong> 矩阵账号协同。专业号负责私信，素人号负责气氛烘托。</li>
+            </ul>
+        </article>
+
+        <article id="step-metrics">
+            <h2>STEP 4: 归因复盘驾驶舱 (Analytics Cockpit)</h2>
+            <ul class="sub-agents">
+                <li><strong>Analytics Agent:</strong> 跨平台效果归因，计算真实 ROI。</li>
+                <li><strong>Optimization Loop:</strong> 自动反馈建议并「一键重构」下一轮运营蓝图。</li>
+            </ul>
+        </article>
+
+        <!-- 全域流转特征 (Global UI/UX Logic) -->
+        <footer>
+            <h3>核心交互哲学</h3>
+            <ul>
+                <li><strong>低学习成本：</strong> 采用 Tab 切换逻辑模拟真实的运营工序。</li>
+                <li><strong>可见即可调：</strong> 所有的子 Agent 输出都以「任务块」形式展现，人类点击即可进入详调模式。</li>
+                <li><strong>日历隐藏态：</strong> 只有在点击特定的「运营日历」指令时，才会展开排期视图，保持界面专注度。</li>
+            </ul>
+        </footer>
+    </section>
+</body>
+</html>

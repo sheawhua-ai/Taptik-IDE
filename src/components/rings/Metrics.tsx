@@ -10,155 +10,170 @@ import { motion } from 'motion/react';
 export const Metrics: React.FC = () => {
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">
+      {/* Universal Header Status Bar */}
       <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
         <div className="flex items-center gap-4">
            <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center">
               <BarChart2 size={24} />
            </div>
            <div>
-              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">效果复盘与 ROI 驾驶舱</h2>
-              <p className="text-[11px] font-bold text-neutral-400">实时监控全域投产比，自动生成运营深度月报</p>
+              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">全域触达 ROI & 复盘驾驶舱</h2>
+              <p className="text-[11px] font-bold text-neutral-400">Analytics Agent: 跨平台数据监测与投放归因</p>
            </div>
         </div>
         
-        <div className="flex items-center gap-3">
-           <button className="px-4 py-2 bg-neutral-50 text-neutral-600 rounded-xl text-[12px] font-black hover:bg-neutral-100 transition-all border border-neutral-100 flex items-center gap-2">
-              <History size={16}/> 历史报告
-           </button>
-           <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-black shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-1px] transition-all flex items-center gap-2">
-              <Download size={16}/> 导出当前报表
+        <div className="flex items-center gap-4">
+           <div className="flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-500 rounded-lg text-[10px] font-black uppercase tracking-widest border border-indigo-100">
+              <CheckCircle2 size={12}/>
+              DATA SYNC: REALTIME
+           </div>
+           <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-black shadow-lg shadow-neutral-200 hover:bg-primary-500 transition-all flex items-center gap-2 font-black">
+              <Download size={16}/> 导出运营月报
            </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-8 bg-neutral-50/20">
-         <div className="max-w-7xl mx-auto space-y-8">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-12 bg-neutral-50/20">
+         <div className="max-w-7xl mx-auto space-y-12">
             {/* Main Stats */}
             <div className="grid grid-cols-12 gap-8">
-               <div className="col-span-8 bg-white rounded-[40px] border border-neutral-100 p-10 shadow-sm relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:scale-110 transition-transform">
-                     <Orbit size={200} className="text-indigo-500" />
+               <div className="col-span-12 bg-white rounded-[48px] border border-neutral-100 p-12 shadow-sm relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform pointer-events-none">
+                     <Orbit size={300} className="text-indigo-500" />
                   </div>
                   <div className="relative z-10">
-                     <div className="flex items-center justify-between mb-8">
+                     <div className="flex items-center justify-between mb-12">
                         <div>
-                           <h3 className="text-2xl font-black text-neutral-900 tracking-tight italic">5月 运营运营总况</h3>
-                           <p className="text-[13px] text-neutral-400 font-bold mt-1">青岛瑞吉酒店 · 跨平台全链路监测</p>
+                           <h3 className="text-[28px] font-black text-neutral-900 tracking-tight leading-none italic">2026-Q2 运营总览</h3>
+                           <p className="text-[14px] text-neutral-400 font-bold mt-2 flex items-center gap-2 uppercase tracking-widest leading-none">
+                              Hotel Industry • <span className="text-indigo-500">TapTik Brain Optimized</span>
+                           </p>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-12">
                            <div className="text-right">
-                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">本月消耗 Credits</p>
-                              <p className="text-xl font-black text-neutral-900 tracking-tighter">4,820</p>
+                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-2">预估变现 GMV</p>
+                              <p className="text-4xl font-black text-neutral-900 tracking-tighter">¥58,204.00</p>
                            </div>
-                           <div className="w-px h-10 bg-neutral-100" />
-                           <div className="text-right">
-                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">预估 GMV</p>
-                              <p className="text-xl font-black text-indigo-500 tracking-tighter">¥58,200</p>
+                           <div className="text-right border-l border-neutral-100 pl-12">
+                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-2">获客 ROI</p>
+                              <p className="text-4xl font-black text-emerald-500 tracking-tighter">8.42x</p>
                            </div>
                         </div>
                      </div>
                      
-                     <div className="grid grid-cols-4 gap-6 p-8 bg-neutral-50/50 rounded-[32px] border border-neutral-100">
+                     <div className="grid grid-cols-4 gap-8 mb-12">
                         {[
-                          { label: '发布笔记', val: '20 篇', icon: Layers },
-                          { label: '有效互动', val: '48.2k', icon: Flame },
-                          { label: '咨询线索', val: '48 条', icon: MessageSquare },
-                          { label: '到店成交', val: '12 单', icon: CheckCircle2 },
+                          { label: '笔记总产出', val: '142 篇', sub: '+24%', icon: Layers },
+                          { label: '万粉博主收录', val: '12 位', sub: 'MATRIX', icon: Flame },
+                          { label: '咨询留资线索', val: '482 条', sub: '92.1%', icon: MessageSquare },
+                          { label: '实际核销单量', val: '58 单', sub: 'READY', icon: CheckCircle2 },
                         ].map((s, i) => (
-                          <div key={i} className="flex flex-col gap-2">
-                             <div className="text-neutral-400 flex items-center gap-2"><s.icon size={14}/><span className="text-[10px] font-black uppercase tracking-widest">{s.label}</span></div>
-                             <span className="text-2xl font-black text-neutral-900 tracking-tighter">{s.val}</span>
+                          <div key={i} className="p-8 bg-neutral-50/50 rounded-[40px] border border-neutral-100 hover:bg-neutral-50 hover:shadow-xl transition-all">
+                             <div className="flex items-center justify-between mb-4">
+                                <div className="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-neutral-400">
+                                   <s.icon size={18}/>
+                                </div>
+                                <span className="text-[10px] font-black text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md uppercase">{s.sub}</span>
+                             </div>
+                             <p className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.1em] mb-1">{s.label}</p>
+                             <span className="text-3xl font-black text-neutral-900 tracking-tighter">{s.val}</span>
                           </div>
                         ))}
                      </div>
                      
-                     <div className="mt-8 flex items-center justify-between">
-                        <div className="flex gap-2">
-                           <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-lg border border-emerald-100">ROI: 5.8x</span>
-                           <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-lg border border-indigo-100">高于行业平均水平 24%</span>
+                     <div className="flex items-center gap-4">
+                        <div className="flex -space-x-3">
+                           {[1,2,3,4,5].map(i => (
+                             <img key={i} src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`} className="w-8 h-8 rounded-full border-2 border-white ring-1 ring-neutral-100" alt="" />
+                           ))}
                         </div>
-                        <button className="text-[12px] font-black text-neutral-900 hover:underline flex items-center gap-1">查看详细趋势图 <ArrowUpRight size={14}/></button>
+                        <p className="text-[12px] font-bold text-neutral-500">本月已有 <span className="text-neutral-900">4,821</span> 名潜在客户通过 TapTik 触达转化</p>
+                        <div className="flex-1 border-t border-dashed border-neutral-100 mx-8" />
+                        <button className="px-6 py-3 bg-neutral-900 text-white rounded-2xl text-[13px] font-black hover:bg-primary-500 hover:scale-[1.02] active:scale-95 transition-all">查看归因报告</button>
                      </div>
                   </div>
-               </div>
-               
-               <div className="col-span-4 bg-neutral-100/50 rounded-[40px] border-2 border-dashed border-neutral-200 p-8 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-indigo-50 hover:border-indigo-200 transition-all">
-                  <div className="w-16 h-16 bg-white rounded-3xl shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                     <Target size={32} className="text-indigo-500" />
-                  </div>
-                  <h4 className="text-[18px] font-black text-neutral-900 mb-2">生成本周深度复盘</h4>
-                  <p className="text-[13px] text-neutral-400 font-bold max-w-[200px] leading-relaxed">AI 自动提取爆文逻辑，优化下周投放策略</p>
                </div>
             </div>
 
             {/* Performance Ranking */}
-            <div className="grid grid-cols-2 gap-8">
-               <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm">
-                  <div className="flex items-center justify-between mb-8 px-2">
-                     <h3 className="text-lg font-black text-neutral-900 tracking-tight flex items-center gap-2">
-                        <Star size={20} className="text-amber-500" /> 最佳转化笔记 TOP 3
+            <div className="grid grid-cols-12 gap-8">
+               <div className="col-span-7 bg-white rounded-[48px] border border-neutral-100 p-10 shadow-sm relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-10">
+                     <h3 className="text-xl font-black text-neutral-900 tracking-tight flex items-center gap-3">
+                        <Star size={24} className="text-amber-500 fill-amber-500" /> 最佳爆款表现
                      </h3>
-                     <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest">By Conversion Rate</span>
+                     <div className="flex p-1 bg-neutral-50 rounded-xl border border-neutral-100">
+                        <button className="px-3 py-1 text-[10px] font-black rounded-lg bg-white shadow-sm">阅读数</button>
+                        <button className="px-3 py-1 text-[10px] font-black rounded-lg text-neutral-400">互动数</button>
+                     </div>
                   </div>
                   <div className="space-y-4">
                      {[
-                       { title: '《淡季980住瑞吉》', conversion: '40%', engagement: '9,800', leads: '5单' },
-                       { title: '《推开窗的那一刻》', conversion: '28%', engagement: '7,200', leads: '3单' },
-                       { title: '《青岛避坑！住瑞吉》', conversion: '15%', engagement: '4,500', leads: '2单' },
+                       { title: '《淡季980住瑞吉，真香现场》', conversion: '4.2w', group: '矩阵A-5', rate: '12%', color: 'bg-emerald-500' },
+                       { title: '《推开窗的那一刻，我决定续住》', conversion: '2.8w', group: '矩阵A-1', rate: '8.4%', color: 'bg-blue-500' },
+                       { title: '《青岛海边民宿避坑指南》', conversion: '1.5w', group: '素人号-3', rate: '2.1%', color: 'bg-rose-500' },
                      ].map((note, i) => (
-                       <div key={i} className="group p-5 bg-neutral-50/50 hover:bg-white hover:shadow-xl hover:shadow-neutral-200/50 border border-neutral-100 rounded-[32px] transition-all flex items-center gap-6">
-                          <div className="w-12 h-16 bg-neutral-200 rounded-xl shrink-0 overflow-hidden shadow-inner">
-                             <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-primary-500" />
+                       <div key={i} className="group p-6 bg-neutral-50/50 hover:bg-white hover:shadow-2xl hover:shadow-neutral-200/50 border border-neutral-100 rounded-[32px] transition-all flex items-center gap-8">
+                          <div className="w-16 h-20 bg-neutral-200 rounded-2xl shrink-0 overflow-hidden shadow-inner relative">
+                             <div className={`absolute inset-0 opacity-20 ${note.color}`} />
+                             <div className="w-full h-full flex items-center justify-center font-black text-neutral-400 text-[10px]">THUMB</div>
                           </div>
                           <div className="flex-1">
-                             <h4 className="text-[14px] font-black text-neutral-900 mb-1">{note.title}</h4>
-                             <div className="flex items-center gap-4 text-[11px] font-bold text-neutral-400">
-                                <span className="flex items-center gap-1"><Flame size={12}/> {note.engagement}</span>
-                                <span className="flex items-center gap-1"><Target size={12}/> 获客 {note.leads}</span>
+                             <h4 className="text-[16px] font-bold text-neutral-900 mb-2">{note.title}</h4>
+                             <div className="flex items-center gap-4 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+                                <span className="flex items-center gap-1"><Flame size={12}/> {note.conversion} VIEWS</span>
+                                <span className="flex items-center gap-1"><Share2 size={12}/> {note.group}</span>
                              </div>
                           </div>
                           <div className="text-right">
-                             <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">转化率</p>
-                             <p className="text-[18px] font-black text-emerald-500 tracking-tighter">{note.conversion}</p>
+                             <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">变现贡献</p>
+                             <p className="text-[20px] font-black text-neutral-900 tracking-tighter">{note.rate}</p>
                           </div>
                        </div>
                      ))}
                   </div>
                </div>
 
-               <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm flex flex-col">
-                  <div className="flex items-center justify-between mb-8 px-2">
-                     <h3 className="text-lg font-black text-neutral-900 tracking-tight flex items-center gap-2">
-                        <AlertCircle size={20} className="text-orange-500" /> 增长优化建议
-                     </h3>
-                  </div>
-                  <div className="flex-1 space-y-6">
-                      <div className="p-6 bg-orange-50/50 border border-orange-100 rounded-[32px] flex items-center justify-between gap-6">
-                        <p className="text-[14px] text-neutral-600 font-bold leading-relaxed italic flex-1">
-                           “根据本月数据分析，<span className="text-neutral-900">#亲子房</span> 类笔记的互动率虽高，但成交转化率低于平均水平。建议下月调整对此类内容的投放，增加 <span className="text-indigo-600">攻略类</span> 与 <span className="text-indigo-600">捡漏类</span> 内容的占比。”
-                        </p>
-                        <button 
-                           onClick={() => {
-                              window.dispatchEvent(new CustomEvent('nav-to-strategy'));
-                           }}
-                           className="px-4 py-2 bg-white text-neutral-900 border border-orange-200 rounded-xl text-[11px] font-black hover:bg-orange-100 transition-all shrink-0 shadow-sm"
-                        >
-                           进入策略中心验证
-                        </button>
-                      </div>
-                     <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                           <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">最佳发布窗口</p>
-                           <p className="text-[14px] font-black text-neutral-900">周五晚 8:00 <span className="text-emerald-500">(+40%)</span></p>
+               <div className="col-span-5 bg-neutral-900 rounded-[48px] p-10 text-white relative overflow-hidden flex flex-col">
+                  <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none" />
+                  <div className="relative z-10 flex-1">
+                     <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
+                           <Zap size={24} className="text-primary-400 fill-primary-400" /> 增长优化建议
+                        </h3>
+                        <div className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-primary-400">Optimization Loop</div>
+                     </div>
+                     
+                     <div className="space-y-8">
+                        <div className="p-8 bg-white/5 border border-white/10 rounded-[40px] relative">
+                           <div className="absolute -top-3 -left-3 w-8 h-8 bg-primary-500 rounded-xl flex items-center justify-center text-white shadow-lg">
+                              <Target size={16} />
+                           </div>
+                           <p className="text-[16px] font-bold text-neutral-300 leading-relaxed italic">
+                              “ 归因模型显示，<span className="text-white">#反向旅游</span> 关键词在凌晨时段的点击成本下降了 40%，且转化率提升了 12%。建议下周将运营蓝图的该类权重调高至 <span className="text-primary-400">15%</span>。 ”
+                           </p>
                         </div>
-                        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                           <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">最佳内容类型</p>
-                           <p className="text-[14px] font-black text-neutral-900">清单型/干货</p>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                           <div className="p-6 bg-white/5 rounded-[32px] border border-white/5">
+                              <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-2">最高权重建议</p>
+                              <p className="text-[15px] font-black text-white">#淡季攻略</p>
+                           </div>
+                           <div className="p-6 bg-white/5 rounded-[32px] border border-white/5">
+                              <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-2">预估下周增速</p>
+                              <p className="text-[15px] font-black text-emerald-400">+18.2%</p>
+                           </div>
                         </div>
                      </div>
                   </div>
-                  <button className="mt-8 w-full py-4 bg-neutral-900 text-white rounded-2xl font-black text-[13px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all">
-                     采纳并生成 6月 运营计划
+
+                  <button 
+                    onClick={() => {
+                        window.dispatchEvent(new CustomEvent('nav-to-strategy'));
+                    }}
+                    className="mt-10 w-full py-5 bg-white text-neutral-900 rounded-[28px] font-black text-[15px] flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white hover:translate-y-[-2px] transition-all shadow-xl shadow-black/20"
+                  >
+                     采纳并重构运营蓝图 <ArrowUpRight size={20}/>
                   </button>
                </div>
             </div>

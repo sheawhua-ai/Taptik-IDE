@@ -168,7 +168,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
               {SKILL_SHORTCUTS.map(skill => (
                 <button 
                   key={skill.id}
-                  onClick={() => handleShortcutClick(skill.nav, skill.tab)}
+                  onClick={() => handleShortcutClick(skill.nav, skill.subNav)}
                   className="group relative bg-neutral-0 border border-neutral-200 p-8 rounded-[40px] text-left hover:border-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/5 transition-all"
                 >
                   <div className={`w-14 h-14 ${skill.bg} ${skill.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm`}>
