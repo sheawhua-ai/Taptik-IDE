@@ -6,7 +6,6 @@ import {
   AlertCircle, History, Orbit, Activity
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { DigitalEmployeeProgress } from '../DigitalEmployeeProgress';
 
 export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
   if (!hasData) {
@@ -212,16 +211,6 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                  </div>
               </div>
            </div>
-        </div>
-        <div className="w-[360px] border-l border-neutral-100 bg-white h-full z-10 shrink-0">
-           <DigitalEmployeeProgress 
-             moduleName="归因复盘"
-             tasks={[
-               { id: '1', name: '全渠道数据清洗同步', status: 'completed', agent: '数据搬运工', time: '10:00' },
-               { id: '2', name: 'ROI 多维模型计算', status: 'running', agent: '分析 Agent', time: '11:15' },
-               { id: '3', name: '下周运营策略重构', status: 'pending', agent: '战略助手', time: '14:00' },
-             ]}
-           />
         </div>
       </div>
     </div>

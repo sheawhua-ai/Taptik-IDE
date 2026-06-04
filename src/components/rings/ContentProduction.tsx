@@ -6,7 +6,6 @@ import {
   AlertCircle, MessageSquare, TrendingUp, Layers, Target, PenTool, Activity
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { DigitalEmployeeProgress } from '../DigitalEmployeeProgress';
 
 interface GenerationResult {
   id: string;
@@ -281,7 +280,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
             </div>
 
             <div className="flex-1 bg-neutral-50/30 overflow-y-auto custom-scrollbar p-12 relative flex">
-               <div className="flex-1 overflow-y-auto no-scrollbar pr-8">
+               <div className="flex-1 overflow-y-auto no-scrollbar">
                   <AnimatePresence mode="wait">
                      {isGenerating ? (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-full">
@@ -378,16 +377,6 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         </div>
                      )}
                   </AnimatePresence>
-               </div>
-               <div className="w-[360px] border-l border-neutral-100 bg-white h-full z-10 shrink-0">
-                  <DigitalEmployeeProgress 
-                     moduleName="智造工场"
-                     tasks={[
-                        { id: '1', name: '爆文风格迁移 (Style Transfer)', status: 'completed', agent: '内容官 Agent', time: '09:20' },
-                        { id: '2', name: 'SEO 关键词密度优化', status: 'running', agent: '流量 Agent', time: '10:15' },
-                        { id: '3', name: '多模态图片一键合成', status: 'pending', agent: '视觉系统', time: '11:00' },
-                     ]}
-                  />
                </div>
             </div>
            </>

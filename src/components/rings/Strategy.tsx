@@ -6,7 +6,6 @@ import {
   Plus, Target, Play, CheckCircle2
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { DigitalEmployeeProgress } from '../DigitalEmployeeProgress';
 
 export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: string; rate: string }[] }> = ({ hasData = true, strategyData = [] }) => {
   const [activeTab, setActiveTab] = useState<'blueprint' | 'keywords' | 'distribution'>('blueprint');
@@ -122,116 +121,89 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                </button>
             </div>
          ) : activeTab === 'blueprint' && (
-           <div className="max-w-6xl mx-auto space-y-8">
-              <div className="grid grid-cols-12 gap-8">
-                 <div className="col-span-8 space-y-8">
-                    <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm">
-                       <div className="flex items-center justify-between mb-8">
-                          <div>
-                            <h3 className="text-lg font-black text-neutral-900 tracking-tight flex items-center gap-2">
-                               <TrendingUp size={20} className="text-blue-500" />
-                               操盘手落地执行决策 (Direct Strategy)
-                            </h3>
-                            <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">基于实时大盘数据的确定性策略输出</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                             <span className="text-[11px] font-black text-neutral-400">数据同步状态:</span>
-                             <span className="text-[11px] font-black text-success-600 bg-success-50 px-2 py-1 rounded">LIVE</span>
-                          </div>
-                       </div>
-                       
-                       <div className="grid grid-cols-1 gap-4 mb-8">
-                          {[
-                             { title: '全域搜索拦截', sub: '针对核心蓝海词的精准占位，构建流量护城河', weight: '45%', color: 'bg-rose-500' },
-                             { title: '竞品心智攻势', sub: '基于竞品评论区的侧向切入，挖掘存量转化机会', weight: '35%', color: 'bg-blue-500' },
-                             { title: 'KOC 规模分发', sub: '构建品牌自有的多节点传播网，实现爆发式传播', weight: '20%', color: 'bg-emerald-500' },
-                          ].map((p, i) => (
-                             <div key={i} className="p-5 bg-neutral-50 rounded-[32px] border border-neutral-100 group hover:bg-white hover:shadow-xl transition-all">
-                                <div className="flex items-center justify-between mb-4">
-                                   <div className="flex items-center gap-3">
-                                      <div className={`w-2.5 h-2.5 rounded-full ${p.color}`} />
-                                      <span className="text-[14px] font-black text-neutral-900">{p.title}</span>
-                                   </div>
-                                   <span className="text-[15px] font-black text-neutral-900">{p.weight}</span>
-                                </div>
-                                <p className="text-[12px] font-bold text-neutral-400 leading-relaxed px-5 mb-4">{p.sub}</p>
-                                <div className="px-5">
-                                   <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
-                                      <div className={`h-full ${p.color}`} style={{ width: p.weight }} />
-                                   </div>
-                                </div>
-                             </div>
-                          ))}
-                       </div>
+           <div className="max-w-7xl mx-auto space-y-8">
+              <div className="grid grid-cols-1 gap-8">
+                <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm">
+                   <div className="flex items-center justify-between mb-8">
+                      <div>
+                        <h3 className="text-lg font-black text-neutral-900 tracking-tight flex items-center gap-2">
+                           <TrendingUp size={20} className="text-blue-500" />
+                           操盘手落地执行决策 (Direct Strategy)
+                        </h3>
+                        <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">基于实时大盘数据的确定性策略输出</p>
+                      </div>
+                      <div className="flex items-center gap-6">
+                         <div className="flex items-center gap-2">
+                            <span className="text-[11px] font-black text-neutral-400">数据同步状态:</span>
+                            <span className="text-[11px] font-black text-success-600 bg-success-50 px-2 py-1 rounded">LIVE</span>
+                         </div>
+                         <div className="flex items-center gap-2 text-primary-500 text-[11px] font-black uppercase tracking-[0.2em] bg-primary-50 px-3 py-1 rounded-full">
+                           <Orbit size={14} /> 流量自动巡航中
+                         </div>
+                      </div>
+                   </div>
+                   
+                   <div className="grid grid-cols-3 gap-6 mb-10">
+                      {[
+                         { title: '全域搜索拦截', sub: '针对核心蓝海词的精准占位，构建流量护城河', weight: '45%', color: 'bg-rose-500' },
+                         { title: '竞品心智攻势', sub: '基于竞品评论区的侧向切入，挖掘存量转化机会', weight: '35%', color: 'bg-blue-500' },
+                         { title: 'KOC 规模分发', sub: '构建品牌自有的多节点传播网，实现爆发式传播', weight: '20%', color: 'bg-emerald-500' },
+                      ].map((p, i) => (
+                         <div key={i} className="p-6 bg-neutral-50 rounded-[32px] border border-neutral-100 group hover:bg-white hover:shadow-xl transition-all">
+                            <div className="flex items-center justify-between mb-4">
+                               <div className="flex items-center gap-3">
+                                  <div className={`w-2.5 h-2.5 rounded-full ${p.color}`} />
+                                  <span className="text-[14px] font-black text-neutral-900">{p.title}</span>
+                               </div>
+                               <span className="text-[15px] font-black text-neutral-900">{p.weight}</span>
+                            </div>
+                            <p className="text-[12px] font-bold text-neutral-400 leading-relaxed mb-4">{p.sub}</p>
+                            <div className="">
+                               <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                                  <div className={`h-full ${p.color}`} style={{ width: p.weight }} />
+                               </div>
+                            </div>
+                         </div>
+                      ))}
+                   </div>
 
-                       <div className="overflow-hidden border border-neutral-100 rounded-3xl">
-                          <table className="w-full text-left">
-                             <thead className="bg-neutral-50/50 border-b border-neutral-100">
-                                <tr>
-                                   <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest">核心蓝海词</th>
-                                   <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-center">机会指数</th>
-                                   <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-right">流水线操作</th>
-                                </tr>
-                             </thead>
-                             <tbody className="divide-y divide-neutral-50">
-                                {currentData.map((row, idx) => (
-                                  <tr key={idx} className="hover:bg-neutral-50/50 transition-colors">
-                                     <td className="px-6 py-5">
-                                        <div className="flex items-center gap-3">
-                                           <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                           <span className="text-[15px] font-black text-neutral-800">{row.word}</span>
-                                        </div>
-                                     </td>
-                                     <td className="px-6 py-5 text-center">
-                                        <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[13px] font-black rounded-lg">{row.rate}</span>
-                                     </td>
-                                     <td className="px-6 py-5 text-right">
-                                        <button 
-                                          onClick={() => {
-                                             window.dispatchEvent(new CustomEvent('nav-to-factory', { detail: { keyword: row.word } }));
-                                          }}
-                                          className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 transition-all flex items-center gap-2 ml-auto"
-                                        >
-                                           <Sparkles size={14} /> 送入智造工场
-                                        </button>
-                                     </td>
-                                  </tr>
-                                ))}
-                             </tbody>
-                          </table>
-                       </div>
-                    </div>
-                 </div>
-
-                 <div className="col-span-4 space-y-8">
-                    <DigitalEmployeeProgress 
-                      moduleName="全域巡航"
-                      tasks={[
-                        { id: '1', name: '抓取小红书热门话题', status: 'completed', agent: '蓝海搜寻员', time: '10:30 AM' },
-                        { id: '2', name: '全网对标商户爬取', status: 'running', agent: '情报分析师', time: '12:45 PM' },
-                        { id: '3', name: '转化意图词库自动化更新', status: 'pending', agent: '决策大脑', time: '2:00 PM' },
-                      ]}
-                    />
-
-                    <div className="bg-neutral-900 rounded-[40px] p-8 text-white relative overflow-hidden group">
-                       <div className="relative z-10">
-                          <div className="flex items-center gap-2 text-primary-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-                             <Orbit size={14} /> 热词监测中
-                          </div>
-                          <h3 className="text-xl font-black mb-4 tracking-tight">「{selectedIndustry}」流量自动巡航</h3>
-                          <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-3">
-                             <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-black text-neutral-400">行业监测点</span>
-                                <span className="text-[11px] font-black text-white">4,203 个</span>
-                             </div>
-                             <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-black text-neutral-400">高潜爆发词</span>
-                                <span className="text-[11px] font-black text-rose-400">12 个</span>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
+                   <div className="overflow-hidden border border-neutral-100 rounded-3xl">
+                      <table className="w-full text-left">
+                         <thead className="bg-neutral-50/50 border-b border-neutral-100">
+                            <tr>
+                               <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest">核心蓝海词</th>
+                               <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-center">机会指数</th>
+                               <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-right">流水线操作</th>
+                            </tr>
+                         </thead>
+                         <tbody className="divide-y divide-neutral-50">
+                            {currentData.map((row, idx) => (
+                              <tr key={idx} className="hover:bg-neutral-50/50 transition-colors">
+                                 <td className="px-6 py-5">
+                                    <div className="flex items-center gap-3">
+                                       <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                       <span className="text-[15px] font-black text-neutral-800">{row.word}</span>
+                                    </div>
+                                 </td>
+                                 <td className="px-6 py-5 text-center">
+                                    <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[13px] font-black rounded-lg">{row.rate}</span>
+                                 </td>
+                                 <td className="px-6 py-5 text-right">
+                                    <button 
+                                      onClick={() => {
+                                         window.dispatchEvent(new CustomEvent('nav-to-factory', { detail: { keyword: row.word } }));
+                                      }}
+                                      className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 transition-all flex items-center gap-2 ml-auto"
+                                    >
+                                       <Sparkles size={14} /> 送入智造工场
+                                    </button>
+                                 </td>
+                              </tr>
+                            ))}
+                         </tbody>
+                      </table>
+                   </div>
+                </div>
               </div>
            </div>
          )}

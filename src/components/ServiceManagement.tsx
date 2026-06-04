@@ -40,12 +40,22 @@ const MOCK_MERCHANTS: SubMerchant[] = [
 ];
 
 interface ServiceManagementProps {
-  onSelectMerchant: (merchant: SubMerchant) => void;
-  selectedMerchant: SubMerchant | null;
-  onBack: () => void;
+  onSelectMerchant?: (merchant: SubMerchant) => void;
+  selectedMerchant?: SubMerchant | null;
+  onBack?: () => void;
 }
 
-export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMerchant, selectedMerchant, onBack }) => {
+export const ServiceManagement: React.FC<ServiceManagementProps> = ({ 
+  onSelectMerchant: externalOnSelect, 
+  selectedMerchant: externalSelected, 
+  onBack: externalOnBack 
+}) => {
+  const [internalSelected, setInternalSelected] = React.useState<SubMerchant | null>(null);
+  
+  const selectedMerchant = externalSelected !== undefined ? externalSelected : internalSelected;
+  const onSelectMerchant = externalOnSelect || setInternalSelected;
+  const onBack = externalOnBack || (() => setInternalSelected(null));
+
   const [activeTab, setActiveTab] = React.useState<'merchants' | 'team'>('merchants');
   const [detailTab, setDetailTab] = React.useState('pipeline');
   const registerUrl = "https://tap.topyuncang.com/login?age=your_id";

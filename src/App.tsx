@@ -28,10 +28,11 @@ import { Strategy } from './components/rings/Strategy';
 import { ContentProduction } from './components/rings/ContentProduction';
 import { Publishing } from './components/rings/Publishing';
 import { Interaction } from './components/rings/Interaction';
+import { ExecutionCenter } from './components/rings/ExecutionCenter';
 import { CRM } from './components/rings/CRM';
 import { Metrics } from './components/rings/Metrics';
 
-import { ExecutionCenter } from './components/rings/ExecutionCenter';
+import { AgentStatusFooter } from './components/AgentStatusFooter';
 import { SubagentChat } from './components/SubagentChat';
 
 // Existing Pages
@@ -158,6 +159,7 @@ export default function App() {
   
   const [isUsagePopupOpen, setIsUsagePopupOpen] = useState(false);
   const [isSettingsPopupOpen, setIsSettingsPopupOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const insertMention = (name: string, type: '@' | '/') => {
     let newVal;
@@ -429,11 +431,10 @@ export default function App() {
            <div className="border-t border-neutral-100 pt-8 mt-4 space-y-3 pb-8">
               <div className="px-2 text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-2 hidden xl:block">配置与资产</div>
               {[
-                { id: 'assets', name: '商家配置中心', sub: '主体与员工管理', icon: LayoutGrid },
                 { id: 'files', name: '知识库中心', sub: 'Lancedb 极速检索', icon: BookOpen },
                 { id: 'skills', name: '技能插件市场', sub: '极简能力工具箱', icon: ShoppingCart },
                 { id: 'billing', name: '用量与计费', sub: '信用点与账单', icon: Gauge },
-                { id: 'settings', name: '系统设置', sub: '全局环境配置', icon: Settings },
+                { id: 'settings', name: '系统设置', sub: '主体与员工管理', icon: Settings },
               ].map(item => (
                  <button 
                    key={item.id}
@@ -514,18 +515,6 @@ export default function App() {
              </div>
 
              <div className="flex-1 flex w-full overflow-hidden bg-[#fafafa] relative">
-               {/* Shared Left Subagent Chat */}
-               <SubagentChat 
-                 moduleId={workflowTab} 
-                 moduleName={{
-                   strategy: '全域巡航',
-                   content: '智造工场',
-                   execution: '编排中心',
-                   interaction: '触达转化',
-                   metrics: '归因复盘'
-                 }[workflowTab] || ''} 
-               />
-
                <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative bg-white">
                  {workflowTab === 'strategy' && (
                     <Strategy hasData={hasData} strategyData={onboardingData.strategyKeywords} />
@@ -557,63 +546,6 @@ export default function App() {
           </div>
         )}
 
-        {activeNav === 'assets' && (
-           <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
-              <div className="h-14 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white shadow-sm z-10">
-                 <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-neutral-900 rounded-lg flex items-center justify-center text-white">
-                       <LayoutGrid size={18} />
-                    </div>
-                    <div>
-                       <h2 className="text-[16px] font-black text-neutral-900 tracking-tight">资产与基础设施</h2>
-                       <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest leading-none mt-0.5">商户与系统连接管理</p>
-                    </div>
-                 </div>
-                 <div className="flex items-center gap-3">
-                    <button className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-black hover:opacity-80 transition-opacity shadow-lg shadow-neutral-200">新增主体授权</button>
-                 </div>
-              </div>
-              
-              <div className="flex-1 flex overflow-hidden">
-                 <div className="w-1/4 max-w-[320px] border-r border-neutral-100 bg-[#fafafa] flex flex-col">
-                    <div className="p-6 space-y-6">
-                       <div>
-                          <div className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-4 px-1">核心商户</div>
-                          <div className="space-y-1">
-                             <button className="w-full text-left px-4 py-3 rounded-xl bg-white border border-neutral-200 shadow-sm text-[13px] font-bold text-neutral-900 flex items-center justify-between group">
-                                <span>商户矩阵管理</span>
-                                <ChevronRight size={14} className="text-neutral-300 group-hover:text-primary-500 transition-colors" />
-                             </button>
-                          </div>
-                       </div>
-                       
-                       <div className="pt-4 border-t border-neutral-200/60">
-                          <div className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-4 px-1 flex items-center justify-between">
-                             <span>外部集成</span>
-                             <span className="text-[9px] bg-primary-500 text-white px-1.5 py-0.5 rounded-full font-black">即将上线</span>
-                          </div>
-                          <div className="space-y-2 opacity-60">
-                             {[
-                                { name: '企业微信 (SCRM)', icon: AtSign },
-                                { name: '智能客服 (CS)', icon: Bot },
-                                { name: '自动化分发 (KOC)', icon: ShareIcon },
-                             ].map((ext, i) => (
-                                <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dashed border-neutral-200 bg-neutral-100/50 text-[13px] font-bold text-neutral-400 grayscale">
-                                   <ext.icon size={16} />
-                                   {ext.name}
-                                </div>
-                             ))}
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-                 <div className="flex-1 overflow-y-auto bg-white p-8">
-                    <MerchantMatrix />
-                 </div>
-              </div>
-           </div>
-        )}
-
         {activeNav === 'files' && <FileManager filesTab={filesTab} setFilesTab={setFilesTab} activeProject={activeProject} activeDoc={activeDoc} setActiveDoc={setActiveDoc} />}
         {activeNav === 'skills' && <SkillMarket creatingSkill={creatingSkill} setCreatingSkill={setCreatingSkill} skillMarketTab={skillMarketTab} setSkillMarketTab={setSkillMarketTab} selectedSkill={selectedSkill} setSelectedSkill={setSelectedSkill} />}
         {activeNav === 'billing' && (
@@ -637,21 +569,8 @@ export default function App() {
            </div>
         )}
 
-           <div className="h-8 bg-neutral-900 text-neutral-300 flex items-center justify-between px-4">
-              <div className="flex items-center gap-5">
-                 <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
-                    <span className="text-[10px] font-black tracking-tighter uppercase">系统在线: 助手已准备</span>
-                 </div>
-              </div>
-              
-              <div className="flex items-center gap-6">
-                 <div className="flex items-center gap-1.5 text-[10px] font-black opacity-80 px-2 py-0.5 bg-white/10 rounded cursor-help">
-                    <Cpu size={12} />
-                    <span>94% 系统效能</span>
-                 </div>
-              </div>
-           </div>
+        {/* Footer Status Bar */}
+        <AgentStatusFooter />
       </div>
     </div>
   );

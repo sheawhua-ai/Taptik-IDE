@@ -5,7 +5,6 @@ import {
   ChevronDown, AlertCircle, TrendingUp, ShieldAlert, Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { DigitalEmployeeProgress } from '../DigitalEmployeeProgress';
 
 interface Comment {
   id: string;
@@ -272,16 +271,6 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({ hasData = true })
               <p className="text-neutral-400 font-bold mt-2 max-w-xs leading-relaxed uppercase text-[11px] tracking-widest">Agent 正在全天候捕捉高净值客户咨询</p>
             </div>
           )}
-        </div>
-        <div className="w-[360px] border-l border-neutral-100 bg-white h-full z-10 shrink-0">
-           <DigitalEmployeeProgress 
-             moduleName="触达转化"
-             tasks={[
-               { id: '1', name: '全渠道评论语义识别', status: 'completed', agent: '情报分析师', time: '12:00' },
-               { id: '2', name: '爆款内容自动回复建议', status: 'running', agent: '话术 Agent', time: '13:10' },
-               { id: '3', name: '意向线索同步至本地 CRM', status: 'pending', agent: '对接助手', time: '15:00' },
-             ]}
-           />
         </div>
       </div>
     </div>

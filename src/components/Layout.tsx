@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { AgentStatusFooter } from './AgentStatusFooter';
+import { SubagentChat } from './SubagentChat';
+import { MessageSquare, Sparkles, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Layout() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* SideNavBar */}
@@ -66,7 +72,7 @@ export default function Layout() {
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden relative">
         {/* TopNavBar */}
         <header className="flex justify-between items-center w-full px-6 h-14 bg-white/80 backdrop-blur-xl border-b border-zinc-100/50 shadow-sm shadow-zinc-200/50 shrink-0 z-40">
           <div className="flex items-center gap-8">
@@ -94,9 +100,49 @@ export default function Layout() {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto relative">
           <Outlet />
         </div>
+
+        {/* Floating Agent Ball - Fixed to Viewport */}
+        <div className="fixed bottom-16 right-8 flex flex-col items-end gap-4 z-50">
+          <AnimatePresence>
+            {isChatOpen && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="w-[400px] h-[600px] bg-white rounded-[32px] shadow-2xl border border-neutral-100 overflow-hidden flex flex-col"
+              >
+                <SubagentChat 
+                  moduleId="global" 
+                  moduleName="全域指挥中心" 
+                  onClose={() => setIsChatOpen(false)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button 
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className={`w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${isChatOpen ? 'bg-neutral-900 rotate-90 scale-90' : 'bg-primary-500 hover:scale-110 active:scale-95'}`}
+          >
+            {isChatOpen ? <X className="text-white" size={20} /> : (
+              <div className="relative">
+                <MessageSquare className="text-white" size={24} />
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center"
+                >
+                  <Sparkles size={8} className="text-primary-500" />
+                </motion.div>
+              </div>
+            )}
+          </button>
+        </div>
+
+        <AgentStatusFooter />
       </main>
     </div>
   );
