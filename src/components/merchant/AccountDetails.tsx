@@ -11,7 +11,7 @@ export const AccountDetails: React.FC = () => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">商户账号详情</h2>
-          <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">Merchant Identity & Configuration</p>
+          <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">商户身份与配置</p>
         </div>
         <button className="px-6 py-2.5 bg-neutral-0 border border-neutral-200 rounded-xl text-[13px] font-black hover:bg-neutral-50 flex items-center gap-2">
            <Edit3 size={18}/> 编辑资料
@@ -66,7 +66,7 @@ export const AccountDetails: React.FC = () => {
                    <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm"><Lock size={20} className="text-neutral-400"/></div>
                       <div>
-                         <p className="text-[14px] font-black text-neutral-800">API Access Token</p>
+                         <p className="text-[14px] font-black text-neutral-800">API 访问 Token</p>
                          <p className="text-[11px] text-neutral-400 font-bold uppercase tracking-tighter">用于全链路流水线数据回调</p>
                       </div>
                    </div>
@@ -96,7 +96,7 @@ export const AccountDetails: React.FC = () => {
               <div className="relative z-10">
                  <div className="flex items-center justify-between mb-8">
                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10"><CreditCard size={24} className="text-primary-400"/></div>
-                    <span className="px-3 py-1 bg-success-500 text-white text-[10px] font-black rounded-lg uppercase tracking-widest">Premium</span>
+                    <span className="px-3 py-1 bg-success-500 text-white text-[10px] font-black rounded-lg uppercase tracking-widest">至尊版</span>
                  </div>
                  <h4 className="text-[20px] font-black mb-2">服务有效期</h4>
                  <p className="text-[13px] text-white/40 font-medium mb-6">该商户当前版本为 [旗舰版]</p>

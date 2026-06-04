@@ -67,7 +67,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMe
               <div>
                 <div className="flex items-center gap-3">
                   <h1 className="text-[17px] font-black text-neutral-900 tracking-tight">{selectedMerchant.name}</h1>
-                  <span className="px-1.5 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] font-bold rounded uppercase">UUID: {selectedMerchant.id}</span>
+                  <span className="px-1.5 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] font-bold rounded uppercase">uuid: {selectedMerchant.id}</span>
                 </div>
                 <p className="text-[11px] text-neutral-400 font-bold uppercase tracking-wider mt-0.5">正在管理该商户数据与资产</p>
               </div>
@@ -121,7 +121,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMe
                onClick={() => setActiveTab('merchants')}
                className={`text-[15px] font-black relative py-7 transition-all ${activeTab === 'merchants' ? 'text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
              >
-                商户 Hub
+                商户中心 Hub
                 {activeTab === 'merchants' && <motion.div layoutId="manageTab" className="absolute bottom-0 left-0 right-0 h-1 bg-primary-500 rounded-t-full" />}
              </button>
              <button 
@@ -218,7 +218,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMe
                 <div className="p-8 border-b border-neutral-100 flex items-center justify-between">
                    <div className="flex items-center gap-4">
                       <h2 className="text-[18px] font-black text-neutral-900 tracking-tight">所有下线商户</h2>
-                      <div className="px-2 py-0.5 bg-neutral-100 rounded-lg text-[11px] font-black text-neutral-500">1 TOTAL</div>
+                      <div className="px-2 py-0.5 bg-neutral-100 rounded-lg text-[11px] font-black text-neutral-500">活跃使用 / 活跃商户</div>
                    </div>
                    <div className="flex items-center gap-3">
                       <div className="relative">
@@ -232,7 +232,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMe
                    <table className="w-full text-left">
                      <thead>
                        <tr className="bg-neutral-50/50 text-[10px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100">
-                         <th className="px-8 py-4">UUID</th>
+                         <th className="px-8 py-4">标识库</th>
                          <th className="px-8 py-4">商户品牌名称</th>
                          <th className="px-8 py-4">账号信息</th>
                          <th className="px-8 py-4">状态</th>
@@ -246,7 +246,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMe
                              <td className="px-8 py-5 font-mono text-[11px] text-neutral-400">#{m.id}</td>
                              <td className="px-8 py-5">
                                 <div className="flex items-center gap-3">
-                                   <div className="w-9 h-9 bg-neutral-100 rounded-xl flex items-center justify-center font-black text-neutral-500">TS</div>
+                                   <div className="w-9 h-9 bg-neutral-100 rounded-xl flex items-center justify-center font-black text-neutral-500">商</div>
                                    <span className="text-[14px] font-black text-neutral-900">{m.name}</span>
                                 </div>
                              </td>
@@ -257,12 +257,12 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({ onSelectMe
                                 </div>
                              </td>
                              <td className="px-8 py-5">
-                                <span className="px-2.5 py-1 bg-success-50 text-success-600 text-[10px] font-black rounded-lg border border-success-100">ACTIVE</span>
+                                <span className="px-2.5 py-1 bg-success-50 text-success-600 text-[10px] font-black rounded-lg border border-success-100">活跃商户</span>
                              </td>
                              <td className="px-8 py-5">
                                 <div className="flex items-center gap-4">
                                    <div className="text-center">
-                                      <p className="text-[10px] font-black text-neutral-400 uppercase">Credits</p>
+                                      <p className="text-[10px] font-black text-neutral-400 uppercase">当前余额</p>
                                       <p className="text-[13px] font-bold text-neutral-800">5,420</p>
                                    </div>
                                    <div className="w-px h-6 bg-neutral-100" />

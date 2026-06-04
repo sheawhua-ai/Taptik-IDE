@@ -103,7 +103,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                 <div className="flex items-center gap-4">
                    <button onClick={() => setCreatingSkill(false)} className="w-8 h-8 flex items-center justify-center rounded-xl bg-neutral-100 text-neutral-500 hover:text-neutral-900 transition-colors"><ChevronLeft size={16}/></button>
                    <div>
-                      <h1 className="text-lg font-black text-neutral-900 flex items-center gap-2">工作流技能蒸馏大模型构建器 <span className="text-[10px] bg-primary-50 text-primary-500 px-1.5 py-0.5 rounded uppercase font-bold">Stable v2.1</span></h1>
+                      <h1 className="text-lg font-black text-neutral-900 flex items-center gap-2">工作流技能蒸馏构建器 <span className="text-[10px] bg-primary-50 text-primary-500 px-1.5 py-0.5 rounded uppercase font-bold">Stable v2.1</span></h1>
                       <p className="text-[11px] text-neutral-500 font-medium">描述运营需求，或上传 .md 指令集进行能力蒸馏。</p>
                    </div>
                 </div>
@@ -193,7 +193,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                                 </button>
                              </div>
                           </div>
-                          <p className="text-center text-[11px] text-neutral-400 font-bold mt-4 uppercase tracking-widest">Interactive UI Preview</p>
+                          <p className="text-center text-[11px] text-neutral-400 font-bold mt-4 uppercase tracking-widest">交互式 UI 预览</p>
                        </div>
 
                        {/* Monetization & Config Section */}
@@ -294,87 +294,62 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar">
                <div className="max-w-7xl mx-auto">
                   {skillMarketTab === 'my' && (
-                     <div className="mb-12 bg-neutral-900 rounded-[40px] p-12 text-white relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:scale-110 transition-transform">
-                           <Workflow size={240} className="text-primary-500" />
+                     <div className="mb-8 bg-neutral-900 rounded-[32px] p-8 text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform">
+                           <Workflow size={180} className="text-primary-500" />
                         </div>
                         <div className="relative z-10 max-w-xl">
-                           <div className="flex items-center gap-2 text-primary-400 text-[10px] font-black uppercase tracking-[0.2em] mb-5">
-                              <ShieldCheck size={14} /> Developer Dashboard
+                           <div className="flex items-center gap-2 text-primary-400 text-[9px] font-black uppercase tracking-[0.2em] mb-4">
+                              <ShieldCheck size={12} /> 开发者工作台
                            </div>
-                           <h2 className="text-4xl font-black tracking-tight mb-5 leading-tight">自建技能变现概览</h2>
-                           <p className="text-neutral-400 text-[15px] font-bold mb-10 leading-relaxed max-w-md">
-                                TAPTIK 鼓励开发者构建高价值资产。当您的技能累计被调用超过 <span className="text-white underline decoration-primary-500 underline-offset-4 decoration-4">500 次</span> 后，即可解锁商业计费权限。
-                           </p>
-                           
+                           <h2 className="text-2xl font-black tracking-tight mb-4 leading-tight">自建技能变现概览</h2>
                            <div className="grid grid-cols-2 gap-4">
-                              <div className="bg-white/5 p-6 rounded-[24px] border border-white/10 backdrop-blur-sm">
-                                 <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-2">累计变现收入</p>
+                              <div className="bg-white/5 p-4 rounded-[20px] border border-white/10 backdrop-blur-sm">
+                                 <p className="text-[9px] font-black text-neutral-500 uppercase tracking-widest mb-1">累计变现收入</p>
                                  <div className="flex items-baseline gap-1">
-                                    <span className="text-2xl font-black text-white">￥12,450</span>
-                                    <span className="text-[14px] font-bold text-neutral-400">.50</span>
+                                    <span className="text-xl font-black text-white">￥12,450</span>
+                                    <span className="text-[12px] font-bold text-neutral-400">.50</span>
                                  </div>
                               </div>
-                              <div className="bg-white/5 p-6 rounded-[24px] border border-white/10 backdrop-blur-sm">
-                                 <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-2">待解锁门槛</p>
+                              <div className="bg-white/5 p-4 rounded-[20px] border border-white/10 backdrop-blur-sm">
+                                 <p className="text-[9px] font-black text-neutral-500 uppercase tracking-widest mb-1">待解锁门槛</p>
                                  <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-black text-warning-400">1</span>
-                                    <span className="text-[14px] font-bold text-neutral-400">个技能审核中</span>
+                                    <span className="text-xl font-black text-warning-400">1</span>
+                                    <span className="text-[12px] font-bold text-neutral-400">个任务</span>
                                  </div>
-                              </div>
-                           </div>
-                        </div>
-
-                        {/* Progress Visualization */}
-                        <div className="mt-12 max-w-2xl bg-white/5 rounded-[32px] p-8 border border-white/10 backdrop-blur-md">
-                           <div className="space-y-4">
-                              <div className="flex items-center justify-between text-[12px] font-black uppercase tracking-wider mb-2">
-                                 <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-                                    <span className="text-white">当前最佳 Skill：全域视觉去重工具</span>
-                                 </div>
-                                 <span className="text-primary-400">8.4% 达成</span>
-                              </div>
-                              <div className="h-4 w-full bg-white/10 rounded-full overflow-hidden p-1 shadow-inner">
-                                 <div className="h-full bg-gradient-to-r from-primary-500 to-success-400 w-[8.4%] rounded-full shadow-[0_0_20px_rgba(230,53,96,0.4)] relative">
-                                    <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.2)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.2)_75%,transparent_75%,transparent)] bg-[length:1rem_1rem] animate-[shimmer_2s_linear_infinite]" />
-                                 </div>
-                              </div>
-                              <div className="flex justify-between text-[10px] font-black text-neutral-500 uppercase tracking-widest">
-                                 <span>Alpha Launch: 0 次调用</span>
-                                 <span>Target: 500 次调用</span>
                               </div>
                            </div>
                         </div>
                      </div>
                   )}
 
-                  <div className="grid grid-cols-1 gap-4 mb-20">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-20">
                      {(skillMarketTab === 'market' ? filteredSkills : MY_SKILLS).map(sk => (
-                        <div key={sk.id} onClick={() => setSelectedSkill(sk)} className="flex items-center gap-6 p-6 rounded-3xl border border-neutral-100 hover:border-primary-500/30 hover:bg-primary-50/20 transition-all cursor-pointer group bg-neutral-0 shadow-sm hover:shadow-2xl hover:translate-y-[-2px]">
-                           {sk.icon && (
-                             <div className="w-14 h-14 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-500 transition-all group-hover:scale-110 flex-shrink-0">
-                               <sk.icon size={24} />
-                             </div>
-                           )}
-                           <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-1.5 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
-                                 <span>Provider: {sk.author}</span>
-                                 <span>•</span>
-                                 <span className="text-primary-500">{sk.stats} 活跃使用</span>
-                              </div>
-                              <h3 className="text-[17px] font-black text-neutral-900 flex items-center gap-3">
-                                 {sk.name}
-                                 {sk.category === 'data' && <div className="px-2 py-0.5 bg-warning-50 text-warning-600 text-[9px] rounded-md font-black">Data-Driven</div>}
-                              </h3>
-                              <p className="text-[13px] text-neutral-500 font-medium mt-1 leading-relaxed max-w-2xl">{sk.desc}</p>
+                        <div key={sk.id} onClick={() => setSelectedSkill(sk)} className="flex flex-col p-5 rounded-3xl border border-neutral-100 hover:border-primary-500/30 hover:bg-primary-50/20 transition-all cursor-pointer group bg-neutral-0 shadow-sm hover:shadow-xl relative overflow-hidden">
+                           <div className="flex items-start justify-between mb-4">
+                              {sk.icon && (
+                                <div className="w-10 h-10 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-500 transition-all flex-shrink-0">
+                                  <sk.icon size={20} />
+                                </div>
+                              )}
+                              <div className="text-[14px] font-black text-neutral-900 group-hover:text-primary-500 transition-colors uppercase tracking-tighter">{sk.price}</div>
                            </div>
-                           <div className="w-[180px] flex flex-col items-end gap-2 shrink-0 border-l border-neutral-100 pl-8">
-                              <div className="text-[16px] font-black text-neutral-900">{sk.price}</div>
-                              <button className="px-4 py-2 bg-neutral-50 text-neutral-500 text-[11px] font-black rounded-xl group-hover:bg-primary-500 group-hover:text-white transition-all">查看详情</button>
+                           
+                           <div className="space-y-1.5 flex-1">
+                              <h3 className="text-[15px] font-black text-neutral-900 flex items-center gap-2">
+                                 {sk.name}
+                              </h3>
+                              <p className="text-[11px] text-neutral-500 font-bold leading-relaxed line-clamp-2">{sk.desc}</p>
+                           </div>
+
+                           <div className="mt-4 pt-4 border-t border-neutral-50 flex items-center justify-between">
+                              <div className="flex items-center gap-2 text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+                                 <span className="text-primary-500">{sk.stats} 活跃</span>
+                              </div>
+                              <ArrowUpRight size={14} className="text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                            </div>
                         </div>
                      ))}
@@ -388,7 +363,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                   <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-neutral-0 w-full max-w-2xl rounded-[40px] p-12 relative overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
                     <button onClick={() => setSelectedSkill(null)} className="absolute top-8 right-10 text-neutral-400 hover:text-neutral-900 transition-colors"><X size={28}/></button>
                     <div className="mb-10">
-                       <span className="text-[11px] font-black text-primary-500 uppercase tracking-[0.2em] mb-3 block">Expert Capability Node</span>
+                       <span className="text-[11px] font-black text-primary-500 uppercase tracking-[0.2em] mb-3 block">专家级能力节点</span>
                        <h2 className="text-3xl font-black text-neutral-900 mb-2 leading-tight">{selectedSkill.name}</h2>
                        <div className="flex gap-4 mt-4">
                           <span className="px-3 py-1.5 bg-neutral-50 text-neutral-500 text-[11px] font-bold rounded-lg border border-neutral-100 flex items-center gap-1.5"><Users size={14}/> {selectedSkill.stats} 安装量</span>
@@ -403,11 +378,11 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                        </div>
                        <div className="grid grid-cols-2 gap-4">
                           <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                             <h5 className="text-[10px] font-black text-neutral-400 uppercase mb-1">Billing</h5>
+                             <h5 className="text-[10px] font-black text-neutral-400 uppercase mb-1">计费方式</h5>
                              <p className="text-[14px] font-black text-neutral-900">{selectedSkill.price}</p>
                           </div>
                           <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                             <h5 className="text-[10px] font-black text-neutral-400 uppercase mb-1">Category</h5>
+                             <h5 className="text-[10px] font-black text-neutral-400 uppercase mb-1">分类</h5>
                              <p className="text-[14px] font-black text-primary-500 uppercase">{selectedSkill.category}</p>
                           </div>
                        </div>

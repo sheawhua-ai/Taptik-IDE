@@ -16,7 +16,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
   filesTab, setFilesTab, activeProject, activeDoc, setActiveDoc 
 }) => {
   const UNIFIED_FILE_TREE = activeProject.fileTree;
-  const [knowledgeSubTab, setKnowledgeSubTab] = useState<'wiki' | 'memory'>('memory');
+  const [knowledgeSubTab, setKnowledgeSubTab] = useState<'merchant' | 'personal'>('merchant');
   const [autoGenerate, setAutoGenerate] = useState(true);
 
   return (
@@ -112,98 +112,102 @@ export const FileManager: React.FC<FileManagerProps> = ({
                 <div className="h-14 border-b border-neutral-100 flex items-center px-6 shrink-0 bg-neutral-0">
                    <div className="flex items-center gap-6">
                       <button 
-                        onClick={() => setKnowledgeSubTab('wiki')}
-                        className={`text-[14px] font-bold py-4 relative transition-colors ${knowledgeSubTab === 'wiki' ? 'text-neutral-900 border-b-2 border-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                        onClick={() => setKnowledgeSubTab('merchant')}
+                        className={`text-[14px] font-bold py-4 relative transition-colors ${knowledgeSubTab === 'merchant' ? 'text-neutral-900 border-b-2 border-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
                       >
-                         Repo Wiki
+                         商家知识库 (Shared)
                       </button>
                       <button 
-                        onClick={() => setKnowledgeSubTab('memory')}
-                        className={`text-[14px] font-bold py-4 relative transition-colors ${knowledgeSubTab === 'memory' ? 'text-neutral-900 border-b-2 border-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                        onClick={() => setKnowledgeSubTab('personal')}
+                        className={`text-[14px] font-bold py-4 relative transition-colors ${knowledgeSubTab === 'personal' ? 'text-neutral-900 border-b-2 border-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
                       >
-                         记忆
+                         操盘手个人库 (Private)
                       </button>
                    </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 lg:p-8 custom-scrollbar">
-                   {knowledgeSubTab === 'memory' && (
-                      <div className="max-w-4xl space-y-6">
-                         {/* 记忆概览卡片 */}
-                         <div className="bg-neutral-50/50 border border-neutral-200 rounded-xl p-5 shadow-sm">
-                            <div className="flex items-center justify-between mb-2">
-                               <div className="flex items-center gap-2">
-                                  <h3 className="text-[15px] font-black text-neutral-900">记忆</h3>
-                                  <ChevronDown size={14} className="text-neutral-400" />
-                               </div>
-                            </div>
-                            <p className="text-[13px] text-neutral-500 font-medium leading-relaxed mb-6">
-                               开启自动生成后，记忆将在您使用 Qoder 的过程中逐步积累。
-                               <button className="text-primary-500 font-bold ml-1 hover:underline">了解更多</button>
-                            </p>
-                            <div className="flex items-center justify-between bg-neutral-0 border border-neutral-100 rounded-lg p-3">
-                               <div className="flex items-center gap-2">
-                                  <span className="text-[13px] font-bold text-neutral-700">自动生成</span>
-                                  <Info size={14} className="text-neutral-300" />
-                               </div>
-                               <button 
-                                 onClick={() => setAutoGenerate(!autoGenerate)}
-                                 className={`w-10 h-5 rounded-full transition-colors relative flex items-center px-1 ${autoGenerate ? 'bg-success-500' : 'bg-neutral-200'}`}
-                               >
-                                  <div className={`w-3.5 h-3.5 bg-white rounded-full shadow-sm transition-transform ${autoGenerate ? 'translate-x-4.5' : 'translate-x-0'}`}></div>
-                                </button>
-                            </div>
-                         </div>
+                    <div className="max-w-4xl space-y-6">
+                       {/* LanceDB Overview Card */}
+                       <div className="bg-neutral-50/50 border border-neutral-200 rounded-xl p-5 shadow-sm">
+                          <div className="flex items-center justify-between mb-2">
+                             <div className="flex items-center gap-2">
+                                <h3 className="text-[15px] font-black text-neutral-900">LanceDB | {knowledgeSubTab === 'merchant' ? '共享资产集群' : '个人私有切片'}</h3>
+                                <ChevronDown size={14} className="text-neutral-400" />
+                             </div>
+                             <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black text-primary-500 bg-primary-50 px-2 py-0.5 rounded uppercase">Serverless Vector Index</span>
+                             </div>
+                          </div>
+                          <p className="text-[13px] text-neutral-500 font-medium leading-relaxed mb-6">
+                             {knowledgeSubTab === 'merchant' ? '商户级别共享的私域文档、话术库及品牌调性手册。' : '仅限当前操盘手可见的个人创作草稿、历史灵感及学习记忆。'}
+                             <button className="text-primary-500 font-bold ml-1 hover:underline">架构说明</button>
+                          </p>
+                          <div className="flex items-center justify-between bg-neutral-0 border border-neutral-100 rounded-lg p-3">
+                             <div className="flex items-center gap-2">
+                                <span className="text-[13px] font-bold text-neutral-700">实时向量同步</span>
+                                <Info size={14} className="text-neutral-300" />
+                             </div>
+                             <button 
+                               onClick={() => setAutoGenerate(!autoGenerate)}
+                               className={`w-10 h-5 rounded-full transition-colors relative flex items-center px-1 ${autoGenerate ? 'bg-success-500' : 'bg-neutral-200'}`}
+                             >
+                                <div className={`w-3.5 h-3.5 bg-white rounded-full shadow-sm transition-transform ${autoGenerate ? 'translate-x-4.5' : 'translate-x-0'}`}></div>
+                              </button>
+                          </div>
+                       </div>
 
-                         {/* 搜索与筛选 */}
-                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center gap-2">
-                               <div className="relative flex-1">
-                                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
-                                  <input 
-                                    type="text" 
-                                    placeholder="搜索记忆..." 
-                                    className="w-full bg-neutral-0 border border-neutral-200 rounded-lg py-2.5 pl-10 pr-4 text-[14px] focus:outline-none focus:border-primary-500 transition-all font-medium" 
-                                  />
-                               </div>
-                               <button className="p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-600 hover:bg-neutral-100 transition-colors relative">
-                                  <SlidersHorizontal size={18} />
-                                  <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-success-500 rounded-full border border-white"></div>
-                               </button>
-                            </div>
+                       {/* Search & Filter */}
+                       <div className="flex flex-col gap-4">
+                          <div className="flex items-center gap-2">
+                             <div className="relative flex-1">
+                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                                <input 
+                                  type="text" 
+                                  placeholder={knowledgeSubTab === 'merchant' ? "搜索商户文档..." : "搜索个人灵感..."} 
+                                  className="w-full bg-neutral-0 border border-neutral-200 rounded-lg py-2.5 pl-10 pr-4 text-[14px] focus:outline-none focus:border-primary-500 transition-all font-medium" 
+                                />
+                             </div>
+                             <button className="p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-600 hover:bg-neutral-100 transition-colors relative">
+                                <SlidersHorizontal size={18} />
+                                <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-success-500 rounded-full border border-white"></div>
+                             </button>
+                          </div>
 
-                            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
-                               <div className="flex items-center gap-2 px-3 py-1 bg-neutral-50 border border-neutral-200 rounded-md text-[13px] font-bold text-neutral-700 shrink-0">
-                                  成熟度 <span className="text-neutral-400 font-normal ml-2">高</span> <X size={14} className="text-neutral-300 ml-1 cursor-pointer" />
-                               </div>
-                               <button className="text-[13px] font-bold text-neutral-400 hover:text-neutral-600 shrink-0">清除筛选</button>
-                            </div>
-                         </div>
+                          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+                             <div className="flex items-center gap-2 px-3 py-1 bg-neutral-50 border border-neutral-200 rounded-md text-[13px] font-bold text-neutral-700 shrink-0">
+                                成熟度 <span className="text-neutral-400 font-normal ml-2">高</span> <X size={14} className="text-neutral-300 ml-1 cursor-pointer" />
+                             </div>
+                             <button className="text-[13px] font-bold text-neutral-400 hover:text-neutral-600 shrink-0">清除筛选</button>
+                          </div>
+                       </div>
 
-                         {/* 记忆内容 */}
-                         <div className="space-y-4 pt-2">
-                            {['用户', 'program', 'agents-window.code-workspace'].map((cat, i) => (
-                              <div key={i} className="border-b border-neutral-100 last:border-0 pb-2">
-                                 <div className="flex items-center justify-between py-2 group cursor-pointer mb-1">
-                                    <h4 className="text-[12px] font-black text-neutral-400 uppercase tracking-tight">{cat}</h4>
-                                    <ChevronDown size={14} className="text-neutral-300 group-hover:text-neutral-600" />
-                                 </div>
-                                 {cat === 'program' && (
-                                    <div className="flex items-center justify-between p-3 hover:bg-neutral-50 rounded-xl transition-colors cursor-pointer group">
-                                       <div className="flex items-center gap-3">
-                                          <div className="w-8 h-8 rounded-lg bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-400 shadow-sm border-dashed">
-                                             <FileText size={16} />
-                                          </div>
-                                          <span className="text-[14px] font-bold text-neutral-700">项目信息</span>
-                                       </div>
-                                       <div className="text-[12px] font-bold text-neutral-400">2</div>
-                                    </div>
-                                 )}
-                              </div>
-                            ))}
-                         </div>
-                      </div>
-                   )}
+                       {/* Knowledge Items */}
+                       <div className="space-y-4 pt-2">
+                          {['官方画册', '直播话术', '竞品情报'].map((cat, i) => (
+                            <div key={i} className="border-b border-neutral-100 last:border-0 pb-2">
+                               <div className="flex items-center justify-between py-2 group cursor-pointer mb-1">
+                                  <h4 className="text-[12px] font-black text-neutral-400 uppercase tracking-tight">{cat}</h4>
+                                  <ChevronDown size={14} className="text-neutral-300 group-hover:text-neutral-600" />
+                                </div>
+                                {i === 0 && (
+                                   <div className="flex items-center justify-between p-3 hover:bg-neutral-50 rounded-xl transition-colors cursor-pointer group">
+                                      <div className="flex items-center gap-3">
+                                         <div className="w-8 h-8 rounded-lg bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-400 shadow-sm border-dashed">
+                                            <FileText size={16} />
+                                         </div>
+                                         <span className="text-[14px] font-bold text-neutral-700">2024夏季新品SOP</span>
+                                      </div>
+                                      <div className="text-[12px] font-bold text-neutral-400 text-right">
+                                         <p>83% 相关度</p>
+                                         <p className="text-[10px] text-neutral-300">昨天 14:20</p>
+                                      </div>
+                                   </div>
+                                )}
+                            </div>
+                          ))}
+                       </div>
+                    </div>
                 </div>
              </div>
           ) : !activeDoc ? (
@@ -212,10 +216,10 @@ export const FileManager: React.FC<FileManagerProps> = ({
                 <div className="max-w-4xl mx-auto">
                    <div className="mb-10">
                       <h1 className="text-3xl font-black text-neutral-900 mb-3 flex items-center gap-3">
-                         本地知识库 <span className="text-[12px] font-bold text-success-600 bg-success-50 px-2 py-1 rounded border border-success-100 uppercase tracking-wider align-middle">离线优先</span>
+                         LanceDB 向量集群 <span className="text-[12px] font-bold text-success-600 bg-success-50 px-2 py-1 rounded border border-success-100 uppercase tracking-wider align-middle">实时检索</span>
                       </h1>
                       <p className="text-[14px] text-neutral-500 font-medium leading-relaxed max-w-2xl">
-                         基于 Tauri 的物理级离线存储，内置 LanceDB Serverless 向量引擎。无需上传云端，本地毫秒级索引。文件变更自动 Git 提交，并实时注入到 AI 工作台的 RAG 知识检索范围。
+                          基于极速向量数据库 LanceDB 构建，支持结构化与非结构化混合查询。商户知识库确保全员行动一致，个人知识库赋能操盘手私域创作力。
                       </p>
                    </div>
 
@@ -239,9 +243,9 @@ export const FileManager: React.FC<FileManagerProps> = ({
                    <h3 className="text-[16px] font-bold text-neutral-900 mb-4 border-b border-neutral-100 pb-2">最近同步机制日志</h3>
                    <div className="space-y-3 pb-8">
                       {[
-                          { action: '自动构建索引', target: '防敏感词过滤包.rag', time: '10分钟前', status: '完成' },
-                          { action: 'Git Auto-Commit', target: '~/TapTik-Workspace/商家A', time: '1 小时前', status: '成功' },
-                          { action: 'LanceDB 更新', target: '+ 42 Blocks', time: '3 小时前', status: '成功' }
+                               {action: '自动构建索引', target: '防敏感词过滤包.rag', time: '10分钟前', status: '完成' },
+                               {action: 'Git 自动提交', target: '~/智策系统-工作区/商家A', time: '1 小时前', status: '成功' },
+                               {action: '向量库更新', target: '+ 42 数据块', time: '3 小时前', status: '成功' }
                       ].map((log, i) => (
                          <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-neutral-50/50 rounded-lg border border-neutral-100 text-[13px]">
                             <div className="flex items-center gap-3">

@@ -8,7 +8,7 @@ export const Billing: React.FC = () => {
     <div className="flex-1 flex flex-col h-full bg-neutral-0 overflow-y-auto custom-scrollbar">
        <div className="p-8 border-b border-neutral-100 bg-neutral-0 shrink-0 relative z-10">
            <h1 className="text-2xl font-black text-neutral-900 tracking-tight">消耗与资源对账</h1>
-           <p className="text-[13px] text-neutral-400 font-bold mt-1 uppercase tracking-widest">Billing & Consumption Management</p>
+           <p className="text-[13px] text-neutral-400 font-bold mt-1 uppercase tracking-widest">账单与消耗管理</p>
        </div>
        
        <div className="flex-1 p-8 max-w-6xl space-y-10">
@@ -20,12 +20,12 @@ export const Billing: React.FC = () => {
                  </div>
                  <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6">
-                       <div className="px-3 py-1 bg-primary-500 rounded-lg text-[10px] font-black uppercase tracking-widest leading-none text-white">Enterprise Wallet</div>
+                       <div className="px-3 py-1 bg-primary-500 rounded-lg text-[10px] font-black uppercase tracking-widest leading-none text-white">企业钱包</div>
                        <span className="text-neutral-500 text-[11px] font-bold">组织 ID: 150007802</span>
                     </div>
                     <div className="flex items-baseline gap-3 mb-2">
                        <span className="text-5xl font-black tracking-tighter">4,720.00</span>
-                       <span className="text-neutral-500 text-lg font-bold">T-Credits</span>
+                       <span className="text-neutral-500 text-lg font-bold">积分点数</span>
                     </div>
                     <p className="text-neutral-400 text-[13px] font-medium max-w-md">基于 Agent 的全自动消耗结算。当前余额支持约 2,360 篇原创笔记生成或 15,000 次 RAG 语义索引调用。</p>
                  </div>
@@ -87,7 +87,7 @@ export const Billing: React.FC = () => {
                        </div>
                        <div className="flex items-center gap-8">
                           <div className="text-right">
-                             <div className="text-[11px] font-black text-neutral-300 uppercase tracking-tighter mb-0.5">Execution Engine</div>
+                             <div className="text-[11px] font-black text-neutral-300 uppercase tracking-tighter mb-0.5">执行引擎</div>
                              <div className="text-[13px] font-bold text-neutral-600">{row.engine}</div>
                           </div>
                           <div className="w-20 text-right text-lg font-black text-danger-500 tracking-tighter">

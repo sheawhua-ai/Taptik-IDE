@@ -3,9 +3,10 @@ import {
   Sparkles, Zap, LayoutGrid, FileText, Settings2, 
   RefreshCw, CheckCircle2, ChevronRight, Copy, 
   ArrowRight, Image as ImageIcon, Wand2, Star,
-  AlertCircle, MessageSquare, TrendingUp, Layers, Target, PenTool
+  AlertCircle, MessageSquare, TrendingUp, Layers, Target, PenTool, Activity
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { DigitalEmployeeProgress } from '../DigitalEmployeeProgress';
 
 interface GenerationResult {
   id: string;
@@ -18,10 +19,10 @@ interface GenerationResult {
   };
 }
 
-export const ContentProduction: React.FC = () => {
+export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
   const [activeStep, setActiveStep] = useState(1);
   const [formData, setFormData] = useState({
-    keyword: '青岛民宿',
+    keyword: '',
     selectedBlueOcean: '',
     intent: '',
     imageSource: 'ai' as 'ai' | 'original'
@@ -33,6 +34,8 @@ export const ContentProduction: React.FC = () => {
   const [blueOceanWords, setBlueOceanWords] = useState<string[]>([]);
   const [plans, setPlans] = useState<string[]>([]);
   const [results, setResults] = useState<GenerationResult[]>([]);
+
+  const isEmpty = !hasData && !formData.keyword && !isGenerating;
 
   useEffect(() => {
     const handleBridge = (e: any) => {
@@ -93,11 +96,15 @@ export const ContentProduction: React.FC = () => {
            </div>
            <div>
               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">内容智造工场 (Content Factory)</h2>
-              <p className="text-[11px] font-bold text-neutral-400">Copywriter Agent: 基于 LangGraph 的多轮文本迭代与视觉合成</p>
+              <p className="text-[11px] font-bold text-neutral-400">Copywriter Agent: 基于多轮文本迭代的内容高度自动化生成</p>
            </div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
+           <div className="flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-500 rounded-lg text-[11px] font-black italic">
+              <RefreshCw size={12} className="animate-spin-slow" />
+              流程循环中
+           </div>
            <div className="flex bg-neutral-50 p-1 rounded-xl">
               {[
                 { id: 1, name: '输入', icon: Settings2 },
@@ -106,7 +113,7 @@ export const ContentProduction: React.FC = () => {
                 { id: 4, name: '精调', icon: PenTool }
               ].map((s) => (
                 <div key={s.id} className={`px-4 py-1.5 rounded-lg text-[12px] font-black transition-all flex items-center gap-2 ${activeStep === s.id ? 'bg-white text-neutral-900 shadow-sm border border-neutral-100' : 'text-neutral-400'}`}>
-                   {activeStep >= s.id ? <CheckCircle2 size={12} className="text-emerald-500" /> : s.id}
+                   {activeStep >= s.id ? <CheckCircle2 size={12} /> : s.id}
                    {s.name}
                 </div>
               ))}
@@ -115,85 +122,101 @@ export const ContentProduction: React.FC = () => {
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-         {/* Standardized 480px Context Sidebar */}
-         <div className="w-[480px] border-r border-neutral-100 flex flex-col h-full bg-neutral-50/20 overflow-y-auto custom-scrollbar">
-            <div className="p-10 space-y-10">
+         {isEmpty ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-20 text-center bg-neutral-50/10">
+               <div className="w-32 h-32 bg-purple-50 rounded-[48px] flex items-center justify-center text-purple-200 mb-10 group hover:rotate-6 transition-transform">
+                  <Sparkles size={64} />
+               </div>
+               <h3 className="text-3xl font-black text-neutral-900 mb-4 tracking-tight italic">智造工场待起航</h3>
+               <p className="text-neutral-400 font-bold max-w-md mx-auto leading-relaxed">
+                  目前内容仓库为空。建议先从“运营蓝图”选择蓝海词，或直接在左侧输入您的首个创作命题。
+               </p>
+               <div className="mt-12 flex gap-4">
+                  <button 
+                     onClick={() => window.dispatchEvent(new CustomEvent('nav-to-strategy'))}
+                     className="px-8 py-4 bg-white border border-neutral-200 text-neutral-900 rounded-2xl text-[14px] font-black shadow-sm hover:bg-neutral-50 transition-all"
+                  >
+                     去蓝图选词
+                  </button>
+               </div>
+            </div>
+         ) : (
+           <>
+            <div className="w-[440px] border-r border-neutral-100 flex flex-col h-full bg-neutral-50/20 overflow-y-auto custom-scrollbar">
+            <div className="p-8 space-y-8">
                {activeStep === 1 && (
-                  <div className="space-y-8">
-                     <div className="flex items-center justify-between">
-                        <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                           <Settings2 size={16} className="text-neutral-400"/> 启动生产流
-                        </h3>
-                        <span className="px-2 py-0.5 bg-neutral-900 text-white text-[9px] font-black rounded-lg">IDLE</span>
-                     </div>
+                  <div className="space-y-6">
+                     <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
+                        <Settings2 size={16} className="text-neutral-400"/> 启动生产流
+                     </h3>
                      <div className="space-y-4">
                         <div className="space-y-2">
                            <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest pl-1">核心主题/词</label>
                            <input 
                               value={formData.keyword}
                               onChange={(e) => setFormData({...formData, keyword: e.target.value})}
-                              className="w-full bg-white border border-neutral-200 rounded-[24px] p-5 text-[15px] font-bold text-neutral-900 focus:border-primary-500 transition-all font-mono shadow-sm"
+                              className="w-full bg-white border border-neutral-200 rounded-2xl p-4 text-[14px] font-bold text-neutral-900 focus:border-primary-500 transition-all font-mono"
                               placeholder="例如：青岛民宿"
                            />
                         </div>
-                        <button onClick={fetchBlueOcean} className="w-full h-14 bg-neutral-900 text-white rounded-[24px] font-black text-[15px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-xl shadow-neutral-200">
-                           挖掘蓝海机会点 <ArrowRight size={18}/>
+                        <button onClick={fetchBlueOcean} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg shadow-neutral-200">
+                           挖掘蓝海机会点 <ArrowRight size={16}/>
                         </button>
                      </div>
                   </div>
                )}
 
                {activeStep === 2 && (
-                  <div className="space-y-8">
+                  <div className="space-y-6">
                      <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <Target size={16} className="text-blue-500"/> 选择目标切入点
+                        <Target size={16} className="text-neutral-400"/> 选择目标切入点
                      </h3>
                      <div className="space-y-3">
                         {blueOceanWords.map(word => (
                            <button 
                               key={word}
                               onClick={() => setFormData({...formData, selectedBlueOcean: word})}
-                              className={`w-full p-6 rounded-[32px] border text-left transition-all ${formData.selectedBlueOcean === word ? 'bg-white border-primary-500 shadow-2xl' : 'bg-white/50 border-neutral-100 hover:border-neutral-300'}`}
+                              className={`w-full p-4 rounded-2xl border text-left transition-all ${formData.selectedBlueOcean === word ? 'bg-white border-primary-500 shadow-xl' : 'bg-white/50 border-neutral-200 hover:border-neutral-300'}`}
                            >
                               <div className="flex items-center justify-between">
-                                 <span className={`text-[15px] font-black ${formData.selectedBlueOcean === word ? 'text-primary-600' : 'text-neutral-700'}`}>{word}</span>
-                                 {formData.selectedBlueOcean === word && <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center text-white"><CheckCircle2 size={14}/></div>}
+                                 <span className={`text-[13px] font-bold ${formData.selectedBlueOcean === word ? 'text-primary-600' : 'text-neutral-700'}`}>{word}</span>
+                                 {formData.selectedBlueOcean === word && <div className="w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center text-white"><CheckCircle2 size={12}/></div>}
                               </div>
                            </button>
                         ))}
-                        <button onClick={generateIntent} disabled={!formData.selectedBlueOcean} className="w-full h-14 mt-6 bg-neutral-900 text-white rounded-[24px] font-black text-[15px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all disabled:opacity-50 shadow-xl">
-                           制定运营意图 <Zap size={18} className="fill-current"/>
+                        <button onClick={generateIntent} disabled={!formData.selectedBlueOcean} className="w-full h-14 mt-4 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all disabled:opacity-50">
+                           制定运营意图 <Zap size={16} className="fill-current"/>
                         </button>
                      </div>
                   </div>
                )}
 
                {activeStep === 3 && (
-                  <div className="space-y-8">
+                  <div className="space-y-6">
                      <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <FileText size={16} className="text-purple-500"/> 确认内容主方向
+                        <FileText size={16} className="text-neutral-400"/> 确认内容主方向
                      </h3>
                      <div className="space-y-3">
                         {plans.map(p => (
                            <button 
                               key={p}
                               onClick={() => setFormData({...formData, intent: p})}
-                              className={`w-full p-6 rounded-[32px] border text-left transition-all ${formData.intent === p ? 'bg-white border-primary-500 shadow-2xl' : 'bg-white/50 border-neutral-100 hover:border-neutral-300'}`}
+                              className={`w-full p-4 rounded-2xl border text-left transition-all ${formData.intent === p ? 'bg-white border-primary-500 shadow-xl' : 'bg-white/50 border-neutral-200 hover:border-neutral-300'}`}
                            >
-                              <p className={`text-[14px] font-bold leading-relaxed ${formData.intent === p ? 'text-primary-600' : 'text-neutral-700'}`}>{p}</p>
+                              <p className={`text-[13px] font-bold leading-relaxed ${formData.intent === p ? 'text-primary-600' : 'text-neutral-700'}`}>{p}</p>
                            </button>
                         ))}
                         
-                        <div className="pt-8 border-t border-neutral-100 flex flex-col gap-6">
-                           <div className="p-5 bg-white/50 rounded-[32px] border border-neutral-100">
-                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-4">视觉合成策略</p>
-                              <div className="flex p-1 bg-neutral-100 rounded-2xl">
-                                 <button onClick={() => setFormData({...formData, imageSource: 'ai'})} className={`flex-1 py-3 text-[12px] font-black rounded-xl transition-all ${formData.imageSource === 'ai' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>AI 配图合成</button>
-                                 <button onClick={() => setFormData({...formData, imageSource: 'original'})} className={`flex-1 py-3 text-[12px] font-black rounded-xl transition-all ${formData.imageSource === 'original' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>人工素材补全</button>
+                        <div className="pt-6 border-t border-neutral-100 flex flex-col gap-4">
+                           <div className="p-4 bg-white/50 rounded-2xl border border-neutral-100">
+                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-3">视觉合成策略</p>
+                              <div className="flex p-1 bg-neutral-100 rounded-xl">
+                                 <button onClick={() => setFormData({...formData, imageSource: 'ai'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'ai' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>AI 配图合成</button>
+                                 <button onClick={() => setFormData({...formData, imageSource: 'original'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'original' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>人工素材补全</button>
                               </div>
                            </div>
-                           <button onClick={handleInitialGenerate} disabled={!formData.intent} className="w-full h-14 bg-neutral-900 text-white rounded-[24px] font-black text-[15px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-xl active:scale-95">
-                              进入精调阶段 <Sparkles size={18}/>
+                           <button onClick={handleInitialGenerate} disabled={!formData.intent} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95">
+                              进入精调阶段 <Sparkles size={16}/>
                            </button>
                         </div>
                      </div>
@@ -201,40 +224,35 @@ export const ContentProduction: React.FC = () => {
                )}
 
                {activeStep === 4 && (
-                  <div className="space-y-8">
+                  <div className="space-y-6">
                      <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <PenTool size={16} className="text-orange-500"/> 人工干预节点
+                        <PenTool size={16} className="text-neutral-400"/> 人工干预节点
                      </h3>
-                     <div className="p-8 bg-neutral-900 rounded-[40px] text-white relative overflow-hidden shadow-2xl">
-                        <div className="absolute top-0 right-0 p-8 opacity-10">
-                           <Zap size={80} className="text-primary-400" />
-                        </div>
-                        <div className="relative z-10">
-                           <p className="text-[11px] font-black text-primary-400 uppercase tracking-[0.2em] mb-4">Human-in-the-loop</p>
-                           <p className="text-[15px] font-bold text-neutral-300 mb-6 leading-relaxed">您可以调整 AI 的输出方向，Agent 将即时重构内容：</p>
-                           <div className="space-y-2">
-                              {[
-                                 '加强互动引导', '多用口语化表达', '精简文本篇幅', '强调价格优势'
-                              ].map(dir => (
-                                 <button 
-                                   key={dir}
-                                   onClick={() => handleIterate(dir)}
-                                   className="w-full py-4 px-5 bg-white/5 hover:bg-white/10 rounded-[20px] border border-white/10 text-[13px] font-black text-left transition-all flex items-center justify-between group"
-                                 >
-                                    {dir}
-                                    <RefreshCw size={14} className="text-neutral-500 group-hover:rotate-180 transition-transform" />
-                                 </button>
-                              ))}
-                           </div>
+                     <div className="p-6 bg-neutral-900 rounded-[32px] text-white">
+                        <p className="text-[11px] font-black text-primary-400 uppercase tracking-[0.2em] mb-4">Human-in-the-loop</p>
+                        <p className="text-[14px] font-bold text-neutral-300 mb-6">您可以调整 AI 的输出方向，Agent 将即时重构内容：</p>
+                        <div className="space-y-2">
+                           {[
+                              '加强互动引导', '多用口语化表达', '精简文本篇幅', '强调价格优势'
+                           ].map(dir => (
+                              <button 
+                                key={dir}
+                                onClick={() => handleIterate(dir)}
+                                className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-[12px] font-black text-left transition-all flex items-center justify-between group"
+                              >
+                                 {dir}
+                                 <RefreshCw size={12} className="text-neutral-500 group-hover:rotate-180 transition-transform" />
+                              </button>
+                           ))}
                         </div>
                      </div>
                      
-                     <div className="pt-8 border-t border-neutral-200">
+                     <div className="pt-6 border-t border-neutral-200">
                         <button 
                           onClick={() => setActiveStep(5)}
-                          className="w-full h-15 bg-emerald-500 text-white rounded-[28px] font-black text-[16px] flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 active:scale-95"
+                          className="w-full h-14 bg-emerald-500 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
                         >
-                           生产完成 & 排期分发 <ArrowRight size={20}/>
+                           生产完成 & 排期分发 <ArrowRight size={16}/>
                         </button>
                      </div>
                   </div>
@@ -242,124 +260,138 @@ export const ContentProduction: React.FC = () => {
 
                {activeStep === 5 && (
                   <div className="space-y-6">
-                     <div className="p-10 bg-emerald-50 rounded-[48px] border border-emerald-100 flex flex-col items-center text-center">
-                        <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center text-emerald-500 mb-8 border border-emerald-100">
-                           <CheckCircle2 size={40} />
+                     <div className="p-8 bg-emerald-50 rounded-[40px] border border-emerald-100 flex flex-col items-center text-center">
+                        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-emerald-500 mb-6">
+                           <CheckCircle2 size={32} />
                         </div>
-                        <h4 className="text-2xl font-black text-neutral-900 tracking-tight">流水线已闭环</h4>
-                        <p className="text-[14px] font-bold text-neutral-500 mt-3 max-w-xs">内容已存入预备库，Agent 已自动生成分发排期任务。</p>
+                        <h4 className="text-xl font-black text-neutral-900">入库生产任务已闭环</h4>
+                        <p className="text-[13px] font-bold text-neutral-500 mt-2">笔记已存入预备库，排期任务已生成</p>
                         <button 
                           onClick={() => {
                             window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'interaction' } }));
                           }}
-                          className="mt-10 px-10 py-4 bg-neutral-900 text-white rounded-[24px] text-[14px] font-black hover:bg-emerald-600 hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
+                          className="mt-8 px-8 py-3 bg-neutral-900 text-white rounded-2xl text-[13px] font-black hover:bg-primary-500 transition-all"
                         >
-                          前往 CRM 中心查看
+                          查看分发与互动
                         </button>
                      </div>
                   </div>
                )}
             </div>
-         </div>
+            </div>
 
-         <div className="flex-1 bg-neutral-50/30 overflow-y-auto custom-scrollbar p-12 relative">
-            <AnimatePresence mode="wait">
-               {isGenerating ? (
-                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-full">
-                      <div className="relative">
-                        <RefreshCw className="animate-spin text-primary-500 mb-6" size={48} />
-                        <div className="absolute inset-0 animate-ping opacity-20"><RefreshCw size={48} className="text-primary-500" /></div>
-                      </div>
-                      <p className="text-[14px] font-black text-neutral-400 animate-pulse uppercase tracking-[0.2em]">Agent Is Architecting Your Content...</p>
-                      <div className="mt-8 space-y-2 w-48">
-                         <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
-                            <motion.div 
-                               initial={{ width: 0 }} 
-                               animate={{ width: '100%' }} 
-                               transition={{ duration: 2, repeat: Infinity }}
-                               className="h-full bg-primary-500" 
-                            />
-                         </div>
-                      </div>
-                   </motion.div>
-               ) : activeStep >= 4 ? (
-                  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto">
-                     <div className="bg-white rounded-[40px] border border-neutral-200 overflow-hidden shadow-2xl relative">
-                        <div className="p-10 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/20">
-                           <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-purple-500 border border-neutral-100">
-                                 <FileText size={22}/>
-                              </div>
-                              <div>
-                                 <h4 className="text-xl font-black text-neutral-900">{iterationCount === 1 ? '内容初稿 (V1 Draft)' : `迭代版本 V${iterationCount}`}</h4>
-                                 <p className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Powered by TapTik Copywriter Agent</p>
+            <div className="flex-1 bg-neutral-50/30 overflow-y-auto custom-scrollbar p-12 relative flex">
+               <div className="flex-1 overflow-y-auto no-scrollbar pr-8">
+                  <AnimatePresence mode="wait">
+                     {isGenerating ? (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-full">
+                           <div className="relative">
+                              <RefreshCw className="animate-spin text-primary-500 mb-6" size={48} />
+                              <div className="absolute inset-0 animate-ping opacity-20"><RefreshCw size={48} className="text-primary-500" /></div>
+                           </div>
+                           <p className="text-[14px] font-black text-neutral-400 animate-pulse uppercase tracking-[0.2em]">Agent 正在构建您的内容...</p>
+                           <div className="mt-8 space-y-2 w-48">
+                              <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
+                                 <motion.div 
+                                    initial={{ width: 0 }} 
+                                    animate={{ width: '100%' }} 
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                    className="h-full bg-primary-500" 
+                                 />
                               </div>
                            </div>
-                           <div className="flex gap-2">
-                              <div className="flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black border border-emerald-100">
-                                 原创度预估: 95%+
-                              </div>
-                           </div>
-                        </div>
-                        
-                        <div className="p-10 space-y-8">
-                           <div className="space-y-4">
-                              <h5 className="text-[12px] font-black text-neutral-400 uppercase tracking-widest">小红书标题建议</h5>
-                              <p className="text-2xl font-black text-neutral-900 italic tracking-tight leading-tight">
-                                推开窗的那一刻，我知道这980花得太值了！🏨
-                              </p>
-                           </div>
-
-                           <div className="space-y-4">
-                              <h5 className="text-[12px] font-black text-neutral-400 uppercase tracking-widest">正文内容 (Bodytext)</h5>
-                              <div className="p-8 bg-neutral-50 rounded-[32px] border border-neutral-100 shadow-inner">
-                                 <p className="text-[15px] font-bold text-neutral-700 leading-relaxed whitespace-pre-wrap">
-                                    {currentDraft}
-                                 </p>
-                              </div>
-                           </div>
-
-                           <div className="grid grid-cols-2 gap-6">
-                              <div className="p-6 bg-blue-50/50 rounded-[32px] border border-blue-100">
-                                 <h5 className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4">视觉策略建议</h5>
+                        </motion.div>
+                     ) : activeStep >= 4 ? (
+                        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto">
+                           <div className="bg-white rounded-[40px] border border-neutral-200 overflow-hidden shadow-2xl relative">
+                              <div className="p-10 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/20">
                                  <div className="flex items-center gap-4">
-                                    <div className="w-16 h-20 bg-white rounded-xl shadow-sm border border-blue-100 flex items-center justify-center text-blue-300">
-                                       <ImageIcon size={28}/>
+                                    <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-purple-500 border border-neutral-100">
+                                       <FileText size={22}/>
                                     </div>
                                     <div>
-                                       <p className="text-[13px] font-black text-neutral-800">首图建议：开窗海景特写</p>
-                                       <p className="text-[11px] font-semibold text-blue-400 mt-1">Agent 已自动匹配背景素材库</p>
+                                       <h4 className="text-xl font-black text-neutral-900">{iterationCount === 1 ? '内容初稿 (V1 Draft)' : `迭代版本 V${iterationCount}`}</h4>
+                                       <p className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">智策系统 文案 Agent 强力驱动</p>
+                                    </div>
+                                 </div>
+                                 <div className="flex gap-2">
+                                    <div className="flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black border border-emerald-100">
+                                       原创度预估: 95%+
                                     </div>
                                  </div>
                               </div>
-                              <div className="p-6 bg-neutral-900 rounded-[32px] text-white">
-                                 <h5 className="text-[10px] font-black text-primary-400 uppercase tracking-widest mb-4">数据表现预测</h5>
-                                 <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                       <p className="text-[9px] text-neutral-500 uppercase">点击率 (CTR)</p>
-                                       <p className="text-lg font-black text-success-400">HIGH</p>
+                              
+                              <div className="p-10 space-y-8">
+                                 <div className="space-y-4">
+                                    <h5 className="text-[12px] font-black text-neutral-400 uppercase tracking-widest">小红书标题建议</h5>
+                                    <p className="text-2xl font-black text-neutral-900 italic tracking-tight leading-tight">
+                                    推开窗的那一刻，我知道这980花得太值了！🏨
+                                    </p>
+                                 </div>
+
+                                 <div className="space-y-4">
+                                    <h5 className="text-[12px] font-black text-neutral-400 uppercase tracking-widest">正文内容 (Bodytext)</h5>
+                                    <div className="p-8 bg-neutral-50 rounded-[32px] border border-neutral-100 shadow-inner">
+                                       <p className="text-[15px] font-bold text-neutral-700 leading-relaxed whitespace-pre-wrap">
+                                          {currentDraft}
+                                       </p>
                                     </div>
-                                    <div>
-                                       <p className="text-[9px] text-neutral-500 uppercase">互动潜力</p>
-                                       <p className="text-lg font-black text-primary-400">ELITE</p>
+                                 </div>
+
+                                 <div className="grid grid-cols-2 gap-6">
+                                    <div className="p-6 bg-blue-50/50 rounded-[32px] border border-blue-100">
+                                       <h5 className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4">视觉策略建议</h5>
+                                       <div className="flex items-center gap-4">
+                                          <div className="w-16 h-20 bg-white rounded-xl shadow-sm border border-blue-100 flex items-center justify-center text-blue-300">
+                                             <ImageIcon size={28}/>
+                                          </div>
+                                          <div>
+                                             <p className="text-[13px] font-black text-neutral-800">首图建议：开窗海景特写</p>
+                                             <p className="text-[11px] font-semibold text-blue-400 mt-1">Agent 已自动匹配背景素材库</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className="p-6 bg-neutral-900 rounded-[32px] text-white">
+                                       <h5 className="text-[10px] font-black text-primary-400 uppercase tracking-widest mb-4">数据表现预测</h5>
+                                       <div className="grid grid-cols-2 gap-4">
+                                          <div>
+                                             <p className="text-[9px] text-neutral-500 uppercase">点击率 (CTR)</p>
+                                             <p className="text-lg font-black text-success-400">高 (HIGH)</p>
+                                          </div>
+                                          <div>
+                                             <p className="text-[9px] text-neutral-500 uppercase">互动潜力</p>
+                                             <p className="text-lg font-black text-primary-400">极佳 (ELITE)</p>
+                                          </div>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
                            </div>
+                        </motion.div>
+                     ) : (
+                        <div className="max-w-4xl mx-auto flex flex-col items-center justify-center h-full text-center">
+                           <div className="w-24 h-24 bg-white rounded-[40px] shadow-2xl flex items-center justify-center mb-10 group hover:scale-110 transition-transform">
+                              <Wand2 className="text-purple-400 group-hover:rotate-12 transition-transform" size={40} />
+                           </div>
+                           <h3 className="text-2xl font-black text-neutral-900 tracking-tight leading-tight">智造流水线已就绪</h3>
+                           <p className="text-neutral-400 font-bold mt-4 max-w-sm mx-auto leading-relaxed">请完成左侧运营决策步骤，Agent 将根据您的业务偏好实时进行多轮文本博弈与合成。</p>
                         </div>
-                     </div>
-                  </motion.div>
-               ) : (
-                  <div className="max-w-4xl mx-auto flex flex-col items-center justify-center h-full text-center">
-                     <div className="w-24 h-24 bg-white rounded-[40px] shadow-2xl flex items-center justify-center mb-10 group hover:scale-110 transition-transform">
-                        <Wand2 className="text-purple-400 group-hover:rotate-12 transition-transform" size={40} />
-                     </div>
-                     <h3 className="text-2xl font-black text-neutral-900 tracking-tight leading-tight">智造流水线已就绪</h3>
-                     <p className="text-neutral-400 font-bold mt-4 max-w-sm mx-auto leading-relaxed">请完成左侧运营决策步骤，Agent 将根据您的业务偏好实时进行多轮文本博弈与合成。</p>
-                  </div>
-               )}
-            </AnimatePresence>
-         </div>
+                     )}
+                  </AnimatePresence>
+               </div>
+               <div className="w-[360px] border-l border-neutral-100 bg-white h-full z-10 shrink-0">
+                  <DigitalEmployeeProgress 
+                     moduleName="智造工场"
+                     tasks={[
+                        { id: '1', name: '爆文风格迁移 (Style Transfer)', status: 'completed', agent: '内容官 Agent', time: '09:20' },
+                        { id: '2', name: 'SEO 关键词密度优化', status: 'running', agent: '流量 Agent', time: '10:15' },
+                        { id: '3', name: '多模态图片一键合成', status: 'pending', agent: '视觉系统', time: '11:00' },
+                     ]}
+                  />
+               </div>
+            </div>
+           </>
+         )}
       </div>
     </div>
   );

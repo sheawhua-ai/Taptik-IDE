@@ -42,7 +42,7 @@ export const StaffManager: React.FC = () => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">员工权限管理</h2>
-          <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">Staff Access & Role Control</p>
+          <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">员工访问与角色控制</p>
         </div>
         <button className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-black shadow-xl hover:bg-neutral-800 transition-all flex items-center gap-2">
            <Plus size={18}/> 邀约员工

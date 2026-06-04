@@ -62,7 +62,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">素材管理中心</h2>
-            <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">Asset Repository & Media Library</p>
+            <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">素材储存库与媒体库</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex bg-neutral-0 p-1 rounded-xl border border-neutral-200 shadow-sm">
@@ -88,7 +88,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
                <Plus size={16}/> 上传素材
             </button>
           </div>
-          <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest">Global Asset Library</span>
+          <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest">全局资产库</span>
         </div>
       )}
 
@@ -110,7 +110,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
                 onClick={() => setSelectedType(type)}
                 className={`px-4 py-2 rounded-xl text-[12px] font-black capitalize transition-all ${selectedType === type ? 'bg-neutral-900 text-white shadow-lg shadow-neutral-200' : 'bg-neutral-0 border border-neutral-200 text-neutral-500 hover:bg-neutral-50'}`}
               >
-                {type === 'all' ? '全部' : type}
+                {type === 'all' ? '全部' : type === 'image' ? '图片' : type === 'video' ? '视频' : type === 'document' ? '文档' : type}
               </button>
            ))}
         </div>
@@ -195,7 +195,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
                     <td className="px-8 py-4">
                       <span className="text-[14px] font-black text-neutral-800">{asset.name}</span>
                     </td>
-                    <td className="px-8 py-4 capitalize font-bold text-[13px] text-neutral-500">{asset.type}</td>
+                    <td className="px-8 py-4 font-bold text-[13px] text-neutral-500">{asset.type === 'image' ? '图片' : asset.type === 'video' ? '视频' : asset.type === 'audio' ? '音频' : '文档'}</td>
                     <td className="px-8 py-4 font-mono text-[13px] text-neutral-400">{asset.size}</td>
                     <td className="px-8 py-4">
                        <div className="flex items-center gap-2">

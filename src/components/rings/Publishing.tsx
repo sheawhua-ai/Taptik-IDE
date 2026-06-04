@@ -10,7 +10,7 @@ export const Publishing: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<typeof SCHEDULE[0] | null>(null);
   const [isCalendarExpanded, setIsCalendarExpanded] = useState(false);
 
-  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const DAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
   
   const SCHEDULE = [
     { day: 2, account: '瑞吉', type: 'note', status: 'published', title: '淡季捡漏清单', content: '这是一篇关于青岛瑞吉酒店淡季捡漏的深度笔记，包含了价格对比和房型推荐。', time: '10:00' },
@@ -131,7 +131,7 @@ export const Publishing: React.FC = () => {
                <div className="bg-neutral-900 p-8 rounded-[40px] text-white flex flex-col justify-between group">
                   <div className="flex justify-between items-start">
                      <div>
-                        <h4 className="text-[14px] font-black uppercase tracking-[0.2em] mb-1 opacity-50">Content Mix</h4>
+                        <h4 className="text-[14px] font-black uppercase tracking-[0.2em] mb-1 opacity-50">比例构成</h4>
                         <p className="text-xl font-black">发布配比监控</p>
                      </div>
                      <Layers size={24} className="text-primary-500 group-hover:rotate-12 transition-transform" />
@@ -140,7 +140,7 @@ export const Publishing: React.FC = () => {
                      <div className="space-y-2">
                         <div className="flex justify-between text-[11px] font-black uppercase tracking-tighter">
                            <span className="text-neutral-400">图文 (60%)</span>
-                           <span className="text-emerald-400">Target Met</span>
+                           <span className="text-emerald-400">已达标</span>
                         </div>
                         <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                            <div className="h-full bg-emerald-500 w-[60%]" />
@@ -160,7 +160,7 @@ export const Publishing: React.FC = () => {
                <div className="bg-white p-8 rounded-[40px] border border-neutral-100 shadow-sm flex flex-col justify-between group">
                   <div className="flex justify-between items-start">
                      <div>
-                        <h4 className="text-[14px] font-black uppercase tracking-[0.2em] mb-1 opacity-50">API Status</h4>
+                        <h4 className="text-[14px] font-black uppercase tracking-[0.2em] mb-1 opacity-50">连接状态</h4>
                         <p className="text-xl font-black">发布连接器</p>
                      </div>
                      <RefreshCw size={24} className="text-blue-500 group-hover:rotate-180 transition-transform duration-1000" />
@@ -203,7 +203,7 @@ export const Publishing: React.FC = () => {
                   <div className="space-y-4">
                      <div className="flex items-center justify-between">
                         <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest">排期标题</span>
-                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-blue-50 text-blue-500'}`}>{selectedItem.status}</span>
+                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-blue-50 text-blue-500'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
                      </div>
                      <p className="text-xl font-black text-neutral-900 leading-tight">{selectedItem.title}</p>
                   </div>

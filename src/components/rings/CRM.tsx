@@ -53,7 +53,7 @@ export const CRM: React.FC = () => {
                     <p className="text-[11px] font-black text-neutral-400 uppercase tracking-widest mb-3">{kpi.label}</p>
                     <div className="flex items-end justify-between">
                        <span className={`text-3xl font-black tracking-tighter ${kpi.color}`}>{kpi.value}</span>
-                       <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${kpi.trend === 'Critical' ? 'bg-rose-50 text-rose-500' : 'bg-emerald-50 text-emerald-500'}`}>{kpi.trend}</span>
+                       <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${kpi.trend === 'Critical' ? 'bg-rose-50 text-rose-500' : 'bg-emerald-50 text-emerald-500'}`}>{kpi.trend === 'Critical' ? '紧迫' : kpi.trend}</span>
                     </div>
                  </div>
                ))}
@@ -142,7 +142,7 @@ export const CRM: React.FC = () => {
                </div>
                
                <div className="p-6 border-t border-neutral-50 bg-neutral-50/20 text-center">
-                  <p className="text-[11px] font-black text-neutral-300 uppercase tracking-widest">End of Pipeline • Showing 12 Records</p>
+                  <p className="text-[11px] font-black text-neutral-300 uppercase tracking-widest">流程终点 • 显示 12 条记录</p>
                </div>
             </div>
          </div>

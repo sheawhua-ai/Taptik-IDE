@@ -99,7 +99,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                          </div>
                          <div>
                             <h2 className="text-2xl font-black tracking-tight leading-tight">全链路 ROI 归因分析</h2>
-                            <p className="text-neutral-400 text-[14px] font-bold mt-1 uppercase tracking-widest">End-to-End Attribution Engine</p>
+                            <p className="text-neutral-400 text-[14px] font-bold mt-1 uppercase tracking-widest">End-to-End 归因引擎</p>
                          </div>
                       </div>
 
@@ -134,7 +134,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 </div>
                 <div className="relative z-10 max-w-2xl">
                    <div className="flex items-center gap-2 text-primary-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-left">
-                      <Zap size={14} /> Generative AI Analysis
+                      <Zap size={14} /> AI 生成式分析
                    </div>
                    <h2 className="text-4xl font-black tracking-tight mb-4 leading-tight text-left">探索式数据分析</h2>
                    <p className="text-neutral-400 text-[16px] font-bold mb-10 leading-relaxed text-left">
@@ -262,15 +262,15 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <div className="p-8 border-b border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                            <Workflow size={22} className="text-primary-500" />
-                           <span className="text-[16px] font-black text-neutral-900 uppercase tracking-tight">Active Analysis View</span>
+                           <span className="text-[16px] font-black text-neutral-900 uppercase tracking-tight">活跃探测视图</span>
                         </div>
                         <div className="flex items-center gap-6">
                            <div className="flex items-center gap-2.5 px-4 py-1.5 bg-success-50 text-success-600 rounded-full border border-success-100">
                               <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
-                              <span className="text-[11px] font-black uppercase tracking-[0.1em]">32/50 Scanned</span>
+                              <span className="text-[11px] font-black uppercase tracking-[0.1em]">已扫描 32/50</span>
                            </div>
                            <button className="text-[11px] font-black flex items-center gap-2 text-neutral-400 hover:text-primary-500 transition-colors uppercase tracking-widest">
-                              <RefreshCw size={14}/> Live Sync
+                              <RefreshCw size={14}/> 实时同步
                            </button>
                         </div>
                       </div>
@@ -282,7 +282,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                                 <th className="py-5 px-10">关键词 / 选题洞察</th>
                                 <th className="py-5 px-6">搜索热度</th>
                                 <th className="py-5 px-10 text-center">蓝海评分 (核心潜力)</th>
-                                <th className="py-5 px-10 text-right">OPERATIONS</th>
+                                <th className="py-5 px-10 text-right">操作</th>
                               </tr>
                           </thead>
                           <tbody className="text-[14px] text-neutral-800 font-bold divide-y divide-neutral-50">
@@ -297,7 +297,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                                         <div className="flex flex-col gap-2">
                                            <div className="flex items-center gap-3">
                                               <span className="text-[17px] font-black text-neutral-900 leading-none">{item.word}</span>
-                                              {item.trend === 'up' && <div className="p-1 px-1.5 bg-success-50 text-success-600 rounded-lg text-[10px] font-black flex items-center gap-1 border border-success-100"><ArrowUp size={10}/> TRENDING</div>}
+                                              {item.trend === 'up' && <div className="p-1 px-1.5 bg-success-50 text-success-600 rounded-lg text-[10px] font-black flex items-center gap-1 border border-success-100"><ArrowUp size={10}/> 正在上升</div>}
                                            </div>
                                            <p className="text-[11px] text-neutral-400 font-black italic tracking-wide">{item.desc}</p>
                                         </div>
@@ -305,7 +305,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                                     <td className="py-8 px-6">
                                        <div className="flex flex-col">
                                           <span className="font-black text-[18px] text-neutral-800 leading-none">{item.heat}</span>
-                                          <span className="text-[10px] text-neutral-400 font-bold mt-2 uppercase tracking-widest text-left">Search Vol</span>
+                                          <span className="text-[10px] text-neutral-400 font-bold mt-2 uppercase tracking-widest text-left">搜索热度</span>
                                        </div>
                                     </td>
                                     <td className="py-8 px-10">
@@ -334,7 +334,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                             <Compass size={180} />
                          </div>
                          <div className="relative z-10">
-                            <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary-400 mb-4 text-left">Intelligent Foresight</h4>
+                            <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary-400 mb-4 text-left">智能预测洞察</h4>
                             <p className="text-[18px] font-black leading-snug mb-10 text-left">“结婚酒店” 高频共现词中，“免费停车” 与 “厅高不遮挡” 的情绪价值反馈提升 25%。</p>
                             <button className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[12px] font-black transition-all uppercase tracking-[0.1em] flex items-center justify-center gap-2">
                                同步到爆文引擎 <ArrowUpRight size={16} />
@@ -343,12 +343,12 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       </div>
 
                       <div className="bg-white border border-neutral-200 rounded-[48px] p-10 shadow-sm">
-                         <h4 className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-8 text-left">Detection Status</h4>
+                         <h4 className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-8 text-left">探测状态监控</h4>
                          <div className="space-y-6">
                             {[
-                               { label: '笔记层扫描深度', value: 'Lv.3 (Deep)', color: 'text-primary-500' },
-                               { label: '当前风控阈值', value: '安全 (Green)', color: 'text-success-500' },
-                               { label: '系统采样频率', value: '2.5s / Page', color: 'text-neutral-500' },
+                               { label: '笔记层扫描深度', value: 'Lv.3 (深度)', color: 'text-primary-500' },
+                               { label: '当前风控阈值', value: '安全 (绿色)', color: 'text-success-500' },
+                               { label: '系统采样频率', value: '2.5秒 / 页', color: 'text-neutral-500' },
                             ].map((row, i) => (
                                <div key={i} className="flex items-center justify-between py-2 border-b border-neutral-50 text-left">
                                   <span className="text-[11px] font-black text-neutral-400 uppercase tracking-tighter text-left">{row.label}</span>

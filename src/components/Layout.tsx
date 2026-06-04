@@ -12,7 +12,7 @@ export default function Layout() {
               <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
             </div>
             <div>
-              <h1 className="text-sm font-black uppercase tracking-widest text-zinc-900">TapTik IDE</h1>
+              <h1 className="text-sm font-black uppercase tracking-widest text-zinc-900">智策系统</h1>
               <p className="text-[10px] text-on-surface-variant font-medium">企业级架构师</p>
             </div>
           </div>
