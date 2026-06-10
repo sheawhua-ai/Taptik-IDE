@@ -39,7 +39,7 @@ export const ExecutionCenter: React.FC = () => {
             { step: '01', title: '全网扫描', desc: '全赛道关键词抓取', icon: Search, status: 'completed' },
             { step: '02', title: '词云过滤', desc: '剔除高竞争大词', icon: Workflow, status: 'error' },
             { step: '03', title: '趋势预判', desc: '热度回归模型计算', icon: Brain, status: 'pending' },
-            { step: '04', title: '报告输出', desc: '输出巡航蓝图', icon: CheckCircle2, status: 'pending' },
+            { step: '04', title: '报告输出', desc: '输出巡航策略', icon: CheckCircle2, status: 'pending' },
         ]
     },
   ];
@@ -52,7 +52,7 @@ export const ExecutionCenter: React.FC = () => {
               <Workflow size={24} />
            </div>
            <div>
-              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">编排中心 & 质量监测</h2>
+              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">编排层：智策分发中心 (Orchestration)</h2>
               <p className="text-[11px] font-bold text-neutral-400">流水线助手: 负责 Agent 集群的任务排期、容错与闭环优化</p>
            </div>
         </div>

@@ -44,15 +44,15 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">
       <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
-        <div className="flex items-center gap-4">
-           <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center">
-              <BarChart2 size={24} />
-           </div>
-           <div>
-              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">全域触达 ROI & 复盘驾驶舱</h2>
-              <p className="text-[11px] font-bold text-neutral-400">Analytics Agent: 跨平台数据监测与投放归因</p>
-           </div>
-        </div>
+         <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
+               <BarChart2 size={24} />
+            </div>
+            <div>
+               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">Analyst | 数据归因</h2>
+               <p className="text-[11px] font-bold text-neutral-400">Tactical Agent: 正在通过 KOC 溯源码计算实时 ROI (当前 XHS ROI: 4.8x)</p>
+            </div>
+         </div>
         
         <div className="flex items-center gap-3">
            <div className="flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-500 rounded-lg text-[10px] font-black uppercase tracking-widest border border-indigo-100">
@@ -206,7 +206,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                       }}
                       className="mt-10 w-full py-5 bg-white text-neutral-900 rounded-[28px] font-black text-[15px] flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white hover:translate-y-[-2px] transition-all shadow-xl shadow-black/20"
                     >
-                       采纳并重构运营蓝图 <ArrowUpRight size={20}/>
+                       采纳并重构运营策略 <ArrowUpRight size={20}/>
                     </button>
                  </div>
               </div>

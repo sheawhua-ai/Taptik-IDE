@@ -143,7 +143,7 @@ export const AgentStatusFooter: React.FC = () => {
           <div className="flex items-center gap-10">
             {[
               { label: '全域巡航', icon: Search, status: 'done' },
-              { label: '智造工场', icon: PenTool, status: 'active' },
+              { label: '智造工坊', icon: PenTool, status: 'active' },
               { label: '编排中心', icon: Layers, status: 'idle' },
               { label: '触达转化', icon: TrendingUp, status: 'idle' },
               { label: '归因复盘', icon: Activity, status: 'idle' },

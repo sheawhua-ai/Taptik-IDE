@@ -89,15 +89,15 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">
       <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
-        <div className="flex items-center gap-4">
-           <div className="w-10 h-10 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center">
-              <Sparkles size={24} />
-           </div>
-           <div>
-              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">内容智造工场 (Content Factory)</h2>
-              <p className="text-[11px] font-bold text-neutral-400">Copywriter Agent: 基于多轮文本迭代的内容高度自动化生成</p>
-           </div>
-        </div>
+         <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
+               <Sparkles size={24} />
+            </div>
+            <div>
+               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">Studio | 智造工坊</h2>
+               <p className="text-[11px] font-bold text-neutral-400">Creative Agent: 正在为 82 个 KOS 账号生成差异化笔记</p>
+            </div>
+         </div>
         
         <div className="flex items-center gap-6">
            <div className="flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-500 rounded-lg text-[11px] font-black italic">
@@ -126,9 +126,9 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                <div className="w-32 h-32 bg-purple-50 rounded-[48px] flex items-center justify-center text-purple-200 mb-10 group hover:rotate-6 transition-transform">
                   <Sparkles size={64} />
                </div>
-               <h3 className="text-3xl font-black text-neutral-900 mb-4 tracking-tight italic">智造工场待起航</h3>
+               <h3 className="text-3xl font-black text-neutral-900 mb-4 tracking-tight italic">智造工坊待命</h3>
                <p className="text-neutral-400 font-bold max-w-md mx-auto leading-relaxed">
-                  目前内容仓库为空。建议先从“运营蓝图”选择蓝海词，或直接在左侧输入您的首个创作命题。
+                  目前内容仓库为空。建议先从“全域巡航”选择蓝海词，或直接在左侧启动多模态生产流。
                </p>
                <div className="mt-12 flex gap-4">
                   <button 
@@ -150,6 +150,31 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                      </h3>
                      <div className="space-y-4">
                         <div className="space-y-2">
+                           <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest pl-1">选择生产品类</label>
+                           <div className="grid grid-cols-2 gap-2">
+                              {[
+                                 { id: 'note', label: '图文/笔记', sub: 'XHS/知乎' },
+                                 { id: 'video', label: '短视频脚本', sub: '抖音/TikTok' },
+                                 { id: 'storyboard', label: '视频分镜', sub: '专业导演视角' },
+                                 { id: 'visual', label: '视觉封面', sub: 'Flux/MJ 驱动' },
+                              ].map(m => (
+                                 <button key={m.id} className="p-3 bg-white border border-neutral-100 rounded-xl text-left hover:border-primary-500 transition-all group">
+                                    <div className="text-[12px] font-black text-neutral-700 group-hover:text-primary-500">{m.label}</div>
+                                    <div className="text-[9px] font-bold text-neutral-400 uppercase tracking-tighter">{m.sub}</div>
+                                 </button>
+                              ))}
+                           </div>
+                        </div>
+                        <div className="space-y-2">
+                           <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest pl-1">发布目标平台</label>
+                           <div className="grid grid-cols-1 gap-2">
+                              <button className="py-2.5 px-3 bg-rose-50 border border-rose-100 rounded-xl text-[12px] font-black text-rose-600 flex items-center justify-between">
+                                 小红书 (XHS) 
+                                 <span className="text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded-full">主攻平台</span>
+                              </button>
+                           </div>
+                        </div>
+                        <div className="space-y-2">
                            <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest pl-1">核心主题/词</label>
                            <input 
                               value={formData.keyword}
@@ -159,7 +184,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                            />
                         </div>
                         <button onClick={fetchBlueOcean} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg shadow-neutral-200">
-                           挖掘蓝海机会点 <ArrowRight size={16}/>
+                           启动多模态解析 <ArrowRight size={16}/>
                         </button>
                      </div>
                   </div>
@@ -208,10 +233,10 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         
                         <div className="pt-6 border-t border-neutral-100 flex flex-col gap-4">
                            <div className="p-4 bg-white/50 rounded-2xl border border-neutral-100">
-                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-3">视觉合成策略</p>
+                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-3">视觉引擎 (Visual AI)</p>
                               <div className="flex p-1 bg-neutral-100 rounded-xl">
-                                 <button onClick={() => setFormData({...formData, imageSource: 'ai'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'ai' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>AI 配图合成</button>
-                                 <button onClick={() => setFormData({...formData, imageSource: 'original'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'original' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>人工素材补全</button>
+                                 <button onClick={() => setFormData({...formData, imageSource: 'ai'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'ai' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>Flux / MJ</button>
+                                 <button onClick={() => setFormData({...formData, imageSource: 'original'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'original' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>自有素材库</button>
                               </div>
                            </div>
                            <button onClick={handleInitialGenerate} disabled={!formData.intent} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95">

@@ -53,26 +53,26 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
   return (
     <div className="flex flex-col h-full w-full bg-white overflow-hidden">
       <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10 shadow-sm">
-        <div className="flex items-center gap-4">
-           <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
-              <Compass size={24} />
-           </div>
-           <div>
-              <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">全域巡航 & 运营蓝图</h2>
-              <div className="flex items-center gap-2 mt-0.5">
-                 <p className="text-[11px] font-bold text-neutral-400">当前锁定赛道: </p>
-                 <span className="text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-tight">
-                   {selectedIndustry}
-                 </span>
-              </div>
-           </div>
-        </div>
+         <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
+               <Compass size={24} className="animate-pulse" />
+            </div>
+            <div>
+               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">Scout | 巡航侦察</h2>
+               <div className="flex items-center gap-2 mt-0.5">
+                  <p className="text-[11px] font-bold text-neutral-400">正在实时监测: </p>
+                  <span className="text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-tight">
+                    小红书 竞品 KOS 矩阵
+                  </span>
+               </div>
+            </div>
+         </div>
         
         <div className="flex items-center gap-2 bg-neutral-50 p-1.5 rounded-2xl">
            {[
-             { id: 'blueprint', name: '运营蓝图', icon: Orbit },
-             { id: 'keywords', name: '热词雷达', icon: Search },
-             { id: 'distribution', name: '平台矩阵', icon: Layers }
+             { id: 'blueprint', name: '运营策略中心', icon: Orbit },
+             { id: 'keywords', name: '蓝海词雷达', icon: Search },
+             { id: 'distribution', name: '平台资产矩阵', icon: Layers }
            ].map((tab) => (
              <button 
                 key={tab.id}
@@ -97,8 +97,8 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                   />
                   <RefreshCw className="text-primary-500 animate-spin" size={40} />
                </div>
-               <h3 className="text-xl font-black text-neutral-900 mb-2">正在从「{selectedIndustry}」全域抓取蓝海词...</h3>
-               <p className="text-neutral-400 font-bold text-sm">本地缓存未命中，预计还需要 {Math.ceil((100 - fetchProgress) / 20)}s 完成实时解构</p>
+               <h3 className="text-xl font-black text-neutral-900 mb-2">正在从全域抓取「{selectedIndustry}」蓝海词...</h3>
+               <p className="text-neutral-400 font-bold text-sm">正在整合 TikTok 趋势、抖音热门、知乎问答库等数据源...</p>
             </div>
          ) : isEmpty ? (
             <div className="flex-1 flex flex-col items-center justify-center p-20 text-center w-full min-h-full">
@@ -195,7 +195,7 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                                       }}
                                       className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 transition-all flex items-center gap-2 ml-auto"
                                     >
-                                       <Sparkles size={14} /> 送入智造工场
+                                       <Sparkles size={14} /> 送入智造工坊
                                     </button>
                                  </td>
                               </tr>
@@ -209,14 +209,73 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
          )}
 
          {activeTab === 'keywords' && (
-            <div className="max-w-4xl mx-auto flex flex-col items-center justify-center py-20 text-center">
-               <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-300 mb-6">
-                  <Search size={32} />
+            <div className="max-w-6xl mx-auto space-y-12 py-6">
+               <div className="flex items-center justify-between">
+                  <div>
+                     <h3 className="text-2xl font-black text-neutral-900 tracking-tight flex items-center gap-2">
+                        <Search size={24} className="text-primary-500" />
+                        蓝海词全域雷达
+                     </h3>
+                     <p className="text-neutral-500 font-bold mt-2">实时监测多平台（TikTok/抖音/知乎/小红书）爆发潜力词</p>
+                  </div>
                </div>
-               <h3 className="text-lg font-black text-neutral-900 mb-2">热词雷达已与操作蓝图同步</h3>
-               <p className="text-[13px] font-bold text-neutral-400 max-w-sm">
-                  为了提升操作效率，所有的热词监测数据已直接整合至「策略蓝图」的表格中。
-               </p>
+
+               <div className="grid grid-cols-4 gap-6">
+                  {[
+                     { platform: 'TikTok', trend: '上升', count: 1242, color: 'text-cyan-500' },
+                     { platform: '抖音', trend: '爆发', count: 892, color: 'text-rose-500' },
+                     { platform: '知乎', trend: '平稳', count: 452, color: 'text-blue-500' },
+                     { platform: '小红书', trend: '上升', count: 2130, color: 'text-rose-600' },
+                  ].map((p, i) => (
+                     <div key={i} className="bg-white p-6 rounded-[32px] border border-neutral-100 shadow-sm">
+                        <div className="flex items-center justify-between mb-4">
+                           <span className="text-[12px] font-black text-neutral-400 uppercase tracking-widest">{p.platform}</span>
+                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${p.trend === '爆发' ? 'bg-rose-50 text-rose-500' : 'bg-emerald-50 text-emerald-500'}`}>
+                              {p.trend}
+                           </span>
+                        </div>
+                        <div className="flex items-baseline gap-1">
+                           <span className="text-2xl font-black text-neutral-900">{p.count}</span>
+                           <span className="text-[10px] font-bold text-neutral-400">词条</span>
+                        </div>
+                     </div>
+                  ))}
+               </div>
+
+               <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm">
+                  <div className="flex items-center justify-between mb-8 pb-8 border-b border-neutral-50">
+                     <div className="text-[14px] font-black text-neutral-900">核心爆发蓝海词分布</div>
+                     <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                           <div className="w-2.5 h-2.5 bg-primary-500 rounded-full" />
+                           <span className="text-[11px] font-bold text-neutral-500 tracking-tight">高转化潜力</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                           <div className="w-2.5 h-2.5 bg-neutral-200 rounded-full" />
+                           <span className="text-[11px] font-bold text-neutral-500 tracking-tight">低竞争度</span>
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                     {currentData.map((row, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-4 bg-neutral-50 rounded-2xl border border-neutral-100 hover:bg-white hover:shadow-lg transition-all group">
+                           <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-neutral-400 font-black text-xs shadow-sm">
+                                 #{idx + 1}
+                              </div>
+                              <div>
+                                 <div className="text-[15px] font-black text-neutral-900">{row.word}</div>
+                                 <div className="text-[10px] font-bold text-neutral-400 mt-0.5">全网搜索量 7 日增长率 {row.rate}%</div>
+                              </div>
+                           </div>
+                           <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[11px] font-black opacity-0 group-hover:opacity-100 transition-all">
+                              开始追踪
+                           </button>
+                        </div>
+                     ))}
+                  </div>
+               </div>
             </div>
          )}
       </div>
