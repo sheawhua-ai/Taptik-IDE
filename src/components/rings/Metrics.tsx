@@ -49,7 +49,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                <BarChart2 size={24} />
             </div>
             <div>
-               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">Analyst | 数据归因</h2>
+               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">数据归因</h2>
                <p className="text-[11px] font-bold text-neutral-400">Tactical Agent: 正在通过 KOC 溯源码计算实时 ROI (当前 XHS ROI: 4.8x)</p>
             </div>
          </div>
@@ -88,7 +88,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                                 <p className="text-4xl font-black text-neutral-900 tracking-tighter">¥58,204.00</p>
                              </div>
                              <div className="text-right border-l border-neutral-100 pl-12">
-                                <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-2">获客 ROI</p>
+                                <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-2">获客投资回报率</p>
                                 <p className="text-4xl font-black text-emerald-500 tracking-tighter">8.42x</p>
                              </div>
                           </div>

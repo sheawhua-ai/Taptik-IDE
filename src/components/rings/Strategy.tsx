@@ -58,7 +58,7 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                <Compass size={24} className="animate-pulse" />
             </div>
             <div>
-               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">Scout | 巡航侦察</h2>
+               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">巡航侦察</h2>
                <div className="flex items-center gap-2 mt-0.5">
                   <p className="text-[11px] font-bold text-neutral-400">正在实时监测: </p>
                   <span className="text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-tight">

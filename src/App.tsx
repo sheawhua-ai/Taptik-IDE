@@ -62,6 +62,14 @@ const SIDE_NAV_ITEMS = [
   { id: 'workflow', name: '商家项目', sub: '全链路跟踪', icon: Workflow, color: 'text-primary-500' },
 ];
 
+const PROJECT_TABS = [
+  { id: 'strategy', name: '全域巡航', icon: Compass },
+  { id: 'matrix', name: '矩阵分发', icon: LayoutGrid },
+  { id: 'content', name: '智造工坊', icon: Sparkles },
+  { id: 'interaction', name: '触达转化', icon: MessageSquare },
+  { id: 'metrics', name: '数据归因', icon: BarChart2 },
+];
+
 export default function App() {
   const [activeProjectId, setActiveProjectId] = useState<keyof typeof MOCK_PROJECTS>('new-merchant');
   const [onboardingStep, setOnboardingStep] = useState(0); 
@@ -106,6 +114,8 @@ export default function App() {
 
   const [activeNav, setActiveNav] = useState('workbench'); 
   const [workflowTab, setWorkflowTab] = useState<'strategy' | 'matrix' | 'content' | 'execution' | 'interaction' | 'metrics'>('strategy');
+  const [focusMode, setFocusMode] = useState<'normal' | 'creation' | 'monitoring' | 'review'>('normal');
+  const [showSubagentChat, setShowSubagentChat] = useState(false);
   const [activeMission, setActiveMission] = useState<{ type: string; payload: any } | null>(null);
   
   useEffect(() => {
@@ -479,18 +489,13 @@ export default function App() {
            </div>
         )}
 
+        {/* 专注模式切换器 (仅在工作流模式显示) */}
         {activeNav === 'workflow' && (
           <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-white">
-             {/* Sub-tabs for Workflow Workstation */}
+             {/* 顶部导航与专注模式 */}
              <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0 shadow-sm z-20">
                 <div className="flex items-center gap-10">
-                   {[
-                      { id: 'strategy', name: '全域巡航', icon: Compass },
-                      { id: 'matrix', name: '矩阵分发', icon: LayoutGrid },
-                      { id: 'content', name: '智造工坊', icon: Sparkles },
-                      { id: 'interaction', name: '触达转化', icon: MessageSquare },
-                      { id: 'metrics', name: '数据归因', icon: BarChart2 },
-                   ].map(tab => (
+                   {PROJECT_TABS.map(tab => (
                      <button 
                        key={tab.id}
                        onClick={() => setWorkflowTab(tab.id as any)}
@@ -504,12 +509,25 @@ export default function App() {
                      </button>
                    ))}
                 </div>
-                <div className="flex items-center gap-4">
-                   <div className="flex items-center gap-2 px-3 py-1 bg-success-50 text-success-600 rounded-full border border-success-100 text-[10px] font-black">
-                      <div className="w-1.5 h-1.5 bg-success-500 rounded-full animate-pulse" />
-                      大脑智能体：激活
-                   </div>
 
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center bg-neutral-100 p-1 rounded-xl">
+                    {[
+                      { id: 'normal', name: '常规', icon: Monitor },
+                      { id: 'creation', name: '创作', icon: PenTool },
+                      { id: 'monitoring', name: '监控', icon: Activity },
+                      { id: 'review', name: '审核', icon: ShieldCheck },
+                    ].map(mode => (
+                      <button 
+                        key={mode.id}
+                        onClick={() => setFocusMode(mode.id as any)}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-black transition-all ${focusMode === mode.id ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-400 hover:text-neutral-600'}`}
+                      >
+                        <mode.icon size={12} />
+                        {mode.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
              </div>
 
@@ -520,243 +538,48 @@ export default function App() {
                  )}
 
                  {workflowTab === 'matrix' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col h-full bg-white overflow-hidden">
-                       <div className="flex-1 flex flex-col p-12 overflow-y-auto custom-scrollbar">
-                          <div className="max-w-6xl mx-auto w-full space-y-12">
-                             <div className="flex items-center justify-between">
-                                <div>
-                                   <div className="flex items-center gap-3 mb-2">
-                                      <h2 className="text-3xl font-black text-neutral-900 tracking-tight">Marshall | 资源调度池</h2>
-                                      <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 text-[10px] font-black rounded-full border border-emerald-500/20 uppercase tracking-widest">Autonomous Active</span>
-                                   </div>
-                                   <p className="text-neutral-500 font-bold mt-2">Agent 智动分配内容权重与 KOC 任务索引（当前全池利用率 94.2%）</p>
-                                </div>
-                                <div className="flex gap-3">
-                                   <button className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl font-black text-xs hover:bg-primary-500 transition-all flex items-center gap-2 shadow-lg group">
-                                      <RefreshCw size={16} className="group-hover:rotate-180 transition-transform duration-700" /> 强制全池重调度
-                                   </button>
-                                </div>
-                             </div>
-                             
-                             <div className="grid grid-cols-4 gap-6">
-                                {[
-                                   { label: '池化账号总数', value: '82', sub: 'KOS Matrix', icon: Users, color: 'text-rose-500' },
-                                   { label: '活跃 KOC 节点', value: '1,240', sub: '码归因追踪中', icon: Orbit, color: 'text-indigo-500' },
-                                   { label: '平均权重得分', value: '8.4', sub: 'Matrix Credit', icon: Star, color: 'text-warning-500' },
-                                   { label: '并发任务载荷', value: '450', sub: 'Running Jobs', icon: Zap, color: 'text-primary-500' },
-                                ].map((stat, i) => (
-                                   <div key={i} className="p-8 bg-neutral-50 rounded-[40px] border border-neutral-100 transition-all hover:bg-white hover:shadow-2xl group relative overflow-hidden">
-                                      <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                         <stat.icon size={80} />
-                                      </div>
-                                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-neutral-400 mb-6 shadow-sm group-hover:bg-neutral-900 group-hover:text-white transition-all">
-                                         <stat.icon size={20} />
-                                      </div>
-                                      <div className="text-3xl font-black text-neutral-900 mb-1">{stat.value}</div>
-                                      <div className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">{stat.label}</div>
-                                      <div className="text-[9px] font-bold text-neutral-300 mt-1">{stat.sub}</div>
-                                   </div>
-                                ))}
-                             </div>
-
-                             <div className="grid grid-cols-2 gap-8">
-                                <div className="bg-neutral-900 rounded-[56px] p-12 text-white relative overflow-hidden">
-                                   <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/5 blur-[100px]" />
-                                   <div className="relative z-10 space-y-10">
-                                      <h3 className="text-2xl font-black tracking-tight flex items-center gap-3">
-                                         <Cpu size={24} className="text-primary-500" />
-                                         Marshall Dispatch Logic
-                                      </h3>
-                                      <div className="space-y-4">
-                                         {[
-                                            { action: '内容去重因子', status: 'Active', desc: '确保 82 个账号笔记重复率 < 10%' },
-                                            { action: '权重均衡算法', status: 'Active', desc: '优先分配优质内容给高权重 KOS' },
-                                            { action: '溯源码轮换决策', status: 'Active', desc: '根据转化曲线自动切入利益点' },
-                                         ].map((logic, i) => (
-                                            <div key={i} className="p-6 bg-white/5 rounded-3xl border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all">
-                                               <div>
-                                                  <div className="font-black text-sm">{logic.action}</div>
-                                                  <div className="text-[11px] text-neutral-500 font-bold">{logic.desc}</div>
-                                               </div>
-                                               <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
-                                            </div>
-                                         ))}
-                                      </div>
-                                   </div>
-                                </div>
-
-                                <div className="bg-neutral-50 rounded-[56px] p-12 border border-neutral-100 relative overflow-hidden">
-                                   <div className="relative z-10 flex flex-col h-full">
-                                      <div className="flex items-center justify-between mb-10">
-                                         <h3 className="text-2xl font-black text-neutral-900 tracking-tight">全球调度负载</h3>
-                                         <div className="text-primary-500 text-3xl font-black">94.2%</div>
-                                      </div>
-                                      <div className="flex-1 flex items-end gap-3 px-4">
-                                         {[40, 65, 80, 50, 95, 75, 90, 85, 94, 98, 92, 94].map((h, i) => (
-                                            <div key={i} className="flex-1 bg-neutral-200 rounded-t-xl relative group">
-                                               <div style={{ height: `${h}%` }} className={`w-full rounded-t-xl transition-all duration-1000 ${i === 11 ? 'bg-primary-500' : 'bg-neutral-900/10 group-hover:bg-primary-500/40'}`} />
-                                            </div>
-                                         ))}
-                                      </div>
-                                      <div className="mt-8 flex items-center justify-between text-[10px] font-black text-neutral-400 uppercase tracking-widest">
-                                         <span>24H Load Trend</span>
-                                         <span>Current Cycle: T+5s</span>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-
-                             <div className="bg-neutral-50 p-8 rounded-[40px] border border-neutral-100">
-                                <div className="flex items-center justify-between mb-8">
-                                   <h3 className="text-lg font-black text-neutral-900">KOC 码后追踪数据流 (实时)</h3>
-                                   <div className="text-[11px] font-black text-neutral-400 uppercase tracking-widest flex items-center gap-2">
-                                      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
-                                      Marshall Agent 实时归因中
-                                   </div>
-                                </div>
-                                <div className="space-y-4">
-                                   {[
-                                      { koc: '南京德基广场-王小美', scan: 142, leads: 12, time: '刚刚', roi: 4.2 },
-                                      { koc: '上海新天地-李大白', scan: 89, leads: 5, time: '2分钟前', roi: 3.1 },
-                                      { koc: '杭州万象城-周星星', scan: 210, leads: 28, time: '5分钟前', roi: 5.8 },
-                                   ].map((row, i) => (
-                                      <div key={i} className="bg-white p-5 rounded-2xl flex items-center justify-between border border-neutral-100 shadow-sm hover:shadow-xl transition-all">
-                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-400">
-                                               <User size={18} />
-                                            </div>
-                                            <div>
-                                               <div className="text-[14px] font-black text-neutral-900">{row.koc}</div>
-                                               <div className="text-[10px] font-bold text-neutral-400">{row.time} 发起扫码追踪</div>
-                                            </div>
-                                         </div>
-                                         <div className="flex items-center gap-12">
-                                            <div className="text-right">
-                                               <div className="text-[10px] font-black text-neutral-400 uppercase tracking-tighter">扫码 / 留资</div>
-                                               <div className="text-[14px] font-black text-neutral-900">{row.scan} / {row.leads}</div>
-                                            </div>
-                                            <div className="text-right">
-                                               <div className="text-[10px] font-black text-neutral-400 uppercase tracking-tighter">实时 ROI</div>
-                                               <div className="text-[14px] font-black text-primary-500">{row.roi}x</div>
-                                            </div>
-                                            <div className="w-10 h-10 flex items-center justify-center bg-neutral-50 rounded-xl text-neutral-300">
-                                               <QrCode size={20} />
-                                            </div>
-                                         </div>
-                                      </div>
-                                   ))}
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </motion.div>
+                    <MerchantMatrix />
                  )}
                  
                  {workflowTab === 'content' && (
-                    <div className="flex flex-col h-full bg-white">
-                       <ContentProduction hasData={hasData} />
-                    </div>
-                 )}
-
-                 {workflowTab === 'execution' && (
-                    <div className="flex flex-col h-full bg-white">
-                       <ExecutionCenter />
-                    </div>
+                    <ContentProduction hasData={hasData} />
                  )}
 
                  {workflowTab === 'interaction' && (
-                    <div className="flex flex-col h-full bg-white">
-                       <Interaction hasData={hasData} />
-                    </div>
+                    <Interaction hasData={hasData} />
                  )}
 
                  {workflowTab === 'metrics' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col h-full bg-white overflow-hidden">
-                       <div className="flex-1 p-12 overflow-y-auto custom-scrollbar">
-                          <div className="max-w-6xl mx-auto space-y-12">
-                             <div className="flex items-center justify-between">
-                                <div>
-                                   <h2 className="text-3xl font-black text-neutral-900 tracking-tight">Tactician | 决策大脑</h2>
-                                   <p className="text-neutral-500 font-bold mt-2">基于实时 ROI 动态调整 Scout 侦察方向与 Studio 创作参数</p>
-                                </div>
-                                <div className="flex gap-4">
-                                   <div className="px-5 py-2 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 flex items-center gap-2">
-                                      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                                      <span className="text-[11px] font-black uppercase tracking-widest">Closed-Loop Active</span>
-                                   </div>
-                                </div>
-                             </div>
-
-                             {/* Dynamic Decision Tree / Logic */}
-                             <div className="p-10 bg-neutral-900 rounded-[56px] text-white relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-80 h-80 bg-primary-500/10 blur-[100px]" />
-                                <div className="space-y-10 relative z-10">
-                                   <div className="flex items-center gap-3">
-                                      <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                                         <Brain size={20} className="text-primary-500" />
-                                      </div>
-                                      <h3 className="text-2xl font-black tracking-tight tracking-tight">Autonomous Decision Loop</h3>
-                                   </div>
-                                   
-                                   <div className="flex items-center gap-8 px-4">
-                                      <div className="flex-1 p-6 bg-white/5 rounded-[32px] border border-white/5 space-y-3">
-                                         <div className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Input: Analyst Feedback</div>
-                                         <p className="text-sm font-bold text-neutral-300">昨天「轻医美」赛道平均扫码率下降 14%，KOC 转化反馈存在价格敏感度。</p>
-                                      </div>
-                                      <div className="shrink-0 text-primary-500">
-                                         <ArrowRight size={32} />
-                                      </div>
-                                      <div className="flex-1 p-6 bg-primary-500/10 rounded-[32px] border border-primary-500/20 space-y-3 ring-4 ring-primary-500/5">
-                                         <div className="text-[10px] font-black text-primary-400 uppercase tracking-widest">Decision: Policy Update</div>
-                                         <p className="text-sm font-bold">指令「Scout」搜集本周竞品低价团购关键词。指令「Studio」生成高性价比视角笔记。</p>
-                                      </div>
-                                      <div className="shrink-0 text-emerald-500">
-                                         <ArrowRight size={32} />
-                                      </div>
-                                      <div className="flex-1 p-6 bg-white/5 rounded-[32px] border border-white/5 space-y-3">
-                                         <div className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Output: Next Cycle</div>
-                                         <p className="text-sm font-bold text-neutral-300">预计 48H 内通过“差异化低价”心智拉回扫码 ROI。</p>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-
-                             <div className="grid grid-cols-2 gap-8">
-                                <div className="p-10 bg-neutral-50 rounded-[56px] border border-neutral-100">
-                                   <h3 className="text-xl font-black text-neutral-900 mb-8 flex items-center gap-3">
-                                      <LineChart size={20} className="text-indigo-500" />
-                                      ROI 归因曲线 (自动决策参考)
-                                   </h3>
-                                   <div className="aspect-video bg-white rounded-[40px] border border-neutral-100 flex items-center justify-center">
-                                      <div className="text-neutral-300 font-black italic">Visualizing ROI Attribution Hub...</div>
-                                   </div>
-                                </div>
-                                <div className="p-10 bg-neutral-50 rounded-[56px] border border-neutral-100">
-                                   <h3 className="text-xl font-black text-neutral-900 mb-8 flex items-center gap-3">
-                                      <Target size={20} className="text-rose-500" />
-                                      爆文率监控 (内容有效性)
-                                   </h3>
-                                   <div className="grid grid-cols-2 gap-4">
-                                      {[
-                                         { label: '笔记存活率', value: '98.2%', detail: '+2.1% WoW' },
-                                         { label: '平均互动量', value: '1.2k', detail: 'Above Industry' },
-                                         { label: '搜索渗透率', value: '64%', detail: 'High SEO Rank' },
-                                         { label: '负面拦截量', value: '0', detail: 'Safety Level 1' },
-                                      ].map((item, i) => (
-                                         <div key={i} className="p-6 bg-white rounded-3xl border border-neutral-100">
-                                            <div className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">{item.label}</div>
-                                            <div className="text-2xl font-black text-neutral-900">{item.value}</div>
-                                            <div className="text-[11px] font-bold text-emerald-500 mt-2">{item.detail}</div>
-                                         </div>
-                                      ))}
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </motion.div>
+                    <Metrics />
                  )}
                </div>
+
+               {/* 环境感知 AI 搭档侧边栏 */}
+               <AnimatePresence>
+                 {(showSubagentChat && focusMode !== 'review') && (
+                    <motion.div 
+                      initial={{ width: 0, opacity: 0 }}
+                      animate={{ width: 400, opacity: 1 }}
+                      exit={{ width: 0, opacity: 0 }}
+                      className="border-l border-neutral-100 bg-white shadow-xl z-20 flex flex-col shrink-0"
+                    >
+                      <SubagentChat 
+                        moduleId={workflowTab} 
+                        moduleName={PROJECT_TABS.find(t => t.id === workflowTab)?.name || '业务助手'} 
+                        onClose={() => setShowSubagentChat(false)}
+                      />
+                    </motion.div>
+                 )}
+               </AnimatePresence>
+
+               {(!showSubagentChat && focusMode !== 'review') && (
+                 <button 
+                   onClick={() => setShowSubagentChat(true)}
+                   className="absolute right-6 bottom-6 w-12 h-12 bg-neutral-900 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:bg-primary-500 transition-all z-30 active:scale-95"
+                 >
+                   <Bot size={20} />
+                 </button>
+               )}
              </div>
           </div>
         )}
