@@ -288,22 +288,6 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
               </div>
            </div>
 
-           <div className="p-6 bg-neutral-900 border-t border-white/5 mt-auto">
-              <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-3">系统运行效能</div>
-              <div className="space-y-3">
-                 <div className="flex justify-between text-[10px] font-bold text-white/60">
-                    <span>向量库匹配度</span>
-                    <span>98.2%</span>
-                 </div>
-                 <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                    <div className="w-[98%] h-full bg-primary-500" />
-                 </div>
-                 <div className="flex justify-between text-[10px] font-bold text-white/60 pt-1">
-                    <span>自动化节约工时</span>
-                    <span>42h / 周</span>
-                 </div>
-              </div>
-           </div>
         </div>
       </div>
     </div>

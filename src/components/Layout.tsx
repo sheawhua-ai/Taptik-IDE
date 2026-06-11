@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { AgentStatusFooter } from './AgentStatusFooter';
 import { SubagentChat } from './SubagentChat';
 import { MessageSquare, Sparkles, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -141,8 +140,6 @@ export default function Layout() {
             )}
           </button>
         </div>
-
-        <AgentStatusFooter />
       </main>
     </div>
   );

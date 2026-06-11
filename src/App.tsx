@@ -32,7 +32,6 @@ import { ExecutionCenter } from './components/rings/ExecutionCenter';
 import { CRM } from './components/rings/CRM';
 import { Metrics } from './components/rings/Metrics';
 
-import { AgentStatusFooter } from './components/AgentStatusFooter';
 import { SubagentChat } from './components/SubagentChat';
 
 // Existing Pages
@@ -785,8 +784,7 @@ export default function App() {
            </div>
         )}
 
-        {/* Footer Status Bar */}
-        <AgentStatusFooter />
+
       </div>
     </div>
   );

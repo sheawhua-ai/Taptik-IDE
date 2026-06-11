@@ -114,27 +114,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                  </button>
               </div>
            </div>
-
-           <div className="mt-auto p-6 bg-neutral-900 border-t border-white/5">
-              <div className="flex items-center justify-between mb-4">
-                 <div className="flex items-center gap-2">
-                    <Database size={14} className="text-primary-500" />
-                    <span className="text-[11px] font-black text-white/50 uppercase tracking-widest">LanceDB Status</span>
-                 </div>
-                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              </div>
-              <div className="space-y-3">
-                 <div className="text-[10px] font-bold text-white/30 flex justify-between">
-                    <span>已建索引块 (Chunks)</span>
-                    <span className="text-white/70">8,230</span>
-                 </div>
-                 <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div className="w-2/3 h-full bg-primary-500 shadow-[0_0_8px_rgba(230,53,96,0.5)]" />
-                 </div>
-                 <div className="text-[9px] font-bold text-white/20">向量空间利用率 94.2%</div>
-              </div>
-           </div>
-        </div>
+         </div>
 
         {/* Right: Structured Document List */}
         <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
