@@ -132,15 +132,21 @@ export default function App() {
       setActiveNav('workflow');
       setWorkflowTab(e.detail.tab);
     };
+    const handleToFiles = () => {
+       setActiveNav('files');
+       setFilesTab('knowledge'); // switch to the knowledge total base directly
+    };
     window.addEventListener('nav-to-factory', handleToFactory);
     window.addEventListener('nav-to-strategy', handleToStrategy);
     window.addEventListener('nav-to-tab', handleToTab);
+    window.addEventListener('nav-to-files', handleToFiles);
     const handleToWorkbench = () => setActiveNav('workbench');
     window.addEventListener('nav-to-strategy-start', handleToWorkbench);
     return () => {
       window.removeEventListener('nav-to-factory', handleToFactory);
       window.removeEventListener('nav-to-strategy', handleToStrategy);
       window.removeEventListener('nav-to-tab', handleToTab);
+      window.removeEventListener('nav-to-files', handleToFiles);
       window.removeEventListener('nav-to-strategy-start', handleToWorkbench);
     };
   }, []);

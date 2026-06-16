@@ -122,7 +122,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
               <div className="flex items-end justify-between border-b border-neutral-100 pb-8">
                  <div>
                     <h1 className="text-3xl font-black text-neutral-900 tracking-tight mb-2">文档与语义资产</h1>
-                    <p className="text-neutral-500 font-bold">查看及管理已结构化至 LanceDB 的文件、SOP 与 原始语料</p>
+                    <p className="text-neutral-500 font-bold">查看及管理已结构化至 LanceDB 的核心知识库、SOP 与原始语料</p>
                  </div>
                  <div className="flex gap-2">
                     <button className="p-2 border border-neutral-200 rounded-xl text-neutral-400 hover:text-neutral-900"><LayoutGrid size={20} /></button>
@@ -130,7 +130,45 @@ export const FileManager: React.FC<FileManagerProps> = ({
                  </div>
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              {/* Core Enterprise Assets Group */}
+              <div className="space-y-4">
+                 <h2 className="text-[14px] font-black text-neutral-900 flex items-center gap-2">
+                    <Brain className="text-primary-500" size={18} />
+                    企业/品牌级核心约束 (Global Constraints)
+                 </h2>
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                   {[
+                     { name: '账号 IP 定位方案', sub: '全局强制挂载', size: '2.1MB', tags: ['人设', '竞品屏蔽'], color: 'from-rose-500 to-rose-600', shadow: 'shadow-rose-500/20' },
+                     { name: '视觉及配图规范', sub: '视觉流必须继承', size: '1.4MB', tags: ['色系', '排版'], color: 'from-amber-500 to-amber-600', shadow: 'shadow-amber-500/20' },
+                     { name: '风险规避库', sub: '内容生产必经校验', size: '42KB', tags: ['违禁词', '公关'], color: 'from-emerald-500 to-emerald-600', shadow: 'shadow-emerald-500/20' },
+                     { name: '话题标签矩阵', sub: '流量分发锚点', size: '128KB', tags: ['长尾', 'SEO'], color: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/20' }
+                   ].map((a, idx) => (
+                      <div key={idx} className="p-5 bg-white border border-neutral-200/60 rounded-3xl hover:border-primary-500 hover:shadow-xl transition-all group flex flex-col h-full">
+                         <div className="flex items-center justify-between mb-4">
+                            <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${a.color} shadow-lg ${a.shadow} flex items-center justify-center text-white shrink-0`}>
+                               <BookOpen size={18} />
+                            </div>
+                            <span className="text-[10px] uppercase font-black text-neutral-400 bg-neutral-50 px-2 py-1 rounded-md">{a.size}</span>
+                         </div>
+                         <h3 className="text-[13px] font-black text-neutral-900 mb-1 group-hover:text-primary-600">{a.name}</h3>
+                         <p className="text-[10px] font-bold text-neutral-400 mb-4">{a.sub}</p>
+                         <div className="mt-auto flex flex-wrap gap-1.5">
+                            {a.tags.map(t => (
+                               <span key={t} className="text-[9px] font-black uppercase text-neutral-500 bg-neutral-100/80 px-2 py-1 rounded-md">#{t}</span>
+                            ))}
+                         </div>
+                      </div>
+                   ))}
+                 </div>
+              </div>
+
+              {/* General Documents */}
+              <div className="space-y-4 pt-6">
+                 <h2 className="text-[14px] font-black text-neutral-900 flex items-center gap-2">
+                    <FolderOpen className="text-neutral-400" size={18} />
+                    一般文档与语料
+                 </h2>
+                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                  {DOCUMENTS.map((doc, i) => (
                    <div key={i} className="group bg-white border border-neutral-100 p-6 rounded-[32px] hover:border-primary-500/20 hover:shadow-2xl transition-all relative overflow-hidden">
                       <div className="absolute -top-10 -right-10 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
@@ -171,6 +209,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                       </div>
                    </div>
                  ))}
+                 </div>
               </div>
               
               <div className="pt-10">

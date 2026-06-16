@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, Sparkles, Target, BarChart2, Workflow, MessageSquare,
   Compass, Lightbulb, Bot, LayoutGrid, Cpu, Share2, PanelLeftClose, PanelRightClose,
-  User, Send, FileText, Plus, Check, CalendarDays, LineChart, PanelLeftOpen, PanelRightOpen, History, FolderOpen, Brain
+  User, Send, FileText, Plus, Check, CalendarDays, LineChart, PanelLeftOpen, PanelRightOpen, History, FolderOpen, Brain, BookOpen, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FunctionNav } from './command-center/FunctionNav';
@@ -176,8 +176,21 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
               <div className="flex-1 overflow-hidden flex flex-col bg-[#fafafa]">
                  {leftTab === 'macros' && <SubagentMacroPanel onRunMacro={handleExecute} />}
                  {leftTab === 'assets' && (
-                    <div className="p-6 space-y-4">
-                       <p className="text-[11px] font-bold text-neutral-400 text-center py-10">当前项目文件与资料资产库<br/>（建设中）</p>
+                    <div className="p-6 flex flex-col items-center justify-center text-center h-[300px] border-b border-neutral-100">
+                       <div className="w-16 h-16 bg-neutral-100 rounded-2xl flex items-center justify-center text-neutral-400 mb-4 shadow-inner">
+                          <BookOpen size={24} />
+                       </div>
+                       <h3 className="text-[13px] font-black text-neutral-900 mb-2">资产已全量归集</h3>
+                       <p className="text-[11px] font-bold text-neutral-400 max-w-[200px] mb-6">商家 IP 定位、合规词库与视觉规范已统一存放在主知识库中心。</p>
+                       <button 
+                         onClick={() => {
+                            // Dispatch custom event to change left nav in App.tsx
+                            window.dispatchEvent(new CustomEvent('nav-to-files'));
+                         }}
+                         className="px-5 py-2.5 bg-neutral-900 border border-neutral-800 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 hover:border-primary-500 transition-all flex items-center gap-2"
+                       >
+                         前往知识库中心 <ArrowUpRight size={14} />
+                       </button>
                     </div>
                  )}
                  {leftTab === 'history' && (
