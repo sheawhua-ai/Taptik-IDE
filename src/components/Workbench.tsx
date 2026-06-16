@@ -400,7 +400,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                   <div className="space-y-[2px] bg-neutral-50 p-[2px] rounded-[24px]">
                     {[
                       { stage: '策略探测', status: '完成', icon: Target, detail: '蓝海词「低卡茶饮」热度上升 42%' },
-                      { stage: '智造工坊', status: '执行中', icon: Sparkles, detail: '生成笔记 12 篇，配图任务下发中', active: true },
+                      { stage: '批量内容生成', status: '分配中', icon: Sparkles, detail: '生成笔记 25 篇，配图任务下发中', active: true },
                       { stage: '分发排期', status: '等待', icon: Share2, detail: '排期空闲' },
                       { stage: '数据归因', status: '等待', icon: BarChart2, detail: '等待回流报表' },
                     ].map((step, i) => (

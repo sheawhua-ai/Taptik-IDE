@@ -1,15 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  PlusCircle, LayoutGrid, Users, CreditCard, Settings, 
-  ArrowUpRight, Building, User, CheckCircle2, MoreVertical,
-  Activity, BarChart3, MessageSquare, Sparkles, Send, Target,
-  X, Calendar, Crosshair, Package, ArrowRight
+  PlusCircle, Target, ArrowUpRight, CheckCircle2, Activity, Send, 
+  Package, X, Calendar, ArrowRight, PenTool, Play, Camera, CalendarClock,
+  Image as ImageIcon, Sparkles, CheckSquare, Settings, ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+interface BatchProject {
+  id: string;
+  project: string;
+  target: string;
+  totalCount: number;
+  completedCount: number;
+}
+
+interface NoteDraft {
+  id: string;
+  title: string;
+  content: string;
+  imageType: 'official' | 'real_shoot' | 'pending';
+  status: 'drafting' | 'review' | 'dispatched' | 'scheduled';
+  selected?: boolean;
+}
+
 export default function MerchantMatrix() {
-  const [viewMode, setViewMode] = useState<'projects' | 'staff'>('projects');
+  const [activeProject, setActiveProject] = useState<string | null>(null);
   const [isCreatingProject, setIsCreatingProject] = useState(false);
+  const [activeBatch, setActiveBatch] = useState<BatchProject | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [drafts, setDrafts] = useState<NoteDraft[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  useEffect(() => {
+    const handleOpenCreate = () => {
+      setActiveProject(null);
+      setIsCreatingProject(true);
+    };
+    window.addEventListener('nav-to-create-project', handleOpenCreate);
+    return () => window.removeEventListener('nav-to-create-project', handleOpenCreate);
+  }, []);
 
   const MOCK_PROJECTS = [
     { 
@@ -42,38 +72,267 @@ export default function MerchantMatrix() {
     }
   ];
 
-  const MOCK_STAFF = [
-    { id: '1', name: '李经理', role: '内容操盘手', status: '在线', activity: '正在编辑：夏日防晒方案' },
-    { id: '2', name: '张小帅', role: '分发专员', status: '离线', activity: '最后在线：2 小时前' },
-    { id: '3', name: '王美丽', role: '互动客服', status: '正在忙碌', activity: '处理意向线索中...' },
+  const pendingBatches: BatchProject[] = [
+    { id: 'B1', project: '阶段一：冷启动', target: '跑通账号防晒标签，提升基础社区收录率', totalCount: 25, completedCount: 0 },
+    { id: 'B2', project: '阶段二：心智种草期', target: '测试垂直穿搭/美妆流量池，沉淀转化素材', totalCount: 40, completedCount: 0 },
+    { id: 'B3', project: '阶段三：搜索卡位期', target: '集中占据防晒推荐搜索占位，获取长尾流量', totalCount: 60, completedCount: 0 },
   ];
 
-  return (
-    <div className="max-w-6xl mx-auto space-y-10 p-8 lg:p-12">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h2 className="text-3xl font-black text-neutral-900 tracking-tight">
-            {viewMode === 'projects' ? '商家项目看板' : '团队协作席位'}
-          </h2>
-          <p className="text-[13px] text-neutral-400 font-bold">
-            {viewMode === 'projects' ? '跟踪商家项目的全链路进展与核心业务产出' : '管理您团队中的操盘手、客服与分发专员'}
-          </p>
+  const handleStartBatch = (batch: BatchProject) => {
+    setActiveBatch(batch);
+    setIsGenerating(true);
+    setProgress(0);
+    setDrafts([]);
+
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += 12;
+      if (currentProgress >= 100) {
+        clearInterval(interval);
+        generateMocks(batch);
+        setIsGenerating(false);
+        setProgress(100);
+      } else {
+        setProgress(currentProgress);
+      }
+    }, 400);
+  };
+
+  const generateMocks = (batch: BatchProject) => {
+    const mocks: NoteDraft[] = Array.from({ length: 6 }).map((_, i) => ({
+      id: `ND-${i + 1}`,
+      title: i % 2 === 0 ? '一秒入夏必备！通勤挖到的防晒神仙单品☀️' : '早八党福音，清爽不油腻的防晒测评来了！',
+      content: '夏天真的不能没有它！最近挖到的宝藏神器，不仅肤感清爽不拔干，而且力度也是绝绝子！\n\n测试了一周，平时通勤或者周末出去玩完全够用...',
+      imageType: 'pending',
+      status: 'review',
+      selected: false
+    }));
+    setDrafts(mocks);
+  };
+
+  const toggleSelectAll = () => {
+    const newState = !selectAll;
+    setSelectAll(newState);
+    setDrafts(drafts.map(d => ({ ...d, selected: newState })));
+  };
+
+  const toggleSelect = (id: string) => {
+    setDrafts(drafts.map(d => d.id === id ? { ...d, selected: !d.selected } : d));
+  };
+
+  const handleBulkDispatch = () => {
+    setDrafts(drafts.map(d => d.selected ? { ...d, imageType: 'real_shoot', status: 'dispatched', selected: false } : d));
+    setSelectAll(false);
+  };
+
+  const handleBulkSchedule = () => {
+    setDrafts(drafts.map(d => d.selected ? { ...d, status: 'scheduled', selected: false } : d));
+    setSelectAll(false);
+  };
+
+  const selectedCount = drafts.filter(d => d.selected).length;
+
+  if (activeProject) {
+    const project = MOCK_PROJECTS.find(p => p.id === activeProject) || MOCK_PROJECTS[0];
+    return (
+      <div className="flex flex-col h-full bg-neutral-50/50 overflow-hidden">
+        {/* Project Generation Header */}
+        <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
+           <div className="flex items-center gap-4">
+              <button 
+                onClick={() => { setActiveProject(null); setActiveBatch(null); }}
+                className="w-10 h-10 border border-neutral-200 rounded-xl flex items-center justify-center text-neutral-500 hover:bg-neutral-50 transition-colors"
+              >
+                 <ChevronLeft size={20} />
+              </button>
+              <div>
+                 <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">{project.name}</h2>
+                 <p className="text-[11px] font-bold text-neutral-400 mt-0.5">项目内容生产车间</p>
+              </div>
+           </div>
+           
+           {activeBatch && !isGenerating && drafts.length > 0 && (
+             <button 
+               onClick={() => setActiveBatch(null)} 
+               className="px-5 py-2 hover:bg-neutral-100 border border-neutral-200 rounded-xl text-[13px] font-black text-neutral-500 transition-colors bg-white shadow-sm"
+             >
+               返回待生产批次
+             </button>
+           )}
         </div>
-        <div className="flex items-center gap-2 bg-neutral-100 p-1.5 rounded-2xl">
-           <button 
-             onClick={() => setViewMode('projects')}
-             className={`px-5 py-2.5 rounded-xl text-[12px] font-black transition-all ${viewMode === 'projects' ? 'bg-white shadow-xl text-neutral-900 border border-neutral-200/50' : 'text-neutral-400'}`}
-           >项目进度</button>
-           <button 
-             onClick={() => setViewMode('staff')}
-             className={`px-5 py-2.5 rounded-xl text-[12px] font-black transition-all ${viewMode === 'staff' ? 'bg-white shadow-xl text-neutral-900 border border-neutral-200/50' : 'text-neutral-400'}`}
-           >团队管理</button>
+
+        <div className="flex-1 flex overflow-hidden">
+           {!activeBatch ? (
+              <div className="flex-1 flex flex-col p-12 overflow-y-auto custom-scrollbar">
+                 <div className="max-w-4xl mx-auto w-full space-y-8">
+                    <div>
+                      <h3 className="text-2xl font-black text-neutral-900 tracking-tight">待处理生产批次</h3>
+                      <p className="text-[13px] font-bold text-neutral-400 mt-2">系统已根据 {project.name} 的排期日历，为您汇总需要生成内容的批次任务。</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                       {pendingBatches.map((batch, index) => (
+                          <div key={batch.id} className="bg-white p-6 rounded-[24px] border border-neutral-200 flex items-center justify-between hover:border-primary-500/30 hover:shadow-lg transition-all group">
+                             <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 bg-neutral-50 rounded-2xl flex items-center justify-center text-neutral-400 font-black text-xl border border-neutral-100">
+                                  {batch.totalCount}
+                                  <span className="text-[10px] ml-1 uppercase">篇</span>
+                                </div>
+                                <div>
+                                   <div className="flex items-center gap-3 mb-2">
+                                      <span className="text-[11px] font-black text-primary-500 bg-primary-50 px-2.5 py-1 rounded-md tracking-widest uppercase">阶段批次 {index + 1}</span>
+                                      <h4 className="text-[16px] font-black text-neutral-900">{batch.project}</h4>
+                                   </div>
+                                   <p className="text-[12px] font-bold text-neutral-500 flex items-center gap-2">
+                                      <TargetIcon /> 阶段目标：{batch.target}
+                                   </p>
+                                </div>
+                             </div>
+                             <button onClick={() => handleStartBatch(batch)} className="px-6 py-4 bg-neutral-900 text-white text-[13px] font-black rounded-xl hover:bg-primary-500 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
+                                <Play size={16} fill="currentColor" /> 启动批量生成
+                             </button>
+                          </div>
+                       ))}
+                    </div>
+                 </div>
+              </div>
+           ) : (
+              <div className="flex-1 flex flex-col relative overflow-hidden bg-white">
+                 {isGenerating ? (
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                       <div className="relative w-24 h-24 mb-8">
+                          <svg className="animate-spin w-full h-full text-neutral-100" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" strokeWidth="8" />
+                          </svg>
+                          <svg className="absolute inset-0 w-full h-full text-primary-500 origin-center -rotate-90" viewBox="0 0 100 100">
+                            <circle 
+                              cx="50" cy="50" r="45" fill="none" strokeWidth="8" 
+                              strokeDasharray="283" 
+                              strokeDashoffset={283 - (progress / 100) * 283} 
+                              className="transition-all duration-300 ease-out" 
+                              strokeLinecap="round" 
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                             <Sparkles size={28} className="text-primary-500 animate-pulse" />
+                          </div>
+                       </div>
+                       <h3 className="text-2xl font-black text-neutral-900 tracking-tight leading-tight">正在批量构建笔记初稿...</h3>
+                       <p className="text-[14px] font-bold text-neutral-400 mt-3 text-center">
+                         进度 {progress.toFixed(0)}% <br/>
+                         <span className="text-[12px] opacity-70">正在调用知识库防查重与敏感词过滤引擎</span>
+                       </p>
+                    </div>
+                 ) : (
+                    <div className="flex flex-col h-full">
+                       <div className="p-6 border-b border-neutral-100 bg-neutral-50/50 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+                          <div className="flex items-center gap-4">
+                             <button 
+                               onClick={toggleSelectAll}
+                               className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm ${selectAll ? 'bg-primary-500 text-white' : 'bg-white border text-neutral-400 hover:bg-neutral-50'}`}
+                             >
+                                <CheckSquare size={18} />
+                             </button>
+                             <div>
+                                <p className="text-[14px] font-black text-neutral-900">
+                                   已选中 {selectedCount} 篇
+                                </p>
+                                <p className="text-[11px] font-bold text-neutral-400 mt-0.5">
+                                   共 {activeBatch.totalCount} 篇已完成撰写，请确认配图并分配到待分发素材库。
+                                </p>
+                             </div>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                             <button 
+                               onClick={handleBulkDispatch}
+                               disabled={selectedCount === 0}
+                               className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-black hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors disabled:opacity-50 flex items-center gap-2 shadow-sm"
+                             >
+                                <Camera size={16} /> 批量下发导购实拍 ({selectedCount})
+                             </button>
+                             <button 
+                               onClick={handleBulkSchedule}
+                               disabled={selectedCount === 0}
+                               className="px-5 py-3 bg-neutral-900 text-white rounded-xl text-[13px] font-black hover:bg-primary-500 transition-colors disabled:opacity-50 flex items-center gap-2 shadow-lg"
+                             >
+                                <CalendarClock size={16} /> 入库至待分发列队 ({selectedCount})
+                             </button>
+                          </div>
+                       </div>
+
+                       <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-neutral-50/30">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                             {drafts.map((draft, i) => (
+                                <div 
+                                  key={draft.id} 
+                                  onClick={() => toggleSelect(draft.id)}
+                                  className={`bg-white rounded-[24px] border-2 transition-all cursor-pointer relative flex flex-col h-[320px] ${draft.selected ? 'border-primary-500 ring-4 ring-primary-500/10 shadow-lg' : 'border-neutral-200 hover:border-neutral-300'}`}
+                                >
+                                   <div className="p-5 border-b border-neutral-100 flex items-start justify-between bg-neutral-50/30 rounded-t-[22px]">
+                                      <div className="flex-1 min-w-0 pr-4">
+                                         <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest bg-neutral-200 text-neutral-600">
+                                              #{i + 1}
+                                            </span>
+                                            {draft.status === 'scheduled' && (
+                                              <span className="text-[10px] font-black px-2 py-0.5 rounded tracking-widest bg-primary-100 text-primary-600 flex items-center gap-1">
+                                                 <CalendarClock size={10} /> 已入库
+                                              </span>
+                                            )}
+                                            {draft.status === 'dispatched' && (
+                                              <span className="text-[10px] font-black px-2 py-0.5 rounded tracking-widest bg-emerald-100 text-emerald-600 flex items-center gap-1">
+                                                 <Camera size={10} /> 待回传
+                                              </span>
+                                            )}
+                                         </div>
+                                         <h4 className="text-[14px] font-black text-neutral-900 leading-snug line-clamp-2">
+                                            {draft.title}
+                                         </h4>
+                                      </div>
+                                      <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 transition-colors ${draft.selected ? 'bg-primary-500 text-white' : 'border border-neutral-300 text-transparent'}`}>
+                                         <CheckCircle2 size={16} className={draft.selected ? 'opacity-100' : 'opacity-0'} />
+                                      </div>
+                                   </div>
+                                   
+                                   <div className="p-5 flex-1 flex flex-col justify-between overflow-hidden">
+                                      <div>
+                                         <p className="text-[12px] font-bold text-neutral-500 leading-relaxed line-clamp-4">
+                                            {draft.content}
+                                         </p>
+                                      </div>
+                                      <div className="mt-4 flex items-center gap-2">
+                                         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100 text-neutral-400">
+                                            {draft.imageType === 'pending' ? <ImageIcon size={14} /> : draft.imageType === 'real_shoot' ? <Camera size={14} className="text-emerald-500" /> : <ImageIcon size={14} className="text-primary-500" />}
+                                         </span>
+                                         <span className="text-[11px] font-bold text-neutral-400">
+                                            {draft.imageType === 'pending' ? '尚未分配素材' : draft.imageType === 'real_shoot' ? '实拍任务执行中' : '已匹配品牌库图片'}
+                                         </span>
+                                      </div>
+                                   </div>
+                                </div>
+                             ))}
+                          </div>
+                       </div>
+                    </div>
+                 )}
+              </div>
+           )}
         </div>
       </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 gap-6">
-        {viewMode === 'projects' ? (
-          MOCK_PROJECTS.map(project => (
+  return (
+    <div className="w-full h-full overflow-y-auto bg-white custom-scrollbar pb-24">
+      <div className="max-w-6xl mx-auto space-y-10 p-8 lg:p-12">
+        <div className="space-y-1">
+          <h2 className="text-3xl font-black text-neutral-900 tracking-tight">项目与内容</h2>
+          <p className="text-[13px] text-neutral-400 font-bold">跟踪商家项目的全链路进展，并在项目中进行内容的批量成稿</p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          {MOCK_PROJECTS.map(project => (
             <motion.div 
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
@@ -111,8 +370,12 @@ export default function MerchantMatrix() {
                   </div>
                 </div>
 
-                <button className="px-6 py-3 bg-neutral-50 hover:bg-neutral-900 hover:text-white rounded-2xl text-[12px] font-black transition-all flex items-center gap-2">
-                  进入详情 <ArrowUpRight size={16} />
+                <button 
+                  onClick={() => setActiveProject(project.id)}
+                  className="px-6 py-3 bg-neutral-900 text-white rounded-2xl text-[12px] font-black transition-all flex items-center gap-2 hover:bg-primary-500 shadow-xl active:scale-95"
+                >
+                  <PenTool size={16} />
+                  进入成稿车间
                 </button>
               </div>
 
@@ -144,159 +407,149 @@ export default function MerchantMatrix() {
                 ))}
               </div>
             </motion.div>
-          ))
-        ) : (
-          MOCK_STAFF.map(staff => (
-            <div key={staff.id} className="p-8 bg-white border border-neutral-100 rounded-[40px] flex items-center justify-between hover:border-primary-500/20 hover:shadow-2xl transition-all group">
-               <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-neutral-50 rounded-2xl flex items-center justify-center text-neutral-300 font-black group-hover:bg-primary-50 group-hover:text-primary-500 transition-all text-xl">
-                     {staff.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="text-[17px] font-black text-neutral-900">{staff.name}</h4>
-                    <p className="text-[11px] text-neutral-400 font-black uppercase tracking-widest">{staff.role}</p>
-                  </div>
-               </div>
-               
-               <div className="flex items-center gap-12">
-                  <div className="hidden md:block text-right">
-                     <p className="text-[10px] text-neutral-400 font-black uppercase tracking-widest mb-1.5">最近作业</p>
-                     <p className="text-[14px] font-bold text-neutral-600">{staff.activity}</p>
-                  </div>
-                  <div className="min-w-[100px] text-right">
-                    <span className={`px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest ${staff.status === '在线' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-neutral-50 text-neutral-400 border border-neutral-100'}`}>
-                      {staff.status}
-                    </span>
-                  </div>
-               </div>
-            </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
 
-      <button 
-         onClick={() => viewMode === 'projects' && setIsCreatingProject(true)}
-         className="w-full py-8 bg-white border border-dashed border-neutral-200 rounded-[40px] text-[15px] font-black text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-3"
-      >
-         <PlusCircle size={24} /> {viewMode === 'projects' ? '启动新履约项目' : '录入新员工信息'}
-      </button>
+        <button 
+           onClick={() => setIsCreatingProject(true)}
+           className="w-full py-8 bg-white border border-dashed border-neutral-200 rounded-[40px] text-[15px] font-black text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-3"
+        >
+           <PlusCircle size={24} /> 启动新项目
+        </button>
 
-      {/* Create Project Overlay Modal */}
-      <AnimatePresence>
-        {isCreatingProject && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-end p-4"
-          >
+        {/* Create Project Overlay Modal */}
+        <AnimatePresence>
+          {isCreatingProject && (
             <motion.div 
-               initial={{ x: '100%', opacity: 0 }}
-               animate={{ x: 0, opacity: 1 }}
-               exit={{ x: '100%', opacity: 0 }}
-               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-               className="w-full max-w-2xl bg-white h-full rounded-[40px] shadow-2xl flex flex-col overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-end p-4"
             >
-               <div className="h-20 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0">
-                  <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
-                        <Package size={20} />
-                     </div>
-                     <h2 className="text-xl font-black text-neutral-900 tracking-tight">建立履约项目与周期目标</h2>
-                  </div>
-                  <button onClick={() => setIsCreatingProject(false)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 transition-colors">
-                     <X size={20} />
-                  </button>
-               </div>
-               
-               <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/30 custom-scrollbar space-y-8">
-                  {/* Base Info */}
-                  <div className="space-y-4">
-                     <h3 className="text-[13px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
-                        <Target size={16} className="text-neutral-400" /> 1. 项目基础定义
-                     </h3>
-                     <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                           <label className="text-[11px] font-bold text-neutral-400 uppercase">选择挂载商户账号</label>
-                           <select className="w-full h-12 bg-white border border-neutral-200 rounded-2xl px-4 text-[14px] font-black outline-none focus:border-primary-500">
-                             <option>奈雪的茶 (NX-001)</option>
-                             <option>霸王茶姬 (BW-022)</option>
-                           </select>
-                        </div>
-                        <div className="space-y-2">
-                           <label className="text-[11px] font-bold text-neutral-400 uppercase">履约项目名称</label>
-                           <input type="text" placeholder="例如：2026秋季大促矩阵" className="w-full h-12 bg-white border border-neutral-200 rounded-2xl px-4 text-[14px] font-black outline-none focus:border-primary-500" />
-                        </div>
-                     </div>
-                  </div>
+              <motion.div 
+                 initial={{ x: '100%', opacity: 0 }}
+                 animate={{ x: 0, opacity: 1 }}
+                 exit={{ x: '100%', opacity: 0 }}
+                 transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                 className="w-full max-w-3xl bg-white h-full rounded-[40px] shadow-2xl flex flex-col overflow-hidden"
+              >
+                 <div className="h-20 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0">
+                    <div className="flex items-center gap-3">
+                       <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
+                          <Package size={20} />
+                       </div>
+                       <h2 className="text-xl font-black text-neutral-900 tracking-tight">创建新项目</h2>
+                    </div>
+                    <button onClick={() => setIsCreatingProject(false)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 transition-colors">
+                       <X size={20} />
+                    </button>
+                 </div>
+                 
+                 <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/30 custom-scrollbar space-y-10">
+                    <div className="space-y-6">
+                       <h3 className="text-[14px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
+                          <Target size={18} className="text-neutral-400" /> 1. 项目与目标立项
+                       </h3>
+                       <div className="grid grid-cols-2 gap-5">
+                          <div className="space-y-2">
+                             <label className="text-[11px] font-bold text-neutral-400 uppercase">关联商家主账号</label>
+                             <select className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] font-black outline-none focus:border-primary-500 transition-colors">
+                               <option>奈雪的茶 (NX-001)</option>
+                               <option>霸王茶姬 (BW-022)</option>
+                             </select>
+                          </div>
+                          <div className="space-y-2">
+                             <label className="text-[11px] font-bold text-neutral-400 uppercase">项目名称</label>
+                             <input type="text" placeholder="例如：2026秋季大促矩阵" className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] font-black outline-none focus:border-primary-500 transition-colors" />
+                          </div>
+                          <div className="col-span-2 space-y-2">
+                             <label className="text-[11px] font-bold text-neutral-400 uppercase">核心运营目标</label>
+                             <textarea 
+                               rows={2} 
+                               placeholder="描述您的期望，例如：'想在下个月提升防晒品类的搜索占位，需要大批量真实素人测评'..." 
+                               className="w-full bg-white border border-neutral-200 rounded-2xl p-4 text-[14px] font-bold outline-none focus:border-primary-500 transition-colors resize-none"
+                             />
+                          </div>
+                          <div className="col-span-2 mt-1">
+                             <button className="px-6 py-3.5 bg-neutral-900 text-white rounded-xl text-[13px] font-black flex items-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95 group border-0">
+                                <Sparkles size={16} className="text-primary-400 group-hover:text-white transition-colors" /> 智能排期助手分析目标
+                             </button>
+                          </div>
+                       </div>
+                    </div>
 
-                  {/* Period Targets */}
-                  <div className="space-y-4">
-                     <h3 className="text-[13px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
-                        <Calendar size={16} className="text-neutral-400" /> 2. 阶段性周期排期与 KPI
-                     </h3>
-                     <p className="text-[11px] font-bold text-neutral-400 -mt-2">设置明确的履约周期与产量预估，系统将按此自动驱动排期任务并生成周/月报。</p>
-                     
-                     <div className="space-y-3">
-                        {[
-                           { period: '一月 (启动期)', notes: '16条', rule: '每周4条原创精编', target: '跑通账号标签，提升基础收录' },
-                           { period: '二月 (上升期)', notes: '12条', rule: '每周3条原创精编', target: '测试垂直流量池，沉淀转化素材' },
-                           { period: '三月 (平稳爆发)', notes: '12条', rule: '每周3条原创精编', target: '建立品类词占位，获取稳定搜索流量' }
-                        ].map((m, i) => (
-                           <div key={i} className="bg-white p-5 rounded-3xl border border-neutral-200/50 shadow-sm flex items-start gap-5">
-                              <div className="w-12 h-12 bg-neutral-900 rounded-2xl flex items-center justify-center text-white font-black text-lg shrink-0">
-                                 {i + 1}
-                              </div>
-                              <div className="flex-1 min-w-0 grid grid-cols-2 gap-4">
-                                 <div>
-                                   <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1 block">阶段名称</label>
-                                   <input defaultValue={m.period} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black" />
-                                 </div>
-                                 <div>
-                                   <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1 block">笔记产出总量</label>
-                                   <input defaultValue={m.notes} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black" />
-                                 </div>
-                                 <div className="col-span-2">
-                                   <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1 block">本期运营目标 / KPI</label>
-                                   <input defaultValue={m.target} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black" />
-                                 </div>
-                              </div>
-                           </div>
-                        ))}
-                        <button className="w-full py-4 border-2 border-dashed border-neutral-200 rounded-3xl text-[12px] font-black text-neutral-400 hover:border-neutral-300 hover:bg-neutral-50 transition-colors">
-                           + 增加考核周期
-                        </button>
-                     </div>
-                  </div>
+                    <div className="space-y-6 pt-6 border-t border-neutral-200/50">
+                       <div className="flex flex-col gap-1">
+                          <div className="flex items-center justify-between">
+                             <h3 className="text-[14px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
+                                <Calendar size={18} className="text-neutral-400" /> 2. 阶段性周期排期与指标任务
+                             </h3>
+                             <span className="text-[10px] font-black text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-md shadow-sm">可手动微调</span>
+                          </div>
+                          <p className="text-[12px] font-bold text-neutral-400 ml-6">系统已根据目标智能规划出最优发布节奏与所需的笔记规模。</p>
+                       </div>
+                       
+                       <div className="space-y-4">
+                          {[
+                             { period: '冷启动与收录期', notes: '25 篇', target: '跑通账号防晒标签，提升基础社区收录率' },
+                             { period: '心智种草与互动期', notes: '40 篇', target: '测试垂直穿搭/美妆流量池，沉淀转化素材' },
+                             { period: '搜索卡位与爆发期', notes: '60 篇', target: '集中占据防晒推荐搜索占位，获取长尾流量' }
+                          ].map((m, i) => (
+                             <div key={i} className="bg-white p-6 rounded-[24px] border border-neutral-200 hover:border-primary-500/30 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-start md:items-center gap-5">
+                                <div className="w-10 h-10 bg-neutral-100 rounded-[12px] flex items-center justify-center text-neutral-500 font-black text-[15px] shrink-0">
+                                   {i + 1}
+                                </div>
+                                <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-4 gap-4">
+                                   <div className="md:col-span-1">
+                                     <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1.5 block">阶段定义</label>
+                                     <input defaultValue={m.period} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black outline-none focus:bg-white focus:border-primary-500 transition-colors" />
+                                   </div>
+                                   <div className="md:col-span-1">
+                                     <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1.5 block">目标产量</label>
+                                     <input defaultValue={m.notes} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black outline-none focus:bg-white focus:border-primary-500 transition-colors" />
+                                   </div>
+                                   <div className="md:col-span-2">
+                                     <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1.5 block">阶段核心目标 (KPI)</label>
+                                     <input defaultValue={m.target} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black outline-none focus:bg-white focus:border-primary-500 transition-colors" />
+                                   </div>
+                                </div>
+                             </div>
+                          ))}
+                          <button className="w-full py-5 border-2 border-dashed border-neutral-200 rounded-[24px] text-[13px] font-black text-neutral-400 hover:border-neutral-300 hover:bg-neutral-50 transition-colors">
+                             + 手动增加周期排期
+                          </button>
+                       </div>
+                    </div>
+                 </div>
 
-                  {/* Asset Integration */}
-                  <div className="space-y-4">
-                     <h3 className="text-[13px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
-                        <Crosshair size={16} className="text-neutral-400" /> 3. 关联商家知识资产库
-                     </h3>
-                     <div className="p-5 bg-blue-50/50 border border-blue-100 rounded-3xl relative overflow-hidden group">
-                        <Sparkles size={100} className="absolute -right-6 -bottom-6 text-blue-500/10 group-hover:scale-110 transition-transform duration-500" />
-                        <p className="text-[12px] font-black text-blue-800 mb-3 relative z-10">已自动从所选商户加载以下品宣资产，流水线将严格以此约束 AI 输出：</p>
-                        <div className="flex flex-wrap gap-2 relative z-10">
-                           {['账号 IP 定位方案的规范', '视觉及配图合规约束', '行业高风险违禁词拦截库'].map((tag, i) => (
-                             <span key={i} className="px-3 py-1.5 bg-white border border-blue-200 text-blue-600 rounded-lg text-[11px] font-bold flex items-center gap-1.5">
-                                <CheckCircle2 size={12} className="text-blue-500" /> {tag}
-                             </span>
-                           ))}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               <div className="p-6 border-t border-neutral-100 shrink-0 bg-white">
-                  <button onClick={() => setIsCreatingProject(false)} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-colors active:scale-95 shadow-xl shadow-neutral-200">
-                     确认创建并自动展开任务排期 <ArrowRight size={16} />
-                  </button>
-               </div>
+                 <div className="h-24 border-t border-neutral-100 bg-white flex items-center justify-between px-8 shrink-0">
+                    <div className="text-[12px] font-bold text-neutral-400 flex items-center gap-2 bg-neutral-50 px-4 py-2 rounded-xl">
+                       <div className="relative flex h-2 w-2">
+                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                       </div>
+                       已默认关联当前商户 IP规范与敏感词拦截库
+                    </div>
+                    <div className="flex items-center gap-3">
+                       <button onClick={() => setIsCreatingProject(false)} className="px-6 py-3.5 rounded-xl text-[14px] font-black text-neutral-500 hover:bg-neutral-100 transition-colors">
+                          取消
+                       </button>
+                       <button onClick={() => setIsCreatingProject(false)} className="px-8 py-3.5 bg-primary-500 text-white rounded-xl text-[14px] font-black hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/20 active:scale-95 flex items-center gap-2">
+                          确认创建并生成排期任务 <ArrowRight size={16} />
+                       </button>
+                    </div>
+                 </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
+
+const TargetIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </svg>
+);

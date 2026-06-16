@@ -15,16 +15,16 @@ export const FunctionNav: React.FC<FunctionNavProps> = ({ setActiveNav, isOpen, 
     {
       label: '数据洞察',
       items: [
-        { label: '全域巡航', icon: Compass, action: () => { setActiveNav('workbench'); onClose(); } },
-        { label: '矩阵分发', icon: LayoutGrid, action: () => { setActiveNav('workbench'); onClose(); } },
-        { label: '数据归因', icon: BarChart2, action: () => { setActiveNav('workbench'); onClose(); } },
+        { label: '选题策略', icon: Compass, action: () => { setActiveNav('workbench'); onClose(); } },
+        { label: '项目与内容', icon: LayoutGrid, action: () => { setActiveNav('workbench'); onClose(); } },
+        { label: '流量分析', icon: BarChart2, action: () => { setActiveNav('workbench'); onClose(); } },
       ]
     },
     {
-      label: '内容管理',
+      label: '分发与转化',
       items: [
-        { label: '智造工坊', icon: Sparkles, action: () => { setActiveNav('workbench'); onClose(); } },
-        { label: '触达转化', icon: MessageSquare, action: () => { setActiveNav('workbench'); onClose(); } },
+        { label: '账号与分发', icon: Sparkles, action: () => { setActiveNav('workbench'); onClose(); } },
+        { label: '客服互动', icon: MessageSquare, action: () => { setActiveNav('workbench'); onClose(); } },
       ]
     },
     {

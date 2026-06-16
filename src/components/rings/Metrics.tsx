@@ -18,7 +18,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
              </div>
              <div>
                 <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">归因复盘中心</h2>
-                <p className="text-[11px] font-bold text-neutral-400">目前尚无投放记录，归因引擎正在待命</p>
+                <p className="text-[11px] font-bold text-neutral-400">目前尚无投放记录，没有可分析的反馈数据</p>
              </div>
           </div>
         </div>
@@ -26,9 +26,9 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
            <div className="w-32 h-32 bg-indigo-50 rounded-[48px] flex items-center justify-center text-indigo-200 mb-8 animate-pulse">
               <Activity size={64} />
            </div>
-           <h3 className="text-2xl font-black text-neutral-900 mb-4">待点火的数据引擎</h3>
+           <h3 className="text-2xl font-black text-neutral-900 mb-4">暂无触达与转化分析数据</h3>
            <p className="text-neutral-400 font-bold max-w-md leading-relaxed">
-             当您在“智造工场”发布第一篇笔记后，归因引擎将自动捕获小红书端的流量反馈，并在这里为您呈现 ROI 增长曲线。
+             当您在“账号与分发”执行发布后，系统将自动汇总各平台的流量反馈，并在这里为您呈现 ROI 增长曲线。
            </p>
            <button 
              onClick={() => window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'content' } }))}

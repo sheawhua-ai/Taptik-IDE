@@ -30,6 +30,9 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const COMMANDS = [
+    { cmd: '/催办进度', desc: '检查哪些 KOS 员工未完成本周期发文任务', module: 'matrix' },
+    { cmd: '/批量派单', desc: '给选中的自有账号批量下发指定 SOP 任务', module: 'matrix' },
+    { cmd: '/巡检风控', desc: '扫描监控的账号是否有被限流或违规封禁风险', module: 'matrix' },
     { cmd: '/开启全域巡航', desc: '启动当前商家的蓝海关键词扫描任务', module: 'data' },
     { cmd: '/导出数据', desc: '将当前模块分析结果导出为 Excel/PDF', module: 'data' },
     { cmd: '/停止当前流水线', desc: '紧急终止编排中心所有正在运行的任务', module: 'exec' },
@@ -40,7 +43,8 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
     // Initial greeting based on module - only reset if moduleId changes
     const greetings: Record<string, string> = {
       'strategy': `您好！我是全域巡航数字员工。我正在为您监测「${moduleName}」相关的行业蓝海机会。您可以问我关于市场趋势或竞品策略的问题。`,
-      'content': `智造工场数字员工已就绪。正在为您解析最近的爆款笔记逻辑。您可以下达改写、生成或润色内容指令。`,
+      'matrix': `矩阵调度数字员工已就绪。正在为您监控自有 KOS 账号与外部素人发文状态。您可以让我下发任务或排查账号异常。`,
+      'content': `内容助手已就绪。正在为您解析最近的爆款笔记逻辑。您可以下达改写、生成或润色内容指令。`,
       'execution': `编排中心数字员工在线。正在管理您的自动化任务流。需要我调整执行顺序或增加监控节点吗？`,
       'interaction': `触达转化助手已连接。正在分析意图私信。您可以让我自动回复或导出高潜线索。`,
       'metrics': `归因复盘专家已就绪。正在分析 ROI 与爆文率。需要我生成本周的运营对比报表吗？`
@@ -94,7 +98,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
           subtasks: [
             { id: 't1', name: '全域需求对齐', status: 'completed', agent: '主控助手' },
             { id: 't2', name: '外部竞品词库抓取', status: 'running', agent: '巡航助手' },
-            { id: 't3', name: '小红书笔记脚本产出', status: 'pending', agent: '智造助手' },
+            { id: 't3', name: '小红书笔记脚本产出', status: 'pending', agent: '内容助手' },
             { id: 't4', name: '投放节点编排', status: 'pending', agent: '编排助手' },
           ]
         };
@@ -165,7 +169,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
                     onClick={() => {
                         const tabMap: Record<string, 'strategy' | 'content' | 'execution' | 'interaction' | 'metrics'> = {
                             '巡航助手': 'strategy',
-                            '智造助手': 'content',
+                            '内容助手': 'content',
                             '编排助手': 'execution'
                         };
                         const target = tabMap[sub.agent];

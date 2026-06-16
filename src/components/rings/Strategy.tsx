@@ -112,7 +112,7 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                     <div>
                       <h3 className="text-[16px] font-black text-neutral-900 tracking-tight flex items-center gap-2">
                          <Layers size={18} className="text-blue-500" />
-                         当前活跃项目联合策略 (Data-Driven Blueprint)
+                         当前活跃项目联合策略
                       </h3>
                       <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">整合【外部全域蓝海雷达】与【内部数据归因模型】</p>
                     </div>
@@ -156,7 +156,7 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                            <Target size={18} className="text-primary-500" />
                            策略探测输出：高潜力切入点
                         </h3>
-                        <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">基于联合数据输出，并无缝对接至智造工坊执行</p>
+                        <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">基于联合数据输出，一键发起立项与排期</p>
                      </div>
                  </div>
 
@@ -184,11 +184,11 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                                <td className="px-6 py-5 text-right">
                                   <button 
                                     onClick={() => {
-                                       window.dispatchEvent(new CustomEvent('nav-to-factory', { detail: { keyword: row.word } }));
+                                       window.dispatchEvent(new CustomEvent('nav-to-matrix-create'));
                                     }}
                                     className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 hover:shadow-lg transition-all flex items-center gap-2 ml-auto active:scale-95"
                                   >
-                                     <Sparkles size={14} /> 送入智造工坊
+                                     <Plus size={14} /> 基于此创建项目
                                   </button>
                                </td>
                             </tr>

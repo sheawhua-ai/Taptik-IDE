@@ -58,15 +58,15 @@ const MOCK_PROJECTS = {
 };
 
 const SIDE_NAV_ITEMS = [
-  { id: 'workbench', name: '指挥中枢', sub: '调度与指令', icon: Cpu, color: 'text-orange-500' },
+  { id: 'workbench', name: '工作台', sub: '调度与指令', icon: Cpu, color: 'text-orange-500' },
   { id: 'workflow', name: '商家项目', sub: '全链路跟踪', icon: Workflow, color: 'text-primary-500' },
 ];
 
 const PROJECT_TABS = [
-  { id: 'strategy', name: '全域巡航', icon: Compass },
-  { id: 'matrix', name: '矩阵分发', icon: LayoutGrid },
-  { id: 'content', name: '智造工坊', icon: Sparkles },
-  { id: 'interaction', name: '触达转化', icon: MessageSquare },
+  { id: 'strategy', name: '选题与策略', icon: Compass },
+  { id: 'matrix', name: '项目与内容', icon: LayoutGrid },
+  { id: 'content', name: '账号与分发', icon: Sparkles },
+  { id: 'interaction', name: '客服互动', icon: MessageSquare },
   { id: 'metrics', name: '数据归因', icon: BarChart2 },
 ];
 
@@ -136,18 +136,29 @@ export default function App() {
        setActiveNav('files');
        setFilesTab('knowledge'); // switch to the knowledge total base directly
     };
+    const handleToWorkbench = () => setActiveNav('workbench');
+    
+    const handleToMatrixCreate = () => {
+      setActiveNav('workflow');
+      setWorkflowTab('matrix');
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('nav-to-create-project'));
+      }, 50);
+    };
+
     window.addEventListener('nav-to-factory', handleToFactory);
     window.addEventListener('nav-to-strategy', handleToStrategy);
     window.addEventListener('nav-to-tab', handleToTab);
     window.addEventListener('nav-to-files', handleToFiles);
-    const handleToWorkbench = () => setActiveNav('workbench');
     window.addEventListener('nav-to-strategy-start', handleToWorkbench);
+    window.addEventListener('nav-to-matrix-create', handleToMatrixCreate);
     return () => {
       window.removeEventListener('nav-to-factory', handleToFactory);
       window.removeEventListener('nav-to-strategy', handleToStrategy);
       window.removeEventListener('nav-to-tab', handleToTab);
       window.removeEventListener('nav-to-files', handleToFiles);
       window.removeEventListener('nav-to-strategy-start', handleToWorkbench);
+      window.removeEventListener('nav-to-matrix-create', handleToMatrixCreate);
     };
   }, []);
 
@@ -353,9 +364,9 @@ export default function App() {
                  <div className="px-3 py-2 text-[10px] font-black text-neutral-400 uppercase tracking-widest">快捷任务</div>
                  <div className="space-y-1">
                     {[
-                      { icon: Sparkles, label: "智造工坊: 多模态生成", sub: "基于蓝海策略自动生产视频/图文/脚本" },
-                      { icon: Compass, label: "全域巡航: 解析蓝海词", sub: "整合 TikTok/知乎/抖音等多源趋势" },
-                      { icon: Target, label: "矩阵中心: 跨平台同步", sub: "一键同步内容至 12+ 矩阵账号" },
+                      { icon: LayoutGrid, label: "项目与内容: 开始生成", sub: "基于项目策略批量挂机生成内容素材" },
+                      { icon: Compass, label: "选题策略: 收集竞品热词", sub: "提取站内外最新高频热词" },
+                      { icon: Sparkles, label: "账号与分发: 安排发布", sub: "将已完成素材分配至各个矩阵账号" },
                     ].map((item, i) => (
                       <button key={i} className="w-full flex items-center gap-4 p-3.5 hover:bg-neutral-50 rounded-2xl transition-all group group-hover:translate-x-1">
                         <div className="w-10 h-10 bg-neutral-50 rounded-xl flex items-center justify-center text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-500 transition-all">

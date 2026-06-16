@@ -20,14 +20,14 @@ export const Billing: React.FC = () => {
                  </div>
                  <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6">
-                       <div className="px-3 py-1 bg-primary-500 rounded-lg text-[10px] font-black uppercase tracking-widest leading-none text-white">企业钱包</div>
-                       <span className="text-neutral-500 text-[11px] font-bold">组织 ID: 150007802</span>
+                       <div className="px-3 py-1 bg-primary-500 rounded-lg text-[10px] font-black uppercase tracking-widest leading-none text-white">充值钱包</div>
+                       <span className="text-neutral-500 text-[11px] font-bold">当前所属账户</span>
                     </div>
                     <div className="flex items-baseline gap-3 mb-2">
                        <span className="text-5xl font-black tracking-tighter">4,720.00</span>
-                       <span className="text-neutral-500 text-lg font-bold">积分点数</span>
+                       <span className="text-neutral-500 text-lg font-bold">人民币 (可用抵扣)</span>
                     </div>
-                    <p className="text-neutral-400 text-[13px] font-medium max-w-md">基于 Agent 的全自动消耗结算。当前余额支持约 2,360 篇原创笔记生成或 15,000 次 RAG 语义索引调用。</p>
+                    <p className="text-neutral-400 text-[13px] font-medium max-w-md">基于 Agent 的全自动消耗结算。直接扣取可用人民币抵扣金，单次调用精细至厘。</p>
                  </div>
                  <div className="relative z-10 flex items-center gap-3 mt-8">
                     <button className="bg-neutral-0 text-neutral-900 hover:bg-neutral-100 px-8 py-3.5 rounded-2xl text-[14px] font-black shadow-xl transition-all active:scale-95">钱包充值</button>
@@ -68,9 +68,9 @@ export const Billing: React.FC = () => {
               
               <div className="grid grid-cols-1 gap-4">
                  {[
-                    { date: '05-07 10:24', project: '宠物食品组', type: 'KOC矩阵分发', detail: '小红书代写 (15篇)', engine: 'DeepSeek-V3', cost: '-30' },
-                    { date: '05-07 09:12', project: '美妆旗舰店', type: '新品高赞仿写', detail: '深度图文改写 (5个)', engine: 'GPT-4o', cost: '-45' },
-                    { date: '05-06 22:45', project: '数码组', type: '全域 RAG 索引', detail: '同步 1,200 个文档块', engine: 'LanceDB+V3', cost: '-12' },
+                    { date: '05-07 10:24', project: '宠物食品组', type: 'KOC矩阵分发', detail: '小红书代写 (15篇)', engine: 'DeepSeek-V3', cost: '- ¥ 3.00' },
+                    { date: '05-07 09:12', project: '美妆旗舰店', type: '新品高赞仿写', detail: '深度图文改写 (5个)', engine: 'GPT-4o', cost: '- ¥ 4.50' },
+                    { date: '05-06 22:45', project: '数码组', type: '全域 RAG 索引', detail: '同步 1,200 个文档块', engine: 'LanceDB+V3', cost: '- ¥ 0.12' },
                  ].map((row, i) => (
                     <div key={i} className="bg-neutral-0 border border-neutral-100 rounded-[24px] p-5 flex items-center justify-between hover:border-primary-500/20 hover:bg-primary-50/20 transition-all group shadow-sm">
                        <div className="flex items-center gap-6 flex-1">
