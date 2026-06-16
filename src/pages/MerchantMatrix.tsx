@@ -114,19 +114,31 @@ export default function MerchantMatrix() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="flex items-stretch -mx-2">
                 {project.stages.map((stage, idx) => (
-                  <div key={idx} className={`p-5 rounded-3xl border transition-all ${stage.status === 'completed' ? 'bg-success-50/30 border-success-100' : stage.status === 'active' ? 'bg-white border-primary-500 shadow-lg' : 'bg-neutral-50 border-neutral-100 opacity-50'}`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className={`text-[10px] font-black uppercase tracking-widest ${stage.status === 'completed' ? 'text-success-600' : stage.status === 'active' ? 'text-primary-500' : 'text-neutral-400'}`}>
-                        STG {idx + 1}
-                      </div>
-                      {stage.status === 'completed' && <CheckCircle2 size={14} className="text-success-500" />}
-                      {stage.status === 'active' && <Activity size={14} className="text-primary-500 animate-pulse" />}
-                    </div>
-                    <div className="text-[14px] font-black text-neutral-900 mb-1">{stage.name}</div>
-                    <div className="text-[10px] font-bold text-neutral-400 truncate">{stage.value}</div>
-                  </div>
+                  <React.Fragment key={idx}>
+                     <div className={`p-4 xl:p-5 flex-1 rounded-[24px] border transition-all ${stage.status === 'completed' ? 'bg-success-50/30 border-success-100' : stage.status === 'active' ? 'bg-white border-primary-500 shadow-lg' : 'bg-neutral-50/50 border-neutral-100 opacity-60'}`}>
+                        <div className="flex items-center justify-between mb-3">
+                           <div className={`text-[10px] font-black uppercase tracking-widest ${stage.status === 'completed' ? 'text-success-600' : stage.status === 'active' ? 'text-primary-500' : 'text-neutral-400'}`}>
+                           STG {idx + 1}
+                           </div>
+                           {stage.status === 'completed' && <CheckCircle2 size={14} className="text-success-500" />}
+                           {stage.status === 'active' && <Activity size={14} className="text-primary-500 animate-pulse" />}
+                        </div>
+                        <div className="text-[13px] xl:text-[14px] font-black text-neutral-900 mb-1">{stage.name}</div>
+                        <div className="text-[10px] font-bold text-neutral-400 truncate">{stage.value}</div>
+                     </div>
+                     {idx < project.stages.length - 1 && (
+                        <div className="flex items-center justify-center -mx-4 z-10 w-8 shrink-0">
+                           <button 
+                             title="触发指令串联"
+                             className={`w-6 h-6 rounded-full bg-white border shadow-sm flex items-center justify-center transition-all group ${stage.status === 'completed' ? 'border-primary-200 text-primary-500 hover:scale-110 hover:bg-primary-50' : 'border-neutral-200 text-neutral-300 hover:text-neutral-600'}`}
+                           >
+                              <Send size={10} className="group-hover:translate-x-0.5 transition-transform" />
+                           </button>
+                        </div>
+                     )}
+                  </React.Fragment>
                 ))}
               </div>
             </motion.div>

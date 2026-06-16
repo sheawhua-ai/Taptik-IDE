@@ -509,26 +509,6 @@ export default function App() {
                      </button>
                    ))}
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center bg-neutral-100 p-1 rounded-xl">
-                    {[
-                      { id: 'normal', name: '常规', icon: Monitor },
-                      { id: 'creation', name: '创作', icon: PenTool },
-                      { id: 'monitoring', name: '监控', icon: Activity },
-                      { id: 'review', name: '审核', icon: ShieldCheck },
-                    ].map(mode => (
-                      <button 
-                        key={mode.id}
-                        onClick={() => setFocusMode(mode.id as any)}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-black transition-all ${focusMode === mode.id ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-400 hover:text-neutral-600'}`}
-                      >
-                        <mode.icon size={12} />
-                        {mode.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
              </div>
 
              <div className="flex-1 flex w-full overflow-hidden bg-[#fafafa] relative">

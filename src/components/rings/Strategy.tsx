@@ -8,7 +8,6 @@ import {
 import { motion } from 'motion/react';
 
 export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: string; rate: string }[] }> = ({ hasData = true, strategyData = [] }) => {
-  const [activeTab, setActiveTab] = useState<'blueprint' | 'keywords' | 'distribution'>('blueprint');
   const [selectedIndustry, setSelectedIndustry] = useState('宠物用品');
   const [isFetching, setIsFetching] = useState(false);
   const [fetchProgress, setFetchProgress] = useState(0);
@@ -51,42 +50,27 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
   const isEmpty = (!hasData && strategyData.length === 0) && !isFetching;
 
   return (
-    <div className="flex flex-col h-full w-full bg-white overflow-hidden">
-      <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10 shadow-sm">
+    <div className="flex flex-col h-full w-full bg-neutral-50/20 overflow-hidden">
+      <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-neutral-900 text-white rounded-[20px] flex items-center justify-center shadow-md">
                <Compass size={24} className="animate-pulse" />
             </div>
             <div>
-               <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">巡航侦察</h2>
+               <h2 className="text-[16px] font-black text-neutral-900 tracking-tight">全域巡航与策略决策</h2>
                <div className="flex items-center gap-2 mt-0.5">
-                  <p className="text-[11px] font-bold text-neutral-400">正在实时监测: </p>
-                  <span className="text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-tight">
-                    小红书 竞品 KOS 矩阵
-                  </span>
+                  <p className="text-[11px] font-bold text-neutral-400">正在联动内外部数据，生成项目定制决策</p>
                </div>
             </div>
          </div>
-        
-        <div className="flex items-center gap-2 bg-neutral-50 p-1.5 rounded-2xl">
-           {[
-             { id: 'blueprint', name: '运营策略中心', icon: Orbit },
-             { id: 'keywords', name: '蓝海词雷达', icon: Search },
-             { id: 'distribution', name: '平台资产矩阵', icon: Layers }
-           ].map((tab) => (
-             <button 
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2 rounded-xl text-[12px] font-black transition-all flex items-center gap-2 ${activeTab === tab.id ? 'bg-white text-neutral-900 shadow-sm border border-neutral-100' : 'text-neutral-400 hover:text-neutral-600'}`}
-             >
-                <tab.icon size={14} className={activeTab === tab.id ? 'text-primary-500' : ''} />
-                {tab.name}
-             </button>
-           ))}
-        </div>
+         
+         <div className="flex items-center gap-2 bg-blue-50/50 px-4 py-2 rounded-2xl border border-blue-100/50">
+           <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+           <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest">外部雷达与归因反馈在线</span>
+         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-10 bg-neutral-50/20">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-10">
          {isFetching ? (
             <div className="flex flex-col items-center justify-center h-full">
                <div className="w-32 h-32 relative flex items-center justify-center mb-8">
@@ -97,8 +81,8 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                   />
                   <RefreshCw className="text-primary-500 animate-spin" size={40} />
                </div>
-               <h3 className="text-xl font-black text-neutral-900 mb-2">正在从全域抓取「{selectedIndustry}」蓝海词...</h3>
-               <p className="text-neutral-400 font-bold text-sm">正在整合 TikTok 趋势、抖音热门、知乎问答库等数据源...</p>
+               <h3 className="text-[16px] font-black text-neutral-900 mb-2">正在从全域与归因库抓取数据分析...</h3>
+               <p className="text-neutral-400 font-bold text-[12px]">正在整合外部蓝海潜力词，并引入历史项目的 ROI 反馈...</p>
             </div>
          ) : isEmpty ? (
             <div className="flex-1 flex flex-col items-center justify-center p-20 text-center w-full min-h-full">
@@ -109,174 +93,111 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
                >
                   <Compass size={48} />
                </motion.div>
-               <h3 className="text-2xl font-black text-neutral-900 mb-4 tracking-tight">智策巡航尚未启动</h3>
+               <h3 className="text-2xl font-black text-neutral-900 mb-4 tracking-tight">全域巡航尚未启动</h3>
                <p className="text-neutral-400 font-bold max-w-sm leading-relaxed text-[14px]">
-                  请在左侧对话框中输入您的业务关键词（如「宠物粮」），助手将自动为您扫描全域流量蓝图，并生成确定性的操作蓝图。
+                  左侧控制台分配行业/项目词（如「宠物粮」）后，系统将融合「数据归因」并雷达扫描全网蓝海机会，生成确定的落地打法。
                </p>
                <button 
                   onClick={() => window.dispatchEvent(new CustomEvent('nav-to-strategy-start'))}
                   className="mt-10 px-8 py-4 bg-neutral-900 text-white rounded-[24px] text-[14px] font-black shadow-2xl hover:bg-primary-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
                >
-                  查看教学视频或手册 <ArrowUpRight size={18}/>
+                  启动全局扫描探测 <ArrowUpRight size={18}/>
                </button>
             </div>
-         ) : activeTab === 'blueprint' && (
-           <div className="max-w-7xl mx-auto space-y-8">
-              <div className="grid grid-cols-1 gap-8">
-                <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm">
-                   <div className="flex items-center justify-between mb-8">
-                      <div>
-                        <h3 className="text-lg font-black text-neutral-900 tracking-tight flex items-center gap-2">
-                           <TrendingUp size={20} className="text-blue-500" />
-                           操盘手落地执行决策 (Direct Strategy)
-                        </h3>
-                        <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">基于实时大盘数据的确定性策略输出</p>
-                      </div>
-                      <div className="flex items-center gap-6">
-                         <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-black text-neutral-400">数据同步状态:</span>
-                            <span className="text-[11px] font-black text-success-600 bg-success-50 px-2 py-1 rounded">LIVE</span>
-                         </div>
-                         <div className="flex items-center gap-2 text-primary-500 text-[11px] font-black uppercase tracking-[0.2em] bg-primary-50 px-3 py-1 rounded-full">
-                           <Orbit size={14} /> 流量自动巡航中
-                         </div>
-                      </div>
-                   </div>
-                   
-                   <div className="grid grid-cols-3 gap-6 mb-10">
-                      {[
-                         { title: '全域搜索拦截', sub: '针对核心蓝海词的精准占位，构建流量护城河', weight: '45%', color: 'bg-rose-500' },
-                         { title: '竞品心智攻势', sub: '基于竞品评论区的侧向切入，挖掘存量转化机会', weight: '35%', color: 'bg-blue-500' },
-                         { title: 'KOC 规模分发', sub: '构建品牌自有的多节点传播网，实现爆发式传播', weight: '20%', color: 'bg-emerald-500' },
-                      ].map((p, i) => (
-                         <div key={i} className="p-6 bg-neutral-50 rounded-[32px] border border-neutral-100 group hover:bg-white hover:shadow-xl transition-all">
-                            <div className="flex items-center justify-between mb-4">
-                               <div className="flex items-center gap-3">
-                                  <div className={`w-2.5 h-2.5 rounded-full ${p.color}`} />
-                                  <span className="text-[14px] font-black text-neutral-900">{p.title}</span>
-                               </div>
-                               <span className="text-[15px] font-black text-neutral-900">{p.weight}</span>
-                            </div>
-                            <p className="text-[12px] font-bold text-neutral-400 leading-relaxed mb-4">{p.sub}</p>
-                            <div className="">
-                               <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
-                                  <div className={`h-full ${p.color}`} style={{ width: p.weight }} />
-                               </div>
-                            </div>
-                         </div>
-                      ))}
-                   </div>
+         ) : (
+           <div className="max-w-6xl mx-auto space-y-8">
+              {/* 基于项目与归因的策略诊断 */}
+              <div className="bg-white rounded-[32px] border border-neutral-100 p-8 shadow-sm">
+                 <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h3 className="text-[16px] font-black text-neutral-900 tracking-tight flex items-center gap-2">
+                         <Layers size={18} className="text-blue-500" />
+                         当前活跃项目联合策略 (Data-Driven Blueprint)
+                      </h3>
+                      <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">整合【外部全域蓝海雷达】与【内部数据归因模型】</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                       <span className="text-[11px] font-black text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-xl border border-neutral-200 uppercase tracking-widest flex items-center gap-1">
+                         <BarChart size={12}/> 归因置信度: 94%
+                       </span>
+                    </div>
+                 </div>
+                 
+                 <div className="grid grid-cols-3 gap-6 mb-8">
+                    {[
+                       { title: '外部增量蓝海', sub: '全网（抖音/小红书）长尾搜索暴增词获取', weight: '55%', color: 'bg-rose-500' },
+                       { title: '往期归因反馈', sub: '复用近 30 天高转化图文模版，舍弃无效方向', weight: '30%', color: 'bg-blue-500' },
+                       { title: '平台资源倾斜', sub: '预测下一周期推荐算法的资源池偏好', weight: '15%', color: 'bg-emerald-500' },
+                    ].map((p, i) => (
+                       <div key={i} className="p-6 bg-neutral-50/50 rounded-[28px] border border-neutral-100 group hover:bg-white hover:border-primary-200 transition-all">
+                          <div className="flex items-center justify-between mb-4">
+                             <div className="flex items-center gap-3">
+                                <div className={`w-2.5 h-2.5 rounded-full ${p.color}`} />
+                                <span className="text-[13px] font-black text-neutral-900">{p.title}</span>
+                             </div>
+                             <span className="text-[14px] font-black text-neutral-900">{p.weight}</span>
+                          </div>
+                          <p className="text-[11px] font-bold text-neutral-500 leading-relaxed mb-4">{p.sub}</p>
+                          <div className="">
+                             <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                                <div className={`h-full ${p.color}`} style={{ width: p.weight }} />
+                             </div>
+                          </div>
+                       </div>
+                    ))}
+                 </div>
+              </div>
 
-                   <div className="overflow-hidden border border-neutral-100 rounded-3xl">
-                      <table className="w-full text-left">
-                         <thead className="bg-neutral-50/50 border-b border-neutral-100">
-                            <tr>
-                               <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest">核心蓝海词</th>
-                               <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-center">机会指数</th>
-                               <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-right">流水线操作</th>
+              {/* Actionable Pipeline (The Output Radar) */}
+              <div className="bg-white rounded-[32px] border border-neutral-100 p-8 shadow-sm">
+                 <div className="flex items-center justify-between mb-8">
+                     <div>
+                        <h3 className="text-[16px] font-black text-neutral-900 tracking-tight flex items-center gap-2">
+                           <Target size={18} className="text-primary-500" />
+                           策略探测输出：高潜力切入点
+                        </h3>
+                        <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">基于联合数据输出，并无缝对接至智造工坊执行</p>
+                     </div>
+                 </div>
+
+                 <div className="overflow-hidden border border-neutral-100 rounded-[24px]">
+                    <table className="w-full text-left">
+                       <thead className="bg-neutral-50/50 border-b border-neutral-100">
+                          <tr>
+                             <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest">建议切入方向 / 蓝海词</th>
+                             <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-center">综合机会指数</th>
+                             <th className="px-6 py-4 text-[11px] font-black text-neutral-400 uppercase tracking-widest text-right">串联生产链路</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-neutral-100">
+                          {currentData.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-neutral-50/80 transition-colors">
+                               <td className="px-6 py-5">
+                                  <div className="flex items-center gap-3">
+                                     <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                     <span className="text-[14px] font-black text-neutral-800">{row.word}</span>
+                                  </div>
+                               </td>
+                               <td className="px-6 py-5 text-center">
+                                  <span className="px-3 py-1.5 bg-blue-50 text-blue-600 text-[12px] font-black rounded-xl border border-blue-100 shadow-sm">{row.rate}</span>
+                               </td>
+                               <td className="px-6 py-5 text-right">
+                                  <button 
+                                    onClick={() => {
+                                       window.dispatchEvent(new CustomEvent('nav-to-factory', { detail: { keyword: row.word } }));
+                                    }}
+                                    className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 hover:shadow-lg transition-all flex items-center gap-2 ml-auto active:scale-95"
+                                  >
+                                     <Sparkles size={14} /> 送入智造工坊
+                                  </button>
+                               </td>
                             </tr>
-                         </thead>
-                         <tbody className="divide-y divide-neutral-50">
-                            {currentData.map((row, idx) => (
-                              <tr key={idx} className="hover:bg-neutral-50/50 transition-colors">
-                                 <td className="px-6 py-5">
-                                    <div className="flex items-center gap-3">
-                                       <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                       <span className="text-[15px] font-black text-neutral-800">{row.word}</span>
-                                    </div>
-                                 </td>
-                                 <td className="px-6 py-5 text-center">
-                                    <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[13px] font-black rounded-lg">{row.rate}</span>
-                                 </td>
-                                 <td className="px-6 py-5 text-right">
-                                    <button 
-                                      onClick={() => {
-                                         window.dispatchEvent(new CustomEvent('nav-to-factory', { detail: { keyword: row.word } }));
-                                      }}
-                                      className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 transition-all flex items-center gap-2 ml-auto"
-                                    >
-                                       <Sparkles size={14} /> 送入智造工坊
-                                    </button>
-                                 </td>
-                              </tr>
-                            ))}
-                         </tbody>
-                      </table>
-                   </div>
-                </div>
+                          ))}
+                       </tbody>
+                    </table>
+                 </div>
               </div>
            </div>
-         )}
-
-         {activeTab === 'keywords' && (
-            <div className="max-w-6xl mx-auto space-y-12 py-6">
-               <div className="flex items-center justify-between">
-                  <div>
-                     <h3 className="text-2xl font-black text-neutral-900 tracking-tight flex items-center gap-2">
-                        <Search size={24} className="text-primary-500" />
-                        蓝海词全域雷达
-                     </h3>
-                     <p className="text-neutral-500 font-bold mt-2">实时监测多平台（TikTok/抖音/知乎/小红书）爆发潜力词</p>
-                  </div>
-               </div>
-
-               <div className="grid grid-cols-4 gap-6">
-                  {[
-                     { platform: 'TikTok', trend: '上升', count: 1242, color: 'text-cyan-500' },
-                     { platform: '抖音', trend: '爆发', count: 892, color: 'text-rose-500' },
-                     { platform: '知乎', trend: '平稳', count: 452, color: 'text-blue-500' },
-                     { platform: '小红书', trend: '上升', count: 2130, color: 'text-rose-600' },
-                  ].map((p, i) => (
-                     <div key={i} className="bg-white p-6 rounded-[32px] border border-neutral-100 shadow-sm">
-                        <div className="flex items-center justify-between mb-4">
-                           <span className="text-[12px] font-black text-neutral-400 uppercase tracking-widest">{p.platform}</span>
-                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${p.trend === '爆发' ? 'bg-rose-50 text-rose-500' : 'bg-emerald-50 text-emerald-500'}`}>
-                              {p.trend}
-                           </span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                           <span className="text-2xl font-black text-neutral-900">{p.count}</span>
-                           <span className="text-[10px] font-bold text-neutral-400">词条</span>
-                        </div>
-                     </div>
-                  ))}
-               </div>
-
-               <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm">
-                  <div className="flex items-center justify-between mb-8 pb-8 border-b border-neutral-50">
-                     <div className="text-[14px] font-black text-neutral-900">核心爆发蓝海词分布</div>
-                     <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2">
-                           <div className="w-2.5 h-2.5 bg-primary-500 rounded-full" />
-                           <span className="text-[11px] font-bold text-neutral-500 tracking-tight">高转化潜力</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                           <div className="w-2.5 h-2.5 bg-neutral-200 rounded-full" />
-                           <span className="text-[11px] font-bold text-neutral-500 tracking-tight">低竞争度</span>
-                        </div>
-                     </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                     {currentData.map((row, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-4 bg-neutral-50 rounded-2xl border border-neutral-100 hover:bg-white hover:shadow-lg transition-all group">
-                           <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-neutral-400 font-black text-xs shadow-sm">
-                                 #{idx + 1}
-                              </div>
-                              <div>
-                                 <div className="text-[15px] font-black text-neutral-900">{row.word}</div>
-                                 <div className="text-[10px] font-bold text-neutral-400 mt-0.5">全网搜索量 7 日增长率 {row.rate}%</div>
-                              </div>
-                           </div>
-                           <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[11px] font-black opacity-0 group-hover:opacity-100 transition-all">
-                              开始追踪
-                           </button>
-                        </div>
-                     ))}
-                  </div>
-               </div>
-            </div>
          )}
       </div>
     </div>

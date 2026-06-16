@@ -143,35 +143,27 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
            <>
             <div className="w-[440px] border-r border-neutral-100 flex flex-col h-full bg-neutral-50/20 overflow-y-auto custom-scrollbar">
             <div className="p-8 space-y-8">
-               {activeStep === 1 && (
-                  <div className="space-y-6">
+               <div className="space-y-12">
+                  {/* Step 1 */}
+                  <div className={`space-y-6 transition-all ${activeStep > 1 ? 'opacity-70' : ''}`}>
                      <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <Settings2 size={16} className="text-neutral-400"/> 启动生产流
+                        <Settings2 size={16} className={`${activeStep > 1 ? 'text-primary-500' : 'text-neutral-400'}`}/> {activeStep > 1 ? '1. 生产指令设定期' : '启动生产流'}
                      </h3>
                      <div className="space-y-4">
                         <div className="space-y-2">
                            <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest pl-1">选择生产品类</label>
                            <div className="grid grid-cols-2 gap-2">
                               {[
-                                 { id: 'note', label: '图文/笔记', sub: 'XHS/知乎' },
-                                 { id: 'video', label: '短视频脚本', sub: '抖音/TikTok' },
-                                 { id: 'storyboard', label: '视频分镜', sub: '专业导演视角' },
-                                 { id: 'visual', label: '视觉封面', sub: 'Flux/MJ 驱动' },
+                                 { id: 'note', label: '图文/笔记', sub: 'XHS/知乎', disabled: activeStep > 1 },
+                                 { id: 'video', label: '短视频脚本', sub: '抖音/TikTok', disabled: activeStep > 1 },
+                                 { id: 'storyboard', label: '视频分镜', sub: '等待能力接入', disabled: true },
+                                 { id: 'visual', label: '视觉封面', sub: 'Flux/MJ 驱动', disabled: activeStep > 1 },
                               ].map(m => (
-                                 <button key={m.id} className="p-3 bg-white border border-neutral-100 rounded-xl text-left hover:border-primary-500 transition-all group">
-                                    <div className="text-[12px] font-black text-neutral-700 group-hover:text-primary-500">{m.label}</div>
+                                 <button key={m.id} disabled={m.disabled} className={`p-3 bg-white border border-neutral-100 rounded-xl text-left transition-all group ${m.disabled ? 'opacity-40 cursor-not-allowed bg-neutral-50/50' : 'hover:border-primary-500'}`}>
+                                    <div className={`text-[12px] font-black ${m.disabled ? 'text-neutral-400' : 'text-neutral-700 group-hover:text-primary-500'}`}>{m.label}</div>
                                     <div className="text-[9px] font-bold text-neutral-400 uppercase tracking-tighter">{m.sub}</div>
                                  </button>
                               ))}
-                           </div>
-                        </div>
-                        <div className="space-y-2">
-                           <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest pl-1">发布目标平台</label>
-                           <div className="grid grid-cols-1 gap-2">
-                              <button className="py-2.5 px-3 bg-rose-50 border border-rose-100 rounded-xl text-[12px] font-black text-rose-600 flex items-center justify-between">
-                                 小红书 (XHS) 
-                                 <span className="text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded-full">主攻平台</span>
-                              </button>
                            </div>
                         </div>
                         <div className="space-y-2">
@@ -179,108 +171,119 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                            <input 
                               value={formData.keyword}
                               onChange={(e) => setFormData({...formData, keyword: e.target.value})}
-                              className="w-full bg-white border border-neutral-200 rounded-2xl p-4 text-[14px] font-bold text-neutral-900 focus:border-primary-500 transition-all font-mono"
+                              disabled={activeStep > 1}
+                              className={`w-full bg-white border border-neutral-200 rounded-2xl p-4 text-[14px] font-bold text-neutral-900 transition-all font-mono ${activeStep > 1 ? 'opacity-70 bg-neutral-50' : 'focus:border-primary-500'}`}
                               placeholder="例如：青岛民宿"
                            />
                         </div>
-                        <button onClick={fetchBlueOcean} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg shadow-neutral-200">
-                           启动多模态解析 <ArrowRight size={16}/>
-                        </button>
+                        {activeStep === 1 && (
+                           <button onClick={fetchBlueOcean} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95 mt-4">
+                              调度蓝海探测 Agent <Zap size={16} className="fill-current"/>
+                           </button>
+                        )}
                      </div>
                   </div>
-               )}
 
-               {activeStep === 2 && (
-                  <div className="space-y-6">
-                     <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <Target size={16} className="text-neutral-400"/> 选择目标切入点
-                     </h3>
-                     <div className="space-y-3">
-                        {blueOceanWords.map(word => (
-                           <button 
-                              key={word}
-                              onClick={() => setFormData({...formData, selectedBlueOcean: word})}
-                              className={`w-full p-4 rounded-2xl border text-left transition-all ${formData.selectedBlueOcean === word ? 'bg-white border-primary-500 shadow-xl' : 'bg-white/50 border-neutral-200 hover:border-neutral-300'}`}
-                           >
-                              <div className="flex items-center justify-between">
-                                 <span className={`text-[13px] font-bold ${formData.selectedBlueOcean === word ? 'text-primary-600' : 'text-neutral-700'}`}>{word}</span>
-                                 {formData.selectedBlueOcean === word && <div className="w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center text-white"><CheckCircle2 size={12}/></div>}
-                              </div>
-                           </button>
-                        ))}
-                        <button onClick={generateIntent} disabled={!formData.selectedBlueOcean} className="w-full h-14 mt-4 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all disabled:opacity-50">
-                           制定运营意图 <Zap size={16} className="fill-current"/>
-                        </button>
-                     </div>
-                  </div>
-               )}
-
-               {activeStep === 3 && (
-                  <div className="space-y-6">
-                     <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <FileText size={16} className="text-neutral-400"/> 确认内容主方向
-                     </h3>
-                     <div className="space-y-3">
-                        {plans.map(p => (
-                           <button 
-                              key={p}
-                              onClick={() => setFormData({...formData, intent: p})}
-                              className={`w-full p-4 rounded-2xl border text-left transition-all ${formData.intent === p ? 'bg-white border-primary-500 shadow-xl' : 'bg-white/50 border-neutral-200 hover:border-neutral-300'}`}
-                           >
-                              <p className={`text-[13px] font-bold leading-relaxed ${formData.intent === p ? 'text-primary-600' : 'text-neutral-700'}`}>{p}</p>
-                           </button>
-                        ))}
-                        
-                        <div className="pt-6 border-t border-neutral-100 flex flex-col gap-4">
-                           <div className="p-4 bg-white/50 rounded-2xl border border-neutral-100">
-                              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-3">视觉引擎 (Visual AI)</p>
-                              <div className="flex p-1 bg-neutral-100 rounded-xl">
-                                 <button onClick={() => setFormData({...formData, imageSource: 'ai'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'ai' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>Flux / MJ</button>
-                                 <button onClick={() => setFormData({...formData, imageSource: 'original'})} className={`flex-1 py-2 text-[11px] font-black rounded-lg transition-all ${formData.imageSource === 'original' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400'}`}>自有素材库</button>
-                              </div>
-                           </div>
-                           <button onClick={handleInitialGenerate} disabled={!formData.intent} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95">
-                              进入精调阶段 <Sparkles size={16}/>
-                           </button>
-                        </div>
-                     </div>
-                  </div>
-               )}
-
-               {activeStep === 4 && (
-                  <div className="space-y-6">
-                     <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
-                        <PenTool size={16} className="text-neutral-400"/> 人工干预节点
-                     </h3>
-                     <div className="p-6 bg-neutral-900 rounded-[32px] text-white">
-                        <p className="text-[11px] font-black text-primary-400 uppercase tracking-[0.2em] mb-4">Human-in-the-loop</p>
-                        <p className="text-[14px] font-bold text-neutral-300 mb-6">您可以调整 AI 的输出方向，Agent 将即时重构内容：</p>
-                        <div className="space-y-2">
-                           {[
-                              '加强互动引导', '多用口语化表达', '精简文本篇幅', '强调价格优势'
-                           ].map(dir => (
+                  {/* Step 2 */}
+                  {activeStep >= 2 && (
+                     <div className={`space-y-6 mt-8 transition-all relative ${activeStep > 2 ? 'opacity-70' : 'animate-in fade-in slide-in-from-top-4'}`}>
+                        <div className="absolute -top-10 left-3.5 w-0.5 h-10 bg-neutral-200 rounded-full" />
+                        <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
+                           <Target size={16} className={`${activeStep > 2 ? 'text-primary-500' : 'text-neutral-400'}`}/> 2. 蓝海切入锚点评估
+                        </h3>
+                        <div className="space-y-3">
+                           {blueOceanWords.map(word => (
                               <button 
-                                key={dir}
-                                onClick={() => handleIterate(dir)}
-                                className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-[12px] font-black text-left transition-all flex items-center justify-between group"
+                                 key={word}
+                                 disabled={activeStep > 2}
+                                 onClick={() => setFormData({...formData, selectedBlueOcean: word})}
+                                 className={`w-full p-4 rounded-2xl border text-left transition-all ${activeStep > 2 ? 'bg-neutral-50/50' : ''} ${formData.selectedBlueOcean === word ? 'bg-white border-primary-500 shadow-sm' : 'bg-white/50 border-neutral-200 hover:border-neutral-300'}`}
                               >
-                                 {dir}
-                                 <RefreshCw size={12} className="text-neutral-500 group-hover:rotate-180 transition-transform" />
+                                 <div className="flex items-center justify-between">
+                                    <span className={`text-[13px] font-bold ${formData.selectedBlueOcean === word ? 'text-primary-600' : 'text-neutral-700'}`}>{word}</span>
+                                    {formData.selectedBlueOcean === word && <div className="w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center text-white"><CheckCircle2 size={12}/></div>}
+                                 </div>
                               </button>
                            ))}
+                           {activeStep === 2 && (
+                              <button onClick={generateIntent} disabled={!formData.selectedBlueOcean} className="w-full h-12 bg-white border border-neutral-200 text-neutral-900 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 hover:border-primary-500 hover:text-primary-500 transition-all disabled:opacity-50 mt-2">
+                                 确立此方向并生成大纲 <ArrowRight size={14}/>
+                              </button>
+                           )}
                         </div>
                      </div>
-                     
-                     <div className="pt-6 border-t border-neutral-200">
-                        <button 
-                          onClick={() => setActiveStep(5)}
-                          className="w-full h-14 bg-emerald-500 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
-                        >
-                           生产完成 & 排期分发 <ArrowRight size={16}/>
-                        </button>
+                  )}
+
+                  {/* Step 3 */}
+                  {activeStep >= 3 && (
+                     <div className={`space-y-6 mt-8 transition-all relative ${activeStep > 3 ? 'opacity-70' : 'animate-in fade-in slide-in-from-top-4'}`}>
+                        <div className="absolute -top-10 left-3.5 w-0.5 h-10 bg-neutral-200 rounded-full" />
+                        <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
+                           <FileText size={16} className={`${activeStep > 3 ? 'text-primary-500' : 'text-neutral-400'}`}/> 3. 网感与撰写大纲
+                        </h3>
+                        <div className="space-y-3">
+                           {plans.map(p => (
+                              <button 
+                                 key={p}
+                                 disabled={activeStep > 3}
+                                 onClick={() => setFormData({...formData, intent: p})}
+                                 className={`w-full p-4 rounded-2xl border text-left transition-all ${activeStep > 3 ? 'bg-neutral-50/50' : ''} ${formData.intent === p ? 'bg-white border-primary-500 shadow-sm' : 'bg-white/50 border-neutral-200 hover:border-neutral-300'}`}
+                              >
+                                 <p className={`text-[13px] font-bold leading-relaxed ${formData.intent === p ? 'text-primary-600' : 'text-neutral-700'}`}>{p}</p>
+                              </button>
+                           ))}
+                           
+                           {activeStep === 3 && (
+                              <div className="pt-4 flex flex-col gap-4">
+                                 <button onClick={handleInitialGenerate} disabled={!formData.intent} className="w-full h-14 bg-neutral-900 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95 mt-2">
+                                    进入全链路生成 <Sparkles size={16}/>
+                                 </button>
+                              </div>
+                           )}
+                        </div>
                      </div>
-                  </div>
-               )}
+                  )}
+
+                  {/* Step 4 */}
+                  {activeStep >= 4 && (
+                     <div className="space-y-6 mt-8 relative animate-in fade-in slide-in-from-top-4">
+                        <div className="absolute -top-10 left-3.5 w-0.5 h-10 bg-neutral-200 rounded-full" />
+                        <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-2 uppercase tracking-widest">
+                           <PenTool size={16} className="text-secondary-500"/> 4. 实时人工微调 (HITL)
+                        </h3>
+                        <div className="p-6 bg-neutral-900 rounded-[32px] text-white overflow-hidden relative group">
+                           <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
+                              <Target size={200} className="absolute -bottom-10 -right-10 text-white" />
+                           </div>
+                           <p className="text-[11px] font-black text-primary-400 uppercase tracking-widest mb-4">实时介入反馈</p>
+                           <p className="text-[13px] font-bold text-neutral-300 mb-6 leading-relaxed">可点击下方微指令，Agent 将实时重构右侧产出节点。即刻生效。</p>
+                           <div className="grid grid-cols-2 gap-2 relative z-10">
+                              {[
+                                 '加强互动引导', '多用口语化表达', '精简文本篇幅', '强调价格优势'
+                              ].map(dir => (
+                                 <button 
+                                   key={dir}
+                                   onClick={() => handleIterate(dir)}
+                                   className="py-3 px-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 text-[11px] font-black text-left transition-all flex items-center justify-between group/btn text-neutral-300 hover:text-white"
+                                 >
+                                    <span className="truncate">{dir}</span>
+                                    <RefreshCw size={12} className="text-neutral-500 group-hover/btn:rotate-180 group-hover/btn:text-primary-400 transition-all shrink-0 ml-1" />
+                                 </button>
+                              ))}
+                           </div>
+                        </div>
+                        
+                        <div className="pt-4">
+                           <button 
+                             onClick={() => setActiveStep(5)}
+                             className="w-full h-14 bg-emerald-500 text-white rounded-2xl font-black text-[14px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95 mt-2"
+                           >
+                              生产确认并推进至矩阵排期 <CheckCircle2 size={16}/>
+                           </button>
+                        </div>
+                     </div>
+                  )}
+               </div>
 
                {activeStep === 5 && (
                   <div className="space-y-6">
