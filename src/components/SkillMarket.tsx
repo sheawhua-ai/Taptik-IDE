@@ -11,8 +11,8 @@ import { motion, AnimatePresence } from 'motion/react';
 interface SkillMarketProps {
   creatingSkill: boolean;
   setCreatingSkill: (val: boolean) => void;
-  skillMarketTab: 'my' | 'market';
-  setSkillMarketTab: (val: 'my' | 'market') => void;
+  skillMarketTab: string;
+  setSkillMarketTab: (val: string) => void;
   selectedSkill: any;
   setSelectedSkill: (val: any) => void;
 }
@@ -92,9 +92,20 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
   ];
 
   const filteredSkills = MARKET_SKILLS.filter(sk => {
+    let isTabMatch = false;
+    if (skillMarketTab === 'agent' || skillMarketTab === 'group') {
+      isTabMatch = sk.category === 'agent';
+    } else if (skillMarketTab === 'skill') {
+      isTabMatch = sk.category !== 'agent' && sk.category !== 'mcp';
+    } else if (skillMarketTab === 'mcp') {
+      isTabMatch = sk.category === 'mcp';
+    } else {
+      isTabMatch = true;
+    }
+
     const matchesSearch = sk.name.includes(searchQuery) || sk.desc.includes(searchQuery);
     const matchesCategory = activeCategory === 'all' || sk.category === activeCategory;
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesCategory && isTabMatch;
   });
 
   return (
@@ -262,18 +273,24 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
             <div className="flex-none p-6 px-10 border-b border-neutral-100 bg-neutral-0 shadow-sm relative z-10">
                <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-6">
-                    <h1 className="text-2xl font-black text-neutral-900 tracking-tight">技能增强中心</h1>
+                    <h1 className="text-2xl font-black text-neutral-900 tracking-tight">专家与技能 Hub</h1>
                     <div className="flex bg-neutral-50 rounded-[14px] p-1 text-[13px] font-extrabold border border-neutral-200">
-                       <button onClick={() => setSkillMarketTab('my')} className={`px-6 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'my' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500'}`}>我的技能</button>
-                       <button onClick={() => setSkillMarketTab('market')} className={`px-6 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'market' ? 'bg-neutral-900 text-neutral-0 shadow-md' : 'text-neutral-500'}`}>技能市场</button>
+                       <button onClick={() => setSkillMarketTab('agent')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'agent' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>专家</button>
+                       <button onClick={() => setSkillMarketTab('group')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'group' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>专家团</button>
+                       <button onClick={() => setSkillMarketTab('skill')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'skill' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>技能</button>
+                       <button onClick={() => setSkillMarketTab('mcp')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'mcp' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>连接器</button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
+                     <button onClick={() => setSkillMarketTab('my')} className={`px-5 py-2 rounded-xl text-[13px] font-black border transition-all ${skillMarketTab === 'my' ? 'bg-neutral-900 text-white border-neutral-900 shadow-md' : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50'}`}>
+                       已购/我的资源
+                     </button>
+                     <div className="w-[1px] h-6 bg-neutral-200" />
                      <button onClick={() => setShowGitModal(true)} className="bg-neutral-900 text-white px-5 py-2.5 rounded-2xl text-[13px] font-black shadow-xl shadow-neutral-900/20 flex items-center gap-2 hover:scale-[1.02] transition-all active:scale-95">
-                         <Cloud size={16} /> 导入私有空间源
+                         <Cloud size={16} /> 导入私有源
                      </button>
                      <button onClick={() => setCreatingSkill(true)} className="bg-primary-500 text-white px-6 py-2.5 rounded-2xl text-[13px] font-black shadow-xl shadow-primary-500/20 flex items-center gap-2 hover:scale-[1.02] transition-all active:scale-95">
-                         <Sparkles size={16} /> 构建专有 Skill
+                         <Sparkles size={16} /> 构建资产
                      </button>
                   </div>
                </div>
@@ -335,7 +352,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
                   )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-20">
-                     {(skillMarketTab === 'market' ? filteredSkills : MY_SKILLS).map(sk => (
+                     {(skillMarketTab === 'my' ? MY_SKILLS : filteredSkills).map(sk => (
                         <div key={sk.id} onClick={() => setSelectedSkill(sk)} className="flex flex-col p-5 rounded-3xl border border-neutral-100 hover:border-primary-500/30 hover:bg-primary-50/20 transition-all cursor-pointer group bg-neutral-0 shadow-sm hover:shadow-xl relative overflow-hidden">
                            <div className="flex items-start justify-between mb-4">
                               {sk.icon && (

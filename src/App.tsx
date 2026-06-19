@@ -179,7 +179,7 @@ export default function App() {
   const [activeDoc, setActiveDoc] = useState<string | null>(null);
   
   const [selectedSkill, setSelectedSkill] = useState<any>(null);
-  const [skillMarketTab, setSkillMarketTab] = useState<'market' | 'my'>('my');
+  const [skillMarketTab, setSkillMarketTab] = useState<string>('agent');
   const [creatingSkill, setCreatingSkill] = useState(false);
   const [filesTab, setFilesTab] = useState<'project' | 'knowledge'>('project');
   

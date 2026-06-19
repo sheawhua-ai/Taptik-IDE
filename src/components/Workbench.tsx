@@ -6,15 +6,15 @@ import {
   ChevronRight, Wrench, BrainCircuit, CheckCircle2, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { FunctionNav } from './command-center/FunctionNav';
 import { CommandDirectory } from './command-center/CommandDirectory';
-import { SubagentMacroPanel } from './command-center/SubagentMacroPanel';
+import { AgentSelector, AVAILABLE_AGENTS } from './command-center/AgentSelector';
 
 type AgentThought = {
   id: string;
   type: 'think' | 'tool_call';
   content: string;
   result?: string;
+  status?: 'success' | 'warning' | 'error';
 };
 
 type ChatMessage = {
@@ -46,28 +46,27 @@ const ThoughtsBlock = ({ thoughts, isThinking }: { thoughts: AgentThought[], isT
                 <CheckCircle2 size={16} className="text-emerald-500" />
              )}
              <span>
-               思考过程 ({thoughts.filter(t => t.type === 'think').length}) · 
-               调用工具 ({thoughts.filter(t => t.type === 'tool_call').length})
+               子节点思考与执行过程 ({thoughts.length})
              </span>
           </div>
           <ChevronRight size={16} className={`text-neutral-400 transition-transform ${expanded ? 'rotate-90' : ''}`} />
        </button>
        
        {expanded && (
-         <div className="p-4 pt-0 border-t border-neutral-200/50 space-y-3 mt-1">
+         <div className="p-4 pt-1 border-t border-neutral-200/50 space-y-4">
            {thoughts.map(t => (
-             <div key={t.id} className="flex items-start gap-3 text-[13px]">
+             <div key={t.id} className={`flex items-start gap-3 text-[13px] ${t.status === 'warning' ? 'bg-warning-50/50 p-2 -mx-2 rounded-xl text-warning-700 border border-warning-200/50' : t.status === 'success' ? 'bg-emerald-50/50 p-2 -mx-2 rounded-xl text-emerald-700 border border-emerald-200/50' : ''}`}>
                 <div className="mt-0.5 shrink-0">
                   {t.type === 'think' ? (
-                     <BrainCircuit size={14} className="text-purple-500" />
+                     <BrainCircuit size={14} className={t.status === 'warning' ? 'text-warning-500' : t.status === 'success' ? 'text-emerald-500' : 'text-purple-500'} />
                   ) : (
                      <Wrench size={14} className="text-blue-500" />
                   )}
                 </div>
                 <div className="flex-1 space-y-1.5">
-                   <div className="font-bold text-neutral-700">{t.content}</div>
+                   <div className={`font-bold ${t.status === 'warning' ? 'text-warning-900' : t.status === 'success' ? 'text-emerald-900' : 'text-neutral-700'}`}>{t.content}</div>
                    {t.result && (
-                     <div className="font-mono text-[11px] text-neutral-500 bg-white border border-neutral-200 p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-wrap">
+                     <div className="font-mono text-[11px] text-neutral-500 bg-white border border-neutral-200 p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-wrap mt-2">
                        {t.result}
                      </div>
                    )}
@@ -115,9 +114,11 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
   const [leftExpanded, setLeftExpanded] = useState(true);
   const [rightExpanded, setRightExpanded] = useState(false);
   
-  const [isFunctionNavOpen, setIsFunctionNavOpen] = useState(false);
+  const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
   const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
-  const [isAgentPanelOpen, setIsAgentPanelOpen] = useState(false);
+  const [activeAgentId, setActiveAgentId] = useState('core');
+
+  const activeAgent = AVAILABLE_AGENTS.find(a => a.id === activeAgentId) || AVAILABLE_AGENTS[0];
 
   // Rotating placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -136,7 +137,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setIsFunctionNavOpen(prev => !prev);
+        setIsAgentSelectorOpen(prev => !prev);
       }
     };
     window.addEventListener('keydown', handler);
@@ -210,20 +211,55 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
     setMessages(prev => [...prev, agentMsg]);
     setIsProcessing(true);
 
-    const stages = [
-      { type: 'think' as const, content: '分析用户意图，拆解任务目标...' },
-      { type: 'tool_call' as const, content: '正在调用数据检索工具 (fetch_merchant_data)' },
-      { type: 'think' as const, content: '获取到当前项目的运营数据，准备对应的小红书爆文案例' },
-      { type: 'tool_call' as const, content: '正在调用案例库匹配 (search_case_study)' },
-      { type: 'think' as const, content: '综合数据，生成优化策略方案' }
-    ];
+    let stages: { type: 'think' | 'tool_call', content: string, status?: 'success' | 'warning' | 'error' }[] = [];
+
+    // Simulate Agent Routing based on selected Agent and intent
+    const isAutoRoutingContent = activeAgentId === 'strategy' && (finalQuery.includes('生成') || finalQuery.includes('写') || finalQuery.includes('创作'));
+    const isAutoRoutingStrategy = activeAgentId === 'content' && (finalQuery.includes('分析') || finalQuery.includes('趋势') || finalQuery.includes('蓝海'));
+
+    if (activeAgentId === 'core') {
+       stages = [
+         { type: 'think', content: '[Taptik 大脑] 正在全局分析任务意图...' },
+         { type: 'tool_call', content: '评估合适的工作流与子节点...' },
+         { type: 'think', content: '已将任务下发给对应业务线的垂直智能体执行' },
+         { type: 'tool_call', content: '正在调用底层基础工具群' },
+         { type: 'think', content: '汇总多节点结果，准备输出...' }
+       ];
+    } else if (isAutoRoutingContent) {
+       stages = [
+         { type: 'think', content: `[${activeAgent.name}] 正在解析任务意图...` },
+         { type: 'think', content: `[${activeAgent.name}] 注意：检测到「内容生产」需求，超出当前策略规划边界。`, status: 'warning' },
+         { type: 'tool_call', content: `自动向上级 Taptik 智能大脑请求跨界协同调度...` },
+         { type: 'think', content: `[Taptik 大脑] 批准接管。已唤起 [全域内容打法团队] 将策略转化为实体内容！`, status: 'success' },
+         { type: 'think', content: `[内容团队] 正在执行批量生成逻辑...` }
+       ];
+    } else if (isAutoRoutingStrategy) {
+       stages = [
+         { type: 'think', content: `[${activeAgent.name}] 正在解析任务任务...` },
+         { type: 'think', content: `[${activeAgent.name}] 注意：检测到「策略推演/数据分析」需求，这并非当前内容节点的最优能力范围。`, status: 'warning' },
+         { type: 'tool_call', content: `自动向系统申请调度 [策略专家] 协助...` },
+         { type: 'think', content: `[策略专家] 已接管需求，正在提取全网蓝海词库与历史转化数据...`, status: 'success' },
+         { type: 'think', content: `基于数据与策略，整理最终建议...` }
+       ];
+    } else {
+       // Standard behavior for the selected sub-agent
+       stages = [
+         { type: 'think', content: `[${activeAgent.name}] 已接管任务，正在拆解目标...` },
+         { type: 'tool_call', content: `正在调用 ${activeAgent.name} 专属 API 接口与数据集` },
+         { type: 'think', content: '获取相关业务资产状态...' },
+         { type: 'tool_call', content: '执行领域级专有逻辑 (Deduction / Gen)' },
+         { type: 'think', content: '任务执行完毕，生成汇报...' }
+       ];
+    }
 
     let step = 0;
     const interval = setInterval(() => {
       if (step < stages.length) {
+         const currentStep = step;
+         const stage = stages[currentStep] || { type: 'think', content: '处理中...' };
          setMessages(prev => prev.map(m => {
            if (m.id === agentMsgId) {
-             const newThoughts = [...(m.thoughts || []), { id: `t${step}`, result: step % 2 !== 0 ? '{\n  "status": "success",\n  "records": 12,\n  "cache": "HIT"\n}' : undefined, ...stages[step] }];
+             const newThoughts = [...(m.thoughts || []), { id: `t${currentStep}`, result: currentStep % 2 !== 0 && !stage.status ? '{\n  "status": "success",\n  "cache": "HIT"\n}' : undefined, ...stage }];
              return { ...m, thoughts: newThoughts };
            }
            return m;
@@ -233,10 +269,19 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
          clearInterval(interval);
          setMessages(prev => prev.map(m => {
            if (m.id === agentMsgId) {
+             let finalResponse = `指令「${finalQuery}」已处理完毕。`;
+             if (isAutoRoutingContent) {
+               finalResponse += ` 由于任务包含具体的内容生产环节，我在过程中拉起了 **全域内容打法团队** 协同执行，最终的内容草稿已为您在后端生成就绪。`;
+             } else if (isAutoRoutingStrategy) {
+               finalResponse += ` 考虑到任务需要深入的数据推演，我已自动安排 **策略专家** 提供核心洞察，确保最终方案具备高转化潜力。`;
+             } else {
+               finalResponse += ` 我已为您调取对应的业务数据，并匹配了 3 个相关参考方案，随时可供审查。`;
+             }
+
              return { 
                ...m,
                isThinking: false, 
-               content: `指令「${finalQuery}」已处理完毕。已为您调取对应的图文结构与数据报告，并且匹配到 3 个行业内的标杆成功案例，随时可供审查。` 
+               content: finalResponse 
              };
            }
            return m;
@@ -244,7 +289,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
          setIsProcessing(false);
          setRightExpanded(true);
       }
-    }, 600);
+    }, 750);
   };
 
   return (
@@ -466,40 +511,26 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
               {/* The Input Container */}
               <div className="relative z-50">
                 <AnimatePresence>
-                  {isFunctionNavOpen && <FunctionNav setActiveNav={setActiveNav} isOpen={isFunctionNavOpen} onClose={() => setIsFunctionNavOpen(false)} />}
+                  <AgentSelector 
+                     isOpen={isAgentSelectorOpen} 
+                     onClose={() => setIsAgentSelectorOpen(false)} 
+                     activeAgentId={activeAgentId}
+                     onSelectAgent={setActiveAgentId}
+                     onOpenMarket={() => setActiveNav('skills')}
+                  />
                   {isCommandDirOpen && <CommandDirectory onSelectCommand={(cmd) => { setQuery(cmd); setIsCommandDirOpen(false); }} isOpen={isCommandDirOpen} onClose={() => setIsCommandDirOpen(false)} />}
-                  {isAgentPanelOpen && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                      className="absolute bottom-full right-0 mb-4 w-[380px] h-[480px] bg-white rounded-2xl shadow-2xl border border-neutral-100 flex flex-col z-50 overflow-hidden"
-                    >
-                      <div className="p-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-                        <div className="flex items-center gap-2 text-neutral-900">
-                          <Bot size={16} />
-                          <span className="text-[13px] font-black">系统与智能体 (Agents)</span>
-                        </div>
-                        <button onClick={() => setIsAgentPanelOpen(false)} className="p-1.5 hover:bg-neutral-200 rounded-lg text-neutral-500 transition-colors">
-                          <X size={16} />
-                        </button>
-                      </div>
-                      <div className="flex flex-col flex-1 overflow-hidden relative">
-                         <SubagentMacroPanel onRunMacro={(cmd) => { setQuery(cmd); setIsAgentPanelOpen(false); }} />
-                      </div>
-                    </motion.div>
-                  )}
                 </AnimatePresence>
 
                 <div className="bg-white p-2 rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.08)] flex items-center gap-3 pr-3 border border-neutral-200 focus-within:ring-4 focus-within:ring-primary-500/20 focus-within:border-primary-500/50 transition-all text-neutral-900">
                   
-                  {/* Deterministic Nav Button (LayoutGrid) */}
+                  {/* Agent Selector Button */}
                   <button 
-                    onClick={() => { setIsFunctionNavOpen(!isFunctionNavOpen); setIsCommandDirOpen(false); setIsAgentPanelOpen(false); }}
-                    className={`ml-2 p-3 rounded-2xl transition-all ${isFunctionNavOpen ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-50'}`}
-                    title="结构化功能导航 (Ctrl+K)"
+                    onClick={() => { setIsAgentSelectorOpen(!isAgentSelectorOpen); setIsCommandDirOpen(false); }}
+                    className={`ml-2 px-3 py-2 rounded-[20px] transition-all flex items-center gap-2 ${isAgentSelectorOpen ? 'bg-primary-50 text-primary-600' : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'} border border-transparent ${activeAgentId !== 'core' && !isAgentSelectorOpen ? 'bg-neutral-50 border-neutral-200' : ''}`}
+                    title="选择智能体 (Ctrl+K)"
                   >
-                    <LayoutGrid size={20} />
+                    <activeAgent.icon size={18} className={activeAgentId !== 'core' ? activeAgent.iconColor : ''} />
+                    <span className="text-[12px] font-black">{activeAgentId === 'core' ? '智能体' : activeAgent.name}</span>
                   </button>
 
                   <div className="w-[1px] h-8 bg-neutral-200" />
@@ -511,23 +542,14 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                       onFocus={() => setIsInputFocused(true)}
                       onBlur={() => setIsInputFocused(false)}
                       onKeyDown={(e) => e.key === 'Enter' && handleExecute()}
-                      placeholder={query ? '' : SUGGESTIONS[placeholderIndex]} 
+                      placeholder={query ? '' : `唤起 ${activeAgent.name} 执行任务，或输入 ${SUGGESTIONS[placeholderIndex]}`} 
                       className="absolute inset-0 bg-transparent border-none outline-none text-[15px] text-neutral-900 w-full h-full placeholder:text-neutral-400 placeholder:transition-opacity"
                     />
                   </div>
                   
-                  {/* Agent Setup/Shortcut Button */}
-                  <button 
-                    onClick={() => { setIsAgentPanelOpen(!isAgentPanelOpen); setIsFunctionNavOpen(false); setIsCommandDirOpen(false); }}
-                    className={`p-2.5 rounded-xl transition-all ${isAgentPanelOpen ? 'bg-primary-50 text-primary-500' : 'text-neutral-400 hover:text-primary-500 hover:bg-neutral-50'}`}
-                    title="智能体指令集"
-                  >
-                    <Bot size={20} />
-                  </button>
-
                   {/* Intent Directory Button (Lightbulb) */}
                   <button 
-                    onClick={() => { setIsCommandDirOpen(!isCommandDirOpen); setIsFunctionNavOpen(false); setIsAgentPanelOpen(false); }}
+                    onClick={() => { setIsCommandDirOpen(!isCommandDirOpen); setIsAgentSelectorOpen(false); }}
                     className={`p-2.5 rounded-xl transition-all ${isCommandDirOpen ? 'bg-warning-50 text-warning-500' : 'text-neutral-400 hover:text-warning-500 hover:bg-neutral-50'}`}
                     title="意图与指令集模板"
                   >

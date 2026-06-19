@@ -10,8 +10,8 @@ export const AccountDetails: React.FC = () => {
     <div className="flex flex-col h-full bg-neutral-50 p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">商户账号详情</h2>
-          <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">商户身份与配置</p>
+          <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">商家账号详情</h2>
+          <p className="text-[12px] text-neutral-400 font-bold uppercase tracking-wider mt-1">商家身份与配置</p>
         </div>
         <button className="px-6 py-2.5 bg-neutral-0 border border-neutral-200 rounded-xl text-[13px] font-black hover:bg-neutral-50 flex items-center gap-2">
            <Edit3 size={18}/> 编辑资料
@@ -27,7 +27,7 @@ export const AccountDetails: React.FC = () => {
              </h3>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                   <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest block mb-1.5 focus:text-primary-500">商户名称</label>
+                   <label className="text-[11px] font-black text-neutral-400 uppercase tracking-widest block mb-1.5 focus:text-primary-500">商家名称</label>
                    <p className="text-[15px] font-bold text-neutral-800">test shop</p>
                 </div>
                 <div>
@@ -99,7 +99,7 @@ export const AccountDetails: React.FC = () => {
                     <span className="px-3 py-1 bg-success-500 text-white text-[10px] font-black rounded-lg uppercase tracking-widest">至尊版</span>
                  </div>
                  <h4 className="text-[20px] font-black mb-2">服务有效期</h4>
-                 <p className="text-[13px] text-white/40 font-medium mb-6">该商户当前版本为 [旗舰版]</p>
+                 <p className="text-[13px] text-white/40 font-medium mb-6">该商家当前版本为 [旗舰版]</p>
                  
                  <div className="space-y-4 mb-8">
                     <div className="flex justify-between items-center text-[13px]">

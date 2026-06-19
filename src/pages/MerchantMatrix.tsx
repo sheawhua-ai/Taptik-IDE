@@ -616,7 +616,7 @@ export default function MerchantMatrix() {
                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                        </div>
-                       已默认关联当前商户 IP规范与敏感词拦截库
+                       已默认关联当前商家 IP规范与敏感词拦截库
                     </div>
                     <div className="flex items-center gap-3">
                        <button onClick={() => setIsCreatingProject(false)} className="px-6 py-3.5 rounded-xl text-[14px] font-black text-neutral-500 hover:bg-neutral-100 transition-colors">

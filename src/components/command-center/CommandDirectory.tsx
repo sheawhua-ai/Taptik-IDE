@@ -13,7 +13,7 @@ const COMMAND_EXAMPLES = [
     category: '📊 数据洞察类',
     commands: [
       { template: '分析 [笔记链接] 的互动趋势', preview: '分析这篇笔记的互动数据变化' },
-      { template: '查看 [商户小红书号] 最近 7 天的数据', preview: '获取商户整体运营数据' },
+      { template: '查看 [商家小红书号] 最近 7 天的数据', preview: '获取商家整体运营数据' },
       { template: '对比 [笔记A] 和 [笔记B] 的表现', preview: '两篇笔记横向对比' },
     ]
   },

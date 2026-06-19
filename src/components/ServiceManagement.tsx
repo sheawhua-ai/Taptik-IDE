@@ -57,7 +57,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
   const onBack = externalOnBack || (() => setInternalSelected(null));
 
   const [activeTab, setActiveTab] = React.useState<'merchants' | 'team'>('merchants');
-  const [detailTab, setDetailTab] = React.useState('pipeline');
+  const [detailTab, setDetailTab] = React.useState('account');
   const registerUrl = "https://tap.topyuncang.com/login?age=your_id";
 
   if (selectedMerchant) {
@@ -79,18 +79,15 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
                   <h1 className="text-[17px] font-black text-neutral-900 tracking-tight">{selectedMerchant.name}</h1>
                   <span className="px-1.5 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] font-bold rounded uppercase">uuid: {selectedMerchant.id}</span>
                 </div>
-                <p className="text-[11px] text-neutral-400 font-bold uppercase tracking-wider mt-0.5">正在管理该商户数据与资产</p>
+                <p className="text-[11px] text-neutral-400 font-bold uppercase tracking-wider mt-0.5">正在管理该商家数据与资产</p>
               </div>
             </div>
           </div>
 
           <div className="flex items-center bg-neutral-50 p-1.5 rounded-2xl border border-neutral-100">
             {[
-              { id: 'pipeline', name: '业务方案' },
-              { id: 'assets', name: '素材中心' },
-              { id: 'tasks', name: '执行任务' },
-              { id: 'staff', name: '员工权限' },
               { id: 'account', name: '账号详情' },
+              { id: 'staff', name: '员工与权限' },
             ].map(tab => (
               <button 
                 key={tab.id}
@@ -104,11 +101,8 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-           {detailTab === 'pipeline' && <SchemeManager embedded={true} />}
-           {detailTab === 'assets' && <AssetManager embedded={true} />}
-           {detailTab === 'tasks' && <TaskList />}
-           {detailTab === 'staff' && <StaffManager />}
            {detailTab === 'account' && <AccountDetails />}
+           {detailTab === 'staff' && <StaffManager />}
         </div>
       </div>
     );
@@ -131,14 +125,14 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
                onClick={() => setActiveTab('merchants')}
                className={`text-[15px] font-black relative py-7 transition-all ${activeTab === 'merchants' ? 'text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
              >
-                商户中心 Hub
+                商家管理
                 {activeTab === 'merchants' && <motion.div layoutId="manageTab" className="absolute bottom-0 left-0 right-0 h-1 bg-primary-500 rounded-t-full" />}
              </button>
              <button 
                onClick={() => setActiveTab('team')}
                className={`text-[15px] font-black relative py-7 transition-all ${activeTab === 'team' ? 'text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
              >
-                组织与内勤
+                组织管理
                 {activeTab === 'team' && <motion.div layoutId="manageTab" className="absolute bottom-0 left-0 right-0 h-1 bg-primary-500 rounded-t-full" />}
              </button>
           </nav>
@@ -168,11 +162,11 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
                   </div>
                   <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-2">
-                      <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">专属商户入驻引擎</h2>
+                      <h2 className="text-[20px] font-black text-neutral-900 tracking-tight">专属商家入驻引擎</h2>
                       <span className="px-2 py-0.5 bg-success-50 text-success-600 text-[10px] font-black rounded-lg">绑定分销 ID</span>
                     </div>
                     <p className="text-[14px] text-neutral-500 font-medium mb-8 max-w-lg">
-                      系统已根据您的代理商 ID 自动生成入驻入口。新商户注册后将自动获得您的「业务模板库」共享权限。
+                      系统已根据您的代理商 ID 自动生成入驻入口。新商家注册后将自动获得您的「业务模板库」共享权限。
                     </p>
                     <div className="flex flex-col md:flex-row gap-8 items-center">
                       <div className="bg-neutral-0 p-4 border border-neutral-100 rounded-3xl shadow-xl">
@@ -180,7 +174,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
                            <QrCode size={120} className="text-neutral-900" />
                         </div>
                         <button className="w-full mt-4 py-2 text-[12px] font-black text-primary-500 hover:bg-primary-50 rounded-lg transition-colors border border-primary-50 flex items-center justify-center gap-2">
-                           <Download size={14} /> 保存商户码
+                           <Download size={14} /> 保存商家码
                         </button>
                       </div>
                       <div className="flex-1 w-full space-y-6">
@@ -204,11 +198,11 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
                    <div className="absolute top-[-20px] right-[-20px] w-48 h-48 bg-primary-500/10 rounded-full blur-3xl opacity-50 group-hover:scale-125 transition-transform"></div>
                    <div className="relative z-10">
                       <BarChart3 size={32} className="text-primary-500 mb-8" />
-                      <h3 className="text-[24px] font-black leading-tight mb-2">本月商户业绩</h3>
+                      <h3 className="text-[24px] font-black leading-tight mb-2">本月商家业绩</h3>
                       <p className="text-[13px] text-white/40 font-bold mb-8">数据中心聚合监控</p>
                       <div className="space-y-4">
                          <div className="flex justify-between items-end border-b border-white/10 pb-4">
-                            <span className="text-[12px] font-bold text-white/60 text-left">活跃商户</span>
+                            <span className="text-[12px] font-bold text-white/60 text-left">活跃商家</span>
                             <span className="text-[24px] font-black">42</span>
                          </div>
                          <div className="flex justify-between items-end border-b border-white/10 pb-4">
@@ -227,13 +221,13 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
               <div className="bg-neutral-0 rounded-[32px] border border-neutral-200 shadow-sm overflow-hidden">
                 <div className="p-8 border-b border-neutral-100 flex items-center justify-between">
                    <div className="flex items-center gap-4">
-                      <h2 className="text-[18px] font-black text-neutral-900 tracking-tight">所有下线商户</h2>
-                      <div className="px-2 py-0.5 bg-neutral-100 rounded-lg text-[11px] font-black text-neutral-500">活跃使用 / 活跃商户</div>
+                      <h2 className="text-[18px] font-black text-neutral-900 tracking-tight">所有下线商家</h2>
+                      <div className="px-2 py-0.5 bg-neutral-100 rounded-lg text-[11px] font-black text-neutral-500">活跃使用 / 活跃商家</div>
                    </div>
                    <div className="flex items-center gap-3">
                       <div className="relative">
                          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
-                         <input placeholder="搜索商户 ID..." className="pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] font-bold w-64 outline-none focus:border-primary-500" />
+                         <input placeholder="搜索商家 ID..." className="pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] font-bold w-64 outline-none focus:border-primary-500" />
                       </div>
                       <button className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-black shadow-lg">直接手动开号</button>
                    </div>
@@ -243,7 +237,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
                      <thead>
                        <tr className="bg-neutral-50/50 text-[10px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100">
                          <th className="px-8 py-4">标识库</th>
-                         <th className="px-8 py-4">商户品牌名称</th>
+                         <th className="px-8 py-4">商家品牌名称</th>
                          <th className="px-8 py-4">账号信息</th>
                          <th className="px-8 py-4">状态</th>
                          <th className="px-8 py-4">关键指标 (本月)</th>
