@@ -47,7 +47,8 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
       'content': `内容助手已就绪。正在为您解析最近的爆款笔记逻辑。您可以下达改写、生成或润色内容指令。`,
       'execution': `编排中心数字员工在线。正在管理您的自动化任务流。需要我调整执行顺序或增加监控节点吗？`,
       'interaction': `触达转化助手已连接。正在分析意图私信。您可以让我自动回复或导出高潜线索。`,
-      'metrics': `归因复盘专家已就绪。正在分析 ROI 与爆文率。需要我生成本周的运营对比报表吗？`
+      'metrics': `归因复盘专家已就绪。正在分析 ROI 与爆文率。需要我生成本周的运营对比报表吗？`,
+      'builder': `您好！我是技能蒸馏构建器。只需通过对话告诉我您想要的业务逻辑（比如：“我要一个能根据图片自动洗稿的小红书工具”），我会自动在后台编写包含环境依赖与程序调用的 Zip 压缩包。您可以随时让我“测试一下”查看效果。`
     };
 
     setMessages([
@@ -86,8 +87,60 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
 
     // Simulate agent response
     setTimeout(() => {
-      // If prompt contains keywords for planning
-      if (inputValue.includes('策划') || inputValue.includes('任务') || inputValue.includes('方案')) {
+      if (moduleId === 'builder') {
+        if (inputValue.includes('测试')) {
+          const agentMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'agent',
+            content: `正在沙盒环境中为您运行最新的技能包...\n[✅] 依赖环境打包完成\n[✅] 执行程序调用正常\n\n您可以直接输入测试数据（例如：“请帮我生成一段带自然意图的防限流笔记”），以验证技能的实际输出效果。`,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, agentMsg]);
+          setIsTyping(false);
+        } else if (inputValue.includes('构建') || inputValue.includes('完成') || inputValue.includes('打包')) {
+          const planMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'agent',
+            content: '已确认需求。正在为您自动生成包含核心逻辑与程序调用脚本的复合技能包 (Skill Package.zip) ...',
+            timestamp: new Date(),
+            type: 'plan',
+            status: 'running',
+            subtasks: [
+              { id: 'b1', name: '解析操作意图与上下文约束', status: 'completed', agent: '逻辑编译器' },
+              { id: 'b2', name: '生成底层 Python/Node.js 执行脚本', status: 'running', agent: '代码生成引擎' },
+              { id: 'b3', name: '打包为标准 Zip 资源包', status: 'pending', agent: '沙盒环境' },
+            ]
+          };
+          setMessages(prev => [...prev, planMsg]);
+          setIsTyping(false);
+
+          // Simulate plan progression
+          setTimeout(() => {
+            setMessages(prev => prev.map(m => m.id === planMsg.id ? {
+              ...m,
+              subtasks: m.subtasks?.map(st => st.id === 'b2' ? { ...st, status: 'completed' } : st.id === 'b3' ? { ...st, status: 'completed' } : st)
+            } : m));
+            
+            setTimeout(() => {
+               setMessages(prev => [...prev, {
+                  id: Date.now().toString(),
+                  role: 'system',
+                  content: '🎉 技能包构建完成。可在工作台导出您的 skill_package.zip 。',
+                  timestamp: new Date()
+               }]);
+            }, 1000);
+          }, 3000);
+        } else {
+          const agentMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'agent',
+            content: `已记录您的输入：“${inputValue}”。我已经更新了内部状态中的代码调用逻辑。您可以发出一句【测试一下】指令来验证效果，或者告诉我【打包完成】以生成最终技能 zip 包。`,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, agentMsg]);
+          setIsTyping(false);
+        }
+      } else if (inputValue.includes('策划') || inputValue.includes('任务') || inputValue.includes('方案')) {
         const planMsg: Message = {
           id: (Date.now() + 1).toString(),
           role: 'agent',

@@ -84,9 +84,9 @@ export default function App() {
     if (!messagesMap['project-a']) {
       setMessagesMap({
         'project-a': [
-          { id: 'start-1', role: 'agent', content: '您好，智能助手已就绪。您可以尝试输入指令开始运营任务。' },
-          { id: 'start-2', role: 'agent', content: '监测到您正在处理 2024 夏季新品增长任务。{recommend_skill_paid:爆文逻辑蒸馏器:50信用点/次:原创度提升 +42.5%}' },
-          { id: 'start-3', role: 'agent', content: '由于当前笔记被系统识别出高度“AI味”，建议安装相关改写工具。{recommend_skill_free:去 AI 味改写:6:原创度提升 30-45%}' }
+          { id: 'start-1', role: 'agent', content: '您好，智能助手已就绪。正在分析您的 2024 夏季新品需求...' },
+          { id: 'start-2', role: 'system', content: '「自动感知到任务包含小红书图文制作，后台已静默挂载专家技能 @AIGC_Creator/爆文逻辑蒸馏器」' },
+          { id: 'start-3', role: 'agent', content: '由于这是高阶竞争赛道，我已经为您自动配置了行业专家的爆文模型。{recommend_skill_paid:爆文逻辑蒸馏器:50信用点/次:原创度提升 +42.5%}' }
         ],
         'new-merchant': [
           { id: 'new-1', role: 'agent', content: '欢迎加入智策！我是您的 AI 增长伙伴。' },
@@ -457,8 +457,8 @@ export default function App() {
            <div className="border-t border-neutral-100 pt-8 mt-4 space-y-3 pb-8">
               <div className="px-2 text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-2 hidden xl:block">配置与资产</div>
               {[
-                { id: 'files', name: '知识库中心', sub: 'Lancedb 极速检索', icon: BookOpen },
-                { id: 'skills', name: '技能插件市场', sub: '极简能力工具箱', icon: ShoppingCart },
+                { id: 'files', name: '知识库管理', sub: '全局沉淀文档', icon: BookOpen },
+                { id: 'skills', name: '专家与技能市场', sub: '扩展行业经验库', icon: ShoppingCart },
                 { id: 'billing', name: '用量与计费', sub: '信用点与账单', icon: Gauge },
                 { id: 'settings', name: '系统设置', sub: '主体与员工管理', icon: Settings },
               ].map(item => (

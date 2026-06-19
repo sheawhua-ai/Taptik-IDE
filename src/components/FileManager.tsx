@@ -116,19 +116,46 @@ export const FileManager: React.FC<FileManagerProps> = ({
            </div>
          </div>
 
-        {/* Right: Structured Document List */}
-        <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-           <div className="max-w-5xl mx-auto space-y-10">
-              <div className="flex items-end justify-between border-b border-neutral-100 pb-8">
-                 <div>
-                    <h1 className="text-3xl font-black text-neutral-900 tracking-tight mb-2">文档与语义资产</h1>
-                    <p className="text-neutral-500 font-bold">查看及管理已结构化至 LanceDB 的核心知识库、SOP 与原始语料</p>
-                 </div>
-                 <div className="flex gap-2">
-                    <button className="p-2 border border-neutral-200 rounded-xl text-neutral-400 hover:text-neutral-900"><LayoutGrid size={20} /></button>
-                    <button className="p-2 bg-neutral-900 text-white rounded-xl shadow-lg shadow-neutral-900/10"><SlidersHorizontal size={20} /></button>
-                 </div>
-              </div>
+        {/* Right: Structured Document List or Editor */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar relative bg-[#fafafa]">
+           {activeDoc ? (
+             <div className="flex-1 flex flex-col h-full bg-white relative z-20">
+                <div className="h-16 px-8 border-b border-neutral-100 flex items-center justify-between shadow-sm shrink-0">
+                   <div className="flex items-center gap-4">
+                      <button onClick={() => setActiveDoc(null)} className="w-8 h-8 flex items-center justify-center rounded-xl bg-neutral-100/80 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors">
+                         <X size={16} />
+                      </button>
+                      <h2 className="text-[16px] font-black tracking-tight text-neutral-900 flex items-center gap-2">
+                         <PenTool size={16} className="text-primary-500" />
+                         {activeDoc}
+                      </h2>
+                      <span className="px-2 py-0.5 bg-active-50 text-active-600 rounded text-[10px] font-black uppercase tracking-widest border border-active-100">Live Sync</span>
+                   </div>
+                   <button className="px-5 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-black shadow-lg hover:bg-neutral-800 transition-all flex items-center gap-2">
+                      <Database size={16}/> 向量化并更新主模型上下文
+                   </button>
+                </div>
+                <div className="flex-1 p-8 overflow-y-auto">
+                   <div className="max-w-4xl mx-auto">
+                      <textarea 
+                         defaultValue={`# ${activeDoc}\n\n这是从知识库中提取的内容。您可以直接修改，AI 将在下次生成时自动应用您的约束配置。\n\n- 核心卖点约束：需包含“纯天然”\n- 违规词过滤：禁止使用“第一”、“最”`} 
+                         className="w-full h-[600px] bg-neutral-50 border border-neutral-200 rounded-2xl p-6 text-[14px] leading-loose focus:outline-none focus:border-primary-500 focus:bg-white transition-all resize-none shadow-inner"
+                      />
+                   </div>
+                </div>
+             </div>
+           ) : (
+             <div className="max-w-5xl mx-auto space-y-10 p-10">
+                <div className="flex items-end justify-between border-b border-neutral-100 pb-8">
+                   <div>
+                      <h1 className="text-3xl font-black text-neutral-900 tracking-tight mb-2">文档与语义资产</h1>
+                      <p className="text-neutral-500 font-bold">查看及管理已结构化至 LanceDB 的核心知识库、SOP 与原始语料</p>
+                   </div>
+                   <div className="flex gap-2">
+                      <button className="p-2 border border-neutral-200 rounded-xl text-neutral-400 hover:text-neutral-900"><LayoutGrid size={20} /></button>
+                      <button className="p-2 bg-neutral-900 text-white rounded-xl shadow-lg shadow-neutral-900/10"><SlidersHorizontal size={20} /></button>
+                   </div>
+                </div>
 
               {/* Core Enterprise Assets Group */}
               <div className="space-y-4">
@@ -143,7 +170,11 @@ export const FileManager: React.FC<FileManagerProps> = ({
                      { name: '风险规避库', sub: '内容生产必经校验', size: '42KB', tags: ['违禁词', '公关'], color: 'from-emerald-500 to-emerald-600', shadow: 'shadow-emerald-500/20' },
                      { name: '话题标签矩阵', sub: '流量分发锚点', size: '128KB', tags: ['长尾', 'SEO'], color: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/20' }
                    ].map((a, idx) => (
-                      <div key={idx} className="p-5 bg-white border border-neutral-200/60 rounded-3xl hover:border-primary-500 hover:shadow-xl transition-all group flex flex-col h-full">
+                      <div 
+                         key={idx} 
+                         onClick={() => setActiveDoc(a.name)}
+                         className="cursor-pointer p-5 bg-white border border-neutral-200/60 rounded-3xl hover:border-primary-500 hover:shadow-xl transition-all group flex flex-col h-full"
+                      >
                          <div className="flex items-center justify-between mb-4">
                             <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${a.color} shadow-lg ${a.shadow} flex items-center justify-center text-white shrink-0`}>
                                <BookOpen size={18} />
@@ -211,8 +242,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                  ))}
                  </div>
               </div>
-              
-              <div className="pt-10">
+                            <div className="pt-10">
                  <div className="bg-neutral-50 rounded-[40px] p-10 border border-neutral-100 text-center space-y-6">
                     <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center mx-auto shadow-sm text-neutral-300">
                        <Link2 size={32} />
@@ -227,6 +257,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                  </div>
               </div>
            </div>
+           )}
         </div>
       </div>
     </div>
