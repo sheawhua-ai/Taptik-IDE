@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   PlusCircle, Target, ArrowUpRight, CheckCircle2, Activity, Send, 
   Package, X, Calendar, ArrowRight, PenTool, Play, Camera, CalendarClock,
-  Image as ImageIcon, Sparkles, CheckSquare, Settings, ChevronLeft
+  Image as ImageIcon, Sparkles, CheckSquare, Settings, ChevronLeft,
+  Users, MoreVertical, CalendarDays
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -31,6 +32,7 @@ export default function MerchantMatrix() {
   const [progress, setProgress] = useState(0);
   const [drafts, setDrafts] = useState<NoteDraft[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [activeTab, setActiveTab] = useState<'content' | 'collaboration'>('content');
 
   useEffect(() => {
     const handleOpenCreate = () => {
@@ -44,31 +46,31 @@ export default function MerchantMatrix() {
   const MOCK_PROJECTS = [
     { 
       id: 'p1', 
-      name: '奈雪的茶 - 夏季运营', 
+      name: '蕉下 - 夏日防晒种草季', 
       status: '进行中',
       progress: 65,
       stages: [
-        { name: '策略企划', status: 'completed', value: '12 组核心词已锁定' },
-        { name: '内容生产', status: 'active', value: '45/100 篇笔记已就绪' },
-        { name: '矩阵分发', status: 'pending', value: '预计明日开启' },
-        { name: '互动转化', status: 'pending', value: '-' },
+        { name: '定调企划', status: 'completed', value: '12组内容方向已锁定' },
+        { name: '素材生成', status: 'active', value: '45/100 篇初稿已产出' },
+        { name: '矩阵发布', status: 'pending', value: '预计明日开启' },
+        { name: '沉淀与复盘', status: 'pending', value: '-' },
         { name: '数据归因', status: 'pending', value: '-' },
       ],
-      kpis: { views: '124k', engagement: '8.2k', leads: '412' }
+      kpis: { views: '124k', engagement: '8.2k', leads: '¥3.20' }
     },
     { 
       id: 'p2', 
-      name: '霸王茶姬 - 春季拉新', 
+      name: '花西子 - 七夕礼盒首发', 
       status: '已完成',
       progress: 100,
       stages: [
-        { name: '策略企划', status: 'completed', value: '完成' },
-        { name: '内容生产', status: 'completed', value: '完成' },
-        { name: '矩阵分发', status: 'completed', value: '120 账号覆盖' },
-        { name: '互动转化', status: 'completed', value: '89% 响应率' },
-        { name: '数据归因', status: 'completed', value: 'ROI: 3.4' },
+        { name: '定调企划', status: 'completed', value: '完成' },
+        { name: '素材生成', status: 'completed', value: '完成' },
+        { name: '矩阵发布', status: 'completed', value: '120 KOC覆盖' },
+        { name: '沉淀与复盘', status: 'completed', value: '长尾流量收录占比89%' },
+        { name: '数据归因', status: 'completed', value: 'CPE降至 ¥1.27' },
       ],
-      kpis: { views: '890k', engagement: '45k', leads: '1.2k' }
+      kpis: { views: '890k', engagement: '45k', leads: '¥1.27' }
     }
   ];
 
@@ -161,8 +163,94 @@ export default function MerchantMatrix() {
            )}
         </div>
 
-        <div className="flex-1 flex overflow-hidden">
-           {!activeBatch ? (
+         {/* Tab Navigation */}
+         {!activeBatch && (
+            <div className="px-8 pt-4 pb-0 bg-white border-b border-neutral-100 flex items-center gap-8 z-10 shrink-0">
+               <button 
+                  onClick={() => setActiveTab('content')}
+                  className={`pb-4 text-[13px] font-black transition-all relative ${activeTab === 'content' ? 'text-neutral-900 border-b-2 border-primary-500' : 'text-neutral-400 hover:text-neutral-600'}`}
+               >
+                  批量成稿批次
+               </button>
+               <button 
+                  onClick={() => setActiveTab('collaboration')}
+                  className={`pb-4 text-[13px] font-black transition-all relative ${activeTab === 'collaboration' ? 'text-neutral-900 border-b-2 border-primary-500' : 'text-neutral-400 hover:text-neutral-600'}`}
+               >
+                  项目全景日历与协同
+               </button>
+            </div>
+         )}
+         <div className="flex-1 flex overflow-hidden">
+           {activeTab === 'collaboration' && !activeBatch ? (
+             <div className="flex-1 flex flex-col p-12 overflow-y-auto custom-scrollbar">
+                <div className="max-w-5xl mx-auto w-full space-y-8">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <h3 className="text-2xl font-black text-neutral-900 tracking-tight">日历排期与团队协作</h3>
+                       <p className="text-[13px] font-bold text-neutral-400 mt-2">打通小红书内容生产全链路节点，分配团队撰稿、美工与投放人员。</p>
+                     </div>
+                     <button className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-black shadow-lg hover:bg-neutral-800 transition-colors">
+                        + 添加成员
+                     </button>
+                   </div>
+
+                   <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                      <div className="xl:col-span-2 space-y-6">
+                         <div className="bg-white p-8 rounded-[24px] border border-neutral-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative">
+                            <div className="flex items-center justify-between mb-8">
+                               <h4 className="text-[16px] font-black text-neutral-900 flex items-center gap-2">
+                                  <CalendarDays size={18} className="text-primary-500" /> 
+                                  当月行动排期 (主线进度)
+                               </h4>
+                            </div>
+                            <div className="grid grid-cols-7 gap-3 mb-6">
+                               {['周日', '周一', '周二', '周三', '周四', '周五', '周六'].map((d, i) => (
+                                 <div key={i} className="text-center text-[12px] font-black text-neutral-400 mb-2">{d}</div>
+                               ))}
+                               {[...Array(35)].map((_, i) => {
+                                 const isEvent = i % 8 === 0 && i !== 0;
+                                 return (
+                                   <div key={i} className={`aspect-square rounded-[16px] border flex flex-col items-start justify-between p-3 relative cursor-pointer group ${isEvent ? 'border-primary-500 bg-primary-50 shadow-sm' : 'border-neutral-100 bg-white hover:border-neutral-300 transition-colors'}`}>
+                                     <span className={`text-[12px] font-black ${isEvent ? 'text-primary-600' : 'text-neutral-600'}`}>{i + 1 > 31 ? i - 31 : i + 1}</span>
+                                     {isEvent && <div className="text-[10px] font-bold text-primary-500 leading-tight">首批素材<br/>验收</div>}
+                                   </div>
+                                 );
+                               })}
+                            </div>
+                         </div>
+                      </div>
+                      
+                      <div className="space-y-6">
+                         <div className="bg-white p-8 rounded-[24px] border border-neutral-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                            <h4 className="text-[13px] font-black text-neutral-900 mb-6 flex items-center gap-2 uppercase tracking-widest">
+                               <Users size={16} className="text-neutral-400" />
+                               项目参与人员与分工
+                            </h4>
+                            <div className="space-y-5">
+                               {[
+                                 { role: '内容编导 / 主责', name: '王梦 (AI辅助)', av: 'W', id: '@wm_01' },
+                                 { role: '小红书投手 / 投放', name: '张强', av: 'Z', id: '@zq_ops' },
+                                 { role: '商务对接 / 审核', name: '李静', av: 'L', id: '@lj_sales' }
+                               ].map((u, i) => (
+                                 <div key={i} className="flex items-center gap-4 group cursor-pointer hover:bg-neutral-50 p-2 -mx-2 rounded-xl transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-neutral-100 text-neutral-500 flex items-center justify-center font-black text-[13px] shrink-0 border-2 border-white shadow-sm group-hover:bg-primary-50 group-hover:text-primary-500 transition-colors">{u.av}</div>
+                                    <div className="flex-1 min-w-0">
+                                       <div className="flex items-center gap-2">
+                                          <div className="text-[14px] font-black text-neutral-900 group-hover:text-primary-500 transition-colors truncate">{u.name}</div>
+                                          {i === 0 && <span className="bg-primary-500 text-white text-[9px] px-1.5 py-0.5 rounded font-black">Owner</span>}
+                                       </div>
+                                       <div className="text-[11px] font-bold text-neutral-400 truncate mt-0.5">{u.role}</div>
+                                    </div>
+                                    <button className="text-neutral-300 hover:text-neutral-900 p-1"><MoreVertical size={16} /></button>
+                                 </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+           ) : !activeBatch && activeTab === 'content' ? (
               <div className="flex-1 flex flex-col p-12 overflow-y-auto custom-scrollbar">
                  <div className="max-w-4xl mx-auto w-full space-y-8">
                     <div>
@@ -327,8 +415,8 @@ export default function MerchantMatrix() {
     <div className="w-full h-full overflow-y-auto bg-white custom-scrollbar pb-24">
       <div className="max-w-6xl mx-auto space-y-10 p-8 lg:p-12">
         <div className="space-y-1">
-          <h2 className="text-3xl font-black text-neutral-900 tracking-tight">项目与内容</h2>
-          <p className="text-[13px] text-neutral-400 font-bold">跟踪商家项目的全链路进展，并在项目中进行内容的批量成稿</p>
+          <h2 className="text-3xl font-black text-neutral-900 tracking-tight">项目运营与团队协作</h2>
+          <p className="text-[13px] text-neutral-400 font-bold">跟踪小红书运营项目的全链路进展、日历排期，并在项目中指派任务进行内容的批量成稿</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
@@ -357,15 +445,15 @@ export default function MerchantMatrix() {
 
                 <div className="grid grid-cols-3 gap-8 px-8 border-x border-neutral-50">
                   <div>
-                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">浏览量</div>
+                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">小红书曝光量</div>
                     <div className="text-xl font-black text-neutral-900">{project.kpis.views}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">互动</div>
+                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">评赞藏互动</div>
                     <div className="text-xl font-black text-neutral-900">{project.kpis.engagement}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">线索</div>
+                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">CPE(互动成本)</div>
                     <div className="text-xl font-black text-primary-500">{project.kpis.leads}</div>
                   </div>
                 </div>
@@ -452,7 +540,7 @@ export default function MerchantMatrix() {
                        </h3>
                        <div className="grid grid-cols-2 gap-5">
                           <div className="space-y-2">
-                             <label className="text-[11px] font-bold text-neutral-400 uppercase">关联商家主账号</label>
+                             <label className="text-[11px] font-bold text-neutral-400 uppercase">关联客户/项目主账号</label>
                              <select className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] font-black outline-none focus:border-primary-500 transition-colors">
                                <option>奈雪的茶 (NX-001)</option>
                                <option>霸王茶姬 (BW-022)</option>

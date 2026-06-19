@@ -2,56 +2,81 @@ import React, { useState } from 'react';
 import { 
   Search, Filter, MessageSquare, Flame, CheckCircle2, 
   Clock, User, Send, ExternalLink, MoreVertical, 
-  ChevronDown, AlertCircle, TrendingUp, ShieldAlert, Zap
+  ChevronDown, AlertCircle, TrendingUp, ShieldAlert, Zap,
+  MessageCircle, Smartphone, UserPlus, BookOpen, Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-interface Comment {
+interface Lead {
   id: string;
   user: string;
+  avatar: string;
   content: string;
-  noteTitle: string;
+  type: 'dm' | 'comment';
+  source?: string; // Note title if comment
   time: string;
-  intent: 'high' | 'question' | 'other';
+  intent: 'high' | 'medium' | 'low';
   intentScore: number;
   status: 'pending' | 'replied' | 'ignored';
-  avatar?: string;
-  accountType: 'professional' | 'amateur';
   accountName: string;
+  wechatAdded?: boolean;
 }
 
-const MOCK_COMMENTS: Comment[] = [
+const MOCK_LEADS: Lead[] = [
   {
     id: '1',
-    user: '小丸子爱旅行',
-    content: '太美了！怎么预订？6月还有房吗？',
-    noteTitle: '《推开窗的那一刻，我知道这980花得太值了》',
+    user: '旅行小达人',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=12',
+    content: '请问咱们这套护肤品对敏感肌友好吗？想了解一下拿货价。',
+    type: 'dm',
     time: '2分钟前',
     intent: 'high',
     intentScore: 98,
     status: 'pending',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-    accountType: 'professional',
-    accountName: '瑞吉官方'
+    accountName: '官方旗舰店小红书',
+    wechatAdded: false
   },
   {
     id: '2',
-    user: '旅行达人Leo',
-    content: '有亲子房吗？能加床吗？',
-    noteTitle: '《青岛住宿避坑！淡季980住瑞吉不香吗》',
+    user: '花花鸭',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
+    content: '求购买链接！找了好久了😭',
+    type: 'comment',
+    source: '《终于找到本命高光，黄皮绝了》',
     time: '15分钟前',
-    intent: 'question',
-    intentScore: 75,
+    intent: 'high',
+    intentScore: 92,
     status: 'pending',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
-    accountType: 'amateur',
-    accountName: '素人-小王'
+    accountName: '素人KOC-李子',
+  },
+  {
+    id: '3',
+    user: '默默',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=8',
+    content: '这件衣服多少钱呀？',
+    type: 'comment',
+    source: '《春日穿搭OOTD｜微胖女孩的显瘦秘籍》',
+    time: '1小时前',
+    intent: 'medium',
+    intentScore: 75,
+    status: 'replied',
+    accountName: '矩阵号-小A',
   }
 ];
 
 export const Interaction: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
-  const [filter, setFilter] = useState<'all' | 'high' | 'question'>('all');
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(hasData ? MOCK_COMMENTS[0] : null);
+  const [filter, setFilter] = useState<'all' | 'high' | 'dm' | 'comment'>('all');
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(hasData ? MOCK_LEADS[0] : null);
+  const [aiAutoReply, setAiAutoReply] = useState(false);
+  const [activeTab, setActiveTab] = useState<'leads' | 'sop'>('leads');
+
+  const filteredLeads = MOCK_LEADS.filter(lead => {
+    if (filter === 'all') return true;
+    if (filter === 'high') return lead.intent === 'high';
+    if (filter === 'dm') return lead.type === 'dm';
+    if (filter === 'comment') return lead.type === 'comment';
+    return true;
+  });
 
   if (!hasData) {
     return (
@@ -60,19 +85,10 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({ hasData = true })
             <div className="w-24 h-24 bg-rose-50 rounded-[32px] flex items-center justify-center text-rose-500 mb-10 group hover:rotate-12 transition-transform">
                <Flame size={48} className="fill-current" />
             </div>
-            <h3 className="text-2xl font-black text-neutral-900 mb-4 italic tracking-tight">变现转化引擎已预热</h3>
+            <h3 className="text-2xl font-black text-neutral-900 mb-4 italic tracking-tight">客资转化引擎已上线</h3>
             <p className="text-[14px] text-neutral-400 font-bold leading-relaxed mb-10">
-               当您的笔记产生互动时，智策助手会立即通过 LLM 语义识别捕获高意向客户，并将其转化为结构化的“变现线索”。
+               全天候监控矩阵账号的私信与评论，由 AI 自动捕捉高意向客资，辅助加企微，生成销售 SOP。
             </p>
-            <div className="space-y-3 w-full">
-               <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100 flex items-center gap-4 text-left">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-500 shadow-sm"><Zap size={20}/></div>
-                  <div>
-                     <p className="text-[12px] font-black text-neutral-900">自动意向打分</p>
-                     <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">捕获率 99.9%</p>
-                  </div>
-               </div>
-            </div>
          </div>
       </div>
     );
@@ -80,199 +96,236 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({ hasData = true })
 
   return (
     <div className="flex h-full w-full bg-white overflow-hidden">
-      {/* List Area */}
-      <div className="w-[450px] border-r border-neutral-100 flex flex-col h-full bg-neutral-50/30">
+      {/* 侧边导航与列表 */}
+      <div className="w-[450px] border-r border-neutral-100 flex flex-col h-full bg-[#fafafa]">
         <div className="p-8 border-b border-neutral-100 bg-white">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-xl font-black text-neutral-900 tracking-tight">运营触达 & 变现中心</h2>
-              <p className="text-[11px] font-bold text-neutral-400 mt-1 uppercase tracking-widest italic flex items-center gap-1.5">
-                <ShieldAlert size={12} className="text-emerald-500"/> CRM 助手: 线索保护已开启
+              <h2 className="text-xl font-black text-neutral-900 tracking-tight">客资运营与转化</h2>
+              <p className="text-[11px] font-bold text-neutral-400 mt-1 flex items-center gap-1.5">
+                <Smartphone size={12} className="text-emerald-500"/> 多账号私信/评论监控
               </p>
-            </div>
-            <div className="w-12 h-12 bg-neutral-50 rounded-2xl flex items-center justify-center text-neutral-400">
-               <Filter size={20} />
             </div>
           </div>
           
-          <div className="flex gap-2 bg-neutral-50 p-1.5 rounded-2xl">
-            {[
-              { id: 'all', name: '全部漏斗', icon: MessageSquare },
-              { id: 'high', name: '高意向', icon: Flame },
-              { id: 'question', name: '咨询', icon: MessageSquare }
-            ].map((btn) => (
-              <button 
-                key={btn.id}
-                onClick={() => setFilter(btn.id as any)}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-black transition-all ${filter === btn.id ? 'bg-white text-neutral-900 shadow-sm border border-neutral-100' : 'text-neutral-400 hover:text-neutral-600'}`}
-              >
-                {btn.name}
-              </button>
-            ))}
+          <div className="flex gap-2">
+             <button 
+                onClick={() => setActiveTab('leads')}
+                className={`px-4 py-2 rounded-xl text-[13px] font-black transition-colors ${activeTab === 'leads' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'}`}
+             >
+                线索跟进
+             </button>
+             <button 
+                onClick={() => setActiveTab('sop')}
+                className={`px-4 py-2 rounded-xl text-[13px] font-black transition-colors ${activeTab === 'sop' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'}`}
+             >
+                销售 SOP 管理
+             </button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-neutral-50/20">
-          <div className="p-4 space-y-3">
-            {MOCK_COMMENTS.filter(c => filter === 'all' || c.intent === filter).map(comment => (
-              <button 
-                key={comment.id}
-                onClick={() => setSelectedComment(comment)}
-                className={`w-full text-left p-6 rounded-[32px] transition-all border group relative ${selectedComment?.id === comment.id ? 'bg-white border-primary-500 shadow-2xl shadow-primary-500/10' : 'bg-white/50 border-neutral-100 hover:border-neutral-200 hover:bg-white'}`}
-              >
-                {comment.intent === 'high' && (
-                   <div className="absolute top-6 right-6 flex items-center gap-1 bg-rose-50 px-2 py-1 rounded-lg">
-                      <Flame size={12} className="text-rose-500 animate-pulse" />
-                      <span className="text-[10px] font-black text-rose-500">高热线索</span>
-                   </div>
-                )}
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
-                    <img src={comment.avatar} className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="" />
-                    <div>
-                      <div className="text-[14px] font-black text-neutral-900">{comment.user}</div>
-                      <div className="text-[11px] font-bold text-neutral-400 italic">来自: {comment.accountName}</div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-[14px] font-bold text-neutral-700 mb-4 line-clamp-2 leading-relaxed">
-                  {comment.content}
-                </p>
-                <div className="flex items-center justify-between pt-4 border-t border-neutral-50/50">
-                    <div className="flex items-center gap-2">
-                       <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest ${comment.accountType === 'professional' ? 'bg-blue-50 text-blue-500' : 'bg-neutral-100 text-neutral-500'}`}>
-                          {comment.accountType === 'professional' ? '矩阵号A-1' : '素人种子-E'}
-                       </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                       <span className="text-[11px] font-black text-neutral-900">{comment.intentScore}%</span>
-                       <div className="w-12 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                          <div className={`h-full ${comment.intentScore > 80 ? 'bg-emerald-500' : 'bg-blue-500'}`} style={{ width: `${comment.intentScore}%` }} />
+        {activeTab === 'leads' && (
+           <>
+             <div className="px-6 py-4 bg-white border-b border-neutral-100">
+               <div className="flex gap-2 bg-neutral-50 p-1.5 rounded-xl">
+                 {[
+                   { id: 'all', name: '全部' },
+                   { id: 'high', name: '高意向' },
+                   { id: 'dm', name: '私信' },
+                   { id: 'comment', name: '评论' }
+                 ].map((btn) => (
+                   <button 
+                     key={btn.id}
+                     onClick={() => setFilter(btn.id as any)}
+                     className={`flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all ${filter === btn.id ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-400 hover:text-neutral-600'}`}
+                   >
+                     {btn.name}
+                   </button>
+                 ))}
+               </div>
+             </div>
+             
+             <div className="flex-1 overflow-y-auto custom-scrollbar">
+               <div className="p-4 space-y-3">
+                 {filteredLeads.map(lead => (
+                   <button 
+                     key={lead.id}
+                     onClick={() => setSelectedLead(lead)}
+                     className={`w-full text-left p-5 rounded-[24px] transition-all border relative ${selectedLead?.id === lead.id ? 'bg-white border-primary-500 shadow-xl shadow-primary-500/10 z-10' : 'bg-white border-neutral-100 hover:border-neutral-200'}`}
+                   >
+                     {lead.intent === 'high' && (
+                        <div className="absolute top-5 right-5 flex items-center gap-1 bg-rose-50 px-2 py-1 rounded-lg">
+                           <Flame size={12} className="text-rose-500" />
+                           <span className="text-[10px] font-black text-rose-500">高意向</span>
+                        </div>
+                     )}
+                     <div className="flex items-center gap-3 mb-3">
+                       <img src={lead.avatar} className="w-10 h-10 rounded-full border border-neutral-100" alt="" />
+                       <div>
+                         <div className="text-[14px] font-black text-neutral-900">{lead.user}</div>
+                         <div className="flex items-center gap-2 mt-0.5">
+                           <span className={`text-[9px] px-1.5 py-0.5 rounded uppercase font-black ${lead.type === 'dm' ? 'bg-blue-50 text-blue-500' : 'bg-orange-50 text-orange-500'}`}>
+                              {lead.type === 'dm' ? '私信' : '评论'}
+                           </span>
+                           <span className="text-[10px] font-bold text-neutral-400 truncate max-w-[120px]">{lead.accountName}</span>
+                         </div>
                        </div>
-                    </div>
-                </div>
+                     </div>
+                     <p className="text-[13px] font-bold text-neutral-700 mb-3 line-clamp-2 leading-relaxed">
+                       {lead.content}
+                     </p>
+                     <div className="flex items-center justify-between pt-3 border-t border-neutral-50">
+                         <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">{lead.time}</span>
+                         <span className="text-[11px] font-black text-emerald-500">意向分: {lead.intentScore}</span>
+                     </div>
+                   </button>
+                 ))}
+               </div>
+             </div>
+           </>
+        )}
+
+        {activeTab === 'sop' && (
+           <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6 bg-white">
+              <div className="p-6 bg-neutral-50 rounded-[24px] border border-neutral-100 hover:border-primary-200 transition-colors cursor-pointer group">
+                 <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500"><BookOpen size={16} /></div>
+                    <h3 className="text-[14px] font-black text-neutral-900 group-hover:text-primary-500 transition-colors">夏季防晒产品 - 转化话术库</h3>
+                 </div>
+                 <p className="text-[12px] text-neutral-500 font-bold">针对价格敏感、效果成分询问等高频问题，基于 1,200 条成交记录提炼。</p>
+              </div>
+              <div className="p-6 bg-neutral-50 rounded-[24px] border border-neutral-100 hover:border-primary-200 transition-colors cursor-pointer group">
+                 <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-500"><UserPlus size={16} /></div>
+                    <h3 className="text-[14px] font-black text-neutral-900 group-hover:text-primary-500 transition-colors">企微私域引流 SOP</h3>
+                 </div>
+                 <p className="text-[12px] text-neutral-500 font-bold">福利诱饵设计、钩子发送时机，成功引流率高达 45%。</p>
+              </div>
+              <button className="w-full py-4 rounded-[20px] border-2 border-dashed border-neutral-200 text-neutral-400 font-black text-[13px] hover:border-primary-500 hover:text-primary-500 transition-colors flex flex-col items-center gap-2">
+                 <Bot size={20} />
+                 AI 自动总结近期销冠 SOP
               </button>
-            ))}
-          </div>
-        </div>
+           </div>
+        )}
       </div>
 
+      {/* 主工作区 */}
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 flex flex-col bg-white">
-          {selectedComment ? (
-            <>
-              <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white shadow-sm z-10">
-                <div className="flex items-center gap-4">
-                  <img src={selectedComment.avatar} className="w-11 h-11 rounded-full border-2 border-neutral-100" alt="" />
-                  <div>
-                    <h3 className="text-[16px] font-black text-neutral-900 tracking-tight">{selectedComment.user}</h3>
-                    <div className="flex items-center gap-2">
-                        <p className="text-[11px] font-bold text-neutral-400">UID: {selectedComment.id} • 小红书全域变现漏斗</p>
-                        <span className="w-1 h-1 bg-neutral-300 rounded-full" />
-                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">会话活跃中</span>
-                    </div>
+        {activeTab === 'leads' && selectedLead ? (
+          <div className="flex-1 flex flex-col bg-white">
+            <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white">
+              <div className="flex items-center gap-4">
+                <img src={selectedLead.avatar} className="w-11 h-11 rounded-full border-2 border-neutral-100" alt="" />
+                <div>
+                  <h3 className="text-[16px] font-black text-neutral-900 tracking-tight">{selectedLead.user}</h3>
+                  <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-bold text-neutral-400">来自账号: {selectedLead.accountName}</span>
+                      <span className="w-1 h-1 bg-neutral-300 rounded-full" />
+                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{selectedLead.type === 'dm' ? '私信互动中' : '评论活跃'}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <button className="px-5 py-2.5 bg-neutral-900 text-white rounded-2xl text-[13px] font-black shadow-xl shadow-neutral-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
-                    <TrendingUp size={16}/> 推送至销售线索
+              </div>
+              <div className="flex items-center gap-3">
+                {!selectedLead.wechatAdded && (
+                  <button className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[12px] font-black hover:bg-emerald-100 transition-all flex items-center gap-2">
+                    <UserPlus size={14}/> 引导加企微
                   </button>
-                  <button className="p-2.5 bg-neutral-50 text-neutral-400 rounded-2xl hover:bg-neutral-100 transition-all border border-neutral-100">
-                    <MoreVertical size={20}/>
+                )}
+                {selectedLead.type === 'comment' && (
+                  <button className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-black flex items-center gap-2 hover:bg-neutral-800">
+                    跳转至笔记处理 <ExternalLink size={14}/>
                   </button>
-                </div>
+                )}
+                <button className="p-2 bg-neutral-50 text-neutral-400 rounded-xl hover:bg-neutral-100 border border-neutral-100">
+                  <MoreVertical size={18}/>
+                </button>
               </div>
-
-              <div className="flex-1 overflow-y-auto p-12 bg-neutral-50/10 custom-scrollbar space-y-12">
-                <div className="p-8 bg-white rounded-[40px] border border-neutral-100 flex items-start gap-8 shadow-sm">
-                  <div className="w-32 h-44 bg-neutral-100 rounded-2xl overflow-hidden shrink-0 group relative cursor-pointer shadow-inner">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent group-hover:from-black/40 transition-all" />
-                    <div className="w-full h-full bg-blue-500 flex items-center justify-center font-black text-white p-4 text-center leading-tight">
-                        笔记缩略图
-                    </div>
-                  </div>
-                  <div className="flex-1 pt-2">
-                    <div className="flex items-center gap-2 mb-3">
-                        <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black border border-blue-100 uppercase tracking-widest">爆款笔记</span>
-                        <span className="text-[11px] font-bold text-neutral-400 italic">2026.04.12 发布</span>
-                    </div>
-                    <h4 className="text-2xl font-black text-neutral-900 tracking-tight leading-tight mb-4 max-w-xl">
-                      {selectedComment.noteTitle}
-                    </h4>
-                    <div className="grid grid-cols-3 gap-8">
-                      {[
-                        { label: '笔记点击', val: '4.2w', color: 'text-neutral-900' },
-                        { label: '互动总量', val: '1,203', color: 'text-neutral-900' },
-                        { label: '变现转化', val: '12%', color: 'text-success-500' }
-                      ].map((stat, i) => (
-                        <div key={i} className="flex flex-col">
-                            <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-1">{stat.label}</span>
-                            <span className={`text-2xl font-black ${stat.color} tracking-tighter`}>{stat.val}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="max-w-2xl mx-auto space-y-8">
-                  <div className="flex gap-5">
-                      <img src={selectedComment.avatar} className="w-10 h-10 rounded-full shrink-0 border-2 border-white shadow-sm" alt="" />
-                      <div className="flex flex-col gap-3">
-                        <div className="bg-white p-8 rounded-[40px] rounded-tl-none shadow-xl shadow-neutral-100 border border-neutral-100">
-                            <p className="text-[16px] font-bold text-neutral-800 leading-relaxed italic">
-                              “ {selectedComment.content} ”
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-3 pl-2">
-                            <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest">{selectedComment.time}</span>
-                            <span className="w-1 h-1 bg-neutral-300 rounded-full" />
-                            <span className="text-[11px] font-black text-orange-500">意向得分: {selectedComment.intentScore}</span>
-                        </div>
-                      </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-10 border-t border-neutral-100 bg-white">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-neutral-900 text-white text-[12px] font-black rounded-xl hover:bg-primary-500 transition-all flex items-center gap-2">
-                        <Zap size={14} className="fill-current"/> 话术 Agent 生成建议
-                      </button>
-                      <button className="px-4 py-2 bg-neutral-50 text-neutral-500 text-[12px] font-black rounded-xl hover:bg-neutral-100 transition-all border border-neutral-100">直连官方私信后台</button>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-50 rounded-xl border border-neutral-100">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[11px] font-black text-neutral-900 uppercase tracking-widest">智策系统: 变现引擎在线</span>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="bg-neutral-50 border border-neutral-200 rounded-[40px] focus-within:bg-white focus-within:border-primary-500 focus-within:shadow-2xl focus-within:shadow-primary-500/10 transition-all p-3">
-                    <textarea 
-                      className="w-full bg-transparent border-none outline-none p-6 text-[15px] font-bold text-neutral-900 placeholder:text-neutral-400 resize-none min-h-[140px]"
-                      placeholder="输入更具变现吸引力的回复内容..."
-                    />
-                    <div className="flex items-center justify-between px-6 pb-4">
-                      <p className="text-[11px] font-bold text-neutral-400 italic">当前账户余额：矩阵号A1 (素人号)</p>
-                      <button className="h-14 px-10 bg-neutral-900 text-white rounded-[24px] flex items-center justify-center gap-2 hover:bg-primary-500 hover:scale-[1.02] active:scale-95 transition-all shadow-xl font-black text-[15px]">
-                          确认发送回复 <Send size={18} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-neutral-300 p-8 text-center bg-neutral-50/20">
-              <div className="w-24 h-24 bg-white rounded-[40px] shadow-sm flex items-center justify-center mb-8 border border-neutral-100">
-                  <MessageSquare size={36} className="text-neutral-200" />
-              </div>
-              <h3 className="text-xl font-black text-neutral-900 tracking-tight leading-tight">请选择一条评论线索</h3>
-              <p className="text-neutral-400 font-bold mt-2 max-w-xs leading-relaxed uppercase text-[11px] tracking-widest">Agent 正在全天候捕捉高净值客户咨询</p>
             </div>
-          )}
-        </div>
+
+            <div className="flex-1 overflow-y-auto p-12 bg-neutral-50/30 custom-scrollbar flex flex-col">
+              {selectedLead.type === 'comment' && selectedLead.source && (
+                 <div className="mb-8 p-6 bg-white rounded-[24px] border border-neutral-200 flex items-center justify-between">
+                    <div>
+                       <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block mb-1">评论来源</span>
+                       <h4 className="text-[15px] font-black text-neutral-900">{selectedLead.source}</h4>
+                    </div>
+                    <div className="p-3 bg-neutral-50 rounded-xl text-neutral-500"><BookOpen size={20} /></div>
+                 </div>
+              )}
+
+              <div className="flex gap-4">
+                  <img src={selectedLead.avatar} className="w-10 h-10 rounded-full shrink-0 border border-neutral-200" alt="" />
+                  <div className="flex flex-col gap-2 max-w-[70%]">
+                    <div className="bg-white p-5 rounded-[24px] rounded-tl-none border border-neutral-200 shadow-sm">
+                        <p className="text-[14px] font-bold text-neutral-800 leading-relaxed">
+                          {selectedLead.content}
+                        </p>
+                    </div>
+                    <div className="text-[10px] font-black text-neutral-400 ml-2">{selectedLead.time}</div>
+                  </div>
+              </div>
+            </div>
+
+            {selectedLead.type === 'dm' && (
+              <div className="p-6 border-t border-neutral-100 bg-white">
+                <div className="flex justify-between items-center mb-4">
+                   <div className="flex gap-2">
+                       <button className="px-4 py-1.5 bg-neutral-900 text-white text-[11px] font-black rounded-lg flex items-center gap-1.5 hover:opacity-90">
+                         <Bot size={14} /> AI 辅助回复
+                       </button>
+                       <button className="px-4 py-1.5 bg-neutral-100 text-neutral-600 text-[11px] font-black rounded-lg hover:bg-neutral-200">
+                         提取联系方式
+                       </button>
+                   </div>
+                   <label className="flex items-center gap-2 cursor-pointer group">
+                      <div className={`w-8 h-4 rounded-full relative transition-colors ${aiAutoReply ? 'bg-emerald-500' : 'bg-neutral-200'}`} onClick={() => setAiAutoReply(!aiAutoReply)}>
+                         <div className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-all ${aiAutoReply ? 'left-4' : 'left-1'}`} />
+                      </div>
+                      <span className="text-[11px] font-black text-neutral-500 group-hover:text-neutral-900">AI 自动接待与引流</span>
+                   </label>
+                </div>
+                <div className="bg-neutral-50 border border-neutral-200 rounded-[24px] p-2 focus-within:border-primary-500 focus-within:bg-white transition-all">
+                  <textarea 
+                    className="w-full bg-transparent border-none outline-none p-4 text-[14px] font-bold text-neutral-900 placeholder:text-neutral-400 resize-none min-h-[100px]"
+                    placeholder="输入回复内容，或按 Tab 接受 AI 建议..."
+                  />
+                  <div className="flex justify-end pr-2 pb-2">
+                    <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl flex items-center gap-2 hover:bg-primary-500 transition-all font-black text-[13px]">
+                        发送 <Send size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {selectedLead.type === 'comment' && (
+              <div className="p-10 border-t border-neutral-100 bg-white flex flex-col items-center justify-center text-center">
+                 <div className="w-16 h-16 bg-neutral-50 rounded-full flex items-center justify-center text-neutral-400 mb-4">
+                    <MessageCircle size={24} />
+                 </div>
+                 <h4 className="text-[14px] font-black text-neutral-900 mb-2">评论涉及平台风控，请在原生平台处理</h4>
+                 <p className="text-[12px] text-neutral-400 font-bold mb-6 max-w-sm">AI 已根据上下文生成此评论互动的高转化回复建议，请点击右上角的「跳转至笔记处理」完成控评与引流。</p>
+                 <div className="w-full max-w-lg p-5 bg-orange-50 border border-orange-100 rounded-2xl text-left">
+                    <div className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><Bot size={12}/> AI 推荐回复</div>
+                    <p className="text-[13px] font-bold text-neutral-800">
+                       “亲亲，这件确实很适合肉肉女孩呢！穿上巨显瘦～不过因为我们近期在做活动，小爆了一下，库存有点紧。私信发您领取专属福利哦！👗”
+                    </p>
+                 </div>
+              </div>
+            )}
+          </div>
+        ) : activeTab === 'sop' ? (
+          <div className="flex-1 bg-[#fafafa] flex items-center justify-center">
+             <div className="text-center text-neutral-400">
+                <BookOpen size={48} className="mx-auto mb-4 opacity-20" />
+                <p className="text-[14px] font-black">请在左侧选择 SOP 文档进行查看与编辑</p>
+             </div>
+          </div>
+        ) : (
+          <div className="flex-1 bg-white" />
+        )}
       </div>
     </div>
   );
 };
+

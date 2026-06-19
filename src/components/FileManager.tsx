@@ -78,7 +78,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
         <div className="w-[280px] border-r border-neutral-100 bg-white flex flex-col overflow-hidden shadow-sm z-10">
            <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                 <h3 className="text-[11px] font-black text-neutral-300 uppercase tracking-widest">商家库管理</h3>
+                 <h3 className="text-[11px] font-black text-neutral-300 uppercase tracking-widest">项目库管理</h3>
                  <button className="text-neutral-300 hover:text-neutral-900"><SlidersHorizontal size={14} /></button>
               </div>
               

@@ -48,25 +48,25 @@ const SHORTCUT_CATEGORIES = [
   { id: 'common', name: '常用', icon: Star, items: [{ text: '提取竞品核心痛点', type: 'prompt' }, { text: '小红书笔记一键清洗', type: 'prompt' }, { text: '调用: KOC 分发引擎', type: 'skill' }] },
   { id: 'content', name: '内容创作', icon: Filter, items: [{ text: '网感改写', type: 'prompt' }, { text: '种草大纲', type: 'prompt' }] },
   { id: 'workflow', name: '逻辑流程', icon: Route, items: [{ text: 'RAG 洞察', type: 'skill' }] },
-  { id: 'data', name: '流量归因', icon: Target, items: [{ text: '分析 ROI', type: 'prompt' }, { text: '爆文率报表', type: 'prompt' }] }
+  { id: 'data', name: '流量归因', icon: Target, items: [{ text: '分析爆文率', type: 'prompt' }, { text: '种草成本报表', type: 'prompt' }] }
 ];
 
 const MOCK_PROJECTS = {
-  'new-merchant': { id: 'new-merchant', name: '新商家：待体验', initial: '新', color: 'var(--neutral-100)', textColor: 'var(--neutral-400)', fileTree: [], chatHistory: [] },
-  'project-a': { id: 'project-a', name: '商家A：宠物食品组', initial: '宠', color: 'var(--primary-50)', textColor: 'var(--primary-500)', fileTree: [{ type: 'Folder', name: '营销物料库 (云端)', children: [{ type: 'File', name: '海报底图A.jpg' }] }, { type: 'Folder', name: '本地上传资料', children: [{ type: 'File', name: '通用全局规范.pdf' }, { type: 'RAG', name: '宠物标准话术.rag' }] }], chatHistory: [{ id: '1', title: '执行技能助手: 竞品标题仿写', time: '30 分钟前' }, { id: '2', title: '分析狗粮销售数据', time: '1 小时前' }] },
-  'project-b': { id: 'project-b', name: '商家B：美妆旗舰店', initial: '美', color: 'var(--danger-50)', textColor: 'var(--danger-500)', fileTree: [{ type: 'Folder', name: '美妆图库', children: [{ type: 'File', name: '口红试色图集.png' }] }, { type: 'Folder', name: '话术大纲', children: [{ type: 'RAG', name: '防敏感词过滤包.rag' }, { type: 'File', name: '竞品拆解.md' }] }], chatHistory: [{ id: '4', title: '短视频带货脚本生成', time: '1 小时前' }] }
+  'new-merchant': { id: 'new-merchant', name: '新项目：待体验', initial: '新', color: 'var(--neutral-100)', textColor: 'var(--neutral-400)', fileTree: [], chatHistory: [] },
+  'project-a': { id: 'project-a', name: '品牌A：宠物食品组', initial: '宠', color: 'var(--primary-50)', textColor: 'var(--primary-500)', fileTree: [{ type: 'Folder', name: '营销物料库 (云端)', children: [{ type: 'File', name: '海报底图A.jpg' }] }, { type: 'Folder', name: '本地上传资料', children: [{ type: 'File', name: '通用全局规范.pdf' }, { type: 'RAG', name: '宠物标准话术.rag' }] }], chatHistory: [{ id: '1', title: '执行技能助手: 竞品标题仿写', time: '30 分钟前' }, { id: '2', title: '分析狗粮曝光数据', time: '1 小时前' }] },
+  'project-b': { id: 'project-b', name: '品牌B：美妆官号', initial: '美', color: 'var(--danger-50)', textColor: 'var(--danger-500)', fileTree: [{ type: 'Folder', name: '美妆图库', children: [{ type: 'File', name: '口红试色图集.png' }] }, { type: 'Folder', name: '话术大纲', children: [{ type: 'RAG', name: '防敏感词过滤包.rag' }, { type: 'File', name: '竞品拆解.md' }] }], chatHistory: [{ id: '4', title: '短视频文案生成', time: '1 小时前' }] }
 };
 
 const SIDE_NAV_ITEMS = [
   { id: 'workbench', name: '工作台', sub: '调度与指令', icon: Cpu, color: 'text-orange-500' },
-  { id: 'workflow', name: '商家项目', sub: '全链路跟踪', icon: Workflow, color: 'text-primary-500' },
+  { id: 'workflow', name: '项目中心', sub: '全链路跟踪与协作', icon: Workflow, color: 'text-primary-500' },
 ];
 
 const PROJECT_TABS = [
   { id: 'strategy', name: '选题与策略', icon: Compass },
   { id: 'matrix', name: '项目与内容', icon: LayoutGrid },
   { id: 'content', name: '账号与分发', icon: Sparkles },
-  { id: 'interaction', name: '客服互动', icon: MessageSquare },
+  { id: 'interaction', name: '客资', icon: MessageSquare },
   { id: 'metrics', name: '数据归因', icon: BarChart2 },
 ];
 
@@ -89,8 +89,8 @@ export default function App() {
           { id: 'start-3', role: 'agent', content: '由于这是高阶竞争赛道，我已经为您自动配置了行业专家的爆文模型。{recommend_skill_paid:爆文逻辑蒸馏器:50信用点/次:原创度提升 +42.5%}' }
         ],
         'new-merchant': [
-          { id: 'new-1', role: 'agent', content: '欢迎加入智策！我是您的 AI 增长伙伴。' },
-          { id: 'new-2', role: 'agent', content: '由于这是新商户，我建议按照工作台的“新手引导”三步走：从授权账号开始，我会带您发现本周的小红书爆款机会。' },
+          { id: 'new-1', role: 'agent', content: '欢迎加入！我是您的 AI 增长伙伴。' },
+          { id: 'new-2', role: 'agent', content: '由于这是新项目，我建议按照工作台的“新手引导”三步走：从授权账号开始，我会带您发现本周的小红书爆文趋势。' },
           { id: 'new-3', role: 'agent', content: '如果您准备好了，请点击工作台上的「去授权主体」开始第一步。' }
         ]
       });

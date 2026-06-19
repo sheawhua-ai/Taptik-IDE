@@ -2,12 +2,83 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, Sparkles, Target, BarChart2, Workflow, MessageSquare,
   Compass, Lightbulb, Bot, LayoutGrid, Cpu, Share2, PanelLeftClose, PanelRightClose,
-  User, Send, FileText, Plus, Check, CalendarDays, LineChart, PanelLeftOpen, PanelRightOpen, History, FolderOpen, Brain, BookOpen, ArrowUpRight
+  User, Send, FileText, Plus, Check, CalendarDays, LineChart, PanelLeftOpen, PanelRightOpen, History, FolderOpen, Brain, BookOpen, ArrowUpRight,
+  ChevronRight, Wrench, BrainCircuit, CheckCircle2, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FunctionNav } from './command-center/FunctionNav';
 import { CommandDirectory } from './command-center/CommandDirectory';
 import { SubagentMacroPanel } from './command-center/SubagentMacroPanel';
+
+type AgentThought = {
+  id: string;
+  type: 'think' | 'tool_call';
+  content: string;
+  result?: string;
+};
+
+type ChatMessage = {
+  id: string;
+  role: 'user' | 'agent' | 'system';
+  content: string;
+  time: string;
+  thoughts?: AgentThought[];
+  isThinking?: boolean;
+};
+
+const ThoughtsBlock = ({ thoughts, isThinking }: { thoughts: AgentThought[], isThinking: boolean }) => {
+  const [expanded, setExpanded] = useState(false);
+  
+  if (!thoughts || thoughts.length === 0) return null;
+
+  return (
+    <div className="mb-3 border border-neutral-200 rounded-2xl overflow-hidden bg-neutral-50/50">
+       <button 
+         onClick={() => setExpanded(!expanded)}
+         className="w-full flex items-center justify-between p-3 hover:bg-neutral-100/50 transition-colors"
+       >
+          <div className="flex items-center gap-2 text-[13px] font-bold text-neutral-600">
+             {isThinking ? (
+                <div className="animate-spin text-neutral-400">
+                  <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full" />
+                </div>
+             ) : (
+                <CheckCircle2 size={16} className="text-emerald-500" />
+             )}
+             <span>
+               思考过程 ({thoughts.filter(t => t.type === 'think').length}) · 
+               调用工具 ({thoughts.filter(t => t.type === 'tool_call').length})
+             </span>
+          </div>
+          <ChevronRight size={16} className={`text-neutral-400 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+       </button>
+       
+       {expanded && (
+         <div className="p-4 pt-0 border-t border-neutral-200/50 space-y-3 mt-1">
+           {thoughts.map(t => (
+             <div key={t.id} className="flex items-start gap-3 text-[13px]">
+                <div className="mt-0.5 shrink-0">
+                  {t.type === 'think' ? (
+                     <BrainCircuit size={14} className="text-purple-500" />
+                  ) : (
+                     <Wrench size={14} className="text-blue-500" />
+                  )}
+                </div>
+                <div className="flex-1 space-y-1.5">
+                   <div className="font-bold text-neutral-700">{t.content}</div>
+                   {t.result && (
+                     <div className="font-mono text-[11px] text-neutral-500 bg-white border border-neutral-200 p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-wrap">
+                       {t.result}
+                     </div>
+                   )}
+                </div>
+             </div>
+           ))}
+         </div>
+       )}
+    </div>
+  );
+};
 
 interface WorkbenchProps {
   setActiveNav: (nav: string) => void;
@@ -39,13 +110,14 @@ const CAPSULES = [
 export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNav, onboardingStep, setOnboardingStep, setOnboardingData, activeProjectId }) => {
   const [query, setQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [leftTab, setLeftTab] = useState<'macros' | 'assets' | 'history'>('history');
+  const [leftTab, setLeftTab] = useState<'history' | 'assets'>('history');
   
   const [leftExpanded, setLeftExpanded] = useState(true);
-  const [rightExpanded, setRightExpanded] = useState(true);
+  const [rightExpanded, setRightExpanded] = useState(false);
   
   const [isFunctionNavOpen, setIsFunctionNavOpen] = useState(false);
   const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
+  const [isAgentPanelOpen, setIsAgentPanelOpen] = useState(false);
 
   // Rotating placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -71,9 +143,21 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const [messages, setMessages] = useState([
-    { role: 'agent', content: '指挥官，根据最新数据巡航，我为您准备了 3 条主动业务建议。您可以直接处理，或在下方输入框自由指挥我。', time: '刚才' }
-  ]);
+  const isNewMerchant = activeProjectId === 'new-merchant';
+
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  useEffect(() => {
+    if (activeProjectId === 'new-merchant') {
+      setMessages([
+        { id: '1', role: 'agent', content: '您好！我是您的 Taptik 智能大脑。作为一个新入驻项目，我们可以先从基础的数据诊断和对标分析开始。', time: '刚才' }
+      ]);
+    } else {
+      setMessages([
+        { id: '1', role: 'agent', content: '指挥官，根据最新数据巡航，我为您准备了 3 条主动业务建议。您可以直接处理，或在下方输入框自由指挥我。', time: '刚才' }
+      ]);
+    }
+  }, [activeProjectId]);
 
   const [proactiveSuggestions] = useState([
     { 
@@ -106,19 +190,61 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
     const finalQuery = customQuery || query;
     if (!finalQuery.trim()) return;
 
-    const newMsg = { role: 'user', content: finalQuery, time: '刚才' };
+    const userMsgId = Date.now().toString();
+    const agentMsgId = (Date.now() + 1).toString();
+
+    const newMsg: ChatMessage = { id: userMsgId, role: 'user', content: finalQuery, time: '刚才' };
     setMessages(prev => [...prev, newMsg]);
     setQuery('');
+    
+    // Add pending agent message
+    const agentMsg: ChatMessage = {
+       id: agentMsgId,
+       role: 'agent',
+       content: '',
+       time: '刚才',
+       isThinking: true,
+       thoughts: []
+    };
+    
+    setMessages(prev => [...prev, agentMsg]);
     setIsProcessing(true);
 
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        role: 'agent', 
-        content: `指令「${finalQuery}」已进入执行队列。正在调用对应的 Subagent Macro 序列，进度与看板资源已实时同步。`, 
-        time: '刚才' 
-      }]);
-      setIsProcessing(false);
-    }, 1200);
+    const stages = [
+      { type: 'think' as const, content: '分析用户意图，拆解任务目标...' },
+      { type: 'tool_call' as const, content: '正在调用数据检索工具 (fetch_merchant_data)' },
+      { type: 'think' as const, content: '获取到当前项目的运营数据，准备对应的小红书爆文案例' },
+      { type: 'tool_call' as const, content: '正在调用案例库匹配 (search_case_study)' },
+      { type: 'think' as const, content: '综合数据，生成优化策略方案' }
+    ];
+
+    let step = 0;
+    const interval = setInterval(() => {
+      if (step < stages.length) {
+         setMessages(prev => prev.map(m => {
+           if (m.id === agentMsgId) {
+             const newThoughts = [...(m.thoughts || []), { id: `t${step}`, result: step % 2 !== 0 ? '{\n  "status": "success",\n  "records": 12,\n  "cache": "HIT"\n}' : undefined, ...stages[step] }];
+             return { ...m, thoughts: newThoughts };
+           }
+           return m;
+         }));
+         step++;
+      } else {
+         clearInterval(interval);
+         setMessages(prev => prev.map(m => {
+           if (m.id === agentMsgId) {
+             return { 
+               ...m,
+               isThinking: false, 
+               content: `指令「${finalQuery}」已处理完毕。已为您调取对应的图文结构与数据报告，并且匹配到 3 个行业内的标杆成功案例，随时可供审查。` 
+             };
+           }
+           return m;
+         }));
+         setIsProcessing(false);
+         setRightExpanded(true);
+      }
+    }, 600);
   };
 
   return (
@@ -129,13 +255,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
           <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center text-white">
             <Cpu size={16} />
           </div>
-          <h2 className="text-[14px] font-black tracking-tight">调度中心 / 指令控制台</h2>
-        </div>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 text-[11px] font-bold text-neutral-400">
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-            分布式核心：在线
-          </div>
+          <h2 className="text-[14px] font-black tracking-tight">工作台</h2>
         </div>
       </div>
 
@@ -145,43 +265,39 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
           {leftExpanded ? (
             <motion.div 
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 340, opacity: 1 }}
+              animate={{ width: 220, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               className="border-r border-neutral-100 bg-[#fafafa] flex flex-col shrink-0 overflow-hidden relative z-10"
             >
-              <div className="p-4 border-b border-neutral-100 bg-white shrink-0">
-                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[13px] font-black text-neutral-900">左侧挂载区</h3>
-                    <button onClick={() => setLeftExpanded(false)} className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-400">
-                       <PanelLeftClose size={16} />
-                    </button>
-                 </div>
-                 <div className="flex bg-neutral-100/50 p-1 rounded-xl">
+              <div className="p-2 border-b border-neutral-100 bg-white shrink-0 flex items-center justify-between gap-2 shadow-sm">
+                 <div className="flex bg-neutral-100/50 p-1 rounded-lg flex-1">
                    {[
-                     { id: 'history', name: '会话历史', icon: History },
-                     { id: 'assets', name: '本地文件', icon: FolderOpen },
-                     { id: 'macros', name: '智能体', icon: Bot }
+                     { id: 'history', name: '会话', icon: History },
+                     { id: 'assets', name: '文件', icon: FolderOpen }
                    ].map(tab => (
                      <button 
                        key={tab.id}
                        onClick={() => setLeftTab(tab.id as any)}
-                       className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-black transition-all ${leftTab === tab.id ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                       className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-black transition-all ${leftTab === tab.id ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
                      >
-                       <tab.icon size={12} /> {tab.name}
+                       <tab.icon size={14} className={leftTab === tab.id ? 'text-primary-500' : ''} />
+                       {tab.name}
                      </button>
                    ))}
                  </div>
+                 <button onClick={() => setLeftExpanded(false)} className="p-1.5 shrink-0 hover:bg-neutral-100 rounded-lg text-neutral-400 transition-colors">
+                    <PanelLeftClose size={16} />
+                 </button>
               </div>
               
               <div className="flex-1 overflow-hidden flex flex-col bg-[#fafafa]">
-                 {leftTab === 'macros' && <SubagentMacroPanel onRunMacro={handleExecute} />}
                  {leftTab === 'assets' && (
                     <div className="p-6 flex flex-col items-center justify-center text-center h-[300px] border-b border-neutral-100">
                        <div className="w-16 h-16 bg-neutral-100 rounded-2xl flex items-center justify-center text-neutral-400 mb-4 shadow-inner">
                           <BookOpen size={24} />
                        </div>
                        <h3 className="text-[13px] font-black text-neutral-900 mb-2">资产已全量归集</h3>
-                       <p className="text-[11px] font-bold text-neutral-400 max-w-[200px] mb-6">商家 IP 定位、合规词库与视觉规范已统一存放在主知识库中心。</p>
+                       <p className="text-[11px] font-bold text-neutral-400 max-w-[200px] mb-6">项目 IP 定位、合规词库与视觉规范已统一存放在主知识库中心。</p>
                        <button 
                          onClick={() => {
                             // Dispatch custom event to change left nav in App.tsx
@@ -206,8 +322,11 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                   <PanelLeftOpen size={16} />
                </button>
                <div className="w-8 h-[1px] bg-neutral-100 my-2" />
-               <button onClick={() => { setLeftExpanded(true); setLeftTab('macros'); }} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 relative">
-                  <Bot size={18} />
+               <button onClick={() => { setLeftExpanded(true); setLeftTab('history'); }} className={`p-2 hover:bg-neutral-100 rounded-xl ${leftTab === 'history' ? 'text-primary-500' : 'text-neutral-400'} relative`}>
+                  <History size={18} />
+               </button>
+               <button onClick={() => { setLeftExpanded(true); setLeftTab('assets'); }} className={`p-2 hover:bg-neutral-100 rounded-xl ${leftTab === 'assets' ? 'text-primary-500' : 'text-neutral-400'} relative`}>
+                  <FolderOpen size={18} />
                </button>
             </div>
           )}
@@ -218,82 +337,88 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
           <div className="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar">
             
             {/* Proactive AI Engine */}
-            <div className="max-w-3xl mx-auto space-y-4">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 rounded-lg bg-primary-50 text-primary-500 flex items-center justify-center shadow-sm">
-                  <Sparkles size={14} />
-                </div>
-                <h3 className="text-[15px] font-black tracking-tight text-neutral-900">AI 主动护航引擎</h3>
-                <span className="ml-2 px-2 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] font-black rounded-md">3 条建议需评估</span>
-              </div>
-              
-              <div className="grid grid-cols-1 gap-4">
-                {proactiveSuggestions.map(s => (
-                  <div key={s.id} className="bg-white/80 backdrop-blur-xl border border-neutral-200/50 rounded-[28px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all border-l-4 group relative overflow-hidden" style={{ borderLeftColor: s.type === 'emergency' ? '#e11d48' : s.type === 'attention' ? '#f59e0b' : '#3b82f6' }}>
-                    <div className="flex items-start justify-between relative z-10">
-                      <div className="flex-1 pr-6">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={`text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest ${s.type === 'emergency' ? 'bg-rose-50 text-rose-600' : s.type === 'attention' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'}`}>
-                            {s.type === 'emergency' ? '紧急排查' : s.type === 'attention' ? '需关注' : '优化建议'}
-                          </span>
-                          <h4 className="text-[16px] font-black text-neutral-900 tracking-tight">{s.title}</h4>
-                        </div>
-                        <p className="text-[13px] text-neutral-600 font-bold leading-relaxed">{s.desc}</p>
-                        
-                        {/* Reason Line - Explainability Patch */}
-                        <div className="mt-3 flex items-center gap-1.5 text-[11px] font-bold text-neutral-400 bg-neutral-50/50 inline-block px-3 py-1.5 rounded-lg">
-                          <Brain size={12} className="text-neutral-300" />
-                          <span>推理引擎：检测到数据显著偏离均值，超过同期 85% 历史样本。</span>
-                        </div>
-                      </div>
-                      <button 
-                        onClick={() => handleExecute(s.cmd)}
-                        className="shrink-0 px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[12px] font-black hover:bg-primary-500 transition-all shadow-lg active:scale-95 group-hover:-translate-x-1"
-                      >
-                        {s.action}
-                      </button>
-                    </div>
+            {!isNewMerchant ? (
+              <div className="max-w-3xl mx-auto space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-lg bg-primary-50 text-primary-500 flex items-center justify-center shadow-sm">
+                    <Sparkles size={14} />
                   </div>
-                ))}
+                  <h3 className="text-[15px] font-black tracking-tight text-neutral-900">AI 主动护航引擎</h3>
+                  <span className="ml-2 px-2 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] font-black rounded-md">3 条建议需评估</span>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4">
+                  {proactiveSuggestions.map(s => (
+                    <div key={s.id} className="bg-white/80 backdrop-blur-xl border border-neutral-200/50 rounded-[28px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all border-l-4 group relative overflow-hidden" style={{ borderLeftColor: s.type === 'emergency' ? '#e11d48' : s.type === 'attention' ? '#f59e0b' : '#3b82f6' }}>
+                      <div className="flex items-start justify-between relative z-10">
+                        <div className="flex-1 pr-6">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest ${s.type === 'emergency' ? 'bg-rose-50 text-rose-600' : s.type === 'attention' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'}`}>
+                              {s.type === 'emergency' ? '紧急排查' : s.type === 'attention' ? '需关注' : '优化建议'}
+                            </span>
+                            <h4 className="text-[16px] font-black text-neutral-900 tracking-tight">{s.title}</h4>
+                          </div>
+                          <p className="text-[13px] text-neutral-600 font-bold leading-relaxed">{s.desc}</p>
+                          
+                          {/* Reason Line - Explainability Patch */}
+                          <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-neutral-400 bg-neutral-50/50 px-3 py-1.5 rounded-lg">
+                            <Brain size={12} className="text-neutral-300" />
+                            <span>推理引擎：检测到数据显著偏离均值，超过同期 85% 历史样本。</span>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => handleExecute(s.cmd)}
+                          className="shrink-0 px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[12px] font-black hover:bg-primary-500 transition-all shadow-lg active:scale-95 group-hover:-translate-x-1"
+                        >
+                          {s.action}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+               <div className="max-w-3xl mx-auto flex flex-col items-center justify-center pt-8 pb-4">
+                  <div className="w-16 h-16 bg-neutral-900 rounded-3xl flex items-center justify-center text-white mb-6 shadow-xl shadow-neutral-900/10">
+                    <Bot size={32} />
+                  </div>
+                  <h2 className="text-[24px] font-black text-neutral-900 tracking-tight mb-4">您好，我是 Taptik 智能大脑</h2>
+                  <p className="text-[14px] text-neutral-500 font-bold max-w-lg text-center leading-relaxed">
+                    作为您的全天候 AI 业务护航引擎，我可以帮您处理繁杂的运营工作，分析账号数据，并为您量身定制最适合的增长策略。
+                  </p>
+               </div>
+            )}
 
-            <div className="max-w-3xl mx-auto space-y-6 pt-6 border-t border-neutral-200/50">
+            <div className={`max-w-3xl mx-auto space-y-6 pt-6 ${!isNewMerchant ? 'border-t border-neutral-200/50' : ''}`}>
               <AnimatePresence mode="popLayout">
                 {messages.map((msg, i) => (
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.96, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     layout
-                    key={i}
+                    key={msg.id}
                     className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                   >
                     <div className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-xl ${msg.role === 'agent' ? 'bg-neutral-900 text-white' : 'bg-primary-500 text-white'}`}>
                       {msg.role === 'agent' ? <Bot size={20} /> : <User size={20} />}
                     </div>
                     <div className={`max-w-[80%] space-y-1 ${msg.role === 'user' ? 'text-right' : ''}`}>
-                      <div className={`px-6 py-4 rounded-3xl text-[14px] font-bold leading-relaxed shadow-sm ${msg.role === 'agent' ? 'bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-neutral-100 text-neutral-800 rounded-tl-lg' : 'bg-primary-500 text-white shadow-primary-500/20 rounded-tr-lg'}`}>
-                        {msg.content}
-                      </div>
+                      {msg.thoughts && msg.thoughts.length > 0 && (
+                        <ThoughtsBlock thoughts={msg.thoughts} isThinking={msg.isThinking || false} />
+                      )}
+                      {msg.content && (
+                        <div className={`text-left px-6 py-4 rounded-3xl text-[14px] font-bold leading-relaxed shadow-sm ${msg.role === 'agent' ? 'bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-neutral-100 text-neutral-800 rounded-tl-lg' : 'bg-primary-500 text-white shadow-primary-500/20 rounded-tr-lg'}`}>
+                          {msg.content}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
-              {isProcessing && (
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-2xl bg-neutral-900 text-white flex items-center justify-center shadow-xl border border-white/10 animate-pulse">
-                    <Bot size={20} />
-                  </div>
-                  <div className="flex items-center gap-1.5 px-5 py-4 bg-white border border-neutral-100 rounded-3xl rounded-tl-lg shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-                     <span className="w-1.5 h-1.5 bg-neutral-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                     <span className="w-1.5 h-1.5 bg-neutral-300 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                     <span className="w-1.5 h-1.5 bg-neutral-300 rounded-full animate-bounce" />
-                  </div>
-                </div>
-              )}
+              {/* isProcessing animation removed to avoid duplication with ThoughtsBlock */}
             </div>
             {/* Phantom bottom margin to prevent overlapping with command input */}
-            <div className="h-40" /> 
+            <div className={isNewMerchant && messages.length <= 1 ? "h-64" : "h-40"} /> 
           </div>
 
           {/* Unified Input Console (Bottom Absolute) */}
@@ -301,33 +426,76 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
             <div className="max-w-4xl mx-auto pointer-events-auto relative">
               
               {/* Suggestion Capsules */}
-              <div className="flex items-center gap-2 mb-3 px-2 flex-wrap">
-                <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mr-2">推荐指令：</span>
-                {CAPSULES.map((capsule, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => {
-                      setQuery(capsule.cmd);
-                    }}
-                    className="px-3 py-1.5 bg-white border border-neutral-200 rounded-xl text-[11px] font-bold text-neutral-500 hover:text-neutral-900 hover:border-neutral-300 shadow-sm transition-all active:scale-95"
-                  >
-                    {capsule.label}
-                  </button>
-                ))}
-              </div>
+              {isNewMerchant && messages.length <= 1 ? (
+                <div className="grid grid-cols-3 gap-4 mb-5 relative z-10">
+                   {[
+                      { title: '账号分析', desc: '诊断当前账号状态，提供冷启动优化方案', icon: Target, cmd: '帮我诊断当前账号的冷启动状态' },
+                      { title: '运营探讨', desc: '与 AI 共同探讨业务痛点，制定周期性增长策略', icon: MessageSquare, cmd: '我想探讨一下接下来的运营策略' },
+                      { title: '案例对照', desc: '调取行业爆款与成功案例，解析流量密码', icon: Compass, cmd: '给我提供一些同行业最近的爆款案例' }
+                   ].map((btn, i) => (
+                      <button 
+                         key={i}
+                         onClick={() => handleExecute(btn.cmd)}
+                         className="flex flex-col items-start p-4 bg-white border border-neutral-200 hover:border-primary-500 rounded-[20px] shadow-sm hover:shadow-md transition-all group text-left"
+                      >
+                         <div className="w-10 h-10 rounded-xl bg-neutral-50 text-neutral-500 mb-4 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-500 transition-colors">
+                            <btn.icon size={20} />
+                         </div>
+                         <h4 className="text-[14px] font-black text-neutral-900 mb-1.5">{btn.title}</h4>
+                         <p className="text-[11px] font-bold text-neutral-400 leading-relaxed max-w-[200px]">{btn.desc}</p>
+                      </button>
+                   ))}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 mb-3 px-2 flex-wrap">
+                  <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mr-2">推荐指令：</span>
+                  {CAPSULES.map((capsule, i) => (
+                    <button 
+                      key={i}
+                      onClick={() => {
+                        setQuery(capsule.cmd);
+                      }}
+                      className="px-3 py-1.5 bg-white border border-neutral-200 rounded-xl text-[11px] font-bold text-neutral-500 hover:text-neutral-900 hover:border-neutral-300 shadow-sm transition-all active:scale-95"
+                    >
+                      {capsule.label}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* The Input Container */}
               <div className="relative z-50">
                 <AnimatePresence>
                   {isFunctionNavOpen && <FunctionNav setActiveNav={setActiveNav} isOpen={isFunctionNavOpen} onClose={() => setIsFunctionNavOpen(false)} />}
                   {isCommandDirOpen && <CommandDirectory onSelectCommand={(cmd) => { setQuery(cmd); setIsCommandDirOpen(false); }} isOpen={isCommandDirOpen} onClose={() => setIsCommandDirOpen(false)} />}
+                  {isAgentPanelOpen && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      className="absolute bottom-full right-0 mb-4 w-[380px] h-[480px] bg-white rounded-2xl shadow-2xl border border-neutral-100 flex flex-col z-50 overflow-hidden"
+                    >
+                      <div className="p-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+                        <div className="flex items-center gap-2 text-neutral-900">
+                          <Bot size={16} />
+                          <span className="text-[13px] font-black">系统与智能体 (Agents)</span>
+                        </div>
+                        <button onClick={() => setIsAgentPanelOpen(false)} className="p-1.5 hover:bg-neutral-200 rounded-lg text-neutral-500 transition-colors">
+                          <X size={16} />
+                        </button>
+                      </div>
+                      <div className="flex flex-col flex-1 overflow-hidden relative">
+                         <SubagentMacroPanel onRunMacro={(cmd) => { setQuery(cmd); setIsAgentPanelOpen(false); }} />
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
 
                 <div className="bg-white p-2 rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.08)] flex items-center gap-3 pr-3 border border-neutral-200 focus-within:ring-4 focus-within:ring-primary-500/20 focus-within:border-primary-500/50 transition-all text-neutral-900">
                   
                   {/* Deterministic Nav Button (LayoutGrid) */}
                   <button 
-                    onClick={() => setIsFunctionNavOpen(!isFunctionNavOpen)}
+                    onClick={() => { setIsFunctionNavOpen(!isFunctionNavOpen); setIsCommandDirOpen(false); setIsAgentPanelOpen(false); }}
                     className={`ml-2 p-3 rounded-2xl transition-all ${isFunctionNavOpen ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-50'}`}
                     title="结构化功能导航 (Ctrl+K)"
                   >
@@ -348,10 +516,19 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                     />
                   </div>
                   
+                  {/* Agent Setup/Shortcut Button */}
+                  <button 
+                    onClick={() => { setIsAgentPanelOpen(!isAgentPanelOpen); setIsFunctionNavOpen(false); setIsCommandDirOpen(false); }}
+                    className={`p-2.5 rounded-xl transition-all ${isAgentPanelOpen ? 'bg-primary-50 text-primary-500' : 'text-neutral-400 hover:text-primary-500 hover:bg-neutral-50'}`}
+                    title="智能体指令集"
+                  >
+                    <Bot size={20} />
+                  </button>
+
                   {/* Intent Directory Button (Lightbulb) */}
                   <button 
-                    onClick={() => setIsCommandDirOpen(!isCommandDirOpen)}
-                    className={`p-2.5 rounded-xl transition-all ${isCommandDirOpen ? 'bg-primary-50 text-primary-500' : 'text-neutral-400 hover:text-warning-500 hover:bg-neutral-50'}`}
+                    onClick={() => { setIsCommandDirOpen(!isCommandDirOpen); setIsFunctionNavOpen(false); setIsAgentPanelOpen(false); }}
+                    className={`p-2.5 rounded-xl transition-all ${isCommandDirOpen ? 'bg-warning-50 text-warning-500' : 'text-neutral-400 hover:text-warning-500 hover:bg-neutral-50'}`}
                     title="意图与指令集模板"
                   >
                     <Lightbulb size={20} />
@@ -419,36 +596,12 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                     ))}
                   </div>
                 </div>
-
-                {/* Calendar Patch */}
-                <div>
-                  <h3 className="text-[13px] font-black text-neutral-900 tracking-tight mb-5 flex items-center gap-2">
-                    <CalendarDays size={14} className="text-secondary-500" />
-                    行动日历
-                  </h3>
-                  <div className="grid grid-cols-7 gap-1.5 mb-6">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                      <div key={i} className="text-center text-[10px] font-black text-neutral-400 mb-2">{d}</div>
-                    ))}
-                    {[...Array(14)].map((_, i) => (
-                      <div key={i} className={`aspect-square rounded-xl border flex flex-col items-center justify-center relative hover:border-primary-500/30 transition-colors cursor-pointer group ${i === 4 ? 'border-primary-500 bg-primary-500 text-white shadow-md' : 'border-neutral-100 bg-white text-neutral-600'}`}>
-                        <span className={`text-[11px] font-black ${i === 4 ? 'text-white' : ''}`}>{i+1}</span>
-                        {i % 4 === 0 && <div className={`absolute bottom-1 w-1 h-1 rounded-full ${i === 4 ? 'bg-white' : 'bg-primary-500'}`} />}
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </motion.div>
           ) : (
             <div className="w-12 border-l border-neutral-100 bg-white flex flex-col items-center py-4 gap-4 shrink-0 z-10 shadow-[-4px_0_24px_rgba(0,0,0,0.02)]">
                <button onClick={() => setRightExpanded(true)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 tooltip-trigger">
                   <PanelRightOpen size={16} />
-               </button>
-               <div className="w-8 h-[1px] bg-neutral-100 my-2" />
-               <button onClick={() => setRightExpanded(true)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 relative">
-                  <CalendarDays size={18} />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-primary-500 rounded-full border-2 border-white" />
                </button>
             </div>
           )}
