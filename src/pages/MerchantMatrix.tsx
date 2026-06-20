@@ -251,33 +251,33 @@ export default function MerchantMatrix() {
                 </div>
              </div>
            ) : !activeBatch && activeTab === 'content' ? (
-              <div className="flex-1 flex flex-col p-12 overflow-y-auto custom-scrollbar">
-                 <div className="max-w-4xl mx-auto w-full space-y-8">
+              <div className="flex-1 flex flex-col p-8 lg:p-12 overflow-y-auto custom-scrollbar">
+                 <div className="max-w-4xl mx-auto w-full space-y-6">
                     <div>
-                      <h3 className="text-2xl font-black text-neutral-900 tracking-tight">待处理生产批次</h3>
-                      <p className="text-[13px] font-bold text-neutral-400 mt-2">系统已根据 {project.name} 的排期日历，为您汇总需要生成内容的批次任务。</p>
+                      <h3 className="text-xl font-black text-neutral-900 tracking-tight">待处理生产批次</h3>
+                      <p className="text-[12px] font-bold text-neutral-400 mt-1.5">系统已根据 {project.name} 的排期日历，为您汇总需要生成内容的批次任务。</p>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-1 gap-3">
                        {pendingBatches.map((batch, index) => (
-                          <div key={batch.id} className="bg-white p-6 rounded-[24px] border border-neutral-200 flex items-center justify-between hover:border-primary-500/30 hover:shadow-lg transition-all group">
-                             <div className="flex items-center gap-6">
-                                <div className="w-16 h-16 bg-neutral-50 rounded-2xl flex items-center justify-center text-neutral-400 font-black text-xl border border-neutral-100">
-                                  {batch.totalCount}
-                                  <span className="text-[10px] ml-1 uppercase">篇</span>
+                          <div key={batch.id} className="bg-white p-4 lg:p-5 rounded-[16px] border border-neutral-200 flex flex-col md:flex-row md:items-center justify-between hover:border-primary-500/30 hover:shadow-md transition-all group gap-4">
+                             <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-neutral-50 rounded-xl flex flex-col items-center justify-center text-neutral-500 border border-neutral-100 shrink-0">
+                                  <span className="font-black text-[15px] leading-none">{batch.totalCount}</span>
+                                  <span className="text-[9px] uppercase tracking-widest mt-0.5">篇</span>
                                 </div>
-                                <div>
-                                   <div className="flex items-center gap-3 mb-2">
-                                      <span className="text-[11px] font-black text-primary-500 bg-primary-50 px-2.5 py-1 rounded-md tracking-widest uppercase">阶段批次 {index + 1}</span>
-                                      <h4 className="text-[16px] font-black text-neutral-900">{batch.project}</h4>
+                                <div className="min-w-0 flex-1">
+                                   <div className="flex items-center gap-2 mb-1.5">
+                                      <span className="text-[9px] font-black text-primary-500 bg-primary-50 px-2 py-0.5 rounded-md tracking-widest uppercase">阶段批次 {index + 1}</span>
+                                      <h4 className="text-[14px] font-black text-neutral-900 truncate">{batch.project}</h4>
                                    </div>
-                                   <p className="text-[12px] font-bold text-neutral-500 flex items-center gap-2">
-                                      <TargetIcon /> 阶段目标：{batch.target}
+                                   <p className="text-[11px] font-bold text-neutral-400 flex items-center gap-1.5 truncate">
+                                      <Target size={12} className="shrink-0" /> 目标：{batch.target}
                                    </p>
                                 </div>
                              </div>
-                             <button onClick={() => handleStartBatch(batch)} className="px-6 py-4 bg-neutral-900 text-white text-[13px] font-black rounded-xl hover:bg-primary-500 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
-                                <Play size={16} fill="currentColor" /> 启动批量生成
+                             <button onClick={() => handleStartBatch(batch)} className="w-full md:w-auto px-5 py-2.5 bg-neutral-900 text-white text-[12px] font-black rounded-xl hover:bg-primary-500 transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2 shrink-0">
+                                <Play size={14} fill="currentColor" /> 启动生产
                              </button>
                           </div>
                        ))}
@@ -349,52 +349,52 @@ export default function MerchantMatrix() {
                           </div>
                        </div>
 
-                       <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-neutral-50/30">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                       <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar bg-neutral-50/30">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                              {drafts.map((draft, i) => (
                                 <div 
                                   key={draft.id} 
                                   onClick={() => toggleSelect(draft.id)}
-                                  className={`bg-white rounded-[24px] border-2 transition-all cursor-pointer relative flex flex-col h-[320px] ${draft.selected ? 'border-primary-500 ring-4 ring-primary-500/10 shadow-lg' : 'border-neutral-200 hover:border-neutral-300'}`}
+                                  className={`bg-white rounded-[16px] border-2 transition-all cursor-pointer relative flex flex-col h-[260px] ${draft.selected ? 'border-primary-500 ring-4 ring-primary-500/10 shadow-lg' : 'border-neutral-200 hover:border-neutral-300'}`}
                                 >
-                                   <div className="p-5 border-b border-neutral-100 flex items-start justify-between bg-neutral-50/30 rounded-t-[22px]">
-                                      <div className="flex-1 min-w-0 pr-4">
-                                         <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest bg-neutral-200 text-neutral-600">
+                                   <div className="p-3 lg:p-4 border-b border-neutral-100 flex items-start justify-between bg-neutral-50/30 rounded-t-[14px]">
+                                      <div className="flex-1 min-w-0 pr-3">
+                                         <div className="flex items-center gap-1.5 mb-1.5">
+                                            <span className="text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-widest bg-neutral-200 text-neutral-600">
                                               #{i + 1}
                                             </span>
                                             {draft.status === 'scheduled' && (
-                                              <span className="text-[10px] font-black px-2 py-0.5 rounded tracking-widest bg-primary-100 text-primary-600 flex items-center gap-1">
+                                              <span className="text-[9px] font-black px-1.5 py-0.5 rounded tracking-widest bg-primary-100 text-primary-600 flex items-center gap-1">
                                                  <CalendarClock size={10} /> 已入库
                                               </span>
                                             )}
                                             {draft.status === 'dispatched' && (
-                                              <span className="text-[10px] font-black px-2 py-0.5 rounded tracking-widest bg-emerald-100 text-emerald-600 flex items-center gap-1">
+                                              <span className="text-[9px] font-black px-1.5 py-0.5 rounded tracking-widest bg-emerald-100 text-emerald-600 flex items-center gap-1">
                                                  <Camera size={10} /> 待回传
                                               </span>
                                             )}
                                          </div>
-                                         <h4 className="text-[14px] font-black text-neutral-900 leading-snug line-clamp-2">
+                                         <h4 className="text-[13px] font-black text-neutral-900 leading-snug line-clamp-2">
                                             {draft.title}
                                          </h4>
                                       </div>
-                                      <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 transition-colors ${draft.selected ? 'bg-primary-500 text-white' : 'border border-neutral-300 text-transparent'}`}>
-                                         <CheckCircle2 size={16} className={draft.selected ? 'opacity-100' : 'opacity-0'} />
+                                      <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-colors ${draft.selected ? 'bg-primary-500 text-white' : 'border border-neutral-300 text-transparent'}`}>
+                                         <CheckCircle2 size={12} className={draft.selected ? 'opacity-100' : 'opacity-0'} />
                                       </div>
                                    </div>
                                    
-                                   <div className="p-5 flex-1 flex flex-col justify-between overflow-hidden">
+                                   <div className="p-3 lg:p-4 flex-1 flex flex-col justify-between overflow-hidden">
                                       <div>
-                                         <p className="text-[12px] font-bold text-neutral-500 leading-relaxed line-clamp-4">
+                                         <p className="text-[11px] font-bold text-neutral-500 leading-relaxed line-clamp-4">
                                             {draft.content}
                                          </p>
                                       </div>
-                                      <div className="mt-4 flex items-center gap-2">
-                                         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100 text-neutral-400">
-                                            {draft.imageType === 'pending' ? <ImageIcon size={14} /> : draft.imageType === 'real_shoot' ? <Camera size={14} className="text-emerald-500" /> : <ImageIcon size={14} className="text-primary-500" />}
+                                      <div className="mt-3 flex items-center gap-2">
+                                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-neutral-100 text-neutral-400">
+                                            {draft.imageType === 'pending' ? <ImageIcon size={12} /> : draft.imageType === 'real_shoot' ? <Camera size={12} className="text-emerald-500" /> : <ImageIcon size={12} className="text-primary-500" />}
                                          </span>
-                                         <span className="text-[11px] font-bold text-neutral-400">
-                                            {draft.imageType === 'pending' ? '尚未分配素材' : draft.imageType === 'real_shoot' ? '实拍任务执行中' : '已匹配品牌库图片'}
+                                         <span className="text-[10px] font-bold text-neutral-400">
+                                            {draft.imageType === 'pending' ? '未分配素材' : draft.imageType === 'real_shoot' ? '实拍中' : '已匹配图片'}
                                          </span>
                                       </div>
                                    </div>
@@ -413,96 +413,98 @@ export default function MerchantMatrix() {
 
   return (
     <div className="w-full h-full overflow-y-auto bg-white custom-scrollbar pb-24">
-      <div className="max-w-6xl mx-auto space-y-10 p-8 lg:p-12">
+      <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-8">
         <div className="space-y-1">
-          <h2 className="text-3xl font-black text-neutral-900 tracking-tight">项目运营与团队协作</h2>
+          <h2 className="text-2xl font-black text-neutral-900 tracking-tight">项目运营与团队协作</h2>
           <p className="text-[13px] text-neutral-400 font-bold">跟踪小红书运营项目的全链路进展、日历排期，并在项目中指派任务进行内容的批量成稿</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4">
           {MOCK_PROJECTS.map(project => (
             <motion.div 
               key={project.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-8 bg-white border border-neutral-100 rounded-[40px] hover:shadow-2xl transition-all group overflow-hidden relative"
+              className="p-5 flex flex-col xl:flex-row bg-white border border-neutral-100 rounded-[20px] hover:shadow-xl transition-all group overflow-hidden relative gap-6"
             >
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-8 pb-8 border-b border-neutral-50">
-                <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 bg-neutral-900 rounded-2xl flex items-center justify-center text-white shadow-xl">
-                    <Target size={24} />
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 xl:w-2/5">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-neutral-900 rounded-xl flex items-center justify-center text-white shadow-md shrink-0">
+                    <Target size={20} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-neutral-900 mb-1">{project.name}</h3>
-                    <div className="flex items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${project.status === '进行中' ? 'bg-primary-50 text-primary-500' : 'bg-success-50 text-success-600'}`}>
+                    <h3 className="text-[16px] font-black text-neutral-900 mb-1">{project.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest ${project.status === '进行中' ? 'bg-primary-50 text-primary-500' : 'bg-success-50 text-success-600'}`}>
                         {project.status}
                       </span>
-                      <span className="text-[11px] text-neutral-400 font-bold">当前进度: {project.progress}%</span>
+                      <span className="text-[11px] text-neutral-400 font-bold">进度 {project.progress}%</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-8 px-8 border-x border-neutral-50">
-                  <div>
-                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">小红书曝光量</div>
-                    <div className="text-xl font-black text-neutral-900">{project.kpis.views}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">评赞藏互动</div>
-                    <div className="text-xl font-black text-neutral-900">{project.kpis.engagement}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-1">CPE(互动成本)</div>
-                    <div className="text-xl font-black text-primary-500">{project.kpis.leads}</div>
-                  </div>
+                <div className="flex flex-col gap-2 px-4 border-l-2 border-neutral-50 shrink-0">
+                   <div className="flex items-center justify-between gap-6">
+                     <span className="text-[10px] font-black text-neutral-400 tracking-widest">曝光</span>
+                     <span className="text-[13px] font-black text-neutral-900">{project.kpis.views}</span>
+                   </div>
+                   <div className="flex items-center justify-between gap-6">
+                     <span className="text-[10px] font-black text-neutral-400 tracking-widest">互动</span>
+                     <span className="text-[13px] font-black text-neutral-900">{project.kpis.engagement}</span>
+                   </div>
+                   <div className="flex items-center justify-between gap-6">
+                     <span className="text-[10px] font-black text-neutral-400 tracking-widest">CPE</span>
+                     <span className="text-[13px] font-black text-primary-500">{project.kpis.leads}</span>
+                   </div>
                 </div>
-
-                <button 
-                  onClick={() => setActiveProject(project.id)}
-                  className="px-6 py-3 bg-neutral-900 text-white rounded-2xl text-[12px] font-black transition-all flex items-center gap-2 hover:bg-primary-500 shadow-xl active:scale-95"
-                >
-                  <PenTool size={16} />
-                  进入成稿车间
-                </button>
               </div>
 
-              <div className="flex items-stretch -mx-2">
+              <div className="flex items-stretch -mx-1 flex-1 min-w-0">
                 {project.stages.map((stage, idx) => (
                   <React.Fragment key={idx}>
-                     <div className={`p-4 xl:p-5 flex-1 rounded-[24px] border transition-all ${stage.status === 'completed' ? 'bg-success-50/30 border-success-100' : stage.status === 'active' ? 'bg-white border-primary-500 shadow-lg' : 'bg-neutral-50/50 border-neutral-100 opacity-60'}`}>
-                        <div className="flex items-center justify-between mb-3">
-                           <div className={`text-[10px] font-black uppercase tracking-widest ${stage.status === 'completed' ? 'text-success-600' : stage.status === 'active' ? 'text-primary-500' : 'text-neutral-400'}`}>
+                     <div className={`p-3 flex-1 rounded-[16px] border transition-all flex flex-col justify-center min-w-0 ${stage.status === 'completed' ? 'bg-success-50/30 border-success-100' : stage.status === 'active' ? 'bg-white border-primary-500 shadow-sm' : 'bg-neutral-50/50 border-neutral-100 opacity-60'}`}>
+                        <div className="flex items-center justify-between mb-1.5">
+                           <div className={`text-[9px] font-black uppercase tracking-widest ${stage.status === 'completed' ? 'text-success-600' : stage.status === 'active' ? 'text-primary-500' : 'text-neutral-400'}`}>
                            STG {idx + 1}
                            </div>
-                           {stage.status === 'completed' && <CheckCircle2 size={14} className="text-success-500" />}
-                           {stage.status === 'active' && <Activity size={14} className="text-primary-500 animate-pulse" />}
+                           {stage.status === 'completed' && <CheckCircle2 size={12} className="text-success-500 shrink-0 ml-1" />}
+                           {stage.status === 'active' && <Activity size={12} className="text-primary-500 animate-pulse shrink-0 ml-1" />}
                         </div>
-                        <div className="text-[13px] xl:text-[14px] font-black text-neutral-900 mb-1">{stage.name}</div>
-                        <div className="text-[10px] font-bold text-neutral-400 truncate">{stage.value}</div>
+                        <div className="text-[12px] font-black text-neutral-900 truncate mb-0.5">{stage.name}</div>
+                        <div className="text-[9px] font-bold text-neutral-400 truncate w-full">{stage.value}</div>
                      </div>
                      {idx < project.stages.length - 1 && (
-                        <div className="flex items-center justify-center -mx-4 z-10 w-8 shrink-0">
+                        <div className="flex items-center justify-center -mx-2.5 z-10 w-5 shrink-0">
                            <button 
                              title="触发指令串联"
-                             className={`w-6 h-6 rounded-full bg-white border shadow-sm flex items-center justify-center transition-all group ${stage.status === 'completed' ? 'border-primary-200 text-primary-500 hover:scale-110 hover:bg-primary-50' : 'border-neutral-200 text-neutral-300 hover:text-neutral-600'}`}
+                             className={`w-5 h-5 rounded-full bg-white border shadow-sm flex items-center justify-center transition-all group ${stage.status === 'completed' ? 'border-primary-200 text-primary-500 hover:scale-110 hover:bg-primary-50' : 'border-neutral-200 text-neutral-300 hover:text-neutral-600'}`}
                            >
-                              <Send size={10} className="group-hover:translate-x-0.5 transition-transform" />
+                              <Send size={8} className="group-hover:translate-x-0.5 transition-transform" />
                            </button>
                         </div>
                      )}
                   </React.Fragment>
                 ))}
               </div>
+              
+               <div className="flex items-center justify-end xl:w-auto xl:pl-4">
+                   <button 
+                     onClick={() => setActiveProject(project.id)}
+                     className="w-full xl:w-auto px-5 py-2.5 bg-neutral-900 text-white rounded-[14px] text-[12px] font-black transition-all flex items-center justify-center gap-2 hover:bg-primary-500 shadow-lg active:scale-95 whitespace-nowrap"
+                   >
+                     <PenTool size={14} />
+                     成稿车间
+                   </button>
+               </div>
             </motion.div>
           ))}
         </div>
 
         <button 
            onClick={() => setIsCreatingProject(true)}
-           className="w-full py-8 bg-white border border-dashed border-neutral-200 rounded-[40px] text-[15px] font-black text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-3"
+           className="w-full py-4 bg-white border border-dashed border-neutral-200 rounded-[20px] text-[13px] font-black text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-2"
         >
-           <PlusCircle size={24} /> 启动新项目
+           <PlusCircle size={18} /> 启动新项目
         </button>
 
         {/* Create Project Overlay Modal */}
