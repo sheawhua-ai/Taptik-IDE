@@ -793,61 +793,56 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
                    animate={{ opacity: 1, y: 0, scale: 1 }}
                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                   className="absolute bottom-[calc(100%+8px)] left-4 right-4 bg-white rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] border border-neutral-200 flex flex-col h-[260px] overflow-hidden origin-bottom z-50 mb-2"
+                   className="absolute bottom-[calc(100%+12px)] right-6 w-[400px] bg-white rounded-3xl shadow-[0_16px_40px_rgba(0,0,0,0.08)] border border-neutral-100 flex flex-col overflow-hidden origin-bottom-right z-50 mb-2"
                 >
-                   <div className="flex items-center justify-between py-2.5 px-6 border-b border-neutral-100 bg-neutral-50/50 shrink-0">
+                   <div className="flex items-center justify-between py-5 px-6 border-b border-neutral-50 bg-[#fafafa]">
                       <div className="flex items-center gap-3">
-                         <div className="w-6 h-6 bg-primary-100 text-primary-600 rounded-md flex items-center justify-center">
-                            <Workflow size={12} />
+                         <div className="w-8 h-8 bg-neutral-900 text-white rounded-[10px] flex items-center justify-center shadow-sm">
+                            <Workflow size={14} />
                          </div>
-                         <h3 className="text-[13px] font-black text-neutral-900 tracking-tight">
-                            Agent 工作流执行链路
-                         </h3>
-                      </div>
-                      <div className="flex items-center gap-3">
-                         <div className="flex gap-1 bg-white border border-neutral-200 p-0.5 rounded-[10px]">
-                            {['阶段分布', '执行日志'].map(t => (
-                              <button key={t} className={`px-4 py-1.5 text-[11px] font-black rounded-[8px] transition-all ${t === '阶段分布' ? 'bg-neutral-900 shadow-sm text-white' : 'text-neutral-500 hover:bg-neutral-50'}`}>{t}</button>
-                            ))}
+                         <div>
+                            <h3 className="text-[14px] font-black text-neutral-900 tracking-tight">Agent 瀑布工作流</h3>
+                            <div className="text-[11px] font-bold text-neutral-500 mt-0.5 tracking-wide">任务执行链路</div>
                          </div>
-                         <div className="w-[1px] h-4 bg-neutral-200 ml-1" />
-                         <button onClick={() => setBottomExpanded(false)} className="p-1.5 hover:bg-neutral-100 rounded-lg text-neutral-400 border border-transparent hover:border-neutral-200 transition-all">
-                            <PanelRightClose size={16} className="rotate-90" />
-                         </button>
                       </div>
+                      <button onClick={() => setBottomExpanded(false)} className="w-8 h-8 flex items-center justify-center hover:bg-neutral-200 bg-neutral-100 rounded-full text-neutral-500 transition-all">
+                         <X size={14} />
+                      </button>
                    </div>
                    
-                   <div className="flex-1 overflow-x-auto custom-scrollbar bg-neutral-50 flex items-center justify-start">
-                       <div className="flex items-center h-full px-8 pb-4 min-w-max gap-0 mt-4">
-                           {[
-                             { stage: '策略探测', status: '完成', icon: Target, detail: '蓝海词「低卡茶饮」热度上升 42%' },
-                             { stage: '批量内容生成', status: '分配中', icon: Sparkles, detail: '生成笔记 25 篇，配图任务下发中', active: true },
-                             { stage: '分发排期', status: '等待', icon: Share2, detail: '排期空闲' },
-                             { stage: '数据归因', status: '等待', icon: BarChart2, detail: '等待回流报表' },
-                           ].map((step, i, arr) => (
-                             <React.Fragment key={i}>
-                               <div className={`w-[280px] p-5 rounded-[24px] flex flex-col gap-4 relative transition-all ${step.active ? 'bg-white border-2 border-primary-500 shadow-xl z-20' : step.status === '完成' ? 'bg-white border border-neutral-200 shadow-sm opacity-90' : 'bg-white/50 border border-dashed border-neutral-200 opacity-60'}`}>
+                   <div className="flex-1 overflow-y-auto max-h-[360px] px-5 py-4 bg-white custom-scrollbar">
+                       {[
+                         { stage: '策略探测', status: '完成', detail: '分析近期大盘数据发现蓝海词「低卡茶饮」，热度上升 42%', time: '10:42', id: 'step-1' },
+                         { stage: '批量内容生成', status: '执行中', detail: '正在根据策略矩阵生成笔记，已完成 12/25 篇', active: true, time: '10:45', id: 'step-2' },
+                         { stage: '分发排期', status: '排队中', detail: '等待内容生成完毕后，将自动下发至各渠道排期', time: '--:--', id: 'step-3' },
+                         { stage: '数据归因', status: '待触发', detail: '等待发布后回流数据报表并优化策略', time: '--:--', id: 'step-4' },
+                       ].map((step, i, arr) => (
+                          <div key={step.id} className="relative flex gap-3 pb-4 last:pb-0 group">
+                             {i < arr.length - 1 && (
+                                <div className="absolute left-[7px] top-4 bottom-0 w-[1px]">
+                                   <div className={`w-full h-full ${step.status === '完成' ? 'bg-primary-500' : 'bg-neutral-100 border-l-[1px] border-dashed border-neutral-200'}`} />
+                                </div>
+                             )}
+                             
+                             <div className="mt-1 w-[15px] flex justify-center shrink-0 relative z-10">
+                                <div className={`w-3 h-3 rounded-full flex items-center justify-center ${step.active ? 'bg-primary-500 shadow-[0_0_0_3px_rgba(var(--primary-100),1)]' : step.status === '完成' ? 'bg-neutral-900 border border-neutral-700' : 'bg-white border-2 border-neutral-200'}`}>
+                                   {step.active && <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />}
+                                </div>
+                             </div>
+                             
+                             <div className={`flex-1 pt-0 ${step.active ? 'opacity-100' : step.status === '完成' ? 'opacity-90' : 'opacity-50'}`}>
                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${step.active ? 'bg-primary-50 text-primary-600' : step.status === '完成' ? 'bg-emerald-50 text-emerald-600' : 'bg-neutral-100 text-neutral-400'}`}>
-                                          {step.status === '完成' ? <Check size={18} /> : <step.icon size={18} />}
-                                        </div>
-                                        <h4 className={`text-[15px] font-black tracking-tight ${step.active ? 'text-primary-700' : 'text-neutral-900'}`}>{step.stage}</h4>
+                                    <div className="flex items-center gap-2">
+                                       <span className={`text-[12px] font-black ${step.active ? 'text-primary-600' : 'text-neutral-800'}`}>{step.stage}</span>
+                                       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${step.active ? 'bg-primary-50 text-primary-600' : step.status === '完成' ? 'bg-neutral-100 text-neutral-600' : 'hidden'}`}>{step.status}</span>
                                     </div>
-                                    <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${step.active ? 'bg-primary-50 text-primary-600' : step.status === '完成' ? 'bg-emerald-50 text-emerald-600' : 'bg-neutral-100 text-neutral-500'}`}>{step.status}</span>
+                                    <span className="text-[10px] font-bold text-neutral-400 font-mono tracking-tight">{step.time}</span>
                                  </div>
-                                 <p className="text-[12px] font-bold text-neutral-500 leading-relaxed line-clamp-2">{step.detail}</p>
-                               </div>
-                               {i < arr.length - 1 && (
-                                  <div className="w-8 shrink-0 relative flex items-center justify-center -mx-2 z-10">
-                                     <div className={`h-[2px] w-full ${arr[i+1].status === '完成' || arr[i+1].active ? 'bg-primary-500' : 'border-t-[2px] border-dashed border-neutral-300'}`} />
-                                     <ChevronRight size={14} className={`absolute ${arr[i+1].status === '完成' || arr[i+1].active ? 'text-primary-500' : 'text-neutral-300'}`} />
-                                  </div>
-                               )}
-                             </React.Fragment>
-                           ))}
-                       </div>
-                    </div>
+                                 <p className="text-[11px] font-medium text-neutral-500 mt-1 leading-snug break-all line-clamp-2">{step.detail}</p>
+                             </div>
+                          </div>
+                       ))}
+                   </div>
                 </motion.div>
               )}
               </AnimatePresence>

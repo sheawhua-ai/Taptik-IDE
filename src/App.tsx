@@ -102,6 +102,10 @@ import {
   Gift,
   UserCircle,
   CheckCircle2,
+  PanelLeftClose,
+  Plus,
+  FolderOpen,
+  Folder,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -268,18 +272,26 @@ const MOCK_PROJECTS: Record<string, any> = {
 const SIDE_NAV_ITEMS = [
   {
     id: "workbench",
-    name: "工作台",
-    sub: "调度与指令",
-    icon: Cpu,
-    color: "text-orange-500",
+    name: "商家运营",
+    icon: LayoutGrid,
   },
   {
-    id: "workflow",
-    name: "项目中心",
-    sub: "全链路跟踪与协作",
-    icon: Workflow,
-    color: "text-primary-500",
+    id: "files",
+    name: "素材和知识库",
+    icon: BookOpen,
   },
+  {
+    id: "skills",
+    name: "技能和专家",
+    icon: Zap,
+  },
+];
+
+const PROJECT_HISTORY_ITEMS = [
+  { id: "1", project: "宠粮新客运营", title: "小红书批量生成中", time: "1小时前", status: "running" },
+  { id: "2", project: "宠粮新客运营", title: "昨日拉新复盘", time: "21小时前", status: "completed" },
+  { id: "3", project: "宠粮新客运营", title: "帮我诊断一下现有的私域...", time: "9天前", status: "completed" },
+  { id: "4", project: "美妆季卡提报", title: "双11大促素材规划", time: "20小时前", status: "completed" },
 ];
 
 const PROJECT_TABS = [
@@ -762,29 +774,29 @@ export default function App() {
       />
 
       {/* SaaS Nav Sidebar */}
-      <div className="w-[80px] xl:w-[260px] border-r border-neutral-200 bg-white flex flex-col shrink-0 h-full relative z-20 overflow-hidden">
-        <div className="h-16 flex items-center justify-center xl:justify-start xl:px-6 font-black text-lg tracking-tight text-neutral-900 gap-3 mb-4 mt-2 shrink-0">
-          <div className="w-9 h-9 bg-neutral-900 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg rotate-3 group-hover:rotate-0 transition-transform">
-            <Cpu size={22} />
-          </div>
-          <div className="hidden xl:block leading-tight">
-            <h1 className="text-[17px] font-black tracking-tight text-neutral-900 uppercase">
-              智策系统
+      <div className="w-[80px] xl:w-[240px] bg-[#f7f8fa] border-r border-[#e9eaec] flex flex-col shrink-0 h-full relative z-20 overflow-hidden">
+        <div className="h-14 flex items-center justify-between px-4 font-black tracking-tight text-neutral-900 border-b border-transparent shrink-0">
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-[15px] font-black tracking-tight text-slate-700 uppercase">
+              TapTik
             </h1>
-            <p className="text-[10px] font-bold text-primary-500 bg-primary-50 px-1.5 py-0.5 rounded uppercase tracking-widest mt-0.5 inline-block">
-              Pro v2.1
-            </p>
+            <span className="text-[11px] font-bold text-slate-400 font-mono tracking-tight">v1.5.7</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-slate-400">
+             <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all"><PanelLeftClose size={16} /></button>
+             <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all"><Search size={16} /></button>
+             <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all"><Filter size={16} /></button>
           </div>
         </div>
 
-        <div className="px-2 xl:px-4 py-2 cursor-pointer relative mb-4 shrink-0">
+        <div className="px-3 py-3 cursor-pointer relative shrink-0">
           <button
             onClick={() => setIsProjectSelectorOpen(true)}
-            className="w-full flex items-center justify-center xl:justify-between hover:bg-neutral-50 rounded-xl p-2 xl:px-3 xl:py-2 text-sm font-bold text-neutral-700 transition-colors border border-transparent"
+            className="w-full flex items-center justify-between hover:bg-white hover:shadow-sm rounded-xl px-2.5 py-2 text-sm font-bold text-slate-700 transition-all border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.02)] bg-white"
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-7 h-7 xl:w-6 xl:h-6 rounded-lg flex items-center justify-center font-black text-[10px] shadow-sm shrink-0"
+                className="w-5 h-5 rounded flex items-center justify-center font-black text-[10px] shadow-sm shrink-0"
                 style={{
                   backgroundColor: activeProject.color,
                   color: activeProject.textColor,
@@ -792,83 +804,77 @@ export default function App() {
               >
                 {activeProject.initial}
               </div>
-              <span className="hidden xl:block truncate max-w-[120px]">
+              <span className="truncate max-w-[120px] text-[13px] font-black text-slate-800">
                 {activeProject.name}
               </span>
             </div>
-            <div className="hidden xl:flex items-center gap-1.5">
-               <span className="text-[10px] font-black text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded">⌘K</span>
-               <ChevronDown size={14} className="text-neutral-400 shrink-0" />
+            <div className="flex items-center gap-1.5">
+               <span className="text-[10px] font-black text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">⌘K</span>
+               <ChevronDown size={14} className="text-slate-400 shrink-0" />
             </div>
           </button>
         </div>
 
-        <div className="flex-1 px-3 space-y-2 overflow-y-auto custom-scrollbar">
-          <div className="px-2 text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-2 hidden xl:block">
-            核心控制
-          </div>
+        <div className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar flex flex-col">
+          <button
+            onClick={() => setActiveNav("new_task")}
+            className="w-full flex items-center justify-center xl:justify-start gap-3 px-3 py-2.5 rounded-xl transition-all group hover:bg-white hover:shadow-sm mb-2 text-slate-700 border border-transparent"
+          >
+            <div className="w-5 h-5 flex items-center justify-center bg-slate-800 text-white rounded-[6px] shrink-0 shadow-sm border border-slate-700"><Plus size={14} strokeWidth={3} /></div>
+            <span className="text-[13px] font-black">新建任务</span>
+          </button>
+
           {SIDE_NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveNav(item.id)}
-              className={`w-full flex items-center justify-center xl:justify-start gap-4 p-3 rounded-2xl transition-all duration-300 group ${activeNav === item.id ? "bg-neutral-900 text-white shadow-xl shadow-neutral-900/10" : "text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900"}`}
+              className={`w-full flex items-center justify-center xl:justify-start gap-3 px-3 py-2 rounded-xl transition-all group border border-transparent ${activeNav === item.id ? "bg-white text-slate-900 shadow-sm font-black" : "text-slate-600 hover:bg-white/60 hover:text-slate-900 font-bold"}`}
             >
               <item.icon
-                size={20}
-                className={`shrink-0 ${activeNav === item.id ? "text-primary-400" : "group-hover:text-neutral-900"}`}
+                size={16}
+                strokeWidth={activeNav === item.id ? 2.5 : 2}
+                className={`shrink-0 ${activeNav === item.id ? "text-slate-800" : "text-slate-400 group-hover:text-slate-600"}`}
               />
-              <div className="hidden xl:block text-left">
-                <p className="text-[14px] font-black leading-tight">
-                  {item.name}
-                </p>
-                <p
-                  className={`text-[10px] font-bold uppercase tracking-tighter mt-0.5 ${activeNav === item.id ? "text-neutral-400" : "text-neutral-300 group-hover:text-neutral-400"}`}
-                >
-                  {item.sub}
-                </p>
-              </div>
+              <span className="text-[13px]">
+                {item.name}
+              </span>
             </button>
           ))}
 
-          <div className="border-t border-neutral-100 pt-8 mt-4 space-y-3 pb-8">
-            <div className="px-2 text-[10px] font-black text-neutral-300 uppercase tracking-widest mb-2 hidden xl:block">
-              配置与资产
+          <div className="border-t border-[#e9eaec] mt-6 pt-4 mb-2">
+            <div className="px-2 text-[11px] font-bold text-slate-400 flex items-center justify-between mb-2">
+               <span>近期任务与项目</span>
+               <button className="hover:text-slate-700"><Plus size={12} strokeWidth={3} /></button>
             </div>
-            {[
-              {
-                id: "files",
-                name: "知识库管理",
-                sub: "全局沉淀文档",
-                icon: BookOpen,
-              },
-              {
-                id: "skills",
-                name: "专家与技能市场",
-                sub: "扩展行业经验库",
-                icon: ShoppingCart,
-              },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveNav(item.id)}
-                className={`w-full flex items-center justify-center xl:justify-start gap-4 p-3 rounded-2xl transition-all group ${activeNav === item.id ? "bg-neutral-900 text-white shadow-xl shadow-neutral-900/10" : "text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900"}`}
-              >
-                <item.icon
-                  size={20}
-                  className={`shrink-0 ${activeNav === item.id ? "text-primary-400" : "group-hover:text-neutral-900"}`}
-                />
-                <div className="hidden xl:block text-left">
-                  <p className="text-[14px] font-black leading-tight">
-                    {item.name}
-                  </p>
-                  <p
-                    className={`text-[10px] font-bold uppercase tracking-tighter mt-0.5 ${activeNav === item.id ? "text-neutral-400" : "text-neutral-300 group-hover:text-neutral-400"}`}
-                  >
-                    {item.sub}
-                  </p>
-                </div>
-              </button>
-            ))}
+            <div className="flex flex-col gap-0.5">
+               <div className="flex flex-col">
+                  <button className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-white/60 text-slate-600 group transition-all">
+                     <div className="flex items-center gap-2">
+                        <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600" />
+                        <FolderOpen size={14} className="text-slate-400 group-hover:text-slate-600" />
+                        <span className="text-[13px] font-bold truncate max-w-[120px]">宠粮新客运营</span>
+                     </div>
+                  </button>
+                  <div className="flex flex-col pl-7 pr-2 border-l border-slate-200 ml-4 py-1 space-y-1">
+                     {PROJECT_HISTORY_ITEMS.slice(0, 3).map(task => (
+                        <button key={task.id} className="w-full text-left py-1.5 px-2 hover:bg-white rounded-md text-[12px] font-bold text-slate-500 hover:text-slate-800 transition-all flex items-center justify-between group">
+                           <span className="truncate flex-1 pr-2">{task.title}</span>
+                           <span className="text-[9px] font-semibold text-slate-400 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">{task.time}</span>
+                        </button>
+                     ))}
+                  </div>
+               </div>
+               
+               <div className="flex flex-col">
+                  <button className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-white/60 text-slate-600 group transition-all">
+                     <div className="flex items-center gap-2">
+                        <ChevronDown size={14} className="text-slate-400 rounded group-hover:text-slate-600 -rotate-90" />
+                        <Folder size={14} className="text-slate-400 group-hover:text-slate-600" />
+                        <span className="text-[13px] font-bold truncate max-w-[120px]">美妆季卡提报</span>
+                     </div>
+                  </button>
+               </div>
+            </div>
           </div>
         </div>
 
