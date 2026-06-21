@@ -4,7 +4,7 @@ import {
   Compass, Lightbulb, Bot, LayoutGrid, Cpu, Share2, PanelLeftClose, PanelRightClose,
   User, Send, FileText, Plus, Check, CalendarDays, LineChart, PanelLeftOpen, PanelRightOpen, History, FolderOpen, Brain, BookOpen, ArrowUpRight,
   ChevronRight, Wrench, BrainCircuit, CheckCircle2, X, MoreHorizontal, Edit2, Save, Share, Trash2, Folder,
-  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CommandDirectory } from './command-center/CommandDirectory';
@@ -156,9 +156,27 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
   
   const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
   const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
+  const [isAttachMenuOpen, setIsAttachMenuOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [activeAgentId, setActiveAgentId] = useState('core');
 
   const activeAgent = AVAILABLE_AGENTS.find(a => a.id === activeAgentId) || AVAILABLE_AGENTS[0];
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    // Assume file is processed here
+  };
 
   // Rotating placeholder
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -402,197 +420,24 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
       </div>
 
       <div className="flex-1 flex overflow-hidden relative bg-neutral-50/30">
-        {/* === Left Panel (3-tiered Macros & Assets) === */}
-        <AnimatePresence initial={false}>
-          {leftExpanded ? (
-            <motion.div 
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 220, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              className="border-r border-neutral-100 bg-[#fafafa] flex flex-col shrink-0 overflow-hidden relative z-10"
-            >
-              <div className="p-2 border-b border-neutral-100 bg-white shrink-0 flex items-center justify-between gap-2 shadow-sm">
-                 <div className="flex bg-neutral-100/50 p-1 rounded-lg flex-1">
-                   {[
-                     { id: 'history', name: '任务', icon: MessageSquare }, // Changed from history/会话 to MessageSquare/任务
-                     { id: 'assets', name: '文件', icon: FolderOpen }
-                   ].map(tab => (
-                     <button 
-                       key={tab.id}
-                       onClick={() => setLeftTab(tab.id as any)}
-                       className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-black transition-all ${leftTab === tab.id ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
-                     >
-                       <tab.icon size={14} className={leftTab === tab.id ? 'text-primary-500' : ''} />
-                       {tab.name}
-                     </button>
-                   ))}
-                 </div>
-                 <button onClick={() => setLeftExpanded(false)} className="p-1.5 shrink-0 hover:bg-neutral-100 rounded-lg text-neutral-400 transition-colors">
-                    <PanelLeftClose size={16} />
-                 </button>
-              </div>
-              
-              <div className="flex-1 overflow-hidden flex flex-col bg-[#fafafa]">
-                 {leftTab === 'assets' && (
-                    <div className="p-6 flex flex-col items-center justify-center text-center h-[300px] border-b border-neutral-100">
-                       <div className="w-16 h-16 bg-neutral-100 rounded-2xl flex items-center justify-center text-neutral-400 mb-4 shadow-inner">
-                          <BookOpen size={24} />
-                       </div>
-                       <h3 className="text-[13px] font-black text-neutral-900 mb-2">资产已全量归集</h3>
-                       <p className="text-[11px] font-bold text-neutral-400 max-w-[200px] mb-6">项目 IP 定位、合规词库与视觉规范已统一存放在主知识库中心。</p>
-                       <button 
-                         onClick={() => {
-                            window.dispatchEvent(new CustomEvent('nav-to-files'));
-                         }}
-                         className="px-5 py-2.5 bg-neutral-900 border border-neutral-800 text-white rounded-xl text-[11px] font-black hover:bg-primary-500 hover:border-primary-500 transition-all flex items-center gap-2"
-                       >
-                         前往知识库中心 <ArrowUpRight size={14} />
-                       </button>
-                    </div>
-                 )}
-                 {leftTab === 'history' && (
-                    <div className="flex-1 flex flex-col min-h-0 relative">
-                       <div className="p-3 border-b border-neutral-100 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.02)] z-10 sticky top-0 bg-[#fafafa]">
-                          <span className="text-[12px] font-black text-neutral-500">历史任务</span>
-                          <div className="relative">
-                            <button 
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 rounded-lg text-[11px] font-bold text-neutral-700 transition-all shadow-sm"
-                              onClick={() => setIsNewMenuOpen(!isNewMenuOpen)}
-                            >
-                               <Plus size={12} />
-                               新建
-                            </button>
-                            {isNewMenuOpen && (
-                               <>
-                                 <div className="fixed inset-0 z-40" onClick={() => setIsNewMenuOpen(false)} />
-                                 <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-neutral-100 shadow-xl rounded-xl z-[60] py-1.5">
-                                    <button 
-                                      className="w-full text-left px-3 py-1.5 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2"
-                                      onClick={() => setIsNewMenuOpen(false)}
-                                    >
-                                      <MessageSquare size={14} className="text-neutral-400" /> 新建任务
-                                    </button>
-                                    <button 
-                                      className="w-full text-left px-3 py-1.5 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2"
-                                      onClick={() => setIsNewMenuOpen(false)}
-                                    >
-                                      <Folder size={14} className="text-neutral-400" /> 新建文件夹
-                                    </button>
-                                 </div>
-                               </>
-                            )}
-                          </div>
-                       </div>
-                       
-                       {/* List wrapper */}
-                       <div className="flex-1 overflow-y-auto px-2 py-3 space-y-1 custom-scrollbar pb-10">
-                          <div className="flex items-center justify-between px-2 mb-2 group">
-                             <span className="text-[11px] font-black text-neutral-400">任务 ({historyTasks.length}) <ChevronRight size={12} className="inline rotate-90" /></span>
-                          </div>
-                          
-                          {historyTasks.map(task => (
-                             <div 
-                               key={task.id} 
-                               className={`px-3 py-2.5 rounded-xl cursor-pointer group flex flex-col gap-1.5 transition-all relative ${task.active ? 'bg-white shadow-sm border border-neutral-200/60' : 'hover:bg-neutral-100/60 border border-transparent'}`}
-                               onMouseLeave={() => setActiveTaskMenu(null)}
-                             >
-                                <div className="flex items-center justify-between gap-1.5">
-                                  <span className={`text-[12px] font-bold truncate flex-1 ${task.active ? 'text-primary-600' : 'text-neutral-700'}`}>{task.title}</span>
-                                  
-                                  <div className="flex items-center gap-2 shrink-0 relative min-w-[50px] justify-end">
-                                    {task.active && activeTaskMenu !== task.id && <div className="w-1.5 h-1.5 rounded-full bg-primary-500 absolute right-1" />}
-                                    {!task.active && activeTaskMenu !== task.id && <span className="text-[10px] text-neutral-400 group-hover:opacity-0 transition-opacity absolute right-0">{task.time}</span>}
-                                    
-                                    <button 
-                                      className="absolute right-0 opacity-0 group-hover:opacity-100 px-2 py-1 flex items-center gap-1 hover:bg-neutral-200 rounded-md text-neutral-500 z-10 transition-colors"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setActiveTaskMenu(task.id);
-                                      }}
-                                    >
-                                      <span className="text-[10px] font-bold">操作</span>
-                                      <MoreHorizontal size={14} />
-                                    </button>
-
-                                    {activeTaskMenu === task.id && (
-                                       <>
-                                         <div className="fixed inset-0 z-[90]" onClick={(e) => { e.stopPropagation(); setActiveTaskMenu(null); }} />
-                                         <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-neutral-100 shadow-xl rounded-xl z-[100] py-1.5" onClick={(e) => e.stopPropagation()}>
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2 transition-colors">
-                                              <ArrowUpCircle size={14} className="text-neutral-400" /> 置顶任务
-                                            </button>
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2 transition-colors">
-                                              <FolderOpen size={14} className="text-neutral-400" /> 打开文件夹
-                                            </button>
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2 transition-colors">
-                                              <Edit2 size={14} className="text-neutral-400" /> 重命名
-                                            </button>
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2 transition-colors">
-                                              <Save size={14} className="text-neutral-400" /> 保存到工作空间
-                                            </button>
-                                            <div className="h-[1px] bg-neutral-100 my-1" />
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2 transition-colors">
-                                              <Share size={14} className="text-neutral-400" /> 分享任务
-                                            </button>
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-neutral-50 text-neutral-700 flex items-center gap-2 transition-colors">
-                                              <Folder size={14} className="text-neutral-400" /> 归档任务
-                                            </button>
-                                            <button className="w-full text-left px-3 py-2 text-[12px] hover:bg-red-50 text-red-600 flex items-center gap-2 transition-colors">
-                                              <Trash2 size={14} className="text-red-500" /> 删除任务
-                                            </button>
-                                         </div>
-                                       </>
-                                    )}
-                                  </div>
-                               </div>
-                             </div>
-                          ))}
-
-                          <div className="flex items-center justify-between px-2 mt-6 mb-2 group">
-                             <span className="text-[11px] font-black text-neutral-400">空间 (1) <ChevronRight size={12} className="inline rotate-90" /></span>
-                          </div>
-                          
-                          <div className="px-3 py-2.5 rounded-xl cursor-pointer group flex flex-col gap-1.5 transition-all hover:bg-neutral-100/60 border border-transparent">
-                             <div className="flex items-center justify-between gap-1.5">
-                                <div className="flex items-center gap-2 flex-1 min-w-0">
-                                   <FolderOpen size={14} className="text-neutral-400 shrink-0" />
-                                   <span className="text-[12px] font-bold truncate text-neutral-700">项目新手指引</span>
-                                   <ChevronRight size={12} className="text-neutral-400 shrink-0 rotate-90" />
-                                </div>
-                             </div>
-                          </div>
-                          <div className="pl-8 pr-3 py-2 rounded-xl cursor-pointer hover:bg-neutral-100/60 transition-all flex items-center justify-between border border-transparent">
-                             <span className="text-[12px] text-neutral-600 truncate flex-1">Tauri移动端开发</span>
-                             <span className="text-[10px] text-neutral-400">5小时前</span>
-                          </div>
-                          <div className="pl-8 pr-3 py-2 rounded-xl cursor-pointer hover:bg-neutral-100/60 transition-all flex items-center justify-between border border-transparent">
-                             <span className="text-[12px] text-neutral-600 truncate flex-1">生成项目功能介绍</span>
-                             <span className="text-[10px] text-neutral-400">3天前</span>
-                          </div>
-                      </div>
-                    </div>
-                 )}
-              </div>
-            </motion.div>
-          ) : (
-            <div className="w-12 border-r border-neutral-100 bg-white flex flex-col items-center py-4 gap-4 shrink-0 z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-               <button onClick={() => setLeftExpanded(true)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 tooltip-trigger">
-                  <PanelLeftOpen size={16} />
-               </button>
-               <div className="w-8 h-[1px] bg-neutral-100 my-2" />
-               <button onClick={() => { setLeftExpanded(true); setLeftTab('history'); }} className={`p-2 hover:bg-neutral-100 rounded-xl ${leftTab === 'history' ? 'text-primary-500' : 'text-neutral-400'} relative`}>
-                  <History size={18} />
-               </button>
-               <button onClick={() => { setLeftExpanded(true); setLeftTab('assets'); }} className={`p-2 hover:bg-neutral-100 rounded-xl ${leftTab === 'assets' ? 'text-primary-500' : 'text-neutral-400'} relative`}>
-                  <FolderOpen size={18} />
-               </button>
-            </div>
-          )}
-        </AnimatePresence>
-
         {/* === Middle Panel (Console Display) === */}
-        <div className="flex-1 flex flex-col relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] min-w-[480px]">
-          <div className="flex-1 overflow-y-auto p-10 pb-6 space-y-10 custom-scrollbar">
+        <div 
+          className="flex-1 flex flex-col relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] min-w-[480px]"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          {isDragging && (
+             <div className="absolute inset-0 z-50 bg-primary-500/10 backdrop-blur-[2px] border-2 border-dashed border-primary-500 rounded-xl m-4 flex flex-col items-center justify-center pointer-events-none">
+                <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-primary-500 mb-4 animate-bounce">
+                   <Paperclip size={32} />
+                </div>
+                <h3 className="text-xl font-black text-primary-600 tracking-tight">松开以上传文件</h3>
+                <p className="text-[13px] font-bold text-primary-500/70 mt-2">支持本地文件、文件夹拖拽上传</p>
+             </div>
+          )}
+
+          <div className={`flex-1 overflow-y-auto p-10 pb-6 space-y-10 custom-scrollbar ${isDragging ? 'opacity-50' : ''}`}>
             
             {/* New Merchant Config Dashboard */}
             {isNewMerchant && messages.length <= 1 && (
@@ -729,6 +574,42 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                     />
                   </div>
                   
+                  <div className="relative">
+                     <button 
+                       onClick={() => { setIsAttachMenuOpen(!isAttachMenuOpen); setIsAgentSelectorOpen(false); setIsCommandDirOpen(false); }}
+                       className={`p-2.5 rounded-xl transition-all ${isAttachMenuOpen ? 'bg-primary-50 text-primary-500' : 'text-neutral-400 hover:text-primary-500 hover:bg-neutral-50'}`}
+                       title="添加附件"
+                     >
+                       <Paperclip size={20} />
+                     </button>
+                     <AnimatePresence>
+                       {isAttachMenuOpen && (
+                         <>
+                           <div className="fixed inset-0 z-40" onClick={() => setIsAttachMenuOpen(false)} />
+                           <motion.div 
+                             initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                             animate={{ opacity: 1, y: 0, scale: 1 }}
+                             exit={{ opacity: 0, y: 10, scale: 0.96 }}
+                             className="absolute right-0 bottom-full mb-2 w-40 bg-white border border-neutral-100 shadow-xl rounded-2xl z-50 py-2 flex flex-col"
+                           >
+                              <button className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 transition-colors text-[13px] font-bold text-left w-full group">
+                                <Paperclip size={14} className="text-neutral-400 group-hover:text-neutral-600" /> 本地文件
+                              </button>
+                              <button className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 transition-colors text-[13px] font-bold text-left w-full group">
+                                <FileText size={14} className="text-neutral-400 group-hover:text-neutral-600" /> 腾讯文档
+                              </button>
+                              <button className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 transition-colors text-[13px] font-bold text-left w-full group">
+                                <BrainCircuit size={14} className="text-neutral-400 group-hover:text-neutral-600" /> ima 知识库
+                              </button>
+                              <button className="flex items-center gap-2.5 px-4 py-2 hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 transition-colors text-[13px] font-bold text-left w-full group">
+                                <Database size={14} className="text-neutral-400 group-hover:text-neutral-600" /> 乐享知识库
+                              </button>
+                           </motion.div>
+                         </>
+                       )}
+                     </AnimatePresence>
+                  </div>
+
                   {/* Intent Directory Button (Lightbulb) */}
                   <button 
                     onClick={() => { setIsCommandDirOpen(!isCommandDirOpen); setIsAgentSelectorOpen(false); }}

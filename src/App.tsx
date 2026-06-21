@@ -107,6 +107,7 @@ import {
   Plus,
   FolderOpen,
   Folder,
+  Store,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -115,12 +116,19 @@ import { DataCenter } from "./components/DataCenter";
 import { FileManager } from "./components/FileManager";
 import { Billing } from "./components/Billing";
 import { ServiceManagement } from "./components/ServiceManagement";
+import { MerchantManagement } from "./components/settings/MerchantManagement";
 import { Workbench } from "./components/Workbench";
+import { AccountSettings } from "./components/settings/AccountSettings";
+import { MemorySettings } from "./components/settings/MemorySettings";
+import { PersonalizationSettings } from "./components/settings/PersonalizationSettings";
+import { SecuritySettings } from "./components/settings/SecuritySettings";
 
 // Modular Merchant Components
 import { SchemeManager } from "./components/merchant/SchemeManager";
 import { StaffManager } from "./components/merchant/StaffManager";
 import { AccountDetails } from "./components/merchant/AccountDetails";
+import { MerchantManagement } from "./components/settings/MerchantManagement";
+import { GrowthPlanModal } from "./components/GrowthPlanModal";
 
 // 6 Rings Components
 import { Strategy } from "./components/rings/Strategy";
@@ -133,6 +141,7 @@ import { Metrics } from "./components/rings/Metrics";
 
 import { SubagentChat } from "./components/SubagentChat";
 import { ProjectSwitcherModal } from "./components/ProjectSwitcherModal";
+import { CreateProjectModal } from "./components/CreateProjectModal";
 
 // Existing Pages
 import MerchantMatrix from "./pages/MerchantMatrix";
@@ -193,7 +202,7 @@ const MOCK_PROJECTS: Record<string, any> = {
   },
   "project-a": {
     id: "project-a",
-    name: "品牌A：宠物食品组",
+    name: "商家A：宠物食品组",
     initial: "宠",
     color: "var(--primary-50)",
     textColor: "var(--primary-500)",
@@ -225,7 +234,7 @@ const MOCK_PROJECTS: Record<string, any> = {
   },
   "project-b": {
     id: "project-b",
-    name: "品牌B：美妆官号",
+    name: "商家B：美妆官号",
     initial: "美",
     color: "var(--danger-50)",
     textColor: "var(--danger-500)",
@@ -254,7 +263,7 @@ const MOCK_PROJECTS: Record<string, any> = {
   },
   "project-c": {
     id: "project-c",
-    name: "新进品牌：待配置",
+    name: "新进商家：待配置",
     initial: "新",
     color: "var(--indigo-50)",
     textColor: "var(--indigo-600)",
@@ -272,7 +281,7 @@ const MOCK_PROJECTS: Record<string, any> = {
 
 const SIDE_NAV_ITEMS = [
   {
-    id: "workbench",
+    id: "workflow",
     name: "商家运营",
     icon: LayoutGrid,
   },
@@ -387,7 +396,7 @@ export default function App() {
   >(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const [activeNav, setActiveNav] = useState("workbench");
+  const [activeNav, setActiveNav] = useState("workflow");
   const [workflowTab, setWorkflowTab] = useState<
     "strategy" | "matrix" | "content" | "execution" | "interaction" | "metrics"
   >("strategy");
@@ -458,6 +467,7 @@ export default function App() {
   }, []);
 
   const [isProjectSelectorOpen, setIsProjectSelectorOpen] = useState(false);
+  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
   const [activeDoc, setActiveDoc] = useState<string | null>(null);
 
   const [selectedSkill, setSelectedSkill] = useState<any>(null);
@@ -466,6 +476,7 @@ export default function App() {
   const [filesTab, setFilesTab] = useState<"project" | "knowledge">("project");
 
   const [isUsagePopupOpen, setIsUsagePopupOpen] = useState(false);
+  const [isGrowthPlanModalOpen, setIsGrowthPlanModalOpen] = useState(false);
   const [isSettingsPopupOpen, setIsSettingsPopupOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -775,6 +786,11 @@ export default function App() {
          }}
       />
 
+      <CreateProjectModal 
+         isOpen={isCreateProjectModalOpen} 
+         onClose={() => setIsCreateProjectModalOpen(false)} 
+      />
+
       {/* SaaS Nav Sidebar */}
       <div className={`${isSidebarCollapsed ? "w-[68px]" : "w-[240px]"} transition-all duration-300 bg-[#f7f8fa] border-r border-[#e9eaec] flex flex-col shrink-0 h-full relative z-20 overflow-hidden`}>
         <div className={`h-14 flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-4"} font-black tracking-tight text-neutral-900 border-b border-transparent shrink-0`}>
@@ -836,9 +852,9 @@ export default function App() {
 
         <div className={`flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar flex flex-col ${isSidebarCollapsed ? "items-center" : ""}`}>
           <button
-            onClick={() => setActiveNav("new_task")}
+            onClick={() => setActiveNav("workbench")}
             title={isSidebarCollapsed ? "新建任务" : undefined}
-            className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} rounded-xl transition-all group hover:bg-white hover:shadow-sm mb-2 text-slate-700 border border-transparent`}
+            className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} rounded-xl transition-all group border border-transparent ${activeNav === "workbench" ? "bg-white text-slate-900 shadow-sm" : "hover:bg-white hover:shadow-sm text-slate-700"} mb-2`}
           >
             <div className={`w-5 h-5 flex items-center justify-center bg-slate-800 text-white rounded-[6px] shrink-0 shadow-sm border border-slate-700 ${isSidebarCollapsed ? 'mx-auto' : ''}`}><Plus size={14} strokeWidth={3} /></div>
             {!isSidebarCollapsed && <span className="text-[13px] font-black">新建任务</span>}
@@ -868,7 +884,7 @@ export default function App() {
             {!isSidebarCollapsed && (
               <div className="px-2 text-[11px] font-bold text-slate-400 flex items-center justify-between mb-2 w-full">
                  <span>近期任务与项目</span>
-                 <button className="hover:text-slate-700" title="新建项目"><Plus size={12} strokeWidth={3} /></button>
+                 <button onClick={() => setIsCreateProjectModalOpen(true)} className="hover:text-slate-700" title="新建项目"><Plus size={12} strokeWidth={3} /></button>
               </div>
             )}
             
@@ -920,11 +936,11 @@ export default function App() {
           >
             <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-neutral-100">
               <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
-                <rect width="120" height="120" fill="#E45826" />
+                <rect width="120" height="120" fill="#E63560" />
                 <path d="M26 26H50V50H26V26Z" fill="white" />
                 <path d="M52 26H94V50H52V26Z" fill="white" />
                 <path d="M52 52H76V76H52V52Z" fill="white" />
-                <path d="M78 62H102V86H78V62Z" fill="#FCD8B0" />
+                <path d="M78 62H102V86H78V62Z" fill="#FFC2D4" />
                 <path d="M38 80H62V104H38V80Z" fill="white" />
               </svg>
             </div>
@@ -993,7 +1009,7 @@ export default function App() {
 
                   <div className="px-4 pb-3">
                     <div className="rounded-xl border border-neutral-200 overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-                      <div className="bg-[#E45826] text-white px-3 py-2 flex items-center gap-2">
+                      <div className="bg-primary-500 text-white px-3 py-2 flex items-center gap-2">
                         <div className="w-4 h-4 flex items-center justify-center shrink-0">
                           <svg
                             viewBox="0 0 120 120"
@@ -1003,7 +1019,7 @@ export default function App() {
                             <path d="M26 26H50V50H26V26Z" fill="white" />
                             <path d="M52 26H94V50H52V26Z" fill="white" />
                             <path d="M52 52H76V76H52V52Z" fill="white" />
-                            <path d="M78 62H102V86H78V62Z" fill="#FCD8B0" />
+                            <path d="M78 62H102V86H78V62Z" fill="#FFC2D4" />
                             <path d="M38 80H62V104H38V80Z" fill="white" />
                           </svg>
                         </div>
@@ -1050,7 +1066,13 @@ export default function App() {
                         <ChevronRight size={14} className="text-neutral-400" />
                       </div>
                     </button>
-                    <button className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 group transition-colors">
+                    <button 
+                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 group transition-colors"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setIsGrowthPlanModalOpen(true);
+                      }}
+                    >
                       <div className="flex items-center gap-3 text-[13px] font-bold">
                         <CheckCircle2
                           size={16}
@@ -1060,7 +1082,6 @@ export default function App() {
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="text-[12px] font-bold text-neutral-500">
-                          领取Buddy赚积分
                         </span>
                         <ChevronRight size={14} className="text-neutral-400" />
                       </div>
@@ -1194,10 +1215,10 @@ export default function App() {
                        </div>
                        <h3 className="text-xl font-black text-neutral-900 mb-2">项目中心暂未解锁</h3>
                        <p className="text-neutral-500 text-sm font-bold max-w-sm leading-relaxed mb-6">
-                         该品牌还在冷启动配置阶段。请先前往工作台，与 AI 完成基于对话的「品牌画像基座建设」，以解锁后续的运营流水线。
+                         该商家还在冷启动配置阶段。请先前往工作台，与 AI 完成基于对话的「商家画像基座建设」，以解锁后续的运营流水线。
                        </p>
                        <button onClick={() => setActiveNav('workbench')} className="px-8 py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-black hover:bg-primary-500 shadow-xl shadow-neutral-200 transition-all active:scale-95">
-                          去完善品牌基座
+                          去完善商家基座
                        </button>
                     </div>
                 ) : (
@@ -1323,6 +1344,7 @@ export default function App() {
                 <div className="px-4 space-y-1 mt-4">
                   {[
                     { id: "account", name: "账户管理", icon: User },
+                    { id: "merchants", name: "商家管理", icon: Store },
                     { id: "system", name: "系统设置", icon: Settings },
                     { id: "agents", name: "智能体设置", icon: Bot },
                     { id: "memory", name: "记忆", icon: Brain },
@@ -1331,7 +1353,6 @@ export default function App() {
                     { id: "personalization", name: "个性化", icon: Palette },
                     { id: "data", name: "数据管理", icon: Database },
                     { id: "security", name: "安全中心", icon: ShieldCheck },
-                    { id: "help", name: "帮助与反馈", icon: HelpCircle },
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -1356,6 +1377,7 @@ export default function App() {
                 <h2 className="text-[20px] font-black text-neutral-900 mb-8">
                   {[
                     "account",
+                    "merchants",
                     "system",
                     "agents",
                     "memory",
@@ -1364,10 +1386,10 @@ export default function App() {
                     "personalization",
                     "data",
                     "security",
-                    "help",
                   ].includes(activeSettingsTab)
                     ? [
                         "账户管理",
+                        "商家管理",
                         "系统设置",
                         "智能体设置",
                         "记忆",
@@ -1376,10 +1398,10 @@ export default function App() {
                         "个性化",
                         "数据管理",
                         "安全中心",
-                        "帮助与反馈",
                       ][
                         [
                           "account",
+                          "merchants",
                           "system",
                           "agents",
                           "memory",
@@ -1388,11 +1410,41 @@ export default function App() {
                           "personalization",
                           "data",
                           "security",
-                          "help",
                         ].indexOf(activeSettingsTab)
                       ]
                     : "设置"}
                 </h2>
+
+                {activeSettingsTab === "merchants" && (
+                  <div className="h-full">
+                     <p className="text-[13px] text-neutral-500 mb-6 -mt-6">作为服务商，管理下属所有商家账号及其系统权限</p>
+                     <MerchantManagement />
+                  </div>
+                )}
+
+                {activeSettingsTab === "account" && (
+                  <div className="h-full">
+                     <AccountSettings />
+                  </div>
+                )}
+
+                {activeSettingsTab === "memory" && (
+                  <div className="h-full">
+                     <MemorySettings />
+                  </div>
+                )}
+
+                {activeSettingsTab === "personalization" && (
+                  <div className="h-full">
+                     <PersonalizationSettings />
+                  </div>
+                )}
+
+                {activeSettingsTab === "security" && (
+                  <div className="h-full">
+                     <SecuritySettings />
+                  </div>
+                )}
 
                 {activeSettingsTab === "system" && (
                   <div className="space-y-6 max-w-2xl">
@@ -1466,10 +1518,10 @@ export default function App() {
                         </h4>
                         <p className="text-[12px] text-neutral-500 mt-1">
                           开启后将自动更新已安装的技能为最新版本，不会更新你在
-                          WorkBuddy 中编辑过的技能。
+                          TapTik 中编辑过的技能。
                         </p>
                       </div>
-                      <div className="w-10 h-6 bg-[#1dd28b] rounded-full cursor-pointer relative transition-colors shadow-inner">
+                      <div className="w-10 h-6 bg-primary-500 rounded-full cursor-pointer relative transition-colors shadow-inner">
                         <div className="absolute left-5 top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform" />
                       </div>
                     </div>
@@ -1483,7 +1535,7 @@ export default function App() {
                           上传技能后仍会显示安全检测过程；检测结果为非高风险时自动继续安装，高风险始终需要手动确认。
                         </p>
                       </div>
-                      <div className="w-10 h-6 bg-[#1dd28b] rounded-full cursor-pointer relative transition-colors shadow-inner">
+                      <div className="w-10 h-6 bg-primary-500 rounded-full cursor-pointer relative transition-colors shadow-inner">
                         <div className="absolute left-5 top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform" />
                       </div>
                     </div>
@@ -1514,6 +1566,11 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+
+      <GrowthPlanModal 
+        isOpen={isGrowthPlanModalOpen} 
+        onClose={() => setIsGrowthPlanModalOpen(false)} 
+      />
     </div>
   );
 }

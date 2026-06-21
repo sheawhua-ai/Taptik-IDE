@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Plus, Building2, BarChart2, CheckCircle2, ChevronRight, X, AlertCircle } from 'lucide-react';
+import { CreateMerchantModal } from './merchant/CreateMerchantModal';
 
 interface ProjectSwitcherModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface ProjectSwitcherModalProps {
 export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOpen, onClose, projects, activeProjectId, onSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -27,21 +29,22 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
   });
 
   return (
-    <AnimatePresence>
-      <motion.div 
-         initial={{ opacity: 0 }}
-         animate={{ opacity: 1 }}
-         exit={{ opacity: 0 }}
-         className="fixed inset-0 z-[1000] bg-neutral-900/40 backdrop-blur-sm flex items-start justify-center pt-[10vh]"
-         onClick={onClose}
-      >
-         <motion.div
-           initial={{ opacity: 0, y: 10, scale: 0.98 }}
-           animate={{ opacity: 1, y: 0, scale: 1 }}
-           exit={{ opacity: 0, y: 10, scale: 0.98 }}
-           onClick={(e) => e.stopPropagation()}
-           className="w-full max-w-4xl bg-white rounded-[24px] shadow-[0_24px_80px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
+    <>
+      <AnimatePresence>
+        <motion.div 
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           exit={{ opacity: 0 }}
+           className="fixed inset-0 z-[1000] bg-neutral-900/40 backdrop-blur-sm flex items-start justify-center pt-[10vh]"
+           onClick={onClose}
         >
+           <motion.div
+             initial={{ opacity: 0, y: 10, scale: 0.98 }}
+             animate={{ opacity: 1, y: 0, scale: 1 }}
+             exit={{ opacity: 0, y: 10, scale: 0.98 }}
+             onClick={(e) => e.stopPropagation()}
+             className="w-full max-w-4xl bg-white rounded-[24px] shadow-[0_24px_80px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
+          >
            {/* Header Area */}
            <div className="px-8 pt-6 pb-5 border-b border-neutral-100 flex flex-col space-y-5 bg-neutral-50/30">
               <div className="flex items-center justify-between pointer-events-none">
@@ -50,15 +53,18 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
                        <Building2 size={16} />
                     </div>
                     <div>
-                       <h2 className="text-[18px] font-black text-neutral-900 tracking-tight">切换品牌工作空间</h2>
+                       <h2 className="text-[18px] font-black text-neutral-900 tracking-tight">切换商家</h2>
                        <p className="text-[11px] font-bold text-neutral-500">按 Cmd+K 快速唤起</p>
                     </div>
                  </div>
                  
                  <div className="flex items-center gap-3 pointer-events-auto">
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white rounded-[10px] text-[12px] font-black hover:bg-primary-500 transition-colors shadow-sm active:scale-95">
+                    <button 
+                       onClick={() => setIsCreateModalOpen(true)}
+                       className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white rounded-[10px] text-[12px] font-black hover:bg-primary-500 transition-colors shadow-sm active:scale-95"
+                    >
                        <Plus size={14} />
-                       接入品牌
+                       新增商家
                     </button>
                     <button onClick={onClose} className="w-8 h-8 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-[10px] flex items-center justify-center transition-colors">
                        <X size={16} />
@@ -71,7 +77,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
                     <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-primary-500 transition-colors" />
                     <input 
                        type="text"
-                       placeholder="搜索品牌名称或标签..."
+                       placeholder="搜索商家名称或标签..."
                        value={searchQuery}
                        onChange={(e) => setSearchQuery(e.target.value)}
                        className="w-full h-10 pl-10 pr-4 bg-white border border-neutral-200 focus:border-primary-500 outline-none rounded-xl text-[13px] font-bold placeholder:font-normal transition-all shadow-sm"
@@ -90,7 +96,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
            <div className="flex-1 min-h-[300px] max-h-[60vh] overflow-y-auto custom-scrollbar bg-white">
               <div className="flex flex-col">
                  <div className="grid grid-cols-12 gap-4 px-8 py-3 text-[11px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 bg-white sticky top-0 z-10 w-full">
-                    <div className="col-span-4 lg:col-span-5">品牌名称</div>
+                    <div className="col-span-4 lg:col-span-5">商家名称</div>
                     <div className="col-span-4 lg:col-span-3">核心业务状态</div>
                     <div className="col-span-3 lg:col-span-3">冷启完善度</div>
                     <div className="col-span-1 text-right">操作</div>
@@ -181,7 +187,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
                  {filteredProjects.length === 0 && (
                     <div className="py-12 flex flex-col items-center justify-center text-neutral-400">
                        <Search size={32} className="mb-4 opacity-50" />
-                       <p className="text-[14px] font-bold">没有找到匹配的品牌项目</p>
+                       <p className="text-[14px] font-bold">没有找到匹配的商家项目</p>
                     </div>
                  )}
               </div>
@@ -189,5 +195,10 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
         </motion.div>
       </motion.div>
     </AnimatePresence>
+    <CreateMerchantModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onSuccess={() => {
+       setIsCreateModalOpen(false);
+       onClose();
+    }} />
+    </>
   );
 };
