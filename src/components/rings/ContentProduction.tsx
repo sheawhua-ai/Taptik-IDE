@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Users, CheckCircle2, ArrowRight, ScanLine, AlertCircle, 
-  Send, User, Link, MessageSquare, LayoutGrid
+  Send, User, Link, MessageSquare, LayoutGrid, Share2, Bot
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -26,7 +26,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
       <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
          <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-neutral-900 text-white rounded-2xl flex items-center justify-center shadow-lg">
-               <ShareIcon size={24} />
+               <Share2 size={24} />
             </div>
             <div>
                <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">账号与分发</h2>
@@ -56,7 +56,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {MOCK_OWNED_ACCOUNTS.map(account => (
-                  <div key={account.id} className="p-5 bg-white border border-neutral-100 rounded-[24px] flex flex-col hover:border-primary-500/30 hover:shadow-xl transition-all group">
+                  <div key={account.id} onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-expert', { detail: { expert: '排期专家', context: `诊断当前账号分发健康度：${account.name}` }})) }} className="p-5 bg-white border border-neutral-100 rounded-[24px] flex flex-col hover:border-primary-500/30 hover:shadow-xl transition-all cursor-pointer group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                           <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black ${account.health === 'good' ? 'bg-primary-50 text-primary-500' : account.health === 'warning' ? 'bg-amber-50 text-amber-500' : 'bg-rose-50 text-rose-500'}`}>

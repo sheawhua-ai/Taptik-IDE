@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Workflow, ShieldCheck, Activity, ArrowRight, Brain, 
   Search, Layers, Share2, CheckCircle2, Clock, Zap, Play, Pause, X,
-  LayoutGrid, List, AlertCircle, RefreshCcw, Eye, Check, MinusCircle
+  LayoutGrid, List, AlertCircle, RefreshCcw, Eye, Check, MinusCircle, Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -93,7 +93,7 @@ export const ExecutionCenter: React.FC = () => {
                 {!isCompactView ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {PLANS.map((plan, i) => (
-                            <div key={i} onClick={() => setActivePlan(i)} className={`p-8 bg-white rounded-[40px] border transition-all cursor-pointer group relative overflow-hidden ${activePlan === i ? 'border-primary-500 shadow-2xl scale-[1.02]' : 'border-neutral-100 hover:border-neutral-200 shadow-sm'} ${plan.errorState ? 'border-red-200 bg-red-50/10' : ''} ${plan.hitlState ? 'border-orange-200 bg-orange-50/10' : ''}`}>
+                            <div key={i} onClick={() => { setActivePlan(i); window.dispatchEvent(new CustomEvent('open-expert', { detail: { expert: '编排专家', context: `帮我看看这个流水线任务：${plan.title}` }})) }} className={`p-8 bg-white rounded-[40px] border transition-all cursor-pointer group relative overflow-hidden ${activePlan === i ? 'border-primary-500 shadow-2xl scale-[1.02]' : 'border-neutral-100 hover:border-neutral-200 shadow-sm'} ${plan.errorState ? 'border-red-200 bg-red-50/10' : ''} ${plan.hitlState ? 'border-orange-200 bg-orange-50/10' : ''}`}>
                                 {plan.errorState && (
                                     <div className="absolute top-0 right-0 px-6 py-2 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-bl-3xl z-10 flex items-center gap-2 shadow-lg">
                                         <AlertCircle size={14} /> {plan.errorState}

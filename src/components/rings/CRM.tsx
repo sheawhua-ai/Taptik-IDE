@@ -3,7 +3,7 @@ import {
   Users, UserPlus, Phone, Search, Filter, 
   ChevronRight, MoreVertical, Star, Calendar,
   ArrowUpRight, Target, LayoutGrid, CheckCircle2,
-  Clock, AlertCircle, FileText, Ban, MessageSquare
+  Clock, AlertCircle, FileText, Ban, MessageSquare, Bot
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -94,7 +94,7 @@ export const CRM: React.FC = () => {
 
                <div className="flex-1 p-6 grid grid-cols-1 gap-4">
                   {LEADS.filter(l => l.status === pipelineTab || pipelineTab === 'new').map(lead => (
-                    <div key={lead.id} className="group bg-white p-6 rounded-[32px] border border-neutral-100 hover:border-primary-500 hover:shadow-2xl hover:shadow-neutral-200/50 transition-all flex items-center gap-8">
+                    <div key={lead.id} onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-expert', { detail: { expert: '客资专家', context: `分析一下这个潜客意向和沟通策略：${lead.name}，对${lead.product}感兴趣` }})) }} className="group bg-white cursor-pointer p-6 rounded-[32px] border border-neutral-100 hover:border-primary-500 hover:shadow-2xl hover:shadow-neutral-200/50 transition-all flex items-center gap-8">
                        <div className="w-14 h-14 bg-neutral-100 rounded-2xl flex items-center justify-center font-black text-neutral-500 text-xl shrink-0 group-hover:bg-primary-50 group-hover:text-primary-500 transition-colors">
                           {lead.name[0]}
                        </div>

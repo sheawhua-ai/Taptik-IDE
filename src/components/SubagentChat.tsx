@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Send, Bot, User, Sparkles, Zap, MessageSquare, 
-  Terminal, History, Settings, MoreVertical, Check, Cpu, X
+  Terminal, History, Settings, MoreVertical, Check, Cpu, X, FileText, Trash2,
+  Compass, PenTool, Calendar, Users, BarChart, Workflow
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -13,6 +14,7 @@ interface Message {
   type?: 'text' | 'plan' | 'report';
   status?: 'pending' | 'running' | 'completed' | 'error';
   subtasks?: { id: string; name: string; status: 'pending' | 'running' | 'completed'; agent: string }[];
+  contextPill?: { type: string; text: string };
 }
 
 interface SubagentChatProps {
@@ -25,9 +27,22 @@ interface SubagentChatProps {
 export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName, onNavigate, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const [contextPill, setContextPill] = useState<{ type: string; text: string } | null>(null);
+  const [currentExpert, setCurrentExpert] = useState<string>(moduleName + ' 助手');
   const [isTyping, setIsTyping] = useState(false);
   const [showCommandMenu, setShowCommandMenu] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const getExpertIcon = (name: string) => {
+    if (name.includes('策略')) return <Compass size={16} />;
+    if (name.includes('内容')) return <PenTool size={16} />;
+    if (name.includes('排期')) return <Calendar size={16} />;
+    if (name.includes('客资')) return <Users size={16} />;
+    if (name.includes('数据')) return <BarChart size={16} />;
+    if (name.includes('编排')) return <Workflow size={16} />;
+    return <Bot size={16} />;
+  };
 
   const COMMANDS = [
     { cmd: '/催办进度', desc: '检查哪些 KOS 员工未完成本周期发文任务', module: 'matrix' },
@@ -40,6 +55,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
   ];
 
   useEffect(() => {
+    setCurrentExpert(moduleName + ' 助手');
     // Initial greeting based on module - only reset if moduleId changes
     const greetings: Record<string, string> = {
       'strategy': `您好！我是全域巡航数字员工。我正在为您监测「${moduleName}」相关的行业蓝海机会。您可以问我关于市场趋势或竞品策略的问题。`,
@@ -58,6 +74,19 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
         timestamp: new Date()
       }
     ]);
+
+    const handleOpenExpert = (e: any) => {
+      const { expert, context } = e.detail || {};
+      if (expert) {
+         setCurrentExpert(expert);
+      }
+      if (context) {
+         setContextPill({ type: expert || '参考内容', text: context });
+         setInputValue((prev) => prev || `请分析这个`);
+      }
+    };
+    window.addEventListener('open-expert', handleOpenExpert);
+    return () => window.removeEventListener('open-expert', handleOpenExpert);
   }, [moduleId]); // Only reset when changing modules, not when moduleName (object lookup result) might be unstable
 
   useEffect(() => {
@@ -67,7 +96,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
   }, [messages, isTyping]);
 
   const handleSend = () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && !contextPill) return;
 
     if (inputValue.startsWith('/')) {
         // Handle command locally or send as command
@@ -77,11 +106,13 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
       id: Date.now().toString(),
       role: 'user',
       content: inputValue,
-      timestamp: new Date()
+      timestamp: new Date(),
+      contextPill
     };
 
     setMessages(prev => [...prev, userMsg]);
     setInputValue('');
+    setContextPill(null);
     setIsTyping(true);
 
     // Simulate agent response
@@ -147,10 +178,10 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
           <p className="text-[13px] font-bold text-neutral-600 mb-4">{msg.content}</p>
           <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-100 space-y-3">
             <div className="flex items-center justify-between mb-2">
-               <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest px-2 py-0.5 bg-neutral-100 rounded">Orchestration Plan v1.0</span>
+               <span className="text-[10px] font-black text-neutral-400 px-2 py-0.5 bg-neutral-100 rounded">编排计划 v1.0</span>
                <div className="flex items-center gap-1">
                   <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-ping" />
-                  <span className="text-[9px] font-black text-primary-500 uppercase tracking-tighter">Running</span>
+                  <span className="text-[10px] font-black text-primary-500">执行中</span>
                </div>
             </div>
             {msg.subtasks?.map((sub, idx) => (
@@ -192,32 +223,50 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
   return (
     <div className="flex flex-col h-full bg-white w-full overflow-hidden relative">
       {/* Header */}
-      <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-5 bg-white shrink-0 z-10 shadow-sm">
+      <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-5 bg-white shrink-0 z-10 shadow-sm relative">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-neutral-900 rounded-lg flex items-center justify-center text-white shadow-sm ring-1 ring-neutral-800">
-            <Cpu size={16} />
+            {getExpertIcon(currentExpert)}
           </div>
           <div>
-            <h3 className="text-[14px] font-black text-neutral-900 leading-none">{moduleName} 助手</h3>
+            <h3 className="text-[14px] font-black text-neutral-900 leading-none">{currentExpert}</h3>
             <div className="flex items-center gap-1.5 mt-1.2">
                <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-               <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Agent Logic Active</p>
+               <p className="text-[10px] font-black text-neutral-500">在线监控中</p>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-           <button className="p-1 px-2 text-[10px] font-black text-neutral-400 bg-neutral-50 rounded-md border border-neutral-100 uppercase tracking-tighter">Clear Memory</button>
            {onClose && (
              <button 
                onClick={onClose}
                className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-all"
+               title="收起助手"
              >
                <X size={18} />
              </button>
            )}
-           <button className="text-neutral-400 hover:text-neutral-900 transition-colors">
-              <MoreVertical size={18} />
-           </button>
+           <div className="relative">
+             <button 
+               onClick={() => setShowOptions(!showOptions)}
+               className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+             >
+                <MoreVertical size={18} />
+             </button>
+             {showOptions && (
+                 <>
+                   <div className="fixed inset-0 z-40" onClick={() => setShowOptions(false)} />
+                   <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-neutral-100 rounded-xl shadow-lg z-50 overflow-hidden py-1">
+                      <button 
+                        onClick={() => { setMessages([]); setShowOptions(false); }}
+                        className="w-full text-left px-3 py-2 text-[12px] font-black text-rose-500 hover:bg-rose-50 flex items-center gap-2 transition-colors"
+                      >
+                         <Trash2 size={14} /> 清除会话记录
+                      </button>
+                   </div>
+                 </>
+             )}
+           </div>
         </div>
       </div>
 
@@ -228,6 +277,14 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
       >
         {messages.map((msg) => (
           <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+             {msg.role === 'user' && msg.contextPill && (
+                <div className="flex items-center gap-1.5 px-3 py-2 bg-white text-blue-600 rounded-xl text-[12px] font-black shadow-sm mb-2 max-w-[90%] border border-blue-100">
+                   <FileText size={14} className="shrink-0" />
+                   <span className="shrink-0 text-blue-800">{msg.contextPill.type}</span>
+                   <span className="text-neutral-400 px-1">|</span>
+                   <span className="truncate text-neutral-600">{msg.contextPill.text}</span>
+                </div>
+             )}
             <div className={`max-w-[90%] p-4 rounded-2xl shadow-sm ${
               msg.role === 'user' 
                 ? 'bg-neutral-900 text-white rounded-tr-none' 
@@ -235,8 +292,8 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
             }`}>
               {renderMessageContent(msg)}
             </div>
-            <span className="text-[9px] font-black text-neutral-300 uppercase tracking-widest mt-1.5 px-1">
-              {msg.role === 'agent' ? 'Digital Employee' : 'Admin'} · {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            <span className="text-[10px] font-black text-neutral-400 mt-1.5 px-1">
+              {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>
         ))}
@@ -288,43 +345,43 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
           )}
         </AnimatePresence>
 
-        <div className="relative flex items-center">
-          <textarea 
-            rows={1}
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-              }
-              if (e.key === 'Escape') {
-                setShowCommandMenu(false);
-              }
-            }}
-            placeholder={`输入指令，或键入 "/" 唤出动作菜单...`}
-            className="w-full bg-neutral-50 border border-neutral-200 rounded-2xl py-3 pl-4 pr-12 text-[13px] font-bold outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all resize-none overflow-hidden placeholder:text-neutral-300"
-          />
-          <button 
-            onClick={handleSend}
-            disabled={!inputValue.trim()}
-            className="absolute right-2 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-primary-500 transition-all shadow-lg active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
-          >
-            <Send size={16} />
-          </button>
-        </div>
-        <div className="mt-3 flex items-center justify-between px-1">
-            <div className="flex gap-2">
-                <button className="flex items-center gap-1.5 text-[10px] font-black text-neutral-400 hover:text-neutral-900 transition-colors uppercase tracking-widest bg-neutral-100/50 px-2 py-1 rounded">
-                    <History size={11} /> 历史
+        <div className="relative bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 focus-within:border-primary-500/50 focus-within:ring-4 focus-within:ring-primary-500/5 transition-all">
+           {contextPill && (
+             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-blue-600 rounded-xl text-[12px] font-black shadow-sm mb-1 ml-1 mt-1 max-w-[90%] border border-blue-100 w-max">
+                <FileText size={14} className="shrink-0" />
+                <span className="shrink-0 text-blue-800">{contextPill.type}</span>
+                <span className="text-neutral-400 px-1">|</span>
+                <span className="truncate text-neutral-600 max-w-[200px]">{contextPill.text}</span>
+                <button onClick={() => setContextPill(null)} className="ml-2 text-neutral-400 hover:text-rose-500 transition-colors">
+                    <X size={12} />
                 </button>
-                <button className="flex items-center gap-1.5 text-[10px] font-black text-neutral-400 hover:text-neutral-900 transition-colors uppercase tracking-widest bg-neutral-100/50 px-2 py-1 rounded">
-                    <Terminal size={11} /> 脚本
-                </button>
-            </div>
-            <div className="flex items-center gap-2 text-[9px] font-black text-neutral-300 uppercase tracking-[0.2em]">
-                Auto-Scheduling Active
-            </div>
+             </div>
+           )}
+           <div className="flex items-end">
+              <textarea 
+                rows={1}
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                  if (e.key === 'Escape') {
+                    setShowCommandMenu(false);
+                  }
+                }}
+                placeholder={`输入指令，或键入 "/" 唤出动作菜单...`}
+                className="w-full bg-transparent py-2.5 pl-3 pr-2 text-[13px] font-bold outline-none resize-none overflow-hidden placeholder:text-neutral-300"
+              />
+              <button 
+                onClick={handleSend}
+                disabled={!inputValue.trim() && !contextPill}
+                className="shrink-0 mb-0.5 mr-0.5 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-primary-500 transition-all shadow-lg active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              >
+                <Send size={16} />
+              </button>
+           </div>
         </div>
       </div>
     </div>

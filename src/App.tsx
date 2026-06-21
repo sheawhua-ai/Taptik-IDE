@@ -127,6 +127,7 @@ import { SearchTasksModal } from "./components/SearchTasksModal";
 import { GrowthPlanModal } from "./components/GrowthPlanModal";
 import { SwitchAccountModal } from "./components/SwitchAccountModal";
 import { FinancePanelModal } from "./components/FinancePanelModal";
+import { Logo } from "./components/Logo";
 
 // 6 Rings Components
 import { Strategy } from "./components/rings/Strategy";
@@ -801,12 +802,16 @@ export default function App() {
       <div className={`${isSidebarCollapsed ? "w-[68px]" : "w-[240px]"} transition-all duration-300 bg-[#f7f8fa] border-r border-[#e9eaec] flex flex-col shrink-0 h-full relative z-20 overflow-hidden`}>
         <div className={`h-14 flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-4"} font-black tracking-tight text-neutral-900 border-b border-transparent shrink-0`}>
           {!isSidebarCollapsed && (
-            <div className="flex items-baseline gap-2">
-              <h1 className="text-[15px] font-black tracking-tight text-slate-700 uppercase">
+            <div className="flex items-center gap-2">
+              <Logo className="w-6 h-6 shadow-sm rounded-[6px]" />
+              <h1 className="text-[17px] font-black tracking-tight text-slate-800 uppercase mt-0.5">
                 TapTik
               </h1>
-              <span className="text-[11px] font-bold text-slate-400 font-mono tracking-tight">v1.5.7</span>
+              <span className="text-[11px] font-bold text-slate-400 font-mono tracking-tight mt-1 ml-0.5">v1.5.7</span>
             </div>
+          )}
+          {isSidebarCollapsed && (
+             <Logo className="w-7 h-7 shadow-sm rounded-[6px] mx-auto mt-2" />
           )}
           <div className={`flex items-center text-slate-400 ${isSidebarCollapsed ? "flex-col gap-2 mt-2" : "gap-1.5"}`}>
              <button 
@@ -984,14 +989,7 @@ export default function App() {
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
           >
             <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-neutral-100">
-              <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
-                <rect width="120" height="120" fill="#E63560" />
-                <path d="M26 26H50V50H26V26Z" fill="white" />
-                <path d="M52 26H94V50H52V26Z" fill="white" />
-                <path d="M52 52H76V76H52V52Z" fill="white" />
-                <path d="M78 62H102V86H78V62Z" fill="#FFC2D4" />
-                <path d="M38 80H62V104H38V80Z" fill="white" />
-              </svg>
+              <Logo className="w-full h-full" />
             </div>
             {!isSidebarCollapsed && (
               <>
@@ -1060,17 +1058,7 @@ export default function App() {
                     <div className="rounded-xl border border-neutral-200 overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
                       <div className="bg-primary-500 text-white px-3 py-2 flex items-center gap-2">
                         <div className="w-4 h-4 flex items-center justify-center shrink-0">
-                          <svg
-                            viewBox="0 0 120 120"
-                            fill="none"
-                            className="w-full h-full"
-                          >
-                            <path d="M26 26H50V50H26V26Z" fill="white" />
-                            <path d="M52 26H94V50H52V26Z" fill="white" />
-                            <path d="M52 52H76V76H52V52Z" fill="white" />
-                            <path d="M78 62H102V86H78V62Z" fill="#FFC2D4" />
-                            <path d="M38 80H62V104H38V80Z" fill="white" />
-                          </svg>
+                          <Logo className="w-full h-full rounded-sm" />
                         </div>
                         <span className="text-[12px] font-black tracking-tight">
                           Taptik 探索站
