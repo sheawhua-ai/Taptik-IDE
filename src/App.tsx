@@ -102,11 +102,7 @@ import {
   Gift,
   UserCircle,
   CheckCircle2,
-  PanelLeftClose,
   PanelLeftOpen,
-  Plus,
-  FolderOpen,
-  Folder,
   Store,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -116,7 +112,6 @@ import { DataCenter } from "./components/DataCenter";
 import { FileManager } from "./components/FileManager";
 import { Billing } from "./components/Billing";
 import { ServiceManagement } from "./components/ServiceManagement";
-import { MerchantManagement } from "./components/settings/MerchantManagement";
 import { Workbench } from "./components/Workbench";
 import { AccountSettings } from "./components/settings/AccountSettings";
 import { MemorySettings } from "./components/settings/MemorySettings";
@@ -128,7 +123,10 @@ import { SchemeManager } from "./components/merchant/SchemeManager";
 import { StaffManager } from "./components/merchant/StaffManager";
 import { AccountDetails } from "./components/merchant/AccountDetails";
 import { MerchantManagement } from "./components/settings/MerchantManagement";
+import { SearchTasksModal } from "./components/SearchTasksModal";
 import { GrowthPlanModal } from "./components/GrowthPlanModal";
+import { SwitchAccountModal } from "./components/SwitchAccountModal";
+import { FinancePanelModal } from "./components/FinancePanelModal";
 
 // 6 Rings Components
 import { Strategy } from "./components/rings/Strategy";
@@ -480,6 +478,14 @@ export default function App() {
   const [isSettingsPopupOpen, setIsSettingsPopupOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSearchTasksModalOpen, setIsSearchTasksModalOpen] = useState(false);
+  const [isTasksFilterDropdownOpen, setIsTasksFilterDropdownOpen] = useState(false);
+  const [activeTaskFilterStatus, setActiveTaskFilterStatus] = useState("待处理");
+  const [activeTaskFilterTime, setActiveTaskFilterTime] = useState("全部时间");
+
+  const [userRole, setUserRole] = useState<"merchant" | "provider" | "creator">("merchant");
+  const [isFinanceModalOpen, setIsFinanceModalOpen] = useState(false);
+  const [isSwitchAccountModalOpen, setIsSwitchAccountModalOpen] = useState(false);
 
   const insertMention = (name: string, type: "@" | "/") => {
     let newVal;
@@ -812,8 +818,51 @@ export default function App() {
              </button>
              {!isSidebarCollapsed && (
                <>
-                 <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all" title="搜索 (Cmd+K)"><Search size={16} /></button>
-                 <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all" title="过滤器"><Filter size={16} /></button>
+                 <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all" title="搜索 (Cmd+K)" onClick={() => setIsSearchTasksModalOpen(true)}><Search size={16} /></button>
+                 <div className="relative">
+                   <button className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all" title="过滤器" onClick={() => setIsTasksFilterDropdownOpen(!isTasksFilterDropdownOpen)}><Filter size={16} /></button>
+                   {isTasksFilterDropdownOpen && (
+                     <>
+                       <div className="fixed inset-0 z-[100]" onClick={() => setIsTasksFilterDropdownOpen(false)} />
+                       <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-neutral-100 z-[101] py-2">
+                         <div className="px-3 py-1.5 text-[12px] text-slate-400 font-bold">筛选状态</div>
+                         {['全部状态', '进行中', '已完成', '失败', '待处理', '规划中'].map((status) => (
+                           <button 
+                             key={status}
+                             onClick={() => { setActiveTaskFilterStatus(status); setIsTasksFilterDropdownOpen(false); }}
+                             className={`w-full text-left px-4 py-2 text-[14px] flex items-center justify-between hover:bg-slate-50 transition-colors ${activeTaskFilterStatus === status ? 'text-primary-500 font-bold bg-primary-50/50' : 'text-slate-700'}`}
+                           >
+                             {status}
+                             {activeTaskFilterStatus === status && <Check size={14} />}
+                           </button>
+                         ))}
+                         <div className="w-full h-px bg-slate-100 my-2" />
+                         <div className="px-3 py-1.5 text-[12px] text-slate-400 font-bold">筛选时间</div>
+                         {['全部时间', '今天', '最近 7 天', '最近 30 天'].map((time) => (
+                           <button 
+                             key={time}
+                             onClick={() => { setActiveTaskFilterTime(time); setIsTasksFilterDropdownOpen(false); }}
+                             className={`w-full text-left px-4 py-2 text-[14px] flex items-center justify-between hover:bg-slate-50 transition-colors ${activeTaskFilterTime === time ? 'text-primary-500 font-bold bg-primary-50/50' : 'text-slate-700'}`}
+                           >
+                             {time}
+                             {activeTaskFilterTime === time && <Check size={14} />}
+                           </button>
+                         ))}
+                         <div className="w-full h-px bg-slate-100 my-2" />
+                         <button 
+                           onClick={() => {
+                             setActiveTaskFilterStatus('全部状态');
+                             setActiveTaskFilterTime('全部时间');
+                             setIsTasksFilterDropdownOpen(false);
+                           }}
+                           className="w-full text-left px-4 py-2 text-[14px] text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+                         >
+                           重置筛选条件
+                         </button>
+                       </div>
+                     </>
+                   )}
+                 </div>
                </>
              )}
           </div>
@@ -1051,17 +1100,23 @@ export default function App() {
                   </div>
 
                   <div className="px-2 py-1 space-y-0.5">
-                    <button className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 group transition-colors">
+                    <button 
+                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 group transition-colors"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setIsFinanceModalOpen(true);
+                      }}
+                    >
                       <div className="flex items-center gap-3 text-[13px] font-bold">
                         <Sparkles
                           size={16}
                           className="text-neutral-500 group-hover:text-red-500"
                         />
-                        积分余额
+                        {userRole === 'merchant' ? '积分余额' : '收益中心'}
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="text-[12px] font-bold text-neutral-500">
-                          3,056.44
+                          {userRole === 'merchant' ? '3,056.44' : '¥ 12,500.00'}
                         </span>
                         <ChevronRight size={14} className="text-neutral-400" />
                       </div>
@@ -1134,9 +1189,15 @@ export default function App() {
                   <div className="h-[1px] bg-neutral-100 my-1 mx-4" />
 
                   <div className="px-2 py-1 flex-1">
-                    <button className="w-full flex items-center gap-3 px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 transition-colors text-[13px] font-bold">
+                    <button 
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 transition-colors text-[13px] font-bold"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setIsSwitchAccountModalOpen(true);
+                      }}
+                    >
                       <LogOut size={16} className="text-neutral-500" />
-                      退出登录
+                      切换账号
                     </button>
                   </div>
                 </motion.div>
@@ -1570,6 +1631,24 @@ export default function App() {
       <GrowthPlanModal 
         isOpen={isGrowthPlanModalOpen} 
         onClose={() => setIsGrowthPlanModalOpen(false)} 
+      />
+
+      <SearchTasksModal
+        isOpen={isSearchTasksModalOpen}
+        onClose={() => setIsSearchTasksModalOpen(false)}
+      />
+
+      <SwitchAccountModal
+        isOpen={isSwitchAccountModalOpen}
+        onClose={() => setIsSwitchAccountModalOpen(false)}
+        currentUserRole={userRole}
+        onSwitchRole={setUserRole}
+      />
+
+      <FinancePanelModal
+        isOpen={isFinanceModalOpen}
+        onClose={() => setIsFinanceModalOpen(false)}
+        userRole={userRole}
       />
     </div>
   );
