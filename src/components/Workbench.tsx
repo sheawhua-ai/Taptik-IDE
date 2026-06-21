@@ -439,43 +439,33 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
 
           <div className={`flex-1 overflow-y-auto p-10 pb-6 space-y-10 custom-scrollbar ${isDragging ? 'opacity-50' : ''}`}>
             
-            {/* New Merchant Config Dashboard */}
-            {isNewMerchant && messages.length <= 1 && (
-               <div className="max-w-4xl mx-auto flex flex-col pt-4 pb-8 space-y-6">
-                  <div className="flex items-start gap-4 mb-2">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                      <Target size={24} />
-                    </div>
-                    <div>
-                      <h2 className="text-[22px] font-black text-neutral-900 tracking-tight">新入驻冷启动配置</h2>
-                      <p className="text-[13px] text-neutral-500 font-bold max-w-xl leading-relaxed mt-1">
-                        系统检测到您是一个新入驻的品牌账号。在正式利用 AI 开启小红书的自动运营流水线前，请先补全品牌初始的知识库与基础策略模型。
-                      </p>
-                    </div>
+            {/* Clean Startup Screen (New Task / Empty State) */}
+            {messages.length <= 1 && (
+               <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center max-w-2xl mx-auto px-4 mt-8">
+                  <div className="w-16 h-16 bg-neutral-900 rounded-3xl flex items-center justify-center text-white shadow-2xl mb-8 relative">
+                     <Bot size={32} />
+                     <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border border-white" />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                     <button onClick={() => handleExecute('立即帮我针对竞品开始梳理卖点画像，准备建立出圈模型')} className="group p-5 bg-white border border-neutral-200/60 hover:border-indigo-400 rounded-3xl text-left transition-all shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl">
-                       <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                          <UserCircle size={20} />
-                       </div>
-                       <h3 className="text-[15px] font-black text-neutral-900 mb-1">1. 探索品牌画像</h3>
-                       <p className="text-[12px] text-neutral-500 font-bold">对焦目标受众，挖掘出圈卖点</p>
-                     </button>
-                     <button onClick={() => handleExecute('基于当前的行业趋势，为我的品牌规划一份第一季度的打法和关键话题结构')} className="group p-5 bg-white border border-neutral-200/60 hover:border-emerald-400 rounded-3xl text-left transition-all shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl">
-                       <div className="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                          <Compass size={20} />
-                       </div>
-                       <h3 className="text-[15px] font-black text-neutral-900 mb-1">2. 制定周期策略</h3>
-                       <p className="text-[12px] text-neutral-500 font-bold">生成话题树，制定起盘节奏</p>
-                     </button>
-                     <button onClick={() => handleExecute('开始初始化文件知识网和素材结构库')} className="group p-5 bg-white border border-neutral-200/60 hover:border-primary-400 rounded-3xl text-left transition-all shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl">
-                       <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                          <Database size={20} />
-                       </div>
-                       <h3 className="text-[15px] font-black text-neutral-900 mb-1">3. 初始化知识库</h3>
-                       <p className="text-[12px] text-neutral-500 font-bold">结构化文档沉淀，充盈底层库</p>
-                     </button>
-                  </div>
+                  <h2 className="text-[28px] font-black text-neutral-900 tracking-tight leading-snug mb-3">
+                     {isNewMerchant ? '欢迎入驻，开始构建您的专属品牌诊断' : '今天需要我帮您做些什么？'}
+                  </h2>
+                  <p className="text-[14px] text-neutral-500 font-bold leading-relaxed mb-10 max-w-lg">
+                    {isNewMerchant 
+                      ? '系统检测到您为新入驻账号，建议先由「策略专家」为您进行深度的品牌诊断与受众画像对焦，建立精准的内容基座。' 
+                      : '您可以直接下达任务指令，或唤起垂直方向的专业智能体为您处理数据、策略或内容。'}
+                  </p>
+                  
+                  {isNewMerchant && (
+                      <button 
+                         onClick={() => {
+                             setActiveAgentId('strategy');
+                             handleExecute('你好，我是新入驻的商家，请帮我对焦品牌受众和产品卖点，建立出圈模型。');
+                         }}
+                         className="px-8 py-3.5 bg-neutral-900 text-white rounded-2xl text-[14px] font-black hover:bg-primary-500 hover:shadow-xl hover:shadow-primary-500/20 transition-all flex items-center gap-2 active:scale-95"
+                      >
+                         <Target size={18} /> 开启品牌深度诊断
+                      </button>
+                  )}
                </div>
             )}
 
@@ -516,24 +506,26 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
             <div className="max-w-4xl mx-auto relative">
               
               {/* Top: Capsule Commands */}
-              <div className="flex items-center gap-2 mb-3 px-2 flex-wrap">
-                {CAPSULES.map((capsule, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => {
-                      setQuery(capsule.cmd);
-                    }}
-                    className="px-3 py-1.5 bg-white border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 hover:border-neutral-300 shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
-                  >
-                    <FileText size={14} className="text-neutral-400" />
-                    {capsule.label}
+              {messages.length > 1 && (
+                <div className="flex items-center gap-2 mb-3 px-2 flex-wrap">
+                  {CAPSULES.map((capsule, i) => (
+                    <button 
+                      key={i}
+                      onClick={() => {
+                        setQuery(capsule.cmd);
+                      }}
+                      className="px-3 py-1.5 bg-white border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 hover:border-neutral-300 shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
+                    >
+                      <FileText size={14} className="text-neutral-400" />
+                      {capsule.label}
+                    </button>
+                  ))}
+                  <button className="px-3 py-1.5 bg-white border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 hover:border-neutral-300 shadow-sm transition-all flex items-center gap-1.5">
+                    <LayoutGrid size={14} className="text-neutral-400" />
+                    更多
                   </button>
-                ))}
-                <button className="px-3 py-1.5 bg-white border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 hover:border-neutral-300 shadow-sm transition-all flex items-center gap-1.5">
-                  <LayoutGrid size={14} className="text-neutral-400" />
-                  更多
-                </button>
-              </div>
+                </div>
+              )}
 
               {/* The Input Container */}
               <div className="relative z-50">
@@ -628,37 +620,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({ setActiveNav, setDataSubNa
                 </div>
               </div>
 
-              {/* Bottom: Quick Tasks / Suggestions */}
-              {isNewMerchant && messages.length <= 1 && showQuickTasks && (
-                <div className="mt-5 relative z-10 border border-transparent xl:border-neutral-200/60 rounded-3xl xl:p-6 p-2 xl:bg-neutral-50/50">
-                   <div className="flex items-center justify-between xl:mb-4 mb-2 px-2 xl:px-0">
-                     <span className="text-[12px] font-black text-neutral-500 tracking-tight">为您推荐最佳实践案例 <ArrowUpRight size={12} className="inline ml-1" /></span>
-                     <button onClick={() => setShowQuickTasks(false)} className="text-neutral-400 hover:text-neutral-800 transition-colors bg-white xl:bg-transparent rounded-full shadow-sm xl:shadow-none p-1 xl:p-0"><X size={14} /></button>
-                   </div>
-                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                     {[
-                        { title: '账号冷启动分析', desc: '诊断当前账号状态，提供内容优化建议', icon: Target, cmd: '帮我诊断当前账号的冷启动状态', color: 'bg-emerald-50 text-emerald-500' },
-                        { title: '制定运营策略方案', desc: '与引擎共同探讨痛点，建立周期性目标', icon: MessageSquare, cmd: '我想探讨一下接下来的运营策略', color: 'bg-blue-50 text-blue-500' },
-                        { title: '深度案例对照研读', desc: '调取行业爆款，解析文案模版与流量密码', icon: Compass, cmd: '给我提供一些同行业最近的爆款案例', color: 'bg-purple-50 text-purple-500' }
-                     ].map((btn, i) => (
-                        <button 
-                           key={i}
-                           onClick={() => handleExecute(btn.cmd)}
-                           className="flex flex-col items-start p-5 bg-white border border-neutral-150 hover:border-primary-500 rounded-[20px] shadow-sm hover:shadow-md transition-all group text-left relative overflow-hidden h-32"
-                        >
-                           <div className={`w-10 h-10 rounded-xl ${btn.color} mb-3 flex items-center justify-center relative z-10`}>
-                              <btn.icon size={20} />
-                           </div>
-                           <h4 className="text-[14px] font-black text-neutral-900 mb-1 relative z-10">{btn.title}</h4>
-                           <p className="text-[11px] font-bold text-neutral-400 leading-relaxed max-w-[200px] relative z-10 truncate w-full">{btn.desc}</p>
-                           <div className="absolute right-0 bottom-0 opacity-5 pointer-events-none transform translate-x-4 translate-y-4">
-                              <btn.icon size={80} />
-                           </div>
-                        </button>
-                     ))}
-                   </div>
-                </div>
-              )}
+
               
             </div>
           </div>
