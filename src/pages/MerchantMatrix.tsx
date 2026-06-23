@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { 
  PlusCircle, Target, ArrowUpRight, CheckCircle2, Activity, Send, 
  Package, X, Calendar, ArrowRight, PenTool, Play, Camera, CalendarClock,
- Image as ImageIcon, RefreshCw, Sparkles, CheckSquare, Settings, ChevronLeft,
+ Image as ImageIcon, Layers, RefreshCw, Sparkles, CheckSquare, Settings, ChevronLeft,
  Users, MoreVertical, CalendarDays, Trash2, AlertTriangle, AlertCircle,
- Plus, Hash, Bot, MessageSquare
+ Plus, Hash, Bot, MessageSquare, QrCode, Copy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SubagentChat } from '../components/SubagentChat';
@@ -46,10 +46,40 @@ export default function MerchantMatrix() {
       }
     }));
   };
- const [tasks, setTasks] = useState([
- { id: 1, name: '周末都市通勤穿搭实拍', count: 15, current: 8, assignee: '豆豆 (KOC)', status: '执行中', require: '阳光充足，体现透气材质，带产品特写，需与文案风格契合。' },
- { id: 2, name: '室内棚拍静物摆拍', count: 30, current: 0, assignee: '内部视觉组', status: '待承接', require: '纯净背景，突出产品包材质感，需要高分辨率原图。' }
- ]);
+ const [showQrModal, setShowQrModal] = useState<number | null>(null);
+  const [showAssignModal, setShowAssignModal] = useState<number | null>(null);
+  const [showNotesModal, setShowNotesModal] = useState<number | null>(null);
+  const [showProgressHover, setShowProgressHover] = useState<number | null>(null);
+  const [showAuditModal, setShowAuditModal] = useState<number | null>(null);
+  const [auditSubmitting, setAuditSubmitting] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showAssetLibrary, setShowAssetLibrary] = useState(false);
+  
+  const handleReplaceFromLibrary = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowAssetLibrary(true);
+  };
+  const handleRequestReshoot = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setToastMessage("已生成重拍需求，并发送至【拍摄任务管理】");
+    setTimeout(() => setToastMessage(""), 2500);
+  };
+  const handleDeleteImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setToastMessage("图片已删除，并在品牌素材库中重新标记为“可用”状态");
+    setTimeout(() => setToastMessage(""), 2500);
+  };
+  
+  const INTERNAL_TASKS = [
+  { id: 1, name: '外景通勤透气感穿搭实拍', mergedFrom: 5, count: 15, current: 8, assignee: '豆豆 (新媒体部)', status: '执行中', require: '基于5篇“防晒测评合集”自动提炼。需要阳光充足，体现透气材质，带产品特写。' },
+  { id: 2, name: '室内摄影棚平铺静物', mergedFrom: 3, count: 12, current: 0, assignee: '未分配', status: '待分配', require: '基于3篇“单品深度解析”提炼。要求室温柔光背景，高级光影，突出产品质感，3:4构图。' }
+];
+
+const EXTERNAL_TASKS = [
+  { id: 3, name: '夏季通勤防晒实测第1篇', noteTarget: '防晒测评第1篇：户外暴晒', count: 4, current: 4, assignee: '素人@小甜甜', status: 'AI审核通过待发布', require: '需包含真实上脸涂抹图及对应评测配文。合格后AI自动推流发布。' },
+  { id: 4, name: '夏季通勤防晒实测第2篇', noteTarget: '防晒单品：带妆不补涂', count: 3, current: 0, assignee: '未分配', status: '待领取', require: '需包含带妆出镜图，体现产品服帖度。' }
+];
+
  const [hashtags, setHashtags] = useState(["防晒推荐", "夏日穿搭"]);
  const [suggestedTags] = useState(["好物分享", "测评", "防晒霜", "通勤必备"]);
  
@@ -109,49 +139,41 @@ export default function MerchantMatrix() {
  }, []);
 
  const MOCK_PROJECTS = [
- { 
- id: 'p1', 
- name: '蕉下 - 夏日防晒种草季', 
- status: '任务进行中',
- progress: 65,
- targetCount: 100,
- recoveredMaterial: 55,
- generatedNotes: 45,
- publishedNotes: 12,
- },
- { 
- id: 'p2', 
- name: '花西子 - 七夕礼盒首发', 
- status: '已完成',
- progress: 100,
- targetCount: 120,
- recoveredMaterial: 120,
- generatedNotes: 120,
- publishedNotes: 120,
- }
- ];
-
- const pendingBatches: BatchProject[] = [
- { id: 'B1', project: '阶段一：冷启动', target: '跑通账号防晒标签，提升基础社区收录率', totalCount: 25, completedCount: 0 },
- { id: 'B2', project: '阶段二：心智种草期', target: '测试垂直穿搭/美妆流量池，沉淀转化素材', totalCount: 40, completedCount: 0 },
- { id: 'B3', project: '阶段三：搜索卡位期', target: '集中占据防晒推荐搜索占位，获取长尾流量', totalCount: 60, completedCount: 0 },
- ];
+  { 
+  id: 'p1', 
+  name: '蕉下 - 夏日防晒种草季', 
+  status: '任务进行中',
+  progress: 65,
+  targetCount: 100,
+  recoveredMaterial: 55,
+  generatedNotes: 45,
+  publishedNotes: 12,
+  targetGroup: 'internal'
+  },
+  { 
+  id: 'p2', 
+  name: '发小发 - 素人测评寄样派发', 
+  status: '筹备中',
+  progress: 10,
+  targetCount: 50,
+  recoveredMaterial: 5,
+  generatedNotes: 50,
+  publishedNotes: 0,
+  targetGroup: 'external'
+  }
+  ];
 
  
+  const generateMocks = () => {
+    setTimeout(() => {
+      setDrafts([
+        { id: '1', title: '防晒测评第1篇：户外暴晒', content: '作为一个每天通勤的打工人...', score: 92, imageType: 'pending', targetViews: 5000, targetInteractions: 120, status: 'scheduled' },
+        { id: '2', title: '防晒单品：带妆不补涂', content: '妆后补防晒真的是个技术活...', score: 85, imageType: 'pending', targetViews: 3000, targetInteractions: 80, status: 'scheduled' }
+      ]);
+    }, 600);
+  };
 
- const generateMocks = () => {
- const mocks: NoteDraft[] = Array.from({ length: 6 }).map((_, i) => ({
- id: `ND-${i + 1}`,
- title: i % 2 === 0 ? '一秒入夏必备！通勤挖到的防晒神仙单品☀️' : '早八党福音，清爽不油腻的防晒测评来了！',
- content: '夏天真的不能没有它！最近挖到的宝藏神器，不仅肤感清爽不拔干，而且力度也是绝绝子！\\n\\n测试了一周，平时通勤或者周末出去玩完全够用...',
- imageType: 'pending',
- status: 'review',
- selected: false
- }));
- setDrafts(mocks);
- };
-
- const handleAutoGroupDispatch = () => {
+  const handleAutoGroupDispatch = () => {
  // AI automatic grouping logic
  setTimeout(() => {
  setDrafts(drafts.map((d, i) => ({ 
@@ -208,32 +230,32 @@ export default function MerchantMatrix() {
  <div onClick={() => handleFieldFocus("封面素材", "请分析此封面首图是否吸睛、是否符合当前笔记调性", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
  <img src="https://images.unsplash.com/photo-1600000000000?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="封面" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">封面首图</div>
- <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Sparkles size={12} /> AI推荐替换
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Camera size={12} /> 起草重拍需求
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
-   <Trash2 size={12} /> 移除并释放
- </button>
- </div>
+ <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm px-2">
+    <button onClick={handleReplaceFromLibrary} title="从素材库挑选替换图片" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <RefreshCw size={16} />
+    </button>
+    <button onClick={handleRequestReshoot} title="提交重拍任务" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <Camera size={16} />
+    </button>
+    <button onClick={handleDeleteImage} title="删除并释放至素材库" className="p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors shadow-sm">
+      <Trash2 size={16} />
+    </button>
+</div>
  </div>
  <div onClick={() => handleFieldFocus("内页素材", "请分析此内页图是否清晰传达了产品信息，与上下文是否连贯", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
  <img src="https://images.unsplash.com/photo-1600000000001?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="内图" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">内页 1</div>
- <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Sparkles size={12} /> AI推荐替换
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Camera size={12} /> 起草重拍需求
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
-   <Trash2 size={12} /> 移除并释放
- </button>
- </div>
+ <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm px-2">
+    <button onClick={handleReplaceFromLibrary} title="从素材库挑选替换图片" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <RefreshCw size={16} />
+    </button>
+    <button onClick={handleRequestReshoot} title="提交重拍任务" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <Camera size={16} />
+    </button>
+    <button onClick={handleDeleteImage} title="删除并释放至素材库" className="p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors shadow-sm">
+      <Trash2 size={16} />
+    </button>
+</div>
  </div>
  <div className="w-[140px] h-[180px] rounded-2xl border border-dashed border-neutral-300 bg-white relative shrink-0 flex flex-col gap-2 items-center justify-center hover:bg-neutral-50 cursor-pointer transition-colors text-neutral-400 hover:text-neutral-600">
  <PlusCircle size={28} />
@@ -301,21 +323,13 @@ export default function MerchantMatrix() {
 
  </div>
 
- {/* Right: AI Subagent & Status */}
- <div className="w-full xl:w-[460px] bg-white flex flex-col shrink-0 relative z-10 h-full">
- {/* Subagent Chat */}
- <div className="flex-1 flex flex-col h-full bg-white relative">
- <SubagentChat moduleId="content" moduleName="内容修改" initialContext="已挂载当前笔记草稿及最新图文视觉素材。" />
- </div>
-
- {/* Status Config */}
- <div className="p-6 bg-white border-t border-neutral-200">
+ {/* Status Config */} 
+ <div className="w-full xl:w-[280px] bg-white border-l border-neutral-200 p-6 flex flex-col justify-end shrink-0 block">
  <button onClick={() => setReviewingDraft(null)} className="w-full py-4 bg-primary-500 text-white rounded-[14px] text-[15px] hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex justify-center items-center gap-2 mb-3">
  确认人工精修无误 <CheckCircle2 size={18} />
  </button>
  
 </div>
- </div>
  </div>
  </motion.div>
  </motion.div>
@@ -342,7 +356,259 @@ export default function MerchantMatrix() {
  
  </div>
 
- <div className="flex-1 flex relative overflow-hidden bg-white">
+ 
+      
+      {/* Modals for Task Management */}
+      <AnimatePresence>
+        {showQrModal !== null && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-sm overflow-hidden flex flex-col shadow-2xl">
+              <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50">
+                <h3 className="font-medium text-neutral-900 border-l-4 border-primary-500 pl-2">任务分发二维码</h3>
+                <button onClick={() => setShowQrModal(null)} className="p-1 hover:bg-neutral-200 rounded text-neutral-400"><X size={18} /></button>
+              </div>
+              <div className="p-6 flex flex-col items-center">
+                <div className="w-48 h-48 bg-neutral-100 rounded-xl mb-4 flex items-center justify-center border-2 border-dashed border-neutral-200">
+                  <QrCode size={100} className="text-neutral-400" />
+                </div>
+                <p className="text-[13px] text-neutral-500 text-center mb-4 leading-relaxed">扫码或复制链接下发给员工<br/>员工扫码后将自动将此任务添加至其工作日历中</p>
+                <div className="flex w-full gap-2">
+                  <div className="flex-1 bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-2 text-[12px] text-neutral-500 flex items-center overflow-hidden">
+                    <span className="truncate">https://ai.work/tasks/t-{showQrModal}</span>
+                  </div>
+                  <button onClick={() => {
+                    setToastMessage("链接已复制，可直接下发给相关员工");
+                    setTimeout(() => setToastMessage(""), 2000);
+                  }} className="px-3 py-2 bg-primary-50 text-primary-600 rounded-lg shrink-0 flex items-center gap-1 hover:bg-primary-100 transition-colors tooltip" title="复制">
+                    <Copy size={16} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showAssignModal !== null && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-lg overflow-hidden flex flex-col shadow-2xl">
+              <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50">
+                <h3 className="font-medium text-neutral-900 border-l-4 border-primary-500 pl-2">智能指派与企微/微信通知</h3>
+                <button onClick={() => setShowAssignModal(null)} className="p-1 hover:bg-neutral-200 rounded text-neutral-400"><X size={18} /></button>
+              </div>
+              
+              <div className="p-5 flex flex-col gap-4 bg-white max-h-[70vh] overflow-y-auto">
+                {/* AI 自动化分发策略 */}
+                <div className="bg-gradient-to-br from-primary-50 to-primary-100/50 p-4 rounded-xl border border-primary-100">
+                   <div className="flex items-center gap-2 mb-2 text-primary-700 font-medium text-[14px]">
+                     <Sparkles size={16} /> AI 将基于视觉需求自动匹配最合适的内部员工
+                   </div>
+                   <div className="mt-3">
+                     <button onClick={() => {
+                        setToastMessage("AI 已自动指派员工「豆豆」，并通过企微/微信发送任务卡片");
+                        setTimeout(() => setToastMessage(""), 3000);
+                        setShowAssignModal(null);
+                     }} className="w-full bg-white p-4 rounded-lg border border-primary-200 shadow-sm hover:shadow hover:border-primary-400 transition-all text-left flex items-center justify-between group">
+                       <div className="flex flex-col gap-1">
+                         <span className="text-[14px] font-semibold text-neutral-900 flex items-center gap-2"><svg className="w-4 h-4 text-[#10B681]" fill="currentColor" viewBox="0 0 24 24"><path d="M12.003 0C5.372 0 0 5.373 0 12.003c0 6.633 5.372 12.005 12.003 12.005 6.629 0 12.001-5.372 12.001-12.005C24.004 5.373 18.632 0 12.003 0zm4.568 15.938H7.43v-1.748h9.141v1.748zm.284-4.887H7.146v-1.746h9.709v1.746zm.283-4.885H6.864v-1.748h10.27v1.748z"/></svg>通过企微/微信通知下发</span>
+                         <span className="text-[11px] text-neutral-500">依据员工画像与空闲度一键外派，素材回传后自动进入系统</span>
+                       </div>
+                       <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 group-hover:scale-110 transition-transform">
+                         <Bot size={18}/>
+                       </div>
+                     </button>
+                   </div>
+                </div>
+
+                <div className="text-[12px] font-medium text-neutral-900 mt-2 mb-1 flex items-center justify-between">
+                  手动下发
+                  <span className="text-[10px] text-neutral-400 font-normal">指定特定部门与标签</span>
+                </div>
+                <div className="grid gap-2">
+                {[
+                  { name: '王大锤', dept: '设计部', status: '空闲', tags: ['棚拍', '精修', '视觉总控'], color: 'bg-green-100 text-green-600' },
+                  { name: '豆豆', dept: '新媒体部', status: '进行2个任务', tags: ['生活感', '外景', '通勤', '出镜'], color: 'bg-amber-100 text-amber-600' },
+                  { name: '视觉天下影棚', dept: '外部机构', status: '空闲', tags: ['专业器材', '批量产出'], color: 'bg-green-100 text-green-600' }
+                ].map((person, idx) => (
+                  <div key={idx} onClick={() => {
+                    setToastMessage("已通过企业微信发送任务通知给：" + person.name);
+                    setTimeout(() => setToastMessage(""), 3000);
+                    setShowAssignModal(null);
+                  }} className="p-3 border border-neutral-200 rounded-xl hover:border-primary-500 hover:shadow-md cursor-pointer transition-all flex flex-col gap-2 group">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500"><Users size={16} /></div>
+                        <div>
+                          <div className="text-[13px] text-neutral-900 font-medium mb-0.5">{person.name} <span className="text-[11px] text-neutral-400">({person.dept})</span></div>
+                          <div className={`text-[10px] w-fit px-1.5 py-0.5 rounded-full ${person.color}`}>{person.status}</div>
+                        </div>
+                      </div>
+                      <span className="text-primary-500 opacity-0 group-hover:opacity-100 text-[12px] bg-primary-50 px-2 py-1 rounded transition-opacity font-medium">指派任务</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 pl-13">
+                      {person.tags.map(tag => (
+                        <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded border border-neutral-200 flex items-center gap-0.5"><Hash size={10}/> {tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showNotesModal !== null && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col shadow-2xl">
+              <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50">
+                <div>
+                  <h3 className="font-medium text-neutral-900 border-l-4 border-primary-500 pl-2">任务需求拆解来源</h3>
+                  <p className="text-[11px] text-neutral-500 mt-1 pl-3">此素材任务的总体要求由以下笔记AI汇总生成</p>
+                </div>
+                <button onClick={() => setShowNotesModal(null)} className="p-1 hover:bg-neutral-200 rounded text-neutral-400"><X size={18} /></button>
+              </div>
+              <div className="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+                {[1,2,3].map(i => (
+                  <div key={i} className="flex gap-4 p-4 border border-neutral-100 rounded-xl bg-neutral-50/50">
+                    <div className="w-16 h-20 bg-neutral-200 rounded object-cover overflow-hidden shrink-0">
+                      <img src={`https://images.unsplash.com/photo-1600000${i}00000?auto=format&fit=crop&q=80&w=100&h=140`} className="w-full h-full object-cover"/>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-[14px] font-medium text-neutral-900 mb-1">防晒推荐大赏 - 笔记草稿 {i}</h4>
+                      <p className="text-[12px] text-neutral-500 mb-3 bg-white p-2 rounded border border-neutral-100 shadow-sm">这里需要展示夏日强烈阳光下出行的状态，封面首图侧重整体穿搭效果，内页需求包括产品细节特写与质感展示...</p>
+                      <div className="flex gap-2">
+                         <span className="px-2 py-0.5 bg-white border border-neutral-200 text-[11px] font-medium text-neutral-700 rounded shadow-sm">需求：封面 (1张)</span>
+                         <span className="px-2 py-0.5 bg-white border border-neutral-200 text-[11px] font-medium text-neutral-700 rounded shadow-sm">需求：内页图 (3-4张)</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      
+        {showAuditModal !== null && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col shadow-2xl">
+              <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50">
+                <div>
+                  <h3 className="font-medium text-neutral-900 border-l-4 border-primary-500 pl-2">AI 自动审核报告</h3>
+                  <p className="text-[11px] text-neutral-500 mt-1 pl-3">系统已自动审核素人提交素材，并将其同步至对应笔记发布队列</p>
+                </div>
+                <button onClick={() => setShowAuditModal(null)} className="p-1 hover:bg-neutral-200 rounded text-neutral-400"><X size={18} /></button>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[60vh]">
+                <div className="flex gap-4 mb-6">
+                  <div className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center bg-emerald-100 text-emerald-600"><CheckCircle2 size={18}/></div>
+                  <div>
+                    <div className="text-[14px] font-medium text-neutral-900 flex items-center gap-2">素人@小甜甜 - 提交的图文素材</div>
+                    <div className="text-[12px] text-emerald-500 mt-1 flex items-center gap-1"><Sparkles size={12}/> AI 视觉引擎校验通过，内容健康且满足需求</div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-[13px] font-medium text-neutral-900 mb-2 flex items-center gap-1.5"><ImageIcon size={14}/> 审核通过素材 (4/4)</div>
+                    <div className="grid grid-cols-4 gap-2">
+                       {[1,2,3,4].map(num => (
+                         <div key={num} className="aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden border border-neutral-200 relative group cursor-pointer">
+                            <img src={`https://images.unsplash.com/photo-1600000${num}00000?auto=format&fit=crop&q=80&w=150&h=200`} className="w-full h-full object-cover"/>
+                            <div className="absolute top-1 right-1 bg-green-500 text-white p-0.5 rounded-full"><CheckCircle2 size={10}/></div>
+                         </div>
+                       ))}
+                    </div>
+                  </div>
+                  
+                  <div className="pt-2">
+                    <div className="text-[13px] font-medium text-neutral-900 mb-2 flex items-center gap-1.5"><MessageSquare size={14}/> 配套发布文案展示</div>
+                    <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-[13px] text-neutral-700 leading-relaxed relative">
+                      最近找到了一款超好用的防晒宝藏！[派对R]<br/><br/>
+                      作为一个每天早起通勤的打工人，防晒真的是我的续命神器。这几天试用了品牌方寄来的这款，上脸感觉真的出乎意料的轻薄，一点都不假白！最重要的是化完妆也不会搓泥，真的爱了！<br/><br/>
+                      #防晒推荐 #日常好物 #素人实测
+                      <div className="absolute top-3 right-3 text-emerald-500 bg-emerald-100 px-2 py-0.5 text-[10px] rounded">合规探测通过</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 border-t border-neutral-100 bg-neutral-50 flex justify-end gap-3 items-center">
+                <span className="text-[12px] text-neutral-400 flex items-center gap-1"><Bot size={14}/> 此审核由系统自动完成，无需人工干预</span>
+                <button onClick={() => setShowAuditModal(null)} className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-medium hover:bg-neutral-800 shadow transition-colors flex items-center gap-2">
+                  关闭查看
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed top-10 left-1/2 -translate-x-1/2 bg-neutral-900 text-white px-6 py-3 rounded-full z-[9999] shadow-xl flex items-center gap-2"
+          >
+            <CheckCircle2 size={16} className="text-green-400" />
+            <span className="text-[13px] font-medium">{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Asset Library Modal */}
+      <AnimatePresence>
+        {showAssetLibrary && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl"
+            >
+              <div className="flex items-center justify-between p-4 border-b border-neutral-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-primary-600">
+                    <ImageIcon size={16} />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-neutral-900 text-[15px]">品牌素材库</h3>
+                    <p className="text-[11px] text-neutral-500">已自动为您推荐适合当前笔记的可用空闲素材</p>
+                  </div>
+                </div>
+                <button onClick={() => setShowAssetLibrary(false)} className="p-2 hover:bg-neutral-100 rounded-xl transition-colors text-neutral-400">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-4 flex-1 overflow-y-auto bg-neutral-50">
+                <div className="grid grid-cols-3 gap-4">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="bg-white p-2 rounded-xl border border-neutral-200 shadow-sm group cursor-pointer hover:border-primary-400 hover:shadow-md transition-all">
+                      <div className="w-full aspect-[3/4] rounded-lg overflow-hidden relative mb-2">
+                        <img src={`https://images.unsplash.com/photo-16000000000${i + 5}?auto=format&fit=crop&q=80&w=400&h=600`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute top-2 left-2 bg-green-500/90 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm shadow-sm flex items-center gap-1">
+                          <CheckCircle2 size={10} /> 智能推荐
+                        </div>
+                      </div>
+                      <button onClick={() => {
+                        setToastMessage("图片更换成功，已使用新素材，原素材已恢复");
+                        setTimeout(() => setToastMessage(""), 2000);
+                        setShowAssetLibrary(false);
+                      }} className="w-full py-2 bg-neutral-100 hover:bg-primary-50 hover:text-primary-600 text-neutral-700 text-[12px] font-medium rounded-lg transition-colors">
+                        使用此素材
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+<div className="flex-1 flex relative overflow-hidden bg-white">
  <div className="flex flex-col w-full h-full">
  <div className="px-6 pt-4 border-b border-neutral-100 bg-neutral-50/50 flex flex-col gap-4 shrink-0">
  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -354,11 +620,7 @@ export default function MerchantMatrix() {
  在此管理和修改生成的完整笔记，以及跟踪关联图文素材的回传情况。点击文本框即可直接修改笔记，点击右侧助手即可启动 AI 辅助润色。
  </p>
  </div>
- <div className="flex items-center gap-3">
- <button onClick={() => {}} className="px-4 py-2.5 bg-primary-500 text-white rounded-xl text-[12px] hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
- <Sparkles size={14} /> 内容策略与分发中心
- </button>
- </div>
+ 
  </div>
  
  <div className="flex items-center gap-6 text-[13px] mt-2">
@@ -431,53 +693,114 @@ export default function MerchantMatrix() {
  )}
 
  {activeTab === 'tasks' && (
- <div className="space-y-4 max-w-5xl mx-auto">
- <div className="flex items-center justify-between mb-4">
- <div className="text-[16px] text-neutral-900">实拍任务与素材收集发包管理</div>
- <button onClick={() => setIsCreatingTask(true)} className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[12px] flex items-center gap-1.5 shadow-md hover:bg-neutral-800 transition-colors">
- <Plus size={16} /> 新建素材图文任务
- </button>
+  <div className="space-y-4 max-w-5xl mx-auto">
+    <div className="flex items-center justify-between mb-4">
+      <div>
+        <div className="text-[16px] font-medium text-neutral-900 flex items-center gap-2">
+          {project.targetGroup === 'internal' ? '内部素材发包任务 (合并同类项)' : '外部KOC素人派单平台 (按单篇领取)'}
+          <span className="px-2 py-0.5 bg-primary-50 text-primary-600 text-[11px] rounded-full">由笔记自动分类提炼</span>
+        </div>
+        <div className="text-[12px] text-neutral-500 mt-1">
+          {project.targetGroup === 'internal' 
+            ? '自动分析本周笔记规划，合并同类素材需求，直接通过企微指派给内部员工。'
+            : '单篇笔记生成专属任务。素人扫码认领并回传素材，AI自动审核并即刻同步至小红书发布，全程无人化流转。'}
+        </div>
+      </div>
+      {project.targetGroup === 'external' ? (
+        <button onClick={() => setShowQrModal(project.id)} className="px-5 py-2.5 bg-primary-500 text-white rounded-[14px] text-[13px] font-medium flex items-center gap-2 shadow-lg hover:bg-primary-600 active:scale-95 transition-all tooltip" title="向所有素人库群发">
+          <QrCode size={16} /> 生成专属任务池认领码
+        </button>
+      ) : null}
+    </div>
+    
+    {(project.targetGroup === 'internal' ? INTERNAL_TASKS : EXTERNAL_TASKS).map(task => (
+      <div key={task.id} className="bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col lg:flex-row lg:items-start gap-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-inner ${task.status === 'AI审核通过待发布' ? 'bg-gradient-to-b from-emerald-50 to-emerald-100/50 text-emerald-500' : task.status === '待领取' ? 'bg-gradient-to-b from-neutral-50 to-neutral-100/50 text-neutral-500' : task.status === '执行中' ? 'bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-500' : 'bg-gradient-to-b from-amber-50 to-amber-100/50 text-amber-500'}`}>
+          {task.status === 'AI审核通过待发布' ? <CheckSquare size={24}/> : task.status === '执行中' ? <Camera size={24} /> : <Target size={24} />}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-2">
+            <h4 className="text-[16px] font-semibold text-neutral-900">{task.name}</h4>
+            {project.targetGroup === 'internal' ? (
+              <button className="bg-neutral-100 transition-colors text-neutral-600 text-[11px] px-2 py-0.5 rounded-full flex items-center gap-1 font-medium group tooltip" title="由多篇笔记的视觉需求合并而来">
+                <Layers size={12} /> 来源于 {(task as any).mergedFrom} 篇笔记
+              </button>
+            ) : (
+                <div className="text-[12px] bg-primary-50 border border-primary-100 text-primary-600 px-2 py-0.5 rounded-full font-medium flex items-center gap-1"><PenTool size={12}/> 绑定：{(task as any).noteTarget}</div>
+            )}
+            <span className={`text-[11px] px-2 py-0.5 rounded-full uppercase tracking-widest border ${task.status === 'AI审核通过待发布' ? 'border-emerald-200 bg-emerald-50 text-emerald-600' : task.status === '待领取' ? 'border-neutral-200 bg-neutral-50 text-neutral-600' : task.status === '执行中' ? 'border-blue-200 bg-blue-50 text-blue-600' : 'border-amber-200 bg-amber-50 text-amber-600'}`}>
+              {task.status}
+            </span>
+          </div>
+          <div className="bg-neutral-50/80 rounded-xl p-3 mb-4 border border-neutral-100">
+            <div className="flex items-start gap-2">
+              <Bot size={14} className="text-primary-500 shrink-0 mt-0.5" />
+              <p className="text-[13px] text-neutral-600 leading-relaxed font-medium">{task.require}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 text-[13px]">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 rounded-lg text-neutral-600 border border-neutral-200">
+              <ImageIcon size={14} /> 需回传 {task.count} 张素材
+            </div>
+            {task.status === 'AI审核通过待发布' ? (
+              <div className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-lg tooltip" title="已列入发布排期序列">
+                <CheckCircle2 size={14} /> AI判定合格，内容已直发
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 text-neutral-500 bg-neutral-50 px-3 py-1.5 rounded-lg">
+                <CalendarClock size={14} /> 截止时间: 本周五 18:00
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="lg:border-l lg:border-neutral-100 lg:pl-8 flex flex-col items-end gap-5 shrink-0 w-full lg:w-[220px]">
+          <div className="text-right w-full relative group cursor-pointer" onMouseEnter={() => setShowProgressHover(task.id)} onMouseLeave={() => setShowProgressHover(null)}>
+            <div className="flex justify-between items-center lg:block bg-neutral-50 lg:bg-transparent p-3 lg:p-0 rounded-xl">
+              <div className="text-[11px] text-neutral-400 font-medium mb-1 flex items-center gap-1 lg:justify-end">
+                素材回传进度 <AlertCircle size={12} className="text-neutral-300 group-hover:text-primary-400 transition-colors"/>
+              </div>
+              <div className={`text-[28px] font-mono font-medium transition-colors leading-none ${task.current >= task.count ? 'text-emerald-500' : 'text-neutral-900'}`}>{task.current} <span className="text-neutral-400 text-[18px]">/ {task.count}</span></div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2.5 w-full">
+            {task.status === 'AI审核通过待发布' ? (
+              <button onClick={() => setShowAuditModal(task.id)} className="w-full py-2.5 bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-[12px] font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-1.5">
+                <CheckSquare size={14} /> 查看AI校验报告
+              </button>
+            ) : task.status === '执行中' ? (
+              <button onClick={() => {
+                 setToastMessage(`已向 ${task.assignee.split(' ')[0]} 发送催办提醒。`);
+                 setTimeout(() => setToastMessage(""), 2000);
+              }} className="w-full py-2.5 bg-neutral-900 text-white hover:bg-black rounded-xl text-[12px] font-medium transition-all shadow hover:shadow-md whitespace-nowrap flex items-center justify-center gap-1.5">
+                <MessageSquare size={14} /> 催办执行进度
+              </button>
+            ) : project.targetGroup === 'internal' ? (
+              <>
+                <button onClick={() => setShowAssignModal(task.id)} className="w-full py-2.5 bg-neutral-900 text-white hover:bg-black rounded-xl text-[12px] font-medium transition-all shadow hover:shadow-md whitespace-nowrap flex items-center justify-center gap-1.5">
+                  <Users size={14} /> 匹配内部分配
+                </button>
+              </>
+            ) : (
+                <button onClick={() => {
+                   setToastMessage("系统已再次将该笔记任务推送至素人达人库");
+                   setTimeout(() => setToastMessage(""), 2000);
+                }} className="w-full py-2.5 border border-primary-200 bg-primary-50 text-primary-600 hover:bg-primary-100 rounded-xl text-[12px] font-medium transition-colors whitespace-nowrap flex items-center justify-center gap-1.5 tooltip" title="向素人大厅重新曝光">
+                  <RefreshCw size={14}/> 推送至任务大厅
+                </button>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+</div>
+ </div>
+ </div>
  </div>
  
- {tasks.map(task => (
- <div key={task.id} className="bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col lg:flex-row lg:items-center gap-6 shadow-sm hover:shadow-md transition-shadow">
- <div className={`w-14 h-14 rounded-[16px] flex items-center justify-center shrink-0 ${task.status === '执行中' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}`}>
- {task.status === '执行中' ? <Camera size={24} /> : <Target size={24} />}
- </div>
- <div className="flex-1">
- <div className="flex items-center gap-3 mb-1.5">
- <h4 className="text-[16px] font-semibold text-neutral-900">{task.name} ✕ {task.count}图</h4>
- <span className={`text-[11px] px-2 py-1 rounded uppercase tracking-widest ${task.status === '执行中' ? 'bg-emerald-100 text-emerald-700' : 'bg-neutral-100 text-neutral-500'}`}>{task.status}</span>
- </div>
- <p className="text-[13px] text-neutral-500 leading-relaxed">承接方: {task.assignee} | 截止日期: 明天 18:00<br/>要求: {task.require}</p>
- </div>
- <div className="lg:border-l lg:border-neutral-100 lg:pl-6 flex items-center gap-6 shrink-0 lg:ml-auto">
- <div className="text-right cursor-pointer group" onClick={() => setShowTaskDetail(true)}>
- <div className="text-[24px] text-neutral-900 group-hover:text-primary-500 transition-colors">{task.current} <span className="text-neutral-400 text-[14px]">/ {task.count}</span></div>
- <div className="text-[11px] text-neutral-400 uppercase flex items-center gap-1"><Users size={12}/> 查看提交详情</div>
- </div>
- <div className="flex flex-col gap-2">
- <button className="px-5 py-2.5 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl text-[13px] transition-colors shadow-md whitespace-nowrap">
- {task.status === '执行中' ? '分发入库' : '分发二维码'}
- </button>
- {task.current < task.count && (
- <button className="px-3 py-1.5 border border-primary-200 text-primary-600 bg-primary-50 hover:bg-primary-100 hover:border-primary-300 rounded-lg text-[11px] transition-colors whitespace-nowrap flex items-center justify-center gap-1">
- <MessageSquare size={12}/> 微信一键催办
- </button>
- )}
- </div>
- </div>
- </div>
- ))}
- </div>
- )}
- </div>
- </div>
- </div>
- </div>
-
  </> );
- }
+  }
 
  return (
  <>
@@ -523,32 +846,32 @@ export default function MerchantMatrix() {
  <div onClick={() => handleFieldFocus("封面素材", "请分析此封面首图是否吸睛、是否符合当前笔记调性", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
  <img src="https://images.unsplash.com/photo-1600000000000?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="封面" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">封面首图</div>
- <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Sparkles size={12} /> AI推荐替换
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Camera size={12} /> 起草重拍需求
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
-   <Trash2 size={12} /> 移除并释放
- </button>
- </div>
+ <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm px-2">
+    <button onClick={handleReplaceFromLibrary} title="从素材库挑选替换图片" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <RefreshCw size={16} />
+    </button>
+    <button onClick={handleRequestReshoot} title="提交重拍任务" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <Camera size={16} />
+    </button>
+    <button onClick={handleDeleteImage} title="删除并释放至素材库" className="p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors shadow-sm">
+      <Trash2 size={16} />
+    </button>
+</div>
  </div>
  <div onClick={() => handleFieldFocus("内页素材", "请分析此内页图是否清晰传达了产品信息，与上下文是否连贯", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
  <img src="https://images.unsplash.com/photo-1600000000001?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="内图" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">内页 1</div>
- <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Sparkles size={12} /> AI推荐替换
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
-   <Camera size={12} /> 起草重拍需求
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
-   <Trash2 size={12} /> 移除并释放
- </button>
- </div>
+ <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-sm px-2">
+    <button onClick={handleReplaceFromLibrary} title="从素材库挑选替换图片" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <RefreshCw size={16} />
+    </button>
+    <button onClick={handleRequestReshoot} title="提交重拍任务" className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors">
+      <Camera size={16} />
+    </button>
+    <button onClick={handleDeleteImage} title="删除并释放至素材库" className="p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors shadow-sm">
+      <Trash2 size={16} />
+    </button>
+</div>
  </div>
  <div className="w-[140px] h-[180px] rounded-2xl border border-dashed border-neutral-300 bg-white relative shrink-0 flex flex-col gap-2 items-center justify-center hover:bg-neutral-50 cursor-pointer transition-colors text-neutral-400 hover:text-neutral-600">
  <PlusCircle size={28} />
@@ -616,21 +939,13 @@ export default function MerchantMatrix() {
 
  </div>
 
- {/* Right: AI Subagent & Status */}
- <div className="w-full xl:w-[460px] bg-white flex flex-col shrink-0 relative z-10 h-full">
- {/* Subagent Chat */}
- <div className="flex-1 flex flex-col h-full bg-white relative">
- <SubagentChat moduleId="content" moduleName="内容修改" initialContext="已挂载当前笔记草稿及最新图文视觉素材。" />
- </div>
-
- {/* Status Config */}
- <div className="p-6 bg-white border-t border-neutral-200">
+ {/* Status Config */} 
+ <div className="w-full xl:w-[280px] bg-white border-l border-neutral-200 p-6 flex flex-col justify-end shrink-0 block">
  <button onClick={() => setReviewingDraft(null)} className="w-full py-4 bg-primary-500 text-white rounded-[14px] text-[15px] hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex justify-center items-center gap-2 mb-3">
  确认人工精修无误 <CheckCircle2 size={18} />
  </button>
  
 </div>
- </div>
  </div>
  </motion.div>
  </motion.div>
@@ -639,7 +954,7 @@ export default function MerchantMatrix() {
  <div className="w-full h-full overflow-y-auto bg-white custom-scrollbar pb-24">
  <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-8">
  <div className="space-y-1">
- <h2 className="text-2xl font-semibold text-neutral-900 tracking-tight">项目运营与团队协作</h2>
+ <h2 className="text-2xl font-semibold text-neutral-900 tracking-tight">项目与内容</h2>
  <p className="text-[13px] text-neutral-400 ">跟踪小红书运营项目的全链路进展、日历排期，并在项目中指派任务进行内容的批量成稿</p>
  </div>
 
@@ -740,9 +1055,28 @@ export default function MerchantMatrix() {
  <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/30 custom-scrollbar space-y-10">
  <div className="space-y-6">
  <h3 className="text-[14px] font-semibold text-neutral-900 uppercase tracking-widest flex items-center gap-2">
-<Target size={18} className="text-neutral-400" /> 1. 运营项目立项
-</h3>
+ <Target size={18} className="text-neutral-400" /> 1. 运营项目立项
+ </h3>
  <div className="grid grid-cols-1 gap-5">
+ <div className="space-y-2">
+ <label className="text-[11px] text-neutral-400 uppercase">素材执行</label>
+ <div className="grid grid-cols-2 gap-3">
+   <div className="border-2 border-primary-500 bg-primary-50 rounded-xl p-3 flex items-start gap-3 cursor-pointer">
+     <div className="w-5 h-5 rounded-full border-4 border-primary-500 bg-white shrink-0 mt-0.5"></div>
+     <div>
+       <div className="text-[13px] font-semibold text-neutral-900">内部员工</div>
+       <div className="text-[11px] text-neutral-500 mt-1">自动合并相同拍照需求，通过企微分配给组织内员工</div>
+     </div>
+   </div>
+   <div className="border border-neutral-200 bg-white hover:border-primary-200 rounded-xl p-3 flex items-start gap-3 cursor-pointer">
+     <div className="w-5 h-5 rounded-full border border-neutral-300 bg-white shrink-0 mt-0.5 relative"><div className="absolute inset-1 rounded-full bg-transparent hover:bg-neutral-100"></div></div>
+     <div>
+       <div className="text-[13px] font-semibold text-neutral-900">外部KOC</div>
+       <div className="text-[11px] text-neutral-500 mt-1">按单篇笔记拆解需求，扫码领取，素材自动进入审核发布流</div>
+     </div>
+   </div>
+ </div>
+ </div>
  <div className="space-y-2">
  <label className="text-[11px] text-neutral-400 uppercase">项目名称</label>
  <input type="text" placeholder="例如：2026秋季大促矩阵" className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] outline-none focus:border-primary-500 transition-colors" />
@@ -880,7 +1214,7 @@ export default function MerchantMatrix() {
  <div className="p-6 pt-0">
  <button 
  onClick={() => {
- setTasks([...tasks, { id: Date.now(), name: taskName, assignee: taskAssignee || "待定", count: taskCount, current: 0, status: '待承接', require: '请根据提示要求回传高质量图文。' }]);
+ // setTasks([...tasks, { id: Date.now(), name: taskName, assignee: taskAssignee || "待定", count: taskCount, current: 0, status: '待承接', require: '请根据提示要求回传高质量图文。' }]);
  setIsCreatingTask(false);
  setTaskName("");
  setTaskAssignee("");

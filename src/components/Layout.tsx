@@ -49,6 +49,10 @@ export default function Layout() {
  <span className="material-symbols-outlined text-[18px]">account_tree</span>
  内容生产线
  </NavLink>
+ <NavLink to="/assets-knowledge" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors font-sans text-[13px] font-medium ${isActive ? 'bg-white text-[#5157a7] shadow-sm ring-1 ring-zinc-200' : 'text-zinc-500 hover:bg-zinc-200/50 hover:translate-x-1 transition-transform duration-200'}`}>
+ <span className="material-symbols-outlined text-[18px]">perm_media</span>
+ 素材与知识库
+ </NavLink>
  <NavLink to="/intent-network" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors font-sans text-[13px] font-medium ${isActive ? 'bg-white text-[#5157a7] shadow-sm ring-1 ring-zinc-200' : 'text-zinc-500 hover:bg-zinc-200/50 hover:translate-x-1 transition-transform duration-200'}`}>
  <span className="material-symbols-outlined text-[18px]">psychology</span>
  线索分发与监控

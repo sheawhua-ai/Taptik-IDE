@@ -1318,7 +1318,7 @@ export default function App() {
 
  {/* 环境感知 AI 搭档侧边栏 */}
  <AnimatePresence>
- {showSubagentChat && focusMode !== "review" && (
+ {showSubagentChat && focusMode !== "review" && workflowTab !== "matrix" && (
  <motion.div
  initial={{ width: 0, opacity: 0 }}
  animate={{ width: 400, opacity: 1 }}
@@ -1343,7 +1343,7 @@ export default function App() {
  )}
  </AnimatePresence>
 
- {!showSubagentChat && focusMode !== "review" && (
+ {!showSubagentChat && focusMode !== "review" && workflowTab !== "matrix" && (
  <button
  onClick={() => setShowSubagentChat(true)}
  className="absolute right-6 bottom-6 w-12 h-12 bg-neutral-900 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:bg-primary-500 transition-all z-30 active:scale-95"
@@ -1422,6 +1422,7 @@ export default function App() {
  {[
  { id: "account", name: "账户管理", icon: User },
  { id: "merchants", name: "商家管理", icon: Store },
+ { id: "staff", name: "团队与协作", icon: Users },
  { id: "system", name: "系统设置", icon: Settings },
  { id: "agents", name: "智能体设置", icon: Bot },
  { id: "memory", name: "记忆", icon: Brain },
@@ -1455,6 +1456,7 @@ export default function App() {
  {[
  "account",
  "merchants",
+ "staff",
  "system",
  "agents",
  "memory",
@@ -1467,6 +1469,7 @@ export default function App() {
  ? [
  "账户管理",
  "商家管理",
+ "团队与协作",
  "系统设置",
  "智能体设置",
  "记忆",
@@ -1479,6 +1482,7 @@ export default function App() {
  [
  "account",
  "merchants",
+ "staff",
  "system",
  "agents",
  "memory",
