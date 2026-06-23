@@ -1,645 +1,993 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  PlusCircle, Target, ArrowUpRight, CheckCircle2, Activity, Send, 
-  Package, X, Calendar, ArrowRight, PenTool, Play, Camera, CalendarClock,
-  Image as ImageIcon, Sparkles, CheckSquare, Settings, ChevronLeft,
-  Users, MoreVertical, CalendarDays
+ PlusCircle, Target, ArrowUpRight, CheckCircle2, Activity, Send, 
+ Package, X, Calendar, ArrowRight, PenTool, Play, Camera, CalendarClock,
+ Image as ImageIcon, Sparkles, CheckSquare, Settings, ChevronLeft,
+ Users, MoreVertical, CalendarDays, Trash2, AlertTriangle, AlertCircle,
+ Plus, Hash, Bot, MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SubagentChat } from '../components/SubagentChat';
 
 interface BatchProject {
-  id: string;
-  project: string;
-  target: string;
-  totalCount: number;
-  completedCount: number;
+ id: string;
+ project: string;
+ target: string;
+ totalCount: number;
+ completedCount: number;
 }
 
 interface NoteDraft {
-  id: string;
-  title: string;
-  content: string;
-  imageType: 'official' | 'real_shoot' | 'pending';
-  status: 'drafting' | 'review' | 'dispatched' | 'scheduled';
-  selected?: boolean;
+ id: string;
+ title: string;
+ content: string;
+ imageType: 'official' | 'real_shoot' | 'pending';
+ status: 'drafting' | 'review' | 'dispatched' | 'scheduled' | 'published';
+ selected?: boolean;
 }
 
 export default function MerchantMatrix() {
-  const [activeProject, setActiveProject] = useState<string | null>(null);
-  const [isCreatingProject, setIsCreatingProject] = useState(false);
-  const [activeBatch, setActiveBatch] = useState<BatchProject | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [drafts, setDrafts] = useState<NoteDraft[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [activeTab, setActiveTab] = useState<'content' | 'collaboration'>('content');
+ const [activeProject, setActiveProject] = useState<string | null>(null);
+ const [isCreatingProject, setIsCreatingProject] = useState(false);
+ 
+ const [reviewingDraft, setReviewingDraft] = useState<NoteDraft | null>(null);
+ const [activeTab, setActiveTab] = useState<'notes' | 'tasks'>('notes');
+ const [chatInput, setChatInput] = useState("");
+ const [isCreatingTask, setIsCreatingTask] = useState(false);
+ const [showTaskDetail, setShowTaskDetail] = useState(false);
+ const [taskName, setTaskName] = useState("");
+ const [taskAssignee, setTaskAssignee] = useState("");
+ const [taskCount, setTaskCount] = useState(10);
+ const [tasks, setTasks] = useState([
+ { id: 1, name: '周末都市通勤穿搭实拍', count: 15, current: 8, assignee: '豆豆 (KOC)', status: '执行中', require: '阳光充足，体现透气材质，带产品特写，需与文案风格契合。' },
+ { id: 2, name: '室内棚拍静物摆拍', count: 30, current: 0, assignee: '内部视觉组', status: '待承接', require: '纯净背景，突出产品包材质感，需要高分辨率原图。' }
+ ]);
+ const [hashtags, setHashtags] = useState(["防晒推荐", "夏日穿搭"]);
+ const [suggestedTags] = useState(["好物分享", "测评", "防晒霜", "通勤必备"]);
+ 
+ const [drafts, setDrafts] = useState<NoteDraft[]>([]);
+ const [coreTarget, setCoreTarget] = useState("根据前期大盘与策略推演：建议本月提升品牌在下沉市场的防晒搜索卡位，需规模化制造真实素人测评内容，抢占长尾流量池。");
+ const [isAnalyzingTarget, setIsAnalyzingTarget] = useState(false);
+ const [startDate, setStartDate] = useState('2026-06-25');
+ const [showConfirmModal, setShowConfirmModal] = useState(false);
+ const handleRemovePeriod = (index: number) => {
+ setSchedulePeriods(schedulePeriods.filter((_, i) => i !== index));
+ };
+ 
+ const handleNotesChange = (index: number, newNotes: string) => {
+ const newPeriods = [...schedulePeriods];
+ newPeriods[index].notes = newNotes;
+ const count = parseInt(newNotes.replace(/[^0-9]/g, '')) || 0;
+ if (count > 0) {
+ const main = Math.max(1, Math.floor(count * 0.1));
+ const kos = Math.max(1, Math.floor(count * 0.3));
+ const koc = count - main - kos;
+ newPeriods[index].allocation = `主账号 ${main}篇 | KOS ${kos}篇 | 素人 ${koc}篇`;
+ }
+ setSchedulePeriods(newPeriods);
+ };
+ 
+ const [schedulePeriods, setSchedulePeriods] = useState([
+ { period: '冷启动与收录期', notes: '25 篇', target: '跑通账号防晒标签，提升基础社区收录率', allocation: '主账号 2篇 | KOS 5篇 | 素人 18篇' },
+ { period: '心智种草与互动期', notes: '40 篇', target: '测试垂直穿搭/美妆流量池，沉淀转化素材', allocation: '主账号 5篇 | KOS 10篇 | 素人 25篇' },
+ { period: '搜索卡位与爆发期', notes: '60 篇', target: '集中占据防晒推荐搜索占位，获取长尾流量', allocation: '主账号 5篇 | KOS 15篇 | 素人 40篇' }
+ ]);
 
-  useEffect(() => {
-    const handleOpenCreate = () => {
-      setActiveProject(null);
-      setIsCreatingProject(true);
-    };
-    window.addEventListener('nav-to-create-project', handleOpenCreate);
-    return () => window.removeEventListener('nav-to-create-project', handleOpenCreate);
-  }, []);
+ const handleAnalyzeTarget = () => {
+ if (!coreTarget) return;
+ setIsAnalyzingTarget(true);
+ setTimeout(() => {
+ setIsAnalyzingTarget(false);
+ 
+ setSchedulePeriods([
+ { period: '新破圈与受众拓新期', notes: '30 篇', target: '聚焦高潜衍生话题，跨圈层进行流量分发', allocation: '主账号 3篇 | KOS 10篇 | 素人 17篇' },
+ { period: '单点打透与带货爆发期', notes: '60 篇', target: '高密度针对核心痛点进行卖点输出，刺激转化', allocation: '主账号 5篇 | KOS 20篇 | 素人 35篇' },
+ { period: '长尾卡位阶段', notes: '40 篇', target: '维护热门防晒词条下的首屏占位率，求索被动长尾搜索流量', allocation: '主账号 2篇 | KOS 8篇 | 素人 30篇' }
+ ]);
+ }, 1500);
+ };
 
-  const MOCK_PROJECTS = [
-    { 
-      id: 'p1', 
-      name: '蕉下 - 夏日防晒种草季', 
-      status: '进行中',
-      progress: 65,
-      stages: [
-        { name: '定调企划', status: 'completed', value: '12组内容方向已锁定' },
-        { name: '素材生成', status: 'active', value: '45/100 篇初稿已产出' },
-        { name: '矩阵发布', status: 'pending', value: '预计明日开启' },
-        { name: '沉淀与复盘', status: 'pending', value: '-' },
-        { name: '数据归因', status: 'pending', value: '-' },
-      ],
-      kpis: { views: '124k', engagement: '8.2k', leads: '¥3.20' }
-    },
-    { 
-      id: 'p2', 
-      name: '花西子 - 七夕礼盒首发', 
-      status: '已完成',
-      progress: 100,
-      stages: [
-        { name: '定调企划', status: 'completed', value: '完成' },
-        { name: '素材生成', status: 'completed', value: '完成' },
-        { name: '矩阵发布', status: 'completed', value: '120 KOC覆盖' },
-        { name: '沉淀与复盘', status: 'completed', value: '长尾流量收录占比89%' },
-        { name: '数据归因', status: 'completed', value: 'CPE降至 ¥1.27' },
-      ],
-      kpis: { views: '890k', engagement: '45k', leads: '¥1.27' }
-    }
-  ];
+ const handleAddPeriod = () => {
+ setSchedulePeriods([...schedulePeriods, { period: '常规沉淀期', notes: '15 篇', target: '沉淀自然搜索，内容池维护', allocation: '主账号 2篇 | KOS 3篇 | 素人 10篇' }]);
+ };
 
-  const pendingBatches: BatchProject[] = [
-    { id: 'B1', project: '阶段一：冷启动', target: '跑通账号防晒标签，提升基础社区收录率', totalCount: 25, completedCount: 0 },
-    { id: 'B2', project: '阶段二：心智种草期', target: '测试垂直穿搭/美妆流量池，沉淀转化素材', totalCount: 40, completedCount: 0 },
-    { id: 'B3', project: '阶段三：搜索卡位期', target: '集中占据防晒推荐搜索占位，获取长尾流量', totalCount: 60, completedCount: 0 },
-  ];
+ useEffect(() => {
+ const handleOpenCreate = () => {
+ setActiveProject(null);
+ setIsCreatingProject(true);
+ };
+ window.addEventListener('nav-to-create-project', handleOpenCreate);
+ return () => window.removeEventListener('nav-to-create-project', handleOpenCreate);
+ }, []);
 
-  const handleStartBatch = (batch: BatchProject) => {
-    setActiveBatch(batch);
-    setIsGenerating(true);
-    setProgress(0);
-    setDrafts([]);
+ const MOCK_PROJECTS = [
+ { 
+ id: 'p1', 
+ name: '蕉下 - 夏日防晒种草季', 
+ status: '任务进行中',
+ progress: 65,
+ targetCount: 100,
+ recoveredMaterial: 55,
+ generatedNotes: 45,
+ publishedNotes: 12,
+ },
+ { 
+ id: 'p2', 
+ name: '花西子 - 七夕礼盒首发', 
+ status: '已完成',
+ progress: 100,
+ targetCount: 120,
+ recoveredMaterial: 120,
+ generatedNotes: 120,
+ publishedNotes: 120,
+ }
+ ];
 
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += 12;
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        generateMocks(batch);
-        setIsGenerating(false);
-        setProgress(100);
-      } else {
-        setProgress(currentProgress);
-      }
-    }, 400);
-  };
+ const pendingBatches: BatchProject[] = [
+ { id: 'B1', project: '阶段一：冷启动', target: '跑通账号防晒标签，提升基础社区收录率', totalCount: 25, completedCount: 0 },
+ { id: 'B2', project: '阶段二：心智种草期', target: '测试垂直穿搭/美妆流量池，沉淀转化素材', totalCount: 40, completedCount: 0 },
+ { id: 'B3', project: '阶段三：搜索卡位期', target: '集中占据防晒推荐搜索占位，获取长尾流量', totalCount: 60, completedCount: 0 },
+ ];
 
-  const generateMocks = (batch: BatchProject) => {
-    const mocks: NoteDraft[] = Array.from({ length: 6 }).map((_, i) => ({
-      id: `ND-${i + 1}`,
-      title: i % 2 === 0 ? '一秒入夏必备！通勤挖到的防晒神仙单品☀️' : '早八党福音，清爽不油腻的防晒测评来了！',
-      content: '夏天真的不能没有它！最近挖到的宝藏神器，不仅肤感清爽不拔干，而且力度也是绝绝子！\n\n测试了一周，平时通勤或者周末出去玩完全够用...',
-      imageType: 'pending',
-      status: 'review',
-      selected: false
-    }));
-    setDrafts(mocks);
-  };
+ 
 
-  const toggleSelectAll = () => {
-    const newState = !selectAll;
-    setSelectAll(newState);
-    setDrafts(drafts.map(d => ({ ...d, selected: newState })));
-  };
+ const generateMocks = () => {
+ const mocks: NoteDraft[] = Array.from({ length: 6 }).map((_, i) => ({
+ id: `ND-${i + 1}`,
+ title: i % 2 === 0 ? '一秒入夏必备！通勤挖到的防晒神仙单品☀️' : '早八党福音，清爽不油腻的防晒测评来了！',
+ content: '夏天真的不能没有它！最近挖到的宝藏神器，不仅肤感清爽不拔干，而且力度也是绝绝子！\\n\\n测试了一周，平时通勤或者周末出去玩完全够用...',
+ imageType: 'pending',
+ status: 'review',
+ selected: false
+ }));
+ setDrafts(mocks);
+ };
 
-  const toggleSelect = (id: string) => {
-    setDrafts(drafts.map(d => d.id === id ? { ...d, selected: !d.selected } : d));
-  };
+ const handleAutoGroupDispatch = () => {
+ // AI automatic grouping logic
+ setTimeout(() => {
+ setDrafts(drafts.map((d, i) => ({ 
+ ...d, 
+ imageType: i % 2 === 0 ? 'real_shoot' : 'pending', 
+ status: i === 0 ? 'published' : i % 2 === 0 ? 'dispatched' : 'scheduled' 
+ })));
+ }, 800);
+ };
 
-  const handleBulkDispatch = () => {
-    setDrafts(drafts.map(d => d.selected ? { ...d, imageType: 'real_shoot', status: 'dispatched', selected: false } : d));
-    setSelectAll(false);
-  };
+ if (activeProject) {
+ const project = MOCK_PROJECTS.find(p => p.id === activeProject) || MOCK_PROJECTS[0];
+ return (
+ <>
+{/* Draft Review Modal */}
+ <AnimatePresence>
+ {reviewingDraft && (
+ <motion.div 
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-center p-4 md:p-8"
+ >
+ <motion.div 
+ initial={{ y: 20, opacity: 0, scale: 0.95 }}
+ animate={{ y: 0, opacity: 1, scale: 1 }}
+ exit={{ y: 20, opacity: 0, scale: 0.95 }}
+ className="w-full max-w-5xl bg-white h-full rounded-[30px] shadow-2xl flex flex-col overflow-hidden"
+ >
+ <div className="h-16 border-b border-neutral-100 flex items-center justify-between px-6 bg-white shrink-0">
+ <div className="flex items-center gap-3">
+ <div className="w-8 h-8 md:w-10 md:h-10 bg-primary-50 text-primary-500 rounded-xl flex items-center justify-center">
+ <PenTool size={18} />
+ </div>
+ <h2 className="text-[16px] md:text-xl font-semibold text-neutral-900 tracking-tight">修改笔记</h2>
+ </div>
+ <button onClick={() => setReviewingDraft(null)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 transition-colors">
+ <X size={20} />
+ </button>
+ </div>
+ <div className="flex-1 overflow-y-auto flex flex-col xl:flex-row bg-neutral-50">
+ {/* Left: Component Edit */}
+ <div className="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto custom-scrollbar lg:border-r border-neutral-200">
+ <div className="space-y-4">
+ <div className="flex items-center justify-between">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <ImageIcon size={18} className="text-neutral-400" />
+ 笔记素材
+ </label>
+ <button className="text-[11px] text-neutral-600 hover:text-primary-600 border border-neutral-200 hover:border-primary-200 hover:bg-primary-50 px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1">
+                                    使用品牌素材库 <span className="text-neutral-400">|</span> 增删素材
+                                 </button>
+ </div>
+ 
+ <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+ <div className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
+ <img src="https://images.unsplash.com/photo-1600000000000?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="封面" />
+ <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">封面首图</div>
+ <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
+ 点击预览/编辑
+ </div>
+ </div>
+ <div className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
+ <img src="https://images.unsplash.com/photo-1600000000001?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="内图" />
+ <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">内页 1</div>
+ <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
+ 点击预览/编辑
+ </div>
+ </div>
+ <div className="w-[140px] h-[180px] rounded-2xl border border-dashed border-neutral-300 bg-white relative shrink-0 flex flex-col gap-2 items-center justify-center hover:bg-neutral-50 cursor-pointer transition-colors text-neutral-400 hover:text-neutral-600">
+ <PlusCircle size={28} />
+ <span className="text-[12px] ">添加笔记素材</span>
+ </div>
+ </div>
+ </div>
 
-  const handleBulkSchedule = () => {
-    setDrafts(drafts.map(d => d.selected ? { ...d, status: 'scheduled', selected: false } : d));
-    setSelectAll(false);
-  };
+ <div className="space-y-3 group/title relative">
+ <div className="flex items-center justify-between">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <PenTool size={18} className="text-neutral-400" />
+ 笔记标题
+ </label>
+ 
+ </div>
+ <div className="relative">
+ <input type="text" defaultValue={reviewingDraft.title} className="w-full bg-white border border-neutral-200 rounded-xl pl-4 pr-10 py-3.5 text-[15px] outline-none focus:border-primary-500 hover:border-neutral-300 transition-colors shadow-inner" />
+ 
+ </div>
+ </div>
+ <div className="space-y-3 group/content relative">
+ <div className="flex flex-wrap items-center justify-between gap-2">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <PenTool size={18} className="text-neutral-400" />
+ 笔记正文与排版
+ </label>
+ 
+ </div>
+ <div className="relative">
+ <textarea rows={10} defaultValue={reviewingDraft.content} className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
+ <button className="absolute right-3 bottom-3 p-1.5 bg-neutral-100 hover:bg-primary-50 text-neutral-400 hover:text-primary-600 rounded-lg drop-shadow-sm transition-all border border-neutral-200 hover:border-primary-200 flex items-center gap-1">
+ <Bot size={14} /> <span className="text-[10px] ">选中内容进行 AI 修改</span>
+ </button>
+ </div>
+ </div>
 
-  const selectedCount = drafts.filter(d => d.selected).length;
+ <div className="space-y-3">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <Hash size={18} className="text-neutral-400" />
+ 话题标签打标 (Hashtags)
+ </label>
+ <div className="flex flex-wrap gap-2">
+ {hashtags.map(t => (
+ <span key={t} className="px-3 py-1.5 bg-neutral-900 text-white rounded-lg text-[13px] flex items-center gap-1.5 shadow-sm">
+ #{t} 
+ <button className="hover:text-red-400" onClick={() => setHashtags(hashtags.filter(h => h !== t))}><X size={14} /></button>
+ </span>
+ ))}
+ <button className="px-3 py-1.5 bg-white border border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900 rounded-lg text-[13px] flex items-center gap-1 shadow-sm transition-colors">
+ <Plus size={14} /> 自定义
+ </button>
+ </div>
+ <div className="pt-2 bg-primary-50/50 p-3 rounded-xl mt-2 flex flex-col gap-2">
+ <span className="text-[11px] text-primary-500 uppercase flex items-center gap-1">
+ <Sparkles size={12} /> AI 智能检测下划词推荐:
+ </span>
+ <div className="flex flex-wrap gap-2">
+ {suggestedTags.map(t => (
+ <button key={t} onClick={() => !hashtags.includes(t) && setHashtags([...hashtags, t])} className="text-[12px] text-neutral-600 bg-white border border-neutral-200 hover:border-primary-300 hover:text-primary-600 px-3 py-1 rounded-lg transition-colors shadow-sm">
+ +{t}
+ </button>
+ ))}
+ </div>
+ </div>
+ </div>
 
-  if (activeProject) {
-    const project = MOCK_PROJECTS.find(p => p.id === activeProject) || MOCK_PROJECTS[0];
-    return (
-      <div className="flex flex-col h-full bg-neutral-50/50 overflow-hidden">
-        {/* Project Generation Header */}
-        <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
-           <div className="flex items-center gap-4">
-              <button 
-                onClick={() => { setActiveProject(null); setActiveBatch(null); }}
-                className="w-10 h-10 border border-neutral-200 rounded-xl flex items-center justify-center text-neutral-500 hover:bg-neutral-50 transition-colors"
-              >
-                 <ChevronLeft size={20} />
-              </button>
-              <div>
-                 <h2 className="text-[17px] font-black text-neutral-900 tracking-tight">{project.name}</h2>
-                 <p className="text-[11px] font-bold text-neutral-400 mt-0.5">项目内容生产车间</p>
-              </div>
-           </div>
-           
-           {activeBatch && !isGenerating && drafts.length > 0 && (
-             <button 
-               onClick={() => setActiveBatch(null)} 
-               className="px-5 py-2 hover:bg-neutral-100 border border-neutral-200 rounded-xl text-[13px] font-black text-neutral-500 transition-colors bg-white shadow-sm"
-             >
-               返回待生产批次
-             </button>
-           )}
-        </div>
+ </div>
 
-         {/* Tab Navigation */}
-         {!activeBatch && (
-            <div className="px-8 pt-4 pb-0 bg-white border-b border-neutral-100 flex items-center gap-8 z-10 shrink-0">
-               <button 
-                  onClick={() => setActiveTab('content')}
-                  className={`pb-4 text-[13px] font-black transition-all relative ${activeTab === 'content' ? 'text-neutral-900 border-b-2 border-primary-500' : 'text-neutral-400 hover:text-neutral-600'}`}
-               >
-                  批量成稿批次
-               </button>
-               <button 
-                  onClick={() => setActiveTab('collaboration')}
-                  className={`pb-4 text-[13px] font-black transition-all relative ${activeTab === 'collaboration' ? 'text-neutral-900 border-b-2 border-primary-500' : 'text-neutral-400 hover:text-neutral-600'}`}
-               >
-                  项目全景日历与协同
-               </button>
-            </div>
-         )}
-         <div className="flex-1 flex overflow-hidden">
-           {activeTab === 'collaboration' && !activeBatch ? (
-             <div className="flex-1 flex flex-col p-12 overflow-y-auto custom-scrollbar">
-                <div className="max-w-5xl mx-auto w-full space-y-8">
-                   <div className="flex items-center justify-between">
-                     <div>
-                       <h3 className="text-2xl font-black text-neutral-900 tracking-tight">日历排期与团队协作</h3>
-                       <p className="text-[13px] font-bold text-neutral-400 mt-2">打通小红书内容生产全链路节点，分配团队撰稿、美工与投放人员。</p>
-                     </div>
-                     <button className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-black shadow-lg hover:bg-neutral-800 transition-colors">
-                        + 添加成员
-                     </button>
-                   </div>
+ {/* Right: AI Subagent & Status */}
+ <div className="w-full xl:w-[460px] bg-white flex flex-col shrink-0 relative z-10 h-full">
+ {/* Subagent Chat */}
+ <div className="flex-1 flex flex-col h-full bg-white relative">
+ <SubagentChat moduleId="content" moduleName="内容修改" initialContext="已挂载当前笔记草稿及最新图文视觉素材。" />
+ </div>
 
-                   <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                      <div className="xl:col-span-2 space-y-6">
-                         <div className="bg-white p-8 rounded-[24px] border border-neutral-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative">
-                            <div className="flex items-center justify-between mb-8">
-                               <h4 className="text-[16px] font-black text-neutral-900 flex items-center gap-2">
-                                  <CalendarDays size={18} className="text-primary-500" /> 
-                                  当月行动排期 (主线进度)
-                               </h4>
-                            </div>
-                            <div className="grid grid-cols-7 gap-3 mb-6">
-                               {['周日', '周一', '周二', '周三', '周四', '周五', '周六'].map((d, i) => (
-                                 <div key={i} className="text-center text-[12px] font-black text-neutral-400 mb-2">{d}</div>
-                               ))}
-                               {[...Array(35)].map((_, i) => {
-                                 const isEvent = i % 8 === 0 && i !== 0;
-                                 return (
-                                   <div key={i} className={`aspect-square rounded-[16px] border flex flex-col items-start justify-between p-3 relative cursor-pointer group ${isEvent ? 'border-primary-500 bg-primary-50 shadow-sm' : 'border-neutral-100 bg-white hover:border-neutral-300 transition-colors'}`}>
-                                     <span className={`text-[12px] font-black ${isEvent ? 'text-primary-600' : 'text-neutral-600'}`}>{i + 1 > 31 ? i - 31 : i + 1}</span>
-                                     {isEvent && <div className="text-[10px] font-bold text-primary-500 leading-tight">首批素材<br/>验收</div>}
-                                   </div>
-                                 );
-                               })}
-                            </div>
-                         </div>
-                      </div>
-                      
-                      <div className="space-y-6">
-                         <div className="bg-white p-8 rounded-[24px] border border-neutral-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                            <h4 className="text-[13px] font-black text-neutral-900 mb-6 flex items-center gap-2 uppercase tracking-widest">
-                               <Users size={16} className="text-neutral-400" />
-                               项目参与人员与分工
-                            </h4>
-                            <div className="space-y-5">
-                               {[
-                                 { role: '内容编导 / 主责', name: '王梦 (AI辅助)', av: 'W', id: '@wm_01' },
-                                 { role: '小红书投手 / 投放', name: '张强', av: 'Z', id: '@zq_ops' },
-                                 { role: '商务对接 / 审核', name: '李静', av: 'L', id: '@lj_sales' }
-                               ].map((u, i) => (
-                                 <div key={i} className="flex items-center gap-4 group cursor-pointer hover:bg-neutral-50 p-2 -mx-2 rounded-xl transition-colors">
-                                    <div className="w-10 h-10 rounded-full bg-neutral-100 text-neutral-500 flex items-center justify-center font-black text-[13px] shrink-0 border-2 border-white shadow-sm group-hover:bg-primary-50 group-hover:text-primary-500 transition-colors">{u.av}</div>
-                                    <div className="flex-1 min-w-0">
-                                       <div className="flex items-center gap-2">
-                                          <div className="text-[14px] font-black text-neutral-900 group-hover:text-primary-500 transition-colors truncate">{u.name}</div>
-                                          {i === 0 && <span className="bg-primary-500 text-white text-[9px] px-1.5 py-0.5 rounded font-black">Owner</span>}
-                                       </div>
-                                       <div className="text-[11px] font-bold text-neutral-400 truncate mt-0.5">{u.role}</div>
-                                    </div>
-                                    <button className="text-neutral-300 hover:text-neutral-900 p-1"><MoreVertical size={16} /></button>
-                                 </div>
-                               ))}
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             </div>
-           ) : !activeBatch && activeTab === 'content' ? (
-              <div className="flex-1 flex flex-col p-8 lg:p-12 overflow-y-auto custom-scrollbar">
-                 <div className="max-w-4xl mx-auto w-full space-y-6">
-                    <div>
-                      <h3 className="text-xl font-black text-neutral-900 tracking-tight">待处理生产批次</h3>
-                      <p className="text-[12px] font-bold text-neutral-400 mt-1.5">系统已根据 {project.name} 的排期日历，为您汇总需要生成内容的批次任务。</p>
-                    </div>
+ {/* Status Config */}
+ <div className="p-6 bg-white border-t border-neutral-200">
+ <button onClick={() => setReviewingDraft(null)} className="w-full py-4 bg-primary-500 text-white rounded-[14px] text-[15px] hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex justify-center items-center gap-2 mb-3">
+ 确认人工精修无误 <CheckCircle2 size={18} />
+ </button>
+ 
+</div>
+ </div>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ <div className="flex flex-col h-full bg-neutral-50/50 overflow-hidden">
 
-                    <div className="grid grid-cols-1 gap-3">
-                       {pendingBatches.map((batch, index) => (
-                          <div key={batch.id} className="bg-white p-4 lg:p-5 rounded-[16px] border border-neutral-200 flex flex-col md:flex-row md:items-center justify-between hover:border-primary-500/30 hover:shadow-md transition-all group gap-4">
-                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-neutral-50 rounded-xl flex flex-col items-center justify-center text-neutral-500 border border-neutral-100 shrink-0">
-                                  <span className="font-black text-[15px] leading-none">{batch.totalCount}</span>
-                                  <span className="text-[9px] uppercase tracking-widest mt-0.5">篇</span>
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                   <div className="flex items-center gap-2 mb-1.5">
-                                      <span className="text-[9px] font-black text-primary-500 bg-primary-50 px-2 py-0.5 rounded-md tracking-widest uppercase">阶段批次 {index + 1}</span>
-                                      <h4 className="text-[14px] font-black text-neutral-900 truncate">{batch.project}</h4>
-                                   </div>
-                                   <p className="text-[11px] font-bold text-neutral-400 flex items-center gap-1.5 truncate">
-                                      <Target size={12} className="shrink-0" /> 目标：{batch.target}
-                                   </p>
-                                </div>
-                             </div>
-                             <button onClick={() => handleStartBatch(batch)} className="w-full md:w-auto px-5 py-2.5 bg-neutral-900 text-white text-[12px] font-black rounded-xl hover:bg-primary-500 transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2 shrink-0">
-                                <Play size={14} fill="currentColor" /> 启动生产
-                             </button>
-                          </div>
-                       ))}
-                    </div>
-                 </div>
-              </div>
-           ) : (
-              <div className="flex-1 flex flex-col relative overflow-hidden bg-white">
-                 {isGenerating ? (
-                    <div className="flex-1 flex flex-col items-center justify-center">
-                       <div className="relative w-24 h-24 mb-8">
-                          <svg className="animate-spin w-full h-full text-neutral-100" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="45" fill="none" strokeWidth="8" />
-                          </svg>
-                          <svg className="absolute inset-0 w-full h-full text-primary-500 origin-center -rotate-90" viewBox="0 0 100 100">
-                            <circle 
-                              cx="50" cy="50" r="45" fill="none" strokeWidth="8" 
-                              strokeDasharray="283" 
-                              strokeDashoffset={283 - (progress / 100) * 283} 
-                              className="transition-all duration-300 ease-out" 
-                              strokeLinecap="round" 
-                            />
-                          </svg>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                             <Sparkles size={28} className="text-primary-500 animate-pulse" />
-                          </div>
-                       </div>
-                       <h3 className="text-2xl font-black text-neutral-900 tracking-tight leading-tight">正在批量构建笔记初稿...</h3>
-                       <p className="text-[14px] font-bold text-neutral-400 mt-3 text-center">
-                         进度 {progress.toFixed(0)}% <br/>
-                         <span className="text-[12px] opacity-70">正在调用知识库防查重与敏感词过滤引擎</span>
-                       </p>
-                    </div>
-                 ) : (
-                    <div className="flex flex-col h-full">
-                       <div className="p-6 border-b border-neutral-100 bg-neutral-50/50 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-                          <div className="flex items-center gap-4">
-                             <button 
-                               onClick={toggleSelectAll}
-                               className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm ${selectAll ? 'bg-primary-500 text-white' : 'bg-white border text-neutral-400 hover:bg-neutral-50'}`}
-                             >
-                                <CheckSquare size={18} />
-                             </button>
-                             <div>
-                                <p className="text-[14px] font-black text-neutral-900">
-                                   已选中 {selectedCount} 篇
-                                </p>
-                                <p className="text-[11px] font-bold text-neutral-400 mt-0.5">
-                                   共 {activeBatch.totalCount} 篇已完成撰写，请确认配图并分配到待分发素材库。
-                                </p>
-                             </div>
-                          </div>
 
-                          <div className="flex items-center gap-3">
-                             <button 
-                               onClick={handleBulkDispatch}
-                               disabled={selectedCount === 0}
-                               className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-black hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors disabled:opacity-50 flex items-center gap-2 shadow-sm"
-                             >
-                                <Camera size={16} /> 批量下发导购实拍 ({selectedCount})
-                             </button>
-                             <button 
-                               onClick={handleBulkSchedule}
-                               disabled={selectedCount === 0}
-                               className="px-5 py-3 bg-neutral-900 text-white rounded-xl text-[13px] font-black hover:bg-primary-500 transition-colors disabled:opacity-50 flex items-center gap-2 shadow-lg"
-                             >
-                                <CalendarClock size={16} /> 入库至待分发列队 ({selectedCount})
-                             </button>
-                          </div>
-                       </div>
+ {/* Project Generation Header */}
+ <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
+ <div className="flex items-center gap-4">
+ <button 
+ onClick={() => { setActiveProject(null); }}
+ className="w-10 h-10 border border-neutral-200 rounded-xl flex items-center justify-center text-neutral-500 hover:bg-neutral-50 transition-colors"
+ >
+ <ChevronLeft size={20} />
+ </button>
+ <div>
+ <h2 className="text-[17px] font-semibold text-neutral-900 tracking-tight">{project.name}</h2>
+ <p className="text-[11px] text-neutral-400 mt-0.5">笔记管理与素材分配</p>
+ </div>
+ </div>
+ 
+ 
+ </div>
 
-                       <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar bg-neutral-50/30">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-                             {drafts.map((draft, i) => (
-                                <div 
-                                  key={draft.id} 
-                                  onClick={() => toggleSelect(draft.id)}
-                                  className={`bg-white rounded-[16px] border-2 transition-all cursor-pointer relative flex flex-col h-[260px] ${draft.selected ? 'border-primary-500 ring-4 ring-primary-500/10 shadow-lg' : 'border-neutral-200 hover:border-neutral-300'}`}
-                                >
-                                   <div className="p-3 lg:p-4 border-b border-neutral-100 flex items-start justify-between bg-neutral-50/30 rounded-t-[14px]">
-                                      <div className="flex-1 min-w-0 pr-3">
-                                         <div className="flex items-center gap-1.5 mb-1.5">
-                                            <span className="text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-widest bg-neutral-200 text-neutral-600">
-                                              #{i + 1}
-                                            </span>
-                                            {draft.status === 'scheduled' && (
-                                              <span className="text-[9px] font-black px-1.5 py-0.5 rounded tracking-widest bg-primary-100 text-primary-600 flex items-center gap-1">
-                                                 <CalendarClock size={10} /> 已入库
-                                              </span>
-                                            )}
-                                            {draft.status === 'dispatched' && (
-                                              <span className="text-[9px] font-black px-1.5 py-0.5 rounded tracking-widest bg-emerald-100 text-emerald-600 flex items-center gap-1">
-                                                 <Camera size={10} /> 待回传
-                                              </span>
-                                            )}
-                                         </div>
-                                         <h4 className="text-[13px] font-black text-neutral-900 leading-snug line-clamp-2">
-                                            {draft.title}
-                                         </h4>
-                                      </div>
-                                      <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-colors ${draft.selected ? 'bg-primary-500 text-white' : 'border border-neutral-300 text-transparent'}`}>
-                                         <CheckCircle2 size={12} className={draft.selected ? 'opacity-100' : 'opacity-0'} />
-                                      </div>
-                                   </div>
-                                   
-                                   <div className="p-3 lg:p-4 flex-1 flex flex-col justify-between overflow-hidden">
-                                      <div>
-                                         <p className="text-[11px] font-bold text-neutral-500 leading-relaxed line-clamp-4">
-                                            {draft.content}
-                                         </p>
-                                      </div>
-                                      <div className="mt-3 flex items-center gap-2">
-                                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-neutral-100 text-neutral-400">
-                                            {draft.imageType === 'pending' ? <ImageIcon size={12} /> : draft.imageType === 'real_shoot' ? <Camera size={12} className="text-emerald-500" /> : <ImageIcon size={12} className="text-primary-500" />}
-                                         </span>
-                                         <span className="text-[10px] font-bold text-neutral-400">
-                                            {draft.imageType === 'pending' ? '未分配素材' : draft.imageType === 'real_shoot' ? '实拍中' : '已匹配图片'}
-                                         </span>
-                                      </div>
-                                   </div>
-                                </div>
-                             ))}
-                          </div>
-                       </div>
-                    </div>
-                 )}
-              </div>
-           )}
-        </div>
-      </div>
-    );
-  }
+ <div className="flex-1 flex relative overflow-hidden bg-white">
+ <div className="flex flex-col w-full h-full">
+ <div className="px-6 pt-4 border-b border-neutral-100 bg-neutral-50/50 flex flex-col gap-4 shrink-0">
+ <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+ <div>
+ <p className="text-[14px] text-neutral-900">
+ 笔记和素材
+ </p>
+ <p className="text-[11px] text-neutral-400 mt-0.5">
+ 在此管理和修改生成的完整笔记，以及跟踪关联图文素材的回传情况。点击文本框即可直接修改笔记，点击右侧助手即可启动 AI 辅助润色。
+ </p>
+ </div>
+ <div className="flex items-center gap-3">
+ <button onClick={() => {}} className="px-4 py-2.5 bg-primary-500 text-white rounded-xl text-[12px] hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
+ <Sparkles size={14} /> 内容策略与分发中心
+ </button>
+ </div>
+ </div>
+ 
+ <div className="flex items-center gap-6 text-[13px] mt-2">
+ <button 
+ onClick={() => setActiveTab('notes')}
+ className={`pb-3 border-b-2 transition-colors ${activeTab === 'notes' ? 'border-primary-500 text-primary-500' : 'border-transparent text-neutral-400 hover:text-neutral-600'}`}
+ >
+ 笔记库
+ </button>
+ <button 
+ onClick={() => setActiveTab('tasks')}
+ className={`pb-3 border-b-2 transition-colors ${activeTab === 'tasks' ? 'border-primary-500 text-primary-500' : 'border-transparent text-neutral-400 hover:text-neutral-600'}`}
+ >
+ 素材任务
+ </button>
+ </div>
+ </div>
 
-  return (
-    <div className="w-full h-full overflow-y-auto bg-white custom-scrollbar pb-24">
-      <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-8">
-        <div className="space-y-1">
-          <h2 className="text-2xl font-black text-neutral-900 tracking-tight">项目运营与团队协作</h2>
-          <p className="text-[13px] text-neutral-400 font-bold">跟踪小红书运营项目的全链路进展、日历排期，并在项目中指派任务进行内容的批量成稿</p>
-        </div>
+ <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar bg-neutral-50/30">
+ {activeTab === 'notes' && (
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+ {drafts.map((draft, i) => (
+ <div 
+ key={draft.id} 
+ onClick={() => setReviewingDraft(draft)}
+ className="bg-white rounded-[16px] border-2 transition-all cursor-pointer relative flex flex-col h-[320px] border-neutral-200 hover:border-primary-500/50 hover:shadow-lg overflow-hidden group"
+ >
+ <div className="h-[150px] bg-neutral-100 relative shrink-0 overflow-hidden flex items-center justify-center">
+ <img src={`https://images.unsplash.com/photo-${1600000000000 + i}?auto=format&fit=crop&q=80&w=400&h=300`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Cover" />
+ <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+ <div className="absolute top-3 left-3 flex gap-1">
+ {draft.status === 'scheduled' && (
+ <span className="text-[10px] px-2 py-0.5 rounded tracking-widest bg-white/90 text-primary-600 shadow-sm flex items-center gap-1">
+ <CalendarClock size={10} /> 待发布
+ </span>
+ )}
+ {draft.status === 'dispatched' && (
+ <span className="text-[10px] px-2 py-0.5 rounded tracking-widest bg-white/90 text-amber-600 shadow-sm flex items-center gap-1">
+ <Camera size={10} /> 实拍中 (素材缺失)
+ </span>
+ )}
+ {draft.status === 'published' && (
+ <span onClick={(e) => { e.stopPropagation(); window.open('https://xiaohongshu.com', '_blank'); }} className="text-[10px] px-2 py-0.5 rounded tracking-widest bg-success-50 text-success-600 shadow-sm flex items-center gap-1 hover:bg-success-600 hover:text-white transition-colors">
+ <CheckCircle2 size={10} /> @豆豆 - 已发布 (查看)
+</span>
+ )}
+ {draft.status === 'review' && (
+ <span className="text-[10px] px-2 py-0.5 rounded tracking-widest bg-white/90 text-neutral-600 shadow-sm flex items-center gap-1">
+ 待审核
+ </span>
+ )}
+ </div>
+ </div>
+ <div className="p-4 flex-1 flex flex-col">
+ <h4 className="text-[13px] font-semibold text-neutral-900 leading-snug line-clamp-2 mb-1.5">
+ {draft.title}
+ </h4>
+ <p className="text-[11px] text-neutral-500 leading-relaxed line-clamp-3">
+ {draft.content}
+ </p>
+ </div>
+ <div className="px-4 py-3 border-t border-neutral-100 flex items-center flex-wrap gap-1.5 bg-neutral-50 shrink-0 min-h-[44px]">
+ {hashtags.slice(0, 2).map(tag => (
+ <span key={tag} className="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">#{tag}</span>
+ ))}
+ </div>
+ </div>
+ ))}
+ </div>
+ )}
 
-        <div className="grid grid-cols-1 gap-4">
-          {MOCK_PROJECTS.map(project => (
-            <motion.div 
-              key={project.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-5 flex flex-col xl:flex-row bg-white border border-neutral-100 rounded-[20px] hover:shadow-xl transition-all group overflow-hidden relative gap-6"
-            >
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 xl:w-2/5">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-neutral-900 rounded-xl flex items-center justify-center text-white shadow-md shrink-0">
-                    <Target size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-[16px] font-black text-neutral-900 mb-1">{project.name}</h3>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest ${project.status === '进行中' ? 'bg-primary-50 text-primary-500' : 'bg-success-50 text-success-600'}`}>
-                        {project.status}
-                      </span>
-                      <span className="text-[11px] text-neutral-400 font-bold">进度 {project.progress}%</span>
-                    </div>
-                  </div>
-                </div>
+ {activeTab === 'tasks' && (
+ <div className="space-y-4 max-w-5xl mx-auto">
+ <div className="flex items-center justify-between mb-4">
+ <div className="text-[16px] text-neutral-900">实拍任务与素材收集发包管理</div>
+ <button onClick={() => setIsCreatingTask(true)} className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[12px] flex items-center gap-1.5 shadow-md hover:bg-neutral-800 transition-colors">
+ <Plus size={16} /> 新建素材图文任务
+ </button>
+ </div>
+ 
+ {tasks.map(task => (
+ <div key={task.id} className="bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col lg:flex-row lg:items-center gap-6 shadow-sm hover:shadow-md transition-shadow">
+ <div className={`w-14 h-14 rounded-[16px] flex items-center justify-center shrink-0 ${task.status === '执行中' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}`}>
+ {task.status === '执行中' ? <Camera size={24} /> : <Target size={24} />}
+ </div>
+ <div className="flex-1">
+ <div className="flex items-center gap-3 mb-1.5">
+ <h4 className="text-[16px] font-semibold text-neutral-900">{task.name} ✕ {task.count}图</h4>
+ <span className={`text-[11px] px-2 py-1 rounded uppercase tracking-widest ${task.status === '执行中' ? 'bg-emerald-100 text-emerald-700' : 'bg-neutral-100 text-neutral-500'}`}>{task.status}</span>
+ </div>
+ <p className="text-[13px] text-neutral-500 leading-relaxed">承接方: {task.assignee} | 截止日期: 明天 18:00<br/>要求: {task.require}</p>
+ </div>
+ <div className="lg:border-l lg:border-neutral-100 lg:pl-6 flex items-center gap-6 shrink-0 lg:ml-auto">
+ <div className="text-right cursor-pointer group" onClick={() => setShowTaskDetail(true)}>
+ <div className="text-[24px] text-neutral-900 group-hover:text-primary-500 transition-colors">{task.current} <span className="text-neutral-400 text-[14px]">/ {task.count}</span></div>
+ <div className="text-[11px] text-neutral-400 uppercase flex items-center gap-1"><Users size={12}/> 查看提交详情</div>
+ </div>
+ <div className="flex flex-col gap-2">
+ <button className="px-5 py-2.5 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl text-[13px] transition-colors shadow-md whitespace-nowrap">
+ {task.status === '执行中' ? '分发入库' : '分发二维码'}
+ </button>
+ {task.current < task.count && (
+ <button className="px-3 py-1.5 border border-primary-200 text-primary-600 bg-primary-50 hover:bg-primary-100 hover:border-primary-300 rounded-lg text-[11px] transition-colors whitespace-nowrap flex items-center justify-center gap-1">
+ <MessageSquare size={12}/> 微信一键催办
+ </button>
+ )}
+ </div>
+ </div>
+ </div>
+ ))}
+ </div>
+ )}
+ </div>
+ </div>
+ </div>
+ </div>
 
-                <div className="flex flex-col gap-2 px-4 border-l-2 border-neutral-50 shrink-0">
-                   <div className="flex items-center justify-between gap-6">
-                     <span className="text-[10px] font-black text-neutral-400 tracking-widest">曝光</span>
-                     <span className="text-[13px] font-black text-neutral-900">{project.kpis.views}</span>
-                   </div>
-                   <div className="flex items-center justify-between gap-6">
-                     <span className="text-[10px] font-black text-neutral-400 tracking-widest">互动</span>
-                     <span className="text-[13px] font-black text-neutral-900">{project.kpis.engagement}</span>
-                   </div>
-                   <div className="flex items-center justify-between gap-6">
-                     <span className="text-[10px] font-black text-neutral-400 tracking-widest">CPE</span>
-                     <span className="text-[13px] font-black text-primary-500">{project.kpis.leads}</span>
-                   </div>
-                </div>
-              </div>
+ </> );
+ }
 
-              <div className="flex items-stretch -mx-1 flex-1 min-w-0">
-                {project.stages.map((stage, idx) => (
-                  <React.Fragment key={idx}>
-                     <div className={`p-3 flex-1 rounded-[16px] border transition-all flex flex-col justify-center min-w-0 ${stage.status === 'completed' ? 'bg-success-50/30 border-success-100' : stage.status === 'active' ? 'bg-white border-primary-500 shadow-sm' : 'bg-neutral-50/50 border-neutral-100 opacity-60'}`}>
-                        <div className="flex items-center justify-between mb-1.5">
-                           <div className={`text-[9px] font-black uppercase tracking-widest ${stage.status === 'completed' ? 'text-success-600' : stage.status === 'active' ? 'text-primary-500' : 'text-neutral-400'}`}>
-                           STG {idx + 1}
-                           </div>
-                           {stage.status === 'completed' && <CheckCircle2 size={12} className="text-success-500 shrink-0 ml-1" />}
-                           {stage.status === 'active' && <Activity size={12} className="text-primary-500 animate-pulse shrink-0 ml-1" />}
-                        </div>
-                        <div className="text-[12px] font-black text-neutral-900 truncate mb-0.5">{stage.name}</div>
-                        <div className="text-[9px] font-bold text-neutral-400 truncate w-full">{stage.value}</div>
-                     </div>
-                     {idx < project.stages.length - 1 && (
-                        <div className="flex items-center justify-center -mx-2.5 z-10 w-5 shrink-0">
-                           <button 
-                             title="触发指令串联"
-                             className={`w-5 h-5 rounded-full bg-white border shadow-sm flex items-center justify-center transition-all group ${stage.status === 'completed' ? 'border-primary-200 text-primary-500 hover:scale-110 hover:bg-primary-50' : 'border-neutral-200 text-neutral-300 hover:text-neutral-600'}`}
-                           >
-                              <Send size={8} className="group-hover:translate-x-0.5 transition-transform" />
-                           </button>
-                        </div>
-                     )}
-                  </React.Fragment>
-                ))}
-              </div>
-              
-               <div className="flex items-center justify-end xl:w-auto xl:pl-4">
-                   <button 
-                     onClick={() => setActiveProject(project.id)}
-                     className="w-full xl:w-auto px-5 py-2.5 bg-neutral-900 text-white rounded-[14px] text-[12px] font-black transition-all flex items-center justify-center gap-2 hover:bg-primary-500 shadow-lg active:scale-95 whitespace-nowrap"
-                   >
-                     <PenTool size={14} />
-                     成稿车间
-                   </button>
-               </div>
-            </motion.div>
-          ))}
-        </div>
+ return (
+ <>
+{/* Draft Review Modal */}
+ <AnimatePresence>
+ {reviewingDraft && (
+ <motion.div 
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-center p-4 md:p-8"
+ >
+ <motion.div 
+ initial={{ y: 20, opacity: 0, scale: 0.95 }}
+ animate={{ y: 0, opacity: 1, scale: 1 }}
+ exit={{ y: 20, opacity: 0, scale: 0.95 }}
+ className="w-full max-w-5xl bg-white h-full rounded-[30px] shadow-2xl flex flex-col overflow-hidden"
+ >
+ <div className="h-16 border-b border-neutral-100 flex items-center justify-between px-6 bg-white shrink-0">
+ <div className="flex items-center gap-3">
+ <div className="w-8 h-8 md:w-10 md:h-10 bg-primary-50 text-primary-500 rounded-xl flex items-center justify-center">
+ <PenTool size={18} />
+ </div>
+ <h2 className="text-[16px] md:text-xl font-semibold text-neutral-900 tracking-tight">修改笔记</h2>
+ </div>
+ <button onClick={() => setReviewingDraft(null)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 transition-colors">
+ <X size={20} />
+ </button>
+ </div>
+ <div className="flex-1 overflow-y-auto flex flex-col xl:flex-row bg-neutral-50">
+ {/* Left: Component Edit */}
+ <div className="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto custom-scrollbar lg:border-r border-neutral-200">
+ <div className="space-y-4">
+ <div className="flex items-center justify-between">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <ImageIcon size={18} className="text-neutral-400" />
+ 笔记素材
+ </label>
+ <button className="text-[11px] text-neutral-600 hover:text-primary-600 border border-neutral-200 hover:border-primary-200 hover:bg-primary-50 px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1">
+                                    使用品牌素材库 <span className="text-neutral-400">|</span> 增删素材
+                                 </button>
+ </div>
+ 
+ <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+ <div className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
+ <img src="https://images.unsplash.com/photo-1600000000000?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="封面" />
+ <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">封面首图</div>
+ <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
+ 点击预览/编辑
+ </div>
+ </div>
+ <div className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
+ <img src="https://images.unsplash.com/photo-1600000000001?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="内图" />
+ <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">内页 1</div>
+ <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
+ 点击预览/编辑
+ </div>
+ </div>
+ <div className="w-[140px] h-[180px] rounded-2xl border border-dashed border-neutral-300 bg-white relative shrink-0 flex flex-col gap-2 items-center justify-center hover:bg-neutral-50 cursor-pointer transition-colors text-neutral-400 hover:text-neutral-600">
+ <PlusCircle size={28} />
+ <span className="text-[12px] ">添加笔记素材</span>
+ </div>
+ </div>
+ </div>
 
-        <button 
-           onClick={() => setIsCreatingProject(true)}
-           className="w-full py-4 bg-white border border-dashed border-neutral-200 rounded-[20px] text-[13px] font-black text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-2"
-        >
-           <PlusCircle size={18} /> 启动新项目
-        </button>
+ <div className="space-y-3 group/title relative">
+ <div className="flex items-center justify-between">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <PenTool size={18} className="text-neutral-400" />
+ 笔记标题
+ </label>
+ 
+ </div>
+ <div className="relative">
+ <input type="text" defaultValue={reviewingDraft.title} className="w-full bg-white border border-neutral-200 rounded-xl pl-4 pr-10 py-3.5 text-[15px] outline-none focus:border-primary-500 hover:border-neutral-300 transition-colors shadow-inner" />
+ 
+ </div>
+ </div>
+ <div className="space-y-3 group/content relative">
+ <div className="flex flex-wrap items-center justify-between gap-2">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <PenTool size={18} className="text-neutral-400" />
+ 笔记正文与排版
+ </label>
+ 
+ </div>
+ <div className="relative">
+ <textarea rows={10} defaultValue={reviewingDraft.content} className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
+ <button className="absolute right-3 bottom-3 p-1.5 bg-neutral-100 hover:bg-primary-50 text-neutral-400 hover:text-primary-600 rounded-lg drop-shadow-sm transition-all border border-neutral-200 hover:border-primary-200 flex items-center gap-1">
+ <Bot size={14} /> <span className="text-[10px] ">选中内容进行 AI 修改</span>
+ </button>
+ </div>
+ </div>
 
-        {/* Create Project Overlay Modal */}
-        <AnimatePresence>
-          {isCreatingProject && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-end p-4"
-            >
-              <motion.div 
-                 initial={{ x: '100%', opacity: 0 }}
-                 animate={{ x: 0, opacity: 1 }}
-                 exit={{ x: '100%', opacity: 0 }}
-                 transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                 className="w-full max-w-3xl bg-white h-full rounded-[40px] shadow-2xl flex flex-col overflow-hidden"
-              >
-                 <div className="h-20 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0">
-                    <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
-                          <Package size={20} />
-                       </div>
-                       <h2 className="text-xl font-black text-neutral-900 tracking-tight">创建新项目</h2>
-                    </div>
-                    <button onClick={() => setIsCreatingProject(false)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 transition-colors">
-                       <X size={20} />
-                    </button>
-                 </div>
-                 
-                 <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/30 custom-scrollbar space-y-10">
-                    <div className="space-y-6">
-                       <h3 className="text-[14px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
-                          <Target size={18} className="text-neutral-400" /> 1. 项目与目标立项
-                       </h3>
-                       <div className="grid grid-cols-2 gap-5">
-                          <div className="space-y-2">
-                             <label className="text-[11px] font-bold text-neutral-400 uppercase">关联客户/项目主账号</label>
-                             <select className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] font-black outline-none focus:border-primary-500 transition-colors">
-                               <option>奈雪的茶 (NX-001)</option>
-                               <option>霸王茶姬 (BW-022)</option>
-                             </select>
-                          </div>
-                          <div className="space-y-2">
-                             <label className="text-[11px] font-bold text-neutral-400 uppercase">项目名称</label>
-                             <input type="text" placeholder="例如：2026秋季大促矩阵" className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] font-black outline-none focus:border-primary-500 transition-colors" />
-                          </div>
-                          <div className="col-span-2 space-y-2">
-                             <label className="text-[11px] font-bold text-neutral-400 uppercase">核心运营目标</label>
-                             <textarea 
-                               rows={2} 
-                               placeholder="描述您的期望，例如：'想在下个月提升防晒品类的搜索占位，需要大批量真实素人测评'..." 
-                               className="w-full bg-white border border-neutral-200 rounded-2xl p-4 text-[14px] font-bold outline-none focus:border-primary-500 transition-colors resize-none"
-                             />
-                          </div>
-                          <div className="col-span-2 mt-1">
-                             <button className="px-6 py-3.5 bg-neutral-900 text-white rounded-xl text-[13px] font-black flex items-center gap-2 hover:bg-primary-500 transition-all shadow-lg active:scale-95 group border-0">
-                                <Sparkles size={16} className="text-primary-400 group-hover:text-white transition-colors" /> 智能排期助手分析目标
-                             </button>
-                          </div>
-                       </div>
-                    </div>
+ <div className="space-y-3">
+ <label className="text-[14px] text-neutral-900 flex items-center gap-2">
+ <Hash size={18} className="text-neutral-400" />
+ 话题标签打标 (Hashtags)
+ </label>
+ <div className="flex flex-wrap gap-2">
+ {hashtags.map(t => (
+ <span key={t} className="px-3 py-1.5 bg-neutral-900 text-white rounded-lg text-[13px] flex items-center gap-1.5 shadow-sm">
+ #{t} 
+ <button className="hover:text-red-400" onClick={() => setHashtags(hashtags.filter(h => h !== t))}><X size={14} /></button>
+ </span>
+ ))}
+ <button className="px-3 py-1.5 bg-white border border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900 rounded-lg text-[13px] flex items-center gap-1 shadow-sm transition-colors">
+ <Plus size={14} /> 自定义
+ </button>
+ </div>
+ <div className="pt-2 bg-primary-50/50 p-3 rounded-xl mt-2 flex flex-col gap-2">
+ <span className="text-[11px] text-primary-500 uppercase flex items-center gap-1">
+ <Sparkles size={12} /> AI 智能检测下划词推荐:
+ </span>
+ <div className="flex flex-wrap gap-2">
+ {suggestedTags.map(t => (
+ <button key={t} onClick={() => !hashtags.includes(t) && setHashtags([...hashtags, t])} className="text-[12px] text-neutral-600 bg-white border border-neutral-200 hover:border-primary-300 hover:text-primary-600 px-3 py-1 rounded-lg transition-colors shadow-sm">
+ +{t}
+ </button>
+ ))}
+ </div>
+ </div>
+ </div>
 
-                    <div className="space-y-6 pt-6 border-t border-neutral-200/50">
-                       <div className="flex flex-col gap-1">
-                          <div className="flex items-center justify-between">
-                             <h3 className="text-[14px] font-black text-neutral-900 uppercase tracking-widest flex items-center gap-2">
-                                <Calendar size={18} className="text-neutral-400" /> 2. 阶段性周期排期与指标任务
-                             </h3>
-                             <span className="text-[10px] font-black text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-md shadow-sm">可手动微调</span>
-                          </div>
-                          <p className="text-[12px] font-bold text-neutral-400 ml-6">系统已根据目标智能规划出最优发布节奏与所需的笔记规模。</p>
-                       </div>
-                       
-                       <div className="space-y-4">
-                          {[
-                             { period: '冷启动与收录期', notes: '25 篇', target: '跑通账号防晒标签，提升基础社区收录率' },
-                             { period: '心智种草与互动期', notes: '40 篇', target: '测试垂直穿搭/美妆流量池，沉淀转化素材' },
-                             { period: '搜索卡位与爆发期', notes: '60 篇', target: '集中占据防晒推荐搜索占位，获取长尾流量' }
-                          ].map((m, i) => (
-                             <div key={i} className="bg-white p-6 rounded-[24px] border border-neutral-200 hover:border-primary-500/30 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-start md:items-center gap-5">
-                                <div className="w-10 h-10 bg-neutral-100 rounded-[12px] flex items-center justify-center text-neutral-500 font-black text-[15px] shrink-0">
-                                   {i + 1}
-                                </div>
-                                <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-4 gap-4">
-                                   <div className="md:col-span-1">
-                                     <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1.5 block">阶段定义</label>
-                                     <input defaultValue={m.period} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black outline-none focus:bg-white focus:border-primary-500 transition-colors" />
-                                   </div>
-                                   <div className="md:col-span-1">
-                                     <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1.5 block">目标产量</label>
-                                     <input defaultValue={m.notes} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black outline-none focus:bg-white focus:border-primary-500 transition-colors" />
-                                   </div>
-                                   <div className="md:col-span-2">
-                                     <label className="text-[10px] font-bold text-neutral-400 uppercase mb-1.5 block">阶段核心目标 (KPI)</label>
-                                     <input defaultValue={m.target} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] font-black outline-none focus:bg-white focus:border-primary-500 transition-colors" />
-                                   </div>
-                                </div>
-                             </div>
-                          ))}
-                          <button className="w-full py-5 border-2 border-dashed border-neutral-200 rounded-[24px] text-[13px] font-black text-neutral-400 hover:border-neutral-300 hover:bg-neutral-50 transition-colors">
-                             + 手动增加周期排期
-                          </button>
-                       </div>
-                    </div>
-                 </div>
+ </div>
 
-                 <div className="h-24 border-t border-neutral-100 bg-white flex items-center justify-between px-8 shrink-0">
-                    <div className="text-[12px] font-bold text-neutral-400 flex items-center gap-2 bg-neutral-50 px-4 py-2 rounded-xl">
-                       <div className="relative flex h-2 w-2">
-                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                       </div>
-                       已默认关联当前商家 IP规范与敏感词拦截库
-                    </div>
-                    <div className="flex items-center gap-3">
-                       <button onClick={() => setIsCreatingProject(false)} className="px-6 py-3.5 rounded-xl text-[14px] font-black text-neutral-500 hover:bg-neutral-100 transition-colors">
-                          取消
-                       </button>
-                       <button onClick={() => setIsCreatingProject(false)} className="px-8 py-3.5 bg-primary-500 text-white rounded-xl text-[14px] font-black hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/20 active:scale-95 flex items-center gap-2">
-                          确认创建并生成排期任务 <ArrowRight size={16} />
-                       </button>
-                    </div>
-                 </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
+ {/* Right: AI Subagent & Status */}
+ <div className="w-full xl:w-[460px] bg-white flex flex-col shrink-0 relative z-10 h-full">
+ {/* Subagent Chat */}
+ <div className="flex-1 flex flex-col h-full bg-white relative">
+ <SubagentChat moduleId="content" moduleName="内容修改" initialContext="已挂载当前笔记草稿及最新图文视觉素材。" />
+ </div>
+
+ {/* Status Config */}
+ <div className="p-6 bg-white border-t border-neutral-200">
+ <button onClick={() => setReviewingDraft(null)} className="w-full py-4 bg-primary-500 text-white rounded-[14px] text-[15px] hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex justify-center items-center gap-2 mb-3">
+ 确认人工精修无误 <CheckCircle2 size={18} />
+ </button>
+ 
+</div>
+ </div>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ <div className="w-full h-full overflow-y-auto bg-white custom-scrollbar pb-24">
+ <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-8">
+ <div className="space-y-1">
+ <h2 className="text-2xl font-semibold text-neutral-900 tracking-tight">项目运营与团队协作</h2>
+ <p className="text-[13px] text-neutral-400 ">跟踪小红书运营项目的全链路进展、日历排期，并在项目中指派任务进行内容的批量成稿</p>
+ </div>
+
+ <div className="grid grid-cols-1 gap-4">
+ {MOCK_PROJECTS.map(project => (
+ <motion.div 
+ key={project.id}
+ initial={{ opacity: 0, y: 10 }}
+ animate={{ opacity: 1, y: 0 }}
+ className="p-5 flex flex-col xl:flex-row bg-white border border-neutral-100 rounded-[20px] hover:shadow-xl transition-all group overflow-hidden relative gap-6 items-center"
+ >
+ <div className="flex items-center gap-4 min-w-[240px] shrink-0">
+ <div className="min-w-0">
+ <h3 className="text-[16px] font-semibold text-neutral-900 mb-2 truncate">{project.name}</h3>
+ <div className="flex items-center gap-1.5 text-[9px] tracking-widest uppercase mt-1">
+ <span className={`px-2 py-1 rounded shadow-sm flex items-center gap-1 ${project.status === '任务进行中' ? 'text-primary-600 bg-primary-50 border border-primary-100' : 'text-neutral-500 bg-white border border-neutral-200'}`}><CheckCircle2 size={10} />图文生成</span>
+ <ArrowRight size={10} className="text-neutral-300" />
+ <span className={`px-2 py-1 rounded shadow-sm flex items-center gap-1 ${project.status === '任务进行中' ? 'text-emerald-600 bg-emerald-50 border border-emerald-100' : 'text-neutral-500 bg-white border border-neutral-200'}`}><Camera size={10} />素材回传分发</span>
+ <ArrowRight size={10} className="text-neutral-300" />
+ <span className={`px-2 py-1 rounded shadow-sm ${project.status === '已完成' ? 'text-success-600 bg-success-50 border border-success-100' : 'text-neutral-400 bg-neutral-50'}`}>自动发布归档</span>
+ </div>
+ </div>
+ </div>
+
+ <div className="flex-1 flex gap-6 md:gap-8 items-center xl:px-6 xl:border-x border-neutral-50 overflow-x-auto custom-scrollbar">
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">排发任务总数</span>
+ <span className="text-[16px] text-neutral-900">{project.targetCount}</span>
+ </div>
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">已提交素材</span>
+ <span className="text-[16px] text-emerald-500">{project.recoveredMaterial}</span>
+ </div>
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">已成稿笔记</span>
+ <span className="text-[16px] text-primary-500">{project.generatedNotes}</span>
+ </div>
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">已成功发布</span>
+ <span className="text-[16px] text-success-500">{project.publishedNotes}</span>
+ </div>
+ </div>
+
+ <div className="flex flex-col sm:flex-row justify-center gap-2 xl:pl-4 shrink-0 w-full xl:w-auto">
+ <button 
+ onClick={() => { setActiveProject(project.id); generateMocks(); }}
+ className="w-full sm:w-auto px-5 py-2.5 bg-neutral-900 text-white rounded-[14px] text-[12px] transition-all flex items-center justify-center gap-2 hover:bg-primary-500 shadow-lg active:scale-95 whitespace-nowrap"
+ >
+ <PenTool size={14} /> 管理笔记
+ </button>
+ <button className="w-full sm:w-auto px-5 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-[14px] text-[12px] transition-all flex items-center justify-center gap-2 hover:bg-neutral-50 shadow-sm whitespace-nowrap">
+ <Target size={14} /> 分发二维码
+ </button>
+ </div>
+ </motion.div>
+ ))}
+ </div>
+
+ <button 
+ onClick={() => setIsCreatingProject(true)}
+ className="w-full py-4 bg-white border border-dashed border-neutral-200 rounded-[20px] text-[13px] text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-2"
+ >
+ <PlusCircle size={18} /> 启动新项目
+ </button>
+
+ 
+ 
+
+ {/* Create Project Overlay Modal */}
+
+ <AnimatePresence>
+ {isCreatingProject && (
+ <motion.div 
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-end p-4"
+ >
+ <motion.div 
+ initial={{ x: '100%', opacity: 0 }}
+ animate={{ x: 0, opacity: 1 }}
+ exit={{ x: '100%', opacity: 0 }}
+ transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+ className="w-full max-w-3xl bg-white h-full rounded-[40px] shadow-2xl flex flex-col overflow-hidden"
+ >
+ <div className="h-20 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0">
+ <div className="flex items-center gap-3">
+ <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
+ <Package size={20} />
+ </div>
+ <h2 className="text-xl font-semibold text-neutral-900 tracking-tight">创建新项目</h2>
+ </div>
+ <button onClick={() => setIsCreatingProject(false)} className="p-2 hover:bg-neutral-100 rounded-xl text-neutral-400 transition-colors">
+ <X size={20} />
+ </button>
+ </div>
+ 
+ <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/30 custom-scrollbar space-y-10">
+ <div className="space-y-6">
+ <h3 className="text-[14px] font-semibold text-neutral-900 uppercase tracking-widest flex items-center gap-2">
+<Target size={18} className="text-neutral-400" /> 1. 运营项目立项
+</h3>
+ <div className="grid grid-cols-1 gap-5">
+ <div className="space-y-2">
+ <label className="text-[11px] text-neutral-400 uppercase">项目名称</label>
+ <input type="text" placeholder="例如：2026秋季大促矩阵" className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] outline-none focus:border-primary-500 transition-colors" />
+ </div>
+ <div className="space-y-2">
+ <label className="text-[11px] text-neutral-400 uppercase">排期开始日期</label>
+ <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full h-12 bg-white border border-neutral-200 rounded-xl px-4 text-[14px] outline-none focus:border-primary-500 transition-colors text-neutral-700 block" style={{ colorScheme: 'light' }} />
+ </div>
+ <div className="col-span-2 space-y-2 mt-2">
+ <label className="text-[11px] text-neutral-400 uppercase">核心运营目标</label>
+ <textarea 
+ rows={2} 
+ value={coreTarget}
+ onChange={(e) => setCoreTarget(e.target.value)}
+ placeholder="描述您的期望，例如：'想在下个月提升防晒品类的搜索占位，需要大批量真实素人测评'..." 
+ className="w-full bg-white border border-neutral-200 rounded-2xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none"
+ />
+ </div>
+ <div className="col-span-2 mt-1">
+ <button 
+ onClick={handleAnalyzeTarget}
+ disabled={isAnalyzingTarget}
+ className={`px-6 py-3.5 rounded-xl text-[13px] flex items-center gap-2 transition-all shadow-lg active:scale-95 border-0 ${isAnalyzingTarget ? 'bg-neutral-200 text-neutral-500 cursor-not-allowed' : 'bg-neutral-900 text-white hover:bg-primary-500 group'}`}
+ >
+ <Sparkles size={16} className={isAnalyzingTarget ? "animate-spin text-neutral-500" : "text-primary-400 group-hover:text-white transition-colors"} /> 
+ {isAnalyzingTarget ? '智能排期分析中...' : '智能排期助手分析目标'}
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <div className="space-y-6 pt-6 border-t border-neutral-200/50">
+ <div className="flex flex-col gap-1">
+ <div className="flex items-center justify-between">
+ <h3 className="text-[14px] font-semibold text-neutral-900 uppercase tracking-widest flex items-center gap-2">
+<Calendar size={18} className="text-neutral-400" /> 2. 规划执行排期与账号分配
+</h3>
+ <span className="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-md shadow-sm">可手动微调</span>
+ </div>
+ <p className="text-[12px] text-neutral-400 ml-6">系统已根据目标智能规划出最优发布节奏与所需的笔记规模。</p>
+ </div>
+ 
+ <div className="space-y-4">
+ {schedulePeriods.map((m, i) => (
+ <div key={i} className="bg-white p-6 rounded-[24px] border border-neutral-200 hover:border-primary-500/30 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col xl:flex-row items-start xl:items-center gap-5">
+ <div className="w-10 h-10 bg-neutral-100 rounded-[12px] flex items-center justify-center text-neutral-500 text-[15px] shrink-0">
+ {i + 1}
+ </div>
+ <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+ <div className="xl:col-span-1">
+ <label className="text-[10px] text-neutral-400 uppercase mb-1.5 block">阶段定义</label>
+ <input readOnly value={m.period} className="w-full bg-neutral-100 border border-transparent rounded-xl px-3 py-2 text-[13px] text-neutral-500 outline-none cursor-not-allowed" />
+ </div>
+ <div className="xl:col-span-1">
+ <label className="text-[10px] text-neutral-400 uppercase mb-1.5 block">目标产量</label>
+ <input value={m.notes} onChange={(e) => handleNotesChange(i, e.target.value)} className="w-full bg-white border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] outline-none focus:bg-white focus:border-primary-500 transition-colors" />
+ </div>
+ <div className="xl:col-span-2">
+ <label className="text-[10px] text-neutral-400 uppercase mb-1.5 block">阶段核心目标 (KPI)</label>
+ <input defaultValue={m.target} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[13px] outline-none focus:bg-white focus:border-primary-500 transition-colors" />
+ </div>
+ <div className="xl:col-span-1">
+ <label className="text-[10px] text-neutral-400 uppercase mb-1.5 block">账号类型分配</label>
+ <input readOnly value={m.allocation} title={m.allocation} className="w-full bg-neutral-50 border border-neutral-200/50 rounded-xl px-3 py-2 text-[11px] outline-none focus:bg-white focus:border-primary-500 transition-colors text-slate-700" />
+ </div>
+ </div>
+ <button onClick={() => handleRemovePeriod(i)} className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 flex items-center justify-center text-red-500 transition-colors shrink-0" title="删除当前阶段排期">
+ <Trash2 size={14} />
+ </button>
+ </div>
+ ))}
+ 
+ </div>
+ </div>
+ </div>
+
+ <div className="h-24 border-t border-neutral-100 bg-white flex items-center justify-between px-8 shrink-0">
+ <div className="text-[12px] text-neutral-400 flex items-center gap-2 bg-neutral-50 px-4 py-2 rounded-xl">
+ <div className="relative flex h-2 w-2">
+ <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+ <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+ </div>
+ 已默认关联当前商家 IP规范与敏感词拦截库
+ </div>
+ <div className="flex items-center gap-3">
+ <button onClick={() => setIsCreatingProject(false)} className="px-6 py-3.5 rounded-xl text-[14px] text-neutral-500 hover:bg-neutral-100 transition-colors">
+ 取消
+ </button>
+ <button onClick={() => setShowConfirmModal(true)} className="px-8 py-3.5 bg-primary-500 text-white rounded-xl text-[14px] hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/20 active:scale-95 flex items-center gap-2">
+ 确认立项并保存任务排期 <ArrowRight size={16} />
+ </button>
+ </div>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ {/* Create Task Modal */}
+ <AnimatePresence>
+ {isCreatingTask && (
+ <motion.div 
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm flex justify-center p-4 items-center"
+ >
+ <motion.div 
+ initial={{ y: 20, opacity: 0, scale: 0.95 }}
+ animate={{ y: 0, opacity: 1, scale: 1 }}
+ exit={{ y: 20, opacity: 0, scale: 0.95 }}
+ className="w-full max-w-lg bg-white rounded-[24px] shadow-2xl flex flex-col overflow-hidden"
+ >
+ <div className="h-16 border-b border-neutral-100 flex items-center justify-between px-6 bg-neutral-50 shrink-0">
+ <h2 className="text-[16px] font-semibold text-neutral-900 tracking-tight">发布新的素材图文收集任务</h2>
+ <button onClick={() => setIsCreatingTask(false)} className="p-2 hover:bg-neutral-200 rounded-xl text-neutral-500 transition-colors">
+ <X size={20} />
+ </button>
+ </div>
+ <div className="p-6 space-y-5">
+ <div className="space-y-2">
+ <label className="text-[13px] text-neutral-900">任务需求名称</label>
+ <input value={taskName} onChange={e => setTaskName(e.target.value)} placeholder="例如: 阳光外拍素材集1" className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-[14px] outline-none focus:border-primary-500 transition-colors shadow-sm" />
+ </div>
+ <div className="flex gap-4">
+ <div className="flex-1 space-y-2">
+ <label className="text-[13px] text-neutral-900">指派给谁 (承接人/编外机构)</label>
+ <input value={taskAssignee} onChange={e => setTaskAssignee(e.target.value)} placeholder="例如: 外部编导 王小明" className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-[14px] outline-none focus:border-primary-500 transition-colors shadow-sm" />
+ </div>
+ <div className="w-[120px] space-y-2">
+ <label className="text-[13px] text-neutral-900">图文张数</label>
+ <input type="number" value={taskCount} onChange={e => setTaskCount(Number(e.target.value))} className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-[14px] outline-none focus:border-primary-500 transition-colors shadow-sm" />
+ </div>
+ </div>
+ </div>
+ <div className="p-6 pt-0">
+ <button 
+ onClick={() => {
+ setTasks([...tasks, { id: Date.now(), name: taskName, assignee: taskAssignee || "待定", count: taskCount, current: 0, status: '待承接', require: '请根据提示要求回传高质量图文。' }]);
+ setIsCreatingTask(false);
+ setTaskName("");
+ setTaskAssignee("");
+ }}
+ className="w-full py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] transition-all hover:bg-primary-500 shadow-md active:scale-95"
+ >
+ 确认派发图文任务
+ </button>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ {/* Secondary Confirmation Modal */}
+ <AnimatePresence>
+ {showConfirmModal && (
+ <motion.div 
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+ >
+ <motion.div
+ initial={{ scale: 0.95, opacity: 0 }}
+ animate={{ scale: 1, opacity: 1 }}
+ exit={{ scale: 0.95, opacity: 0 }}
+ className="bg-white rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col"
+ >
+ <div className="p-6 border-b border-neutral-100 flex items-center gap-4 bg-amber-50">
+ <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-[16px] flex items-center justify-center shrink-0">
+ <AlertTriangle size={24} />
+ </div>
+ <div>
+ <h3 className="text-[16px] font-semibold text-amber-900">执行资源预警确认</h3>
+ <p className="text-[12px] text-amber-700 mt-1">检测到计划发布分发的内容密集度较高，需二次确认</p>
+ </div>
+ </div>
+ <div className="p-6 space-y-4 bg-white flex-1">
+ <div className="p-4 bg-neutral-50 rounded-[16px] border border-neutral-200">
+ <ul className="space-y-3">
+ <li className="flex items-start gap-2">
+ <AlertCircle size={14} className="text-neutral-400 mt-0.5 shrink-0" />
+ <span className="text-[13px] text-slate-700 leading-snug">
+ 请确认是否具备足够数量的合作账号矩阵。
+ </span>
+ </li>
+ <li className="flex items-start gap-2">
+ <AlertCircle size={14} className="text-neutral-400 mt-0.5 shrink-0" />
+ <span className="text-[13px] text-slate-700 leading-snug">
+ 所有内容将由博主或员工扫描二维码通过官方流程发布（防风控安全模式），如储备账号不足，将导致您规划的产能无法落地分发。
+ </span>
+ </li>
+ </ul>
+ </div>
+ <p className="text-[12px] text-neutral-500 px-1">
+ 点击“强制执行创建”后，系统将在本阶段自动锁定对应的预算和积分消耗。
+ </p>
+ </div>
+ <div className="p-4 bg-neutral-50 border-t border-neutral-100 flex items-center justify-end gap-3 shrink-0">
+ <button onClick={() => setShowConfirmModal(false)} className="px-5 py-2.5 rounded-xl text-[13px] text-neutral-500 hover:bg-neutral-200 transition-colors">
+ 返回调整排期
+ </button>
+ <button onClick={() => { setShowConfirmModal(false); setIsCreatingProject(false); }} className="px-6 py-2.5 bg-amber-500 text-white rounded-xl text-[13px] hover:bg-amber-600 transition-all shadow-sm active:scale-95">
+ 确认资源充足，强制执行
+ </button>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+
+ {/* Task Detail Modal */}
+ <AnimatePresence>
+ {showTaskDetail && (
+ <motion.div 
+ initial={{ opacity: 0 }}
+ animate={{ opacity: 1 }}
+ exit={{ opacity: 0 }}
+ className="fixed inset-0 z-[60] bg-neutral-900/40 backdrop-blur-sm flex justify-center p-4 md:p-8"
+ onClick={() => setShowTaskDetail(false)}
+ >
+ <motion.div 
+ initial={{ y: 20, opacity: 0, scale: 0.95 }}
+ animate={{ y: 0, opacity: 1, scale: 1 }}
+ exit={{ y: 20, opacity: 0, scale: 0.95 }}
+ className="w-full max-w-xl bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden relative"
+ onClick={(e) => e.stopPropagation()}
+ >
+ <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+ <div>
+ <h2 className="text-[18px] font-semibold text-neutral-900">图文承接人员提交详情</h2>
+ <p className="text-[12px] text-neutral-400 mt-1">监督哪些人已经提交，或者发微信通知催办</p>
+ </div>
+ <button onClick={() => setShowTaskDetail(false)} className="p-2 hover:bg-neutral-200 rounded-xl text-neutral-500 transition-colors">
+ <X size={20} />
+ </button>
+ </div>
+ <div className="p-6 space-y-4">
+ <div className="flex items-center justify-between p-4 border border-neutral-100 rounded-2xl bg-white">
+ <div className="flex items-center gap-3">
+ <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center ">豆</div>
+ <div>
+ <p className="text-[14px] text-neutral-900">@豆豆 (KOC)</p>
+ <p className="text-[12px] text-neutral-400">已提交 8 张原图结构</p>
+ </div>
+ </div>
+ <span className="text-[12px] text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">已完成</span>
+ </div>
+ <div className="flex items-center justify-between p-4 border border-neutral-100 rounded-2xl bg-white">
+ <div className="flex items-center gap-3">
+ <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center ">李</div>
+ <div>
+ <p className="text-[14px] text-neutral-900">@李同学 (KOC)</p>
+ <p className="text-[12px] text-amber-500">待提交素材，原定 7 张</p>
+ </div>
+ </div>
+ <button className="text-[12px] text-primary-600 bg-primary-50 hover:bg-primary-100 px-4 py-2 rounded-xl flex items-center gap-1.5 transition-colors">
+ <MessageSquare size={14} /> 微信催图
+ </button>
+ </div>
+ </div>
+ <div className="p-6 pt-2">
+ <button onClick={() => setShowTaskDetail(false)} className="w-full py-4 text-[14px] text-neutral-900 bg-neutral-100 hover:bg-neutral-200 transition-colors rounded-xl">关闭</button>
+ </div>
+ </motion.div>
+ </motion.div>
+ )}
+ </AnimatePresence>
+
+
+ </div>
+ </div>
+
+ </>
+ );
 }
 
 const TargetIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
-  </svg>
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+ <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+ </svg>
 );
