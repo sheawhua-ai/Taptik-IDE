@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
  PlusCircle, Target, ArrowUpRight, CheckCircle2, Activity, Send, 
  Package, X, Calendar, ArrowRight, PenTool, Play, Camera, CalendarClock,
- Image as ImageIcon, Sparkles, CheckSquare, Settings, ChevronLeft,
+ Image as ImageIcon, RefreshCw, Sparkles, CheckSquare, Settings, ChevronLeft,
  Users, MoreVertical, CalendarDays, Trash2, AlertTriangle, AlertCircle,
  Plus, Hash, Bot, MessageSquare
 } from 'lucide-react';
@@ -38,6 +38,14 @@ export default function MerchantMatrix() {
  const [taskName, setTaskName] = useState("");
  const [taskAssignee, setTaskAssignee] = useState("");
  const [taskCount, setTaskCount] = useState(10);
+  const handleFieldFocus = (fieldName: string, content?: string, expertName: string = '内容专家') => {
+    window.dispatchEvent(new CustomEvent('open-expert', {
+      detail: { 
+        expert: expertName, 
+        context: content ? `需要修改的${fieldName}：\n"${content}"\n\n请结合项目背景和上述内容，提供修改建议。` : `准备修改${fieldName}...` 
+      }
+    }));
+  };
  const [tasks, setTasks] = useState([
  { id: 1, name: '周末都市通勤穿搭实拍', count: 15, current: 8, assignee: '豆豆 (KOC)', status: '执行中', require: '阳光充足，体现透气材质，带产品特写，需与文案风格契合。' },
  { id: 2, name: '室内棚拍静物摆拍', count: 30, current: 0, assignee: '内部视觉组', status: '待承接', require: '纯净背景，突出产品包材质感，需要高分辨率原图。' }
@@ -193,24 +201,38 @@ export default function MerchantMatrix() {
  <ImageIcon size={18} className="text-neutral-400" />
  笔记素材
  </label>
- <button className="text-[11px] text-neutral-600 hover:text-primary-600 border border-neutral-200 hover:border-primary-200 hover:bg-primary-50 px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1">
-                                    使用品牌素材库 <span className="text-neutral-400">|</span> 增删素材
-                                 </button>
+ 
  </div>
  
  <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
- <div className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
+ <div onClick={() => handleFieldFocus("封面素材", "请分析此封面首图是否吸睛、是否符合当前笔记调性", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
  <img src="https://images.unsplash.com/photo-1600000000000?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="封面" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">封面首图</div>
- <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
- 点击预览/编辑
+ <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Sparkles size={12} /> AI推荐替换
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Camera size={12} /> 起草重拍需求
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
+   <Trash2 size={12} /> 移除并释放
+ </button>
  </div>
  </div>
- <div className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
+ <div onClick={() => handleFieldFocus("内页素材", "请分析此内页图是否清晰传达了产品信息，与上下文是否连贯", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
  <img src="https://images.unsplash.com/photo-1600000000001?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="内图" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">内页 1</div>
- <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
- 点击预览/编辑
+ <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Sparkles size={12} /> AI推荐替换
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Camera size={12} /> 起草重拍需求
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
+   <Trash2 size={12} /> 移除并释放
+ </button>
  </div>
  </div>
  <div className="w-[140px] h-[180px] rounded-2xl border border-dashed border-neutral-300 bg-white relative shrink-0 flex flex-col gap-2 items-center justify-center hover:bg-neutral-50 cursor-pointer transition-colors text-neutral-400 hover:text-neutral-600">
@@ -229,7 +251,7 @@ export default function MerchantMatrix() {
  
  </div>
  <div className="relative">
- <input type="text" defaultValue={reviewingDraft.title} className="w-full bg-white border border-neutral-200 rounded-xl pl-4 pr-10 py-3.5 text-[15px] outline-none focus:border-primary-500 hover:border-neutral-300 transition-colors shadow-inner" />
+ <input type="text" defaultValue={reviewingDraft.title} onClick={(e) => handleFieldFocus("标题", e.currentTarget.value)} onFocus={(e) => handleFieldFocus("标题", e.currentTarget.value)}  className="w-full bg-white border border-neutral-200 rounded-xl pl-4 pr-10 py-3.5 text-[15px] outline-none focus:border-primary-500 hover:border-neutral-300 transition-colors shadow-inner" />
  
  </div>
  </div>
@@ -242,10 +264,8 @@ export default function MerchantMatrix() {
  
  </div>
  <div className="relative">
- <textarea rows={10} defaultValue={reviewingDraft.content} className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
- <button className="absolute right-3 bottom-3 p-1.5 bg-neutral-100 hover:bg-primary-50 text-neutral-400 hover:text-primary-600 rounded-lg drop-shadow-sm transition-all border border-neutral-200 hover:border-primary-200 flex items-center gap-1">
- <Bot size={14} /> <span className="text-[10px] ">选中内容进行 AI 修改</span>
- </button>
+ <textarea rows={10} defaultValue={reviewingDraft.content} onClick={(e) => handleFieldFocus("正文", e.currentTarget.value.slice(0, 50) + "...")} onFocus={(e) => handleFieldFocus("正文", e.currentTarget.value.slice(0, 50) + "...")}  className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
+ 
  </div>
  </div>
 
@@ -496,24 +516,38 @@ export default function MerchantMatrix() {
  <ImageIcon size={18} className="text-neutral-400" />
  笔记素材
  </label>
- <button className="text-[11px] text-neutral-600 hover:text-primary-600 border border-neutral-200 hover:border-primary-200 hover:bg-primary-50 px-2.5 py-1.5 rounded-lg transition-all shadow-sm flex items-center gap-1">
-                                    使用品牌素材库 <span className="text-neutral-400">|</span> 增删素材
-                                 </button>
+ 
  </div>
  
  <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
- <div className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
+ <div onClick={() => handleFieldFocus("封面素材", "请分析此封面首图是否吸睛、是否符合当前笔记调性", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border-2 border-primary-500 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-primary-600 shadow-md">
  <img src="https://images.unsplash.com/photo-1600000000000?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="封面" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">封面首图</div>
- <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
- 点击预览/编辑
+ <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Sparkles size={12} /> AI推荐替换
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Camera size={12} /> 起草重拍需求
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
+   <Trash2 size={12} /> 移除并释放
+ </button>
  </div>
  </div>
- <div className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
+ <div onClick={() => handleFieldFocus("内页素材", "请分析此内页图是否清晰传达了产品信息，与上下文是否连贯", "视觉专家")} className="w-[140px] h-[180px] rounded-2xl border border-neutral-300 bg-neutral-100 relative shrink-0 overflow-hidden group cursor-pointer hover:border-neutral-400 shadow-sm">
  <img src="https://images.unsplash.com/photo-1600000000001?auto=format&fit=crop&q=80&w=400&h=600" className="w-full h-full object-cover" alt="内图" />
  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm z-10 shadow-sm">内页 1</div>
- <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[12px] backdrop-blur-sm">
- 点击预览/编辑
+ <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm px-2">
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "从品牌素材库(未使用的素材)中，为这篇笔记自动推荐3张合适的替换图片", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Sparkles size={12} /> AI推荐替换
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "这张图片不符合要求。请自动分析问题，并起草一份重拍需求单（包含重拍原因、场景要求、拍摄标准），我修改后直接派发给摄影团队", "内容专家"); }} className="w-full py-1.5 bg-white/10 hover:bg-white/30 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-white/20">
+   <Camera size={12} /> 起草重拍需求
+ </button>
+ <button onClick={(e) => { e.stopPropagation(); handleFieldFocus("图片素材", "已删除此图片，并自动将其在素材库中恢复为”可用“状态。请检查当前正文排版是否需要调整", "内容专家"); }} className="w-full py-1.5 bg-red-500/60 hover:bg-red-500 border border-red-400/50 rounded text-white text-[11px] flex items-center justify-center gap-1.5 transition-colors">
+   <Trash2 size={12} /> 移除并释放
+ </button>
  </div>
  </div>
  <div className="w-[140px] h-[180px] rounded-2xl border border-dashed border-neutral-300 bg-white relative shrink-0 flex flex-col gap-2 items-center justify-center hover:bg-neutral-50 cursor-pointer transition-colors text-neutral-400 hover:text-neutral-600">
@@ -532,7 +566,7 @@ export default function MerchantMatrix() {
  
  </div>
  <div className="relative">
- <input type="text" defaultValue={reviewingDraft.title} className="w-full bg-white border border-neutral-200 rounded-xl pl-4 pr-10 py-3.5 text-[15px] outline-none focus:border-primary-500 hover:border-neutral-300 transition-colors shadow-inner" />
+ <input type="text" defaultValue={reviewingDraft.title} onClick={(e) => handleFieldFocus("标题", e.currentTarget.value)} onFocus={(e) => handleFieldFocus("标题", e.currentTarget.value)}  className="w-full bg-white border border-neutral-200 rounded-xl pl-4 pr-10 py-3.5 text-[15px] outline-none focus:border-primary-500 hover:border-neutral-300 transition-colors shadow-inner" />
  
  </div>
  </div>
@@ -545,10 +579,8 @@ export default function MerchantMatrix() {
  
  </div>
  <div className="relative">
- <textarea rows={10} defaultValue={reviewingDraft.content} className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
- <button className="absolute right-3 bottom-3 p-1.5 bg-neutral-100 hover:bg-primary-50 text-neutral-400 hover:text-primary-600 rounded-lg drop-shadow-sm transition-all border border-neutral-200 hover:border-primary-200 flex items-center gap-1">
- <Bot size={14} /> <span className="text-[10px] ">选中内容进行 AI 修改</span>
- </button>
+ <textarea rows={10} defaultValue={reviewingDraft.content} onClick={(e) => handleFieldFocus("正文", e.currentTarget.value.slice(0, 50) + "...")} onFocus={(e) => handleFieldFocus("正文", e.currentTarget.value.slice(0, 50) + "...")}  className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
+ 
  </div>
  </div>
 
