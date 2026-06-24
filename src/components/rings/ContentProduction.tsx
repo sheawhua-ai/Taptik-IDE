@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Users, Share2, AlertCircle, ScanLine, Smartphone, Calendar, User, History, CheckCircle2, QrCode, Bot
+  Users, Share2, AlertCircle, ScanLine, Smartphone, Calendar, User, History, CheckCircle2, QrCode
 } from 'lucide-react';
 
 export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
@@ -8,15 +8,11 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
   const [showQrCode, setShowQrCode] = useState<string | null>(null);
   const [showAccountBreakdown, setShowAccountBreakdown] = useState(false);
 
-  const MOCK_OWNED_ACCOUNTS = [
-    { id: 'o1', name: '奈雪-区域福利官', initial: '奈', color: 'bg-indigo-50 text-indigo-500', type: '企业专业号', loginMode: '静默登录在线', status: '正常运行', followers: '12.4w', quota: '5篇/天', usedQuota: 2, todayTasks: 2, health: 'good', recentAds: '聚光消耗 ¥1,240' },
-    { id: 'o2', name: '周末喝点啥', initial: '周', color: 'bg-rose-50 text-rose-500', type: '员工 KOS', loginMode: '静默登录在线', status: '正常运行', followers: '3,200', quota: '3篇/天', usedQuota: 1, todayTasks: 1, health: 'good', recentAds: '未投放' },
-    { id: 'o3', name: '广州吃喝小分队', initial: '广', color: 'bg-emerald-50 text-emerald-500', type: '员工 KOS', loginMode: '授权已过期', status: '登录失效', followers: '1.2w', quota: '暂停发文', usedQuota: 0, todayTasks: 0, health: 'error', recentAds: '-' },
-  ];
-
-  const MOCK_EXTERNAL_ACCOUNTS = [
-    { id: 'e1', name: '周末探店指南', initial: '周', color: 'bg-sky-50 text-sky-500', type: '邀约达人', monitoring: '数据抓取中', status: '正常活跃', engagementScore: '89分', recentInteractionRate: '4.2%', frequency: '2篇/周', health: 'good' },
-    { id: 'e2', name: '阿喵测评', initial: '阿', color: 'bg-amber-50 text-amber-500', type: '兼职素人', monitoring: '数据抓取中', status: '疑似限流', engagementScore: '12分', recentInteractionRate: '0.2%', frequency: '1篇/月', health: 'warning' },
+  const MOCK_ACCOUNTS = [
+    { id: 'a1', name: '奈雪-区域福利官', type: '企业专业号', source: '自有资产', status: '正常运行', followers: '12.4w', quota: '5篇/天', usedQuota: 2, todayTasks: 2, health: 'good' },
+    { id: 'a2', name: '周末喝点啥', type: '员工 KOS', source: '自有资产', status: '正常运行', followers: '3,200', quota: '3篇/天', usedQuota: 1, todayTasks: 1, health: 'good' },
+    { id: 'a3', name: '阿喵测评', type: '兼职素人', source: '商单派发', status: '未活跃(超3天)', followers: '840', quota: '无限制', usedQuota: 0, todayTasks: 0, health: 'warning' },
+    { id: 'a4', name: '广州吃喝小分队', type: '员工 KOS', source: '自有资产', status: '异常限流', followers: '1.2w', quota: '暂停发文', usedQuota: 0, todayTasks: 0, health: 'error' },
   ];
 
   const MOCK_QUEUE = [
@@ -124,31 +120,36 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                 </div>
               </div>
 
-              {/* Owned Accounts */}
+              {/* Account List */}
               <div className="bg-white border border-neutral-100 rounded-[20px] overflow-hidden shadow-sm">
-                <div className="p-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-                  <h3 className="text-[14px] font-semibold text-neutral-900">自有 / 授权账号 <span className="text-[12px] font-normal text-neutral-500 ml-2">具备登录态，可获取聚光及笔记明细数据</span></h3>
+                <div className="p-5 border-b border-neutral-100 flex items-center justify-between">
+                  <h3 className="text-[15px] font-semibold text-neutral-900">入网账号流水</h3>
+                  <div className="text-[12px] text-neutral-500 flex gap-4">
+                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-success-500"></div> 正常</span>
+                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-warning-500 text-amber-500"></div> 异常/断更</span>
+                  </div>
                 </div>
                 <div>
-                  {MOCK_OWNED_ACCOUNTS.map((acc, i) => (
-                    <div key={acc.id} className={`p-5 flex items-center justify-between ${i !== MOCK_OWNED_ACCOUNTS.length - 1 ? 'border-b border-neutral-100' : ''}`}>
+                  {MOCK_ACCOUNTS.map((acc, i) => (
+                    <div key={acc.id} className={`p-5 flex items-center justify-between ${i !== MOCK_ACCOUNTS.length - 1 ? 'border-b border-neutral-100' : ''}`}>
                       <div className="flex items-center gap-4 min-w-[200px]">
-                        <div className={`w-10 h-10 rounded-full border border-neutral-100 flex items-center justify-center font-medium ${acc.color}`}>
-                          {acc.initial}
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${acc.health === 'good' ? 'bg-success-50 text-success-600' : acc.health === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'}`}>
+                          <User size={18} />
                         </div>
                         <div>
-                          <div className="text-[14px] font-semibold text-neutral-900 mb-0.5 flex items-center gap-2">
-                            {acc.name}
-                            <span className="text-[9px] text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">{acc.loginMode}</span>
-                          </div>
+                          <div className="text-[14px] font-semibold text-neutral-900 mb-0.5">{acc.name}</div>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] text-neutral-400 bg-neutral-50 px-1.5 py-0.5 rounded">{acc.type}</span>
-                            <span className="text-[10px] text-neutral-400 bg-neutral-50 px-1.5 py-0.5 rounded">粉丝 {acc.followers}</span>
+                            <span className="text-[10px] text-neutral-400 bg-neutral-50 px-1.5 py-0.5 rounded">{acc.source}</span>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between flex-1 pl-12 gap-6">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[11px] text-neutral-400">状态监控</span>
+                          <span className={`text-[13px] font-medium ${acc.health === 'good' ? 'text-success-600' : acc.health === 'warning' ? 'text-amber-500' : 'text-rose-500'}`}>{acc.status}</span>
+                        </div>
                         <div className="flex flex-col gap-1 w-[80px]">
                           <span className="text-[11px] text-neutral-400">日发文配额</span>
                           <span className="text-[13px] font-medium text-neutral-700">{acc.quota}</span>
@@ -157,77 +158,23 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                           <span className="text-[11px] text-neutral-400">今日待发排期</span>
                           <span className="text-[13px] font-medium text-neutral-700">{acc.todayTasks} 篇</span>
                         </div>
-                        <div className="flex flex-col gap-1 w-[120px]">
-                          <span className="text-[11px] text-neutral-400">聚光消耗(近30天)</span>
-                          <span className="text-[13px] font-medium text-neutral-700">{acc.recentAds}</span>
-                        </div>
                         <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">状态监控</span>
-                          <span className={`text-[13px] font-medium ${acc.health === 'good' ? 'text-success-600' : acc.health === 'warning' ? 'text-amber-500' : 'text-rose-500'}`}>{acc.status}</span>
+                          <span className="text-[11px] text-neutral-400">粉丝量</span>
+                          <span className="text-[13px] font-medium text-neutral-700">{acc.followers}</span>
                         </div>
                       </div>
 
                       <div className="w-[100px] text-right shrink-0">
-                        <button className="text-[12px] text-primary-500 font-medium hover:text-primary-600">查看笔记数据</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* External / Monitoring Accounts */}
-              <div className="bg-white border border-neutral-100 rounded-[20px] overflow-hidden shadow-sm mt-6">
-                <div className="p-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-                  <h3 className="text-[14px] font-semibold text-neutral-900">素人 / 达人号 <span className="text-[12px] font-normal text-neutral-500 ml-2">无登录态，采用监控手段采集公开互动数据及账号状态</span></h3>
-                </div>
-                <div>
-                  {MOCK_EXTERNAL_ACCOUNTS.map((acc, i) => (
-                    <div key={acc.id} className={`p-5 flex items-center justify-between ${i !== MOCK_EXTERNAL_ACCOUNTS.length - 1 ? 'border-b border-neutral-100' : ''}`}>
-                      <div className="flex items-center gap-4 min-w-[200px]">
-                        <div className={`w-10 h-10 rounded-full border border-neutral-100 flex items-center justify-center font-medium ${acc.color}`}>
-                          {acc.initial}
-                        </div>
-                        <div>
-                          <div className="text-[14px] font-semibold text-neutral-900 mb-0.5 flex items-center gap-2">
-                            {acc.name}
-                            <span className="text-[9px] text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">{acc.monitoring}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-neutral-400 bg-neutral-50 px-1.5 py-0.5 rounded">{acc.type}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between flex-1 pl-12 gap-6">
-                        <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">发文频率</span>
-                          <span className="text-[13px] font-medium text-neutral-700">{acc.frequency}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">互动总分</span>
-                          <span className="text-[13px] font-medium text-neutral-700">{acc.engagementScore}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 w-[120px]">
-                          <span className="text-[11px] text-neutral-400">近3篇互动率</span>
-                          <span className={`text-[13px] font-medium ${acc.health === 'warning' ? 'text-amber-500' : 'text-neutral-700'}`}>{acc.recentInteractionRate}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">状态监控</span>
-                          <span className={`text-[13px] font-medium ${acc.health === 'good' ? 'text-success-600' : acc.health === 'warning' ? 'text-amber-500' : 'text-rose-500'}`}>{acc.status}</span>
-                        </div>
-                      </div>
-
-                      <div className="w-[100px] text-right shrink-0">
-                        <button className="text-[12px] text-primary-500 font-medium hover:text-primary-600 flex items-center gap-1.5 justify-end w-full"><Bot size={14} /> Agent 深度诊断</button>
+                        <button className="text-[12px] text-primary-500 font-medium hover:text-primary-600">健康巡检</button>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-          ) : viewMode === 'queue' ? (
+          ) : (
             <div className="space-y-6">
-{MOCK_QUEUE.length === 0 ? <div className="text-center py-20 text-neutral-400">请先在项目与内容中完成笔记生成</div> : MOCK_QUEUE.map(task => (
+              {MOCK_QUEUE.map(task => (
                 <div key={task.id} className="bg-white border border-neutral-100 rounded-[20px] p-5 shadow-sm flex items-center justify-between hover:shadow-md hover:border-primary-200 transition-all">
                   <div className="flex items-center gap-5 flex-1 w-0">
                     <img src={task.image} alt={task.title} className="w-16 h-16 rounded-xl object-cover" />
@@ -262,7 +209,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                 </div>
               ))}
             </div>
-) : viewMode === 'calendar' ? (<div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-100"><h3 className="text-[15px] font-semibold text-neutral-900 mb-4">本周排期日历</h3><div className="grid grid-cols-7 gap-4"><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周一</div><div className="space-y-2 mt-2"><div className="bg-primary-50 p-2 rounded-xl flex flex-col gap-1 cursor-pointer hover:bg-primary-100 border border-primary-100 text-left"><span className="text-[10px] text-primary-600 font-medium truncate">防晒实测第1篇</span><span className="text-[9px] text-primary-400">@奈雪</span></div></div></div><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周二</div><div className="space-y-2 mt-2"><div className="bg-amber-50 p-2 rounded-xl flex flex-col gap-1 cursor-pointer hover:bg-amber-100 border border-amber-100 text-left"><span className="text-[10px] text-amber-600 font-medium truncate">带妆防晒组合</span><span className="text-[9px] text-amber-400">@周末喝点啥</span></div></div></div><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周三</div><div className="space-y-2 mt-2"></div></div><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周四</div><div className="space-y-2 mt-2"></div></div><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周五</div><div className="space-y-2 mt-2"></div></div><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周六</div><div className="space-y-2 mt-2"></div></div><div className="col-span-1 text-center"><div className="text-[12px] text-neutral-400 mb-2 border-b pb-2">周日</div><div className="space-y-2 mt-2"></div></div></div></div>) : null}
+          )}
         </div>
       </div>
 

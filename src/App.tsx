@@ -311,74 +311,6 @@ const PROJECT_TABS = [
  { id: "metrics", name: "深度数据看板", icon: BarChart2 },
 ];
 
-const SkillCard: React.FC<{ skillName: string, price: string, benefit: string, type: 'paid' | 'free' }> = ({ skillName, price, benefit, type }) => {
-   const [status, setStatus] = useState<'idle' | 'installing' | 'installed'>('idle');
-
-   return (
-    <div
-    key={skillName}
-    className={`my-3 p-6 bg-white border ${status === 'installed' ? 'border-success-200 opacity-70 bg-neutral-50/50' : 'border-neutral-200'} rounded-[32px] shadow-sm flex flex-col gap-6 max-w-[440px]`}
-    >
-    <div className="flex items-center gap-4 border-b border-neutral-100 pb-5">
-    <div
-    className={`w-12 h-12 rounded-[20px] flex items-center justify-center ${type === "paid" ? "bg-amber-50 text-amber-500" : "bg-primary-50 text-primary-500"}`}
-    >
-    {type === "paid" ? <Sparkles size={24} /> : <Zap size={24} />}
-    </div>
-    <div>
-    <h4 className="text-[15px] font-semibold text-neutral-900 tracking-tight">
-    {skillName}
-    </h4>
-    <p className="text-[12px] text-neutral-400 mt-0.5">
-    行业顶尖专家知识库提取
-    </p>
-    </div>
-    </div>
-    <div className="flex flex-col gap-5">
-    <div className="grid grid-cols-2 gap-3">
-    <div className="flex flex-col gap-1 p-4 bg-neutral-50 rounded-2xl border border-neutral-100 shadow-inner">
-    <span className="text-neutral-400 text-[10px] uppercase tracking-tighter">
-    {type === "paid" ? "💰 消耗" : "📦 状态"}
-    </span>
-    <span className="text-neutral-900 font-mono text-[13px]">
-    {price}
-    </span>
-    </div>
-    <div className="flex flex-col gap-1 p-4 bg-primary-50 rounded-2xl border border-primary-100 shadow-inner">
-    <span className="text-neutral-400 text-[10px] uppercase tracking-tighter">
-    📈 预计提升
-    </span>
-    <span className="text-primary-500 font-mono text-[13px]">
-    {benefit}
-    </span>
-    </div>
-    </div>
-    </div>
-    {status === 'installed' ? (
-       <div className="flex items-center justify-center gap-2 text-success-600 text-[13px] bg-success-50 px-6 py-4 rounded-2xl border border-success-200 shadow-sm mt-2">
-         <Check size={18}/> 技能已挂载并应用
-       </div>
-    ) : (
-      <div className="flex gap-3 mt-2">
-      <button
-      onClick={() => {
-        setStatus('installing');
-        setTimeout(() => setStatus('installed'), 800);
-      }}
-      disabled={status === 'installing'}
-      className="flex-1 px-8 py-4 bg-neutral-900 text-white rounded-2xl text-[14px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-2px] active:scale-95 transition-all text-center flex justify-center items-center h-[52px]"
-      >
-      {status === 'installing' ? <span className="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full"></span> : '安装并应用'}
-      </button>
-      <button className="px-6 py-4 bg-neutral-0 border border-neutral-200 text-neutral-400 rounded-2xl text-[14px] hover:text-neutral-900 hover:border-neutral-300 transition-all h-[52px]">
-      忽略
-      </button>
-      </div>
-    )}
-    </div>
-   );
- }
-
 export default function App() {
  const [activeProjectId, setActiveProjectId] =
  useState<keyof typeof MOCK_PROJECTS>("project-a");
@@ -612,7 +544,6 @@ export default function App() {
  setInputValue("");
  };
 
- 
  const renderMessageContent = (content: string, role: string) => {
  const parts = content.split(
  /(@[\u4e00-\u9fa5a-zA-Z0-9_-]+)|(「(?:🔗|📄|📁|🧠|📦) [^」]+」)|({recommend_skill_paid:[^}]+})|({recommend_skill_free:[^}]+})/,
@@ -643,15 +574,155 @@ export default function App() {
  );
  }
 
- if (part.startsWith('{recommend_skill_paid:')) {
-  const [_, name, price, benefit] = part.replace('}', '').split(':');
-  return <SkillCard key={index} skillName={name} price={price} benefit={benefit} type="paid" />;
-}
+ if (part.startsWith("{recommend_skill_paid:")) {
+ const [_, name, price, benefit] = part.replace("}", "").split(":");
+ return (
+ <div
+ key={index}
+ className="mt-5 mb-2 p-8 bg-neutral-0 border-2 border-primary-500/10 rounded-[32px] shadow-xl shadow-primary-500/5 relative overflow-hidden group"
+ >
+ <div className="absolute -top-6 -right-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
+ <Orbit size={160} className="text-primary-500" />
+ </div>
+ <div className="relative z-10">
+ <div className="flex items-center justify-between mb-6">
+ <div className="flex items-center gap-4">
+ <div className="w-12 h-12 bg-primary-50 rounded-[20px] flex items-center justify-center text-primary-500">
+ <Layers size={24} />
+ </div>
+ <div>
+ <h4 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
+ 🔔 助手决策建议
+ </h4>
+ <p className="text-[10px] text-neutral-400 font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
+ 关键优化动作
+ </p>
+ </div>
+ </div>
+ <div className="px-3 py-1.5 bg-primary-500 text-white text-[10px] rounded-xl uppercase tracking-widest shadow-sm">
+ 付费技能
+ </div>
+ </div>
 
- if (part.startsWith('{recommend_skill_free:')) {
-  const [_, category, count, benefit] = part.replace('}', '').split(':');
-  return <SkillCard key={index} skillName={category} price={count} benefit={benefit} type="free" />;
-}
+ <div className="space-y-4 mb-8">
+ <p className="text-[14px] text-neutral-600 leading-relaxed px-1">
+ 当前笔记原创度偏低，建议安装{" "}
+ <span className="text-primary-500 underline decoration-2 underline-offset-4">
+ 「{name}」
+ </span>
+ 。
+ </p>
+ <div className="grid grid-cols-2 gap-3">
+ <div className="flex flex-col gap-1 p-4 bg-neutral-50 rounded-2xl border border-neutral-100/50 shadow-inner">
+ <span className="text-neutral-400 text-[10px] uppercase tracking-tighter">
+ 💰 费用详情
+ </span>
+ <span className="text-neutral-900 font-mono text-[13px]">
+ {price}
+ </span>
+ </div>
+ <div className="flex flex-col gap-1 p-4 bg-primary-50 rounded-2xl border border-primary-100 shadow-inner">
+ <span className="text-neutral-400 text-[10px] uppercase tracking-tighter">
+ 📈 预计提升
+ </span>
+ <span className="text-primary-500 font-mono text-[13px]">
+ {benefit}
+ </span>
+ </div>
+ </div>
+ </div>
+
+ <div className="flex gap-3">
+ <button
+ onClick={(e) => {
+ const target = e.currentTarget;
+ target.disabled = true;
+ target.innerHTML =
+ '<span class="animate-spin h-3.5 w-3.5 border-2 border-white/30 border-t-white rounded-full"></span>';
+ setTimeout(() => {
+ target.parentElement?.parentElement?.parentElement?.classList.add(
+ "opacity-70",
+ "bg-neutral-50/50",
+ );
+ target.outerHTML =
+ '<div class="flex items-center gap-2 text-success-600 text-[13px] bg-success-50 px-6 py-3 rounded-2xl border border-success-200 shadow-sm"><Check size={18}/> 技能已挂载并应用</div>';
+ }, 800);
+ }}
+ className="flex-1 px-8 py-4 bg-neutral-900 text-white rounded-2xl text-[14px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-2px] active:scale-95 transition-all text-center"
+ >
+ 安装并应用
+ </button>
+ <button className="px-6 py-4 bg-neutral-0 border border-neutral-200 text-neutral-400 rounded-2xl text-[14px] hover:text-neutral-900 hover:border-neutral-300 transition-all">
+ 忽略
+ </button>
+ </div>
+ </div>
+ </div>
+ );
+ }
+
+ if (part.startsWith("{recommend_skill_free:")) {
+ const [_, category, count, benefit] = part.replace("}", "").split(":");
+ return (
+ <div
+ key={index}
+ className="mt-5 mb-2 p-8 bg-neutral-0 border-2 border-dashed border-neutral-200 rounded-[32px] relative overflow-hidden group hover:border-primary-500/20 transition-all"
+ >
+ <div className="absolute -top-10 -right-10 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+ <Dna size={200} className="text-neutral-900" />
+ </div>
+ <div className="relative z-10">
+ <div className="flex items-center justify-between mb-6">
+ <div className="flex items-center gap-4">
+ <div className="w-12 h-12 bg-neutral-50 rounded-[20px] flex items-center justify-center text-neutral-400 border border-neutral-100 group-hover:text-primary-500 group-hover:bg-primary-50 transition-all">
+ <Filter size={24} />
+ </div>
+ <div>
+ <h4 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
+ 🔔 助手执行建议
+ </h4>
+ <p className="text-[10px] text-neutral-400 font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
+ 社区资源推荐
+ </p>
+ </div>
+ </div>
+ <div className="px-3 py-1.5 bg-success-50 text-success-500 text-[10px] rounded-xl border border-success-100 uppercase tracking-widest shadow-sm">
+ 🆓 免费
+ </div>
+ </div>
+
+ <div className="space-y-4 mb-8 px-1">
+ <p className="text-[14px] text-neutral-600 leading-relaxed">
+ 当前笔记原创度偏低，建议安装{" "}
+ <span className="text-neutral-900 ">
+ 「{category}」
+ </span>{" "}
+ 类工具。
+ <br />
+ 市场上已有{" "}
+ <span className="text-primary-500 underline underline-offset-2">
+ {count} 款
+ </span>{" "}
+ 成熟可选资产。
+ </p>
+ <div className="flex items-center gap-3 text-neutral-500 text-[12px] bg-neutral-50/50 w-fit px-3 py-1.5 rounded-lg border border-neutral-100">
+ <Zap size={14} className="text-warning-500 fill-current" />
+ <span>📈 预期原创度提升 {benefit}</span>
+ </div>
+ </div>
+
+ <div className="flex gap-3">
+ <button
+ onClick={() => setActiveNav("skills")}
+ className="flex-1 px-8 py-4 bg-neutral-0 border-2 border-neutral-900 text-neutral-900 rounded-2xl text-[14px] shadow-md hover:bg-neutral-900 hover:text-white transition-all text-center active:scale-95"
+ >
+ 去市场中查看
+ </button>
+ </div>
+ </div>
+ </div>
+ );
+ }
 
  return <span key={index}>{part}</span>;
  });

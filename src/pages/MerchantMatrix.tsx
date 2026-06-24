@@ -289,9 +289,11 @@ const EXTERNAL_TASKS = [
  
  </div>
  <div className="relative">
- <textarea rows={10} defaultValue={reviewingDraft.content} onClick={(e) => handleFieldFocus('正文', e.currentTarget.value.slice(0, 50) + '...')} onFocus={(e) => handleFieldFocus('正文', e.currentTarget.value.slice(0, 50) + '...')}  className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
+ <textarea rows={10} defaultValue={reviewingDraft.content} onClick={(e) => handleFieldFocus("正文", e.currentTarget.value.slice(0, 50) + "...")} onFocus={(e) => handleFieldFocus("正文", e.currentTarget.value.slice(0, 50) + "...")}  className="w-full bg-white border border-neutral-200 hover:border-neutral-300 rounded-xl p-4 text-[14px] outline-none focus:border-primary-500 transition-colors resize-none custom-scrollbar leading-relaxed shadow-inner block" />
+ 
  </div>
  </div>
+
  <div className="space-y-3">
  <label className="text-[14px] text-neutral-900 flex items-center gap-2">
  <Hash size={18} className="text-neutral-400" />
@@ -321,15 +323,17 @@ const EXTERNAL_TASKS = [
  </div>
  </div>
  </div>
+
  </div>
+
  {/* Right: Subagent Chat */} 
- <div className="w-full xl:w-[380px] bg-white border-l border-neutral-200 flex flex-col shrink-0 relative">
- <div className="absolute inset-0 pb-[80px]">
- <SubagentChat 
- moduleId="content" 
- moduleName="内容精修专家" 
- onClose={() => setReviewingDraft(null)} 
- />
+          <div className="w-full xl:w-[380px] bg-white border-l border-neutral-200 flex flex-col shrink-0 relative">
+             <div className="absolute inset-0 pb-[80px]">
+               <SubagentChat 
+                  moduleId="content" 
+                  moduleName="内容精修专家" 
+                  onClose={() => setReviewingDraft(null)} 
+               />
              </div>
              <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-neutral-100 bg-white shrink-0 z-10">
                 <button onClick={() => setReviewingDraft(null)} className="w-full py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-medium hover:bg-neutral-800 transition-colors shadow-md active:scale-95 flex justify-center items-center gap-2">
@@ -361,43 +365,74 @@ const EXTERNAL_TASKS = [
           </button>
         </div>
         <div className="flex-1 w-full overflow-y-auto bg-neutral-50/50 custom-scrollbar pb-24">
-          <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-neutral-900">成稿车间 (Drafts)</h3>
-              <button onClick={() => setActiveProject(null)} className="text-[12px] px-4 py-2 bg-white border border-neutral-200 rounded-xl text-neutral-700 hover:text-neutral-900">
-                返回项目列表
-              </button>
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              {drafts.length === 0 ? (
-                 <div className="text-center py-20 text-neutral-400">暂无笔记草稿</div>
-              ) : drafts.map(draft => (
-                <div key={draft.id} className="bg-white p-5 rounded-[20px] border border-neutral-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
-                   <div className="flex items-center gap-4">
-                      <div className="w-12 h-16 bg-neutral-100 rounded-lg flex items-center justify-center"><ImageIcon size={20} className="text-neutral-300"/></div>
-                      <div>
-                        <h4 className="text-[15px] font-semibold text-neutral-900">{draft.title}</h4>
-                        <div className="text-[12px] text-neutral-500 mt-1 flex items-center gap-3">
-                           <span className="text-primary-500 bg-primary-50 px-2 py-0.5 rounded flex items-center gap-1"><Check size={12}/> {draft.status}</span>
-                           <span className="flex items-center gap-1"><Target size={12}/> 预期互动量: {draft.targetInteractions}</span>
-                        </div>
-                      </div>
-                   </div>
-                   <div className="flex items-center gap-6">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[10px] text-neutral-400 mb-1">质量预打分</span>
-                        <span className="text-[18px] font-semibold text-success-500 leading-none">{draft.score}</span>
-                      </div>
-                      <button onClick={() => setReviewingDraft(draft)} className="px-4 py-2 bg-neutral-900 text-white hover:bg-neutral-800 rounded-xl text-[12px] flex items-center gap-2 shadow-sm">
-                        <PenTool size={14} /> 单条编辑
-                      </button>
-                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+ <div className="max-w-6xl mx-auto space-y-6 p-6 lg:p-8">
+ 
+
+ <div className="grid grid-cols-1 gap-4">
+ {MOCK_PROJECTS.map(project => (
+ <motion.div 
+ key={project.id}
+ initial={{ opacity: 0, y: 10 }}
+ animate={{ opacity: 1, y: 0 }}
+ className="p-5 flex flex-col xl:flex-row bg-white border border-neutral-100 rounded-[20px] hover:shadow-xl transition-all group overflow-hidden relative gap-6 items-center"
+ >
+ <div className="flex items-center gap-4 min-w-[240px] shrink-0">
+ <div className="min-w-0">
+ <h3 className="text-[16px] font-semibold text-neutral-900 mb-2 truncate">{project.name}</h3>
+ <div className="flex items-center gap-1.5 text-[9px] tracking-widest uppercase mt-1">
+ <span className={`px-2 py-1 rounded shadow-sm flex items-center gap-1 ${project.status === '任务进行中' ? 'text-primary-600 bg-primary-50 border border-primary-100' : 'text-neutral-500 bg-white border border-neutral-200'}`}><CheckCircle2 size={10} />图文生成</span>
+ <ArrowRight size={10} className="text-neutral-300" />
+ <span className={`px-2 py-1 rounded shadow-sm flex items-center gap-1 ${project.status === '任务进行中' ? 'text-emerald-600 bg-emerald-50 border border-emerald-100' : 'text-neutral-500 bg-white border border-neutral-200'}`}><Camera size={10} />素材回传分发</span>
+ <ArrowRight size={10} className="text-neutral-300" />
+ <span className={`px-2 py-1 rounded shadow-sm ${project.status === '已完成' ? 'text-success-600 bg-success-50 border border-success-100' : 'text-neutral-400 bg-neutral-50'}`}>自动发布归档</span>
+ </div>
+ </div>
+ </div>
+
+ <div className="flex-1 flex gap-6 md:gap-8 items-center xl:px-6 xl:border-x border-neutral-50 overflow-x-auto custom-scrollbar">
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">排发任务总数</span>
+ <span className="text-[16px] text-neutral-900">{project.targetCount}</span>
+ </div>
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">已提交素材</span>
+ <span className="text-[16px] text-emerald-500">{project.recoveredMaterial}</span>
+ </div>
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">已成稿笔记</span>
+ <span className="text-[16px] text-primary-500">{project.generatedNotes}</span>
+ </div>
+ <div className="flex flex-col gap-1.5 shrink-0">
+ <span className="text-[10px] text-neutral-400 tracking-widest">已成功发布</span>
+ <span className="text-[16px] text-success-500">{project.publishedNotes}</span>
+ </div>
+ </div>
+
+ <div className="flex flex-col sm:flex-row justify-center gap-2 xl:pl-4 shrink-0 w-full xl:w-auto">
+ <button 
+ onClick={() => { setActiveProject(project.id); generateMocks(); }}
+ className="w-full sm:w-auto px-5 py-2.5 bg-neutral-900 text-white rounded-[14px] text-[12px] transition-all flex items-center justify-center gap-2 hover:bg-primary-500 shadow-lg active:scale-95 whitespace-nowrap"
+ >
+ <PenTool size={14} /> 管理笔记
+ </button>
+ <button className="w-full sm:w-auto px-5 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-[14px] text-[12px] transition-all flex items-center justify-center gap-2 hover:bg-neutral-50 shadow-sm whitespace-nowrap">
+ <Target size={14} /> 分发二维码
+ </button>
+ </div>
+ </motion.div>
+ ))}
+ </div>
+
+ <button 
+ onClick={() => window.dispatchEvent(new CustomEvent('nav-to-strategy'))}
+          className="w-full py-4 bg-white border border-dashed border-neutral-200 rounded-[20px] text-[13px] text-neutral-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center gap-2"
+        >
+          <PlusCircle size={18} /> 返回策略页进行新项目立项
+        </button>
       </div>
+    </div>
+  </div>
+
   {/* Create Project Overlay Modal */}
 
  <AnimatePresence>

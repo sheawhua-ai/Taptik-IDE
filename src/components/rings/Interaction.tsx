@@ -1,53 +1,63 @@
- import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
  Search, Filter, MessageSquare, Flame, CheckCircle2, 
  Clock, User, Send, ExternalLink, MoreVertical, 
  ChevronDown, AlertCircle, TrendingUp, ShieldAlert, Zap,
  MessageCircle, Smartphone, UserPlus, BookOpen, Bot,
- Inbox, AlertTriangle, LayoutGrid
+ Inbox, AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { SubagentChat } from '../SubagentChat';
 
 interface InboxItem {
-  id: string;
-  title: string;
-  description: string;
-  type: 'comment' | 'dm';
-  time: string;
-  status: 'pending' | 'resolved';
-  source: string;
-  project?: string;
-  urgency: 'high' | 'medium';
-  snapshots?: string[];
-  aiSuggestion?: string;
-  userPrompt?: string;
+ id: string;
+ title: string;
+ description: string;
+ type: 'comment' | 'dm';
+ time: string;
+ status: 'pending' | 'resolved';
+ source: string;
+ urgency: 'high' | 'medium';
+ snapshots?: string[];
+ aiSuggestion?: string;
+ userPrompt?: string;
 }
 
 const MOCK_INBOX: InboxItem[] = [
-  {
-    id: '1',
-    title: '高热度负面评论识别',
-    description: '识别到笔记下出现热点评论。',
-    type: 'comment',
-    urgency: 'high',
-    time: '5分钟前',
-    status: 'pending',
-    source: '小红书评论区监控',
-    snapshots: ['“这是我第三次买了，这次的包装真的太敷衍了...”'],
-    aiSuggestion: '“亲爱的老朋友，真的非常抱歉给您带来这么糟糕的体验...”'
-  },
-  {
-    id: '2',
-    title: '高潜意向私信会话',
-    description: '捕捉到带明确购买意图且询问「合作/加盟」的私信。',
-    type: 'dm',
-    urgency: 'high',
-    time: '20分钟前',
-    status: 'pending',
-    source: '全域私信收件箱',
-    userPrompt: '“请问如果在二线城市开线下店，有区域代理保护吗？”'
-  }
+ {
+ id: '1',
+ title: '高热度负面评论识别',
+ description: '识别到笔记《第一次买，避坑指南》下出现热点评论。建议立即通过 AI 话术进行安抚回复，避免负面舆情发酵。',
+ type: 'comment',
+ urgency: 'high',
+ time: '5分钟前',
+ status: 'pending',
+ source: '小红书评论区监控',
+ snapshots: ['“这是我第三次买了，这次的包装真的太敷衍了，瓶子都瘪了，太失望了直接粉转黑。”'],
+ aiSuggestion: '“亲爱的老朋友，真的非常抱歉给您带来这么糟糕的体验！作为我们最珍视的连续支持我们的客户，这种失误是绝对不被允许的。我们已为您安排了无门槛的换新补偿，并附赠了一份新品体验装。稍后会有专属客服与您对接，一定会给您一个满意的答复！”'
+ },
+ {
+ id: '2',
+ title: '高潜意向私信会话',
+ description: '捕捉到带明确购买意图且询问「合作/加盟」的私信，联系方式已提炼。AI 判断意向极高，建议快速跟进。',
+ type: 'dm',
+ urgency: 'high',
+ time: '20分钟前',
+ status: 'pending',
+ source: '全域私信收件箱',
+ userPrompt: '“请问如果在二线城市开线下店，有区域代理保护吗？我的微信号是 wx_827364，能否发一份详细的资料？”'
+ },
+ {
+ id: '3',
+ title: '常规种草互动评论',
+ description: '笔记《氛围感拉满的百搭单品》下有用户询问价格与链接。AI已准备好引导私信与发券的回复模版。',
+ type: 'comment',
+ urgency: 'medium',
+ time: '1小时前',
+ status: 'pending',
+ source: '小红书评论区监控',
+ snapshots: ['“哇这个颜色也太好看了吧，求个链接和价格，谢谢拔草！”'],
+ aiSuggestion: '“宝宝眼光真好！这款是我们这期的爆款，现在刚好有活动真的很划算～🔗链接在主页店铺或者私信发您哦，还可以叠加专属满减券，不要错过啦！”'
+ }
 ];
 
 export const Interaction: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
