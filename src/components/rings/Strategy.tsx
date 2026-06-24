@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
  Search, ShieldAlert, TrendingUp, BarChart, 
  MapPin, Globe, Compass, Info,
- AlertCircle, ArrowUpRight, Flame, Layers, Orbit, Sparkles, RefreshCw,
+ AlertCircle, ArrowUpRight, Flame, Layers, Orbit, Sparkles, RefreshCw, Package, Calendar,
  Plus, Target, Play, CheckCircle2, Hash, CheckSquare, Square, BarChart2, Activity, Coins, Focus, Check, Bot
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -12,6 +12,9 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
  const [isFetching, setIsFetching] = useState(false);
  const [fetchProgress, setFetchProgress] = useState(0);
  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [showConfig, setShowConfig] = useState(false);
+  const [projectTargetGroup, setProjectTargetGroup] = useState<'internal'|'external'>('internal');
+  const [isCreating, setIsCreating] = useState(false);
 
  const toggleTopic = (id: number, title?: string) => {
  setSelectedTopic(prev => prev === id ? null : id);
@@ -181,10 +184,10 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
  </div>
  </div>
  <button 
- onClick={() => window.dispatchEvent(new CustomEvent('open-expert', { detail: { expert: '策略专家', context: `我想深入探讨一些个性化的业务选题和专享策略...` }}))}
+ onClick={() => setShowConfig(true)}
  className="shrink-0 px-6 py-3 bg-white border border-indigo-200 text-indigo-600 text-[13px] rounded-[16px] shadow-sm hover:shadow-lg hover:bg-indigo-600 hover:text-white hover:border-transparent transition-all active:scale-95 flex items-center gap-2 relative z-10"
  >
- <Sparkles size={16} /> 试试沟通更多个性化选题
+ <Sparkles size={16} /> 沟通个性化并新建项目
  </button>
  </div>
 
@@ -309,24 +312,80 @@ export const Strategy: React.FC<{ hasData?: boolean; strategyData?: { word: stri
  ))}
  </div>
  
- {/* Action Bar */}
- <div className="mt-8 flex justify-end">
- <button 
- onClick={() => {
- if (selectedTopic !== null) {
- window.dispatchEvent(new CustomEvent('nav-to-matrix-create'));
- }
- }}
- disabled={selectedTopic === null}
- className={`flex items-center justify-center gap-2 px-10 py-4 rounded-[20px] text-[15px] transition-all duration-300 ${selectedTopic !== null ? 'bg-neutral-900 text-white hover:bg-primary-500 hover:scale-[1.02] shadow-xl shadow-neutral-200 active:scale-95' : 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'}`}
- >
- <Check size={18}/> {selectedTopic !== null ? `将选定打法推入工作流` : '请先勾选核心选题'}
- </button>
- </div>
- </div>
- </div>
- )}
- </div>
- </div>
- );
+ {/* Project Config Section */}
+        {(selectedTopic !== null || showConfig) && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-[24px] border border-neutral-100 p-6 shadow-sm mt-6"
+          >
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="text-[16px] font-semibold text-neutral-900 tracking-tight flex items-center gap-2">
+                  <Package size={18} className="text-primary-500" />
+                  项目建档与分发配置
+                </h3>
+                <p className="text-[11px] text-neutral-400 mt-1 uppercase tracking-widest">配置项目基础信息并将策略推入执行大盘</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[12px] font-medium text-neutral-700">项目名称</label>
+                <input type="text" placeholder="例如：2026秋季大促矩阵" className="w-full h-12 bg-neutral-50 border border-neutral-200 rounded-xl px-4 text-[14px] outline-none focus:border-primary-500 focus:bg-white transition-colors" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[12px] font-medium text-neutral-700">排期起始时间</label>
+                <input type="date" className="w-full h-12 bg-neutral-50 border border-neutral-200 rounded-xl px-4 text-[14px] outline-none focus:border-primary-500 focus:bg-white transition-colors text-neutral-700 block" style={{ colorScheme: 'light' }} />
+              </div>
+
+              <div className="col-span-1 md:col-span-2 space-y-3">
+                <label className="text-[12px] font-medium text-neutral-700">素材执行与归集方式</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div onClick={() => setProjectTargetGroup('internal')} className={`border-2 rounded-xl p-4 flex items-start gap-4 cursor-pointer transition-all ${projectTargetGroup === 'internal' ? 'border-primary-500 bg-primary-50' : 'border-neutral-200 bg-white hover:border-primary-200'}`}>
+                    <div className={`w-5 h-5 rounded-full border-4 shrink-0 mt-0.5 ${projectTargetGroup === 'internal' ? 'border-primary-500 bg-white' : 'border-neutral-300 bg-white'}`}></div>
+                    <div>
+                      <div className="text-[14px] font-semibold text-neutral-900">内部团队执行项目</div>
+                      <div className="text-[12px] text-neutral-500 mt-1 leading-relaxed">自动合并相似构图需求，打包发送至企微进行员工排期拍摄</div>
+                    </div>
+                  </div>
+                  <div onClick={() => setProjectTargetGroup('external')} className={`border-2 rounded-xl p-4 flex items-start gap-4 cursor-pointer transition-all ${projectTargetGroup === 'external' ? 'border-primary-500 bg-primary-50' : 'border-neutral-200 bg-white hover:border-primary-200'}`}>
+                    <div className={`w-5 h-5 rounded-full border-4 shrink-0 mt-0.5 ${projectTargetGroup === 'external' ? 'border-primary-500 bg-white' : 'border-neutral-300 bg-white'}`}></div>
+                    <div>
+                      <div className="text-[14px] font-semibold text-neutral-900">外部素人KOC分发</div>
+                      <div className="text-[12px] text-neutral-500 mt-1 leading-relaxed">按单篇生成任务下发接单大厅。素人扫码认领，素材自动审核后代发布</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end gap-3 pt-6 border-t border-neutral-100">
+               {showConfig && (
+                  <button onClick={() => setShowConfig(false)} className="px-6 py-3.5 rounded-xl text-[14px] text-neutral-600 hover:bg-neutral-100 transition-colors">
+                    取消个性化
+                  </button>
+               )}
+               <button 
+                  onClick={() => {
+                    setIsCreating(true);
+                    setTimeout(() => {
+                      setIsCreating(false);
+                      window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'matrix' } }));
+                    }, 1200);
+                  }}
+                  className="flex items-center justify-center gap-2 px-10 py-3.5 rounded-xl text-[14px] font-medium transition-all duration-300 bg-neutral-900 text-white hover:bg-primary-500 hover:scale-[1.02] shadow-xl shadow-neutral-200 active:scale-95"
+                >
+                  {isCreating ? <RefreshCw size={16} className="animate-spin" /> : <Check size={16} />}
+                  {isCreating ? '正在生成智能排期并创立项目...' : '确认创立并推入工作流'}
+                </button>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  )}
+  </div>
+  </div>
+  );
 };

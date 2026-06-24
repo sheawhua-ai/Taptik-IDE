@@ -15,7 +15,7 @@ interface DataCenterProps {
 export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNav, setActiveNav }) => {
  const [aiAnalysisQuery, setAiAnalysisQuery] = React.useState('');
  const [pinnedInsights, setPinnedInsights] = React.useState([
- { id: '1', title: '全域 ROI 实时监控', type: 'chart', value: '4.2', trend: '+12%', color: 'primary' },
+ { id: '1', title: '全局互动质量分', type: 'chart', value: '82.4', trend: '+12%', color: 'primary' },
  { id: '2', title: '高潜客群分布', type: 'map', value: '北京/上海', trend: '活跃', color: 'success' },
  ]);
 
@@ -69,10 +69,10 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
  {[
- { label: '小红书总曝光', val: '12.5 W', icon: Activity, color: 'text-secondary-500', trend: '+12.4%' },
+ { label: '互动质量总分', val: '8,492', icon: Activity, color: 'text-secondary-500', trend: '+12.4%' },
  { label: '小红书总互动', val: '3,492', icon: MessageSquare, color: 'text-primary-500', trend: '+8.1%' },
  { label: '小红书净涨粉', val: '845', icon: Target, color: 'text-success-500', trend: '-2.3%', neg: true },
- { label: 'ROI 综合估算', val: '4.2 x', icon: CreditCard, color: 'text-primary-500', trend: '+5.2%' },
+ { label: '平均互动质量分', val: '82.4', icon: Sparkles, color: 'text-primary-500', trend: '+5.2%' },
  ].map((s, i) => (
  <div key={i} className="bg-white p-6 rounded-3xl border border-neutral-200 shadow-sm group hover:border-primary-500/30 transition-all">
  <div className="text-[11px] text-neutral-400 mb-3 flex items-center justify-between uppercase tracking-widest">
@@ -98,17 +98,17 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
  <Workflow size={28} />
  </div>
  <div>
- <h2 className="text-2xl font-semibold tracking-tight leading-tight">全链路 ROI 归因分析</h2>
- <p className="text-neutral-400 text-[14px] mt-1 uppercase tracking-widest">End-to-End 归因引擎</p>
+ <h2 className="text-2xl font-semibold tracking-tight leading-tight">全链路互动质量归因</h2>
+ <p className="text-neutral-400 text-[14px] mt-1 uppercase tracking-widest">Engagement Quality</p>
  </div>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
  {[
- { label: '曝光层 (Top)', source: '小红书 API / 实时监测', stats: '82.4w', icon: Layers },
- { label: '互动层 (Mid)', source: 'Agent 私域分发反馈', stats: '1.2w', icon: MessageSquare },
- { label: '线索层 (Bottom)', source: '表单 / 留资组件集成', stats: '856', icon: Target },
- { label: '成交层 (Actual)', source: '品牌 CRM 实时对齐', stats: '243', icon: CreditCard },
+ { label: '内容生产层', source: '文本质量/视觉评分', stats: '92分', icon: Layers },
+ { label: '受众触达层', source: '健康度/发布时段', stats: '85分', icon: Target },
+ { label: '用户停留层', source: '首图/标题吸引力', stats: '78分', icon: Activity },
+ { label: '深度互动层', source: '赞藏转评综合分', stats: '82.4分', icon: MessageSquare },
  ].map((node, i) => (
  <div key={i} className="bg-white/5 border border-white/10 rounded-[32px] p-8 relative group overflow-hidden">
  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform">
@@ -190,7 +190,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  {[
  { name: '每周业务矩阵周报', period: '每周一 09:00', dest: '飞书群/运营部', status: 'Active', type: '报表汇总' },
- { name: 'ROI 异常实时报警', period: 'Real-time', dest: 'WeChat / Email', status: 'Monitoring', type: '告警机制' },
+ { name: '质量分下降预警', period: 'Real-time', dest: 'WeChat / Email', status: 'Monitoring', type: '告警机制' },
  { name: '蓝海增长月度雷达', period: '每月 1 号', dest: 'CEO / 市场总监', status: 'Scheduled', type: '深度洞察' },
  ].map((job, idx) => (
  <div key={idx} className="bg-white border border-neutral-200 rounded-[32px] p-8 shadow-sm hover:border-primary-500 transition-all group">

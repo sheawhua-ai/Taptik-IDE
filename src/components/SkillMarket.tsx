@@ -2,7 +2,7 @@ import React from 'react';
 import { 
  ChevronLeft, Check, Sparkles, UploadCloud, Cpu, Zap, User, Bot, 
  Send, Info, Settings, FlaskConical, Play, ShieldCheck, Box, Grid,
- Search, Plus, Infinity, Cloud, ArrowRight, Activity, Upload, LineChart,
+ Search, Plus, Cloud, ArrowRight, Activity, Upload, LineChart,
  TrendingUp, Star, Users, ShoppingCart, ChevronRight, BarChart2, MessageSquare, Target, CreditCard, Save, BoxSelect, Coins, ArrowUpRight, X,
  Filter, Layers, Orbit, Dna, ShieldHalf, Route, Workflow, DownloadCloud
 } from 'lucide-react';
@@ -92,7 +92,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  ];
 
  const filteredSkills = MARKET_SKILLS.filter(sk => {
- let isTabMatch = false;
+ let isTabMatch;
  if (skillMarketTab === 'agent' || skillMarketTab === 'group') {
  isTabMatch = sk.category === 'agent';
  } else if (skillMarketTab === 'skill') {

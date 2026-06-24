@@ -61,8 +61,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
 
  <div className="flex-1 bg-white flex overflow-hidden relative">
  <DataCenter dataSubNav={dataSubNav} setDataSubNav={setDataSubNav} setActiveNav={() => {}} />
- </div>
- </div>
- );
-};
-
+  </div>
+  </div>
+  );
+}
