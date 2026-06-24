@@ -9,10 +9,68 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
   const [showAccountBreakdown, setShowAccountBreakdown] = useState(false);
 
   const MOCK_ACCOUNTS = [
-    { id: 'a1', name: '奈雪-区域福利官', type: '企业专业号', source: '自有资产', status: '正常运行', followers: '12.4w', quota: '5篇/天', usedQuota: 2, todayTasks: 2, health: 'good' },
-    { id: 'a2', name: '周末喝点啥', type: '员工 KOS', source: '自有资产', status: '正常运行', followers: '3,200', quota: '3篇/天', usedQuota: 1, todayTasks: 1, health: 'good' },
-    { id: 'a3', name: '阿喵测评', type: '兼职素人', source: '商单派发', status: '未活跃(超3天)', followers: '840', quota: '无限制', usedQuota: 0, todayTasks: 0, health: 'warning' },
-    { id: 'a4', name: '广州吃喝小分队', type: '员工 KOS', source: '自有资产', status: '异常限流', followers: '1.2w', quota: '暂停发文', usedQuota: 0, todayTasks: 0, health: 'error' },
+    { 
+      id: 'a1', 
+      name: '奈雪-区域福利官', 
+      avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&q=80',
+      type: '企业专业号', 
+      source: '自有资产', 
+      loginStatus: 'managed',
+      status: '正常运行', 
+      followers: '12.4w', 
+      quota: '5篇/天', 
+      usedQuota: 2, 
+      todayTasks: 2, 
+      health: 'good',
+      juguangData: { cost: '¥4,500', roi: '1:3.2', impressions: '145.2w' },
+      noteStats: { likes: '1.2w', saves: '4.5k', comments: '820' },
+    },
+    { 
+      id: 'a2', 
+      name: '周末喝点啥', 
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80',
+      type: '员工 KOS', 
+      source: '自有资产', 
+      loginStatus: 'managed',
+      status: '正常运行', 
+      followers: '3,200', 
+      quota: '3篇/天', 
+      usedQuota: 1, 
+      todayTasks: 1, 
+      health: 'good',
+      juguangData: { cost: '¥1,200', roi: '1:2.1', impressions: '35.4w' },
+      noteStats: { likes: '8.4k', saves: '1.2k', comments: '340' },
+    },
+    { 
+      id: 'a3', 
+      name: '阿喵测评', 
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80',
+      type: '兼职素人', 
+      source: '商单派发', 
+      loginStatus: 'unmanaged',
+      status: '未活跃(超3天)', 
+      followers: '840', 
+      quota: '无限制', 
+      usedQuota: 0, 
+      todayTasks: 0, 
+      health: 'warning',
+      monitoringData: { growthRate: '+12%', engagementRate: '4.5%', brandMentions: 12 },
+    },
+    { 
+      id: 'a4', 
+      name: '广州吃喝小分队', 
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80',
+      type: '员工 KOS', 
+      source: '自有资产', 
+      loginStatus: 'unmanaged',
+      status: '异常限流', 
+      followers: '1.2w', 
+      quota: '暂停发文', 
+      usedQuota: 0, 
+      todayTasks: 0, 
+      health: 'error',
+      monitoringData: { growthRate: '-2%', engagementRate: '1.1%', brandMentions: 3 },
+    },
   ];
 
   const MOCK_QUEUE = [
@@ -121,51 +179,110 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
               </div>
 
               {/* Account List */}
-              <div className="bg-white border border-neutral-100 rounded-[20px] overflow-hidden shadow-sm">
-                <div className="p-5 border-b border-neutral-100 flex items-center justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between px-2">
                   <h3 className="text-[15px] font-semibold text-neutral-900">入网账号流水</h3>
                   <div className="text-[12px] text-neutral-500 flex gap-4">
-                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-success-500"></div> 正常</span>
-                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-warning-500 text-amber-500"></div> 异常/断更</span>
+                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-success-500"></div> 正常运行</span>
+                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-warning-500 text-amber-500"></div> 异常或限流</span>
                   </div>
                 </div>
-                <div>
-                  {MOCK_ACCOUNTS.map((acc, i) => (
-                    <div key={acc.id} className={`p-5 flex items-center justify-between ${i !== MOCK_ACCOUNTS.length - 1 ? 'border-b border-neutral-100' : ''}`}>
-                      <div className="flex items-center gap-4 min-w-[200px]">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${acc.health === 'good' ? 'bg-success-50 text-success-600' : acc.health === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'}`}>
-                          <User size={18} />
-                        </div>
-                        <div>
-                          <div className="text-[14px] font-semibold text-neutral-900 mb-0.5">{acc.name}</div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-neutral-400 bg-neutral-50 px-1.5 py-0.5 rounded">{acc.type}</span>
-                            <span className="text-[10px] text-neutral-400 bg-neutral-50 px-1.5 py-0.5 rounded">{acc.source}</span>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {MOCK_ACCOUNTS.map((acc) => (
+                    <div key={acc.id} className="bg-white border border-neutral-200 rounded-[24px] p-5 shadow-sm hover:shadow-md hover:border-primary-200 transition-all">
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                          <img src={acc.avatar} alt={acc.name} referrerPolicy="no-referrer" className="w-12 h-12 rounded-full object-cover border-2 border-neutral-50 shadow-sm" />
+                          <div>
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <h4 className="text-[15px] font-semibold text-neutral-900">{acc.name}</h4>
+                              <div className={`w-2 h-2 rounded-full ${acc.health === 'good' ? 'bg-success-500' : acc.health === 'warning' ? 'bg-amber-500' : 'bg-rose-500'}`} />
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{acc.type}</span>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${acc.loginStatus === 'managed' ? 'text-primary-600 bg-primary-50' : 'text-indigo-600 bg-indigo-50'}`}>
+                                {acc.loginStatus === 'managed' ? 'PC/App静默挂载' : '云端监控'}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-
-                      <div className="flex items-center justify-between flex-1 pl-12 gap-6">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-[11px] text-neutral-400">状态监控</span>
-                          <span className={`text-[13px] font-medium ${acc.health === 'good' ? 'text-success-600' : acc.health === 'warning' ? 'text-amber-500' : 'text-rose-500'}`}>{acc.status}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">日发文配额</span>
-                          <span className="text-[13px] font-medium text-neutral-700">{acc.quota}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">今日待发排期</span>
-                          <span className="text-[13px] font-medium text-neutral-700">{acc.todayTasks} 篇</span>
-                        </div>
-                        <div className="flex flex-col gap-1 w-[80px]">
-                          <span className="text-[11px] text-neutral-400">粉丝量</span>
-                          <span className="text-[13px] font-medium text-neutral-700">{acc.followers}</span>
+                        <div className="text-right">
+                          <div className="text-[14px] font-semibold text-neutral-900">{acc.followers}</div>
+                          <div className="text-[11px] text-neutral-400">粉丝量</div>
                         </div>
                       </div>
 
-                      <div className="w-[100px] text-right shrink-0">
-                        <button className="text-[12px] text-primary-500 font-medium hover:text-primary-600">健康巡检</button>
+                      {/* Content based on loginStatus */}
+                      {acc.loginStatus === 'managed' ? (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-3 gap-2 p-3 bg-neutral-50 rounded-xl">
+                            <div>
+                              <div className="text-[10px] text-neutral-400 mb-1">聚光消耗</div>
+                              <div className="text-[13px] font-medium text-neutral-800">{acc.juguangData?.cost || '-'}</div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-neutral-400 mb-1">聚光ROI</div>
+                              <div className="text-[13px] font-medium text-success-600">{acc.juguangData?.roi || '-'}</div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-neutral-400 mb-1">笔记赞藏</div>
+                              <div className="text-[13px] font-medium text-neutral-800">{acc.noteStats?.likes || '-'}</div>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="text-[11px] text-neutral-500 font-medium px-1 flex items-center justify-between">
+                              <span>近期高频笔记</span>
+                              <span className="text-primary-500 cursor-pointer hover:underline">查看后台数据</span>
+                            </div>
+                            <div className="space-y-1.5">
+                              <div className="text-[12px] text-neutral-700 bg-white border border-neutral-100 rounded-lg p-2 truncate">· 夏日通勤防晒实测第1篇 <span className="text-neutral-400 ml-1">12w阅读</span></div>
+                              <div className="text-[12px] text-neutral-700 bg-white border border-neutral-100 rounded-lg p-2 truncate">· 带妆一整天持妆防晒组合 <span className="text-neutral-400 ml-1">8.4w阅读</span></div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-3 gap-2 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
+                            <div>
+                              <div className="text-[10px] text-indigo-400 mb-1">预计粉丝增速</div>
+                              <div className={`text-[13px] font-medium ${acc.monitoringData?.growthRate?.includes('+') ? 'text-success-600' : 'text-rose-500'}`}>{acc.monitoringData?.growthRate || '-'}</div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-indigo-400 mb-1">赞藏互动率</div>
+                              <div className="text-[13px] font-medium text-indigo-700">{acc.monitoringData?.engagementRate || '-'}</div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] text-indigo-400 mb-1">品牌词提及</div>
+                              <div className="text-[13px] font-medium text-indigo-700">{acc.monitoringData?.brandMentions || 0}次</div>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="text-[11px] text-neutral-500 font-medium px-1">监控笔记动态</div>
+                            <div className="space-y-1.5">
+                              <div className="text-[12px] text-neutral-600 bg-white border border-neutral-100 rounded-lg p-2 truncate flex items-center justify-between">
+                                <span className="truncate">· 测评了10款宠物零食，推荐...</span>
+                                <span className="text-indigo-500 text-[10px] bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
+                              </div>
+                              <div className="text-[12px] text-neutral-600 bg-white border border-neutral-100 rounded-lg p-2 truncate flex items-center justify-between">
+                                <span className="truncate">· 铲屎官必看的换粮指南</span>
+                                <span className="text-indigo-500 text-[10px] bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Footer actions */}
+                      <div className="mt-4 pt-4 border-t border-neutral-100 flex items-center justify-between">
+                        <div className="flex items-center gap-4 text-[11px] text-neutral-500">
+                          <span className="flex items-center gap-1"><History size={12}/> 状态: <span className="text-neutral-700">{acc.status}</span></span>
+                          <span className="flex items-center gap-1"><Calendar size={12}/> 今日待发: <span className="text-neutral-700">{acc.todayTasks}</span></span>
+                        </div>
+                        <button className="text-[12px] px-3 py-1.5 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors">
+                          账号详情
+                        </button>
                       </div>
                     </div>
                   ))}
