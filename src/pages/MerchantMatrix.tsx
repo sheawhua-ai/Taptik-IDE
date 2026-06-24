@@ -367,9 +367,61 @@ const EXTERNAL_TASKS = [
           </div>
         </div>
         <div className="flex-1 w-full overflow-y-auto bg-neutral-50/50 custom-scrollbar pb-24">
-          <div className="max-w-6xl mx-auto p-6 lg:p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {drafts.map((draft, idx) => (
+          <div className="max-w-6xl mx-auto p-6 lg:p-8 space-y-6">
+            <motion.div 
+              key={project.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-5 flex flex-col xl:flex-row bg-white border border-neutral-100 rounded-[20px] hover:shadow-xl transition-all group overflow-hidden relative gap-6 items-center"
+            >
+              <div className="flex items-center gap-4 min-w-[240px] shrink-0">
+                <div className="min-w-0">
+                  <h3 className="text-[16px] font-semibold text-neutral-900 mb-2 truncate">{project.name}</h3>
+                  <div className="flex items-center gap-1.5 text-[9px] tracking-widest uppercase mt-1">
+                    <span className={`px-2 py-1 rounded shadow-sm flex items-center gap-1 ${project.status === '任务进行中' ? 'text-primary-600 bg-primary-50 border border-primary-100' : 'text-neutral-500 bg-white border border-neutral-200'}`}><CheckCircle2 size={10} />图文生成</span>
+                    <ArrowRight size={10} className="text-neutral-300" />
+                    <span className={`px-2 py-1 rounded shadow-sm flex items-center gap-1 ${project.status === '任务进行中' ? 'text-emerald-600 bg-emerald-50 border border-emerald-100' : 'text-neutral-500 bg-white border border-neutral-200'}`}><Camera size={10} />素材回传分发</span>
+                    <ArrowRight size={10} className="text-neutral-300" />
+                    <span className={`px-2 py-1 rounded shadow-sm ${project.status === '已完成' ? 'text-success-600 bg-success-50 border border-success-100' : 'text-neutral-400 bg-neutral-50'}`}>自动发布归档</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 flex gap-6 md:gap-8 items-center xl:px-6 xl:border-x border-neutral-50 overflow-x-auto custom-scrollbar">
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <span className="text-[10px] text-neutral-400 tracking-widest">排发任务总数</span>
+                  <span className="text-[16px] text-neutral-900">{project.targetCount}</span>
+                </div>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <span className="text-[10px] text-neutral-400 tracking-widest">已提交素材</span>
+                  <span className="text-[16px] text-emerald-500">{project.recoveredMaterial}</span>
+                </div>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <span className="text-[10px] text-neutral-400 tracking-widest">已成稿笔记</span>
+                  <span className="text-[16px] text-primary-500">{project.generatedNotes}</span>
+                </div>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <span className="text-[10px] text-neutral-400 tracking-widest">已成功发布</span>
+                  <span className="text-[16px] text-success-500">{project.publishedNotes}</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-center gap-2 xl:pl-4 shrink-0 w-full xl:w-auto">
+                <button 
+                  onClick={() => generateMocks()}
+                  className="w-full sm:w-auto px-5 py-2.5 bg-neutral-900 text-white rounded-[14px] text-[12px] transition-all flex items-center justify-center gap-2 hover:bg-primary-500 shadow-lg active:scale-95 whitespace-nowrap"
+                >
+                  <PenTool size={14} /> 管理笔记
+                </button>
+                <button className="w-full sm:w-auto px-5 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-[14px] text-[12px] transition-all flex items-center justify-center gap-2 hover:bg-neutral-50 shadow-sm whitespace-nowrap">
+                  <Target size={14} /> 分发二维码
+                </button>
+              </div>
+            </motion.div>
+
+            {drafts.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {drafts.map((draft, idx) => (
                 <div key={draft.id} className="bg-white border border-neutral-200 rounded-[20px] overflow-hidden hover:shadow-xl transition-all group">
                   <div className="p-5 border-b border-neutral-100">
                     <div className="flex items-start justify-between mb-3">
@@ -416,6 +468,7 @@ const EXTERNAL_TASKS = [
                 </div>
               ))}
             </div>
+            )}
           </div>
         </div>
       </div>
