@@ -139,6 +139,7 @@ import { CRM } from "./components/rings/CRM";
 import { Metrics } from "./components/rings/Metrics";
 
 import { SubagentChat } from "./components/SubagentChat";
+import { MerchantMemoryHeader } from "./components/MerchantMemoryHeader";
 import { ProjectSwitcherModal } from "./components/ProjectSwitcherModal";
 import { CreateProjectModal } from "./components/CreateProjectModal";
 
@@ -306,11 +307,11 @@ const PROJECT_HISTORY_ITEMS = [
 ];
 
 const PROJECT_TABS = [
- { id: "strategy", name: "选题与策略", icon: Compass },
- { id: "matrix", name: "项目与内容", icon: LayoutGrid },
- { id: "content", name: "账号与分发", icon: Sparkles },
- { id: "interaction", name: "舆情预警与工单", icon: MessageSquare },
- { id: "metrics", name: "深度数据看板", icon: BarChart2 },
+  { id: "strategy", name: "操盘建议", icon: Compass },
+  { id: "matrix", name: "项目与内容", icon: LayoutGrid },
+  { id: "content", name: "账号与发布", icon: Sparkles },
+  { id: "interaction", name: "风险与待办", icon: MessageSquare },
+  { id: "metrics", name: "数据与机会", icon: BarChart2 },
 ];
 
 export default function App() {
@@ -1319,7 +1320,10 @@ export default function App() {
  {/* 专注模式切换器 (仅在工作流模式显示) */}
  {activeNav === "workflow" && (
  <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-white">
- {/* 顶部导航与专注模式 */}
+ {/* 商家记忆固定区域 */}
+            <MerchantMemoryHeader hasData={hasData} onboardingData={onboardingData} activeProjectId={activeProjectId} projectName={activeProject?.name || "未知项目"} setWorkflowTab={setWorkflowTab} />
+
+            {/* 顶部导航与专注模式 */}
  <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0 shadow-sm z-20">
  <div className="flex items-center gap-10">
  {PROJECT_TABS.map((tab) => {
