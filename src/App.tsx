@@ -24,8 +24,8 @@ import {
  PanelRightClose,
  Plus,
  MoreVertical,
- History,
- Compass,
+ History, Archive,
+ Compass, Pin,
  MessageSquare,
  AtSign,
  LayoutTemplate,
@@ -103,7 +103,7 @@ import {
  UserCircle,
  CheckCircle2,
  PanelLeftOpen,
- Store,
+ Store, MoreHorizontal, Edit2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -511,6 +511,22 @@ export default function App() {
  const [userRole, setUserRole] = useState<"merchant" | "provider" | "creator">("merchant");
  const [isFinanceModalOpen, setIsFinanceModalOpen] = useState(false);
  const [isSwitchAccountModalOpen, setIsSwitchAccountModalOpen] = useState(false);
+  const [activeProjectMenuId, setActiveProjectMenuId] = useState<string | null>(null);
+  const [activeSessionMenuId, setActiveSessionMenuId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.project-menu-container') && !target.closest('.project-menu-trigger')) {
+        setActiveProjectMenuId(null);
+      }
+      if (!target.closest('.session-menu-container') && !target.closest('.session-menu-trigger')) {
+        setActiveSessionMenuId(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
  const insertMention = (name: string, type: "@" | "/") => {
  let newVal;
@@ -963,42 +979,105 @@ export default function App() {
           {!isSidebarCollapsed && (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <span className="text-[11px] text-slate-400 font-medium">当前上下文</span>
-                <div className="bg-white/60 rounded-xl p-3 border border-slate-100 flex flex-col gap-2 shadow-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
-                    <span className="text-[13px] font-semibold text-slate-800">商家 A：宠物食品组</span>
-                  </div>
-                  <div className="flex flex-col gap-1.5 mt-1 text-[11px] text-slate-500">
-                    <div className="flex items-start gap-1.5">
-                      <span className="shrink-0 text-slate-400">目标：</span>
-                      <span>搜索卡位 + 内容起量</span>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="shrink-0 text-slate-400">资源：</span>
-                      <span>知识库已连 / 飞书群已连</span>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between group">
+                  <span className="text-[12px] text-slate-500 font-medium px-2">项目</span>
+                  <button onClick={() => setIsCreateProjectModalOpen(true)} className="hover:text-slate-700 text-slate-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity" title="新建项目"><Plus size={14} /></button>
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400 font-medium">宠粮新客运营</span>
-                  <button onClick={() => setIsCreateProjectModalOpen(true)} className="hover:text-slate-700" title="新建任务流"><Plus size={12} strokeWidth={3} /></button>
-                </div>
-                <div className="flex flex-col border-l-2 border-slate-200 ml-1.5 pl-3 py-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary-500 shadow-[0_0_0_2px_rgba(var(--primary-100),1)] animate-pulse -ml-[17px]"></div>
-                    <span className="text-[12px] text-slate-700 truncate">小红书批量生成中</span>
+                
+                {/* Project Item */}
+                <div className="flex flex-col gap-0.5">
+                  <div className="relative flex items-center justify-between px-2 py-2 rounded-lg bg-slate-100/50 hover:bg-slate-100 cursor-pointer group/project text-slate-800 transition-colors">
+                    <div className="flex items-center gap-2 overflow-hidden flex-1">
+                      <ChevronDown size={14} className="text-slate-400 shrink-0" />
+                      <Folder size={15} className="text-slate-400 shrink-0" />
+                      <span className="text-[13px] font-medium truncate">New project</span>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover/project:opacity-100 transition-opacity relative">
+                      <button 
+                        className="text-slate-400 hover:text-slate-700 p-1 project-menu-trigger" 
+                        title="更多"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveProjectMenuId(activeProjectMenuId === 'new-project' ? null : 'new-project');
+                          setActiveSessionMenuId(null);
+                        }}
+                      >
+                        <MoreHorizontal size={14} />
+                      </button>
+                      <button className="text-slate-400 hover:text-slate-700 p-1" title="编辑">
+                        <Edit2 size={14} />
+                      </button>
+                      
+                      {/* Project Menu Dropdown */}
+                      {activeProjectMenuId === 'new-project' && (
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 text-slate-700 project-menu-container">
+                        <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                          <Pin size={14} className="shrink-0 text-slate-400" /> 置顶项目
+                        </button>
+                        <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                          <FolderOpen size={14} className="shrink-0 text-slate-400" /> 在资源管理器中打开
+                        </button>
+                        <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                          <Edit2 size={14} className="shrink-0 text-slate-400" /> 重命名项目
+                        </button>
+                        <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                          <Archive size={14} className="shrink-0 text-slate-400" /> 归档项目
+                        </button>
+                        <div className="h-px bg-slate-100 my-1 w-full" />
+                        <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors text-left w-full">
+                          <X size={14} className="shrink-0" /> 移除
+                        </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 group cursor-pointer hover:text-slate-800 text-slate-500">
-                    <div className="w-1.5 h-1.5 rounded-full bg-slate-300 -ml-[16px] group-hover:bg-slate-400 transition-colors"></div>
-                    <span className="text-[12px] truncate transition-colors">昨日拉新复盘</span>
-                  </div>
-                  <div className="flex items-center gap-2 group cursor-pointer hover:text-slate-800 text-slate-500">
-                    <div className="w-1.5 h-1.5 rounded-full bg-slate-300 -ml-[16px] group-hover:bg-slate-400 transition-colors"></div>
-                    <span className="text-[12px] truncate transition-colors">诊断现有账号掉量</span>
+                  
+                  {/* Sessions under project */}
+                  <div className="flex flex-col ml-4 border-l border-slate-100 pl-2 mt-1 space-y-0.5">
+                    {[
+                      { id: 1, title: 'Markdown文件访问认知' },
+                      { id: 2, title: '聚光词查询' },
+                      { id: 3, title: 'Rust开发工程师工作经历' },
+                      { id: 4, title: '与GPT5.5能力对比' }
+                    ].map((session, i) => (
+                      <div key={session.id} className={`relative flex items-center justify-between px-2 py-1.5 rounded-md cursor-pointer group/session transition-colors ${i === 0 ? 'bg-slate-100 text-slate-800' : 'hover:bg-slate-50 text-slate-500 hover:text-slate-700'}`}>
+                        <div className="flex items-center gap-2 overflow-hidden flex-1">
+                          <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${i === 0 ? 'bg-slate-300' : 'bg-slate-200'}`} />
+                          <span className="text-[12px] truncate">{session.title}</span>
+                        </div>
+                          <div className="shrink-0 opacity-0 group-hover/session:opacity-100 transition-opacity relative">
+                            <button 
+                              className="text-slate-400 hover:text-slate-600 p-1 session-menu-trigger" 
+                              title="更多"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveSessionMenuId(activeSessionMenuId === session.id ? null : session.id);
+                                setActiveProjectMenuId(null);
+                              }}
+                            >
+                              <MoreHorizontal size={14} />
+                            </button>
+                            
+                            {/* Session Menu Dropdown */}
+                            {activeSessionMenuId === session.id && (
+                              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 session-menu-container">
+                              <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full">
+                                打开会话
+                              </button>
+                              <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full">
+                                分享对话
+                              </button>
+                              <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full">
+                                沉淀为 Skill
+                              </button>
+                              <button className="px-4 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors text-left w-full mt-1 pt-2 border-t border-slate-100">
+                                删除
+                              </button>
+                              </div>
+                            )}
+                          </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
