@@ -205,7 +205,9 @@ const MOCK_PROJECTS: Record<string, any> = {
  initial: "宠",
  color: "var(--primary-50)",
  textColor: "var(--primary-500)",
- tags: ["宠物", "主粮", "V1客户"],
+ tags: ["宠物食品", "幼犬冻干", "肠胃敏感人群"],
+    targets: ["搜索卡位", "内容起量"],
+    knowledge: ["品牌资料", "视觉和审核约束"],
  stats: {
  pendingLeads: 12,
  pendingContent: 5,
@@ -956,52 +958,54 @@ export default function App() {
  </button>
  ))}
 
- <div className="border-t border-[#e9eaec] mt-6 pt-4 mb-2 w-full">
- {!isSidebarCollapsed && (
- <div className="px-2 text-[11px] text-slate-400 flex items-center justify-between mb-2 w-full">
- <span>近期任务与项目</span>
- <button onClick={() => setIsCreateProjectModalOpen(true)} className="hover:text-slate-700" title="新建项目"><Plus size={12} strokeWidth={3} /></button>
- </div>
- )}
- 
- <div className={`flex flex-col w-full ${isSidebarCollapsed ? "gap-2 items-center" : "gap-0.5"}`}>
- <div className="flex flex-col w-full">
- <button 
- title={isSidebarCollapsed ? "宠粮新客运营 (项目)" : undefined}
- className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center h-10 w-10 shrink-0 mx-auto" : "justify-between px-2 py-1.5"} rounded-lg hover:bg-white/60 text-slate-600 group transition-all`}
- >
- <div className="flex items-center gap-2">
- {!isSidebarCollapsed && <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600" />}
- <FolderOpen size={16} className={`text-slate-400 group-hover:text-slate-600 ${isSidebarCollapsed ? "mx-auto" : ""}`} />
- {!isSidebarCollapsed && <span className="text-[13px] truncate max-w-[120px]">宠粮新客运营</span>}
- </div>
- </button>
- {!isSidebarCollapsed && (
- <div className="flex flex-col pl-7 pr-2 border-l border-slate-200 ml-4 py-1 space-y-1">
- {PROJECT_HISTORY_ITEMS.slice(0, 3).map(task => (
- <button key={task.id} className="w-full text-left py-1.5 px-2 hover:bg-white rounded-md text-[12px] text-slate-500 hover:text-slate-800 transition-all flex items-center justify-between group">
- <span className="truncate flex-1 pr-2">{task.title}</span>
- <span className="text-[9px] font-semibold text-slate-400 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">{task.time}</span>
- </button>
- ))}
- </div>
- )}
- </div>
- 
- <div className="flex flex-col w-full">
- <button 
- title={isSidebarCollapsed ? "美妆季卡提报 (项目)" : undefined}
- className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center h-10 w-10 shrink-0 mx-auto" : "justify-between px-2 py-1.5"} rounded-lg hover:bg-white/60 text-slate-600 group transition-all`}
- >
- <div className="flex items-center gap-2">
- {!isSidebarCollapsed && <ChevronDown size={14} className="text-slate-400 rounded group-hover:text-slate-600 -rotate-90" />}
- <Folder size={16} className={`text-slate-400 group-hover:text-slate-600 ${isSidebarCollapsed ? "mx-auto" : ""}`} />
- {!isSidebarCollapsed && <span className="text-[13px] truncate max-w-[120px]">美妆季卡提报</span>}
- </div>
- </button>
- </div>
- </div>
- </div>
+
+        <div className="border-t border-[#e9eaec] mt-6 pt-4 mb-2 w-full px-3">
+          {!isSidebarCollapsed && (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-[11px] text-slate-400 font-medium">当前上下文</span>
+                <div className="bg-white/60 rounded-xl p-3 border border-slate-100 flex flex-col gap-2 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                    <span className="text-[13px] font-semibold text-slate-800">商家 A：宠物食品组</span>
+                  </div>
+                  <div className="flex flex-col gap-1.5 mt-1 text-[11px] text-slate-500">
+                    <div className="flex items-start gap-1.5">
+                      <span className="shrink-0 text-slate-400">目标：</span>
+                      <span>搜索卡位 + 内容起量</span>
+                    </div>
+                    <div className="flex items-start gap-1.5">
+                      <span className="shrink-0 text-slate-400">资源：</span>
+                      <span>知识库已连 / 飞书群已连</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] text-slate-400 font-medium">宠粮新客运营</span>
+                  <button onClick={() => setIsCreateProjectModalOpen(true)} className="hover:text-slate-700" title="新建任务流"><Plus size={12} strokeWidth={3} /></button>
+                </div>
+                <div className="flex flex-col border-l-2 border-slate-200 ml-1.5 pl-3 py-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary-500 shadow-[0_0_0_2px_rgba(var(--primary-100),1)] animate-pulse -ml-[17px]"></div>
+                    <span className="text-[12px] text-slate-700 truncate">小红书批量生成中</span>
+                  </div>
+                  <div className="flex items-center gap-2 group cursor-pointer hover:text-slate-800 text-slate-500">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-300 -ml-[16px] group-hover:bg-slate-400 transition-colors"></div>
+                    <span className="text-[12px] truncate transition-colors">昨日拉新复盘</span>
+                  </div>
+                  <div className="flex items-center gap-2 group cursor-pointer hover:text-slate-800 text-slate-500">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-300 -ml-[16px] group-hover:bg-slate-400 transition-colors"></div>
+                    <span className="text-[12px] truncate transition-colors">诊断现有账号掉量</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
  </div>
 
  <div className={`p-3 ${isSidebarCollapsed ? "px-1" : "xl:p-4"} border-t border-neutral-100 flex flex-col gap-1 bg-white relative z-[60] shrink-0`}>

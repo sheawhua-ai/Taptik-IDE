@@ -57,10 +57,10 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({ moduleId, moduleName
  ];
 
  useEffect(() => {
- setCurrentExpert(moduleName + ' 助手');
+ setCurrentExpert(moduleId === 'strategy' ? '操盘副手' : moduleName + ' 助手');
  // Initial greeting based on module - only reset if moduleId changes
  const greetings: Record<string, string> = {
- 'strategy': `您好！我是全域巡航数字员工。我正在为您监测「${moduleName}」相关的行业蓝海机会。您可以问我关于市场趋势或竞品策略的问题。`,
+ 'strategy': `我已经完成这个商家的今日巡航。\n\n当前最值得优先处理的是「幼犬换粮避坑」方向。它适合用自然流内容先测试，不建议一开始直接做硬广投流。\n\n你可以直接说：\n“开始操盘”\n“继续深挖低粉爆款”\n“换成专业号方向”\n“只用 A01 和 A02”`,
  'matrix': `矩阵调度数字员工已就绪。正在为您监控自有 KOS 账号与外部素人发文状态。您可以让我下发任务或排查账号异常。`,
  'content': `内容助手已就绪。正在为您解析最近的爆款笔记逻辑。您可以下达改写、生成或润色内容指令。`,
  'execution': `编排中心数字员工在线。正在管理您的自动化任务流。需要我调整执行顺序或增加监控节点吗？`,

@@ -129,7 +129,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
  </div>
  <div className="flex items-center gap-1 flex-wrap">
  {proj.tags?.map((tag: string) => (
- <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded truncate max-w-[60px]">
+ <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded truncate max-w-[80px]">
  {tag}
  </span>
  ))}
