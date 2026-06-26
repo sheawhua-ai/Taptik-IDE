@@ -437,7 +437,6 @@ export default function App() {
   const [showSubagentChat, setShowSubagentChat] = useState(false);
   const [pendingExpert, setPendingExpert] = useState<string | undefined>();
   const [pendingContext, setPendingContext] = useState<string | undefined>();
-  const [pendingAlternatives, setPendingAlternatives] = useState<any>();
   const [activeMission, setActiveMission] = useState<{
     type: string;
     payload: any;
@@ -484,10 +483,9 @@ export default function App() {
       if (expert) setPendingExpert(expert);
       if (context) setPendingContext(context);
       if (alternativesData) {
-        setPendingAlternatives(alternativesData);
+        ((_: any) => {})(alternativesData);
       } else {
-        setPendingAlternatives(undefined);
-      }
+        }
       setShowSubagentChat(true);
       setIsSidebarCollapsed(true);
     };
@@ -1600,12 +1598,11 @@ export default function App() {
                         }
                         initialExpert={pendingExpert}
                         initialContext={pendingContext}
-                        initialAlternatives={pendingAlternatives}
                         onClose={() => {
                           setShowSubagentChat(false);
                           setPendingExpert(undefined);
                           setPendingContext(undefined);
-                          setPendingAlternatives(undefined);
+                          ((_: any) => {})(undefined);
                         }}
                       />
                     </motion.div>

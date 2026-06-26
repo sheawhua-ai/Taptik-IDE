@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+
+import fs from 'fs';
+fs.writeFileSync('src/pages/MerchantMatrix.tsx', `import React, { useState } from 'react';
 import { 
-  PlusCircle, Target, Check, ArrowRight, Camera, Plus, Send, 
+  PlusCircle, Target, Check, ArrowRight, Camera, 
   Image as ImageIcon, Sparkles, X, LayoutGrid, ArrowLeft, Wand2,
   AlertTriangle, CheckCircle2, ChevronRight, MessageSquare, Play,
   ListTodo
@@ -223,18 +225,18 @@ export default function MerchantMatrix() {
                           <div 
                             key={pack.id} 
                             onClick={() => handleOpenPack(pack)}
-                            className={`bg-white rounded-xl p-3 cursor-pointer transition-all shadow-sm hover:shadow-md ${pack.aiFlag ? `border-2 ${getAiFlagColor(pack.aiFlag).split(' ')[0]}` : 'border border-neutral-200'}`}
+                            className={\`bg-white rounded-xl p-3 cursor-pointer transition-all shadow-sm hover:shadow-md \${pack.aiFlag ? \`border-2 \${getAiFlagColor(pack.aiFlag).split(' ')[0]}\` : 'border border-neutral-200'}\`}
                           >
                             <h4 className="text-[13px] font-bold text-neutral-900 mb-2 leading-snug">{pack.title}</h4>
                             <div className="flex flex-wrap gap-1.5 mb-2">
                               <span className="text-[10px] bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">{pack.format}</span>
                               <span className="text-[10px] bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">{pack.material}</span>
                               <span className="text-[10px] bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">{pack.path}</span>
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                              <span className={\`text-[10px] px-1.5 py-0.5 rounded border \${
                                 pack.status.includes('就绪') ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                                 pack.status.includes('缺') || pack.status.includes('待补') ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                 'bg-blue-50 text-blue-600 border-blue-100'
-                              }`}>{pack.status}</span>
+                              }\`}>{pack.status}</span>
                             </div>
                             {pack.collab && (
                               <div className="text-[10px] text-blue-600 flex items-center gap-1 mt-1 bg-blue-50/50 p-1 rounded">
@@ -242,7 +244,7 @@ export default function MerchantMatrix() {
                               </div>
                             )}
                             {pack.aiFlag && (
-                              <div className={`mt-2 text-[10px] font-bold px-2 py-1 rounded ${getAiFlagColor(pack.aiFlag)}`}>
+                              <div className={\`mt-2 text-[10px] font-bold px-2 py-1 rounded \${getAiFlagColor(pack.aiFlag)}\`}>
                                 {pack.aiFlag}
                               </div>
                             )}
@@ -456,3 +458,4 @@ export default function MerchantMatrix() {
     </div>
   );
 }
+`);

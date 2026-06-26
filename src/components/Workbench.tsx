@@ -1,716 +1,80 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  Search,
-  Sparkles,
-  Target,
-  BarChart2,
-  Workflow,
-  MessageSquare,
-  Compass,
-  Lightbulb,
-  Bot,
-  LayoutGrid,
-  Cpu,
-  Share2,
-  PanelLeftClose,
-  PanelRightClose,
-  User,
-  Send,
-  FileText,
-  Plus,
-  Check,
-  CalendarDays,
-  LineChart,
-  PanelLeftOpen,
-  PanelRightOpen,
-  History,
-  FolderOpen,
-  Brain,
-  BookOpen,
-  ArrowUpRight,
-  ChevronRight,
-  Wrench,
-  BrainCircuit,
-  CheckCircle2,
-  X,
-  MoreHorizontal,
-  Edit2,
-  Save,
-  Share,
-  Trash2,
-  Folder,
-  Copy,
-  Settings,
-  Palette,
-  HelpCircle,
-  ArrowUpCircle,
-  LogOut,
-  Bell,
-  Link2,
-  Gift,
-  UserCircle,
-  Database,
-  ShieldCheck,
-  Users,
-  ShieldAlert,
-  Paperclip,
-  ArrowDownRight,
-  PieChart,
-  Loader2,
-  ChevronDown,
-} from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { CommandDirectory } from "./command-center/CommandDirectory";
-import {
-  AgentSelector,
-  AVAILABLE_AGENTS,
-} from "./command-center/AgentSelector";
+// @ts-nocheck
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Bot, Send, Image as ImageIcon, FileText, CheckCircle2, ChevronRight, Hash, 
+  Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
-type AgentThought = {
-  id: string;
-  type: "think" | "tool_call";
-  content: string;
-  result?: string;
-  status?: "success" | "warning" | "error";
-};
 
-type ChatMessage = {
+export interface ChatMessage {
   id: string;
-  role: "user" | "agent" | "system";
+  role: 'user' | 'agent';
   content: string;
   time: string;
-  thoughts?: AgentThought[];
   isThinking?: boolean;
-  card?: {
-    type: "confirmation" | "progress" | "result";
-
-    // For confirmation
-    goal?: string;
-    tools?: string[];
-    destinations?: string[];
-    wontDo?: string[];
-    recommendedDestination?: string;
-
-    // For progress
-    currentStep?: string;
-    steps?: { title: string; status: "pending" | "active" | "completed" }[];
-    isExpanded?: boolean;
-
-    // For result
-    title?: string;
-    items?: { title: string; desc: string }[];
-    recommendation?: string;
-    actions?: string[];
-
-    // Common
-    cmd?: string;
-  };
-};
-
-const ThoughtsBlock = ({
-  thoughts,
-  isThinking,
-}: {
-  thoughts: AgentThought[];
-  isThinking: boolean;
-}) => {
-  const [expanded, setExpanded] = useState(false);
-
-  if (!thoughts || thoughts.length === 0) return null;
-
-  return (
-    <div className="mb-3 border border-neutral-200 rounded-2xl overflow-hidden bg-neutral-50/50">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-3 hover:bg-neutral-100/50 transition-colors"
-      >
-        <div className="flex items-center gap-2 text-[13px] text-neutral-600">
-          {isThinking ? (
-            <div className="animate-spin text-neutral-400">
-              <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full" />
-            </div>
-          ) : (
-            <CheckCircle2 size={16} className="text-emerald-500" />
-          )}
-          <span>子节点思考与执行过程 ({thoughts.length})</span>
-        </div>
-        <ChevronRight
-          size={16}
-          className={`text-neutral-400 transition-transform ${expanded ? "rotate-90" : ""}`}
-        />
-      </button>
-
-      {expanded && (
-        <div className="p-4 pt-1 border-t border-neutral-200/50 space-y-4">
-          {thoughts.map((t) => (
-            <div
-              key={t.id}
-              className={`flex items-start gap-3 text-[13px] ${t.status === "warning" ? "bg-warning-50/50 p-2 -mx-2 rounded-xl text-warning-700 border border-warning-200/50" : t.status === "success" ? "bg-emerald-50/50 p-2 -mx-2 rounded-xl text-emerald-700 border border-emerald-200/50" : ""}`}
-            >
-              <div className="mt-0.5 shrink-0">
-                {t.type === "think" ? (
-                  <BrainCircuit
-                    size={14}
-                    className={
-                      t.status === "warning"
-                        ? "text-warning-500"
-                        : t.status === "success"
-                          ? "text-emerald-500"
-                          : "text-purple-500"
-                    }
-                  />
-                ) : (
-                  <Wrench size={14} className="text-blue-500" />
-                )}
-              </div>
-              <div className="flex-1 space-y-1.5">
-                <div
-                  className={` ${t.status === "warning" ? "text-warning-900" : t.status === "success" ? "text-emerald-900" : "text-neutral-700"}`}
-                >
-                  {t.content}
-                </div>
-                {t.result && (
-                  <div className="font-mono text-[11px] text-neutral-500 bg-white border border-neutral-200 p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-wrap mt-2">
-                    {t.result}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+  thoughts?: { id: string; type: string; content: string }[];
+  card?: any;
+}
 
 interface WorkbenchProps {
   setActiveNav: (nav: string) => void;
-  setDataSubNav: (nav: any) => void;
+  setDataSubNav: (nav: string) => void;
+  isNewMerchant?: boolean;
+  setOnboardingData?: (data: any) => void;
+  onboardingData?: any;
   onboardingStep: number;
   setOnboardingStep: (step: number) => void;
-  onboardingData: any;
-  setOnboardingData: (data: any) => void;
-  activeProjectId: string;
+  setWorkflowTab?: (tab: any) => void;
+  messages?: ChatMessage[];
+  setMessages?: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 
-const SUGGESTIONS = [
-  "分析我的宠物零食笔记最近一周的互动趋势",
-  "为美妆护肤行业寻找蓝海关键词",
-  "生成 5 篇改写后的爆文草稿",
-  "查看当前商户的小红书收录监测",
-  "帮我审核待发布的素材内容",
-  "查看这个月的笔记发布日历",
-  "对比我和竞品账号的互动率",
-  "派发素材拍摄任务给运营团队",
-];
-
-const CAPSULES = [
-  { label: "找蓝海关键词", cmd: "为 [行业名称] 寻找潜力蓝海关键词" },
-  { label: "生成爆文", cmd: "生成 5 篇符合小红书网感的爆文草稿" },
-  { label: "分析笔记趋势", cmd: "分析 [笔记链接] 最近一周的互动变化" },
-  { label: "查看素材审核", cmd: "查看待审核的图文与视频素材" },
-];
-
-const ProfileSlot = ({
-  label,
-  value,
-  icon: Icon,
-  active,
-  flashed,
-}: {
-  label: string;
-  value?: string;
-  icon: any;
-  active: boolean;
-  flashed?: boolean;
-}) => {
-  return (
-    <div
-      className={`relative px-4 py-3 rounded-2xl border transition-all duration-700 ${active ? "bg-white border-primary-100 shadow-sm" : "bg-neutral-50 border-dashed border-neutral-200"}`}
-    >
-      <div className="flex items-center gap-3 relative z-10">
-        <div
-          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors ${active ? "bg-primary-50 text-primary-500" : "bg-neutral-100 text-neutral-400"}`}
-        >
-          <Icon size={16} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[11px] text-neutral-400 mb-0.5">{label}</div>
-          <div
-            className={`text-[13px] truncate transition-all duration-500 ${active ? "text-neutral-900" : "text-neutral-300"}`}
-          >
-            {value || "待 AI 提炼补充..."}
-          </div>
-        </div>
-      </div>
-      {flashed && active && (
-        <motion.div
-          initial={{ opacity: 0.8, scale: 0.95 }}
-          animate={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.6 }}
-          className="absolute inset-0 bg-primary-100 rounded-2xl z-0"
-        />
-      )}
-    </div>
-  );
-};
-
 const QUICK_SHORTCUTS = [
-  {
-    id: "1",
-    name: "找蓝海关键词",
-    action: "找蓝海关键词",
-    contexts: [
-      {
-        id: "c1",
-        name: "多猫家庭喂养清单",
-        action: "创建一个搜索多猫家庭喂养清单的关键词任务，后缀是字母a到z",
-      },
-      {
-        id: "c2",
-        name: "猫猫不掉毛攻略",
-        action: "创建一个搜索猫猫不掉毛攻略的关键词任务，后缀是字母a到z",
-      },
-      {
-        id: "c3",
-        name: "平价冻干品牌测评",
-        action: "搜索平价冻干品牌测评的蓝海词",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "生成爆文",
-    action: "生成爆文",
-    contexts: [
-      {
-        id: "c4",
-        name: "爆款标题生成",
-        action: "基于当前受众特征，生成5个自带吸引力的爆款标题",
-      },
-      {
-        id: "c5",
-        name: "痛点文案改写",
-        action: "将这段产品描述改写成直击痛点的小红书种草文案",
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "分析笔记趋势",
-    action: "分析笔记趋势",
-    contexts: [
-      {
-        id: "c6",
-        name: "本周热词分析",
-        action: "提取本周品类下的高频搜索词，并预测下周趋势",
-      },
-      {
-        id: "c7",
-        name: "高潜爆款拆解",
-        action: "拆解近期互动率最高的3篇竞品笔记",
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "查看素材审核",
-    action: "查看素材审核",
-    contexts: [
-      {
-        id: "c8",
-        name: "合规性预检",
-        action: "帮我检查这篇笔记是否包含违规或敏感词",
-      },
-      {
-        id: "c9",
-        name: "图片素材审查",
-        action: "检查配图是否符合平台调性与审核标准",
-      },
-    ],
-  },
-  {
-    id: "5",
-    name: "更多",
-    action: "更多功能",
-    contexts: [],
-  },
+  { id: '1', name: '文档处理', action: '帮我总结和处理这份文档。' },
+  { id: '2', name: '金融服务', action: '提供金融分析和建议。' },
+  { id: '3', name: '高考我帮你', action: '解答高考相关问题并提供志愿建议。' },
+  { id: '4', name: '数据分析及可视化', action: '帮我分析这些数据并生成可视化图表。' },
+  { id: '5', name: '深度研究', action: '对这个主题进行深入的学术和市场研究。' }
 ];
 
 export const Workbench: React.FC<WorkbenchProps> = ({
-  setActiveNav,
-  setDataSubNav,
-  onboardingStep,
-  setOnboardingStep,
-  onboardingData,
-  setOnboardingData,
-  activeProjectId,
+  setActiveNav, setDataSubNav, isNewMerchant, setOnboardingData, onboardingData, onboardingStep, setOnboardingStep, setWorkflowTab, messages = [], setMessages = () => {}
 }) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [selectedShortcut, setSelectedShortcut] = useState<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isEscortOpen, setIsEscortOpen] = useState(false);
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
       const scrollHeight = textareaRef.current.scrollHeight;
-      // Max height approx half page (e.g. 300px)
-      textareaRef.current.style.height = Math.min(scrollHeight, 300) + "px";
+      textareaRef.current.style.height = Math.min(scrollHeight, 300) + 'px';
     }
   }, [query, selectedShortcut]);
 
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [leftTab, setLeftTab] = useState<"history" | "assets">("history");
-
-  const [leftExpanded, setLeftExpanded] = useState(true);
-  const [bottomExpanded, setBottomExpanded] = useState(false);
-  const [showQuickTasks, setShowQuickTasks] = useState(true);
-
-  const [historyTasks, setHistoryTasks] = useState([
-    {
-      id: "1",
-      title: "你能阅读我的本地文件吗",
-      time: "6小时前",
-      active: false,
-    },
-    {
-      id: "2",
-      title: "我想做小红书内容运营,需要...",
-      time: "8天前",
-      active: true,
-    },
-    {
-      id: "3",
-      title: "帮我诊断一下现有的私域存...",
-      time: "8天前",
-      active: false,
-    },
-  ]);
-  const [activeTaskMenu, setActiveTaskMenu] = useState<string | null>(null);
-  const [isNewMenuOpen, setIsNewMenuOpen] = useState(false);
-
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-
-  const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
-  const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
-  const [isAttachMenuOpen, setIsAttachMenuOpen] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [activeAgentId, setActiveAgentId] = useState("core");
-
-  const activeAgent =
-    AVAILABLE_AGENTS.find((a) => a.id === activeAgentId) || AVAILABLE_AGENTS[0];
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    // Assume file is processed here
-  };
-
-  // Rotating placeholder
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
   useEffect(() => {
-    if (isInputFocused || query) return;
-    const timer = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % SUGGESTIONS.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [isInputFocused, query]);
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  // Keyboard shortcut for FunctionNav
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setIsAgentSelectorOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  // Handle open-expert events
-  useEffect(() => {
-    const handleOpenExpert = (e: any) => {
-      const { expert, context } = e.detail;
-      const expertMap: Record<string, string> = {
-        策略专家: "strategy",
-        内容专家: "content",
-        转化专家: "interaction",
-        策略推演指导: "strategy",
-      };
-      const targetId = expertMap[expert] || "core";
-      setActiveAgentId(targetId);
-      setLeftExpanded(false); // Extend the workspace by hiding left menu
-      window.dispatchEvent(
-        new CustomEvent("collapse-sidebar", { detail: { collapsed: true } }),
-      );
-      if (context) {
-        setQuery(context); // Put it in the input box so the user can edit it, or directly launch.
-        setTimeout(() => {
-          document.getElementById("chat-input")?.focus();
-        }, 100);
-      }
-    };
-    window.addEventListener("open-expert", handleOpenExpert);
-    return () => window.removeEventListener("open-expert", handleOpenExpert);
-  }, []);
-
-  const isNewMerchant = activeProjectId === "project-c";
-
-  const currentProjectName = "新进品牌：待配置"; // Placeholder for UI
-
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-
-  useEffect(() => {
-    if (activeProjectId === "new-merchant") {
-      setMessages([
-        {
-          id: "1",
-          role: "agent",
-          content:
-            "您好！我是您的 Taptik 智能大脑。作为一个新入驻项目，我们可以先从基础的数据诊断和对标分析开始。",
-          time: "刚才",
-        },
-      ]);
-    } else if (activeProjectId === "project-c") {
-      setMessages([
-        {
-          id: "1",
-          role: "agent",
-          content:
-            "👏 欢迎接入新品牌！为了帮您精准生成小红书策略，我们需要花 2 分钟聊聊。请问咱们的主打产品是什么？核心受众主要是哪些人？",
-          time: "刚才",
-        },
-      ]);
-      setOnboardingStep(0);
-    } else {
-      setMessages([
-        {
-          id: "1",
-          role: "agent",
-          content:
-            "指挥官，根据最新数据巡航，我为您准备了 3 条主动业务建议。您可以直接处理，或在下方输入框自由指挥我。",
-          time: "刚才",
-        },
-      ]);
-    }
-  }, [activeProjectId]);
-
-  const [isEscortOpen, setIsEscortOpen] = useState(true);
-  const [proactiveSuggestions] = useState([
-    {
-      id: "s1",
-      type: "troubleshoot",
-      title: "笔记互动率异常",
-      desc: "您最近发布的 3 篇「宠物粮」笔记互动量下降 15%，疑似进入低推荐状态。",
-      suggestion: "建议先排查内容结构与账号健康度。",
-      action: "立即排查",
-      cmd: "排查宠物粮笔记互动率异常问题",
-    },
-    {
-      id: "s2",
-      type: "opportunity",
-      title: "发现低粉爆款方向",
-      desc: "「幼犬换粮避坑」近 24 小时出现低粉高互动样本，适合当前宠物食品组做自然流测试。",
-      suggestion: "建议基于该样本生成一批测试选题。",
-      action: "生成选题包",
-      cmd: "基于「幼犬换粮避坑」生成测试选题包",
-    },
-    {
-      id: "s3",
-      type: "collaboration",
-      title: "笔记评论回复",
-      desc: "有 6 条评论待回复，需求未进入 Taptik 任务流，建议同步到商家。",
-      suggestion: "建议将任务派发至相关运营组执行。",
-      action: "同步任务",
-      cmd: "同步笔记评论回复任务到商家",
-    },
-  ]);
-
-  const handleExecuteSuggestion = (suggestion: any) => {
-    const userMsgId = Math.random().toString(36).substring(2);
-    const agentMsgId = Math.random().toString(36).substring(2);
-
-    const newMsg: ChatMessage = {
-      id: userMsgId,
-      role: "user",
-      content: suggestion.cmd,
-      time: "刚才",
-    };
-    setMessages((prev) => [...prev, newMsg]);
-
-    const agentMsg: ChatMessage = {
-      id: agentMsgId,
-      role: "agent",
-      content: "",
-      time: "刚才",
-      isThinking: true,
-    };
-
-    setTimeout(() => {
-      setMessages((prev) => [...prev, agentMsg]);
-      setTimeout(() => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === agentMsgId
-              ? {
-                  ...m,
-                  isThinking: false,
-                  card: {
-                    type: "confirmation",
-                    goal: `为「商家 A：宠物食品组」寻找本周可执行的蓝海内容机会，并生成一批自然流笔记。`,
-                    tools: [
-                      "策略专家：搜索蓝海词和低粉爆款",
-                      "内容专家：生成真人感笔记",
-                      "数据专家：参考历史账号表现",
-                      "知识库：调用品牌卖点和禁忌词",
-                    ],
-                    destinations: [
-                      "宠粮新客运营项目",
-                      "内容车间草稿区",
-                      "项目经验库",
-                    ],
-                    wontDo: [
-                      "不会自动发布",
-                      "不会自动通知客户",
-                      "不会自动修改排期",
-                    ],
-                    recommendedDestination:
-                      "写入「宠粮新客运营」项目，并生成内容任务",
-                    cmd: suggestion.cmd,
-                  },
-                }
-              : m,
-          ),
-        );
-      }, 800);
-    }, 400);
-  };
-
-  const handleToggleProgress = (msgId: string) => {
-    setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id === msgId && m.card && m.card.type === "progress") {
-          return { ...m, card: { ...m.card, isExpanded: !m.card.isExpanded } };
-        }
-        return m;
-      }),
-    );
-  };
-
-  const handleConfirmExecute = (msgId: string, cmd: string) => {
-    setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id === msgId) {
-          return {
-            ...m,
-            card: {
-              type: "progress",
-              currentStep: "正在读取商家画像...",
-              steps: [
-                { title: "正在读取商家画像", status: "active" },
-                { title: "正在调用品牌知识库", status: "pending" },
-                { title: "正在搜索低粉爆款样本", status: "pending" },
-                { title: "正在分析账号历史表现", status: "pending" },
-                { title: "正在生成选题包", status: "pending" },
-                { title: "正在准备内容草稿", status: "pending" },
-              ],
-              isExpanded: true,
-            },
-          };
-        }
-        return m;
-      }),
-    );
-
-    const stepDelays = [1000, 2000, 3000, 4000, 5000, 6000];
-    stepDelays.forEach((delay, index) => {
-      setTimeout(() => {
-        setMessages((prev) =>
-          prev.map((m) => {
-            if (m.id === msgId && m.card && m.card.type === "progress") {
-              const newSteps = [...m.card.steps!];
-              if (index > 0) newSteps[index - 1].status = "completed";
-              newSteps[index].status = "active";
-              return {
-                ...m,
-                card: {
-                  ...m.card,
-                  currentStep: newSteps[index].title,
-                  steps: newSteps,
-                },
-              };
-            }
-            return m;
-          }),
-        );
-      }, delay);
-    });
-
-    setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((m) => {
-          if (m.id === msgId) {
-            return {
-              ...m,
-              card: {
-                type: "result",
-                title: "已完成蓝海机会分析",
-                items: [
-                  {
-                    title: "幼犬换粮避坑",
-                    desc: "自然流机会强，适合素人避坑口吻",
-                  },
-                  {
-                    title: "国产冻干平替测评",
-                    desc: "适合测评号，适合作为第二优先级",
-                  },
-                  {
-                    title: "多猫家庭喂养清单",
-                    desc: "搜索热度稳定，适合长期内容池",
-                  },
-                ],
-                recommendation:
-                  "我建议先启动「幼犬换粮避坑」7 天搜索卡位项目。",
-                actions: ["开始操盘", "继续深挖", "保存到项目"],
-              },
-            };
-          }
-          return m;
-        }),
-      );
-    }, 7000);
-  };
-
-  const handleExecute = (customQuery?: string) => {
+const handleExecute = (customQuery?: string) => {
     let finalQuery = customQuery || query;
-
+    
     if (selectedShortcut && !customQuery) {
-      if (selectedShortcut.action === "") {
+      if (selectedShortcut.action === '') {
         finalQuery = `[${selectedShortcut.name}] ${finalQuery}`.trim();
-      } else if (
-        !finalQuery.includes(selectedShortcut.name) &&
-        !finalQuery.includes(selectedShortcut.action)
-      ) {
+      } else if (!finalQuery.includes(selectedShortcut.name) && !finalQuery.includes(selectedShortcut.action)) {
         finalQuery = `[${selectedShortcut.name}] ${finalQuery}`.trim();
       }
     }
-
+    
     if (!finalQuery.trim()) {
-      if (selectedShortcut && selectedShortcut.action === "") {
+      if (selectedShortcut && selectedShortcut.action === '') {
         finalQuery = `执行技能：${selectedShortcut.name}`;
       } else {
         return;
@@ -719,117 +83,71 @@ export const Workbench: React.FC<WorkbenchProps> = ({
 
     setSelectedShortcut(null);
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
     }
 
     const userMsgId = Math.random().toString(36).substring(2);
     const agentMsgId = Math.random().toString(36).substring(2);
 
-    const newMsg: ChatMessage = {
-      id: userMsgId,
-      role: "user",
-      content: finalQuery,
-      time: "刚才",
-    };
-    setMessages((prev) => [...prev, newMsg]);
-    setQuery("");
-
+    const newMsg: ChatMessage = { id: userMsgId, role: 'user', content: finalQuery, time: '刚才' };
+    setMessages(prev => [...prev, newMsg]);
+    setQuery('');
+    
     const agentMsg: ChatMessage = {
       id: agentMsgId,
-      role: "agent",
-      content: "",
-      time: "刚才",
+      role: 'agent',
+      content: '',
+      time: '刚才',
       isThinking: true,
-      thoughts: [],
+      thoughts: []
     };
-
-    setMessages((prev) => [...prev, agentMsg]);
+    
+    setMessages(prev => [...prev, agentMsg]);
     setIsProcessing(true);
 
     if (isNewMerchant) {
       let step = 0;
       const stages = [
-        { type: "think", content: "正在分析您的输入并提取品牌语义特征..." },
+        { type: 'think', content: '正在分析您的输入并提取品牌语义特征...' }
       ] as any[];
 
       const interval = setInterval(() => {
         if (step < stages.length) {
           const currentStep = step;
           const stage = stages[currentStep];
-          setMessages((prev) =>
-            prev.map((m) => {
-              if (m.id === agentMsgId) {
-                const newThoughts = [
-                  ...(m.thoughts || []),
-                  { id: `t${currentStep}`, ...stage },
-                ];
-                return { ...m, thoughts: newThoughts };
-              }
-              return m;
-            }),
-          );
+          setMessages(prev => prev.map(m => {
+            if (m.id === agentMsgId) {
+              const newThoughts = [...(m.thoughts || []), { id: `t${currentStep}`, ...stage }];
+              return { ...m, thoughts: newThoughts };
+            }
+            return m;
+          }));
           step++;
         } else {
           clearInterval(interval);
           if (onboardingStep === 0) {
-            setTimeout(
-              () =>
-                setOnboardingData((prev: any) => ({
-                  ...prev,
-                  industry: "美妆护肤",
-                  audience: "18-25岁 年轻女大学生",
-                })),
-              0,
-            );
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === agentMsgId
-                  ? {
-                      ...m,
-                      isThinking: false,
-                      content:
-                        "✅ 收到！看来我们的核心是**“敏感肌可用卸妆油”**，主要受众群是**年轻女大学生**。\n\n那么，在文案风格上，您希望我们是“专业严谨的护肤专家”，还是“贴心分享的闺蜜种草”？是否有绝对不能碰的竞品或防坑雷区（比如不要提平替）？",
-                    }
-                  : m,
-              ),
-            );
+            setTimeout(() => setOnboardingData((prev: any) => ({ ...prev, industry: "美妆护肤", audience: "18-25岁 年轻女大学生" })), 0);
+            setMessages(prev => prev.map(m => m.id === agentMsgId ? {
+              ...m,
+              isThinking: false,
+              content: '✅ 收到！看来我们的核心是**“敏感肌可用卸妆油”**，主要受众群是**年轻女大学生**。\n\n那么，在文案风格上，您希望我们是“专业严谨的护肤专家”，还是“贴心分享的闺蜜种草”？是否有绝对不能碰的竞品或防坑雷区（比如不要提平替）？'
+            } : m));
             setOnboardingStep(1);
           } else if (onboardingStep === 1) {
-            setTimeout(
-              () =>
-                setOnboardingData((prev: any) => ({
-                  ...prev,
-                  traps: "避免拉踩、不提平替",
-                  tone: "闺蜜种草，亲切活泼",
-                })),
-              0,
-            );
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === agentMsgId
-                  ? {
-                      ...m,
-                      isThinking: false,
-                      content:
-                        "✅ 非常清晰！已经收到您的防坑雷区与品牌声调预设，并同步为全域智体的底层系统护栏。\n\n🎉 **您的品牌画像基座已初始完成！**\n\n现在您可以解锁左侧的「项目工作流」进行实操，或者点击我下方的按钮，一键生成第一季度的打法节奏。",
-                    }
-                  : m,
-              ),
-            );
+            setTimeout(() => setOnboardingData((prev: any) => ({ ...prev, traps: "避免拉踩、不提平替", tone: "闺蜜种草，亲切活泼" })), 0);
+            setMessages(prev => prev.map(m => m.id === agentMsgId ? {
+              ...m,
+              isThinking: false,
+              content: '✅ 非常清晰！已经收到您的防坑雷区与品牌声调预设，并同步为全域智体的底层系统护栏。\n\n🎉 **您的品牌画像基座已初始完成！**\n\n现在您可以解锁左侧的「项目工作流」进行实操，或者点击我下方的按钮，一键生成第一季度的打法节奏。'
+            } : m));
             setOnboardingStep(3);
           } else {
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === agentMsgId
-                  ? {
-                      ...m,
-                      isThinking: false,
-                      content: "基座已建设完毕，正为您执行具体的工作指令。",
-                    }
-                  : m,
-              ),
-            );
-            setTimeout(() => setActiveNav("workflow"), 1000);
+            setMessages(prev => prev.map(m => m.id === agentMsgId ? {
+              ...m,
+              isThinking: false,
+              content: '基座已建设完毕，正为您执行具体的工作指令。'
+            } : m));
+            setTimeout(() => setActiveNav('workflow'), 1000);
           }
           setIsProcessing(false);
         }
@@ -838,30 +156,19 @@ export const Workbench: React.FC<WorkbenchProps> = ({
     }
 
     setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === agentMsgId
-            ? {
-                ...m,
-                isThinking: false,
-                card: {
-                  type: "confirmation",
-                  goal: `为您执行：${finalQuery}`,
-                  tools: [
-                    "策略专家：搜索蓝海词和低粉爆款",
-                    "内容专家：生成真人感笔记",
-                    "数据专家：参考历史账号表现",
-                  ],
-                  destinations: ["宠粮新客运营项目", "内容车间草稿区"],
-                  wontDo: ["自动发布", "自动修改排期"],
-                  recommendedDestination:
-                    "写入「宠粮新客运营」项目，并生成内容任务",
-                  cmd: finalQuery,
-                },
-              }
-            : m,
-        ),
-      );
+      setMessages(prev => prev.map(m => m.id === agentMsgId ? {
+        ...m,
+        isThinking: false,
+        card: {
+          type: 'confirmation',
+          goal: `为您执行：${finalQuery}`,
+          tools: ['策略专家：搜索蓝海词和低粉爆款', '内容专家：生成真人感笔记', '数据专家：参考历史账号表现'],
+          destinations: ['宠粮新客运营项目', '内容车间草稿区'],
+          wontDo: ['自动发布', '自动修改排期'],
+          recommendedDestination: '写入「宠粮新客运营」项目，并生成内容任务',
+          cmd: finalQuery
+        }
+      } : m));
       setIsProcessing(false);
     }, 800);
   };
