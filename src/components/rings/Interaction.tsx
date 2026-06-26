@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 
-type TaskTab = "todo" | "risk" | "opportunity";
+type TaskTab = "todo" | "risk" | "opportunity" | "acceptance";
 
 interface TaskItem {
   id: string;
@@ -151,6 +151,13 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
             color: "text-blue-600",
           },
           {
+            id: "acceptance",
+            name: "素材验收池",
+            count: 2,
+            icon: ImageIcon,
+            color: "text-emerald-600",
+          },
+          {
             id: "risk",
             name: "异常风险",
             count: 1,
@@ -193,112 +200,225 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
       </div>
 
       {/* 任务列表区 */}
-      <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-        <div className="space-y-4 max-w-5xl mx-auto pb-20">
-          {filteredTasks.length === 0 ? (
-            <div className="text-center py-20 text-neutral-400 text-[14px]">
-              当前队列无任务
+
+      {activeTab === "acceptance" ? (
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="max-w-5xl mx-auto space-y-6 pb-20">
+            <div className="flex justify-between items-end mb-6">
+              <div>
+                <h3 className="text-[18px] font-bold text-neutral-900">
+                  外部与协同素材验收
+                </h3>
+                <p className="text-[13px] text-neutral-500 mt-1">
+                  处理内部派发与外部体验任务回传的素材
+                </p>
+              </div>
             </div>
-          ) : (
-            filteredTasks.map((task) => (
-              <div
-                key={task.id}
-                className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm hover:border-neutral-300 transition-colors relative overflow-hidden group"
-              >
-                {task.priority === "高" && (
-                  <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                )}
 
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex gap-2">
-                      <span className="px-2 py-1 bg-neutral-100 text-neutral-600 text-[11px] font-medium rounded uppercase">
-                        {task.objectType}
-                      </span>
-                      <span
-                        className={`px-2 py-1 text-[11px] font-medium rounded ${
-                          task.event === "异常"
-                            ? "bg-red-50 text-red-600 border border-red-100"
-                            : task.event === "机会"
-                              ? "bg-amber-50 text-amber-600 border border-amber-100"
-                              : task.event === "待审核"
-                                ? "bg-blue-50 text-blue-600 border border-blue-100"
-                                : "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                        }`}
-                      >
-                        {task.event}
-                      </span>
-                    </div>
-                    <h3 className="text-[16px] font-bold text-neutral-900">
-                      {task.title}
-                    </h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
+                <div className="p-3 border-b border-neutral-100 flex items-center justify-between bg-neutral-50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                      内部协同
+                    </span>
+                    <span className="text-[13px] font-bold text-neutral-900">
+                      幼犬实拍补充
+                    </span>
                   </div>
-
-                  <div className="flex items-center gap-4 text-[12px] text-neutral-500">
-                    <div className="flex items-center gap-1.5">
-                      <User size={14} /> {task.assignee}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock
-                        size={14}
-                        className={task.priority === "高" ? "text-red-500" : ""}
-                      />
-                      <span
-                        className={
-                          task.priority === "高"
-                            ? "text-red-600 font-medium"
-                            : ""
-                        }
-                      >
-                        {task.deadline}
-                      </span>
-                    </div>
-                  </div>
+                  <span className="text-[11px] text-neutral-500">
+                    李店长提交于 10 分钟前
+                  </span>
                 </div>
-
-                {task.details && (
-                  <div className="bg-neutral-50 p-4 rounded-xl text-[13px] text-neutral-700 leading-relaxed mb-4 border border-neutral-100">
-                    {task.details}
+                <div className="p-4">
+                  <div className="flex gap-2 mb-3">
+                    <div className="w-24 h-24 bg-neutral-100 rounded flex items-center justify-center text-[10px] text-neutral-400">
+                      视频 1
+                    </div>
+                    <div className="w-24 h-24 bg-neutral-100 rounded flex items-center justify-center text-[10px] text-neutral-400">
+                      视频 2
+                    </div>
+                    <div className="w-24 h-24 bg-neutral-100 rounded flex items-center justify-center text-[10px] text-neutral-400">
+                      视频 3
+                    </div>
                   </div>
-                )}
-
-                <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-5 flex gap-3 items-start">
-                  <Bot size={18} className="text-blue-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-[12px] font-bold text-blue-900 mb-1">
-                      AI 建议动作
-                    </h4>
-                    <p className="text-[13px] text-blue-800/80">
-                      {task.aiSuggestion}
-                    </p>
+                  <div className="bg-emerald-50 text-emerald-700 p-2 rounded text-[11px] mb-3 border border-emerald-100">
+                    <strong>AI 预检：</strong>
+                    光线充足，满足「狗狗吃粮」动作要求，未发现违规元素。
                   </div>
-                </div>
-
-                <div className="flex gap-3 justify-end border-t border-neutral-100 pt-5">
-                  <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
-                    忽略
-                  </button>
-                  <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
-                    转成规则
-                  </button>
-                  <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors border border-neutral-200 rounded-lg hover:bg-neutral-50">
-                    催办
-                  </button>
-                  <button className="px-4 py-2 text-[13px] font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-200 rounded-lg bg-blue-50 hover:bg-blue-100">
-                    派发
-                  </button>
-                  <button className="px-4 py-2 text-[13px] font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 shadow-md">
-                    立即处理
-                  </button>
-                  <button className="px-4 py-2 text-[13px] font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 shadow-md flex items-center gap-1.5">
-                    让 AI 先处理 <Send size={14} />
-                  </button>
+                  <div className="flex gap-2">
+                    <button className="flex-1 bg-neutral-900 text-white text-[12px] font-medium py-2 rounded hover:bg-neutral-800">
+                      入库并装填
+                    </button>
+                    <button className="flex-1 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-medium py-2 rounded hover:bg-neutral-50">
+                      退回重拍
+                    </button>
+                    <button className="flex-1 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-medium py-2 rounded hover:bg-neutral-50">
+                      AI 增强处理
+                    </button>
+                  </div>
+                  <div className="text-center mt-3">
+                    <span className="text-[10px] text-neutral-400">
+                      入库后将沉淀到「幼犬场景库」并在待发布池自动装填
+                    </span>
+                  </div>
                 </div>
               </div>
-            ))
-          )}
+
+              <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
+                <div className="p-3 border-b border-neutral-100 flex items-center justify-between bg-neutral-50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">
+                      真实体验领取
+                    </span>
+                    <span className="text-[13px] font-bold text-neutral-900">
+                      软便换粮打卡
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-neutral-500">
+                    体验用户A 提交于 1 小时前
+                  </span>
+                </div>
+                <div className="p-4">
+                  <div className="flex gap-2 mb-3">
+                    <div className="w-24 h-24 bg-neutral-100 rounded flex items-center justify-center text-[10px] text-neutral-400">
+                      照片 1
+                    </div>
+                    <div className="w-24 h-24 bg-neutral-100 rounded flex items-center justify-center text-[10px] text-neutral-400">
+                      照片 2
+                    </div>
+                  </div>
+                  <div className="bg-red-50 text-red-700 p-2 rounded text-[11px] mb-3 border border-red-100">
+                    <strong>AI 预检：</strong>光线过暗，且照片中出现了竞品包装。
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="flex-1 bg-white border border-red-200 text-red-600 text-[12px] font-medium py-2 rounded hover:bg-red-50">
+                      一键驳回要求重传
+                    </button>
+                    <button className="flex-1 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-medium py-2 rounded hover:bg-neutral-50">
+                      AI 消除竞品并提亮
+                    </button>
+                  </div>
+                  <div className="text-center mt-3">
+                    <span className="text-[10px] text-neutral-400">
+                      处理后将沉淀到「用户反馈库」并在待发布池自动装填
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="space-y-4 max-w-5xl mx-auto pb-20">
+            {filteredTasks.length === 0 ? (
+              <div className="text-center py-20 text-neutral-400 text-[14px]">
+                当前队列无任务
+              </div>
+            ) : (
+              filteredTasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm hover:border-neutral-300 transition-colors relative overflow-hidden group"
+                >
+                  {task.priority === "高" && (
+                    <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                  )}
+
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-2">
+                        <span className="px-2 py-1 bg-neutral-100 text-neutral-600 text-[11px] font-medium rounded uppercase">
+                          {task.objectType}
+                        </span>
+                        <span
+                          className={`px-2 py-1 text-[11px] font-medium rounded ${
+                            task.event === "异常"
+                              ? "bg-red-50 text-red-600 border border-red-100"
+                              : task.event === "机会"
+                                ? "bg-amber-50 text-amber-600 border border-amber-100"
+                                : task.event === "待审核"
+                                  ? "bg-blue-50 text-blue-600 border border-blue-100"
+                                  : "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                          }`}
+                        >
+                          {task.event}
+                        </span>
+                      </div>
+                      <h3 className="text-[16px] font-bold text-neutral-900">
+                        {task.title}
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-[12px] text-neutral-500">
+                      <div className="flex items-center gap-1.5">
+                        <User size={14} /> {task.assignee}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock
+                          size={14}
+                          className={
+                            task.priority === "高" ? "text-red-500" : ""
+                          }
+                        />
+                        <span
+                          className={
+                            task.priority === "高"
+                              ? "text-red-600 font-medium"
+                              : ""
+                          }
+                        >
+                          {task.deadline}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {task.details && (
+                    <div className="bg-neutral-50 p-4 rounded-xl text-[13px] text-neutral-700 leading-relaxed mb-4 border border-neutral-100">
+                      {task.details}
+                    </div>
+                  )}
+
+                  <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-5 flex gap-3 items-start">
+                    <Bot size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-[12px] font-bold text-blue-900 mb-1">
+                        AI 建议动作
+                      </h4>
+                      <p className="text-[13px] text-blue-800/80">
+                        {task.aiSuggestion}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 justify-end border-t border-neutral-100 pt-5">
+                    <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
+                      忽略
+                    </button>
+                    <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
+                      转成规则
+                    </button>
+                    <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors border border-neutral-200 rounded-lg hover:bg-neutral-50">
+                      催办
+                    </button>
+                    <button className="px-4 py-2 text-[13px] font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-200 rounded-lg bg-blue-50 hover:bg-blue-100">
+                      派发
+                    </button>
+                    <button className="px-4 py-2 text-[13px] font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 shadow-md">
+                      立即处理
+                    </button>
+                    <button className="px-4 py-2 text-[13px] font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 shadow-md flex items-center gap-1.5">
+                      让 AI 先处理 <Send size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
