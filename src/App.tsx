@@ -113,7 +113,8 @@ import { motion, AnimatePresence } from "motion/react";
 
 import { SkillMarket } from "./components/SkillMarket";
 import { DataCenter } from "./components/DataCenter";
-import { FileManager } from "./components/FileManager";
+import { MaterialStation } from "./components/MaterialStation";
+import { KnowledgeMemory } from "./components/KnowledgeMemory";
 import { Billing } from "./components/Billing";
 import { ServiceManagement } from "./components/ServiceManagement";
 import { Workbench } from "./components/Workbench";
@@ -292,8 +293,13 @@ const SIDE_NAV_ITEMS = [
     icon: LayoutGrid,
   },
   {
-    id: "files",
-    name: "素材和知识库",
+    id: "materials",
+    name: "素材库",
+    icon: ImageIcon,
+  },
+  {
+    id: "knowledge",
+    name: "知识与记忆",
     icon: BookOpen,
   },
   {
@@ -484,8 +490,7 @@ export default function App() {
       if (context) setPendingContext(context);
       if (alternativesData) {
         ((_: any) => {})(alternativesData);
-      } else {
-        }
+      }
       setShowSubagentChat(true);
       setIsSidebarCollapsed(true);
     };
@@ -1623,14 +1628,11 @@ export default function App() {
           </div>
         )}
 
-        {activeNav === "files" && (
-          <FileManager
-            filesTab={filesTab}
-            setFilesTab={setFilesTab}
-            activeProject={activeProject}
-            activeDoc={activeDoc}
-            setActiveDoc={setActiveDoc}
-          />
+        {activeNav === "materials" && (
+          <MaterialStation activeProject={activeProject} />
+        )}
+        {activeNav === "knowledge" && (
+          <KnowledgeMemory activeProject={activeProject} />
         )}
         {activeNav === "skills" && (
           <SkillMarket

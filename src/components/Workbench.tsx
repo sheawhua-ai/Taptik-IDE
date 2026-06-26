@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, Send, Image as ImageIcon, FileText, CheckCircle2, ChevronRight, Hash, 
   Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
-  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -49,6 +49,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   const [isEscortOpen, setIsEscortOpen] = useState(false);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -61,6 +62,24 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
 
 const handleExecute = (customQuery?: string) => {
     let finalQuery = customQuery || query;
