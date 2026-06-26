@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ExecutionPreview } from "./ExecutionPreview";
+import { ExecutionResult } from "./ExecutionResult";
 
 export const Strategy: React.FC<{
   hasData?: boolean;
@@ -233,7 +234,7 @@ export const Strategy: React.FC<{
 
           {/* 3. 执行预览 */}
           {flowState === "confirming" && (
-            <ExecutionPreview 
+            <ExecutionPreview
               onStart={startGenerating}
               onBack={() => setFlowState("suggestion")}
             />
@@ -246,142 +247,69 @@ export const Strategy: React.FC<{
               animate={{ opacity: 1, scale: 1 }}
               className="bg-white rounded-3xl border border-primary-200 p-8 shadow-xl"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-[20px] font-semibold text-neutral-900 flex items-center gap-2">
-                    {flowState === "generating" ? (
-                      <div className="w-4 h-4 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
-                    ) : (
-                      <CheckCircle2 className="text-emerald-500" />
-                    )}
-                    {flowState === "generating"
-                      ? "AI 正在执行项目初始化..."
-                      : "当前操盘中：幼犬换粮避坑 7 天搜索卡位"}
-                  </h3>
-                </div>
-              </div>
-
               {flowState === "generating" ? (
-                <div className="space-y-5">
-                  <div className="h-2.5 w-full bg-neutral-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary-500 transition-all duration-300"
-                      style={{ width: `${generateProgress}%` }}
-                    />
-                  </div>
-                  <div className="text-[13px] text-neutral-500 font-mono space-y-2">
-                    <div
-                      className={
-                        generateProgress > 0
-                          ? "text-neutral-700"
-                          : "text-neutral-300"
-                      }
-                    >
-                      {generateProgress > 0 && "> "}正在分析 12
-                      篇内容的阶段发布目标...
-                    </div>
-                    <div
-                      className={
-                        generateProgress > 20
-                          ? "text-neutral-700"
-                          : "text-neutral-300"
-                      }
-                    >
-                      {generateProgress > 20 && "> "}
-                      正在调用品牌知识库提取卖点与规避禁忌词...
-                    </div>
-                    <div
-                      className={
-                        generateProgress > 50
-                          ? "text-neutral-700"
-                          : "text-neutral-300"
-                      }
-                    >
-                      {generateProgress > 50 && "> "}
-                      正在生成第一批图文与视频分镜脚本...
-                    </div>
-                    <div
-                      className={
-                        generateProgress > 80
-                          ? "text-neutral-700"
-                          : "text-neutral-300"
-                      }
-                    >
-                      {generateProgress > 80 && "> "}正在将草稿分配至
-                      A01、A02、A05 账号排期队列...
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="text-[20px] font-semibold text-neutral-900 flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
+                        AI 正在执行项目初始化...
+                      </h3>
                     </div>
                   </div>
-                </div>
+                  <div className="space-y-5">
+                    <div className="h-2.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary-500 transition-all duration-300"
+                        style={{ width: `${generateProgress}%` }}
+                      />
+                    </div>
+                    <div className="text-[13px] text-neutral-500 font-mono space-y-2">
+                      <div
+                        className={
+                          generateProgress > 0
+                            ? "text-neutral-700"
+                            : "text-neutral-300"
+                        }
+                      >
+                        {generateProgress > 0 && "> "}正在分析 12
+                        篇内容的阶段发布目标...
+                      </div>
+                      <div
+                        className={
+                          generateProgress > 20
+                            ? "text-neutral-700"
+                            : "text-neutral-300"
+                        }
+                      >
+                        {generateProgress > 20 && "> "}
+                        正在调用品牌知识库提取卖点与规避禁忌词...
+                      </div>
+                      <div
+                        className={
+                          generateProgress > 50
+                            ? "text-neutral-700"
+                            : "text-neutral-300"
+                        }
+                      >
+                        {generateProgress > 50 && "> "}
+                        正在生成第一批图文与视频分镜脚本...
+                      </div>
+                      <div
+                        className={
+                          generateProgress > 80
+                            ? "text-neutral-700"
+                            : "text-neutral-300"
+                        }
+                      >
+                        {generateProgress > 80 && "> "}正在将草稿分配至
+                        A01、A02、A05 账号排期队列...
+                      </div>
+                    </div>
+                  </div>
+                </>
               ) : (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-neutral-50 p-5 rounded-2xl">
-                      <div className="text-[12px] text-neutral-500 mb-1">
-                        已生成图文脚本
-                      </div>
-                      <div className="text-[28px] font-bold text-neutral-900">
-                        8
-                        <span className="text-[14px] text-neutral-400 font-normal">
-                          /12
-                        </span>
-                      </div>
-                    </div>
-                    <div className="bg-amber-50 p-5 rounded-2xl">
-                      <div className="text-[12px] text-amber-600 mb-1">
-                        待人工确认方向
-                      </div>
-                      <div className="text-[28px] font-bold text-amber-700">
-                        2
-                      </div>
-                    </div>
-                    <div className="bg-blue-50 p-5 rounded-2xl">
-                      <div className="text-[12px] text-blue-600 mb-1">
-                        待客户审核素材
-                      </div>
-                      <div className="text-[28px] font-bold text-blue-700">
-                        5
-                      </div>
-                    </div>
-                    <div className="bg-emerald-50 p-5 rounded-2xl">
-                      <div className="text-[12px] text-emerald-600 mb-1">
-                        建议今日发布
-                      </div>
-                      <div className="text-[28px] font-bold text-emerald-700">
-                        3
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-[13px] text-neutral-500 flex items-center gap-1.5 bg-neutral-50 p-3 rounded-lg">
-                    <Activity size={14} className="text-primary-500" />{" "}
-                    数据巡检将在首篇笔记发布后自动开启，请随时关注【深度数据看板】。
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-neutral-100">
-                    <button
-                      onClick={() =>
-                        window.dispatchEvent(
-                          new CustomEvent("nav-to-tab", {
-                            detail: { tab: "matrix" },
-                          }),
-                        )
-                      }
-                      className="px-6 py-3 bg-neutral-900 text-white rounded-xl text-[13px] hover:bg-neutral-800 transition-colors shadow-md flex items-center gap-2"
-                    >
-                      进入项目台查看笔记 <ArrowRight size={14} />
-                    </button>
-                    <button
-                      onClick={() =>
-                        window.dispatchEvent(
-                          new CustomEvent("nav-to-tab", {
-                            detail: { tab: "content" },
-                          }),
-                        )
-                      }
-                      className="px-6 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] hover:bg-neutral-50 transition-colors"
-                    >
-                      进入账号排期与发布
-                    </button>
-                  </div>
-                </div>
+                <ExecutionResult />
               )}
             </motion.div>
           )}

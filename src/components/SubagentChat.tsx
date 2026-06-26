@@ -55,6 +55,7 @@ interface SubagentChatProps {
   onClose?: () => void;
   initialExpert?: string;
   initialContext?: string;
+  initialAlternatives?: any;
 }
 
 export const SubagentChat: React.FC<SubagentChatProps> = ({
@@ -64,6 +65,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
   onClose,
   initialExpert,
   initialContext,
+  initialAlternatives,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -71,6 +73,8 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
     type: string;
     text: string;
   } | null>(null);
+  const [customGreeting, setCustomGreeting] = useState<string | null>(null);
+  const [alternativesModeData, setAlternativesModeData] = useState<any>(null);
   const [currentExpert, setCurrentExpert] = useState<string>(
     moduleName + " 助手",
   );
@@ -146,46 +150,65 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
         id: "1",
         role: "agent",
         content:
+          customGreeting ||
           greetings[moduleId] ||
           `您好，我是 ${moduleName} 模块的数字员工，请问有什么可以帮您？`,
         timestamp: new Date(),
       },
     ]);
+  }, [moduleId, customGreeting, moduleName]);
 
+  const handleCustomGreeting = (e: any) => {
+    if (e.detail?.greeting) {
+      setCustomGreeting(e.detail.greeting);
+    }
+    if (e.detail?.expert) {
+      setCurrentExpert(e.detail.expert);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("set-custom-greeting", handleCustomGreeting);
+    return () =>
+      window.removeEventListener("set-custom-greeting", handleCustomGreeting);
+  }, []);
+
+  useEffect(() => {
     const handleOpenExpert = (e: any) => {
       const { expert, context, alternativesData } = e.detail || {};
       if (expert) {
         setCurrentExpert(expert);
       }
       if (alternativesData) {
-        const altMsg: Message = {
-          id: Math.random().toString(36).substring(2),
-          role: "agent",
-          content: `正在协同调整：${alternativesData.title}`,
-          timestamp: new Date(),
-          type: "alternatives",
-          alternativesData,
-        };
-        setMessages((prev) => [...prev, altMsg]);
-      } else if (context) {
-        setContextPill({ type: expert || "参考内容", text: context });
-        setInputValue((prev) => prev || `请分析这个`);
+        setAlternativesModeData(alternativesData);
+        return;
+      } else {
+        setAlternativesModeData(null);
+        if (context) {
+          setContextPill({ type: expert || "参考内容", text: context });
+          setInputValue((prev) => prev || `请分析这个`);
+        }
       }
     };
     window.addEventListener("open-expert", handleOpenExpert);
     return () => window.removeEventListener("open-expert", handleOpenExpert);
-  }, [moduleId]); // Only reset when changing modules, not when moduleName (object lookup result) might be unstable
+  }, [moduleId, customGreeting]); // Only reset when changing modules, not when moduleName (object lookup result) might be unstable
 
   useEffect(() => {
     if (initialExpert) setCurrentExpert(initialExpert);
-    if (initialContext) {
-      setContextPill({
-        type: initialExpert || "参考内容",
-        text: initialContext,
-      });
-      setInputValue((prev) => prev || `请分析这个`);
+    if (initialAlternatives) {
+      setAlternativesModeData(initialAlternatives);
+    } else {
+      setAlternativesModeData(null);
+      if (initialContext) {
+        setContextPill({
+          type: initialExpert || "参考内容",
+          text: initialContext,
+        });
+        setInputValue((prev) => prev || `请分析这个`);
+      }
     }
-  }, [initialExpert, initialContext]);
+  }, [initialExpert, initialContext, initialAlternatives]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -376,95 +399,102 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
         </div>
       );
     }
-    if (msg.type === "alternatives" && msg.alternativesData) {
-      const altData = msg.alternativesData;
-      return (
-        <div className="space-y-4 w-full">
-          <div className="text-[14px] font-bold text-neutral-900 flex items-center gap-2 mb-2">
-            <Sparkles size={16} className="text-indigo-500" />
-            正在协同调整：{altData.title}
-          </div>
-          <div className="bg-white border border-neutral-100 rounded-xl p-4 shadow-sm">
-            <div className="text-[12px] font-semibold text-neutral-400 mb-1">
-              当前方案：
-            </div>
-            <div className="text-[14px] font-bold text-neutral-900 mb-2">
-              {altData.current}
-            </div>
-            <div className="text-[13px] text-neutral-600 bg-neutral-50 p-2.5 rounded-lg leading-relaxed">
-              <strong className="text-neutral-800">理由：</strong>{" "}
-              {altData.reason}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-[12px] font-semibold text-neutral-400 mb-2">
-              可替代方案：
-            </div>
-            <div className="space-y-2">
-              {altData.alternatives.map((alt, idx) => (
-                <div
-                  key={idx}
-                  className="p-3 border border-neutral-200 bg-white rounded-xl hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer group"
-                >
-                  <div className="text-[13px] font-bold text-neutral-900 mb-1 group-hover:text-indigo-700">
-                    {idx + 1}. {alt.name}
-                  </div>
-                  <div className="text-[12px] text-neutral-500 leading-relaxed">
-                    <strong className="text-neutral-600">适合：</strong>{" "}
-                    {alt.desc}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <div className="text-[12px] text-neutral-500 mb-2">
-              请选择一种，或告诉我你的偏好。
-            </div>
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  sendDirectMessage(
-                    `我想采用方案 1：${altData.alternatives[0]?.name}`,
-                  );
-                }}
-                className="w-full py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[13px] font-medium transition-colors"
-              >
-                采用方案 1
-              </button>
-              <button
-                onClick={() => {
-                  sendDirectMessage(`让我再给一个更激进版本`);
-                }}
-                className="w-full py-2 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-700 rounded-xl text-[13px] font-medium transition-colors"
-              >
-                让我再给一个更激进版本
-              </button>
-              <button
-                onClick={() => {
-                  setInputValue(`请按我的偏好重算：`);
-                  if (scrollRef.current) {
-                    scrollRef.current.scrollTop =
-                      scrollRef.current.scrollHeight;
-                  }
-                }}
-                className="w-full py-2 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-700 rounded-xl text-[13px] font-medium transition-colors"
-              >
-                按我的偏好重算...
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
     return (
       <p className="text-[13px] leading-relaxed whitespace-pre-wrap">
         {msg.content}
       </p>
     );
   };
+
+  if (alternativesModeData) {
+    return (
+      <div className="flex flex-col h-full bg-white relative w-full overflow-hidden">
+        <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-4 bg-white/80 backdrop-blur-sm z-10 shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <div className="text-[14px] font-bold text-neutral-900">
+                {alternativesModeData.title || "调整主方向"}
+              </div>
+            </div>
+          </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1.5 hover:bg-neutral-100 rounded-full transition-colors"
+            >
+              <X size={16} className="text-neutral-500" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 bg-neutral-50/50 custom-scrollbar">
+          <p className="text-[13px] text-neutral-500 mb-4">
+            {alternativesModeData.subtitle ||
+              "已基于当前商家画像、内容目标和账号池生成替代方案"}
+          </p>
+
+          <div className="space-y-4">
+            {alternativesModeData.alternatives?.map((alt: any, idx: number) => (
+              <div
+                key={idx}
+                className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm hover:border-indigo-200 transition-colors"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center text-[12px] font-bold">
+                    {alt.id || ["A", "B", "C"][idx] || idx + 1}
+                  </div>
+                  <h4 className="font-bold text-[14px] text-neutral-900">
+                    {alt.name}
+                  </h4>
+                </div>
+                <div className="bg-neutral-50 p-2.5 rounded text-[12px] text-neutral-600 mb-3 leading-relaxed">
+                  <strong>说明：</strong>
+                  {alt.desc}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      if (onClose) onClose();
+                      window.dispatchEvent(
+                        new CustomEvent("adopt-alternative", {
+                          detail: {
+                            adjustType: alternativesModeData.adjustType,
+                            name: alt.name,
+                          },
+                        }),
+                      );
+                    }}
+                    className="flex-1 py-1.5 bg-neutral-900 text-white text-[12px] font-medium rounded hover:bg-neutral-800"
+                  >
+                    采用
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-neutral-100 bg-white shrink-0">
+          <button
+            className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 text-neutral-500 rounded-xl text-[13px] hover:bg-neutral-100 transition-all text-left flex items-center gap-2"
+            onClick={() => {
+              setContextPill({
+                type: "调整方案",
+                text: alternativesModeData.title,
+              });
+              setAlternativesModeData(null);
+            }}
+          >
+            <PenTool size={14} className="text-neutral-400" />
+            都不满意？呼叫副手手动输入新要求...
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-white w-full overflow-hidden relative">
