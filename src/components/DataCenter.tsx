@@ -136,7 +136,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
  <div className="flex items-center gap-2 text-primary-400 text-[10px] uppercase tracking-[0.2em] mb-4 text-left">
  <Zap size={14} /> AI 生成式分析
  </div>
- <h2 className="text-4xl font-semibold tracking-tight mb-4 leading-tight text-left">探索式数据分析</h2>
+ <h2 className="text-4xl font-semibold tracking-tight mb-4 leading-tight text-left">探索式机会发现</h2>
  <p className="text-neutral-400 text-[16px] mb-10 leading-relaxed text-left">
  跳出固化报表。直接向 AI Agent 描述您想要深度洞悉的业务维度，系统将实时编排并渲染专属于您的可视化分析看板。
  </p>
@@ -181,7 +181,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
  {dataSubNav === 'scheduled' && (
  <div className="p-8 space-y-8 animate-in slide-in-from-left-4 duration-500">
  <div className="flex items-center justify-between">
- <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2 uppercase tracking-widest"><Clock size={20} className="text-primary-500" /> 自动化报表流</h3>
+ <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2 uppercase tracking-widest"><Clock size={20} className="text-primary-500" /> 自动化复盘报告</h3>
  <button className="bg-neutral-900 text-white px-6 py-3 rounded-2xl text-[13px] flex items-center gap-2 hover:bg-primary-500 transition-all shadow-xl">
  <Plus size={18}/> 新建自动化任务
  </button>
@@ -216,7 +216,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
  <div className="bg-white border border-neutral-200 rounded-[48px] p-10 shadow-sm">
  <div className="flex items-center justify-between mb-10">
  <div>
- <h3 className="text-2xl font-semibold text-neutral-900 tracking-tight">蓝海增长潜核探测</h3>
+ <h3 className="text-2xl font-semibold text-neutral-900 tracking-tight">蓝海机会探测</h3>
  <p className="text-[14px] text-neutral-400 mt-1">针对特定品类启动 Agent 深度扫描，挖掘「高互动、低竞争」的潜力长尾词</p>
  </div>
  <div className="flex bg-neutral-100 p-1.5 rounded-2xl border border-neutral-200">

@@ -3,9 +3,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, Send, Image as ImageIcon, FileText, CheckCircle2, ChevronRight, Hash, 
   Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
-  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu, PanelLeftOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { AgentSelector } from './command-center/AgentSelector';
 
 
 export interface ChatMessage {
@@ -39,6 +40,8 @@ const QUICK_SHORTCUTS = [
   { id: '5', name: '深度研究', action: '对这个主题进行深入的学术和市场研究。' }
 ];
 
+const SUGGESTIONS = ['生成商品文案', '分析用户数据', '优化运营策略'];
+
 export const Workbench: React.FC<WorkbenchProps> = ({
   setActiveNav, setDataSubNav, isNewMerchant, setOnboardingData, onboardingData, onboardingStep, setOnboardingStep, setWorkflowTab, messages = [], setMessages = () => {}
 }) => {
@@ -47,9 +50,46 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEscortOpen, setIsEscortOpen] = useState(false);
+  const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
+  const [activeAgentId, setActiveAgentId] = useState('taptik-ai');
+  const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
+  const [isAttachMenuOpen, setIsAttachMenuOpen] = useState(false);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [bottomExpanded, setBottomExpanded] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const proactiveSuggestions = [
+    {
+      id: 1,
+      type: "troubleshoot",
+      title: "近期评论区有客诉趋势",
+      desc: "检测到 3 篇笔记下方存在对发货速度的负面评论。",
+      suggestion: "自动提炼客诉焦点，为您生成回复话术及安抚方案。",
+      action: "生成应对方案",
+    },
+    {
+      id: 2,
+      type: "opportunity",
+      title: "该品类「无谷」搜索词暴增",
+      desc: "行业数据显示「无谷」搜索环比增长 240%。",
+      suggestion: "可针对性补充无谷相关的种草笔记和商品说明。",
+      action: "补充商品说明",
+    },
+  ];
+
+  const handleExecuteSuggestion = (suggestion: any) => {
+    handleExecute(`执行建议：${suggestion.action}`);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prevIndex) => (prevIndex + 1) % SUGGESTIONS.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -205,6 +245,34 @@ const handleExecute = (customQuery?: string) => {
       </div>
 
       <div className="flex-1 flex overflow-hidden relative bg-neutral-50/30">
+        {/* === Left Timeline (Conversation History) === */}
+        {messages.length > 0 && (
+          <div className="w-12 border-r border-neutral-100 bg-white/50 backdrop-blur-sm flex flex-col items-center py-10 gap-3 shrink-0 overflow-y-auto hide-scrollbar z-10">
+            {messages.map((msg, idx) => {
+              if (msg.role === 'agent') return null; // Only show user queries as rounds
+              return (
+                <div 
+                  key={msg.id} 
+                  className="relative group cursor-pointer py-1.5 flex items-center justify-center w-full"
+                  onClick={() => {
+                    const el = document.getElementById(`msg-${msg.id}`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }}
+                >
+                  <div className="w-4 h-1 bg-neutral-300 rounded-full group-hover:bg-primary-500 group-hover:w-6 transition-all duration-300" />
+                  
+                  {/* Tooltip */}
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-neutral-200 shadow-xl rounded-lg p-3 w-48 z-50 pointer-events-none origin-left scale-95 group-hover:scale-100 duration-200">
+                    <p className="text-[12px] text-neutral-600 line-clamp-2 leading-relaxed">
+                      {msg.content || "快捷指令"}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* === Middle Panel (Console Display) === */}
         <div
           className="flex-1 flex flex-col relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] min-w-[480px]"
@@ -270,6 +338,7 @@ const handleExecute = (customQuery?: string) => {
               <AnimatePresence mode="popLayout">
                 {messages.map((msg, i) => (
                   <motion.div
+                    id={`msg-${msg.id}`}
                     initial={{ opacity: 0, scale: 0.96, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     layout

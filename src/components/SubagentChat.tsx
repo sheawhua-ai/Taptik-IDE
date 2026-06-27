@@ -79,6 +79,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [showCommandMenu, setShowCommandMenu] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [alternativesModeData, setAlternativesModeData] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const getExpertIcon = (name: string) => {

@@ -115,6 +115,7 @@ import { SkillMarket } from "./components/SkillMarket";
 import { DataCenter } from "./components/DataCenter";
 import { MaterialStation } from "./components/MaterialStation";
 import { KnowledgeMemory } from "./components/KnowledgeMemory";
+import { AccountPublishing } from "./components/AccountPublishing";
 import { Billing } from "./components/Billing";
 import { ServiceManagement } from "./components/ServiceManagement";
 import { Workbench } from "./components/Workbench";
@@ -144,6 +145,7 @@ import { CRM } from "./components/rings/CRM";
 import { Metrics } from "./components/rings/Metrics";
 
 import { SubagentChat } from "./components/SubagentChat";
+import { ExecutionQueue } from "./components/ExecutionQueue";
 import { MerchantMemoryHeader } from "./components/MerchantMemoryHeader";
 import { ProjectSwitcherModal } from "./components/ProjectSwitcherModal";
 import { CreateProjectModal } from "./components/CreateProjectModal";
@@ -441,6 +443,7 @@ export default function App() {
     "normal" | "creation" | "monitoring" | "review"
   >("normal");
   const [showSubagentChat, setShowSubagentChat] = useState(false);
+  const [activeSidebarMode, setActiveSidebarMode] = useState<"chat" | "queue">("chat");
   const [pendingExpert, setPendingExpert] = useState<string | undefined>();
   const [pendingContext, setPendingContext] = useState<string | undefined>();
   const [activeMission, setActiveMission] = useState<{
@@ -491,6 +494,13 @@ export default function App() {
       if (alternativesData) {
         ((_: any) => {})(alternativesData);
       }
+      setActiveSidebarMode("chat");
+      setShowSubagentChat(true);
+      setIsSidebarCollapsed(true);
+    };
+
+    const handleStartAction = () => {
+      setActiveSidebarMode("queue");
       setShowSubagentChat(true);
       setIsSidebarCollapsed(true);
     };
@@ -503,6 +513,7 @@ export default function App() {
     window.addEventListener("nav-to-matrix-create", handleToMatrixCreate);
     window.addEventListener("collapse-sidebar", handleCollapseSidebar);
     window.addEventListener("open-expert", handleOpenExpertApp);
+    window.addEventListener("start-ai-action", handleStartAction);
     return () => {
       window.removeEventListener("nav-to-factory", handleToFactory);
       window.removeEventListener("nav-to-strategy", handleToStrategy);
@@ -512,6 +523,7 @@ export default function App() {
       window.removeEventListener("nav-to-matrix-create", handleToMatrixCreate);
       window.removeEventListener("collapse-sidebar", handleCollapseSidebar);
       window.removeEventListener("open-expert", handleOpenExpertApp);
+      window.removeEventListener("start-ai-action", handleStartAction);
     };
   }, []);
 
@@ -1572,7 +1584,7 @@ export default function App() {
                     {workflowTab === "matrix" && <MerchantMatrix />}
 
                     {workflowTab === "content" && (
-                      <ContentProduction hasData={hasData} />
+                      <AccountPublishing />
                     )}
 
                     {workflowTab === "interaction" && (
@@ -1595,21 +1607,27 @@ export default function App() {
                       exit={{ width: 0, opacity: 0 }}
                       className="border-l border-neutral-100 bg-white shadow-xl z-20 flex flex-col shrink-0"
                     >
-                      <SubagentChat
-                        moduleId={workflowTab}
-                        moduleName={
-                          PROJECT_TABS.find((t) => t.id === workflowTab)
-                            ?.name || "业务助手"
-                        }
-                        initialExpert={pendingExpert}
-                        initialContext={pendingContext}
-                        onClose={() => {
-                          setShowSubagentChat(false);
-                          setPendingExpert(undefined);
-                          setPendingContext(undefined);
-                          ((_: any) => {})(undefined);
-                        }}
-                      />
+                      {activeSidebarMode === "chat" ? (
+                        <SubagentChat
+                          moduleId={workflowTab}
+                          moduleName={
+                            PROJECT_TABS.find((t) => t.id === workflowTab)
+                              ?.name || "业务助手"
+                          }
+                          initialExpert={pendingExpert}
+                          initialContext={pendingContext}
+                          onClose={() => {
+                            setShowSubagentChat(false);
+                            setPendingExpert(undefined);
+                            setPendingContext(undefined);
+                            ((_: any) => {})(undefined);
+                          }}
+                        />
+                      ) : (
+                        <ExecutionQueue
+                          onClose={() => setShowSubagentChat(false)}
+                        />
+                      )}
                     </motion.div>
                   )}
               </AnimatePresence>
@@ -1618,7 +1636,10 @@ export default function App() {
                 focusMode !== "review" &&
                 workflowTab !== "matrix" && (
                   <button
-                    onClick={() => setShowSubagentChat(true)}
+                    onClick={() => {
+                      setActiveSidebarMode("chat");
+                      setShowSubagentChat(true);
+                    }}
                     className="absolute right-6 bottom-6 w-12 h-12 bg-neutral-900 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:bg-primary-500 transition-all z-30 active:scale-95"
                   >
                     <Bot size={20} />

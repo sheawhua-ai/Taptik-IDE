@@ -29,7 +29,9 @@ interface TaskItem {
   priority: "高" | "中" | "低";
   assignee: string;
   deadline: string;
+  impact: string;
   aiSuggestion: string;
+  aiActionText: string;
   details?: string;
 }
 
@@ -43,8 +45,10 @@ const MOCK_TASKS: TaskItem[] = [
     priority: "高",
     assignee: "未分配",
     deadline: "今天 12:00",
+    impact: "影响高优潜客跟进时效",
     aiSuggestion:
       "AI 已判定意向极高，已提取微信号 wx_827364，建议立即分配商务跟进。",
+    aiActionText: "让 AI 起草回复并指派",
     details:
       "“请问如果在二线城市开线下店，有区域代理保护吗？我的微信号是 wx_827364，能否发一份详细的资料？”",
   },
@@ -57,7 +61,9 @@ const MOCK_TASKS: TaskItem[] = [
     priority: "高",
     assignee: "李店长",
     deadline: "今天 10:30",
+    impact: "影响品牌口碑与自然流分发",
     aiSuggestion: "建议立即回复安抚，AI 已起草包含无门槛换新承诺的回复模版。",
+    aiActionText: "让 AI 自动回复并安抚",
     details:
       "“这是我第三次买了，这次的包装真的太敷衍了，瓶子都瘪了，太失望了直接粉转黑。”",
   },
@@ -70,7 +76,9 @@ const MOCK_TASKS: TaskItem[] = [
     priority: "高",
     assignee: "李店长",
     deadline: "今天 18:00",
+    impact: "卡住 3 篇待发布内容",
     aiSuggestion: "需要 3 段狗狗吃粮的真实短视频，建议推送到企微全员群。",
+    aiActionText: "让 AI 生成拍摄说明并发企微",
   },
   {
     id: "4",
@@ -81,7 +89,9 @@ const MOCK_TASKS: TaskItem[] = [
     priority: "中",
     assignee: "我",
     deadline: "明天 12:00",
+    impact: "影响幼犬换粮项目今天排期",
     aiSuggestion: "AI 建议将开头调整为更情绪化的“吐槽向”。",
+    aiActionText: "让 AI 先改口吻",
   },
   {
     id: "5",
@@ -92,7 +102,9 @@ const MOCK_TASKS: TaskItem[] = [
     priority: "低",
     assignee: "未分配",
     deadline: "本周五",
+    impact: "影响二维码发布入口生成",
     aiSuggestion: "已准备好扫码即发布与真实体验领取的入口码，建议生成并分发。",
+    aiActionText: "让 AI 先生成入口码",
   },
 ];
 
@@ -139,34 +151,47 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
           </div>
         </div>
       </div>
+      
+      {/* 优先级处理摘要 */}
+      <div className="px-8 py-4 bg-neutral-900 text-white flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <Zap size={18} className="text-amber-400" />
+          <p className="text-[14px] font-medium">
+            当前有 3 件事最影响项目推进：1 个拍摄任务未发、1 组内容口吻偏官方、1 个外部发布入口待生成。
+          </p>
+        </div>
+        <button className="bg-white text-neutral-900 px-4 py-2 rounded-lg text-[13px] font-bold hover:bg-neutral-100 transition-colors shadow-sm">
+          按优先级处理
+        </button>
+      </div>
 
-      {/* 顶部三个切换 */}
+      {/* 顶部四个切换 */}
       <div className="px-8 py-4 bg-white border-b border-neutral-100 flex gap-4 shrink-0">
         {[
           {
             id: "todo",
-            name: "待我处理",
+            name: "待我决策",
             count: 3,
             icon: Clock,
             color: "text-blue-600",
           },
           {
             id: "acceptance",
-            name: "素材验收池",
+            name: "待验收",
             count: 2,
             icon: ImageIcon,
             color: "text-emerald-600",
           },
           {
             id: "risk",
-            name: "异常风险",
+            name: "风险异常",
             count: 1,
             icon: ShieldAlert,
             color: "text-red-600",
           },
           {
             id: "opportunity",
-            name: "高价值机会",
+            name: "机会线索",
             count: 1,
             icon: Flame,
             color: "text-amber-600",
@@ -326,7 +351,7 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
                     <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
                   )}
 
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-3">
                       <div className="flex gap-2">
                         <span className="px-2 py-1 bg-neutral-100 text-neutral-600 text-[11px] font-medium rounded uppercase">
@@ -375,6 +400,13 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
                     </div>
                   </div>
 
+                  <div className="mb-4 flex items-start gap-2">
+                    <div className="mt-0.5 shrink-0 px-1.5 py-0.5 bg-neutral-800 text-white text-[10px] rounded font-bold">影响</div>
+                    <p className="text-[13px] text-neutral-700 font-medium">
+                      {task.impact}
+                    </p>
+                  </div>
+
                   {task.details && (
                     <div className="bg-neutral-50 p-4 rounded-xl text-[13px] text-neutral-700 leading-relaxed mb-4 border border-neutral-100">
                       {task.details}
@@ -393,24 +425,29 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
                     </div>
                   </div>
 
-                  <div className="flex gap-3 justify-end border-t border-neutral-100 pt-5">
-                    <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
-                      忽略
-                    </button>
-                    <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
-                      转成规则
-                    </button>
-                    <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors border border-neutral-200 rounded-lg hover:bg-neutral-50">
-                      催办
-                    </button>
-                    <button className="px-4 py-2 text-[13px] font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-200 rounded-lg bg-blue-50 hover:bg-blue-100">
-                      派发
-                    </button>
-                    <button className="px-4 py-2 text-[13px] font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 shadow-md">
-                      立即处理
-                    </button>
-                    <button className="px-4 py-2 text-[13px] font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 shadow-md flex items-center gap-1.5">
-                      让 AI 先处理 <Send size={14} />
+                  <div className="flex gap-3 justify-end border-t border-neutral-100 pt-5 relative">
+                    <div className="group/menu relative">
+                      <button className="px-4 py-2 text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors border border-transparent hover:border-neutral-200 rounded-lg flex items-center gap-1.5">
+                        查看更多
+                      </button>
+                      <div className="absolute bottom-full right-0 mb-2 w-32 bg-white rounded-xl shadow-xl border border-neutral-100 p-1 opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all transform origin-bottom-right z-10 text-left">
+                        <button className="w-full text-left px-3 py-2 text-[13px] text-neutral-600 hover:bg-neutral-50 rounded-lg hover:text-neutral-900">忽略</button>
+                        <button className="w-full text-left px-3 py-2 text-[13px] text-neutral-600 hover:bg-neutral-50 rounded-lg hover:text-neutral-900">转为规则</button>
+                        <button className="w-full text-left px-3 py-2 text-[13px] text-neutral-600 hover:bg-neutral-50 rounded-lg hover:text-neutral-900">改派任务</button>
+                        <button className="w-full text-left px-3 py-2 text-[13px] text-neutral-600 hover:bg-neutral-50 rounded-lg hover:text-neutral-900">催办</button>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        window.dispatchEvent(
+                          new CustomEvent("start-ai-action", {
+                            detail: { task }
+                          })
+                        );
+                      }}
+                      className="px-5 py-2 text-[13px] font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-md flex items-center gap-1.5 transition-colors"
+                    >
+                      {task.aiActionText} <Send size={14} />
                     </button>
                   </div>
                 </div>
