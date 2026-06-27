@@ -119,7 +119,7 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
     return (
       <div className="flex h-full w-full bg-white overflow-hidden items-center justify-center">
         <div className="max-w-md w-full p-12 bg-white rounded-[64px] border border-neutral-100 shadow-2xl shadow-neutral-200/50 flex flex-col items-center text-center">
-          <div className="w-24 h-24 bg-blue-50 rounded-[32px] flex items-center justify-center text-blue-500 mb-10 group hover:rotate-12 transition-transform">
+          <div className="w-24 h-24 bg-indigo-50 rounded-[32px] flex items-center justify-center text-indigo-500 mb-10 group hover:rotate-12 transition-transform">
             <MessageSquare size={48} className="fill-current" />
           </div>
           <h3 className="text-2xl font-semibold text-neutral-900 mb-4 italic tracking-tight">
@@ -173,7 +173,7 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
             name: "待我决策",
             count: 3,
             icon: Clock,
-            color: "text-blue-600",
+            color: "text-indigo-600",
           },
           {
             id: "acceptance",
@@ -244,7 +244,7 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
               <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
                 <div className="p-3 border-b border-neutral-100 flex items-center justify-between bg-neutral-50">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                    <span className="text-[11px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">
                       内部协同
                     </span>
                     <span className="text-[13px] font-bold text-neutral-900">
@@ -364,7 +364,7 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
                               : task.event === "机会"
                                 ? "bg-amber-50 text-amber-600 border border-amber-100"
                                 : task.event === "待审核"
-                                  ? "bg-blue-50 text-blue-600 border border-blue-100"
+                                  ? "bg-neutral-100 text-neutral-800 border border-neutral-200"
                                   : "bg-emerald-50 text-emerald-600 border border-emerald-100"
                           }`}
                         >
@@ -413,13 +413,13 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
                     </div>
                   )}
 
-                  <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-5 flex gap-3 items-start">
-                    <Bot size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                  <div className="bg-neutral-50/80 border border-neutral-100 rounded-xl p-4 mb-5 flex gap-3 items-start">
+                    <Bot size={18} className="text-neutral-500 shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="text-[12px] font-bold text-blue-900 mb-1">
+                      <h4 className="text-[12px] font-bold text-neutral-900 mb-1">
                         AI 建议动作
                       </h4>
-                      <p className="text-[13px] text-blue-800/80">
+                      <p className="text-[13px] text-neutral-600">
                         {task.aiSuggestion}
                       </p>
                     </div>
@@ -445,7 +445,7 @@ export const Interaction: React.FC<{ hasData?: boolean }> = ({
                           })
                         );
                       }}
-                      className="px-5 py-2 text-[13px] font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-md flex items-center gap-1.5 transition-colors"
+                      className="px-5 py-2 text-[13px] font-bold text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 shadow-md flex items-center gap-1.5 transition-colors"
                     >
                       {task.aiActionText} <Send size={14} />
                     </button>

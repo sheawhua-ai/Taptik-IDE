@@ -4,7 +4,7 @@ export const AccountSettings = () => {
  return (
  <div className="flex flex-col h-full space-y-8">
  <div className="flex items-center gap-4">
- <div className="w-14 h-14 bg-blue-500 text-white rounded-full flex items-center justify-center text-xl ">
+ <div className="w-14 h-14 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xl ">
  1
  </div>
  <div>

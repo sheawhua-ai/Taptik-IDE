@@ -1739,7 +1739,7 @@ export default function App() {
                   <div className="text-[20px] font-bold">4</div>
                 </div>
                 <div
-                  className="bg-blue-50 text-blue-700 p-4 rounded-xl border border-blue-100 flex items-center justify-between cursor-pointer hover:bg-blue-100 transition-colors"
+                  className="bg-indigo-50 text-indigo-700 p-4 rounded-xl border border-indigo-100 flex items-center justify-between cursor-pointer hover:bg-indigo-100 transition-colors"
                   onClick={() => {
                     setShowGlobalQueue(false);
                     setWorkflowTab("execution");

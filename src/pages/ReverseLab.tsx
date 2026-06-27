@@ -127,7 +127,7 @@ export default function ReverseLab() {
  >
  <div className="flex-1 min-w-0 pr-4">
  <div className="flex items-center gap-2 mb-1.5">
- <span className={`px-1.5 py-0.5 text-[9px] rounded ${candidate.type === '视频' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
+ <span className={`px-1.5 py-0.5 text-[9px] rounded ${candidate.type === '视频' ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
  {candidate.type}
  </span>
  <h4 className="text-sm font-semibold text-zinc-900 truncate">{candidate.title}</h4>

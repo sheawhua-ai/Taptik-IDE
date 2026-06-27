@@ -115,7 +115,7 @@ export default function TaskDispatch() {
  </h2>
  <div className="flex gap-2">
  <span className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100"><span className="w-2 h-2 rounded-full bg-zinc-300"></span> 待接单 24</span>
- <span className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100"><span className="w-2 h-2 rounded-full bg-blue-400"></span> 拍摄中 15</span>
+ <span className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100"><span className="w-2 h-2 rounded-full bg-indigo-400"></span> 拍摄中 15</span>
  <span className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100"><span className="w-2 h-2 rounded-full bg-amber-400"></span> 待审核 8</span>
  <span className="flex items-center gap-1 text-[10px] text-zinc-500 bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100"><span className="w-2 h-2 rounded-full bg-emerald-400"></span> 已完成 142</span>
  </div>
@@ -153,7 +153,7 @@ export default function TaskDispatch() {
  <td className="py-3 text-xs text-zinc-700">春季出游种草素材采集</td>
  <td className="py-3 text-xs text-zinc-600 flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px] text-zinc-400">person</span> 导购-王芳</td>
  <td className="py-3">
- <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] bg-blue-50 text-blue-600 border border-blue-100">拍摄中 (1/3)</span>
+ <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] bg-indigo-50 text-indigo-600 border border-indigo-100">拍摄中 (1/3)</span>
  </td>
  <td className="py-3 text-[10px] text-zinc-400 text-right">1小时前</td>
  </tr>

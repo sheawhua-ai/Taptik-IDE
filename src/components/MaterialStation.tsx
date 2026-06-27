@@ -104,7 +104,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
             <div className="bg-white border border-neutral-200 rounded-xl px-5 py-3 flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-5 text-[13px] flex-wrap">
                 <div className="flex items-center gap-2">
-                  <HardDrive size={15} className="text-blue-500" />
+                  <HardDrive size={15} className="text-indigo-500" />
                   <span className="text-neutral-600">已连接 <strong className="text-neutral-900">3</strong> 个本地源</span>
                 </div>
                 <div className="w-px h-4 bg-neutral-200 hidden md:block" />
@@ -216,8 +216,8 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                 {/* 1. 本地素材源 */}
                 <div className="bg-white border border-neutral-200 rounded-[20px] p-5 shadow-sm flex flex-col">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                      <HardDrive size={16} className="text-blue-500" />
+                    <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center">
+                      <HardDrive size={16} className="text-indigo-500" />
                     </div>
                     <div>
                       <h4 className="text-[15px] font-bold text-neutral-900">本地素材源</h4>
@@ -226,21 +226,21 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                   </div>
                   
                   <div className="space-y-2 mb-5 flex-1">
-                    <div onClick={() => setActiveDrawer('source_detail')} className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between cursor-pointer hover:bg-blue-50/50 hover:border-blue-100 transition-colors">
+                    <div onClick={() => setActiveDrawer('source_detail')} className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between cursor-pointer hover:bg-indigo-50/50 hover:border-indigo-100 transition-colors">
                       <div className="flex items-center gap-2">
                         <FolderOpen size={16} className="text-neutral-400" />
                         <span className="text-[13px] font-bold text-neutral-800">商家素材文件夹</span>
                       </div>
                       <div className="text-[12px] text-neutral-500">12.5k</div>
                     </div>
-                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between cursor-pointer hover:bg-blue-50/50 hover:border-blue-100 transition-colors">
+                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between cursor-pointer hover:bg-indigo-50/50 hover:border-indigo-100 transition-colors">
                       <div className="flex items-center gap-2">
                         <FolderOpen size={16} className="text-neutral-400" />
                         <span className="text-[13px] font-bold text-neutral-800">历史项目文件夹</span>
                       </div>
                       <div className="text-[12px] text-neutral-500">4.2k</div>
                     </div>
-                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between cursor-pointer hover:bg-blue-50/50 hover:border-blue-100 transition-colors relative overflow-hidden">
+                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 flex items-center justify-between cursor-pointer hover:bg-indigo-50/50 hover:border-indigo-100 transition-colors relative overflow-hidden">
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-400" />
                       <div className="flex items-center gap-2">
                         <FolderOpen size={16} className="text-neutral-400" />
@@ -383,8 +383,8 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-[12px] text-neutral-500 bg-blue-50/50 p-2.5 rounded-lg border border-blue-100">
-                <AlertCircle size={14} className="text-blue-500" />
+              <div className="flex items-center gap-2 text-[12px] text-neutral-500 bg-indigo-50/50 p-2.5 rounded-lg border border-indigo-100">
+                <AlertCircle size={14} className="text-indigo-500" />
                 小红书规则：<strong className="text-neutral-700">已发布使用过的图片默认不再推荐给新笔记，系统将自动对疑似重复图片进行提示。</strong>
               </div>
 
@@ -414,7 +414,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                           {i % 2 === 0 ? (
                             <span className="bg-black/60 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded font-medium border border-white/20" title="仅本地"><HardDrive size={10} /></span>
                           ) : (
-                            <span className="bg-blue-500/80 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded font-medium border border-white/20" title="原文件已同步"><Cloud size={10} /></span>
+                            <span className="bg-indigo-500/80 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded font-medium border border-white/20" title="原文件已同步"><Cloud size={10} /></span>
                           )}
                        </div>
 
@@ -549,7 +549,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                            </div>
                            <div>
                              <div className="text-neutral-500 mb-1">同步状态</div>
-                             <div className="font-medium text-blue-600 flex items-center gap-1"><Cloud size={14}/> 原文件已同步</div>
+                             <div className="font-medium text-indigo-600 flex items-center gap-1"><Cloud size={14}/> 原文件已同步</div>
                            </div>
                            <div>
                              <div className="text-neutral-500 mb-1">AI 标签</div>
@@ -595,8 +595,8 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                     <div className="space-y-6">
                       <div className="bg-white border border-neutral-200 rounded-[20px] p-6 shadow-sm">
                         <div className="flex items-center gap-3 mb-6">
-                          <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                            <FolderOpen size={24} className="text-blue-500" />
+                          <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
+                            <FolderOpen size={24} className="text-indigo-500" />
                           </div>
                           <div>
                             <h4 className="text-[16px] font-bold text-neutral-900">商家原始素材库</h4>
@@ -654,18 +654,18 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                   {activeDrawer === 'cloud_manager' && (
                     <div className="space-y-6">
                        <div className="bg-white border border-neutral-200 rounded-[20px] p-6 shadow-sm text-center">
-                          <Cloud size={48} className="text-blue-500 mx-auto mb-4" />
+                          <Cloud size={48} className="text-indigo-500 mx-auto mb-4" />
                           <h4 className="text-[18px] font-bold text-neutral-900 mb-1">云端存储空间</h4>
                           <div className="text-[13px] text-neutral-500 mb-4">已使用 8.2GB / 总计 50GB</div>
                           
                           <div className="w-full h-3 bg-neutral-100 rounded-full overflow-hidden flex">
-                            <div className="h-full bg-blue-500 w-[15%]" title="原文件 1.2GB" />
+                            <div className="h-full bg-indigo-500 w-[15%]" title="原文件 1.2GB" />
                             <div className="h-full bg-emerald-500 w-[5%]" title="回传素材 400MB" />
                             <div className="h-full bg-amber-500 w-[2%]" title="待清理垃圾 150MB" />
                           </div>
                           
                           <div className="flex justify-center gap-4 mt-4 text-[12px]">
-                            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500"/> 项目引用原文件</div>
+                            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-indigo-500"/> 项目引用原文件</div>
                             <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500"/> 回传池素材</div>
                             <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500"/> 可清理内容</div>
                           </div>

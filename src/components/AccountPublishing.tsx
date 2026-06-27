@@ -125,17 +125,17 @@ const AccountAssetsView = ({ onOpenAccount }: { onOpenAccount: () => void }) => 
               <button className="px-3 py-1.5 text-orange-700/70 hover:bg-white/50 text-[12px] font-medium rounded-lg transition-colors">忽略</button>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100/50 p-4">
+          <div className="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-xl border border-indigo-100/50 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[11px] font-medium rounded">A05 科普号</span>
-              <span className="text-[13px] text-blue-900 font-medium">适合聚光测试</span>
+              <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[11px] font-medium rounded">A05 科普号</span>
+              <span className="text-[13px] text-indigo-900 font-medium">适合聚光测试</span>
             </div>
-            <p className="text-[12px] text-blue-800/80 mb-4 leading-relaxed">
+            <p className="text-[12px] text-indigo-800/80 mb-4 leading-relaxed">
               专业科普点击稳定，转化线索成本低于行业 20%，建议聚光放量。
             </p>
             <div className="flex items-center gap-2">
-              <button className="px-3 py-1.5 bg-white text-blue-700 text-[12px] font-medium rounded-lg shadow-sm">查看建议</button>
-              <button className="px-3 py-1.5 text-blue-700/70 hover:bg-white/50 text-[12px] font-medium rounded-lg transition-colors">忽略</button>
+              <button className="px-3 py-1.5 bg-white text-indigo-700 text-[12px] font-medium rounded-lg shadow-sm">查看建议</button>
+              <button className="px-3 py-1.5 text-indigo-700/70 hover:bg-white/50 text-[12px] font-medium rounded-lg transition-colors">忽略</button>
             </div>
           </div>
         </div>
@@ -240,9 +240,9 @@ const AccountCard = ({ name, type, position, tags, health, suggestion, onClick, 
         </div>
       </div>
 
-      <div className="bg-blue-50/50 border border-blue-100/50 rounded-lg p-3 flex items-start gap-2 mb-4">
-        <Sparkles size={14} className="text-blue-500 mt-0.5 shrink-0" />
-        <p className="text-[12px] text-blue-900/80 leading-relaxed">
+      <div className="bg-indigo-50/50 border border-indigo-100/50 rounded-lg p-3 flex items-start gap-2 mb-4">
+        <Sparkles size={14} className="text-indigo-500 mt-0.5 shrink-0" />
+        <p className="text-[12px] text-indigo-900/80 leading-relaxed">
           <strong>AI 建议：</strong> {suggestion}
         </p>
       </div>
@@ -287,7 +287,7 @@ const PublishingDispatchView = ({ onOpenApplyPlan }: { onOpenApplyPlan: () => vo
                   广州吃喝小分队疑似限流，建议暂停
                 </li>
                 <li className="text-[13px] text-neutral-600 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
                   3 篇内容适合扫码发布包，便于快速铺量
                 </li>
                 <li className="text-[13px] text-neutral-600 flex items-center gap-2">

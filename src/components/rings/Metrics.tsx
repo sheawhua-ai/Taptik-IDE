@@ -193,7 +193,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                     <div className="flex flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-neutral-100 pt-4 md:pt-0 md:pl-6 justify-center">
                       <button 
                         onClick={() => setSelectedEvent(event)}
-                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[13px] font-bold shadow-sm transition-colors text-center w-full md:w-auto"
+                        className="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[13px] font-bold shadow-sm transition-colors text-center w-full md:w-auto"
                       >
                         {event.actionText}
                       </button>
@@ -261,9 +261,9 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                   </div>
                 </div>
 
-                <div className="bg-blue-50/50 rounded-2xl p-5 border border-blue-100">
-                  <h4 className="text-[12px] font-bold text-blue-700 mb-2 uppercase tracking-widest flex items-center gap-1.5">
-                    <Sparkles size={14} /> 推荐动作
+                <div className="bg-neutral-50/80 rounded-2xl p-5 border border-neutral-100">
+                  <h4 className="text-[12px] font-bold text-neutral-900 mb-2 uppercase tracking-widest flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-amber-500" /> 推荐动作
                   </h4>
                   <p className="text-[14px] text-neutral-900 font-medium leading-relaxed">{selectedEvent.aiSuggestion}</p>
                 </div>
@@ -285,7 +285,7 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                       })
                     );
                   }}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[14px] font-bold shadow-md transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold shadow-md transition-colors flex items-center justify-center gap-2"
                 >
                   {selectedEvent.actionText} <ArrowRight size={16} />
                 </button>

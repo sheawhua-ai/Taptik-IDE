@@ -43,7 +43,7 @@ const MODULES = [
     desc: '品牌、产品、价格、活动、禁用表达。',
     stats: { total: 124, highConf: 108, pending: 5, recent: 24, gaps: 2 },
     examples: [
-      { title: '禁用医疗化表达', meta: '规则｜客户确认｜适用：笔记/评论/私信/企微', tags: ['客户确认', '高可信', '禁止自动回复'], tagColors: ['bg-emerald-50 text-emerald-700', 'bg-blue-50 text-blue-700', 'bg-rose-50 text-rose-700'], refs: 12 },
+      { title: '禁用医疗化表达', meta: '规则｜客户确认｜适用：笔记/评论/私信/企微', tags: ['客户确认', '高可信', '禁止自动回复'], tagColors: ['bg-emerald-50 text-emerald-700', 'bg-indigo-50 text-indigo-700', 'bg-rose-50 text-rose-700'], refs: 12 },
       { title: '618 优惠底价', meta: '事实｜文档提取｜适用：私信/企微', tags: ['需人工确认', '即将过期'], tagColors: ['bg-amber-50 text-amber-700', 'bg-orange-50 text-orange-700'], refs: 4 }
     ]
   },
@@ -52,7 +52,7 @@ const MODULES = [
     desc: '目标客户、痛点、常见问题、购买顾虑、情绪反馈。',
     stats: { total: 86, highConf: 62, pending: 12, recent: 45, gaps: 4 },
     examples: [
-      { title: '新手养狗人群痛点', meta: '画像｜AI 推断｜适用：笔记/内容审核', tags: ['已同步 Skill', '高可信'], tagColors: ['bg-purple-50 text-purple-700', 'bg-blue-50 text-blue-700'], refs: 28 }
+      { title: '新手养狗人群痛点', meta: '画像｜AI 推断｜适用：笔记/内容审核', tags: ['已同步 Skill', '高可信'], tagColors: ['bg-purple-50 text-purple-700', 'bg-indigo-50 text-indigo-700'], refs: 28 }
     ]
   },
   {
@@ -60,7 +60,7 @@ const MODULES = [
     desc: '标题、口吻、图文规范、自然流/投流差异、客户审核偏好。',
     stats: { total: 54, highConf: 40, pending: 8, recent: 120, gaps: 1 },
     examples: [
-      { title: '首图必须带大字报', meta: '规则｜团队经验｜适用：笔记', tags: ['高可信'], tagColors: ['bg-blue-50 text-blue-700'], refs: 86 }
+      { title: '首图必须带大字报', meta: '规则｜团队经验｜适用：笔记', tags: ['高可信'], tagColors: ['bg-indigo-50 text-indigo-700'], refs: 86 }
     ]
   },
   {
@@ -76,7 +76,7 @@ const MODULES = [
     desc: '爆款复盘、失败案例、素材偏好、账号适配、Skill 沉淀。',
     stats: { total: 32, highConf: 28, pending: 2, recent: 18, gaps: 0 },
     examples: [
-      { title: '换粮避坑打法复盘', meta: '经验｜项目复盘｜适用：操盘建议', tags: ['高可信'], tagColors: ['bg-blue-50 text-blue-700'], refs: 5 }
+      { title: '换粮避坑打法复盘', meta: '经验｜项目复盘｜适用：操盘建议', tags: ['高可信'], tagColors: ['bg-indigo-50 text-indigo-700'], refs: 5 }
     ]
   }
 ];
@@ -132,9 +132,9 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
         </div>
       </div>
 
-      <div className="bg-blue-50/50 border-b border-blue-100 px-8 py-2.5 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-2 text-[12px] text-blue-800 font-medium">
-          <Info size={14} className="text-blue-500" />
+      <div className="bg-indigo-50/50 border-b border-indigo-100 px-8 py-2.5 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2 text-[12px] text-indigo-800 font-medium">
+          <Info size={14} className="text-indigo-500" />
           {currentSpace?.desc}
         </div>
         <button onClick={() => setActiveDrawer('citation_audit')} className="text-[12px] font-bold text-neutral-500 hover:text-neutral-700 flex items-center gap-1">
@@ -226,10 +226,10 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                       <div className="text-[16px] font-bold text-amber-700">{mod.stats.pending}</div>
                       <div className="text-[10px] text-amber-600">待确认</div>
                     </div>
-                    <div className="bg-blue-50 p-2 rounded-lg text-center relative">
+                    <div className="bg-indigo-50 p-2 rounded-lg text-center relative">
                       {mod.stats.gaps > 0 && <div className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full" />}
-                      <div className="text-[16px] font-bold text-blue-700">{mod.stats.gaps}</div>
-                      <div className="text-[10px] text-blue-600">缺口</div>
+                      <div className="text-[16px] font-bold text-indigo-700">{mod.stats.gaps}</div>
+                      <div className="text-[10px] text-indigo-600">缺口</div>
                     </div>
                   </div>
 
@@ -282,7 +282,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
             >
               <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-white">
                 <h3 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
-                  {activeDrawer === 'import_data' && <><Upload size={18} className="text-blue-500" /> 导入与入库审核</>}
+                  {activeDrawer === 'import_data' && <><Upload size={18} className="text-indigo-500" /> 导入与入库审核</>}
                   {activeDrawer === 'memory_detail' && <><Brain size={18} className="text-purple-500" /> 记忆详情</>}
                   {activeDrawer === 'memory_diagnosis' && <><AlertTriangle size={18} className="text-amber-500" /> 记忆诊断与补齐</>}
                   {activeDrawer === 'citation_audit' && <><History size={18} className="text-neutral-500" /> 调用审计</>}
@@ -317,7 +317,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="text-[18px] font-bold text-neutral-900">AI 从「2024幼犬喂养指南.pdf」提取 15 条记忆</h4>
                         <div className="flex gap-2">
-                          <span className="px-2 py-1 bg-blue-50 text-blue-700 text-[12px] font-bold rounded-lg">商家事实 5</span>
+                          <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[12px] font-bold rounded-lg">商家事实 5</span>
                           <span className="px-2 py-1 bg-purple-50 text-purple-700 text-[12px] font-bold rounded-lg">内容规则 3</span>
                           <span className="px-2 py-1 bg-emerald-50 text-emerald-700 text-[12px] font-bold rounded-lg">话术回复 4</span>
                           <span className="px-2 py-1 bg-amber-50 text-amber-700 text-[12px] font-bold rounded-lg">运营经验 2</span>
@@ -495,7 +495,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                             <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors">
                               <FileText size={16} /> 从资料提取
                             </button>
-                            <button className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-[12px] font-bold text-blue-700 hover:bg-blue-100 flex flex-col items-center gap-1.5 transition-colors">
+                            <button className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-[12px] font-bold text-indigo-700 hover:bg-indigo-100 flex flex-col items-center gap-1.5 transition-colors">
                               <MessageSquare size={16} /> 发给客户补充
                             </button>
                             <button className="p-3 bg-purple-50 border border-purple-200 rounded-xl text-[12px] font-bold text-purple-700 hover:bg-purple-100 flex flex-col items-center gap-1.5 transition-colors text-center">
@@ -528,7 +528,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                         <div key={i} className="bg-white border border-neutral-200 rounded-xl p-5 shadow-sm">
                           <div className="flex items-center justify-between mb-3 pb-3 border-b border-neutral-100">
                             <div className="flex items-center gap-2">
-                              {i === 1 ? <ShieldCheck size={16} className="text-rose-500"/> : <MessageCircle size={16} className="text-blue-500"/>}
+                              {i === 1 ? <ShieldCheck size={16} className="text-rose-500"/> : <MessageCircle size={16} className="text-indigo-500"/>}
                               <span className="text-[14px] font-bold text-neutral-900">{i === 1 ? '内容审核拦截' : '私信自动回复'}</span>
                             </div>
                             <span className="text-[12px] text-neutral-400">10分钟前</span>

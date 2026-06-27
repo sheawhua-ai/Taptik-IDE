@@ -70,7 +70,7 @@ export const Publishing: React.FC = () => {
  </div>
  <div className="flex items-center gap-3">
  <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">已发布</span></div>
- <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">待执行</span></div>
+ <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-indigo-500" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">待执行</span></div>
  </div>
  </div>
  <div className="bg-white border border-neutral-100 rounded-[32px] shadow-sm overflow-hidden">
@@ -94,7 +94,7 @@ export const Publishing: React.FC = () => {
  onClick={() => setSelectedItem(item)}
  className={`p-1.5 rounded-lg border-l-2 shadow-sm group/item flex flex-col gap-0.5 cursor-pointer hover:translate-y-[-1px] transition-all ${
  item.status === 'published' ? 'bg-emerald-50/50 border-emerald-500' : 
- item.status === 'scheduled' ? 'bg-blue-50/50 border-blue-500' : 
+ item.status === 'scheduled' ? 'bg-indigo-50/50 border-indigo-500' : 
  'bg-neutral-50 border-neutral-300'
  }`}
  >
@@ -163,10 +163,10 @@ export const Publishing: React.FC = () => {
  <h4 className="text-[14px] font-semibold uppercase tracking-[0.2em] mb-1 opacity-50">连接状态</h4>
  <p className="text-xl ">发布连接器</p>
  </div>
- <RefreshCw size={24} className="text-blue-500 group-hover:rotate-180 transition-transform duration-1000" />
+ <RefreshCw size={24} className="text-indigo-500 group-hover:rotate-180 transition-transform duration-1000" />
  </div>
  <div className="mt-6 flex items-center gap-3">
- <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center border border-blue-100">
+ <div className="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center border border-indigo-100">
  <Share2 size={24} />
  </div>
  <div>
@@ -189,7 +189,7 @@ export const Publishing: React.FC = () => {
  <div className="w-[480px] h-full bg-white shadow-2xl relative z-10 flex flex-col">
  <div className="p-8 border-b border-neutral-100 flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className={`p-2 rounded-xl ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-blue-50 text-blue-500'}`}>
+ <div className={`p-2 rounded-xl ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-indigo-50 text-indigo-500'}`}>
  <FileText size={20}/>
  </div>
  <h3 className="text-lg font-semibold text-neutral-900">排期详情</h3>
@@ -203,7 +203,7 @@ export const Publishing: React.FC = () => {
  <div className="space-y-4">
  <div className="flex items-center justify-between">
  <span className="text-[11px] text-neutral-400 uppercase tracking-widest">排期标题</span>
- <span className={`px-2.5 py-1 rounded-lg text-[10px] uppercase ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-blue-50 text-blue-500'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
+ <span className={`px-2.5 py-1 rounded-lg text-[10px] uppercase ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-indigo-50 text-indigo-500'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
  </div>
  <p className="text-xl text-neutral-900 leading-tight">{selectedItem.title}</p>
  </div>

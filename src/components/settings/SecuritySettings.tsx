@@ -120,7 +120,7 @@ export const SecuritySettings = () => {
  {/* System Level Tools Box */}
  <div className="border flex items-center justify-between border-slate-200 rounded-2xl bg-white p-5 shadow-sm">
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 shrink-0">
+ <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-500 shrink-0">
  <Monitor size={20} />
  </div>
  <div>

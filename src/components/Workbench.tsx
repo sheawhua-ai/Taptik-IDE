@@ -731,7 +731,7 @@ const handleExecute = (customQuery?: string) => {
                                   id: "s2",
                                   name: "小红书笔记一键清洗",
                                   icon: Sparkles,
-                                  color: "text-blue-500",
+                                  color: "text-indigo-500",
                                 },
                                 {
                                   id: "s3",
@@ -1093,9 +1093,9 @@ const handleExecute = (customQuery?: string) => {
                   },
                   optimize: {
                     label: "优化",
-                    color: "text-blue-600",
-                    dot: "bg-blue-500",
-                    bg: "bg-blue-50/50 border border-blue-100",
+                    color: "text-indigo-600",
+                    dot: "bg-indigo-500",
+                    bg: "bg-indigo-50/50 border border-indigo-100",
                   },
                   collaboration: {
                     label: "协同",

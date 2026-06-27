@@ -44,7 +44,7 @@ export const CRM: React.FC = () => {
  {/* KPI Cards */}
  <div className="grid grid-cols-4 gap-6">
  {[
- { label: '今日新增线索', value: '12', trend: '+20%', color: 'text-blue-500' },
+ { label: '今日新增线索', value: '12', trend: '+20%', color: 'text-indigo-500' },
  { label: '待处理', value: '5', trend: 'Critical', color: 'text-rose-500' },
  { label: '本月转化率', value: '4.2%', trend: '+0.5%', color: 'text-emerald-500' },
  { label: '成交金额 (GMV)', value: '¥58k', trend: '+12%', color: 'text-indigo-500' },
@@ -108,7 +108,7 @@ export const CRM: React.FC = () => {
  <div>
  <p className="text-[10px] text-neutral-400 uppercase tracking-widest mb-1">意向维度</p>
  <div className="flex flex-wrap gap-1">
- <span className="px-2 py-0.5 bg-blue-50 text-blue-500 text-[10px] rounded border border-blue-100">{lead.product}</span>
+ <span className="px-2 py-0.5 bg-indigo-50 text-indigo-500 text-[10px] rounded border border-indigo-100">{lead.product}</span>
  <span className="px-2 py-0.5 bg-neutral-50 text-neutral-400 text-[10px] rounded border border-neutral-100">{lead.budget}</span>
  </div>
  </div>

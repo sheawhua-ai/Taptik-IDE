@@ -250,8 +250,8 @@ export default function MerchantMatrix() {
                   </button>
                 </div>
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                  <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-[13px] text-blue-800 leading-relaxed">
-                    <strong className="flex items-center gap-1 mb-2"><Sparkles size={16} className="text-blue-500"/> AI 批次建议</strong>
+                  <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-[13px] text-indigo-800 leading-relaxed">
+                    <strong className="flex items-center gap-1 mb-2"><Sparkles size={16} className="text-indigo-500"/> AI 批次建议</strong>
                     上一轮“幼犬挑食 + 素人口吻”表现较好，CPA 降低 20%。建议追加 20 篇同方向变体，其中 12 篇自然流，8 篇外部体验领取。
                   </div>
                   

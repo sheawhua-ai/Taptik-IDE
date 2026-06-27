@@ -67,13 +67,13 @@ export const ExecutionQueue: React.FC<{ onClose?: () => void }> = ({ onClose }) 
             {runningCount > 0 && (
               <div>
                 <h4 className="text-[13px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
-                  <Loader2 size={14} className="animate-spin text-blue-500" />
+                  <Loader2 size={14} className="animate-spin text-indigo-500" />
                   AI 正在处理 {runningCount} 项
                 </h4>
                 <div className="space-y-3">
                   {queue.filter(q => q.status === "running").map(item => (
-                    <div key={item.id} className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 animate-pulse"></div>
+                    <div key={item.id} className="bg-white p-4 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 animate-pulse"></div>
                       <p className="text-[13px] font-medium text-neutral-900">{item.actionText}</p>
                       <p className="text-[11px] text-neutral-500 mt-1">处理对象：{item.taskTitle}</p>
                     </div>

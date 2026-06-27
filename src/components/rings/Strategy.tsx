@@ -153,7 +153,7 @@ export const Strategy: React.FC<{
                           </div>
                           <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
                             <div className="text-[12px] font-semibold text-neutral-800 mb-2 flex items-center gap-1.5">
-                              <Users size={14} className="text-blue-500" />{" "}
+                              <Users size={14} className="text-indigo-500" />{" "}
                               评论区痛点提取
                             </div>
                             <div className="text-[12px] text-neutral-500 leading-relaxed">

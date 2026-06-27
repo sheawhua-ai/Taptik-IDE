@@ -472,9 +472,9 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
             className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}
           >
             {msg.role === "user" && msg.contextPill && (
-              <div className="flex items-center gap-1.5 px-3 py-2 bg-white text-blue-600 rounded-xl text-[12px] shadow-sm mb-2 max-w-[90%] border border-blue-100">
+              <div className="flex items-center gap-1.5 px-3 py-2 bg-white text-indigo-600 rounded-xl text-[12px] shadow-sm mb-2 max-w-[90%] border border-indigo-100">
                 <FileText size={14} className="shrink-0" />
-                <span className="shrink-0 text-blue-800">
+                <span className="shrink-0 text-indigo-800">
                   {msg.contextPill.type}
                 </span>
                 <span className="text-neutral-400 px-1">|</span>
@@ -556,9 +556,9 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
 
         <div className="relative bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 focus-within:border-primary-500/50 focus-within:ring-4 focus-within:ring-primary-500/5 transition-all">
           {contextPill && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-blue-600 rounded-xl text-[12px] shadow-sm mb-1 ml-1 mt-1 max-w-[90%] border border-blue-100 w-max">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-indigo-600 rounded-xl text-[12px] shadow-sm mb-1 ml-1 mt-1 max-w-[90%] border border-indigo-100 w-max">
               <FileText size={14} className="shrink-0" />
-              <span className="shrink-0 text-blue-800">{contextPill.type}</span>
+              <span className="shrink-0 text-indigo-800">{contextPill.type}</span>
               <span className="text-neutral-400 px-1">|</span>
               <span className="truncate text-neutral-600 max-w-[200px]">
                 {contextPill.text}

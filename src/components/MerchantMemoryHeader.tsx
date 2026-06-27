@@ -107,7 +107,7 @@ export function MerchantMemoryHeader({
 
                   {/* 3. 账号状态 */}
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
                       <Users size={16} />
                     </div>
                     <div>
