@@ -152,6 +152,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  {unit.output.text && (
  <div className="relative">
  <textarea 
+ data-inline-ai="true"
  value={unit.output.text}
  className="w-full bg-neutral-0 border border-neutral-100 rounded-2xl p-5 text-[14px] text-neutral-700 resize-none min-h-[100px] focus:outline-none"
  readOnly

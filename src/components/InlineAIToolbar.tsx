@@ -11,12 +11,19 @@ export const InlineAIToolbar: React.FC = () => {
       setTimeout(() => {
         const sel = window.getSelection();
         if (sel && sel.toString().trim().length > 0 && sel.rangeCount > 0) {
-          const range = sel.getRangeAt(0);
-          const rect = range.getBoundingClientRect();
-          setSelection({
-            text: sel.toString().trim(),
-            rect
-          });
+          const anchorNode = sel.anchorNode;
+          const parentWithAttr = anchorNode?.parentElement?.closest('[data-inline-ai="true"]');
+          
+          if (parentWithAttr) {
+            const range = sel.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            setSelection({
+              text: sel.toString().trim(),
+              rect
+            });
+          } else {
+            setSelection({ text: '', rect: null });
+          }
         } else {
           setSelection({ text: '', rect: null });
         }
@@ -42,11 +49,27 @@ export const InlineAIToolbar: React.FC = () => {
 
   const handleAction = (action: string) => {
     setIsProcessing(true);
+    
+    let promptText = '';
+    if (action === 'rewrite') promptText = '请润色这段内容：\n' + selection.text;
+    else if (action === 'tone') promptText = '请使这段内容语气更像真实素人：\n' + selection.text;
+    else if (action === 'shorter') promptText = '请精简这段内容：\n' + selection.text;
+    else if (action === 'analyze') promptText = '请分析这段原因：\n' + selection.text;
+
+    // Call subagent with the selected context
+    window.dispatchEvent(
+      new CustomEvent('open-expert', {
+        detail: {
+          expert: '内容助手',
+          context: promptText,
+        }
+      })
+    );
+
     setTimeout(() => {
       setIsProcessing(false);
       setSelection({ text: '', rect: null });
-      // In a real app, this would replace the text or show a diff
-    }, 1500);
+    }, 500);
   };
 
   if (!selection.rect || !selection.text) return null;

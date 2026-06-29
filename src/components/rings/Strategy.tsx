@@ -31,6 +31,8 @@ export const Strategy: React.FC<{
     "suggestion" | "confirming" | "generating" | "running"
   >("suggestion");
   const [generateProgress, setGenerateProgress] = useState(0);
+  const [selectedDirection, setSelectedDirection] = useState("幼犬换粮避坑");
+  const [selectedDesc, setSelectedDesc] = useState("这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。");
 
   const startGenerating = () => {
     setFlowState("generating");
@@ -192,7 +194,11 @@ export const Strategy: React.FC<{
 
                 <div className="flex flex-wrap items-center gap-3">
                   <button
-                    onClick={() => setFlowState("confirming")}
+                    onClick={() => {
+                      setSelectedDirection("幼犬换粮避坑");
+                      setSelectedDesc("这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。");
+                      setFlowState("confirming");
+                    }}
                     className="px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-medium hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
                   >
                     <Play size={16} /> 开始操盘
@@ -237,6 +243,8 @@ export const Strategy: React.FC<{
             <ExecutionPreview
               onStart={startGenerating}
               onBack={() => setFlowState("suggestion")}
+              defaultDirection={selectedDirection}
+              defaultDesc={selectedDesc}
             />
           )}
 
@@ -321,7 +329,14 @@ export const Strategy: React.FC<{
                 其他备选方向
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-primary-300 transition-colors cursor-pointer group shadow-sm">
+                <div 
+                  onClick={() => {
+                    setSelectedDirection("平价猫粮红黑榜测评");
+                    setSelectedDesc("搜索量大但竞争激烈，需以极高专业度切入，建议作为长线防御动作。");
+                    setFlowState("confirming");
+                  }}
+                  className="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-primary-300 transition-colors cursor-pointer group shadow-sm"
+                >
                   <div className="flex justify-between items-start mb-3">
                     <h5 className="font-semibold text-neutral-900 text-[15px]">
                       平价猫粮红黑榜测评
@@ -337,7 +352,14 @@ export const Strategy: React.FC<{
                     查看方案明细 <ArrowRight size={14} />
                   </div>
                 </div>
-                <div className="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-primary-300 transition-colors cursor-pointer group shadow-sm">
+                <div 
+                  onClick={() => {
+                    setSelectedDirection("宠物肠胃保护 Vlog");
+                    setSelectedDesc("高转化率视频类型，但素材回收成本较高，建议走内部员工 KOS 账号执行。");
+                    setFlowState("confirming");
+                  }}
+                  className="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-primary-300 transition-colors cursor-pointer group shadow-sm"
+                >
                   <div className="flex justify-between items-start mb-3">
                     <h5 className="font-semibold text-neutral-900 text-[15px]">
                       宠物肠胃保护 Vlog

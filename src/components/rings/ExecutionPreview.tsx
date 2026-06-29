@@ -17,14 +17,16 @@ import {
 interface ExecutionPreviewProps {
   onStart: () => void;
   onBack: () => void;
+  defaultDirection?: string;
+  defaultDesc?: string;
 }
 
-export function ExecutionPreview({ onStart, onBack }: ExecutionPreviewProps) {
+export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬换粮避坑", defaultDesc = "这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。" }: ExecutionPreviewProps) {
   // Toggle states for adjustments
   const [showGroupAdjust, setShowGroupAdjust] = useState(false);
 
   // States for confirmations
-  const [confirmDirection, setConfirmDirection] = useState("幼犬换粮避坑");
+  const [confirmDirection, setConfirmDirection] = useState(defaultDirection);
   const [confirmGroup, setConfirmGroup] = useState("素人 8 / 专业 4");
   const [confirmDist, setConfirmDist] =
     useState("自有号定向承接 + 外部随机领取池");
@@ -156,13 +158,13 @@ export function ExecutionPreview({ onStart, onBack }: ExecutionPreviewProps) {
               我将启动一个{" "}
               <strong className="text-neutral-900">7 天搜索卡位</strong> 项目：
               <br />
-              围绕「<strong className="text-neutral-900">幼犬换粮避坑</strong>
+              围绕「<strong className="text-neutral-900">{confirmDirection}</strong>
               」生成 <strong className="text-neutral-900">12</strong> 篇内容，
               <br />
               其中 8 篇优先分配给自有账号，4 篇进入外部素人领取池。
             </p>
             <div className="mt-3 pt-3 border-t border-neutral-200/60 text-[13px] text-neutral-500">
-              当前自然流机会更强，因此优先采用素人避坑口吻切入，专业号内容用于建立信任背书。
+              {defaultDesc}
             </div>
           </div>
         </div>
