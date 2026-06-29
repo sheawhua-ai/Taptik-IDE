@@ -500,10 +500,19 @@ export default function App() {
       setIsSidebarCollapsed(true);
     };
 
-    const handleStartAction = () => {
-      setActiveSidebarMode("queue");
-      setShowSubagentChat(true);
-      setIsSidebarCollapsed(true);
+    const handleStartAction = (e: any) => {
+      const { task } = e.detail || {};
+      if (task) {
+        setPendingExpert('操盘副手');
+        setPendingContext(`【处理数据事件】\n对象：${task.title}\n建议动作：${task.aiActionText}\n\n请直接执行此动作，或给出进一步的调整建议。`);
+        setActiveSidebarMode("chat");
+        setShowSubagentChat(true);
+        setIsSidebarCollapsed(true);
+      } else {
+        setActiveSidebarMode("queue");
+        setShowSubagentChat(true);
+        setIsSidebarCollapsed(true);
+      }
     };
 
     window.addEventListener("nav-to-factory", handleToFactory);
