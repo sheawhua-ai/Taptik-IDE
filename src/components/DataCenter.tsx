@@ -1,367 +1,1459 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
- Activity, ArrowUp, ArrowUpFromLine, MessageSquare, Target, 
- LineChart, Check, ArrowRight, Sparkles, Plus, Clock, RefreshCw, Component, Settings, Zap,
- X, BarChart2, Layers, CreditCard, Workflow, GitBranch, Search, Compass, Download, ArrowUpRight
+  Activity, ArrowUp, ArrowUpRight, MessageSquare, Target, 
+  LineChart, Sparkles, Plus, Clock, RefreshCw, Zap,
+  X, BarChart2, Layers, CreditCard, Workflow, Search, Compass, 
+  ArrowRight, ShieldAlert, AlertTriangle, FileText, CheckCircle, Database, ChevronRight, Eye, UserPlus, Bookmark, Send, ChevronDown, Image
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface DataCenterProps {
- dataSubNav: string;
- setDataSubNav: (val: any) => void;
- setActiveNav: (nav: string) => void;
+  dataSubNav: string;
+  setDataSubNav: (val: any) => void;
+  setActiveNav: (nav: string) => void;
 }
 
 export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNav, setActiveNav }) => {
- const [aiAnalysisQuery, setAiAnalysisQuery] = React.useState('');
- const [pinnedInsights, setPinnedInsights] = React.useState([
- { id: '1', title: '全域 ROI 实时监控', type: 'chart', value: '4.2', trend: '+12%', color: 'primary' },
- { id: '2', title: '高潜客群分布', type: 'map', value: '北京/上海', trend: '活跃', color: 'success' },
- ]);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [selectedDashboard, setSelectedDashboard] = useState<any | null>(null);
+  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState('全部');
+  const [tempAnalysisQuery, setTempAnalysisQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [attributionTab, setAttributionTab] = useState('项目概览');
+  const [attributionFilter, setAttributionFilter] = useState('全部笔记');
 
- return (
- <div className="flex-1 flex flex-col h-full bg-neutral-0 overflow-y-auto custom-scrollbar shadow-inner">
- <div className="flex-1 flex flex-col bg-neutral-50/30">
- 
- {/* 1. OVERVIEW TAB */}
- {dataSubNav === 'overview' && (
- <div className="p-8 space-y-10 animate-in fade-in duration-500">
- <div className="space-y-4">
- <div className="flex items-center justify-between">
- <div className="flex items-center gap-2">
- <Target size={18} className="text-primary-500" />
- <h3 className="text-[15px] font-semibold text-neutral-900 uppercase tracking-widest">我的常驻看板</h3>
- </div>
- <button className="text-[11px] text-neutral-400 hover:text-neutral-900 transition-all uppercase tracking-widest">布局设置</button>
- </div>
- 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- {pinnedInsights.map(insight => (
- <div key={insight.id} className="group relative bg-white p-8 rounded-[40px] border border-neutral-200 shadow-sm hover:shadow-2xl transition-all">
- <button 
- onClick={() => setPinnedInsights(prev => prev.filter(p => p.id !== insight.id))}
- className="absolute top-6 right-6 p-2 text-neutral-200 hover:text-danger-500 hover:bg-danger-50 rounded-xl opacity-0 group-hover:opacity-100 transition-all"
- >
- <X size={16} />
- </button>
- <div className="flex items-center justify-between mb-6">
- <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${insight.color === 'primary' ? 'bg-primary-50 text-primary-500' : 'bg-success-50 text-success-500'}`}>
- {insight.type === 'chart' ? <BarChart2 size={24} /> : <Target size={24} />}
- </div>
- <div className="px-2 py-0.5 bg-neutral-50 border border-neutral-100 rounded text-[9px] text-neutral-400 uppercase tracking-widest">AI Agent 推送</div>
- </div>
- <h4 className="text-[12px] font-semibold text-neutral-400 uppercase tracking-[0.15em] mb-1">{insight.title}</h4>
- <div className="flex items-baseline gap-2">
- <span className="text-3xl text-neutral-900 tracking-tighter">{insight.value}</span>
- <span className="text-[13px] text-success-500">{insight.trend}</span>
- </div>
- </div>
- ))}
- <button 
- onClick={() => setDataSubNav('auto_views')}
- className="border-2 border-dashed border-neutral-200 rounded-[40px] flex flex-col items-center justify-center p-8 text-neutral-300 hover:text-primary-500 hover:border-primary-500 hover:bg-primary-50/10 transition-all gap-3"
- >
- <Plus size={32} />
- <span className="text-[12px] uppercase tracking-widest leading-none">通过 AI 创想添加</span>
- </button>
- </div>
- </div>
+  // Scheduled Reports State
+  const [selectedReportTab, setSelectedReportTab] = useState('项目复盘');
+  const [isGenerateReportOpen, setIsGenerateReportOpen] = useState(false);
+  const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
+  const [isExperienceDrawerOpen, setIsExperienceDrawerOpen] = useState(false);
+  const [isReportEditorOpen, setIsReportEditorOpen] = useState(false);
+  const [selectedEvidence, setSelectedEvidence] = useState<any | null>(null);
+  const [selectedExperience, setSelectedExperience] = useState<any | null>(null);
 
- <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
- {[
- { label: '小红书总曝光', val: '12.5 W', icon: Activity, color: 'text-secondary-500', trend: '+12.4%' },
- { label: '小红书总互动', val: '3,492', icon: MessageSquare, color: 'text-primary-500', trend: '+8.1%' },
- { label: '小红书净涨粉', val: '845', icon: Target, color: 'text-success-500', trend: '-2.3%', neg: true },
- { label: 'ROI 综合估算', val: '4.2 x', icon: CreditCard, color: 'text-primary-500', trend: '+5.2%' },
- ].map((s, i) => (
- <div key={i} className="bg-white p-6 rounded-3xl border border-neutral-200 shadow-sm group hover:border-primary-500/30 transition-all">
- <div className="text-[11px] text-neutral-400 mb-3 flex items-center justify-between uppercase tracking-widest">
- {s.label} <s.icon size={16} className={s.color} />
- </div>
- <div className="text-2xl text-neutral-900 tracking-tight">{s.val}</div>
- <div className={`text-[11px] mt-2 flex items-center gap-1 ${s.neg ? 'text-danger-500' : 'text-success-500'}`}>
- <ArrowUp size={12} className={s.neg ? 'rotate-180' : ''}/> {s.trend} 较上周
- </div>
- </div>
- ))}
- </div>
- </div>
- )}
+  const renderReportDrawers = () => {
+    return (
+      <>
+        {/* 生成报告抽屉 */}
+        <AnimatePresence>
+          {isGenerateReportOpen && (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute inset-y-0 right-0 w-[500px] bg-white border-l border-neutral-200 shadow-2xl z-20 flex flex-col"
+            >
+              <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-neutral-900 text-white">
+                <h3 className="font-semibold text-[15px]">生成复盘报告</h3>
+                <button onClick={() => setIsGenerateReportOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">报告类型</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['项目复盘', '客户汇报', '投流复盘'].map((type, i) => (
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
- {/* 2. ROI ATTRIBUTION TAB */}
- {dataSubNav === 'roi_attribution' && (
- <div className="p-8 space-y-8 animate-in slide-in-from-right-4 duration-500">
- <div className="bg-neutral-900 rounded-[48px] p-12 text-white relative overflow-hidden">
- <div className="relative z-10">
- <div className="flex items-center gap-4 mb-10">
- <div className="w-14 h-14 bg-primary-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-500/20">
- <Workflow size={28} />
- </div>
- <div>
- <h2 className="text-2xl font-semibold tracking-tight leading-tight">全链路 ROI 归因分析</h2>
- <p className="text-neutral-400 text-[14px] mt-1 uppercase tracking-widest">End-to-End 归因引擎</p>
- </div>
- </div>
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">复盘范围</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['Q2 幼犬粮推新项目', '全商家大盘', '指定账号矩阵', '指定内容批次'].map((scope, i) => (
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                        {scope}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
- <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
- {[
- { label: '曝光层 (Top)', source: '小红书 API / 实时监测', stats: '82.4w', icon: Layers },
- { label: '互动层 (Mid)', source: 'Agent 私域分发反馈', stats: '1.2w', icon: MessageSquare },
- { label: '线索层 (Bottom)', source: '表单 / 留资组件集成', stats: '856', icon: Target },
- { label: '成交层 (Actual)', source: '品牌 CRM 实时对齐', stats: '243', icon: CreditCard },
- ].map((node, i) => (
- <div key={i} className="bg-white/5 border border-white/10 rounded-[32px] p-8 relative group overflow-hidden">
- <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform">
- <node.icon size={80} />
- </div>
- <p className="text-[10px] text-primary-400 uppercase tracking-widest mb-2">{node.label}</p>
- <h4 className="text-[22px] font-semibold text-white mb-2">{node.stats}</h4>
- <p className="text-[11px] text-neutral-500 ">Data Source: {node.source}</p>
- </div>
- ))}
- </div>
- </div>
- </div>
- </div>
- )}
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">面向对象</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['内部团队', '客户方', '个人复盘'].map((target, i) => (
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                        {target}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
- {/* 3. GENERATIVE AI VIEWS TAB */}
- {dataSubNav === 'auto_views' && (
- <div className="p-8 flex flex-col h-full space-y-8 animate-in slide-in-from-bottom-4 duration-500">
- <div className="bg-neutral-900 rounded-[48px] p-12 text-white relative overflow-hidden group shadow-2xl shrink-0">
- <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform">
- <Sparkles size={200} className="text-primary-500" />
- </div>
- <div className="relative z-10 max-w-2xl">
- <div className="flex items-center gap-2 text-primary-400 text-[10px] uppercase tracking-[0.2em] mb-4 text-left">
- <Zap size={14} /> AI 生成式分析
- </div>
- <h2 className="text-4xl font-semibold tracking-tight mb-4 leading-tight text-left">探索式机会发现</h2>
- <p className="text-neutral-400 text-[16px] mb-10 leading-relaxed text-left">
- 跳出固化报表。直接向 AI Agent 描述您想要深度洞悉的业务维度，系统将实时编排并渲染专属于您的可视化分析看板。
- </p>
- 
- <div className="relative group/input">
- <div className="absolute inset-x-0 -top-px -bottom-px rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 blur-md opacity-20 group-focus-within/input:opacity-50 transition-opacity" />
- <div className="relative flex items-center bg-white/10 border border-white/20 rounded-2xl p-2.5 backdrop-blur-md shadow-2xl">
- <input 
- value={aiAnalysisQuery}
- onChange={(e) => setAiAnalysisQuery(e.target.value)}
- placeholder="在此输入您的分析指令。例如：'分析由于新品上市带来的流量结构变化'..." 
- className="flex-1 bg-transparent border-none outline-none px-6 text-[16px] text-white placeholder:text-white/20"
- />
- <button className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3.5 rounded-xl text-[14px] transition-all shadow-xl flex items-center gap-2">
- 生成看板 <ArrowRight size={18} />
- </button>
- </div>
- </div>
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">报告重点</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['效果与结论', '问题与改进', '下一步执行建议', '投流策略调优'].map((focus, i) => (
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 || i === 2 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                        {focus}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
- <div className="mt-8 flex items-center gap-4">
- <span className="text-[11px] text-neutral-500 uppercase tracking-widest text-left">💡 进阶问题推荐:</span>
- <div className="flex gap-2">
- <button onClick={() => setAiAnalysisQuery("对比上个月，分析 ROI 波动核心原因")} className="px-4 py-1.5 bg-white/5 hover:bg-white/10 rounded-xl text-[12px] text-neutral-400 border border-white/5 transition-all text-left">ROI 波动原因</button>
- <button onClick={() => setAiAnalysisQuery("预测下周高潜力蓝海选题趋势")} className="px-4 py-1.5 bg-white/5 hover:bg-white/10 rounded-xl text-[12px] text-neutral-400 border border-white/5 transition-all text-left">本周爆文预测</button>
- </div>
- </div>
- </div>
- </div>
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">数据口径</div>
+                  <div className="p-4 bg-neutral-50 rounded-xl border border-neutral-100 space-y-3">
+                    <label className="flex items-center gap-3">
+                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <span className="text-[13px] text-neutral-700">小红书自然流笔记（已接入）</span>
+                    </label>
+                    <label className="flex items-center gap-3">
+                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <span className="text-[13px] text-neutral-700">手动回传私信线索（含手工单）</span>
+                    </label>
+                    <label className="flex items-center gap-3">
+                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <span className="text-[13px] text-neutral-700">聚光投流消耗数据（已接入）</span>
+                    </label>
+                    <label className="flex items-center gap-3">
+                      <input type="checkbox" className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <span className="text-[13px] text-neutral-400">低置信推断数据（展示可能不准的推测）</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 border-t border-neutral-100 shrink-0 flex gap-3">
+                <button 
+                  onClick={() => setIsGenerateReportOpen(false)}
+                  className="flex-1 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors"
+                >
+                  取消
+                </button>
+                <button 
+                  onClick={() => setIsGenerateReportOpen(false)}
+                  className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl text-[13px] font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20"
+                >
+                  <Sparkles size={16} /> 开始生成
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
- <div className="flex-1 bg-white border border-neutral-200 rounded-[48px] p-12 flex flex-col items-center justify-center text-center relative overflow-hidden group min-h-[300px]">
- <div className="absolute inset-0 bg-neutral-50/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
- <div className="w-20 h-20 rounded-[32px] bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-300 mb-8 group-hover:scale-110 transition-transform">
- <LineChart size={40} />
- </div>
- <h3 className="text-2xl font-semibold text-neutral-900 mb-2">生成式分析画布</h3>
- <p className="text-[15px] text-neutral-400 max-w-sm">在上方输入指令后，AI 将在此渲染由 Data Agent 实时编排的专属视图。</p>
- </div>
- </div>
- )}
+        {/* 证据下钻抽屉 */}
+        <AnimatePresence>
+          {isEvidenceDrawerOpen && selectedEvidence && (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute inset-y-0 right-0 w-[500px] bg-white border-l border-neutral-200 shadow-2xl z-20 flex flex-col"
+            >
+              <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-neutral-900 text-white">
+                <h3 className="font-semibold text-[15px]">报告证据链</h3>
+                <button onClick={() => setIsEvidenceDrawerOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-neutral-50/50">
+                <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm">
+                  <div className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider mb-2">{selectedEvidence.group}</div>
+                  <h4 className="text-[16px] font-bold text-neutral-900 mb-4">{selectedEvidence.metric}：<span className="text-indigo-600">{selectedEvidence.value}</span></h4>
+                  
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
+                    <div>
+                      <div className="text-[11px] text-neutral-400 mb-1">数据来源</div>
+                      <div className="text-[13px] font-bold text-neutral-700">小红书自然流、投流报表</div>
+                    </div>
+                    <div>
+                      <div className="text-[11px] text-neutral-400 mb-1">置信度</div>
+                      <div className="text-[13px] font-bold text-emerald-600">极高（100% 接入真实数据）</div>
+                    </div>
+                  </div>
+                </div>
 
- {/* 4. SCHEDULED REPORTS */}
- {dataSubNav === 'scheduled' && (
- <div className="p-8 space-y-8 animate-in slide-in-from-left-4 duration-500">
- <div className="flex items-center justify-between">
- <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2 uppercase tracking-widest"><Clock size={20} className="text-primary-500" /> 自动化复盘报告</h3>
- <button className="bg-neutral-900 text-white px-6 py-3 rounded-2xl text-[13px] flex items-center gap-2 hover:bg-primary-500 transition-all shadow-xl">
- <Plus size={18}/> 新建自动化任务
- </button>
- </div>
+                <div>
+                  <h4 className="text-[14px] font-bold text-neutral-900 mb-4 flex items-center justify-between">
+                    <span>相关笔记 {selectedEvidence.evidence}</span>
+                    <button className="text-[12px] text-indigo-600 font-bold hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors">
+                      查看全部明细
+                    </button>
+                  </h4>
+                  <div className="space-y-3">
+                    {[
+                      { title: '换粮拉稀？你可能做错了这三步', account: '养宠日记', type: '自然流', stat: '转化率 4.5%' },
+                      { title: '幼犬刚到家，第一口粮怎么选', account: '新手铲屎官', type: '投流', stat: '线索成本 ￥32' },
+                      { title: '软便克星，这三款平价粮绝了', account: '宠物大百科', type: '自然流', stat: '转化率 3.8%' }
+                    ].map((note, i) => (
+                      <div key={i} className="bg-white p-4 rounded-xl border border-neutral-200 shadow-sm flex items-center justify-between gap-4 cursor-pointer hover:border-indigo-300 transition-colors">
+                        <div className="overflow-hidden">
+                          <div className="text-[13px] font-bold text-neutral-900 truncate mb-1">{note.title}</div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] text-neutral-500">{note.account}</span>
+                            <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">{note.type}</span>
+                          </div>
+                        </div>
+                        <div className="text-[12px] font-bold text-neutral-700 bg-neutral-100 px-2 py-1 rounded shrink-0">
+                          {note.stat}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 border-t border-neutral-100 shrink-0 bg-white grid grid-cols-2 gap-3">
+                <button className="py-2.5 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
+                  转成机会事件
+                </button>
+                <button className="py-2.5 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
+                  提炼为经验
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- {[
- { name: '每周业务矩阵周报', period: '每周一 09:00', dest: '飞书群/运营部', status: 'Active', type: '报表汇总' },
- { name: 'ROI 异常实时报警', period: 'Real-time', dest: 'WeChat / Email', status: 'Monitoring', type: '告警机制' },
- { name: '蓝海增长月度雷达', period: '每月 1 号', dest: 'CEO / 市场总监', status: 'Scheduled', type: '深度洞察' },
- ].map((job, idx) => (
- <div key={idx} className="bg-white border border-neutral-200 rounded-[32px] p-8 shadow-sm hover:border-primary-500 transition-all group">
- <div className="flex items-start justify-between mb-6">
- <div className="w-12 h-12 rounded-2xl bg-neutral-50 text-neutral-500 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-500 transition-colors shadow-inner"><Clock size={24}/></div>
- <span className={`text-[10px] px-2.5 py-1 rounded-lg uppercase tracking-widest ${job.status === 'Active' ? 'bg-success-50 text-success-600' : 'bg-neutral-50 text-neutral-400'}`}>{job.status}</span>
- </div>
- <h4 className="text-[17px] font-semibold text-neutral-900 mb-1">{job.name}</h4>
- <p className="text-[12px] text-neutral-400 mb-8">{job.type} · {job.period}</p>
- <div className="pt-6 border-t border-neutral-50 flex items-center justify-between text-[11px] text-neutral-400 uppercase tracking-widest">
- <span>To: {job.dest}</span>
- <button className="hover:text-primary-500 transition-colors"><Settings size={16}/></button>
- </div>
- </div>
- ))}
- </div>
- </div>
- )}
+        {/* 经验沉淀抽屉 */}
+        <AnimatePresence>
+          {isExperienceDrawerOpen && selectedExperience && (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute inset-y-0 right-0 w-[500px] bg-white border-l border-neutral-200 shadow-2xl z-20 flex flex-col"
+            >
+              <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-neutral-900 text-white">
+                <h3 className="font-semibold text-[15px]">确认沉淀经验</h3>
+                <button onClick={() => setIsExperienceDrawerOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-neutral-50/50">
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">经验内容</div>
+                  <textarea 
+                    className="w-full h-24 p-4 bg-white border border-neutral-200 rounded-xl text-[14px] text-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none shadow-sm"
+                    defaultValue={selectedExperience.title}
+                  />
+                </div>
 
- {/* 5. BLUE OCEAN ANALYSIS */}
- {dataSubNav === 'blueocean' && (
- <div className="p-8 space-y-8 animate-in fade-in duration-500 pb-32">
- <div className="bg-white border border-neutral-200 rounded-[48px] p-10 shadow-sm">
- <div className="flex items-center justify-between mb-10">
- <div>
- <h3 className="text-2xl font-semibold text-neutral-900 tracking-tight">蓝海机会探测</h3>
- <p className="text-[14px] text-neutral-400 mt-1">针对特定品类启动 Agent 深度扫描，挖掘「高互动、低竞争」的潜力长尾词</p>
- </div>
- <div className="flex bg-neutral-100 p-1.5 rounded-2xl border border-neutral-200">
- <button className="px-5 py-2 bg-white shadow-sm rounded-xl text-[12px] text-neutral-900">探测任务</button>
- <button className="px-5 py-2 rounded-xl text-[12px] text-neutral-400 hover:text-neutral-600">我的词库 (142)</button>
- </div>
- </div>
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-3">沉淀位置建议</div>
+                  <div className="space-y-3">
+                    {[
+                      { title: '商家记忆 (Q2幼犬项目)', desc: '仅该商家可见，影响该商家的全局策略', checked: false },
+                      { title: '团队公共经验库', desc: '全团队可见，作为通用行业打法积累', checked: false },
+                      { title: '内容 Skill (内容方向生成器)', desc: '下次执行类似项目时，AI 将自动调用此规则', checked: true }
+                    ].map((dest, i) => (
+                      <label key={i} className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${dest.checked ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white border-neutral-200 hover:bg-neutral-50'}`}>
+                        <input type="checkbox" defaultChecked={dest.checked} className="mt-0.5 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                        <div>
+                          <div className={`text-[13px] font-bold mb-0.5 ${dest.checked ? 'text-indigo-900' : 'text-neutral-900'}`}>{dest.title}</div>
+                          <div className={`text-[12px] ${dest.checked ? 'text-indigo-600/80' : 'text-neutral-500'}`}>{dest.desc}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 border-t border-neutral-100 shrink-0 bg-white grid grid-cols-2 gap-3">
+                <button 
+                  onClick={() => setIsExperienceDrawerOpen(false)}
+                  className="py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm"
+                >
+                  仅保存报告
+                </button>
+                <button 
+                  onClick={() => setIsExperienceDrawerOpen(false)}
+                  className="py-3 bg-indigo-600 text-white rounded-xl text-[13px] font-bold hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-600/20"
+                >
+                  确认沉淀
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {/* 报告编辑抽屉 */}
+        <AnimatePresence>
+          {isReportEditorOpen && (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute inset-y-0 right-0 w-[600px] bg-white border-l border-neutral-200 shadow-2xl z-20 flex flex-col"
+            >
+              <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-neutral-900 text-white">
+                <h3 className="font-semibold text-[15px]">编辑复盘报告 (客户版)</h3>
+                <button onClick={() => setIsReportEditorOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
+              
+              <div className="p-4 border-b border-neutral-100 bg-neutral-50/50 flex gap-2 overflow-x-auto custom-scrollbar shrink-0">
+                <button className="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-[13px] font-bold flex items-center gap-2 whitespace-nowrap">
+                  <Sparkles size={14} /> AI 改写客户口吻
+                </button>
+                <button className="px-4 py-2 bg-white text-neutral-700 border border-neutral-200 rounded-lg text-[13px] font-medium whitespace-nowrap hover:bg-neutral-50">
+                  隐藏低置信数据
+                </button>
+                <button className="px-4 py-2 bg-white text-neutral-700 border border-neutral-200 rounded-lg text-[13px] font-medium whitespace-nowrap hover:bg-neutral-50">
+                  隐藏内部问题
+                </button>
+              </div>
 
- <div className="flex flex-col xl:flex-row gap-5">
- <div className="flex-1 relative group">
- <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-300 group-focus-within:text-primary-500 transition-colors" />
- <input 
- placeholder="输入核心品类或竞争词，例如：无养烘焙猫粮 / 结婚酒店..." 
- className="w-full bg-neutral-50 border border-neutral-200 rounded-[24px] pl-16 pr-8 py-5 text-[16px] outline-none focus:border-primary-500 transition-all shadow-inner"
- />
- </div>
- <div className="flex bg-neutral-100 p-1 rounded-[24px] border border-neutral-200">
- <button className="px-8 py-4 bg-white shadow-xl rounded-2xl text-[13px] text-neutral-900">标准快搜 (列表)</button>
- <button className="px-8 py-4 rounded-2xl text-[13px] text-neutral-400 hover:text-neutral-600 ">深度内探 (笔记级)</button>
- </div>
- <button className="bg-neutral-900 hover:bg-primary-500 text-white px-10 py-4 rounded-[24px] text-[15px] shadow-2xl transition-all flex items-center gap-3">
- <Zap size={20} /> 立即启动扫描
- </button>
- </div>
- 
- <div className="mt-8 flex flex-col md:flex-row md:items-center justify-between gap-6 py-5 px-8 bg-primary-50 border border-primary-100 rounded-[32px]">
- <div className="flex items-center gap-4">
- <div className="p-2.5 bg-white rounded-xl shadow-sm">
- <Settings size={18} className="text-primary-500 animate-spin-slow" />
- </div>
- <p className="text-[12px] text-primary-700 max-w-2xl leading-relaxed">
- <span className=" text-primary-900 uppercase">Agent 策略就绪:</span> 深度内探模式将自动穿透至“笔记详情页”抓取「收/展/粉」高维数据。系统将通过人类阅读模拟采样规避平台风控。历史关联词将优先从本地词库推送以提升 ROI。
- </p>
- </div>
- <div className="text-[12px] text-primary-500 flex items-center gap-2 cursor-pointer hover:underline uppercase tracking-widest px-6 py-3 border border-primary-200 rounded-2xl bg-white shadow-xl hover:scale-105 transition-all shrink-0">
- 计费与点数规则 <CreditCard size={16} />
- </div>
- </div>
- </div>
+              <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/30">
+                <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 space-y-6">
+                  <div className="text-center pb-6 border-b border-neutral-100">
+                    <h2 className="text-xl font-bold text-neutral-900 mb-2">Q2 幼犬粮推新项目汇报</h2>
+                    <p className="text-[13px] text-neutral-500">向品牌方汇报周期效果</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-[14px] font-bold text-neutral-900 mb-2">核心结论</h4>
+                    <textarea 
+                      className="w-full h-24 p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+                      defaultValue="本期项目超额完成目标，曝光量超出预期 20%，CPA 降低 15%。核心增量来自于“软便避坑”选题与“素人开箱”素材的组合打法。"
+                    />
+                  </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
- <div className="lg:col-span-3 bg-white rounded-[48px] border border-neutral-200 overflow-hidden shadow-sm flex flex-col">
- <div className="p-8 border-b border-neutral-100 bg-neutral-50/50 flex items-center justify-between">
- <div className="flex items-center gap-4">
- <Workflow size={22} className="text-primary-500" />
- <span className="text-[16px] text-neutral-900 uppercase tracking-tight">活跃探测视图</span>
- </div>
- <div className="flex items-center gap-6">
- <div className="flex items-center gap-2.5 px-4 py-1.5 bg-success-50 text-success-600 rounded-full border border-success-100">
- <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
- <span className="text-[11px] uppercase tracking-[0.1em]">已扫描 32/50</span>
- </div>
- <button className="text-[11px] flex items-center gap-2 text-neutral-400 hover:text-primary-500 transition-colors uppercase tracking-widest">
- <RefreshCw size={14}/> 实时同步
- </button>
- </div>
- </div>
- 
- <div className="overflow-x-auto overflow-y-auto max-h-[600px]">
- <table className="w-full text-left border-collapse">
- <thead className="bg-neutral-50/50 border-b border-neutral-100 text-[10px] text-neutral-400 uppercase tracking-widest sticky top-0 bg-white z-10 shadow-sm">
- <tr>
- <th className="py-5 px-10">关键词 / 选题洞察</th>
- <th className="py-5 px-6">搜索热度</th>
- <th className="py-5 px-10 text-center">蓝海评分 (核心潜力)</th>
- <th className="py-5 px-10 text-right">操作</th>
- </tr>
- </thead>
- <tbody className="text-[14px] text-neutral-800 divide-y divide-neutral-50">
- {[
- { word: '#新手养幼猫带货避坑清单', heat: '2.4w', quality: '15.4%', fanBase: '3.2k', score: 92, trend: 'up', desc: '深度探测：高收藏且评论区集中在“性价比”' },
- { word: '#多猫家庭烘焙猫粮实测报告', heat: '1.2w', quality: '22.8%', fanBase: '850', score: 88, trend: 'up', desc: '蓝海词：互动率极高，竞品笔记多为纯广告' },
- { word: '#老龄猫关节养护科普方案', heat: '8.4k', quality: '11.5%', fanBase: '1.2w', score: 65, trend: 'stable', desc: '稳健型选题：部分泛人群大 V 已布局' },
- { word: '#2024平价进口猫粮红黑榜', heat: '52.1w', quality: '4.2%', fanBase: '45w', score: 12, trend: 'down', desc: '红海词：投产比低，建议避开' },
- ].map((item, idx) => (
- <tr key={idx} className="group hover:bg-neutral-50/20 transition-colors">
- <td className="py-8 px-10">
- <div className="flex flex-col gap-2">
- <div className="flex items-center gap-3">
- <span className="text-[17px] text-neutral-900 leading-none">{item.word}</span>
- {item.trend === 'up' && <div className="p-1 px-1.5 bg-success-50 text-success-600 rounded-lg text-[10px] flex items-center gap-1 border border-success-100"><ArrowUp size={10}/> 正在上升</div>}
- </div>
- <p className="text-[11px] text-neutral-400 italic tracking-wide">{item.desc}</p>
- </div>
- </td>
- <td className="py-8 px-6">
- <div className="flex flex-col">
- <span className=" text-[18px] text-neutral-800 leading-none">{item.heat}</span>
- <span className="text-[10px] text-neutral-400 mt-2 uppercase tracking-widest text-left">搜索热度</span>
- </div>
- </td>
- <td className="py-8 px-10">
- <div className="flex flex-col items-center">
- <div className={`text-[24px] leading-none ${item.score > 80 ? 'text-primary-500' : item.score > 50 ? 'text-neutral-900' : 'text-neutral-300'}`}>
- {item.score}
- </div>
- <div className="w-20 h-1.5 bg-neutral-100 rounded-full mt-3 overflow-hidden shadow-inner">
- <div className="h-full bg-primary-500" style={{ width: `${item.score}%` }} />
- </div>
- </div>
- </td>
- <td className="py-8 px-10 text-right">
- <button className="text-[13px] text-white bg-neutral-900 hover:bg-primary-500 px-8 py-3.5 rounded-[20px] transition-all shadow-xl hover:scale-105">锁定选题 &rarr;</button>
- </td>
- </tr>
- ))}
- </tbody>
- </table>
- </div>
- </div>
+                  <div>
+                    <h4 className="text-[14px] font-bold text-neutral-900 mb-2">亮点数据</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-xl bg-neutral-50">
+                        <span className="text-[13px] text-neutral-700">总产出线索: 2,450</span>
+                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      </div>
+                      <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-xl bg-neutral-50">
+                        <span className="text-[13px] text-neutral-700">幼犬软便选题转化率: 3.2% (+15%)</span>
+                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      </div>
+                      <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-xl bg-neutral-50">
+                        <span className="text-[13px] text-neutral-700">素人号互动成本: ￥2.4 (-20%)</span>
+                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      </div>
+                    </div>
+                  </div>
 
- <div className="flex flex-col gap-8">
- <div className="bg-neutral-900 rounded-[48px] p-10 text-white relative overflow-hidden flex-1 flex flex-col justify-between group shadow-2xl">
- <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-1000 rotate-12">
- <Compass size={180} />
- </div>
- <div className="relative z-10">
- <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-400 mb-4 text-left">智能预测洞察</h4>
- <p className="text-[18px] leading-snug mb-10 text-left">“结婚酒店” 高频共现词中，“免费停车” 与 “厅高不遮挡” 的情绪价值反馈提升 25%。</p>
- <button className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[12px] transition-all uppercase tracking-[0.1em] flex items-center justify-center gap-2">
- 同步到爆文引擎 <ArrowUpRight size={16} />
- </button>
- </div>
- </div>
+                  <div>
+                    <h4 className="text-[14px] font-bold text-neutral-900 mb-2">内部待解决问题 (当前已隐藏)</h4>
+                    <div className="p-3 border border-dashed border-amber-200 rounded-xl bg-amber-50/50 text-[13px] text-amber-700/60 line-through">
+                      达人响应慢，导致发布节奏断档。
+                    </div>
+                  </div>
 
- <div className="bg-white border border-neutral-200 rounded-[48px] p-10 shadow-sm">
- <h4 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.2em] mb-8 text-left">探测状态监控</h4>
- <div className="space-y-6">
- {[
- { label: '笔记层扫描深度', value: 'Lv.3 (深度)', color: 'text-primary-500' },
- { label: '当前风控阈值', value: '安全 (绿色)', color: 'text-success-500' },
- { label: '系统采样频率', value: '2.5秒 / 页', color: 'text-neutral-500' },
- ].map((row, i) => (
- <div key={i} className="flex items-center justify-between py-2 border-b border-neutral-50 text-left">
- <span className="text-[11px] text-neutral-400 uppercase tracking-tighter text-left">{row.label}</span>
- <span className={`text-[13px] ${row.color} text-right`}>{row.value}</span>
- </div>
- ))}
- </div>
- </div>
- </div>
- </div>
- </div>
- )}
- </div>
- </div>
- );
+                  <div>
+                    <h4 className="text-[14px] font-bold text-neutral-900 mb-2">下一步计划</h4>
+                    <textarea 
+                      className="w-full h-24 p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+                      defaultValue="1. 增加素人号投放比例，优化投放结构。\n2. 将“软便避坑”选题横向拓展至“泪痕”、“黑下巴”等健康方向。\n3. 加快优质内容的产出节奏。"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 border-t border-neutral-100 shrink-0 bg-white flex gap-3">
+                <button 
+                  onClick={() => setIsReportEditorOpen(false)}
+                  className="flex-1 py-3 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm"
+                >
+                  取消
+                </button>
+                <button className="flex-1 py-3 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
+                  复制文本
+                </button>
+                <button className="flex-1 py-3 bg-indigo-600 text-white rounded-xl text-[13px] font-bold hover:bg-indigo-700 transition-colors shadow-sm">
+                  同步到飞书
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    );
+  };
+
+  const renderDrawer = () => {
+    if (!selectedItem) return null;
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="absolute inset-y-0 right-0 w-[400px] bg-white border-l border-neutral-200 shadow-2xl z-50 flex flex-col"
+        >
+          <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-neutral-900 text-white">
+            <h3 className="font-semibold text-[15px]">洞察与动作</h3>
+            <button onClick={() => setSelectedItem(null)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+              <X size={18} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+            <div>
+              <h2 className="text-xl font-bold text-neutral-900 mb-2">{selectedItem.title}</h2>
+              <div className="inline-flex px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider items-center gap-1.5 bg-indigo-50 text-indigo-700">
+                <Sparkles size={14} />
+                AI 判断
+              </div>
+            </div>
+            
+            <div className="bg-neutral-50 rounded-2xl p-5 border border-neutral-100 space-y-4">
+              <div>
+                <h4 className="text-[12px] font-bold text-neutral-900 mb-1 uppercase tracking-widest">AI 诊断结论</h4>
+                <p className="text-[14px] text-neutral-600 leading-relaxed">{selectedItem.aiJudgment || '数据表现优异，建议继续保持当前策略并适度放量。'}</p>
+              </div>
+              <div className="pt-4 border-t border-neutral-200">
+                <h4 className="text-[12px] font-bold text-neutral-900 mb-1 uppercase tracking-widest">证据支撑</h4>
+                <p className="text-[14px] text-neutral-600 leading-relaxed">{selectedItem.evidence || '基于近 7 天 12 篇笔记的综合表现计算得出。'}</p>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-widest">影响对象</h4>
+              <div className="flex flex-wrap items-center gap-2">
+                {(selectedItem.impacts || ['全局项目策略', 'A01 测试号', '科普类内容包']).map((imp: string, i: number) => (
+                  <span key={i} className="px-3 py-1.5 bg-neutral-100 text-neutral-700 text-[13px] rounded-lg border border-neutral-200 font-medium">
+                    {imp}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-neutral-50/80 rounded-2xl p-5 border border-neutral-100">
+              <h4 className="text-[12px] font-bold text-neutral-900 mb-2 uppercase tracking-widest flex items-center gap-1.5">
+                <Sparkles size={14} className="text-amber-500" /> 建议动作
+              </h4>
+              <p className="text-[14px] text-neutral-900 font-medium leading-relaxed">{selectedItem.aiSuggestion || '将此组合沉淀为标准打法，并在下一轮项目中复用。'}</p>
+            </div>
+          </div>
+
+          <div className="p-6 border-t border-neutral-100 bg-white space-y-3">
+            <button 
+              onClick={() => setSelectedItem(null)}
+              className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold shadow-md transition-colors flex items-center justify-center gap-2"
+            >
+              {selectedItem.actionText || '执行建议动作'} <ArrowRight size={16} />
+            </button>
+            <div className="text-center text-[11px] text-neutral-400 font-medium pb-2">
+              执行后流向：{selectedItem.flowTo || '策略知识库'}
+            </div>
+            
+            <div className="relative mt-4">
+              <input
+                type="text"
+                placeholder="告诉 AI 你的判断，例如：这几篇不是内容问题..."
+                className="w-full pl-4 pr-10 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+              />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-neutral-900 text-white rounded-lg flex items-center justify-center hover:bg-neutral-800 transition-colors">
+                <ArrowUp size={14} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
+
+  return (
+    <div className="flex-1 flex flex-col h-full bg-white overflow-hidden relative">
+      <div className="flex-1 overflow-y-auto custom-scrollbar bg-neutral-50/30 relative">
+        {dataSubNav === 'dashboards' && !selectedDashboard && !tempAnalysisQuery && (
+          <div className="p-8 space-y-8 animate-in fade-in duration-500">
+            <div className="flex items-center justify-between shrink-0">
+              <div>
+                <h3 className="text-xl font-semibold text-neutral-900 tracking-tight mb-1">数据工作区</h3>
+                <p className="text-[13px] text-neutral-400">问一次数据，有价值就固化成长期监控看板</p>
+              </div>
+            </div>
+
+            <div className="bg-neutral-900 text-white rounded-[32px] p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl shrink-0">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+                  <Sparkles size={24} className="text-amber-300" />
+                </div>
+                <div>
+                  <h3 className="text-[12px] text-white/50 font-bold uppercase tracking-widest mb-1.5">AI 看板洞察</h3>
+                  <p className="text-[16px] leading-relaxed">
+                    本周私信增长主要来自“幼犬软便避坑”，但 A03 账号连续 3 天互动异常。
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button className="px-6 py-3 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-100 transition-colors shadow-sm shrink-0 whitespace-nowrap">
+                  查看证据
+                </button>
+                <button className="px-6 py-3 bg-white text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-100 transition-colors shadow-sm shrink-0 whitespace-nowrap">
+                  转成机会
+                </button>
+              </div>
+            </div>
+
+            <div className="relative shrink-0">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchInput.trim()) {
+                    setTempAnalysisQuery(searchInput);
+                  }
+                }}
+                placeholder="问数据，例如：本周哪些内容方向带来私信最多？排除投流，只看自然流。"
+                className="w-full pl-5 pr-14 py-4 bg-white border border-neutral-200 rounded-2xl text-[14px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+              />
+              <button 
+                onClick={() => {
+                  if (searchInput.trim()) {
+                    setTempAnalysisQuery(searchInput);
+                  }
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm"
+              >
+                <Search size={18} />
+              </button>
+            </div>
+
+            <div className="flex gap-2 border-b border-neutral-200 pb-4 overflow-x-auto custom-scrollbar shrink-0">
+              {['全部', '增长监控', '内容表现', '账号健康', '素材效果', '投流表现', '转化线索', '团队共享'].map((tab, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setActiveWorkspaceTab(tab)}
+                  className={`px-4 py-2 rounded-lg text-[13px] font-medium whitespace-nowrap transition-colors ${activeWorkspaceTab === tab ? 'bg-white shadow-sm border border-neutral-200 text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white/50'}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-10">
+              {[
+                { name: '内容方向私信转化', question: '哪些内容方向带来私信最多？', anomaly: '幼犬软便避坑贡献 65% 私信', scope: '本周｜自然流｜排除投流', source: 'AI 创建', tab: '内容表现' },
+                { name: '全局盘子健康度', question: '整体曝光、互动、转化及异常指标？', anomaly: 'A03 账号连续 3 天互动异常', scope: '近7天｜全部账号', source: '系统', tab: '增长监控' },
+                { name: '素材 ROI 分析', question: '哪类素材带来的线索成本最低？', anomaly: '真实喂食封面效果最佳', scope: '本月｜含投流', source: '系统', tab: '素材效果' },
+                { name: '投流消耗监控', question: '各计划投产比与起量情况？', anomaly: '无异常', scope: '今日｜所有计划', source: '团队共享', tab: '投流表现' },
+                { name: '账号互动异常', question: '哪些账号互动率低于大盘均值？', anomaly: 'A03 互动率下降 40%', scope: '本周｜矩阵号', source: '系统', tab: '账号健康' },
+                { name: '线索成本飙升预警', question: '转化线索成本是否超过警戒线？', anomaly: 'CPA 涨幅超过 20%', scope: '本周｜含投流', source: '系统', tab: '转化线索' }
+              ].filter(b => activeWorkspaceTab === '全部' || b.tab === activeWorkspaceTab).map((board, i) => (
+                <div 
+                  key={i} 
+                  onClick={() => setSelectedDashboard(board)}
+                  className="bg-white border border-neutral-200 rounded-[24px] p-6 shadow-sm flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <h4 className="text-[16px] font-bold text-neutral-900">{board.name}</h4>
+                  </div>
+                  <div className="space-y-3 mb-6">
+                    <div>
+                      <div className="text-[11px] text-neutral-400 mb-1">问题</div>
+                      <div className="text-[13px] text-neutral-700 font-medium">{board.question}</div>
+                    </div>
+                    <div>
+                      <div className="text-[11px] text-neutral-400 mb-1">最近结论</div>
+                      <div className={`text-[13px] font-bold ${board.anomaly === '无异常' ? 'text-neutral-500' : 'text-indigo-600'}`}>{board.anomaly}</div>
+                    </div>
+                    <div>
+                      <div className="text-[11px] text-neutral-400 mb-1">范围</div>
+                      <div className="text-[12px] text-neutral-500">{board.scope}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-neutral-100">
+                    <span className="text-[11px] font-medium px-2 py-1 bg-neutral-50 rounded text-neutral-500">{board.source}</span>
+                    <span className="text-[11px] text-neutral-400">10 分钟前更新</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {dataSubNav === 'dashboards' && !selectedDashboard && tempAnalysisQuery && (
+          <div className="p-8 space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <button onClick={() => { setTempAnalysisQuery(''); setSearchInput(''); }} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-neutral-100 text-neutral-500 transition-colors">
+                  <ChevronRight size={20} className="rotate-180" />
+                </button>
+                <div>
+                  <h3 className="text-xl font-semibold text-neutral-900 tracking-tight mb-1">临时分析：{tempAnalysisQuery}</h3>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button className="px-5 py-2 bg-neutral-900 text-white text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-800 transition-colors">
+                  保存为看板
+                </button>
+                <button className="px-5 py-2 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-50 transition-colors">
+                  转成机会
+                </button>
+                <button className="px-5 py-2 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-50 transition-colors">
+                  修改口径
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 shrink-0 flex flex-col gap-5">
+              <div className="flex items-start gap-3">
+                <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                <div>
+                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 结论</h5>
+                  <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                    本周私信主要由 <span className="font-bold">幼犬软便避坑</span> 贡献（65%）。由于排除了投流影响，该方向的自然流转化效率远超大盘，建议立即将该方向加入重点追投资源。
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-5 border-t border-indigo-100/50">
+                <div>
+                  <div className="text-[11px] text-indigo-400 mb-1">数据口径</div>
+                  <div className="text-[13px] text-indigo-900 font-bold">本周｜自然流｜排除投流</div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-indigo-400 mb-1">建议动作</div>
+                  <div className="text-[13px] text-indigo-900 font-bold">加大该方向内容排期，复刻优质素材</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6 relative pb-10">
+              <div className="grid grid-cols-2 gap-6 min-h-[300px]">
+                <div className="border border-neutral-100 rounded-2xl p-5 bg-white shadow-sm flex flex-col">
+                  <h5 className="text-[13px] font-bold text-neutral-900 mb-4">内容方向私信贡献占比</h5>
+                  <div className="flex-1 flex flex-col gap-3 justify-center">
+                    {[
+                      { name: '幼犬软便避坑', count: 142, width: '100%' },
+                      { name: '平价烘焙横评', count: 56, width: '40%' },
+                      { name: '挑食矫正', count: 28, width: '20%' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 text-[12px]">
+                        <span className="w-24 truncate text-neutral-600">{item.name}</span>
+                        <div className="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-400 rounded-full" style={{ width: item.width }}></div>
+                        </div>
+                        <span className="font-bold text-neutral-900 w-8">{item.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="border border-neutral-100 rounded-2xl p-5 bg-white shadow-sm flex flex-col">
+                  <h5 className="text-[13px] font-bold text-neutral-900 mb-4">明细数据</h5>
+                  <div className="flex-1 overflow-y-auto space-y-2">
+                    {[
+                      { title: '换粮拉稀？你可能做错了这三步', account: '养宠日记', msg: 45 },
+                      { title: '幼犬刚到家，第一口粮怎么选', account: '新手铲屎官', msg: 32 },
+                      { title: '软便克星，这三款平价粮绝了', account: '宠物大百科', msg: 28 },
+                    ].map((note, i) => (
+                      <div key={i} className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-lg border border-neutral-100">
+                        <div className="overflow-hidden mr-2">
+                          <div className="text-[12px] font-bold text-neutral-900 truncate">{note.title}</div>
+                          <div className="text-[10px] text-neutral-400">{note.account}</div>
+                        </div>
+                        <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="relative mt-4 sticky bottom-0 bg-white pt-4 pb-2">
+                <input
+                  type="text"
+                  placeholder="继续追问，例如：对比上周数据有何变化？"
+                  className="w-full pl-5 pr-14 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-[13px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all shadow-sm"
+                />
+                <button className="absolute right-3 top-1/2 -translate-y-1/2 mt-1 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm">
+                  <ArrowUp size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {dataSubNav === 'dashboards' && selectedDashboard && (
+          <div className="p-8 space-y-8 animate-in slide-in-from-right-4 duration-500">
+            <div className="flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <button onClick={() => setSelectedDashboard(null)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-neutral-100 text-neutral-500 transition-colors">
+                  <ChevronRight size={20} className="rotate-180" />
+                </button>
+                <div>
+                  <h3 className="text-xl font-semibold text-neutral-900 tracking-tight mb-1">{selectedDashboard.name}</h3>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button className="px-5 py-2 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-50 transition-colors">
+                  修改口径
+                </button>
+                <button className="px-5 py-2 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-50 transition-colors">
+                  转成机会
+                </button>
+                <button className="px-5 py-2 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-50 transition-colors">
+                  生成复盘
+                </button>
+                <button className="px-5 py-2 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-50 transition-colors">
+                  共享给团队
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 shrink-0 flex flex-col gap-5">
+              <div className="flex items-start gap-3">
+                <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                <div>
+                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 结论</h5>
+                  <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                    {selectedDashboard.anomaly === '无异常' 
+                      ? '当前各项指标表现平稳，没有发现明显的波动。' 
+                      : `${selectedDashboard.name}：${selectedDashboard.anomaly}，且 CVR（曝光-私信）远高于平均。建议立即将该方向加入重点追投资源。`}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-4 pt-5 border-t border-indigo-100/50">
+                <div>
+                  <div className="text-[11px] text-indigo-400 mb-1">口径说明</div>
+                  <div className="text-[13px] text-indigo-900 font-bold">{selectedDashboard.scope || '全部数据'}</div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-indigo-400 mb-1">关键变化</div>
+                  <div className="text-[13px] text-indigo-900 font-bold">相关指标较上期提升 15%</div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-indigo-400 mb-1">异常项</div>
+                  <div className="text-[13px] text-indigo-900 font-bold">{selectedDashboard.anomaly}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6 relative pb-10">
+              <div className="grid grid-cols-2 gap-6 min-h-[300px]">
+                <div className="border border-neutral-100 rounded-2xl p-5 bg-white shadow-sm flex flex-col">
+                  <h5 className="text-[13px] font-bold text-neutral-900 mb-4">关键指标细分</h5>
+                  <div className="flex-1 flex flex-col gap-3 justify-center">
+                    {[
+                      { name: '类目A', count: 142, width: '100%' },
+                      { name: '类目B', count: 56, width: '40%' },
+                      { name: '类目C', count: 28, width: '20%' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 text-[12px]">
+                        <span className="w-24 truncate text-neutral-600">{item.name}</span>
+                        <div className="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-400 rounded-full" style={{ width: item.width }}></div>
+                        </div>
+                        <span className="font-bold text-neutral-900 w-8">{item.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="border border-neutral-100 rounded-2xl p-5 bg-white shadow-sm flex flex-col">
+                  <h5 className="text-[13px] font-bold text-neutral-900 mb-4">高私信笔记列表</h5>
+                  <div className="flex-1 overflow-y-auto space-y-2">
+                    {[
+                      { title: '换粮拉稀？你可能做错了这三步', account: '养宠日记', msg: 45 },
+                      { title: '幼犬刚到家，第一口粮怎么选', account: '新手铲屎官', msg: 32 },
+                      { title: '软便克星，这三款平价粮绝了', account: '宠物大百科', msg: 28 },
+                    ].map((note, i) => (
+                      <div key={i} className="flex items-center justify-between p-2.5 bg-neutral-50 rounded-lg border border-neutral-100">
+                        <div className="overflow-hidden mr-2">
+                          <div className="text-[12px] font-bold text-neutral-900 truncate">{note.title}</div>
+                          <div className="text-[10px] text-neutral-400">{note.account}</div>
+                        </div>
+                        <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="relative mt-4 sticky bottom-0 bg-white pt-4 pb-2">
+                <input
+                  type="text"
+                  placeholder="排除投流内容，只看自然流。"
+                  className="w-full pl-5 pr-14 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-[13px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all shadow-sm"
+                />
+                <button className="absolute right-3 top-1/2 -translate-y-1/2 mt-1 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm">
+                  <ArrowUp size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {dataSubNav === 'roi_attribution' && (
+          <div className="p-8 space-y-8 animate-in fade-in duration-500 flex flex-col h-full overflow-hidden">
+            <div className="flex items-center justify-between shrink-0">
+              <div>
+                <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2">效果归因</h3>
+                <p className="text-[13px] text-neutral-400 mt-1">找出哪些内容、账号、素材和投放动作真正带来了结果。</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 bg-neutral-100 p-2 rounded-2xl w-fit shrink-0">
+              <div className="flex bg-white rounded-xl shadow-sm p-1">
+                {['项目概览', '笔记贡献', '账号承接', '投流效果'].map((tab) => (
+                  <button 
+                    key={tab} 
+                    onClick={() => {
+                      setAttributionTab(tab);
+                      setAttributionFilter(tab === '笔记贡献' ? '全部笔记' : tab === '账号承接' ? '全部账号' : tab === '投流效果' ? '全部记录' : '贡献笔记');
+                    }}
+                    className={`px-4 py-1.5 rounded-lg text-[13px] font-bold transition-colors ${attributionTab === tab ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50'}`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+              <div className="relative">
+                <select className="appearance-none bg-transparent pl-4 pr-10 py-2 text-[13px] font-bold text-neutral-900 focus:outline-none cursor-pointer">
+                  <option>幼犬换粮避坑项目</option>
+                  <option>平价烘焙粮评测</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-6 pb-10">
+              {attributionTab === '项目概览' && (
+                <>
+                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                    <div className="flex items-start gap-3">
+                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                          本项目私信增长主要由 <span className="font-bold">3 篇素人口吻笔记</span>贡献，其中 2 篇来自 A01/A02 自然流，1 篇由 A01 薯条加热放大。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {[
+                      { title: '内容方向', result: '素人口吻内容贡献 68% 私信', action: '复刻内容结构', flow: '项目与内容' },
+                      { title: '素材类型', result: '真实喂食封面 CTR 高 40%', action: '沉淀素材经验', flow: '素材库' },
+                      { title: '账号承接', result: 'A01/A02 表现稳定，A03 异常', action: '调整账号承接', flow: '账号与发布' },
+                      { title: '发布时间', result: '18:00-21:00 表现最好', action: '同步排期建议', flow: '账号与发布' },
+                      { title: '投流/加热', result: 'A01 薯条加热曝光增量 32%', action: '加入投流观察', flow: '账号与发布' }
+                    ].map((card, i) => (
+                      <div 
+                        key={i} 
+                        className="bg-white border border-neutral-200 rounded-[20px] p-5 shadow-sm flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
+                        onClick={() => setSelectedItem({
+                          title: `${card.title}归因动作`,
+                          aiJudgment: card.result,
+                          evidence: `基于本项目多维度交叉分析得出该结论。`,
+                          aiSuggestion: `建议立即${card.action}。`,
+                          actionText: card.action,
+                          flowTo: card.flow
+                        })}
+                      >
+                        <div>
+                          <div className="text-[11px] text-neutral-400 uppercase tracking-widest mb-2">{card.title}</div>
+                          <div className="text-[13px] font-bold text-neutral-900 leading-snug">{card.result}</div>
+                        </div>
+                        <button className="mt-4 w-full py-2 bg-neutral-50 text-neutral-700 text-[12px] font-bold rounded-lg hover:bg-neutral-100 transition-colors border border-transparent hover:border-neutral-200">
+                          {card.action}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+                      <h4 className="font-bold text-neutral-900">贡献明细</h4>
+                      <div className="flex gap-2">
+                        {['贡献笔记', '异常笔记', '投流笔记'].map((tab) => (
+                          <button 
+                            key={tab} 
+                            onClick={() => setAttributionFilter(tab)}
+                            className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}
+                          >
+                            {tab}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {[
+                        { title: '换粮拉稀？你可能做错了这三步', account: 'A01 养宠日记', type: '素人', promo: '可聚光', msg: 45, ctr: '12%', status: 'best' },
+                        { title: '幼犬刚到家，第一口粮怎么选', account: 'A02 新手铲屎官', type: 'KOC', promo: '可加热', msg: 32, ctr: '8%', status: 'normal' },
+                        { title: '软便克星，这三款平价粮绝了', account: '外部达人-小萌宠', type: '外部', promo: '仅回传数据', msg: 28, ctr: '15%', status: 'normal' },
+                      ].map((note, i) => (
+                        <div key={i} className="p-5 flex items-center justify-between hover:bg-neutral-50 cursor-pointer transition-colors group"
+                          onClick={() => setSelectedItem({
+                            title: '笔记效果归因',
+                            aiJudgment: '这篇表现好主要因为真实喂食封面提高点击，A01 账号近期健康，18:00 发布时间匹配目标人群。薯条加热带来曝光放大，但私信转化主要来自自然流。',
+                            evidence: `自然流曝光 12w，加热曝光 3.8w；私信转化 45 条，CTR ${note.ctr}。`,
+                            aiSuggestion: '建议复刻此内容结构，并在相似账号矩阵中铺发。',
+                            actionText: '复刻这篇内容',
+                            flowTo: '项目与内容'
+                          })}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-400 shrink-0 group-hover:bg-white group-hover:shadow-sm transition-all">
+                              <Image size={18} />
+                            </div>
+                            <div>
+                              <div className="text-[14px] font-bold text-neutral-900 mb-1">{note.title}</div>
+                              <div className="flex items-center gap-2 text-[11px]">
+                                <span className="text-neutral-500">{note.account}</span>
+                                <span className="px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded">{note.type}</span>
+                                <span className={`px-1.5 py-0.5 rounded border ${
+                                  note.promo === '可聚光' ? 'bg-indigo-50 border-indigo-100 text-indigo-700' :
+                                  note.promo === '可加热' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
+                                  'bg-neutral-100 border-neutral-200 text-neutral-500'
+                                }`}>{note.promo}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-6">
+                            <div className="text-center">
+                              <div className="text-[11px] text-neutral-400 mb-1">CTR</div>
+                              <div className="text-[14px] font-bold text-neutral-900">{note.ctr}</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[11px] text-neutral-400 mb-1">私信</div>
+                              <div className="text-[14px] font-bold text-neutral-900">{note.msg}</div>
+                            </div>
+                            <ChevronRight size={18} className="text-neutral-300 group-hover:text-neutral-500 transition-colors" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {attributionTab === '笔记贡献' && (
+                <>
+                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                    <div className="flex items-start gap-3">
+                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                          本周 38 篇笔记中，<span className="font-bold">6 篇贡献了 72% 私信</span>，其中 4 篇是素人口吻避坑内容，2 篇经过薯条加热。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-5 border-b border-neutral-100 flex flex-wrap gap-2 bg-neutral-50/50">
+                      {['全部笔记', '自然流', '投流/加热', '高私信', '高收藏', '高互动', '低效笔记', '异常笔记'].map((tab) => (
+                        <button 
+                          key={tab} 
+                          onClick={() => setAttributionFilter(tab)}
+                          className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white'}`}
+                        >
+                          {tab}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {[
+                        { title: '换粮拉稀？你可能做错了这三步', account: 'A01 养宠日记', type: '素人', promo: '可聚光', msg: 45, ctr: '12%', status: 'best', tags: ['爆文苗子', '高私信', '可复刻'] },
+                        { title: '幼犬刚到家，第一口粮怎么选', account: 'A02 新手铲屎官', type: 'KOC', promo: '可加热', msg: 32, ctr: '8%', status: 'normal', tags: ['账号贡献高'] },
+                        { title: '软便克星，这三款平价粮绝了', account: '外部达人-小萌宠', type: '外部', promo: '仅回传数据', msg: 28, ctr: '15%', status: 'normal', tags: ['素材贡献高'] },
+                      ].map((note, i) => (
+                        <div key={i} className="p-5 flex flex-col md:flex-row md:items-center justify-between hover:bg-neutral-50 cursor-pointer transition-colors group gap-4"
+                          onClick={() => setSelectedItem({
+                            title: '笔记效果归因',
+                            aiJudgment: '这篇表现好主要因为真实喂食封面提高点击，A01 账号近期健康，18:00 发布时间匹配目标人群。',
+                            evidence: `自然流曝光 12w，加热曝光 3.8w；私信转化 45 条。`,
+                            aiSuggestion: '建议复刻此内容结构，并在相似账号矩阵中铺发。',
+                            actionText: '复刻这篇内容',
+                            flowTo: '项目与内容'
+                          })}
+                        >
+                          <div className="flex items-start gap-4 flex-1">
+                            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-400 shrink-0 group-hover:bg-white group-hover:shadow-sm transition-all mt-1">
+                              <Image size={20} />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-[14px] font-bold text-neutral-900 mb-2">{note.title}</div>
+                              <div className="flex flex-wrap items-center gap-2 text-[11px] mb-3">
+                                <span className="text-neutral-500 font-medium">{note.account}</span>
+                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
+                                <span className="text-neutral-500">{note.type}</span>
+                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
+                                <span className={`px-1.5 py-0.5 rounded border ${
+                                  note.promo === '可聚光' ? 'bg-indigo-50 border-indigo-100 text-indigo-700' :
+                                  note.promo === '可加热' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
+                                  'bg-neutral-100 border-neutral-200 text-neutral-500'
+                                }`}>{note.promo}</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {note.tags.map(tag => (
+                                  <span key={tag} className="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-[10px] rounded-md font-medium border border-neutral-200">{tag}</span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-8 shrink-0">
+                            <div className="text-center">
+                              <div className="text-[11px] text-neutral-400 mb-1">CTR</div>
+                              <div className="text-[15px] font-bold text-neutral-900">{note.ctr}</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[11px] text-neutral-400 mb-1">私信</div>
+                              <div className="text-[15px] font-bold text-neutral-900">{note.msg}</div>
+                            </div>
+                            <ChevronRight size={20} className="text-neutral-300 group-hover:text-neutral-500 transition-colors" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {attributionTab === '账号承接' && (
+                <>
+                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                    <div className="flex items-start gap-3">
+                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                          A01/A02 承接素人口吻内容效果稳定，A05 专业科普转化高；<span className="font-bold">A03 连续 3 天互动率异常，建议暂停分发。</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-5 border-b border-neutral-100 flex flex-wrap gap-2 bg-neutral-50/50">
+                      {['全部账号', '品牌官号', '矩阵号', '员工 KOS', '合作达人/KOC', '外部账号池'].map((tab) => (
+                        <button 
+                          key={tab} 
+                          onClick={() => setAttributionFilter(tab)}
+                          className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white'}`}
+                        >
+                          {tab}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 bg-neutral-50/30">
+                      {[
+                        { name: 'A01 养宠日记', type: '矩阵号', focus: '素人避坑', status: 'normal', msg: 124, conv: 18, reason: '表现稳定，适合承接素人流内容' },
+                        { name: 'A03 宠物健康说', type: '矩阵号', focus: '干货科普', status: 'anomaly', msg: 12, conv: 0, reason: '连续 3 天互动率下降，疑似被限流' },
+                        { name: '官方旗舰店', type: '品牌官号', focus: '产品宣发', status: 'normal', msg: 89, conv: 32, reason: '品牌背书强，转化率最高' }
+                      ].map((acc, i) => (
+                        <div key={i} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+                          onClick={() => setSelectedItem({
+                            title: '账号效果归因',
+                            aiJudgment: acc.reason,
+                            evidence: `近7天发布 5 篇内容，平均私信 ${acc.msg} 条，线索 ${acc.conv} 个。`,
+                            aiSuggestion: acc.status === 'anomaly' ? '建议暂停承接新内容，排查账号状态。' : '建议继续承接此类内容，适当增加排期。',
+                            actionText: acc.status === 'anomaly' ? '暂停承接' : '生成账号复盘',
+                            flowTo: '账号与发布'
+                          })}
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <h4 className="text-[15px] font-bold text-neutral-900">{acc.name}</h4>
+                                {acc.status === 'anomaly' && <span className="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 rounded text-[10px] font-bold">异常</span>}
+                              </div>
+                              <div className="flex items-center gap-2 text-[11px] text-neutral-500">
+                                <span>{acc.type}</span>
+                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
+                                <span>主攻: {acc.focus}</span>
+                              </div>
+                            </div>
+                            <ChevronRight size={18} className="text-neutral-300" />
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-2 mb-4">
+                            <div className="bg-neutral-50 rounded-lg p-2 text-center">
+                              <div className="text-[10px] text-neutral-400 mb-1">自然流贡献</div>
+                              <div className="text-[13px] font-bold text-neutral-900">45%</div>
+                            </div>
+                            <div className="bg-neutral-50 rounded-lg p-2 text-center">
+                              <div className="text-[10px] text-neutral-400 mb-1">私信贡献</div>
+                              <div className="text-[13px] font-bold text-neutral-900">{acc.msg}</div>
+                            </div>
+                            <div className="bg-neutral-50 rounded-lg p-2 text-center">
+                              <div className="text-[10px] text-neutral-400 mb-1">转化贡献</div>
+                              <div className="text-[13px] font-bold text-neutral-900">{acc.conv}</div>
+                            </div>
+                          </div>
+                          
+                          <div className="text-[12px] text-neutral-600 bg-neutral-50/80 p-2.5 rounded-lg border border-neutral-100">
+                            <span className="font-bold text-neutral-700">AI: </span>{acc.reason}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {attributionTab === '投流效果' && (
+                <>
+                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                    <div className="flex items-start gap-3">
+                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                          本周投流带来 38% 曝光增量，但私信转化主要来自自然流。<span className="font-bold">A01 的薯条加热 CPA 最低，建议继续小额测试。</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-5 border-b border-neutral-100 flex flex-wrap gap-2 bg-neutral-50/50">
+                      {['全部记录', '自然流', '薯条', '聚光', 'KOS 加热', '未投流'].map((tab) => (
+                        <button 
+                          key={tab} 
+                          onClick={() => setAttributionFilter(tab)}
+                          className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white'}`}
+                        >
+                          {tab}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="divide-y divide-neutral-100">
+                      {[
+                        { title: '换粮拉稀？你可能做错了这三步', account: 'A01 养宠日记', type: '薯条', amount: '￥200', views: '3.8w', cpa: '￥4.5', status: 'effective', tags: ['投流有效', '可聚光'] },
+                        { title: '幼犬刚到家，第一口粮怎么选', account: 'A02 新手铲屎官', type: '聚光', amount: '￥500', views: '8.2w', cpa: '￥12.8', status: 'ineffective', tags: ['投流无效', 'CPA过高'] },
+                        { title: '软便克星，这三款平价粮绝了', account: '官方旗舰店', type: '自然流', amount: '￥0', views: '12w', cpa: '-', status: 'normal', tags: ['仅自然流'] },
+                      ].map((note, i) => (
+                        <div key={i} className="p-5 flex flex-col md:flex-row md:items-center justify-between hover:bg-neutral-50 cursor-pointer transition-colors group gap-4"
+                          onClick={() => setSelectedItem({
+                            title: '投流效果归因',
+                            aiJudgment: note.status === 'effective' ? '小额测试表现优异，互动成本低于大盘 40%。' : note.status === 'ineffective' ? '转化成本过高，建议停止。' : '自然流表现好，无需投流。',
+                            evidence: `消耗 ${note.amount}，带来曝光 ${note.views}，CPA ${note.cpa}。`,
+                            aiSuggestion: note.status === 'effective' ? '建议继续追加 500 元预算测试。' : '建议停止投流，排查素材原因。',
+                            actionText: note.status === 'effective' ? '追加预算建议' : '停止投流',
+                            flowTo: '账号与发布'
+                          })}
+                        >
+                          <div className="flex items-start gap-4 flex-1">
+                            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-400 shrink-0 group-hover:bg-white group-hover:shadow-sm transition-all mt-1">
+                              <Image size={20} />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-[14px] font-bold text-neutral-900 mb-2">{note.title}</div>
+                              <div className="flex flex-wrap items-center gap-2 text-[11px] mb-3">
+                                <span className="text-neutral-500 font-medium">{note.account}</span>
+                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
+                                <span className={`px-1.5 py-0.5 rounded border font-medium ${
+                                  note.type === '薯条' ? 'bg-orange-50 border-orange-100 text-orange-700' :
+                                  note.type === '聚光' ? 'bg-blue-50 border-blue-100 text-blue-700' :
+                                  'bg-neutral-100 border-neutral-200 text-neutral-500'
+                                }`}>{note.type}</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {note.tags.map(tag => (
+                                  <span key={tag} className="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-[10px] rounded-md font-medium border border-neutral-200">{tag}</span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-8 shrink-0">
+                            <div className="text-center">
+                              <div className="text-[11px] text-neutral-400 mb-1">消耗</div>
+                              <div className="text-[15px] font-bold text-neutral-900">{note.amount}</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[11px] text-neutral-400 mb-1">CPA</div>
+                              <div className="text-[15px] font-bold text-neutral-900">{note.cpa}</div>
+                            </div>
+                            <ChevronRight size={20} className="text-neutral-300 group-hover:text-neutral-500 transition-colors" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+
+
+        {dataSubNav === 'scheduled' && (
+          <div className="p-8 space-y-8 animate-in fade-in duration-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold text-neutral-900 tracking-tight mb-1">复盘报告</h3>
+                <p className="text-[13px] text-neutral-400">自动生成给团队/客户看的运营复盘，同时沉淀经验</p>
+              </div>
+              <button 
+                onClick={() => setIsGenerateReportOpen(true)}
+                className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2"
+              >
+                <Plus size={16} /> 生成报告
+              </button>
+            </div>
+
+            <div className="flex gap-2 border-b border-neutral-200 pb-4 overflow-x-auto custom-scrollbar">
+              {['项目复盘', '周报', '月报', '客户汇报', '投流复盘', '内容复盘'].map((tab, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setSelectedReportTab(tab)}
+                  className={`px-4 py-2 rounded-lg text-[13px] font-medium whitespace-nowrap transition-colors ${selectedReportTab === tab ? 'bg-white shadow-sm border border-neutral-200 text-neutral-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white/50'}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {selectedReportTab === '项目复盘' ? (
+              <div className="bg-white border border-neutral-200 rounded-[32px] p-10 shadow-sm space-y-10 relative overflow-hidden">
+                {/* 1. 报告范围与口径 */}
+              <div className="pb-8 border-b border-neutral-100 flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-neutral-900 mb-4">Q2 幼犬粮推新项目复盘</h2>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-neutral-500">
+                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-neutral-300"></span> 范围：Q2 幼犬粮推新项目</div>
+                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-neutral-300"></span> 周期：2024-05-12 至 2024-06-12</div>
+                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> 数据：小红书笔记 + 手动回传私信 + 投流消耗</div>
+                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 未接入：企微成交、订单复购</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[12px] text-neutral-400 mb-1">面向对象</div>
+                  <div className="text-[13px] font-bold text-neutral-700 bg-neutral-100 px-3 py-1 rounded-lg">内部团队</div>
+                </div>
+              </div>
+              
+              {/* 2. AI 总结 */}
+              <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 relative">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Sparkles size={64} className="text-indigo-900" />
+                </div>
+                <h4 className="text-[15px] font-bold text-indigo-900 mb-5 flex items-center gap-2"><Sparkles size={18} className="text-indigo-500"/> 核心结论</h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                  <div className="space-y-2">
+                    <div className="text-[12px] font-bold text-indigo-400 uppercase tracking-wider">结果</div>
+                    <div className="text-[14px] text-indigo-900 font-medium">曝光超预期 20%，CPA 降低 15%。</div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-[12px] font-bold text-indigo-400 uppercase tracking-wider">有效动作</div>
+                    <div className="text-[14px] text-indigo-900 font-medium">素人口吻 + 真实喂食素材组合表现最好。</div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-[12px] font-bold text-amber-500 uppercase tracking-wider">主要问题</div>
+                    <div className="text-[14px] text-amber-900 font-medium bg-amber-50 p-2 rounded border border-amber-100">达人响应慢，导致发布节奏断档。</div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-[12px] font-bold text-emerald-600 uppercase tracking-wider">下一步</div>
+                    <div className="text-[14px] text-emerald-900 font-medium bg-emerald-50 p-2 rounded border border-emerald-100">提高素人内容比例，提前派发素材任务。</div>
+                  </div>
+                </div>
+              </div>
+                
+              {/* 3. 关键数据 */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-[16px] font-bold text-neutral-900">关键数据支撑</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[
+                    { group: '内容表现', metric: '幼犬软便选题转化率', value: '3.2%', change: '+15%', evidence: '涉及 12 篇笔记' },
+                    { group: '素材表现', metric: '真实喂食封面点击率', value: '12.5%', change: '+4.1%', evidence: '涉及 45 个素材' },
+                    { group: '账号表现', metric: '素人号互动成本', value: '￥2.4', change: '-20%', evidence: '涉及 8 个账号' },
+                    { group: '投流表现', metric: '大字报首图线索成本', value: '￥45', change: '-12%', evidence: '涉及 15 个计划' },
+                    { group: '进度异常', metric: '尾部达人延期率', value: '45%', change: '高风险', evidence: '涉及 24 个任务' }
+                  ].map((data, i) => (
+                    <div key={i} className="p-5 border border-neutral-200 rounded-2xl bg-white hover:border-indigo-300 transition-colors shadow-sm flex flex-col justify-between">
+                      <div className="mb-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-[11px] font-bold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded uppercase">{data.group}</span>
+                          <span className={`text-[12px] font-bold ${(data.change.includes('+') || data.change.includes('-')) && !data.change.includes('高') ? 'text-emerald-600' : 'text-amber-600'}`}>{data.change}</span>
+                        </div>
+                        <div className="text-[13px] text-neutral-600 mb-1">{data.metric}</div>
+                        <div className="text-[20px] font-bold text-neutral-900">{data.value}</div>
+                      </div>
+                      <button 
+                        onClick={() => { setSelectedEvidence(data); setIsEvidenceDrawerOpen(true); }}
+                        className="text-[12px] text-indigo-600 font-bold hover:text-indigo-700 flex items-center justify-between bg-indigo-50/50 p-2 rounded-lg transition-colors w-full"
+                      >
+                        {data.evidence} <ChevronRight size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. 经验沉淀 */}
+              <div>
+                <h4 className="text-[16px] font-bold text-neutral-900 mb-4">待确认经验</h4>
+                <div className="space-y-3">
+                  {[
+                    { title: '素人口吻 + 真实喂食素材适合幼犬换粮自然流', dest: '内容 Skill' },
+                    { title: '达人响应慢会影响发布节奏，需提前预留 3 天 buffer', dest: '协同规则' }
+                  ].map((exp, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                          <Database size={16} />
+                        </div>
+                        <div>
+                          <div className="text-[14px] font-bold text-neutral-900 mb-1">{exp.title}</div>
+                          <div className="flex items-center gap-2 text-[11px] text-neutral-500">
+                            建议沉淀至：<span className="font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{exp.dest}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        <button 
+                          onClick={() => { setSelectedExperience(exp); setIsExperienceDrawerOpen(true); }}
+                          className="px-4 py-2 bg-neutral-900 text-white rounded-lg text-[12px] font-bold hover:bg-neutral-800 transition-colors"
+                        >
+                          确认沉淀
+                        </button>
+                        <button className="px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[12px] font-bold hover:bg-neutral-50 transition-colors">
+                          修改
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. 下一步动作 */}
+              <div>
+                <h4 className="text-[16px] font-bold text-neutral-900 mb-4">生成下一步动作</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { action: '追加一轮内容', dest: '项目与内容', navKey: 'strategy' },
+                    { action: '派发素材任务', dest: '协同任务', navKey: 'execution' },
+                    { action: '调整账号承接', dest: '账号与发布', navKey: 'publishing' },
+                    { action: '更新内容规则', dest: '知识与记忆', navKey: 'memory' }
+                  ].map((action, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => setActiveNav(action.navKey)}
+                      className="p-4 border border-neutral-200 rounded-xl bg-white hover:border-indigo-300 hover:shadow-md transition-all group flex flex-col text-left"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-indigo-100 transition-colors text-neutral-500 group-hover:text-indigo-600">
+                          <ArrowUp size={14} className="rotate-45" />
+                        </div>
+                      </div>
+                      <div className="text-[14px] font-bold text-neutral-900 mb-1">{action.action}</div>
+                      <div className="text-[11px] text-neutral-400">流向 <span className="font-medium text-neutral-600">{action.dest}</span></div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-8 border-t border-neutral-100 flex flex-wrap gap-4 justify-between items-center">
+                <div className="text-[13px] text-neutral-400">
+                  报告状态：草稿
+                </div>
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => setIsReportEditorOpen(true)}
+                    className="px-5 py-2 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold shadow-sm hover:bg-neutral-50 transition-colors flex items-center gap-2"
+                  >
+                    <Database size={16} /> 编辑并导出
+                  </button>
+                  <button className="px-5 py-2 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-xl text-[13px] font-bold shadow-sm hover:bg-indigo-100 transition-colors">
+                    同步飞书文档
+                  </button>
+                </div>
+              </div>
+            </div>
+            ) : (
+              <div className="bg-white border border-neutral-200 rounded-[32px] p-10 shadow-sm flex flex-col items-center justify-center min-h-[400px] text-center">
+                <div className="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center mb-4 text-neutral-400">
+                  <FileText size={24} />
+                </div>
+                <h3 className="text-[16px] font-bold text-neutral-900 mb-2">当前未生成该类型的报告</h3>
+                <p className="text-[13px] text-neutral-500 mb-6">点击上方“生成报告”按钮，可以按需生成{selectedReportTab}</p>
+                <button 
+                  onClick={() => setIsGenerateReportOpen(true)}
+                  className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2"
+                >
+                  <Plus size={16} /> 立即生成
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {dataSubNav === 'blueocean' && (
+          <div className="p-8 space-y-8 animate-in fade-in duration-500">
+            <div className="bg-indigo-50 border border-indigo-100 text-indigo-900 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                <p className="text-[14px] leading-relaxed font-medium">
+                  当前发现 3 个可测方向，其中<span className="font-bold text-indigo-700">「幼犬软便避坑」</span>搜索竞争低、评论需求高，适合自然流测试。
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { title: '幼犬软便避坑', heat: '中', comp: '低', hits: '8 篇', gap: '真实经验类不足', match: '高', risk: '医疗化表达' },
+                { title: '平价烘焙猫粮对比', heat: '高', comp: '中', hits: '12 篇', gap: '成分横向测评缺乏', match: '中', risk: '竞品拉踩风险' },
+                { title: '老龄犬关节养护', heat: '低', comp: '极低', hits: '2 篇', gap: '日常护理场景空白', match: '中', risk: '受众过窄' }
+              ].map((card, i) => (
+                <div key={i} className="bg-white border border-neutral-200 rounded-[32px] p-8 shadow-sm flex flex-col">
+                  <h4 className="text-xl font-bold text-neutral-900 mb-6">{card.title}</h4>
+                  <div className="space-y-4 mb-8 flex-1">
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="text-neutral-400">搜索热度</span>
+                      <span className="font-bold text-neutral-900">{card.heat}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="text-neutral-400">竞争强度</span>
+                      <span className="font-bold text-emerald-600">{card.comp}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="text-neutral-400">低粉爆款</span>
+                      <span className="font-bold text-neutral-900">{card.hits}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="text-neutral-400">内容缺口</span>
+                      <span className="font-bold text-neutral-900 truncate max-w-[120px]" title={card.gap}>{card.gap}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="text-neutral-400">商家匹配度</span>
+                      <span className="font-bold text-indigo-600">{card.match}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] pt-3 border-t border-neutral-100">
+                      <span className="text-neutral-400">风险点</span>
+                      <span className="font-bold text-amber-600">{card.risk}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button 
+                      onClick={() => setSelectedItem({
+                        title: `蓝海立项: ${card.title}`,
+                        aiJudgment: '蓝海潜力极高，建议快速跟进占据心智。',
+                        evidence: `搜索热度${card.heat}，竞争强度${card.comp}，目前低粉爆款已有${card.hits}。`,
+                        aiSuggestion: '围绕“真实经验类不足”的缺口，铺设首批测试内容。',
+                        actionText: '生成操盘建议',
+                        flowTo: '操盘建议'
+                      })}
+                      className="w-full py-3 bg-neutral-900 text-white text-[13px] font-bold rounded-xl shadow-sm hover:bg-neutral-800"
+                    >
+                      生成操盘建议
+                    </button>
+                    <div className="flex gap-2">
+                      <button className="flex-1 py-2.5 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-xl shadow-sm hover:bg-neutral-50">加入内容战役</button>
+                      <button className="flex-1 py-2.5 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-xl shadow-sm hover:bg-neutral-50">继续监控</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+      {renderReportDrawers()}
+      {renderDrawer()}
+    </div>
+  );
 };

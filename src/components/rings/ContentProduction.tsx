@@ -310,7 +310,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                   <div className="flex items-center gap-3 shrink-0 ml-8">
                     {task.status === '等待发文' ? (
                       <>
-                        <button onClick={() => setShowQrCode(task.id)} className="px-4 py-2 bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100 rounded-xl text-[12px] font-medium flex items-center gap-1.5 transition-colors">
+                        <button onClick={() => setShowQrCode(task.id)} className="px-4 py-2 bg-neutral-50 text-neutral-600 border border-neutral-200 hover:bg-neutral-100 rounded-xl text-[12px] font-medium flex items-center gap-1.5 transition-colors">
                           <Smartphone size={14} /> 扫码取原件发文
                         </button>
                         <button className="px-4 py-2 border border-neutral-200 text-neutral-600 hover:bg-neutral-50 rounded-xl text-[12px] font-medium flex items-center gap-1.5 transition-colors">

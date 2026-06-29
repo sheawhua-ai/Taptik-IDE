@@ -118,9 +118,8 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
         <div className="px-4 py-4 space-y-1">
           {[
             { id: 'opportunities', name: '机会事件流', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-            { id: 'overview', name: '数据概览', icon: 'M5 12h14M12 5l7 7-7 7' },
-            { id: 'roi_attribution', name: '全链路归因', icon: 'M12 20V10M18 20V4M6 20v-4' },
-            { id: 'auto_views', name: '机会探索', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+            { id: 'dashboards', name: '数据工作区', icon: 'M5 12h14M12 5l7 7-7 7' },
+            { id: 'roi_attribution', name: '效果归因', icon: 'M12 20V10M18 20V4M6 20v-4' },
             { id: 'scheduled', name: '复盘报告', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
             { id: 'blueocean', name: '蓝海机会', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
           ].map((btn) => (
@@ -289,12 +288,20 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
                 >
                   {selectedEvent.actionText} <ArrowRight size={16} />
                 </button>
-                <div className="text-center text-[11px] text-neutral-400 font-medium">
+                <div className="text-center text-[11px] text-neutral-400 font-medium pb-2">
                   执行后将回流至「{selectedEvent.module}」模块
                 </div>
-                <button onClick={() => setSelectedEvent(null)} className="w-full py-2.5 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900 rounded-xl text-[13px] font-medium transition-colors border border-transparent hover:border-neutral-200">
-                  忽略此事件
-                </button>
+                
+                <div className="relative mt-4">
+                  <input
+                    type="text"
+                    placeholder="告诉 AI 你的判断，例如：这几篇不是内容问题，是账号被限流。"
+                    className="w-full pl-4 pr-10 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] placeholder:text-neutral-400 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/10 transition-all"
+                  />
+                  <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-neutral-900 text-white rounded-lg flex items-center justify-center hover:bg-neutral-800 transition-colors">
+                    <ArrowUp size={14} />
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}

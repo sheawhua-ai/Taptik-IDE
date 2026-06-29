@@ -495,10 +495,10 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                             <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors">
                               <FileText size={16} /> 从资料提取
                             </button>
-                            <button className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-[12px] font-bold text-indigo-700 hover:bg-indigo-100 flex flex-col items-center gap-1.5 transition-colors">
+                            <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors">
                               <MessageSquare size={16} /> 发给客户补充
                             </button>
-                            <button className="p-3 bg-purple-50 border border-purple-200 rounded-xl text-[12px] font-bold text-purple-700 hover:bg-purple-100 flex flex-col items-center gap-1.5 transition-colors text-center">
+                            <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors text-center">
                               <Brain size={16} /> 让 AI 根据历史记录草拟
                             </button>
                             <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors">

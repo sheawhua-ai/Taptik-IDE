@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AgentSelector } from './command-center/AgentSelector';
+import { SmartInput } from './SmartInput';
 
 
 export interface ChatMessage {
@@ -808,7 +809,7 @@ const handleExecute = (customQuery?: string) => {
                         </div>
                       </div>
                     )}
-                    <textarea
+                    <SmartInput
                       ref={textareaRef}
                       id="chat-input"
                       value={query}

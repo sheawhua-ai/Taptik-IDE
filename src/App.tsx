@@ -152,6 +152,7 @@ import { CreateProjectModal } from "./components/CreateProjectModal";
 
 // Existing Pages
 import MerchantMatrix from "./pages/MerchantMatrix";
+import { InlineAIToolbar } from "./components/InlineAIToolbar";
 
 // --- Types & Config ---
 interface Message {
@@ -813,6 +814,7 @@ export default function App() {
 
   return (
     <div className="flex h-[100dvh] w-full bg-[#f8f9fa] text-neutral-900 font-sans overflow-hidden relative">
+      <InlineAIToolbar />
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-500 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-500 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />

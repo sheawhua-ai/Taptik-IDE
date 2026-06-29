@@ -24,6 +24,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { SmartInput } from "./SmartInput";
 
 interface Message {
   id: string;
@@ -316,11 +317,6 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setInputValue(val);
-    if (val === "/") {
-      setShowCommandMenu(true);
-    } else if (!val.includes("/")) {
-      setShowCommandMenu(false);
-    }
   };
 
   const selectCommand = (cmd: string) => {
@@ -515,45 +511,6 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
 
       {/* Input */}
       <div className="p-4 bg-white border-t border-neutral-100 relative">
-        <AnimatePresence>
-          {showCommandMenu && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="absolute bottom-full left-4 right-4 mb-2 bg-white border border-neutral-200 rounded-2xl shadow-2xl p-2 z-50 overflow-hidden"
-            >
-              <div className="px-3 py-2 text-[10px] text-neutral-400 uppercase tracking-widest border-b border-neutral-50 mb-1 flex items-center justify-between">
-                <span>快捷指令菜单</span>
-                <span className="text-[8px] bg-neutral-100 px-1 rounded">
-                  ESC
-                </span>
-              </div>
-              <div className="space-y-1">
-                {COMMANDS.map((c, i) => (
-                  <button
-                    key={i}
-                    onClick={() => selectCommand(c.cmd)}
-                    className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-neutral-50 rounded-xl transition-all group text-left"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-[13px] text-neutral-900 group-hover:text-primary-500 transition-colors">
-                        {c.cmd}
-                      </span>
-                      <span className="text-[10px] text-neutral-400">
-                        {c.desc}
-                      </span>
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Zap size={14} className="text-primary-500" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <div className="relative bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 focus-within:border-primary-500/50 focus-within:ring-4 focus-within:ring-primary-500/5 transition-all">
           {contextPill && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-indigo-600 rounded-xl text-[12px] shadow-sm mb-1 ml-1 mt-1 max-w-[90%] border border-indigo-100 w-max">
@@ -571,8 +528,8 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
               </button>
             </div>
           )}
-          <div className="flex items-end">
-            <textarea
+          <div className="flex items-end h-full">
+            <SmartInput
               rows={1}
               value={inputValue}
               onChange={handleInputChange}
@@ -581,12 +538,9 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
                   e.preventDefault();
                   handleSend();
                 }
-                if (e.key === "Escape") {
-                  setShowCommandMenu(false);
-                }
               }}
-              placeholder={`输入指令，或键入 "/" 唤出动作菜单...`}
-              className="w-full bg-transparent py-2.5 pl-3 pr-2 text-[13px] outline-none resize-none overflow-hidden placeholder:text-neutral-300"
+              placeholder={`输入指令，或键入 "@" "/" 唤出动作菜单...`}
+              className="w-full bg-transparent py-2.5 pl-3 pr-2 text-[13px] outline-none resize-none overflow-y-auto placeholder:text-neutral-300 min-h-[40px] max-h-[160px]"
             />
             <button
               onClick={handleSend}

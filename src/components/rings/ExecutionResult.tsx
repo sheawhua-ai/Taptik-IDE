@@ -413,7 +413,7 @@ export function ExecutionResult() {
                             placeholder="不满意？输入修改要求..."
                             className="flex-1 text-[11px] bg-white border border-indigo-100 rounded px-2 py-1.5 focus:outline-none focus:border-indigo-300"
                           />
-                          <button className="px-3 py-1.5 bg-indigo-500 text-white text-[11px] rounded hover:bg-indigo-600">
+                          <button className="px-3 py-1.5 bg-neutral-900 text-white text-[11px] rounded hover:bg-neutral-800 shadow-sm transition-colors">
                             提交修改
                           </button>
                         </div>
