@@ -116,14 +116,35 @@ export const Publishing: React.FC = () => {
  <AlertCircle size={16} className="text-rose-500" /> 执行预警
  </h4>
  <div className="space-y-4">
- <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100 flex items-start gap-4">
- <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500 shadow-sm shrink-0">
- <LayoutGrid size={20} />
+ <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100 flex items-start gap-4 flex-col">
+ <div className="flex items-start gap-4 w-full">
+   <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500 shadow-sm shrink-0">
+   <LayoutGrid size={20} />
+   </div>
+   <div className="flex-1">
+   <p className="text-[13px] font-bold text-rose-900">素材未提交</p>
+   <p className="text-[11px] text-rose-600 mt-1">崂山民宿素材缺失（已超时 24h）</p>
+   </div>
  </div>
- <div>
- <p className="text-[13px] text-rose-900">素材未提交</p>
- <p className="text-[11px] text-rose-600 mt-1">崂山民宿素材缺失（已超时 24h）</p>
- </div>
+ <button
+   onClick={() => {
+      window.dispatchEvent(
+        new CustomEvent("start-ai-action", {
+          detail: { 
+            task: {
+              id: 'warning_1',
+              title: '素材未提交：崂山民宿素材缺失（已超时 24h）',
+              aiActionText: '催交素材',
+              context: '发现崂山民宿素材已超时 24 小时未提交，建议催办或指派替补达人。',
+            }
+          }
+        })
+      );
+   }}
+   className="px-4 py-2 bg-white text-rose-600 text-[12px] font-medium rounded-lg border border-rose-200 hover:bg-rose-100 transition-colors w-full flex items-center justify-center gap-2"
+ >
+   调用副手处理 <ArrowRight size={14} />
+ </button>
  </div>
  </div>
  </div>

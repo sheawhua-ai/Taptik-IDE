@@ -433,7 +433,22 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
           <div className="p-6 border-t border-neutral-100 bg-white space-y-3">
             <button 
-              onClick={() => setSelectedItem(null)}
+              onClick={() => {
+                const item = selectedItem;
+                setSelectedItem(null);
+                window.dispatchEvent(
+                  new CustomEvent("start-ai-action", {
+                    detail: { 
+                      task: {
+                        id: 'data_insight_' + Date.now(),
+                        title: item.title,
+                        aiActionText: item.actionText || '执行建议动作',
+                        context: item.aiSuggestion || '无具体建议',
+                      }
+                    }
+                  })
+                );
+              }}
               className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold shadow-md transition-colors flex items-center justify-center gap-2"
             >
               {selectedItem.actionText || '执行建议动作'} <ArrowRight size={16} />

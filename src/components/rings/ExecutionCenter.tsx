@@ -400,15 +400,29 @@ export const ExecutionCenter: React.FC = () => {
  <div className="flex items-center gap-4 pt-10">
  <button 
  onClick={() => setIsApprovalDrawerOpen(false)}
- className="flex-1 py-6 bg-neutral-900 text-white rounded-[32px] text-lg shadow-2xl flex items-center justify-center gap-3 hover:bg-emerald-500 transition-all hover:scale-[1.02] active:scale-95"
+ className="flex-1 py-6 bg-neutral-900 text-white rounded-[32px] text-[16px] font-bold shadow-2xl flex items-center justify-center gap-3 hover:bg-emerald-500 transition-all hover:scale-[1.02] active:scale-95"
  >
- <Check size={24} /> 确认并允许分发 (Approve)
+ <Check size={24} /> 确认并允许分发
  </button>
  <button 
- onClick={() => setIsApprovalDrawerOpen(false)}
- className="w-24 h-[76px] bg-white border border-neutral-200 text-red-500 rounded-[32px] flex items-center justify-center hover:bg-red-50 transition-all shadow-xl active:scale-95"
+ onClick={() => {
+   setIsApprovalDrawerOpen(false);
+   window.dispatchEvent(
+     new CustomEvent("start-ai-action", {
+       detail: { 
+         task: {
+           id: 'hitl_1',
+           title: '夏季大促爆文文案初稿确认',
+           aiActionText: '打回重写',
+           context: '这篇文案标题太夸张，口吻不够自然。请帮我打回重新调整，要求更贴近真实素人分享。',
+         }
+       }
+     })
+   );
+ }}
+ className="flex-1 py-6 bg-white border border-neutral-200 text-neutral-900 rounded-[32px] text-[16px] font-bold shadow-xl flex items-center justify-center gap-3 hover:bg-neutral-50 transition-all hover:scale-[1.02] active:scale-95"
  >
- <MinusCircle size={28} />
+   让副手去重写
  </button>
  </div>
  </div>
