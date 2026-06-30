@@ -196,15 +196,15 @@ export default function TaskDispatch() {
  
  <div className="flex gap-4 mb-4">
  <div className="w-24 h-24 rounded-lg bg-zinc-700 overflow-hidden relative group cursor-pointer">
- <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT-C7I9NAtz_G1_Z4hV5V89-mN0B-X_7yP8O1e4R4Y6fH7p9S0A1C2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+ <div className="w-full h-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center"><span className="text-zinc-400 text-[10px]">📷</span></div>
  <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1 rounded">镜头1</span>
  </div>
  <div className="w-24 h-24 rounded-lg bg-zinc-700 overflow-hidden relative group cursor-pointer">
- <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjNQhURlDCwsCTZwyAYT3J7m1CCxl4HDURD1JEa_bpLmITpUaDjlaXBfx2kQ5a_cX06ND7muUxQXRLo5dnDO15f0upgG5NgNpOCAGrTNh9y4jqDha_o2tZ6KUZHeANe0Apw4Ezt5R6zFsq9DuQY_iuY1vOlH1_SzIYDSP8unQ94YUDYXbQ7YXbQK4Q6UTh_v4k2aqHhDHodtQYf0LuF7dK3yGzXQpJhCAqA7isNbG733wy5BTyW5YFN1HeNWZjH2PXGM0G-V6ByWw" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+ <div className="w-full h-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center"><span className="text-zinc-400 text-[10px]">📷</span></div>
  <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1 rounded">镜头2</span>
  </div>
  <div className="w-24 h-24 rounded-lg bg-zinc-700 overflow-hidden relative group cursor-pointer">
- <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTxvHjWOcr_BTI6F70PLATbiqcpIyg3o6RWxc8g2MF3B6qFZ-Wpxr-F2d53hJe8mPrQ9wag_gyGtCRxTBSSv27t1cDIFvtZy4-a4MpM4Rfe53JsSJtoYA2J9XTQ95vOUHyaJvY74hENa69UKPpeK96Hf6Lj2YQ3oU_8q3qTmkU4cbqP40E3agCrYJXeSu-CVOcMJZgjYzjHm11GD0jRO9_OMm1sRyblmenI2H4DuzAPM6EaBloiOWp_BSTSDcbgJ6Ls9uRZ0-YiJI" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+ <div className="w-full h-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center"><span className="text-zinc-400 text-[10px]">📷</span></div>
  <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1 rounded">镜头3</span>
  </div>
  </div>
@@ -234,7 +234,7 @@ export default function TaskDispatch() {
  
  <div className="flex gap-4 mb-4">
  <div className="w-24 h-24 rounded-lg bg-zinc-700 overflow-hidden relative group cursor-pointer border-2 border-red-500/50">
- <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaset48DydtP7YJ7F6WChuXTpWoTuqwZpibjzK7OZm5nknO2R78MyaIioFeStDuwlI2UBLA_P0jewzi_eBYRjqIWblGcDfrWOtfrwOCwDMudEE3NBD_Z04Gwc8F2ow1YdAAgikBFIuYHw6TpmHlz5387QNc7diwhQcZABnC_QyoeE7zbFZnSj_eaadkoPWjMSU9bNVQ4NKugcCLpOB9zEUxiIFaAlQkTqNb4GLMer7XenUZ6gSQP0xG2Wjv6qcaaplONCu4WCk7wc" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" referrerPolicy="no-referrer" />
+ <div className="w-full h-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center"><span className="text-zinc-400 text-[10px]">📷</span></div>
  <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1 rounded">镜头1</span>
  </div>
  </div>
