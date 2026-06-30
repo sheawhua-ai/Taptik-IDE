@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
  Calendar, Clock, Filter, Plus, ChevronLeft, ChevronRight,
  LayoutGrid, List, CheckCircle2, AlertCircle, RefreshCw,
- ExternalLink, Share2, Layers, MoreHorizontal, FileText
+ ExternalLink, Share2, Layers, MoreHorizontal, FileText, ArrowRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
