@@ -11,7 +11,8 @@ import {
   Plus,
   Trash2,
   X,
-  Hash
+  Hash,
+  Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -30,8 +31,8 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
 
   const categories = [
     { id: 'all', label: '全部素材', icon: ImageIcon },
-    { id: 'local', label: '本地源', icon: FolderOpen },
-    { id: 'cloud', label: '云端同步', icon: Cloud },
+    { id: 'smart_high_ctr', label: '高点击率素材', icon: Sparkles },
+    { id: 'smart_recent', label: '最近常用', icon: FolderOpen },
     { id: 'review', label: '待验收', icon: CheckCircle2 },
     { id: 'risk', label: '高风险', icon: ShieldAlert },
   ];
@@ -55,8 +56,8 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
   });
 
   const filteredData = mockData.filter(item => {
-    if (activeCategory === 'local' && item.location !== 'local') return false;
-    if (activeCategory === 'cloud' && item.location !== 'cloud') return false;
+    if (activeCategory === 'smart_high_ctr') return item.id % 2 === 0;
+    if (activeCategory === 'smart_recent') return item.id % 3 === 0;
     if (activeCategory === 'risk' && !item.isRisk) return false;
     if (activeCategory === 'review' && !item.needsReview) return false;
     
@@ -108,31 +109,6 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
             ))}
           </div>
 
-          <div className="mt-8">
-            <div className="text-[11px] font-bold text-neutral-400 mb-3 px-2 flex items-center gap-1">
-              <Hash size={12} /> 热门标签
-            </div>
-            <div className="flex flex-wrap gap-2 px-2">
-              {MOCK_TAGS.map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => {
-                    setActiveTag(activeTag === tag ? null : tag);
-                    if (activeTag !== tag) {
-                      setActiveCategory('all');
-                    }
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-colors ${
-                    activeTag === tag
-                      ? 'bg-indigo-100 text-indigo-700 border border-indigo-200 shadow-sm'
-                      : 'bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:border-neutral-300 shadow-sm'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -152,12 +128,12 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                 categories.find(c => c.id === activeCategory)?.label
               )}
             </h2>
-            <div className="relative w-64">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <div className="relative w-80">
+              <Sparkles size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400" />
               <input 
                 type="text" 
-                placeholder="搜索素材名称、标签..." 
-                className="w-full pl-9 pr-4 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                placeholder="输入你想要的画面或氛围，例如：双十一晚上的暖色调小狗..." 
+                className="w-full pl-9 pr-4 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
               />
             </div>
           </div>
