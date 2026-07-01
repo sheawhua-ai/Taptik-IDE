@@ -276,9 +276,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <h1 className="text-2xl font-semibold text-neutral-900 tracking-tight">专家与技能 Hub</h1>
  <div className="flex bg-neutral-50 rounded-[14px] p-1 text-[13px] font-extrabold border border-neutral-200">
  <button onClick={() => setSkillMarketTab('agent')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'agent' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>专家</button>
- <button onClick={() => setSkillMarketTab('group')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'group' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>专家团</button>
  <button onClick={() => setSkillMarketTab('skill')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'skill' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>技能</button>
- <button onClick={() => setSkillMarketTab('mcp')} className={`px-5 py-2 rounded-[10px] transition-all flex items-center gap-2 ${skillMarketTab === 'mcp' ? 'bg-white text-primary-500 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}>连接器</button>
  </div>
  </div>
  <div className="flex items-center gap-4">
