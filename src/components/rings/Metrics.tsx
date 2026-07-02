@@ -3,7 +3,8 @@ import { DataCenter } from '../DataCenter';
 import { 
   Activity, ArrowUp, ArrowUpRight, MessageSquare, Target, 
   LineChart, Sparkles, AlertTriangle, ShieldAlert,
-  Flame, TrendingDown, Eye, UserX, Image, X, ArrowRight
+  Flame, TrendingDown, Eye, UserX, Image, X, ArrowRight,
+  Send, CheckCircle2, Zap, Save, BrainCircuit
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -79,6 +80,25 @@ const MOCK_EVENTS: EventItem[] = [
 export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => {
   const [dataSubNav, setDataSubNav] = useState('opportunities');
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [showReplyModal, setShowReplyModal] = useState(false);
+  const [showMemoryModal, setShowMemoryModal] = useState(false);
+  const [actionSuccess, setActionSuccess] = useState(false);
+
+  const handleDispatch = () => {
+    setActionSuccess(true);
+    setTimeout(() => {
+      setActionSuccess(false);
+      setShowReplyModal(false);
+    }, 2000);
+  };
+
+  const handleSaveMemory = () => {
+    setActionSuccess(true);
+    setTimeout(() => {
+      setActionSuccess(false);
+      setShowMemoryModal(false);
+    }, 2000);
+  };
   
   if (!hasData) {
     return (
@@ -271,18 +291,26 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
               <div className="p-6 border-t border-neutral-100 bg-white space-y-3">
                 <button 
                   onClick={() => {
-                    setSelectedEvent(null);
-                    window.dispatchEvent(
-                      new CustomEvent("start-ai-action", {
-                        detail: { 
-                          task: {
-                            id: selectedEvent.id,
-                            title: selectedEvent.title,
-                            aiActionText: selectedEvent.actionText
-                          }
-                        }
-                      })
-                    );
+                    if (selectedEvent.id === 'e1') {
+                      setSelectedEvent(null);
+                      window.dispatchEvent(
+                        new CustomEvent("nav-to-tab", { detail: { tab: "matrix" } })
+                      );
+                    } else if (selectedEvent.id === 'e2') {
+                      setSelectedEvent(null);
+                      window.dispatchEvent(
+                        new CustomEvent("nav-to-tab", { detail: { tab: "content" } })
+                      );
+                      setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent("open-modify-schedule"));
+                      }, 100);
+                    } else if (selectedEvent.id === 'e3') {
+                      setShowReplyModal(true);
+                      setSelectedEvent(null);
+                    } else if (selectedEvent.id === 'e4') {
+                      setShowMemoryModal(true);
+                      setSelectedEvent(null);
+                    }
                   }}
                   className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold shadow-md transition-colors flex items-center justify-center gap-2"
                 >
@@ -307,6 +335,155 @@ export const Metrics: React.FC<{ hasData?: boolean }> = ({ hasData = true }) => 
           )}
         </AnimatePresence>
       </div>
+
+      {/* Reply Modal */}
+      <AnimatePresence>
+        {showReplyModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-neutral-200 overflow-hidden flex flex-col"
+            >
+              <div className="p-5 flex justify-between items-center border-b border-neutral-100 bg-neutral-50/50">
+                <h3 className="font-bold text-[16px] text-neutral-900 flex items-center gap-2">
+                  <MessageSquare size={18} className="text-indigo-600" /> AI 截流回复生成与指派
+                </h3>
+                <button onClick={() => setShowReplyModal(false)} className="text-neutral-400 hover:text-neutral-900 transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-5">
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2">待截流用户评论</h4>
+                  <div className="bg-neutral-50 p-3 rounded-lg border border-neutral-200 text-[13px] text-neutral-600">
+                    "这个幼犬换粮的链接在哪里呀？我家狗狗也是一直软便。"
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-1">
+                    <Sparkles size={14} className="text-indigo-500" /> AI 建议回复文案 (可修改)
+                  </h4>
+                  <textarea 
+                    className="w-full h-24 p-3 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-[13px] text-neutral-800 resize-none"
+                    defaultValue="亲亲，小狗软便千万别大意！我们这款幼犬专用粮特别添加了益生菌，能很好呵护肠胃哦~ 购买链接在这边，现在下单还有新客优惠呢！"
+                  />
+                  <div className="flex justify-end mt-2 gap-2">
+                    <button className="text-[12px] text-indigo-600 font-medium hover:text-indigo-800 flex items-center gap-1"><Zap size={12} /> 换个语气</button>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2">指派到对应企微账号执行跟进</h4>
+                  <select className="w-full p-2.5 rounded-lg border border-neutral-200 text-[13px] text-neutral-900 focus:outline-none focus:border-indigo-500">
+                    <option value="kefu1">企微客服 - 小雅 (当前在线)</option>
+                    <option value="kefu2">企微客服 - 大潘 (已接待 12 人)</option>
+                    <option value="kefu3">私域运营 - 李明</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-end gap-3">
+                <button 
+                  onClick={() => setShowReplyModal(false)}
+                  className="px-4 py-2 text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                >
+                  取消
+                </button>
+                <button 
+                  onClick={handleDispatch}
+                  disabled={actionSuccess}
+                  className={`px-5 py-2 text-[13px] font-bold text-white rounded-lg transition-all flex items-center gap-2 ${
+                    actionSuccess ? 'bg-emerald-500' : 'bg-indigo-600 hover:bg-indigo-700'
+                  }`}
+                >
+                  {actionSuccess ? (
+                    <><CheckCircle2 size={16} /> 已成功推送至企微</>
+                  ) : (
+                    <><Send size={16} /> 确认并一键指派</>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Memory Extract Modal */}
+      <AnimatePresence>
+        {showMemoryModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-neutral-200 overflow-hidden flex flex-col"
+            >
+              <div className="p-5 flex justify-between items-center border-b border-neutral-100 bg-neutral-50/50">
+                <h3 className="font-bold text-[16px] text-neutral-900 flex items-center gap-2">
+                  <BrainCircuit size={18} className="text-emerald-600" /> 沉淀至知识库记忆
+                </h3>
+                <button onClick={() => setShowMemoryModal(false)} className="text-neutral-400 hover:text-neutral-900 transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-5">
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2">优质素材信息</h4>
+                  <div className="flex gap-4 bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+                    <div className="w-16 h-16 bg-neutral-200 rounded-md flex items-center justify-center text-neutral-400 shrink-0">
+                      <Image size={24} />
+                    </div>
+                    <div>
+                      <div className="text-[13px] font-bold text-neutral-900 mb-1">该素材组合点击率达 15%</div>
+                      <div className="text-[12px] text-neutral-500">点击率比历史平均高 40%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-1">
+                    <Sparkles size={14} className="text-emerald-500" /> AI 提取构图与要素 (可用于后续生图提示词)
+                  </h4>
+                  <textarea 
+                    className="w-full h-28 p-3 rounded-lg border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 text-[13px] text-neutral-800 resize-none"
+                    defaultValue="- 画面主体：幼犬正面特写，眼神清澈委屈
+- 背景环境：暖色调家居环境（浅木色地板+米色沙发）
+- 文字排版：顶部居中大字加粗标红「幼犬软便必看」，底部辅助小字说明
+- 核心情绪：引发主人的共情与焦虑感"
+                  />
+                </div>
+              </div>
+
+              <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-end gap-3">
+                <button 
+                  onClick={() => setShowMemoryModal(false)}
+                  className="px-4 py-2 text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                >
+                  取消
+                </button>
+                <button 
+                  onClick={handleSaveMemory}
+                  disabled={actionSuccess}
+                  className={`px-5 py-2 text-[13px] font-bold text-white rounded-lg transition-all flex items-center gap-2 ${
+                    actionSuccess ? 'bg-emerald-500' : 'bg-neutral-900 hover:bg-neutral-800'
+                  }`}
+                >
+                  {actionSuccess ? (
+                    <><CheckCircle2 size={16} /> 已沉淀为商家记忆</>
+                  ) : (
+                    <><Save size={16} /> 保存为运营记忆</>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

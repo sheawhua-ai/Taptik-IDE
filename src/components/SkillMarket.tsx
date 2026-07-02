@@ -93,12 +93,10 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
 
  const filteredSkills = MARKET_SKILLS.filter(sk => {
  let isTabMatch;
- if (skillMarketTab === 'agent' || skillMarketTab === 'group') {
+ if (skillMarketTab === 'agent') {
  isTabMatch = sk.category === 'agent';
  } else if (skillMarketTab === 'skill') {
  isTabMatch = sk.category !== 'agent' && sk.category !== 'mcp';
- } else if (skillMarketTab === 'mcp') {
- isTabMatch = sk.category === 'mcp';
  } else {
  isTabMatch = true;
  }

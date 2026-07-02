@@ -168,7 +168,7 @@ const SHORTCUT_CATEGORIES = [
     icon: Star,
     items: [
       { text: "提取竞品核心痛点", type: "prompt" },
-      { text: "小红书笔记一键清洗", type: "prompt" },
+      { text: "下周三发5条护肤笔记，配上周图片", type: "prompt" },
       { text: "调用: KOC 分发引擎", type: "skill" },
     ],
   },

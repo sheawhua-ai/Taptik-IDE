@@ -239,8 +239,82 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
 
     // Simulate agent response
     setTimeout(() => {
-      // If prompt contains keywords for planning
+      // If prompt contains keywords for full-link (Direction 4)
       if (
+        text.includes("发 5 条") || text.includes("下周") || text.includes("笔记")
+      ) {
+        const planMsg: Message = {
+          id: Math.random().toString(36).substring(2),
+          role: "agent",
+          content: "收到！已为您自动编排全链路任务，正在套用「夏季护肤爆款模板」并匹配素材...",
+          timestamp: new Date(),
+          type: "plan",
+          status: "running",
+          subtasks: [
+            {
+              id: "t1",
+              name: "1. 知识库检索选题 (夏季护肤)",
+              status: "completed",
+              agent: "分析助手",
+            },
+            {
+              id: "t2",
+              name: "2. 生成 5 篇文案 (爆款模板)",
+              status: "running",
+              agent: "内容助手",
+            },
+            {
+              id: "t3",
+              name: "3. 匹配上周拍摄素材库",
+              status: "pending",
+              agent: "资产助手",
+            },
+            {
+              id: "t4",
+              name: "4. 排期到内容日历 (下周三)",
+              status: "pending",
+              agent: "调度助手",
+            },
+          ],
+        };
+        setMessages((prev) => [...prev, planMsg]);
+        setIsTyping(false);
+
+        // Simulate plan progression
+        setTimeout(() => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === planMsg.id
+                ? {
+                    ...m,
+                    subtasks: m.subtasks?.map((st) =>
+                      st.id === "t2"
+                        ? { ...st, status: "completed" }
+                        : st.id === "t3"
+                          ? { ...st, status: "running" }
+                          : st,
+                    ),
+                  }
+                : m,
+            ),
+          );
+          
+          setTimeout(() => {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === planMsg.id
+                  ? {
+                      ...m,
+                      status: "completed",
+                      content: "✅ 全链路任务准备完毕！已生成 5 篇笔记并匹配素材。排期在下周三。请确认预览或微调。",
+                      subtasks: m.subtasks?.map((st) => ({ ...st, status: "completed" })),
+                    }
+                  : m,
+              ),
+            );
+          }, 1500);
+        }, 1500);
+      } else if (
         text.includes("策划") ||
         text.includes("任务") ||
         text.includes("方案")

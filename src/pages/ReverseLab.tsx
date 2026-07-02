@@ -1,294 +1,228 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { CheckCircle2, AlertTriangle, XCircle, RefreshCw, ShieldAlert, Sparkles, Activity, FileText } from 'lucide-react';
 
 export default function ReverseLab() {
- const [inputType, setInputType] = useState<'keyword' | 'link'>('keyword');
- const [expandedId, setExpandedId] = useState<number | null>(1);
- const [analyzingId, setAnalyzingId] = useState<number | null>(1);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showResults, setShowResults] = useState(true);
 
- const candidates = [
- {
- id: 1,
- title: "不砸钱也能装出高级感？这 5 个细节绝了...",
- author: "装修小白日记",
- followers: 420,
- likes: "2.4k",
- type: "图文",
- content: "今天给大家分享一下我家的极简风装修，真的没花多少钱，但是效果绝绝子！\n\n1. 越少越好：不要做复杂的吊顶，双眼皮吊顶便宜又好看。\n2. 颜色统一：全屋大白墙搭配原木色家具，怎么都不会出错。\n3. 灯光氛围：无主灯设计真的太香了，见光不见灯，氛围感拉满。\n4. 软装点缀：买几幅有艺术感的挂画，瞬间提升格调。\n5. 保持整洁：断舍离才是最高级的装修！\n\n#沉浸式装修 #省钱秘籍 #极简主义"
- },
- {
- id: 2,
- title: "租房党必看！百元打造梦幻卧室，这灯光绝了...",
- author: "独居的娜娜",
- followers: 122,
- likes: "1.8k",
- type: "视频",
- content: "[视频语音转写] 哈喽大家好，我是娜娜。今天带大家看看我花了一百块钱改造的卧室。大家看这个氛围灯，是不是绝了？其实就是在网上买的几十块钱的灯带，贴在床头背后。还有这个四件套，也是纯棉的，睡起来特别舒服。墙上的海报也是我自己打印的，才花了几块钱。租房也要好好生活呀！喜欢的姐妹赶紧抄作业！\n\n#租房改造 #氛围感灯光 #独居生活"
- },
- {
- id: 3,
- title: "谁懂啊！这种奶油风厨房真的太治愈了...",
- author: "美食家大雄",
- followers: 880,
- likes: "3.2k",
- type: "图文",
- content: "终于拥有了梦中情厨！奶油风真的太治愈了，每次做饭心情都超级好。\n\n橱柜选了肤感膜的奶油色，台面是纯白石英石，水槽是白色大单槽，整体看起来非常干净。最满意的是这个小白砖，贴上去复古又清新。大家装修厨房一定要多花点心思，毕竟是一日三餐产生的地方呀！\n\n#奶油风厨房 #软装搭配 #小户型案例"
- }
- ];
+  const [content, setContent] = useState(
+    "标题：绝绝子！这款美白精华真的让我白到发光✨\n\n正文：家人们谁懂啊！最近发现了一款神仙精华，号称全网第一美白神器，用了一周直接白了两个度！绝对没有平替！里面含有最高浓度的VC成分，抗老又美白，不管你是敏感肌还是孕妇都能放心闭眼入。趁着双十一大促，赶紧囤起来，手慢无！\n\n#护肤日常 #美白精华 #第一美白神器"
+  );
 
- return (
- <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
- <div className="flex justify-between items-end">
- <div>
- <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">爆款拆解与模板</h2>
- <p className="text-sm text-zinc-500">将行业爆款的图文逻辑提炼为可复用的标准任务模板</p>
- </div>
- <div className="flex gap-3">
- <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-zinc-200 text-[10px] text-zinc-600">
- <span className="w-1.5 h-1.5 rounded-full bg-[#5157a7] animate-pulse"></span> 实时同步中
- </span>
- </div>
- </div>
+  const handleAnalyze = () => {
+    setIsAnalyzing(true);
+    setShowResults(false);
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      setShowResults(true);
+    }, 1500);
+  };
 
- {/* 第一部分：检索与候选笔记 */}
- <section className="grid grid-cols-12 gap-6">
- {/* 左侧输入区 */}
- <div className="col-span-12 lg:col-span-4 bg-white border border-zinc-200 rounded-xl p-5 shadow-sm flex flex-col">
- <h3 className="text-sm font-semibold flex items-center gap-2 mb-4 text-zinc-900">
- <span className="material-symbols-outlined text-[18px] text-[#5157a7]">travel_explore</span>
- 爆款内容检索与导入
- </h3>
- 
- <div className="flex bg-zinc-100 p-1 rounded-lg mb-4 shrink-0">
- <button 
- onClick={() => setInputType('keyword')}
- className={`flex-1 py-1.5 text-xs rounded-md transition-colors ${inputType === 'keyword' ? 'bg-white text-[#5157a7] shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
- >
- 关键词检索
- </button>
- <button 
- onClick={() => setInputType('link')}
- className={`flex-1 py-1.5 text-xs rounded-md transition-colors ${inputType === 'link' ? 'bg-white text-[#5157a7] shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
- >
- 链接直接读取
- </button>
- </div>
+  const handleRewrite = () => {
+    setContent(
+      "标题：早C晚A打卡！分享我的近期提亮好物✨\n\n正文：整理了最近爱用的提亮精华。质地很水润，吸收挺快的。看了下成分，主要是VC衍生物，比较温和，适合大部分肤质（敏感肌建议先在耳后测试哦）。坚持用了一段时间，感觉肤色有变均匀，光泽感也提升了。双十一有活动，有需要的姐妹可以参考一下～\n\n#护肤日常 #精华分享 #好物推荐"
+    );
+    handleAnalyze();
+  };
 
- {inputType === 'keyword' ? (
- <div className="space-y-4 flex-1">
- <div>
- <label className="block text-[10px] text-zinc-500 mb-1.5 uppercase tracking-wider">搜索关键词</label>
- <input className="w-full border border-zinc-200 bg-zinc-50 rounded-lg p-3 text-sm focus:ring-1 focus:ring-[#5157a7]/30 outline-none" placeholder="例如：极简装修、春季穿搭" type="text" defaultValue="极简装修" />
- </div>
- <div className="p-3 bg-[#e0e0ff]/30 border border-[#5157a7]/20 rounded-lg flex items-start gap-2">
- <span className="material-symbols-outlined text-[#5157a7] text-[16px] mt-0.5">filter_alt</span>
- <div>
- <p className="text-xs text-[#5157a7]">默认检索低粉爆款</p>
- <p className="text-[10px] text-zinc-500 mt-0.5">系统将自动过滤头部大号，优先寻找粉丝数 &lt; 1000 但点赞数 &gt; 1000 的高潜力笔记。</p>
- </div>
- </div>
- <button className="w-full bg-zinc-900 text-white text-xs py-3 rounded-lg hover:bg-zinc-800 transition-colors shadow-md mt-auto">
- 检索候选笔记
- </button>
- </div>
- ) : (
- <div className="space-y-4 flex-1">
- <div>
- <label className="block text-[10px] text-zinc-500 mb-1.5 uppercase tracking-wider">小红书笔记链接</label>
- <textarea className="w-full border border-zinc-200 bg-zinc-50 rounded-lg p-3 text-sm focus:ring-1 focus:ring-[#5157a7]/30 h-32 resize-none outline-none" placeholder="请粘贴小红书笔记链接..."></textarea>
- </div>
- <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-lg flex items-start gap-2">
- <span className="material-symbols-outlined text-zinc-400 text-[16px] mt-0.5">info</span>
- <p className="text-[10px] text-zinc-500">支持图文及视频笔记。视频笔记将自动提取语音并转化为文本供 AI 拆解。</p>
- </div>
- <button className="w-full bg-zinc-900 text-white text-xs py-3 rounded-lg hover:bg-zinc-800 transition-colors shadow-md mt-auto">
- 读取笔记原文
- </button>
- </div>
- )}
- </div>
+  return (
+    <div className="p-6 space-y-6 max-w-[1200px] mx-auto">
+      <div className="flex justify-between items-end">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 flex items-center gap-2">
+            <ShieldAlert className="text-rose-500" />
+            AI 内容违规预检与健康度评分
+          </h2>
+          <p className="text-sm text-neutral-500 mt-1">发布前自动检查广告法违禁词、平台敏感词，提供多维度质量评估。</p>
+        </div>
+        <div className="flex gap-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-700 font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 模型库已更新
+          </span>
+        </div>
+      </div>
 
- {/* 右侧候选列表 */}
- <div className="col-span-12 lg:col-span-8 bg-white border border-zinc-200 rounded-xl p-5 shadow-sm flex flex-col">
- <div className="flex justify-between items-center mb-4">
- <h3 className="text-sm font-semibold flex items-center gap-2 text-zinc-900">
- <span className="material-symbols-outlined text-[18px] text-[#5157a7]">list_alt</span>
- 候选笔记原文 (3)
- </h3>
- <span className="text-[10px] text-zinc-400 font-medium">请点开查看原文，并选择一篇进行 AI 拆解</span>
- </div>
+      <div className="grid grid-cols-12 gap-6">
+        {/* Left: Input */}
+        <div className="col-span-12 lg:col-span-5 bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex flex-col h-[700px]">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[15px] font-bold flex items-center gap-2 text-neutral-900">
+              <FileText size={18} className="text-neutral-400" />
+              待检笔记内容
+            </h3>
+            <button className="text-[12px] text-neutral-500 hover:text-neutral-900" onClick={() => setContent('')}>清空</button>
+          </div>
+          
+          <textarea 
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="flex-1 w-full bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-[14px] text-neutral-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none leading-relaxed"
+            placeholder="粘贴小红书笔记标题与正文..."
+          />
+          
+          <button 
+            onClick={handleAnalyze}
+            disabled={isAnalyzing || !content}
+            className="mt-4 w-full bg-neutral-900 text-white py-3.5 rounded-xl text-[14px] font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-neutral-800 disabled:opacity-50"
+          >
+            {isAnalyzing ? (
+              <><RefreshCw size={18} className="animate-spin" /> AI 深度检测中...</>
+            ) : (
+              <><Activity size={18} /> 开始全方位预检</>
+            )}
+          </button>
+        </div>
 
- <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar max-h-[400px]">
- {candidates.map((candidate) => (
- <div key={candidate.id} className={`border rounded-xl transition-all duration-200 overflow-hidden ${analyzingId === candidate.id ? 'border-[#5157a7] ring-1 ring-[#5157a7]/20 bg-[#e0e0ff]/10' : expandedId === candidate.id ? 'border-zinc-300 bg-white' : 'border-zinc-200 bg-white hover:border-zinc-300'}`}>
- {/* Header */}
- <div 
- className="p-4 flex items-center justify-between cursor-pointer"
- onClick={() => setExpandedId(expandedId === candidate.id ? null : candidate.id)}
- >
- <div className="flex-1 min-w-0 pr-4">
- <div className="flex items-center gap-2 mb-1.5">
- <span className={`px-1.5 py-0.5 text-[9px] rounded ${candidate.type === '视频' ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
- {candidate.type}
- </span>
- <h4 className="text-sm font-semibold text-zinc-900 truncate">{candidate.title}</h4>
- </div>
- <div className="flex items-center gap-3 text-[11px] text-zinc-500">
- <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">person</span> {candidate.author}</span>
- <span className="flex items-center gap-1 text-emerald-600 font-medium"><span className="material-symbols-outlined text-[14px]">group</span> 粉丝 {candidate.followers}</span>
- <span className="flex items-center gap-1 text-red-500 font-medium"><span className="material-symbols-outlined text-[14px]">favorite</span> 点赞 {candidate.likes}</span>
- </div>
- </div>
- <div className="flex items-center gap-3 shrink-0">
- {analyzingId === candidate.id && (
- <span className="text-[10px] text-[#5157a7] bg-[#e0e0ff] px-2 py-1 rounded-md flex items-center gap-1">
- <span className="material-symbols-outlined text-[14px] animate-spin">sync</span> 拆解中
- </span>
- )}
- <span className={`material-symbols-outlined text-zinc-400 transition-transform duration-200 ${expandedId === candidate.id ? 'rotate-180' : ''}`}>
- expand_more
- </span>
- </div>
- </div>
+        {/* Right: Dashboard */}
+        <div className="col-span-12 lg:col-span-7 bg-white border border-neutral-200 rounded-2xl shadow-sm flex flex-col h-[700px] overflow-hidden relative bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-neutral-50 via-white to-white">
+          {!showResults && !isAnalyzing ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-neutral-400">
+              <ShieldAlert size={48} className="mb-4 opacity-20" />
+              <p>点击左侧按钮开始检测</p>
+            </div>
+          ) : isAnalyzing ? (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <div className="relative">
+                <div className="w-24 h-24 border-4 border-neutral-100 rounded-full"></div>
+                <div className="w-24 h-24 border-4 border-indigo-500 rounded-full border-t-transparent animate-spin absolute inset-0"></div>
+                <ShieldAlert size={32} className="absolute inset-0 m-auto text-indigo-500 animate-pulse" />
+              </div>
+              <p className="mt-6 text-neutral-500 text-[14px] font-medium">正在比对最新广告法与平台敏感词库...</p>
+            </div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar"
+            >
+              {/* Score Header */}
+              {content.includes("绝绝子") ? (
+                <div className="flex items-center gap-6 p-6 bg-rose-50 border border-rose-100 rounded-2xl shadow-[0_4px_20px_-4px_rgba(225,29,72,0.1)]">
+                  <div className="shrink-0 text-center">
+                    <div className="text-[48px] font-black text-rose-600 leading-none drop-shadow-sm">42</div>
+                    <div className="text-[12px] font-bold text-rose-500 mt-1">综合健康度</div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <XCircle size={18} className="text-rose-600" />
+                      <h4 className="font-bold text-rose-900 text-[16px]">存在严重违规风险，建议拦截发布</h4>
+                    </div>
+                    <p className="text-[13px] text-rose-700/80 leading-relaxed">检测出 3 处绝对化用语，以及对特殊人群（孕妇）的不当承诺。若强行发布将面临被限流或封号的风险。</p>
+                  </div>
+                  <button 
+                    onClick={handleRewrite}
+                    className="shrink-0 bg-rose-600 text-white px-5 py-3 rounded-xl font-bold text-[14px] shadow-lg shadow-rose-600/20 hover:bg-rose-700 active:scale-95 transition-all flex items-center gap-2"
+                  >
+                    <Sparkles size={16} /> AI 一键合规改写
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-6 p-6 bg-emerald-50 border border-emerald-100 rounded-2xl shadow-[0_4px_20px_-4px_rgba(16,185,129,0.1)]">
+                  <div className="shrink-0 text-center">
+                    <div className="text-[48px] font-black text-emerald-600 leading-none drop-shadow-sm">92</div>
+                    <div className="text-[12px] font-bold text-emerald-500 mt-1">综合健康度</div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle2 size={18} className="text-emerald-600" />
+                      <h4 className="font-bold text-emerald-900 text-[16px]">内容健康度极佳，准许发布</h4>
+                    </div>
+                    <p className="text-[13px] text-emerald-700/80 leading-relaxed">未检测出敏感词及广告法违规。行文自然，客观描述产品功效，符合平台社区规范，推荐发布。</p>
+                  </div>
+                </div>
+              )}
 
- {/* Expanded Content */}
- {expandedId === candidate.id && (
- <div className="px-4 pb-4 pt-1 border-t border-zinc-100 bg-zinc-50/50">
- <div className="mb-3 flex justify-between items-center">
- <span className="text-[10px] text-zinc-500 uppercase tracking-wider">笔记原文读取结果</span>
- {candidate.type === '视频' && (
- <span className="text-[9px] text-amber-600 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded flex items-center gap-1">
- <span className="material-symbols-outlined text-[12px]">graphic_eq</span> 视频语音已转文本
- </span>
- )}
- </div>
- <div className="bg-white p-3 rounded-lg border border-zinc-200 text-xs text-zinc-700 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto custom-scrollbar">
- {candidate.content}
- </div>
- <div className="mt-4 flex justify-end">
- <button 
- onClick={(e) => {
- e.stopPropagation();
- setAnalyzingId(candidate.id);
- }}
- className={`px-4 py-2 rounded-lg text-xs transition-all flex items-center gap-2 ${analyzingId === candidate.id ? 'bg-[#5157a7] text-white shadow-md shadow-[#5157a7]/20' : 'bg-zinc-900 text-white hover:bg-zinc-800'}`}
- >
- <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
- {analyzingId === candidate.id ? '正在拆解此笔记...' : '选择此篇进行 AI 拆解'}
- </button>
- </div>
- </div>
- )}
- </div>
- ))}
- </div>
- </div>
- </section>
+              <div className="grid grid-cols-2 gap-6">
+                {/* Radar Chart Visual (CSS Art Polygon) */}
+                <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-6 flex flex-col items-center justify-center">
+                  <h4 className="text-[13px] font-bold text-neutral-900 mb-6 w-full text-center">多维评估雷达图</h4>
+                  <div className="relative w-48 h-48">
+                    <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+                      <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#e5e5e5" strokeWidth="1" />
+                      <polygon points="50,15 85,32.5 85,67.5 50,85 15,67.5 15,32.5" fill="none" stroke="#e5e5e5" strokeWidth="1" />
+                      <polygon points="50,25 75,37.5 75,62.5 50,75 25,62.5 25,37.5" fill="none" stroke="#e5e5e5" strokeWidth="1" />
+                      <polygon points="50,35 65,42.5 65,57.5 50,65 35,57.5 35,42.5" fill="none" stroke="#e5e5e5" strokeWidth="1" />
+                      <line x1="50" y1="50" x2="50" y2="5" stroke="#e5e5e5" strokeWidth="1" />
+                      <line x1="50" y1="50" x2="95" y2="27.5" stroke="#e5e5e5" strokeWidth="1" />
+                      <line x1="50" y1="50" x2="95" y2="72.5" stroke="#e5e5e5" strokeWidth="1" />
+                      <line x1="50" y1="50" x2="50" y2="95" stroke="#e5e5e5" strokeWidth="1" />
+                      <line x1="50" y1="50" x2="5" y2="72.5" stroke="#e5e5e5" strokeWidth="1" />
+                      <line x1="50" y1="50" x2="5" y2="27.5" stroke="#e5e5e5" strokeWidth="1" />
+                      
+                      {/* Data Polygon based on content */}
+                      {content.includes("绝绝子") ? (
+                        <polygon points="50,70 85,32.5 70,72.5 50,85 20,60 15,40" fill="rgba(225, 29, 72, 0.2)" stroke="#e11d48" strokeWidth="2" />
+                      ) : (
+                        <polygon points="50,15 90,30 85,70 50,85 10,70 15,30" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" strokeWidth="2" />
+                      )}
+                    </svg>
+                    
+                    {content.includes("绝绝子") ? (
+                      <>
+                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-rose-600 bg-white px-1">合规性(极低)</span>
+                        <span className="absolute top-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-white px-1">吸引力(高)</span>
+                        <span className="absolute bottom-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-white px-1">可读性(良)</span>
+                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-600 bg-white px-1">封面匹配(优)</span>
+                        <span className="absolute bottom-1/4 -left-12 text-[10px] font-bold text-rose-600 bg-white px-1">爆款相似度(低)</span>
+                        <span className="absolute top-1/4 -left-10 text-[10px] font-bold text-emerald-600 bg-white px-1">人设契合(中)</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-600 bg-white px-1">合规性(极高)</span>
+                        <span className="absolute top-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-white px-1">吸引力(高)</span>
+                        <span className="absolute bottom-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-white px-1">可读性(优)</span>
+                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-600 bg-white px-1">封面匹配(优)</span>
+                        <span className="absolute bottom-1/4 -left-12 text-[10px] font-bold text-emerald-600 bg-white px-1">爆款相似度(高)</span>
+                        <span className="absolute top-1/4 -left-10 text-[10px] font-bold text-emerald-600 bg-white px-1">人设契合(高)</span>
+                      </>
+                    )}
+                  </div>
+                </div>
 
- {/* 第二部分：拆解结果 (仅在有选中拆解时显示) */}
- <div className={`transition-all duration-500 ${analyzingId ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none hidden'}`}>
- <div className="flex items-center gap-3 mb-4">
- <div className="h-[1px] flex-1 bg-zinc-200"></div>
- <span className="text-xs text-zinc-400 uppercase tracking-widest">AI 拆解结果</span>
- <div className="h-[1px] flex-1 bg-zinc-200"></div>
- </div>
-
- <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
- <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm">
- <div className="flex items-center gap-2 mb-4">
- <span className="material-symbols-outlined material-symbols-filled text-zinc-900 text-[20px]">palette</span>
- <h4 className="text-xs font-semibold text-zinc-900">画面拆解结果</h4>
- </div>
- <div className="space-y-4">
- <div className="grid grid-cols-2 gap-4">
- <div className="p-3 bg-zinc-50 border border-zinc-100 rounded-lg">
- <span className="text-[10px] text-zinc-400 block mb-1">首图特征</span>
- <span className="text-[11px] text-[#5157a7]">强人像 / 情绪特写</span>
- </div>
- <div className="p-3 bg-zinc-50 border border-zinc-100 rounded-lg">
- <span className="text-[10px] text-zinc-400 block mb-1">图片数量</span>
- <span className="text-[11px] text-[#5157a7]">平均 4-6 张</span>
- </div>
- </div>
- <p className="text-[10px] text-zinc-500 italic bg-zinc-50 p-2 rounded border border-zinc-100">💡 “视觉一致性是该样本获得高留存的核心原因”</p>
- </div>
- </div>
-
- <div className="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm">
- <div className="flex items-center gap-2 mb-4">
- <span className="material-symbols-outlined material-symbols-filled text-zinc-900 text-[20px]">psychology</span>
- <h4 className="text-xs font-semibold text-zinc-900">文案套路拆解</h4>
- </div>
- <div className="space-y-3">
- <div className="p-3 bg-zinc-50 border border-zinc-100 rounded-lg">
- <span className="text-[10px] text-zinc-400 block mb-1">高频词汇</span>
- <div className="flex flex-wrap gap-1.5 mt-1">
- <span className="px-2 py-0.5 bg-[#e0e0ff]/50 text-[#5157a7] border border-[#5157a7]/20 text-[9px] rounded">#沉浸式</span>
- <span className="px-2 py-0.5 bg-[#e0e0ff]/50 text-[#5157a7] border border-[#5157a7]/20 text-[9px] rounded">#省钱秘籍</span>
- <span className="px-2 py-0.5 bg-[#e0e0ff]/50 text-[#5157a7] border border-[#5157a7]/20 text-[9px] rounded">#绝绝子</span>
- </div>
- </div>
- <div className="p-3 bg-zinc-50 border border-zinc-100 rounded-lg">
- <span className="text-[10px] text-zinc-400 block mb-1">行文结构</span>
- <span className="text-[11px] text-[#5157a7]">痛点引入 -&gt; 方案反转 -&gt; 情绪共鸣</span>
- </div>
- </div>
- </div>
- </section>
-
- {/* 第三部分：模板配置 */}
- <section className="bg-white border border-zinc-200 rounded-xl p-6 shadow-sm">
- <h2 className="text-sm font-semibold mb-6 flex items-center gap-2 text-zinc-900"><span className="material-symbols-outlined text-[#5157a7]">architecture</span> 提炼为标准任务模板</h2>
- 
- <div className="grid grid-cols-12 gap-8">
- <div className="col-span-12 lg:col-span-8 space-y-6">
- <div>
- <label className="block text-xs text-zinc-700 mb-2">模板名称</label>
- <input type="text" className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5157a7]/20" defaultValue="极简风低成本改造模板" />
- </div>
- 
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-xs text-zinc-700 mb-2">图片数量要求</label>
- <select className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5157a7]/20">
- <option>必须包含 3 张图</option>
- <option>3-5 张图</option>
- <option>不限制</option>
- </select>
- </div>
- <div>
- <label className="block text-xs text-zinc-700 mb-2">首图画面约束</label>
- <select className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5157a7]/20">
- <option>必须包含人像</option>
- <option>必须包含产品特写</option>
- <option>不限制</option>
- </select>
- </div>
- </div>
- 
- <div>
- <label className="block text-xs text-zinc-700 mb-2">文案风格设定</label>
- <input type="text" className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5157a7]/20" defaultValue="痛点引入，强调性价比，多用感叹号和Emoji" />
- </div>
- </div>
-
- <div className="col-span-12 lg:col-span-4 flex flex-col">
- <div className="flex-1">
- <label className="block text-xs text-zinc-700 mb-2">挂载到指定商家</label>
- <div className="flex flex-wrap gap-2 mb-4">
- <span className="px-3 py-1.5 bg-[#e0e0ff]/50 text-[#5157a7] rounded-lg text-xs flex items-center gap-1 border border-[#5157a7]/20">极氪智慧出行 <span className="material-symbols-outlined text-[14px] cursor-pointer hover:bg-[#5157a7]/20 rounded-full">close</span></span>
- <span className="px-3 py-1.5 bg-zinc-50 text-zinc-600 rounded-lg text-xs flex items-center gap-1 cursor-pointer hover:bg-zinc-100 transition-colors border border-zinc-200"><span className="material-symbols-outlined text-[14px]">add</span> 添加商家</span>
- </div>
- <p className="text-[10px] text-zinc-500 leading-relaxed">挂载后，该商家的门店导购即可在小程序端接收到此模板的拍摄与发文任务。</p>
- </div>
- 
- <button className="w-full bg-zinc-900 text-white py-3.5 rounded-xl text-sm shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-zinc-800">
- <span className="material-symbols-outlined text-[18px]">save</span>
- 保存为标准模板
- </button>
- </div>
- </div>
- </section>
- </div>
- </div>
- );
+                {/* Warnings List */}
+                <div className="space-y-3">
+                  {content.includes("绝绝子") ? (
+                    <>
+                      <div className="p-3 border-l-4 border-rose-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">
+                        <AlertTriangle size={16} className="text-rose-500 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="text-[12px] font-bold text-neutral-900 block mb-1">广告法绝对化用语</span>
+                          <p className="text-[11px] text-neutral-500 leading-relaxed">发现「全网第一」、「绝对」等词汇，违反《广告法》第9条。强烈建议修改或使用 AI 一键合规。</p>
+                        </div>
+                      </div>
+                      <div className="p-3 border-l-4 border-rose-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">
+                        <AlertTriangle size={16} className="text-rose-500 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="text-[12px] font-bold text-neutral-900 block mb-1">特殊人群承诺风险</span>
+                          <p className="text-[11px] text-neutral-500 leading-relaxed">发现「孕妇都能放心闭眼入」。根据平台规范，非特殊用途化妆品不得对孕妇群体做绝对安全承诺。</p>
+                        </div>
+                      </div>
+                      <div className="p-3 border-l-4 border-amber-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">
+                        <AlertTriangle size={16} className="text-amber-500 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="text-[12px] font-bold text-neutral-900 block mb-1">营销水军识别预警</span>
+                          <p className="text-[11px] text-neutral-500 leading-relaxed">「家人们谁懂啊」、「绝绝子」过度使用，易被小红书风控系统判定为营销水军，降低初始流量池。</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="p-4 border border-emerald-100 bg-emerald-50/50 shadow-sm rounded-xl flex items-start gap-3 h-full flex-col justify-center">
+                        <CheckCircle2 size={32} className="text-emerald-500 mb-2" />
+                        <div>
+                          <span className="text-[14px] font-bold text-neutral-900 block mb-1">未发现违规项</span>
+                          <p className="text-[12px] text-neutral-500 leading-relaxed">该文案已通过 30,000+ 平台敏感词库及最新广告法筛查。客观真实，口吻自然。</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
