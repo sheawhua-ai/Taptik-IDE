@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Compass,
@@ -9,6 +9,8 @@ import {
   Users,
   CheckCircle2,
   AlertCircle,
+  X,
+  ArrowRight,
 } from "lucide-react";
 import { MerchantProfileDrawer } from "./merchant/MerchantProfileDrawer";
 
@@ -29,6 +31,12 @@ export function MerchantMemoryHeader({
 }: MerchantMemoryHeaderProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEscortExpanded, setIsEscortExpanded] = useState(false);
+
+  useEffect(() => {
+    const handleOpenDrawer = () => setIsDrawerOpen(true);
+    window.addEventListener('open-merchant-profile-drawer', handleOpenDrawer);
+    return () => window.removeEventListener('open-merchant-profile-drawer', handleOpenDrawer);
+  }, []);
 
   if (!hasData) return null;
 
@@ -51,146 +59,119 @@ export function MerchantMemoryHeader({
 
           <div className="flex items-center gap-4 shrink-0">
             <button
-              onClick={() => setIsEscortExpanded(!isEscortExpanded)}
-              className="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-100 px-3 py-1.5 rounded-full text-[12px] text-indigo-600 font-medium"
+              onClick={() => setIsEscortExpanded(true)}
+              className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-100 px-4 py-2 rounded-full text-[13px] text-indigo-700 font-medium"
             >
-              <Sparkles size={14} />
-              今日巡航：发现 6 项动态
-              <ChevronDown
-                size={14}
-                className={`ml-1 transition-transform ${isEscortExpanded ? "rotate-180" : ""}`}
-              />
+              <Sparkles size={16} />
+              <span>今日巡航</span>
+              <span className="w-1 h-1 bg-indigo-300 rounded-full mx-1"></span>
+              <span className="text-indigo-600 font-normal">6 项动态 / 9 个待处理 / 3 个卡点</span>
+              <ChevronDown size={14} className="ml-1 opacity-60" />
             </button>
           </div>
         </div>
 
         <AnimatePresence>
           {isEscortExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden bg-white border-t border-neutral-100 absolute top-full left-0 right-0 shadow-lg z-40"
-            >
-              <div className="px-8 py-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">
-                  {/* 1. 市场机会 */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <TrendingUp size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-semibold text-neutral-900 mb-0.5">
-                        1. 市场机会
-                      </h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        发现 2
-                        个可执行方向，其中「幼犬换粮避坑」最适合今天启动。
-                      </p>
-                    </div>
+            <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setIsEscortExpanded(false)}>
+              <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" />
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="w-[420px] bg-white h-full shadow-2xl flex flex-col relative z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={18} className="text-indigo-600" />
+                    <h3 className="font-bold text-neutral-900 text-[16px]">今日巡航</h3>
                   </div>
-
-                  {/* 2. 竞品动态 */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <Target size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-semibold text-neutral-900 mb-0.5">
-                        2. 竞品动态
-                      </h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        品牌 X 新增 1 篇换粮避坑笔记，收藏增长较快。
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 3. 账号状态 */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <Users size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-semibold text-neutral-900 mb-0.5">
-                        3. 账号状态
-                      </h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        A01、A02 可正常承接，A03 互动下滑。
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 4. 内容进度 */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-semibold text-neutral-900 mb-0.5">
-                        4. 内容进度
-                      </h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        当前 5 篇待审核，3 篇可在今日发布。
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 5. 数据异常 */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <AlertCircle size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-semibold text-neutral-900 mb-0.5">
-                        5. 数据异常
-                      </h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        昨日 1 篇内容收藏率显著高于均值。
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 6. 协同状态 */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <Sparkles size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-[13px] font-semibold text-neutral-900 mb-0.5">
-                        6. 协同状态
-                      </h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        私信新增 1 条客户反馈。
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Actions */}
-                <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-neutral-100">
-                  <button
-                    onClick={() => {
-                      setWorkflowTab("strategy");
-                      setIsEscortExpanded(false);
-                    }}
-                    className="px-5 py-2 rounded-[12px] text-[13px] font-medium bg-neutral-900 text-white hover:bg-neutral-800 transition-colors shadow-sm"
-                  >
-                    生成操盘建议
-                  </button>
-                  <button
-                    onClick={() => {
-                      window.dispatchEvent(
-                        new CustomEvent("nav-to-strategy-start"),
-                      );
-                      setIsEscortExpanded(false);
-                    }}
-                    className="px-5 py-2 rounded-[12px] text-[13px] font-medium bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 transition-colors shadow-sm"
-                  >
-                    查看主动护航事件
+                  <button onClick={() => setIsEscortExpanded(false)} className="p-2 hover:bg-neutral-200 rounded-full transition-colors">
+                    <X size={18} className="text-neutral-500" />
                   </button>
                 </div>
-              </div>
-            </motion.div>
+
+                <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                  {/* Summary */}
+                  <div>
+                    <h4 className="text-[13px] font-bold text-neutral-500 uppercase tracking-wider mb-3">当前商家运营流摘要</h4>
+                    <p className="text-[14px] text-neutral-800 leading-relaxed font-medium">
+                      正在推进 <span className="text-indigo-600 font-bold">2</span> 个核心战役，累积 <span className="text-emerald-600 font-bold">6</span> 项动态更新，当前存在 <span className="text-rose-600 font-bold">3</span> 个关键卡点影响发布节奏。
+                    </p>
+                  </div>
+
+                  {/* Bottlenecks */}
+                  <div>
+                    <h4 className="text-[13px] font-bold text-neutral-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <AlertCircle size={16} /> 最关键卡点
+                    </h4>
+                    <div className="space-y-3">
+                      <div 
+                        className="bg-rose-50 border border-rose-100 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:bg-rose-100 transition-colors"
+                        onClick={() => { setWorkflowTab('matrix'); setIsEscortExpanded(false); }}
+                      >
+                        <div className="w-5 h-5 rounded-full bg-rose-200 text-rose-700 flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">1</div>
+                        <div>
+                          <div className="text-[13px] font-bold text-rose-900 mb-0.5">幼犬换粮战役</div>
+                          <div className="text-[12px] text-rose-700 leading-relaxed">缺 8 个素材，影响 12 篇排期</div>
+                        </div>
+                      </div>
+                      <div 
+                        className="bg-amber-50 border border-amber-100 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:bg-amber-100 transition-colors"
+                        onClick={() => { setWorkflowTab('matrix'); setIsEscortExpanded(false); }}
+                      >
+                        <div className="w-5 h-5 rounded-full bg-amber-200 text-amber-700 flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">2</div>
+                        <div>
+                          <div className="text-[13px] font-bold text-amber-900 mb-0.5">成犬肠胃项目</div>
+                          <div className="text-[12px] text-amber-700 leading-relaxed">5 条达人素材待回传</div>
+                        </div>
+                      </div>
+                      <div 
+                        className="bg-indigo-50 border border-indigo-100 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:bg-indigo-100 transition-colors"
+                        onClick={() => { setWorkflowTab('interaction'); setIsEscortExpanded(false); }}
+                      >
+                        <div className="w-5 h-5 rounded-full bg-indigo-200 text-indigo-700 flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">3</div>
+                        <div>
+                          <div className="text-[13px] font-bold text-indigo-900 mb-0.5">日常粉丝运维</div>
+                          <div className="text-[12px] text-indigo-700 leading-relaxed">有 18 条高意向私信未分流</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Suggestion Chain */}
+                  <div>
+                    <h4 className="text-[13px] font-bold text-neutral-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                      <Sparkles size={16} /> AI 建议链路
+                    </h4>
+                    <div className="relative pl-3 space-y-4 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-indigo-100">
+                      {[
+                        { step: '补素材', mod: 'matrix', highlight: true },
+                        { step: '审内容', mod: 'matrix' },
+                        { step: '推发布池', mod: 'content' },
+                        { step: '分流私信', mod: 'interaction' },
+                        { step: '写入复盘', mod: 'metrics' },
+                      ].map((node, i) => (
+                        <div 
+                          key={i} 
+                          onClick={() => { setWorkflowTab(node.mod); setIsEscortExpanded(false); }}
+                          className={`relative flex items-center gap-4 cursor-pointer group ${node.highlight ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
+                        >
+                          <div className={`w-4 h-4 rounded-full border-2 border-white shadow-sm z-10 transition-colors ${node.highlight ? 'bg-indigo-500' : 'bg-neutral-300 group-hover:bg-indigo-400'}`} />
+                          <div className="flex-1 bg-white border border-neutral-200 p-3 rounded-xl shadow-sm group-hover:border-indigo-300 group-hover:shadow transition-all flex items-center justify-between">
+                            <span className="text-[13px] font-bold text-neutral-900">{node.step}</span>
+                            <ArrowRight size={14} className="text-neutral-400 group-hover:text-indigo-500" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </div>

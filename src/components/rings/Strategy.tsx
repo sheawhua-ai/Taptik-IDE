@@ -13,26 +13,72 @@ import {
   Sparkles,
   Play,
   Hash,
+  User,
   Users,
   Layers,
   ShieldCheck,
   Plus,
+  Settings2,
+  FileText,
+  X,
+  MessageSquare,
+  Send,
+  Image as ImageIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { ExecutionPreview } from "./ExecutionPreview";
 import { ExecutionResult } from "./ExecutionResult";
 
 export const Strategy: React.FC<{
   hasData?: boolean;
   strategyData?: { word: string; rate: string }[];
 }> = ({ hasData = true, strategyData = [] }) => {
-  const [showEvidence, setShowEvidence] = useState(false);
+  const [showEvidenceDrawer, setShowEvidenceDrawer] = useState(false);
+  const [showAdjustDrawer, setShowAdjustDrawer] = useState(false);
+  const [showSkillPanel, setShowSkillPanel] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState('美妆搜索种草打法');
+  const [showSkillOverviewDrawer, setShowSkillOverviewDrawer] = useState(false);
+  const [previewSkill, setPreviewSkill] = useState<{name: string, tag: string, desc: string} | null>(null);
+  
+  const [selectedTarget, setSelectedTarget] = useState('搜索卡位');
+  
+  const [formValues, setFormValues] = useState({
+    percent1: 70, percent2: 30, amount: 12, days: 7, a01: 3, a02: 3, a05: 2, koc: 4
+  });
+  
+  const handleTargetChange = (t: string) => {
+    setSelectedTarget(t);
+    if (t === '搜索卡位') setFormValues({percent1: 70, percent2: 30, amount: 12, days: 7, a01: 3, a02: 3, a05: 2, koc: 4});
+    else if (t === '爆文起量') setFormValues({percent1: 40, percent2: 60, amount: 20, days: 14, a01: 5, a02: 5, a05: 5, koc: 5});
+    else if (t === '线索转化') setFormValues({percent1: 20, percent2: 80, amount: 10, days: 7, a01: 2, a02: 2, a05: 4, koc: 2});
+    else if (t === '账号养成') setFormValues({percent1: 50, percent2: 50, amount: 15, days: 30, a01: 5, a02: 5, a05: 5, koc: 0});
+  };
+
+  
+  
+  
   const [flowState, setFlowState] = useState<
     "suggestion" | "confirming" | "generating" | "running"
   >("suggestion");
   const [generateProgress, setGenerateProgress] = useState(0);
-  const [selectedDirection, setSelectedDirection] = useState("幼犬换粮避坑");
+  const [selectedDirection, setSelectedDirection] = useState("幼犬换粮避坑搜索卡位");
   const [selectedDesc, setSelectedDesc] = useState("这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。");
+  const [adjustMemory, setAdjustMemory] = useState("only_once");
+  const [aiInput, setAiInput] = useState("");
+  const [aiMessage, setAiMessage] = useState("");
+  const [isAiThinking, setIsAiThinking] = useState(false);
+
+  const handleAiSubmit = () => {
+    if (!aiInput) return;
+    setIsAiThinking(true);
+    setTimeout(() => {
+      setIsAiThinking(false);
+      setAiMessage("没问题，我已经将主攻目标切换为“自然流起量”，并为您增加了真实客户快发的篇数（加至20篇），下方的参数已自动为您更新。");
+      setFormValues({ ...formValues, koc: 20 });
+      setSelectedTarget("自然流起量");
+      setAiInput("");
+    }, 1500);
+  };
+
 
   const startGenerating = () => {
     setFlowState("generating");
@@ -51,336 +97,721 @@ export const Strategy: React.FC<{
 
   return (
     <div className="flex flex-col h-full w-full bg-neutral-50/40 overflow-hidden relative">
-      <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center shadow-sm">
-            <Compass size={20} />
+      <div className="border-b border-neutral-100 px-8 py-5 flex items-center justify-between shrink-0 bg-white relative z-20">
+        <div className="flex flex-col gap-2 relative z-20">
+          <div className="text-[12px] text-neutral-500 font-medium flex items-center gap-2">
+            <span>商家：宠物食品组</span>
+            <span className="w-1 h-1 rounded-full bg-neutral-300" />
+            <span>当前阶段：冷启动 / 搜索卡位不足</span>
+            <span className="w-1 h-1 rounded-full bg-neutral-300" />
+            <span className="text-emerald-600">画像完整度：92%</span>
+            <button className="text-[12px] font-medium text-neutral-500 hover:text-neutral-700 transition-colors bg-neutral-100 px-2 py-0.5 rounded ml-2" onClick={() => window.dispatchEvent(new CustomEvent('open-merchant-profile-drawer'))}>查看画像缺口</button>
           </div>
-          <div>
-            <h2 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
-              今日操盘建议
-            </h2>
-            <div className="flex items-center gap-2 mt-0.5">
-              <p className="text-[11px] text-neutral-400">
-                基于商家画像、知识库、目标客群、竞品与历史数据生成
-              </p>
-            </div>
+          <div className="flex items-center gap-3 relative">
+            <button 
+              onClick={() => setShowSkillPanel(!showSkillPanel)}
+              className="text-[14px] font-bold text-neutral-900 flex items-center gap-1.5 hover:bg-neutral-50 px-2 py-1 -ml-2 rounded-lg transition-colors"
+            >
+              <Compass size={16} className="text-rose-600" /> 
+              当前打法：{selectedSkill}
+              <ChevronDown size={14} className="text-neutral-400" />
+            </button>
+            <button className="text-[12px] text-neutral-500 font-medium hover:text-neutral-700 px-2 py-1">刷新建议</button>
+
+            {/* Skill Panel Dropdown */}
+            <AnimatePresence>
+              {showSkillPanel && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setShowSkillPanel(false)}
+                    className="fixed inset-0 z-40"
+                  />
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute top-full left-0 mt-2 w-80 bg-white border border-neutral-200 shadow-xl rounded-xl z-50 overflow-hidden"
+                  >
+                    <div className="p-3 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
+                      <div className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">切换打法 (Skills)</div>
+                    </div>
+                    <div className="p-2 space-y-1">
+                      {[
+                        { name: '通用小红书打法', tag: '系统', desc: '适合无明显行业特征的冷启动' },
+                        { name: '美妆搜索种草打法', tag: '团队版', desc: '适合高溢价/功效型产品，侧重长尾搜索' },
+                        { name: '团队自定义打法', tag: '自定义', desc: '根据最新复盘调整的草稿' },
+                        { name: '上次成功打法', tag: '记忆', desc: '上周五表现最好的内容配比' }
+                      ].map(skill => {
+                        const isActive = skill.name === selectedSkill;
+                        return (
+                        <div key={skill.name} onClick={() => { setPreviewSkill(skill); setShowSkillOverviewDrawer(true); setShowSkillPanel(false); }} className={`p-3 rounded-lg cursor-pointer flex flex-col gap-1 transition-colors ${isActive ? 'bg-rose-50 border border-rose-100' : 'hover:bg-neutral-50 border border-transparent'}`}>
+                          <div className="flex justify-between items-center">
+                            <span className={`text-[13px] font-bold ${isActive ? 'text-rose-900' : 'text-neutral-700'}`}>{skill.name}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${isActive ? 'bg-rose-100 text-rose-700' : 'bg-neutral-100 text-neutral-500'}`}>{skill.tag}</span>
+                          </div>
+                          <div className="text-[11px] text-neutral-500">{skill.desc}</div>
+                        </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
+        </div>
+        <div className="text-[12px] text-amber-800 bg-amber-50 px-4 py-2 rounded-xl border border-amber-100 flex items-center gap-2 font-medium">
+          <Sparkles size={16} className="text-amber-500" /> 
+          发现机会：6 个长尾词 / 2 个账号可承接 / 素材覆盖 70%
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10">
-        <div className="max-w-5xl mx-auto space-y-6">
-          {/* 2. 中间核心：今日操盘建议卡 */}
-          {flowState === "suggestion" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl border border-primary-100 p-8 shadow-xl shadow-primary-500/5 relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-                <Target size={200} />
-              </div>
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8">
+        <div className="max-w-[1200px] mx-auto space-y-6">
+          {/* 方案区 */}
+          {flowState !== "confirming" && (
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              {/* 主推方案 */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="xl:col-span-2 bg-white rounded-3xl border border-rose-100 p-8 shadow-sm relative overflow-hidden"
+              >
+                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                  <Target size={160} />
+                 </div>
+                 <div className="relative z-10">
+                    <div className="flex items-center gap-2 text-rose-700 font-bold mb-4 text-[13px] bg-rose-50 px-3 py-1.5 rounded-full w-fit">
+                      <Bot size={16} /> 推荐优先做
+                    </div>
+                    <h3 className="text-[28px] font-bold text-neutral-900 mb-8 tracking-tight">
+                      {selectedDirection}
+                    </h3>
 
-              <div className="relative z-10 max-w-3xl">
-                <div className="flex items-center gap-2 text-primary-600 font-semibold mb-4 text-[14px]">
-                  <Bot size={18} /> 今日建议优先操盘方向
-                </div>
-
-                <h3 className="text-[28px] font-bold text-neutral-900 mb-4 tracking-tight">
-                  建议从「幼犬换粮避坑」开始
-                </h3>
-
-                <p className="text-[14px] text-neutral-600 leading-relaxed mb-6">
-                  这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。
-                </p>
-
-                <div className="bg-neutral-50/80 rounded-2xl p-5 mb-6 border border-neutral-100">
-                  <h4 className="text-[13px] font-semibold text-neutral-900 mb-3 flex items-center gap-2">
-                    <Layers size={14} className="text-primary-500" /> 建议打法
-                  </h4>
-                  <ul className="space-y-2 text-[13px] text-neutral-600">
-                    <li className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-1.5 shrink-0" />{" "}
-                      创建一个 <strong>7 天搜索卡位项目</strong>，生成 12
-                      篇自然流笔记。
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-1.5 shrink-0" />{" "}
-                      内容结构：
-                      <strong>
-                        70% 素人避坑口吻为主，30% 专业号科普口吻辅助
-                      </strong>
-                      。
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-1.5 shrink-0" />{" "}
-                      影响范围：将调用 A01 测评号、A02 避坑号、A05
-                      专业号的本周排期。
-                    </li>
-                  </ul>
-                </div>
-
-                {/* 证据展开 */}
-                <div className="mb-8">
-                  <button
-                    onClick={() => setShowEvidence(!showEvidence)}
-                    className="flex items-center gap-2 text-[13px] text-neutral-500 hover:text-primary-600 transition-colors bg-white px-3 py-1.5 rounded-lg border border-neutral-200 shadow-sm"
-                  >
-                    {showEvidence ? (
-                      <ChevronDown size={14} />
-                    ) : (
-                      <ChevronRight size={14} />
-                    )}
-                    {showEvidence ? "收起 AI 决策依据" : "展开 AI 决策依据"}
-                  </button>
-                  <AnimatePresence>
-                    {showEvidence && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                            <div className="text-[12px] font-semibold text-neutral-800 mb-2 flex items-center gap-1.5">
-                              <Activity size={14} className="text-rose-500" />{" "}
-                              低粉爆款信号
-                            </div>
-                            <div className="text-[12px] text-neutral-500 leading-relaxed">
-                              发现 3 篇赞藏比 &gt; 5% 的低粉爆款（均 &lt; 500
-                              粉），核心切入点均为“换粮拉稀”。说明目前该切入点处于流量红利期。
-                            </div>
-                          </div>
-                          <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                            <div className="text-[12px] font-semibold text-neutral-800 mb-2 flex items-center gap-1.5">
-                              <Users size={14} className="text-indigo-500" />{" "}
-                              评论区痛点提取
-                            </div>
-                            <div className="text-[12px] text-neutral-500 leading-relaxed">
-                              近 30
-                              天竞品热门笔记下，高频出现“幼犬拉稀、软便、怎么过渡”等真实用户提问，需求强烈。
-                            </div>
-                          </div>
-                          <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                            <div className="text-[12px] font-semibold text-neutral-800 mb-2 flex items-center gap-1.5">
-                              <Hash size={14} className="text-emerald-500" />{" "}
-                              账号矩阵匹配度
-                            </div>
-                            <div className="text-[12px] text-neutral-500 leading-relaxed">
-                              当前商户资产库中，【A01 测评号】和【A02
-                              避坑号】的历史表现良好，粉丝画像与该话题高度重合，适合立刻执行。
-                            </div>
-                          </div>
-                          <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                            <div className="text-[12px] font-semibold text-neutral-800 mb-2 flex items-center gap-1.5">
-                              <ShieldCheck
-                                size={14}
-                                className="text-indigo-500"
-                              />{" "}
-                              品牌知识库依据
-                            </div>
-                            <div className="text-[12px] text-neutral-500 leading-relaxed">
-                              本次生成将自动规避品牌设定的 12
-                              个医疗化违禁词，并提取“低敏、易消化”等合规核心卖点。
-                            </div>
-                          </div>
+                    <div className="space-y-8">
+                      <div>
+                        <div className="text-[14px] font-bold text-neutral-900 mb-2">为什么做：</div>
+                        <div className="text-[14px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100">
+                          {selectedDesc}
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-[14px] font-bold text-neutral-900 mb-3">预计产出：</div>
+                        <div className="flex flex-wrap gap-2.5">
+                          {["7 天项目流", "12 篇内容任务包", "8 个素材需求", "3 个账号排期建议", "1 套私域承接话术"].map(item => (
+                            <span key={item} className="text-[13px] bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg font-medium shadow-sm flex items-center gap-1.5">
+                              <CheckCircle2 size={14} className="text-emerald-500" /> {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    onClick={() => {
-                      setSelectedDirection("幼犬换粮避坑");
-                      setSelectedDesc("这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。");
-                      setFlowState("confirming");
-                    }}
-                    className="px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-medium hover:bg-primary-600 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
-                  >
-                    <Play size={16} /> 开始操盘
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.dispatchEvent(
-                        new CustomEvent("open-expert", {
-                          detail: {
-                            expert: "操盘副手",
-                            context: `我想继续深挖一下「幼犬换粮避坑」这个方向，再给我一些变体`,
-                          },
-                        }),
-                      )
-                    }
-                    className="px-6 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-medium hover:bg-neutral-50 transition-colors shadow-sm"
-                  >
-                    继续深挖
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.dispatchEvent(
-                        new CustomEvent("open-expert", {
-                          detail: {
-                            expert: "操盘副手",
-                            context: `除了幼犬换粮避坑，今天还有没有其他适合测试的方向？`,
-                          },
-                        }),
-                      )
-                    }
-                    className="px-6 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-medium hover:bg-neutral-50 transition-colors shadow-sm"
-                  >
-                    换个方向
-                  </button>
+                      <div>
+                        <div className="text-[14px] font-bold text-neutral-900 mb-3">推荐处理顺序：</div>
+                        <div className="flex items-center gap-2 text-[13px] text-neutral-700 font-medium overflow-x-auto pb-2">
+                           <span className="bg-rose-50 text-rose-700 px-4 py-2 rounded-lg border border-rose-100 whitespace-nowrap">内容确认</span> <ArrowRight size={16} className="text-neutral-300" />
+                           <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">素材补齐</span> <ArrowRight size={16} className="text-neutral-300" />
+                           <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">账号排期</span> <ArrowRight size={16} className="text-neutral-300" />
+                           <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">线索承接</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-10 pt-6 border-t border-neutral-100 flex flex-wrap items-center gap-3">
+                      {(flowState === "suggestion") && (
+                        <button
+                          onClick={() => {
+                            startGenerating();
+                          }}
+                          className="px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
+                        >
+                          <Play size={16} /> 采用此方案
+                        </button>
+                      )}
+                      {(flowState === "generating" || flowState === "running") && (
+                        <div className="px-6 py-3.5 bg-rose-50 text-rose-700 rounded-xl text-[14px] font-bold flex items-center gap-2 border border-rose-100">
+                          <CheckCircle2 size={16} /> 已采用
+                        </div>
+                      )}
+                      
+                      <button
+                        onClick={() => setShowAdjustDrawer(true)}
+                        className="px-6 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors flex items-center gap-2 shadow-sm"
+                        disabled={flowState !== "suggestion"}
+                      >
+                        <Settings2 size={16} /> 调整方案
+                      </button>
+                      <div className="flex-1" />
+                      <button
+                        onClick={() => setShowEvidenceDrawer(true)}
+                        className="px-4 py-3.5 text-rose-600 text-[13px] font-bold hover:bg-rose-50 rounded-xl transition-colors flex items-center gap-1.5"
+                      >
+                        为什么推荐这个方向？ <ChevronRight size={16} />
+                      </button>
+                    </div>
+                 </div>
+              </motion.div>
+
+              {/* 备选方案 */}
+              <div className="flex flex-col gap-4">
+                <div className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-rose-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setSelectedDirection("真实喂养场景种草"); setSelectedDesc("适合素材充足时做。主要依赖用户真实投稿的喂养视频，二次剪辑。"); } }}>
+                  <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">备选 A</div>
+                  <h4 className="text-[18px] font-bold text-neutral-900 mb-2">真实喂养场景种草</h4>
+                  <p className="text-[13px] text-neutral-500 mb-6">适合素材充足时做</p>
+                  {flowState === "suggestion" && <div className="text-[13px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
                 </div>
+                <div className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-rose-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setSelectedDirection("高意向私域承接"); setSelectedDesc("适合已有评论和私信积累时做。重点将已有高意向公域用户导流至企微。"); } }}>
+                  <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">备选 B</div>
+                  <h4 className="text-[18px] font-bold text-neutral-900 mb-2">高意向私域承接</h4>
+                  <p className="text-[13px] text-neutral-500 mb-6">适合已有评论和私信积累时做</p>
+                  {flowState === "suggestion" && <div className="text-[13px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
+                </div>
+                {flowState === "suggestion" && (
+                  <button onClick={() => window.dispatchEvent(new CustomEvent('open-expert-app', { detail: { expert: '操盘副手', context: '除了现有的方案，还有其他适合的备选方向吗？' }}))} className="mt-2 text-[13px] font-bold text-neutral-500 hover:text-neutral-800 flex items-center justify-center gap-2 bg-white border border-neutral-200 py-4 rounded-3xl border-dashed hover:border-neutral-300 transition-colors">
+                     <Plus size={18} /> 换一组方案
+                  </button>
+                )}
               </div>
-            </motion.div>
+            </div>
           )}
 
-          {/* 3. 执行预览 */}
-          {flowState === "confirming" && (
-            <ExecutionPreview
-              onStart={startGenerating}
-              onBack={() => setFlowState("suggestion")}
-              defaultDirection={selectedDirection}
-              defaultDesc={selectedDesc}
-            />
-          )}
-
-          {/* 4. 生成中 / 生成完成 */}
+          {/* 4. 生成中 / 生成完成 (显示在底部) */}
           {(flowState === "generating" || flowState === "running") && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-3xl border border-primary-200 p-8 shadow-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-3xl border border-rose-200 p-8 shadow-xl mt-8"
             >
               {flowState === "generating" ? (
                 <>
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h3 className="text-[20px] font-semibold text-neutral-900 flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
-                        AI 正在执行项目初始化...
+                        <div className="w-4 h-4 rounded-full border-2 border-rose-500 border-t-transparent animate-spin" />
+                        正在生成起盘任务...
                       </h3>
                     </div>
                   </div>
                   <div className="space-y-5">
                     <div className="h-2.5 w-full bg-neutral-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-primary-500 transition-all duration-300"
+                        className="h-full bg-rose-500 transition-all duration-300"
                         style={{ width: `${generateProgress}%` }}
                       />
                     </div>
                     <div className="text-[13px] text-neutral-500 font-mono space-y-2">
-                      <div
-                        className={
-                          generateProgress > 0
-                            ? "text-neutral-700"
-                            : "text-neutral-300"
-                        }
-                      >
-                        {generateProgress > 0 && "> "}正在分析 12
-                        篇内容的阶段发布目标...
+                      <div className={generateProgress > 0 ? "text-neutral-700" : "text-neutral-300"}>
+                        {generateProgress > 0 && "> "}正在生成 1 个项目流和 12 个内容任务...
                       </div>
-                      <div
-                        className={
-                          generateProgress > 20
-                            ? "text-neutral-700"
-                            : "text-neutral-300"
-                        }
-                      >
-                        {generateProgress > 20 && "> "}
-                        正在调用品牌知识库提取卖点与规避禁忌词...
+                      <div className={generateProgress > 20 ? "text-neutral-700" : "text-neutral-300"}>
+                        {generateProgress > 20 && "> "}正在生成 8 个素材需求并同步至素材库...
                       </div>
-                      <div
-                        className={
-                          generateProgress > 50
-                            ? "text-neutral-700"
-                            : "text-neutral-300"
-                        }
-                      >
-                        {generateProgress > 50 && "> "}
-                        正在生成第一批图文与视频分镜脚本...
+                      <div className={generateProgress > 50 ? "text-neutral-700" : "text-neutral-300"}>
+                        {generateProgress > 50 && "> "}正在分配 A01、A02、A05 的 3 个账号排期...
                       </div>
-                      <div
-                        className={
-                          generateProgress > 80
-                            ? "text-neutral-700"
-                            : "text-neutral-300"
-                        }
-                      >
-                        {generateProgress > 80 && "> "}正在将草稿分配至
-                        A01、A02、A05 账号排期队列...
+                      <div className={generateProgress > 80 ? "text-neutral-700" : "text-neutral-300"}>
+                        {generateProgress > 80 && "> "}正在创建 2 个协同确认任务...
                       </div>
                     </div>
                   </div>
                 </>
               ) : (
-                <ExecutionResult />
+                <div className="space-y-6">
+                  <h3 className="text-[20px] font-bold text-neutral-900 flex items-center gap-2">
+                    <CheckCircle2 className="text-emerald-500" size={24} /> 本轮起盘单：幼犬换粮避坑搜索卡位
+                  </h3>
+                  
+                  <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
+                    <div className="mb-6 pb-6 border-b border-neutral-100">
+                      <h4 className="text-[13px] font-bold text-neutral-500 mb-2">目标：</h4>
+                      <p className="text-[15px] text-neutral-800 leading-relaxed">
+                        用 7 天时间铺 20 篇内容，抢占“幼犬换粮软便 / 幼犬不吃粮 / 换粮拉稀”等长尾搜索词。
+                      </p>
+                    </div>
+
+                    <div className="mb-6 pb-6 border-b border-neutral-100">
+                      <h4 className="text-[13px] font-bold text-neutral-500 mb-4">账号组合：</h4>
+                      <div className="grid grid-cols-4 gap-4">
+                        <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">官方号 <span className="text-blue-600">3 篇</span></h5>
+                          <div className="text-[12px] font-medium text-neutral-500 mb-2">建立可信度</div>
+                          <div className="text-[11px] text-neutral-400">专业科普打法 · 品牌素材库</div>
+                        </div>
+                        <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">KOS <span className="text-indigo-600">4 篇</span></h5>
+                          <div className="text-[12px] font-medium text-neutral-500 mb-2">补充服务视角</div>
+                          <div className="text-[11px] text-neutral-400">顾问经验打法 · 需门店场景</div>
+                        </div>
+                        <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">泛素人分发 <span className="text-emerald-600">8 篇</span></h5>
+                          <div className="text-[12px] font-medium text-neutral-500 mb-2">铺真实体验</div>
+                          <div className="text-[11px] text-neutral-400">泛生活种草 · 人工预设人设</div>
+                        </div>
+                        <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">真实客户快发 <span className="text-amber-600">5 篇</span></h5>
+                          <div className="text-[12px] font-medium text-neutral-500 mb-2">现身说法</div>
+                          <div className="text-[11px] text-neutral-400">即时生成打法 · 现场扫码发</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+                      <h4 className="text-[13px] font-bold text-amber-800 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> 当前最大前置条件：</h4>
+                      <ul className="text-[13px] text-amber-700 space-y-1.5 font-medium">
+                        <li>• 泛素人需要先预设账号人设</li>
+                        <li>• 真实客户需要现场扫码</li>
+                        <li>• KOS 需要确认营养顾问人设</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button onClick={() => window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'matrix' } }))} className="px-6 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2">生成项目流 <ArrowRight size={16} /></button>
+                    <button onClick={() => setShowAdjustDrawer(true)} className="px-5 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors">调整账号组合</button>
+                    <button className="px-5 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors">换一套起盘打法</button>
+                  </div>
+                </div>
               )}
             </motion.div>
           )}
+        </div>
+      </div>
 
-          {/* 备选方向 */}
-          {flowState === "suggestion" && (
-            <div className="mt-12 pt-6 border-t border-neutral-100">
-              <h4 className="text-[15px] font-semibold text-neutral-900 mb-4 px-1">
-                其他备选方向
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div 
-                  onClick={() => {
-                    setSelectedDirection("平价猫粮红黑榜测评");
-                    setSelectedDesc("搜索量大但竞争激烈，需以极高专业度切入，建议作为长线防御动作。");
-                    setFlowState("confirming");
-                  }}
-                  className="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-primary-300 transition-colors cursor-pointer group shadow-sm"
+      {/* 为什么推荐这个方向 Drawer */}      {/* 为什么推荐这个方向 Drawer */}
+      <AnimatePresence>
+        {showEvidenceDrawer && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowEvidenceDrawer(false)}
+              className="fixed inset-0 bg-neutral-900/20 backdrop-blur-sm z-[100]"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-[440px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+            >
+              <div className="shrink-0 border-b border-neutral-100 p-6 relative">
+                <button
+                  onClick={() => setShowEvidenceDrawer(false)}
+                  className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
                 >
-                  <div className="flex justify-between items-start mb-3">
-                    <h5 className="font-semibold text-neutral-900 text-[15px]">
-                      平价猫粮红黑榜测评
-                    </h5>
-                    <span className="text-[11px] font-medium bg-neutral-100 text-neutral-600 px-2 py-1 rounded-md">
-                      建议调用：A01 测评号
-                    </span>
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-rose-50 rounded-xl text-rose-600 flex items-center justify-center">
+                    <Sparkles size={20} />
                   </div>
-                  <p className="text-[13px] text-neutral-500 mb-5 leading-relaxed">
-                    搜索量大但竞争激烈，需以极高专业度切入，建议作为长线防御动作。
-                  </p>
-                  <div className="text-[13px] font-medium text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                    查看方案明细 <ArrowRight size={14} />
+                  <h2 className="text-[18px] font-bold text-neutral-900">推荐依据</h2>
+                </div>
+                <p className="text-[13px] text-neutral-500">
+                  基于以下维度生成的“幼犬换粮避坑搜索卡位”方案
+                </p>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <User size={14} /> 商家画像
+                  </h3>
+                  <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
+                    <div className="text-[13px] text-neutral-700 leading-relaxed">目标人群是新手犬主，核心顾虑是软便和换粮失败。</div>
+                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
-                <div 
-                  onClick={() => {
-                    setSelectedDirection("宠物肠胃保护 Vlog");
-                    setSelectedDesc("高转化率视频类型，但素材回收成本较高，建议走内部员工 KOS 账号执行。");
-                    setFlowState("confirming");
-                  }}
-                  className="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-primary-300 transition-colors cursor-pointer group shadow-sm"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <h5 className="font-semibold text-neutral-900 text-[15px]">
-                      宠物肠胃保护 Vlog
-                    </h5>
-                    <span className="text-[11px] font-medium bg-neutral-100 text-neutral-600 px-2 py-1 rounded-md">
-                      建议调用：KOS矩阵号
-                    </span>
+
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <Activity size={14} /> 搜索机会
+                  </h3>
+                  <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
+                    <div className="text-[13px] text-neutral-700 leading-relaxed">“幼犬换粮软便”、“幼犬不吃粮怎么办”等长尾词搜索量上升 32%。</div>
+                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
-                  <p className="text-[13px] text-neutral-500 mb-5 leading-relaxed">
-                    高转化率视频类型，但素材回收成本较高，建议走内部员工 KOS
-                    账号执行。
-                  </p>
-                  <div className="text-[13px] font-medium text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                    查看方案明细 <ArrowRight size={14} />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <Users size={14} /> 账号条件
+                  </h3>
+                  <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
+                    <div className="text-[13px] text-neutral-700 leading-relaxed">A01 测评号适合承接避坑内容，A05 专业号适合承接科普内容，当前排期空闲。</div>
+                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <FileText size={14} /> 素材条件
+                  </h3>
+                  <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
+                    <div className="text-[13px] text-neutral-700 leading-relaxed">现有素材覆盖率 70%，缺失真实喂食和便便状态场景图。</div>
+                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <ShieldCheck size={14} /> 风险提醒
+                  </h3>
+                  <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4">
+                    <div className="text-[13px] text-rose-800 leading-relaxed">品牌属于宠物食品，内容生成时不能承诺治疗效果，避免绝对化功效表达。</div>
+                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* 调整方案 Drawer */}
+      <AnimatePresence>
+        {showAdjustDrawer && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAdjustDrawer(false)}
+              className="fixed inset-0 bg-neutral-900/20 backdrop-blur-sm z-[100]"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-[500px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+            >
+              <div className="shrink-0 border-b border-neutral-100 p-6 relative">
+                <button
+                  onClick={() => setShowAdjustDrawer(false)}
+                  className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                >
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-neutral-100 rounded-xl text-neutral-700 flex items-center justify-center">
+                    <Settings2 size={20} />
+                  </div>
+                  <h2 className="text-[18px] font-bold text-neutral-900">调整方案参数</h2>
+                </div>
+                <p className="text-[13px] text-neutral-500">
+                  修改运营参数，AI 将重新生成对应的起盘计划
+                </p>
+
+                {/* AI Assistant Chat inside Adjust Drawer */}
+                <div className="mt-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Bot size={16} className="text-indigo-600" />
+                    <span className="text-[13px] font-bold text-indigo-900">操盘副手</span>
+                  </div>
+                  
+                  {isAiThinking ? (
+                    <div className="text-[13px] text-indigo-800 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                      <span className="ml-1">正在理解您的意图并调整参数...</span>
+                    </div>
+                  ) : aiMessage ? (
+                    <div className="text-[13px] text-indigo-800 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm leading-relaxed">
+                      {aiMessage}
+                    </div>
+                  ) : (
+                    <div className="text-[13px] text-indigo-800 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm leading-relaxed">
+                      您可以直接告诉我怎么调整，例如：“把真实客户的篇数加到 20 篇”，或者“更偏向自然流起量”。我会自动帮您修改下方的参数。
+                    </div>
+                  )}
+
+                  <div className="relative mt-1">
+                    <input 
+                      type="text" 
+                      value={aiInput}
+                      onChange={(e) => setAiInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && aiInput) handleAiSubmit();
+                      }}
+                      placeholder="输入您的调整需求..." 
+                      className="w-full bg-white border border-indigo-200 rounded-lg pl-3 pr-10 py-2 text-[13px] focus:outline-none focus:border-indigo-400"
+                    />
+                    <button 
+                      onClick={handleAiSubmit}
+                      disabled={!aiInput || isAiThinking}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-indigo-600 hover:text-indigo-700 disabled:text-indigo-300 bg-indigo-50 p-1 rounded-md transition-colors"
+                    >
+                      <Send size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">主攻目标</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['搜索卡位', '爆文起量', '线索转化', '账号养成'].map(t => (
+                        <button key={t} onClick={() => handleTargetChange(t)} className={`py-2 px-3 text-[13px] font-medium rounded-lg border text-center transition-colors ${t === selectedTarget ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容比例</label>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <div className="text-[12px] text-neutral-500 mb-1">素人口吻</div>
+                        <div className="relative"><input type="number" value={formValues.percent1} onChange={e => setFormValues({...formValues, percent1: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">%</span></div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[12px] text-neutral-500 mb-1">专业科普</div>
+                        <div className="relative"><input type="number" value={formValues.percent2} onChange={e => setFormValues({...formValues, percent2: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">%</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容数量</label>
+                      <div className="relative"><input type="number" value={formValues.amount} onChange={e => setFormValues({...formValues, amount: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">篇</span></div>
+                    </div>
+                    <div>
+                      <label className="block text-[13px] font-bold text-neutral-700 mb-2">执行周期</label>
+                      <div className="relative"><input type="number" value={formValues.days} onChange={e => setFormValues({...formValues, days: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">天</span></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">账号矩阵与内容策略</label>
+                    <div className="space-y-3">
+                      {/* 官方/专业号 */}
+                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500"></span>专业号 (A05)</span>
+                          <div className="relative w-20"><input type="number" value={formValues.a05} onChange={e => setFormValues({...formValues, a05: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">篇</span></div>
+                        </div>
+                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>品牌背书、专业成分科普</p></div>
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>员工选用官方精美海报、高清素材或棚拍</p></div>
+                        </div>
+                      </div>
+
+                      {/* 员工/人设号 */}
+                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500"></span>员工/人设号 (A01/A02)</span>
+                          <div className="flex gap-2">
+                             <div className="relative w-[72px]"><input type="number" value={formValues.a01} onChange={e => setFormValues({...formValues, a01: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 text-[11px] font-medium">A01</span></div>
+                             <div className="relative w-[72px]"><input type="number" value={formValues.a02} onChange={e => setFormValues({...formValues, a02: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 text-[11px] font-medium">A02</span></div>
+                          </div>
+                        </div>
+                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>测评对比、避坑指南、个人养宠经验</p></div>
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>员工领取实拍任务，回传生活化场景配图</p></div>
+                        </div>
+                      </div>
+
+                      {/* 外部 KOC */}
+                      <div className="bg-emerald-50/30 border border-emerald-100 shadow-sm rounded-xl p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>外部 KOC 矩阵</span>
+                          <div className="relative w-20"><input type="number" value={formValues.koc} onChange={e => setFormValues({...formValues, koc: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-white border border-emerald-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">篇</span></div>
+                        </div>
+                        <div className="bg-white p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5 border border-emerald-100/50">
+                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>真实反馈、软便改善记录、挑食应对过程</p></div>
+                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>需在此预置 KOC 取材模式，影响下游分发流转</p></div>
+                        </div>
+                        
+                        <div className="pt-2 border-t border-emerald-100 space-y-2">
+                           <label className="flex items-start gap-2 cursor-pointer group">
+                             <input type="radio" name="koc_mode" defaultChecked className="mt-0.5 accent-emerald-600" />
+                             <div>
+                               <div className="text-[13px] font-medium text-neutral-900 group-hover:text-emerald-700 transition-colors">KOC 领取任务时自行实拍回传</div>
+                               <div className="text-[11px] text-neutral-500 mt-0.5">流程：系统下发拍摄要求 &rarr; KOC 回传 &rarr; AI 校验合排</div>
+                             </div>
+                           </label>
+    
+                           <label className="flex items-start gap-2 cursor-pointer group">
+                             <input type="radio" name="koc_mode" className="mt-0.5 accent-emerald-600" />
+                             <div>
+                               <div className="text-[13px] font-medium text-neutral-900 group-hover:text-emerald-700 transition-colors">商家云端下发标准素材包</div>
+                               <div className="text-[11px] text-neutral-500 mt-0.5">流程：员工上传素材 &rarr; 生成多种配图 &rarr; 下发给 KOC 发布</div>
+                             </div>
+                           </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">风险边界 (系统预置)</label>
+                    <div className="space-y-2">
+                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-rose-400" /> 不能承诺治疗</div>
+                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-rose-400" /> 不提竞品</div>
+                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-rose-400" /> 不使用夸张功效词</div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div className="shrink-0 border-t border-neutral-100 p-6 bg-neutral-50/50 space-y-4">
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-2">是否记住这次调整？</div>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" checked={adjustMemory === 'only_once'} onChange={() => setAdjustMemory('only_once')} className="accent-rose-600" />
+                      <span className="text-[13px] text-neutral-700">仅本次使用</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" checked={adjustMemory === 'merchant'} onChange={() => setAdjustMemory('merchant')} className="accent-rose-600" />
+                      <span className="text-[13px] text-neutral-700">记为该商家偏好</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" checked={adjustMemory === 'team'} onChange={() => setAdjustMemory('team')} className="accent-rose-600" />
+                      <span className="text-[13px] text-neutral-700">提交为团队打法</span>
+                    </label>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowAdjustDrawer(false);
+                    startGenerating();
+                  }}
+                  className="w-full py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95"
+                >
+                  确认修改，重新生成起盘清单
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Skill 概览 Drawer */}
+      <AnimatePresence>
+        {showSkillOverviewDrawer && previewSkill && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSkillOverviewDrawer(false)}
+              className="fixed inset-0 bg-neutral-900/20 backdrop-blur-sm z-[100]"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-[440px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+            >
+              <div className="shrink-0 border-b border-neutral-100 p-6 relative">
+                <button
+                  onClick={() => setShowSkillOverviewDrawer(false)}
+                  className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                >
+                  <X size={20} />
+                </button>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-rose-50 rounded-xl text-rose-600 flex items-center justify-center">
+                    <Compass size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-[18px] font-bold text-neutral-900">{previewSkill.name}</h2>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[11px] font-medium bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-md">
+                        {previewSkill.tag}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[13px] text-neutral-500 mt-3">
+                  {previewSkill.desc}
+                </p>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-[13px] font-bold text-neutral-900 mb-2">打法核心逻辑</h3>
+                    <div className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100">
+                      通过在小红书铺设长尾搜索词的内容矩阵，卡位搜索流量，并通过高意向用户的私域导流实现转化。重素人真实反馈，轻专业背书。
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[13px] font-bold text-neutral-900 mb-3">默认内容配比</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-[13px]">
+                        <span className="text-neutral-600 flex items-center gap-2"><User size={14} className="text-neutral-400"/>素人真实体验</span>
+                        <span className="font-medium text-neutral-900">70%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-rose-400 w-[70%]" />
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-[13px] pt-2">
+                        <span className="text-neutral-600 flex items-center gap-2"><Bot size={14} className="text-neutral-400"/>专业医生科普</span>
+                        <span className="font-medium text-neutral-900">30%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-400 w-[30%]" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[13px] font-bold text-neutral-900 mb-2">默认风险拦截规则</h3>
+                    <ul className="space-y-2 text-[13px] text-neutral-600">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                        拦截所有“包治百病”、“首选”等绝对化词汇
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                        避开直接点名竞品进行拉踩的内容
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                        医药相关描述需符合最新广告法规范
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="shrink-0 border-t border-neutral-100 p-6">
+                <button
+                  onClick={() => {
+                    setSelectedSkill(previewSkill.name);
+                    setShowSkillOverviewDrawer(false);
+                    // Reset flow state when changing skill
+                    if (flowState !== "suggestion") {
+                        setFlowState("suggestion");
+                    }
+                  }}
+                  className="w-full py-3.5 bg-rose-600 text-white rounded-xl text-[14px] font-bold hover:bg-rose-700 transition-colors shadow-lg shadow-rose-200 active:scale-95"
+                >
+                  {selectedSkill === previewSkill.name ? '当前已应用此打法' : '应用此打法'}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 };

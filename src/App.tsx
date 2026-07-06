@@ -345,7 +345,7 @@ const PROJECT_HISTORY_ITEMS = [
 
 const PROJECT_TABS = [
   { id: "strategy", name: "操盘建议", icon: Compass },
-  { id: "matrix", name: "项目与内容", icon: LayoutGrid },
+  { id: "matrix", name: "商家运营流", icon: LayoutGrid },
   { id: "content", name: "账号与发布", icon: Sparkles },
   { id: "interaction", name: "协同任务", icon: MessageSquare },
   { id: "metrics", name: "数据与机会", icon: BarChart2 },
@@ -860,8 +860,8 @@ export default function App() {
                   {[
                     {
                       icon: LayoutGrid,
-                      label: "项目与内容: 开始生成",
-                      sub: "基于项目策略批量挂机生成内容素材",
+                      label: "商家运营流: 快速创建",
+                      sub: "基于策略开启新的运营流项目",
                     },
                     {
                       icon: Compass,

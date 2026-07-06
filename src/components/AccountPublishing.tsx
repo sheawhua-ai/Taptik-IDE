@@ -188,71 +188,93 @@ const AccountAssetsView = ({ onOpenAccount, onAddAccount }: { onOpenAccount: () 
           </div>
           
           <div className="divide-y divide-neutral-100">
-            {/* 品牌自有 */}
-            <div className="bg-neutral-50/30 px-4 py-2 text-[12px] font-bold text-neutral-700 border-b border-neutral-100">自有可控账号</div>
-            <AccountListItem 
-              name="奈雪-区域福利官" 
-              type="品牌矩阵号" 
-              position="福利/种草" 
-              dailyAvailable="2/3"
-              tags={["适合自然流", "适合活动承接"]}
-              health="normal"
-              suggestion="适合承接扫码发布包"
-              onClick={onOpenAccount}
-              onDelete={() => {}}
-            />
+            {/* 官方号 */}
+            <div className="bg-neutral-50/30 px-4 py-2 text-[12px] font-bold text-neutral-700 border-b border-neutral-100 flex items-center justify-between">
+              <span>官方号</span>
+              <span className="text-[11px] font-normal text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">品牌自有，高权重</span>
+            </div>
             <AccountListItem 
               name="奈雪的茶官方" 
               type="品牌官号" 
-              position="品牌宣发" 
+              position="品牌宣发/科普" 
               dailyAvailable="0/1"
-              adStatus="关"
-              tags={["需人工发布", "适合专业科普"]}
+              tags={["需人工发布", "强背书"]}
               health="normal"
               suggestion="建议每周 2-3 篇深度内容"
               onClick={onOpenAccount}
               onDelete={() => {}}
             />
+            <AccountListItem 
+              name="奈雪-区域福利官" 
+              type="品牌矩阵号" 
+              position="福利/种草" 
+              dailyAvailable="2/3"
+              tags={["适合自然流", "活动承接"]}
+              health="normal"
+              suggestion="适合承接福利抽奖活动"
+              onClick={onOpenAccount}
+              onDelete={() => {}}
+            />
 
             {/* KOS */}
-            <div className="bg-neutral-50/30 px-4 py-2 text-[12px] font-bold text-neutral-700 border-b border-neutral-100 mt-2">员工 KOS</div>
+            <div className="bg-neutral-50/30 px-4 py-2 text-[12px] font-bold text-neutral-700 border-b border-neutral-100 mt-2 flex items-center justify-between">
+              <span>员工 KOS</span>
+              <span className="text-[11px] font-normal text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">门店员工/区域号</span>
+            </div>
             <AccountListItem 
               name="广州天河李店长" 
               type="店长号" 
               position="门店日常/探店" 
               dailyAvailable="1/1"
               adStatus="关"
-              tags={["适合素人口吻", "适合自然流"]}
+              tags={["素人口吻", "高信任度"]}
               health="warning"
-              suggestion="近3日未更新，建议派发门店活动内容"
+              suggestion="近3日未更新，建议派发探店内容"
               onClick={onOpenAccount}
               onDelete={() => {}}
             />
 
-            {/* 达人池 */}
+            {/* 真实客户池 */}
             <div className="bg-neutral-50/30 px-4 py-2 text-[12px] font-bold text-neutral-700 border-b border-neutral-100 mt-2 flex items-center justify-between">
-              <span>达人/外部账号池</span>
-              <span className="text-[11px] font-normal text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">首次合作后自动纳入</span>
+              <span>真实客户池</span>
+              <span className="text-[11px] font-normal text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">现场扫码授权后自动收录</span>
             </div>
             <AccountListItem 
-              name="护肤小达人" 
-              type="KOC" 
-              position="美妆/测评" 
-              dailyAvailable="-"
-              tags={["出图快", "互动率高"]}
+              name="真实客户_0823" 
+              type="真实客户快发" 
+              position="探店/素人反馈" 
+              dailyAvailable="1/1"
+              tags={["真实消费", "强地域性"]}
               health="normal"
-              suggestion="表现优异，建议长期合作，加入白名单"
+              suggestion="已完成到店打卡任务，可结算"
               onClick={onOpenAccount}
               onDelete={() => {}}
             />
             <AccountListItem 
-              name="探店队长" 
-              type="探店达人" 
-              position="本地生活" 
-              dailyAvailable="-"
-              tags={["流量大", "配合度一般"]}
+              name="真实客户_0811" 
+              type="真实客户快发" 
+              position="素人反馈" 
+              dailyAvailable="0/1"
+              tags={["真实消费", "出图快"]}
               health="normal"
-              suggestion="可以再次合作，注意沟通档期"
+              suggestion="互动数据极好，建议邀约长期体验"
+              onClick={onOpenAccount}
+              onDelete={() => {}}
+            />
+
+            {/* 泛素人 */}
+            <div className="bg-neutral-50/30 px-4 py-2 text-[12px] font-bold text-neutral-700 border-b border-neutral-100 mt-2 flex items-center justify-between">
+              <span>泛素人 / 外包账号池</span>
+              <span className="text-[11px] font-normal text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">预设人设/第三方合作</span>
+            </div>
+            <AccountListItem 
+              name="护肤小达人" 
+              type="泛素人分发" 
+              position="美妆/测评" 
+              dailyAvailable="-"
+              tags={["出图快", "互动率高"]}
+              health="normal"
+              suggestion="表现优异，建议加入白名单"
               onClick={onOpenAccount}
               onDelete={() => {}}
             />
@@ -262,7 +284,6 @@ const AccountAssetsView = ({ onOpenAccount, onAddAccount }: { onOpenAccount: () 
     </div>
   );
 };
-
 const AccountListItem = ({ name, type, position, tags, health, suggestion, onClick, onDelete, dailyAvailable, adStatus }: any) => {
   return (
     <div className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-neutral-50 transition-colors group">
