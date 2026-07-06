@@ -3,10 +3,18 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, CheckCircle2, Bot, ChevronRight, Wand2, FileText, 
   Image as ImageIcon, Compass, Send, CheckCircle, Clock,
-  MessageSquare, User, Smartphone, Users
+  MessageSquare, User, Smartphone, Users, Link
 } from 'lucide-react';
 
+const GROUPS = [
+  { id: 'official', name: '官方号', countStr: '3 篇可分发', batchAction: '一键下发发布任务', color: 'bg-blue-500' },
+  { id: 'kos', name: 'KOS', countStr: '4 篇可分发', batchAction: '一键下发发布任务', color: 'bg-indigo-500' },
+  { id: 'koc_general', name: '泛素人分发', countStr: '8 篇已就绪', batchAction: '生成接单任务码', color: 'bg-emerald-500' },
+  { id: 'koc_real', name: '真实客户快发', countStr: '30 个额度池', batchAction: '生成门店快发入口', color: 'bg-amber-500' },
+];
+
 const MOCK_CONTENT = [
+  // 官方号
   {
     id: 'c1',
     channel: 'official',
@@ -20,58 +28,55 @@ const MOCK_CONTENT = [
     content: '作为一名从医5年的宠物医生，接诊过太多因为换粮不当导致肠胃炎的幼犬。今天就来科普一下正确的换粮姿势。\n\n误区一：一次性全部换新粮。幼犬肠胃脆弱，需要7天过渡期（俗称7日换粮法）。\n\n误区二：只看包装不看成分。一定要学会看配料表，首选鲜肉配方，避开肉粉和诱食剂。\n\n选粮建议：推荐肠胃敏感的幼犬选择含有益生菌、无谷低敏配方的狗粮。最近测评的一款国产粮，鲜肉含量高达70%，且添加了枯草芽孢杆菌，对幼犬肠胃非常友好。',
     tags: '#宠物科普 #狗狗软便 #健康养宠'
   },
+  // KOS
   {
     id: 'c2',
     channel: 'kos',
-    channelName: 'KOS',
+    channelName: '员工 KOS',
     title: '店长手记：今天接诊了一只挑食小金毛',
-    status: '待人设确认',
-    strategy: '员工经验打法',
+    status: '可确认',
+    strategy: '服务记录',
     memory: '线下门店场景、真实服务案例',
-    materials: '需补拍门店问答场景',
-    readyForPublish: false,
-    content: '（正文待确认人设后生成）',
-    tags: ''
+    materials: '店面问答实拍图',
+    readyForPublish: true,
+    content: '今天遇到个特别发愁的客户，说他家金毛挑食得不行。我拿了几个试吃装给金毛，结果它对这款无谷低敏粮情有独钟...\n\n建议家里有挑食修勾的铲屎官，可以试试多换几种口味。',
+    tags: '#宠物店日常 #金毛 #挑食狗狗'
   },
-  {
-    id: 'c3',
-    channel: 'koc_real',
-    channelName: '真实客户快发',
-    title: '现场客户体验反馈 (即时生成)',
-    status: '待现场扫码',
-    strategy: '真实客户快发打法 (不缓存正文)',
-    memory: '已缓存：结构模板、关键词池、商家禁区',
-    materials: '客户现场扫码上传图 + 1句话感受',
-    readyForPublish: false,
-    isBrief: true,
-    briefDesc: '为避免同质化，针对真实到店或购买客户，系统不再提前缓存正文草稿。仅缓存【生成条件包】。',
-    briefTasks: [
-      '客户现场扫码，选择体验场景 (如：到店体验 / 已购买)',
-      '选择核心表达点 (如：效果不错 / 狗狗爱吃)',
-      '输入一句真实感受 (如：第一次换粮有点担心，店员讲得很细)',
-      'AI 接收输入，3-5秒内生成初稿，15秒优化为发布稿'
-    ],
-    icon: <Smartphone size={16} />
-  },
+  // 泛素人
   {
     id: 'c4',
     channel: 'koc_general',
     channelName: '泛素人分发',
-    title: '泛素人种草任务 (人设驱动)',
-    status: '待分配人设',
-    strategy: '泛素人种草打法',
-    memory: '已缓存：产品卖点、生活化种草话题',
-    materials: '从素材池提取通用生活场景图',
+    title: '大学生穷养狗平价好物',
+    status: '可分发',
+    strategy: '素人种草',
+    memory: '大学生、宿舍养宠、平价好物、低营销感',
+    materials: '通用生活场景图',
+    readyForPublish: true,
+    content: '宿舍养狗真的太费钱了！每个月生活费本来就不多，还要给主子买狗粮。做了好多功课才选了这款国产粮，均价才十几块一斤，但是配料表第一位是鲜肉，对于学生党来说真的性价比拉满了。\n\n狗狗吃了快一个月，粑粑正常，毛发也亮亮的，感觉挖到宝了！',
+    tags: '#学生党 #平价好物 #养狗日常'
+  },
+  // 真实客户快发 (池子)
+  {
+    id: 'c3',
+    channel: 'koc_real',
+    channelName: '真实客户快发',
+    title: '门店快发体验码 (池内 30 个名额)',
+    status: '待现场扫码',
+    strategy: '客户即时生成',
+    memory: '扫码后收集：身份标签、体验场景、关注点、一句话感受',
+    materials: '客户现场实拍',
     readyForPublish: false,
     isBrief: true,
-    briefDesc: '针对弱识别 KOC (任务群/第三方)，无法验证真实关系，系统限制生成“深度体验”类文案，仅限生活化种草。',
+    briefDesc: '此通道为客户专属快发入口，内容将在客户扫码并上传基本信息后即时生成。',
     briefTasks: [
-      '运营在系统预设该批次账号人设 (如：宝妈、大学生、养宠新手)',
-      '系统根据人设，结合缓存的关键词包生成适配笔记',
-      '必须经过人工审核',
-      '发给对应 KOC 发布'
+      '门店生成专属体验码，提供给到店/购买客户',
+      '客户扫码，上传 1 张现场实拍图',
+      '客户勾选体验场景（如：首次进店 / 换粮体验）',
+      '客户输入一句真实感受（如：店员讲解很细致，狗狗很喜欢吃）',
+      'AI 接收输入，3秒生成专属体验笔记，客户确认后一键发布'
     ],
-    icon: <Users size={16} />
+    icon: <Smartphone size={16} />
   }
 ];
 
@@ -79,120 +84,146 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
   const [items, setItems] = useState(MOCK_CONTENT);
   const [selectedContent, setSelectedContent] = useState<typeof MOCK_CONTENT[0] | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState('');
-  const [aiPrompt, setAiPrompt] = useState('');
+  const [editContent, setEditContent] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editTags, setEditTags] = useState("");
+  const [showLearningToast, setShowLearningToast] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
   const [isAiRewriting, setIsAiRewriting] = useState(false);
-
-
-  const renderChannelGroup = (channelCode: string, title: string, count: string, color: string) => {
-    const filteredItems = items.filter(c => c.channel === channelCode);
-    if (filteredItems.length === 0) return null;
-    
-    return (
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <div className={`w-2 h-2 rounded-full ${color}`} />
-          <h3 className="font-bold text-[14px] text-neutral-900">{title}</h3>
-          <span className="text-[12px] font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded">{count}</span>
-        </div>
-        <div className="space-y-3">
-          {filteredItems.map(item => (
-            <div 
-              key={item.id} 
-              onClick={() => { setSelectedContent(item); setIsEditing(false); setEditContent(item.content); }}
-              className={`border rounded-xl p-4 cursor-pointer transition-colors ${selectedContent?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-neutral-200 bg-white hover:border-indigo-300'}`}
-            >
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-bold text-[13px] text-neutral-900">{item.title}</h4>
-                <ChevronRight size={16} className="text-neutral-400" />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${item.readyForPublish ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                  {item.status}
-                </span>
-                <span className="text-[11px] text-neutral-500">{item.strategy}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" />
-      
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="w-[800px] bg-white h-full shadow-2xl flex flex-col relative z-10"
+        className="w-[900px] bg-neutral-50 h-full shadow-2xl flex flex-col relative z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-          <div className="flex items-center gap-2">
-            <FileText size={18} className="text-indigo-600" />
-            <h3 className="font-bold text-neutral-900 text-[16px]">内容确认 (20 篇)</h3>
+        <div className="h-16 border-b border-neutral-200 flex items-center justify-between px-6 shrink-0 bg-white">
+          <div className="flex items-center gap-3">
+            <h3 className="font-bold text-[18px] text-neutral-900">批量快审与分发控制台</h3>
+            {showLearningToast && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-1.5 text-[12px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full shadow-sm"
+              >
+                <Bot size={14} /> AI 已记录修改，将用于后续人设迭代
+              </motion.div>
+            )}
+            <span className="text-[12px] font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">已就绪</span>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-neutral-200 rounded-full transition-colors">
-            <X size={18} className="text-neutral-500" />
+          <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
+            <X size={18} />
           </button>
         </div>
-
+        
         <div className="flex-1 flex overflow-hidden">
-          {/* Left: List */}
-          <div className="w-[340px] border-r border-neutral-100 flex flex-col bg-neutral-50/30">
-            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-              {renderChannelGroup('official', '官方号', '3 篇可确认', 'bg-blue-500')}
-              {renderChannelGroup('kos', 'KOS', '2 篇待人设确认', 'bg-indigo-500')}
-              {renderChannelGroup('koc_real', '真实客户快发', '5 个待现场扫码 (不缓存正文)', 'bg-amber-500')}
-              {renderChannelGroup('koc_general', '泛素人分发', '8 篇待分配人设', 'bg-emerald-500')}
+          {/* 左侧列表 */}
+          <div className="w-[320px] bg-white border-r border-neutral-200 flex flex-col h-full overflow-hidden shrink-0">
+            <div className="p-4 border-b border-neutral-100 bg-neutral-50/50">
+              <div className="text-[13px] font-bold text-neutral-500 mb-2">分发控制</div>
+              <div className="space-y-2">
+                {GROUPS.map(g => (
+                  <div key={g.id} className="flex items-center justify-between bg-white border border-neutral-200 p-2.5 rounded-lg shadow-sm">
+                    <div>
+                      <div className="text-[13px] font-bold text-neutral-900 flex items-center gap-1.5">
+                        <div className={`w-2 h-2 rounded-full ${g.color}`} />
+                        {g.name}
+                      </div>
+                      <div className="text-[11px] text-neutral-500 mt-0.5">{g.countStr}</div>
+                    </div>
+                    <button className="text-[11px] font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-1.5 rounded flex items-center gap-1 transition-colors">
+                      {g.id === 'koc_general' || g.id === 'koc_real' ? <Smartphone size={12} /> : <Send size={12} />}
+                      {g.batchAction}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              <div className="text-[12px] font-bold text-neutral-400 px-1 pt-2">详情预览 (抽样)</div>
+              {items.map(item => (
+                <div 
+                  key={item.id}
+                  onClick={() => {
+                    setSelectedContent(item);
+                    setIsEditing(false);
+                  }}
+                  className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                    selectedContent?.id === item.id 
+                      ? 'bg-indigo-50 border-indigo-200 shadow-sm' 
+                      : 'bg-white border-neutral-100 hover:border-neutral-200 hover:shadow-sm'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
+                      item.channel === 'official' ? 'bg-blue-50 text-blue-700' :
+                      item.channel === 'kos' ? 'bg-indigo-50 text-indigo-700' :
+                      item.channel === 'koc_real' ? 'bg-amber-50 text-amber-700' :
+                      'bg-emerald-50 text-emerald-700'
+                    }`}>
+                      {item.channel === 'koc_real' || item.channel === 'koc_general' ? <Users size={12} /> : <User size={12} />}
+                      {item.channelName}
+                    </span>
+                    <span className="text-[11px] text-neutral-500 font-medium">{item.status}</span>
+                  </div>
+                  <h4 className="text-[13px] font-bold text-neutral-900 leading-tight mb-2 line-clamp-2">{item.title}</h4>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Right: Detail */}
-          <div className="flex-1 flex flex-col bg-white overflow-y-auto custom-scrollbar">
+          {/* 右侧详情 */}
+          <div className="flex-1 bg-neutral-50 overflow-y-auto relative p-6">
             {selectedContent ? (
-              <div className="p-6 space-y-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[12px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{selectedContent.channelName}</span>
-                    <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${selectedContent.readyForPublish ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {selectedContent.status}
-                    </span>
-                  </div>
-                  <h2 className="text-[18px] font-bold text-neutral-900">{selectedContent.title}</h2>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                    <div className="text-[12px] text-neutral-500 flex items-center gap-1.5 mb-1"><Compass size={14} />使用打法</div>
-                    <div className="text-[13px] font-bold text-neutral-800">{selectedContent.strategy}</div>
-                  </div>
-                  <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                    <div className="text-[12px] text-neutral-500 flex items-center gap-1.5 mb-1"><Wand2 size={14} />生成条件/依赖</div>
-                    <div className="text-[13px] font-bold text-neutral-800">{selectedContent.memory}</div>
-                  </div>
-                </div>
-
-                <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                  <div className="text-[12px] text-neutral-500 flex items-center gap-1.5 mb-1"><ImageIcon size={14} />素材要求</div>
-                  <div className="text-[13px] font-bold text-neutral-800">{selectedContent.materials}</div>
-                </div>
-
-                <div className="border-t border-neutral-100 pt-6">
-                  {selectedContent.isBrief ? (
-                    <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-5 space-y-4">
-                      <div className="flex items-center gap-2 text-amber-700 font-bold text-[14px]">
-                        {selectedContent.icon || <Clock size={16} />} 
-                        {selectedContent.channel === 'koc_real' ? '即时生成流程 (无缓存正文)' : '人设生成流程'}
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200/60">
+                  <div className="flex items-start justify-between mb-6">
+                    <div>
+                      {isEditing ? null : <h2 className="text-[18px] font-bold text-neutral-900 mb-2">{selectedContent.title}</h2>}
+                      <div className="flex items-center gap-3">
+                        <span className="text-[12px] text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md">{selectedContent.strategy}</span>
                       </div>
-                      <p className="text-[13px] text-amber-800/80 leading-relaxed">{selectedContent.briefDesc}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
+                      <div className="flex items-center gap-1.5 text-neutral-500 mb-2">
+                        <Wand2 size={14} />
+                        <span className="text-[12px] font-bold">关联条件记忆</span>
+                      </div>
+                      <p className="text-[13px] text-neutral-800 leading-relaxed font-medium">
+                        {selectedContent.memory}
+                      </p>
+                    </div>
+                    <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
+                      <div className="flex items-center gap-1.5 text-neutral-500 mb-2">
+                        <ImageIcon size={14} />
+                        <span className="text-[12px] font-bold">匹配素材库</span>
+                      </div>
+                      <p className="text-[13px] text-neutral-800 leading-relaxed font-medium">
+                        {selectedContent.materials}
+                      </p>
+                    </div>
+                  </div>
+
+                  {selectedContent.isBrief ? (
+                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100/50 rounded-xl p-5 shadow-sm">
+                      <div className="flex items-center gap-2 text-[14px] font-bold text-amber-900 mb-3">
+                       {selectedContent.icon || <Clock size={16} />} 
+                       {selectedContent.channel === 'koc_real' ? '门店体验码分发逻辑' : '泛素人分发逻辑'}
+                      </div>
+                      <p className="text-[13px] text-amber-800/80 leading-relaxed mb-4">{selectedContent.briefDesc}</p>
+                      
                       <div className="space-y-2 bg-white rounded-lg p-3 border border-amber-100/50">
-                        <div className="text-[12px] font-bold text-neutral-700 mb-2">执行路径：</div>
+                        <div className="text-[12px] font-bold text-neutral-700 mb-2">分发与执行路径：</div>
                         {selectedContent.briefTasks?.map((task, i) => (
                           <div key={i} className="flex items-start gap-2 text-[13px] text-neutral-600">
                             <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
@@ -200,9 +231,6 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                           </div>
                         ))}
                       </div>
-                      <button className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white text-[13px] font-bold rounded-lg transition-colors">
-                        {selectedContent.channel === 'koc_real' ? '查看 H5 扫码端体验' : '进入人设分配中心'}
-                      </button>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -213,7 +241,9 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                             className="text-[12px] font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg"
                             onClick={() => {
                               setIsEditing(true);
+                              setEditTitle(selectedContent.title);
                               setEditContent(selectedContent.content);
+                              setEditTags(selectedContent.tags || "");
                             }}
                           >
                             GUI + AI 智能编辑
@@ -224,9 +254,11 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                             className="text-[12px] font-bold text-neutral-600 hover:text-neutral-900 bg-neutral-100 px-3 py-1.5 rounded-lg"
                             onClick={() => {
                               setIsEditing(false);
-                              const updated = {...selectedContent, content: editContent};
+                              const updated = {...selectedContent, title: editTitle, content: editContent, tags: editTags, status: '已审阅'};
                               setSelectedContent(updated);
                               setItems(items.map(i => i.id === updated.id ? updated : i));
+                              setShowLearningToast(true);
+                              setTimeout(() => setShowLearningToast(false), 3000);
                             }}
                           >
                             保存修改
@@ -236,15 +268,39 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       
                       {isEditing ? (
                         <div className="space-y-4">
-                          <textarea
-                            value={editContent}
-                            onChange={(e) => setEditContent(e.target.value)}
-                            className="w-full h-48 bg-white border border-neutral-200 rounded-xl p-4 text-[13px] text-neutral-700 leading-relaxed focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none shadow-inner"
-                          />
+                          <div>
+                            <label className="block text-[12px] font-bold text-neutral-500 mb-1">标题</label>
+                            <input
+                              type="text"
+                              value={editTitle}
+                              onChange={(e) => setEditTitle(e.target.value)}
+                              className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-2.5 text-[14px] font-bold text-neutral-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-inner"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[12px] font-bold text-neutral-500 mb-1">正文</label>
+                            <textarea
+                              value={editContent}
+                              onChange={(e) => setEditContent(e.target.value)}
+                              className="w-full h-40 bg-white border border-neutral-200 rounded-xl p-4 text-[13px] text-neutral-700 leading-relaxed focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none shadow-inner"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[12px] font-bold text-neutral-500 mb-1">话题标签</label>
+                            <input
+                              type="text"
+                              value={editTags}
+                              onChange={(e) => setEditTags(e.target.value)}
+                              className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-2.5 text-[13px] text-indigo-600 font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-inner"
+                            />
+                          </div>
                           <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 flex flex-col gap-3">
-                            <div className="flex items-center gap-2">
-                              <Bot size={16} className="text-indigo-600" />
-                              <span className="text-[13px] font-bold text-indigo-900">AI 改写助手</span>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Bot size={16} className="text-indigo-600" />
+                                <span className="text-[13px] font-bold text-indigo-900">AI 辅助与自学习</span>
+                              </div>
+                              <span className="text-[11px] text-indigo-600/70 bg-indigo-100/50 px-2 py-0.5 rounded">修改将同步至人设记忆库</span>
                             </div>
                             <div className="relative">
                               <input 
@@ -261,7 +317,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                                     }, 1500);
                                   }
                                 }}
-                                placeholder="输入改写指令，例如：'语气更口语化一些' 或 '把重点放在换粮法上'"
+                                placeholder="输入改写指令，例如：'语气更口语化一些'"
                                 className="w-full bg-white border border-indigo-200 rounded-lg pl-3 pr-10 py-2.5 text-[13px] focus:outline-none focus:border-indigo-400"
                               />
                               <button 
@@ -292,27 +348,15 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                           )}
                         </div>
                       )}
-                      
-                      {!isEditing && (
-                        selectedContent.readyForPublish ? (
-                          <button className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-[14px] font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
-                            <CheckCircle2 size={16} /> 确认并进入排期
-                          </button>
-                        ) : (
-                          <button className="w-full py-3 bg-neutral-100 text-neutral-400 text-[14px] font-bold rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
-                            等待前置条件完成
-                          </button>
-                        )
-                      )}
                     </div>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-neutral-400 p-6 text-center">
+              <div className="flex-1 flex flex-col items-center justify-center text-neutral-400 p-6 text-center h-full">
                 <FileText size={48} className="mb-4 text-neutral-200" />
                 <p className="text-[14px] font-medium text-neutral-600 mb-1">请在左侧选择一篇内容或任务</p>
-                <p className="text-[12px]">真实客户 KOC 将展示现场扫码生成路径</p>
+                <p className="text-[12px]">可通过分组面板进行批量分发操作</p>
               </div>
             )}
           </div>

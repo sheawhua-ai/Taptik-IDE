@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { X, Users, Box, Target, CheckCircle2 } from 'lucide-react';
+import { X, Users, CheckCircle2, Sparkles } from 'lucide-react';
 
 export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
@@ -11,81 +11,126 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="w-[500px] bg-white h-full shadow-2xl flex flex-col relative z-10"
+        className="w-[600px] bg-neutral-100 h-full shadow-2xl flex flex-col relative z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="h-16 border-b border-neutral-100 flex items-center justify-between px-6 shrink-0 bg-white">
+        <div className="h-16 border-b border-neutral-200 flex items-center justify-between px-6 shrink-0 bg-white">
           <div className="flex items-center gap-2">
             <Users size={18} className="text-neutral-700" />
-            <h3 className="font-bold text-[16px] text-neutral-900">账号组合拆分详情</h3>
+            <h3 className="font-bold text-[16px] text-neutral-900">账号通道与条件确认</h3>
           </div>
           <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
             <X size={18} />
           </button>
         </div>
-
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-neutral-50/50">
-          <div className="bg-white border border-neutral-200 rounded-xl p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-              <span className="text-[14px] font-bold text-neutral-900">当前拆分策略</span>
-              <span className="text-[12px] font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">总数：45 篇</span>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-neutral-800"></span>
-                  <span className="text-[13px] font-medium text-neutral-700">官方号 (A01/A05)</span>
-                </div>
-                <div className="text-[13px] font-bold text-neutral-900">3 篇</div>
-              </div>
-              <p className="text-[12px] text-neutral-500 ml-4">执行方向：品牌宣发、深度科普。需要运营精细打磨。</p>
-
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                  <span className="text-[13px] font-medium text-neutral-700">员工 KOS</span>
-                </div>
-                <div className="text-[13px] font-bold text-neutral-900">4 篇</div>
-              </div>
-              <p className="text-[12px] text-neutral-500 ml-4">执行方向：探店、日常。需系统下发实拍任务。</p>
-
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                  <span className="text-[13px] font-medium text-neutral-700">泛素人分发</span>
-                </div>
-                <div className="text-[13px] font-bold text-neutral-900">8 篇</div>
-              </div>
-              <p className="text-[12px] text-neutral-500 ml-4">执行方向：达人真实反馈。目前需预设泛素人人设，需3天体验期。</p>
-              
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                  <span className="text-[13px] font-medium text-neutral-700">真实客户快发</span>
-                </div>
-                <div className="text-[13px] font-bold text-neutral-900">30 篇</div>
-              </div>
-              <p className="text-[12px] text-neutral-500 ml-4">执行方向：现场扫码发布。目前已有 25 个名额完成扫码，5 个待确认。</p>
-            </div>
-          </div>
-          
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-             <div className="flex items-start gap-2">
-                <Target size={16} className="text-indigo-600 mt-0.5" />
-                <div>
-                   <h4 className="text-[13px] font-bold text-indigo-900 mb-1">执行建议</h4>
-                   <p className="text-[12px] text-indigo-800 leading-relaxed">
-                     由于真实客户占比极高（30篇），建议优先跟进门店台卡码的扫码进度。泛素人 8 篇需要优先预设人设，以防项目延期。
-                   </p>
-                </div>
+        
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex gap-3">
+             <div className="mt-0.5"><Sparkles size={18} className="text-indigo-600" /></div>
+             <div>
+               <h4 className="text-[14px] font-bold text-indigo-900 mb-1">条件已就绪</h4>
+               <p className="text-[13px] text-indigo-800 leading-relaxed">
+                 所有账号和泛素人人设已在策划阶段确认完毕，可直接进入内容生成。真实客户部分将生成扫码入口。
+               </p>
              </div>
           </div>
-        </div>
 
-        <div className="p-4 border-t border-neutral-100 bg-white">
-          <button onClick={onClose} className="w-full py-2.5 bg-neutral-900 text-white rounded-lg text-[13px] font-medium hover:bg-neutral-800 transition-colors">
-            确认并关闭
+          <div className="grid grid-cols-2 gap-3 mb-2">
+            <div className="bg-white p-4 rounded-xl border border-neutral-200 flex flex-col gap-1 shadow-sm">
+              <span className="text-[12px] font-medium text-neutral-500">可直接生成正文</span>
+              <span className="text-[20px] font-bold text-emerald-600">15 <span className="text-[12px] font-normal text-emerald-600/80">篇</span></span>
+            </div>
+            <div className="bg-white p-4 rounded-xl border border-neutral-200 flex flex-col gap-1 shadow-sm">
+              <span className="text-[12px] font-medium text-neutral-500">待生成现场快发码</span>
+              <span className="text-[20px] font-bold text-amber-600">30 <span className="text-[12px] font-normal text-amber-600/80">个</span></span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-[13px] font-bold text-neutral-500 mb-2 px-1">固定人设组 (直接生成正文)</h4>
+            
+            {/* 官方号 */}
+            <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                  <span className="text-[14px] font-bold text-neutral-900">官方号 A01/A05 · 3 篇</span>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">可生成</span>
+              </div>
+              <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
+                <div className="text-neutral-500 font-medium">人设</div>
+                <div className="text-neutral-800 font-medium">品牌科普号 / 宠物医生号</div>
+                <div className="text-neutral-500 font-medium">口吻</div>
+                <div className="text-neutral-800">可信、克制、解释型</div>
+              </div>
+            </div>
+
+            {/* 员工 KOS */}
+            <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                  <span className="text-[14px] font-bold text-neutral-900">员工 KOS · 4 篇</span>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">可生成</span>
+              </div>
+              <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
+                <div className="text-neutral-500 font-medium">人设</div>
+                <div className="text-neutral-800 font-medium">门店店长 / 接待顾问</div>
+                <div className="text-neutral-500 font-medium">口吻</div>
+                <div className="text-neutral-800">接待客户、经验建议、半专业</div>
+              </div>
+            </div>
+
+            {/* 泛素人分发 */}
+            <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="text-[14px] font-bold text-neutral-900">泛素人分发 · 8 篇</span>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">AI已分配人设，可生成</span>
+              </div>
+              <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
+                <div className="text-neutral-500 font-medium">人设群</div>
+                <div className="text-neutral-800 font-medium">宝妈 (3) / 大学生 (2) / 养宠新手 (3)</div>
+                <div className="text-neutral-500 font-medium">口吻</div>
+                <div className="text-neutral-800">轻推荐、低营销感</div>
+              </div>
+            </div>
+
+            <h4 className="text-[13px] font-bold text-neutral-500 mb-2 px-1 mt-6">客户生成条件 (临时人设)</h4>
+
+            {/* 真实客户快发 */}
+            <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500" />
+                  <span className="text-[14px] font-bold text-neutral-900">真实客户快发 · 30 篇</span>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">可生成快发入口</span>
+              </div>
+              <div className="p-4 grid grid-cols-[70px_1fr] gap-y-3 text-[13px]">
+                <div className="text-neutral-500 font-medium">生成方式</div>
+                <div className="text-neutral-800 font-medium">扫码后即时生成</div>
+                <div className="text-neutral-500 font-medium">采集字段</div>
+                <div className="text-neutral-800">
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[12px]">身份标签</span>
+                    <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[12px]">体验场景</span>
+                    <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[12px]">关注点</span>
+                    <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[12px]">一句真实感受</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-4 border-t border-neutral-200 bg-white shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] flex flex-col gap-3">
+          <button onClick={onClose} className="w-full py-3 bg-neutral-900 text-white rounded-lg text-[14px] font-bold hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2">
+            <CheckCircle2 size={16} /> 确认条件并开始生成 (15篇预生成 + 4个分发入口)
           </button>
         </div>
       </motion.div>
