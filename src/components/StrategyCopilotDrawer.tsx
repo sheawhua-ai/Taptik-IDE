@@ -4,7 +4,7 @@ import { X, Bot, Send, Sparkles, Wand2, Compass, Layers, FileText } from 'lucide
 
 export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject?: boolean }> = ({ onClose, isNewProject = false }) => {
   const [messages, setMessages] = useState<{ role: 'ai' | 'user', text: string }[]>([
-    { role: 'ai', text: isNewProject ? '您好！我是操盘副手。要新建项目流，我们需要明确几个核心要素：\n\n1. 这次战役的【主攻目标】是什么？（搜索卡位 / 爆文起量 / 线索转化 / 账号养成）\n2. 【内容风格偏好】是什么？\n3. 【预算 / 账号资源】情况如何？\n\n请直接告诉我您的想法。' : '您好！我是操盘副手。您想新建项目流，请告诉我您的起盘思路。例如：“我想要主攻自然流起量，并且加大客户现场扫码发布的比例。”' }
+    { role: 'ai', text: isNewProject ? '新建项目流，请明确以下核心要素：\n\n1. 这次战役的【主攻目标】是什么？（搜索卡位 / 爆文起量 / 线索转化 / 账号养成）\n2. 【内容风格偏好】是什么？\n3. 【预算 / 账号资源】情况如何？' : '请提供起盘思路。例如：“需要主攻自然流起量，并且加大客户现场扫码发布的比例。”' }
   ]);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -25,12 +25,12 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
       if (newSlots < 3) {
         setMessages(prev => [...prev, { 
           role: 'ai', 
-          text: '好的，已记录您的要求。还需要补充一些信息：对于本次打法，您希望在【内容口吻】上，素人和专业的比例大约是多少？（例如：偏素人种草，或者偏专业医生背书）' 
+          text: '好的，已记录要求。对于本次打法，您希望在【内容口吻】上，素人和专业的比例大约是多少？（例如：偏素人种草，或者偏专业医生背书）' 
         }]);
       } else {
         setMessages(prev => [...prev, { 
           role: 'ai', 
-          text: '太棒了！核心要素已全部收集完毕。我已经为您构思了一套完整的【账号组合】和【内容策略】方案。\n\n点击右下角的“生成方案”按钮，我将自动为您生成具体的执行计划和排期安排。' 
+          text: '核心要素已收集完毕。系统已生成相应的【账号组合】与【内容策略】。\n\n点击右下角的“生成方案”按钮，以输出具体的执行计划和排期安排。' 
         }]);
       }
     }, 1500);

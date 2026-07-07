@@ -1006,7 +1006,7 @@ const handleExecute = (customQuery?: string) => {
           </div>
         </div>
 
-        {/* RIGHT PANEL: AI Escort Engine or Brand Profile */}
+        {/* RIGHT PANEL: 智能 Escort Engine or Brand Profile */}
         {isNewMerchant ? (
           <div className="w-[300px] 2xl:w-[340px] border-l border-neutral-200 bg-[#fbfbfb] flex flex-col shrink-0 relative z-20 shadow-[-4px_0_24px_rgba(0,0,0,0.02)]">
             <div className="p-4 border-b border-neutral-100 flex items-center gap-2 bg-white shrink-0">

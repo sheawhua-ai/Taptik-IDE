@@ -70,7 +70,7 @@ const MOCK_CONTENT = [
       '客户扫码，上传 1 张现场实拍图',
       '客户勾选体验场景（如：首次进店 / 换粮体验）',
       '客户输入一句真实感受（如：店员讲解很细致，狗狗很喜欢吃）',
-      'AI 接收输入，3秒生成专属体验笔记，客户确认后一键发布'
+      '智能 接收输入，3秒生成专属体验笔记，客户确认后一键发布'
     ],
     icon: <Smartphone size={16} />
   }
@@ -90,7 +90,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
   const [editTags, setEditTags] = useState("");
   const [showLearningToast, setShowLearningToast] = useState(false);
   
-  // AI Rewrite state
+  // 智能 Rewrite state
   const [aiPrompt, setAiPrompt] = useState("");
   const [isAiRewriting, setIsAiRewriting] = useState(false);
   const [selectedTextContext, setSelectedTextContext] = useState<{ text: string, start: number, end: number } | null>(null);
@@ -126,12 +126,12 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
         // Rewrite only the selected portion
         const before = editContent.substring(0, selectedTextContext.start);
         const after = editContent.substring(selectedTextContext.end);
-        const newText = `【${selectedTextContext.text} -> AI已按要求("${aiPrompt}")修改】`;
+        const newText = `【${selectedTextContext.text} -> 智能已按要求("${aiPrompt}")修改】`;
         setEditContent(before + newText + after);
         setSelectedTextContext(null); // Clear selection after use
       } else {
         // Full rewrite
-        setEditContent(editContent + "\n\n[AI已根据您的要求润色，语气更口语化]");
+        setEditContent(editContent + "\n\n[智能已根据您的要求润色，语气更口语化]");
       }
       setAiPrompt("");
     }, 1500);
@@ -163,7 +163,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                 exit={{ opacity: 0 }}
                 className="flex items-center gap-1.5 text-[12px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full shadow-sm"
               >
-                <Bot size={14} /> AI 已记录您的修改偏好，将用于迭代后续人设引擎
+                <Bot size={14} /> 智能 已记录您的修改偏好，将用于迭代后续人设引擎
               </motion.div>
             )}
           </div>
@@ -385,7 +385,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                           <div>
                             <div className="flex items-center justify-between mb-1">
                               <label className="block text-[12px] font-bold text-neutral-500">正文</label>
-                              <span className="text-[11px] text-neutral-400">可选中文字进行局部 AI 修改</span>
+                              <span className="text-[11px] text-neutral-400">可选中文字进行局部 智能 修改</span>
                             </div>
                             <textarea
                               ref={textareaRef}
@@ -410,9 +410,9 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <Bot size={16} className="text-indigo-600" />
-                                <span className="text-[13px] font-bold text-indigo-900">AI 辅助修改与自学习</span>
+                                <span className="text-[13px] font-bold text-indigo-900">智能 辅助修改与自学习</span>
                               </div>
-                              <span className="text-[11px] text-indigo-600/70 bg-indigo-100/50 px-2 py-0.5 rounded">您的修改将自动被 AI 记录并迭代人设模型</span>
+                              <span className="text-[11px] text-indigo-600/70 bg-indigo-100/50 px-2 py-0.5 rounded">您的修改将自动被 智能 记录并迭代人设模型</span>
                             </div>
                             
                             <div className="relative">
@@ -484,7 +484,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
               <div className="flex-1 flex flex-col items-center justify-center text-neutral-400 p-6 text-center h-full">
                 <FileText size={48} className="mb-4 text-neutral-200" />
                 <p className="text-[14px] font-medium text-neutral-600 mb-1">请在左侧选择一篇内容进行审阅</p>
-                <p className="text-[12px]">运营确认修改后，AI将自动学习并优化后续生成的文案人设</p>
+                <p className="text-[12px]">运营确认修改后，智能将自动学习并优化后续生成的文案人设</p>
               </div>
             )}
           </div>

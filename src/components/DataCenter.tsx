@@ -244,7 +244,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     {[
                       { title: '商家记忆 (Q2幼犬项目)', desc: '仅该商家可见，影响该商家的全局策略', checked: false },
                       { title: '团队公共经验库', desc: '全团队可见，作为通用行业打法积累', checked: false },
-                      { title: '内容 Skill (内容方向生成器)', desc: '下次执行类似项目时，AI 将自动调用此规则', checked: true }
+                      { title: '内容 Skill (内容方向生成器)', desc: '下次执行类似项目时，系统将自动调用此规则', checked: true }
                     ].map((dest, i) => (
                       <label key={i} className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${dest.checked ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white border-neutral-200 hover:bg-neutral-50'}`}>
                         <input type="checkbox" defaultChecked={dest.checked} className="mt-0.5 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
@@ -294,7 +294,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               
               <div className="p-4 border-b border-neutral-100 bg-neutral-50/50 flex gap-2 overflow-x-auto custom-scrollbar shrink-0">
                 <button className="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-[13px] font-bold flex items-center gap-2 whitespace-nowrap">
-                  <Sparkles size={14} /> AI 改写客户口吻
+                  <Sparkles size={14} /> 智能改写客户口吻
                 </button>
                 <button className="px-4 py-2 bg-white text-neutral-700 border border-neutral-200 rounded-lg text-[13px] font-medium whitespace-nowrap hover:bg-neutral-50">
                   隐藏低置信数据
@@ -397,13 +397,13 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               <h2 className="text-xl font-bold text-neutral-900 mb-2">{selectedItem.title}</h2>
               <div className="inline-flex px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider items-center gap-1.5 bg-indigo-50 text-indigo-700">
                 <Sparkles size={14} />
-                AI 判断
+                系统判断
               </div>
             </div>
             
             <div className="bg-neutral-50 rounded-2xl p-5 border border-neutral-100 space-y-4">
               <div>
-                <h4 className="text-[12px] font-bold text-neutral-900 mb-1 uppercase tracking-widest">AI 诊断结论</h4>
+                <h4 className="text-[12px] font-bold text-neutral-900 mb-1 uppercase tracking-widest">系统诊断结论</h4>
                 <p className="text-[14px] text-neutral-600 leading-relaxed">{selectedItem.aiJudgment || '数据表现优异，建议继续保持当前策略并适度放量。'}</p>
               </div>
               <div className="pt-4 border-t border-neutral-200">
@@ -460,7 +460,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
             <div className="relative mt-4">
               <input
                 type="text"
-                placeholder="告诉 AI 你的判断，例如：这几篇不是内容问题..."
+                placeholder="告诉系统 你的判断，例如：这几篇不是内容问题..."
                 className="w-full pl-4 pr-10 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-neutral-900 text-white rounded-lg flex items-center justify-center hover:bg-neutral-800 transition-colors">
@@ -491,7 +491,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <Sparkles size={24} className="text-amber-300" />
                 </div>
                 <div>
-                  <h3 className="text-[12px] text-white/50 font-bold uppercase tracking-widest mb-1.5">AI 看板洞察</h3>
+                  <h3 className="text-[12px] text-white/50 font-bold uppercase tracking-widest mb-1.5">系统洞察</h3>
                   <p className="text-[16px] leading-relaxed">
                     本周私信增长主要来自“幼犬软便避坑”，但 A03 账号连续 3 天互动异常。
                   </p>
@@ -546,7 +546,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-10">
               {[
-                { name: '内容方向私信转化', question: '哪些内容方向带来私信最多？', anomaly: '幼犬软便避坑贡献 65% 私信', scope: '本周｜自然流｜排除投流', source: 'AI 创建', tab: '内容表现' },
+                { name: '内容方向私信转化', question: '哪些内容方向带来私信最多？', anomaly: '幼犬软便避坑贡献 65% 私信', scope: '本周｜自然流｜排除投流', source: '系统创建', tab: '内容表现' },
                 { name: '全局盘子健康度', question: '整体曝光、互动、转化及异常指标？', anomaly: 'A03 账号连续 3 天互动异常', scope: '近7天｜全部账号', source: '系统', tab: '增长监控' },
                 { name: '素材 ROI 分析', question: '哪类素材带来的线索成本最低？', anomaly: '真实喂食封面效果最佳', scope: '本月｜含投流', source: '系统', tab: '素材效果' },
                 { name: '投流消耗监控', question: '各计划投产比与起量情况？', anomaly: '无异常', scope: '今日｜所有计划', source: '团队共享', tab: '投流表现' },
@@ -613,7 +613,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               <div className="flex items-start gap-3">
                 <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
                 <div>
-                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 结论</h5>
+                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统结论</h5>
                   <p className="text-[14px] text-indigo-800/80 leading-relaxed">
                     本周私信主要由 <span className="font-bold">幼犬软便避坑</span> 贡献（65%）。由于排除了投流影响，该方向的自然流转化效率远超大盘，建议立即将该方向加入重点追投资源。
                   </p>
@@ -717,7 +717,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               <div className="flex items-start gap-3">
                 <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
                 <div>
-                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 结论</h5>
+                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统结论</h5>
                   <p className="text-[14px] text-indigo-800/80 leading-relaxed">
                     {selectedDashboard.anomaly === '无异常' 
                       ? '当前各项指标表现平稳，没有发现明显的波动。' 
@@ -836,7 +836,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <div className="flex items-start gap-3">
                       <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
                         <p className="text-[14px] text-indigo-800/80 leading-relaxed">
                           本项目私信增长主要由 <span className="font-bold">3 篇素人口吻笔记</span>贡献，其中 2 篇来自 A01/A02 自然流，1 篇由 A01 薯条加热放大。
                         </p>
@@ -947,7 +947,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <div className="flex items-start gap-3">
                       <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
                         <p className="text-[14px] text-indigo-800/80 leading-relaxed">
                           本周 38 篇笔记中，<span className="font-bold">6 篇贡献了 72% 私信</span>，其中 4 篇是素人口吻避坑内容，2 篇经过薯条加热。
                         </p>
@@ -1030,7 +1030,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <div className="flex items-start gap-3">
                       <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
                         <p className="text-[14px] text-indigo-800/80 leading-relaxed">
                           A01/A02 承接素人口吻内容效果稳定，A05 专业科普转化高；<span className="font-bold">A03 连续 3 天互动率异常，建议暂停分发。</span>
                         </p>
@@ -1096,7 +1096,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                           </div>
                           
                           <div className="text-[12px] text-neutral-600 bg-neutral-50/80 p-2.5 rounded-lg border border-neutral-100">
-                            <span className="font-bold text-neutral-700">AI: </span>{acc.reason}
+                            <span className="font-bold text-neutral-700">系统: </span>{acc.reason}
                           </div>
                         </div>
                       ))}
@@ -1111,7 +1111,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <div className="flex items-start gap-3">
                       <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">AI 归因结论</h5>
+                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
                         <p className="text-[14px] text-indigo-800/80 leading-relaxed">
                           本周投流带来 38% 曝光增量，但私信转化主要来自自然流。<span className="font-bold">A01 的薯条加热 CPA 最低，建议继续小额测试。</span>
                         </p>
@@ -1237,7 +1237,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 </div>
               </div>
               
-              {/* 2. AI 总结 */}
+              {/* 2. 系统总结 */}
               <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 relative">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                   <Sparkles size={64} className="text-indigo-900" />

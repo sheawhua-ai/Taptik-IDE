@@ -144,7 +144,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
         {/* 1. 执行摘要卡 */}
         <div className="bg-white p-8 border-b border-neutral-100 relative">
           <div className="absolute top-8 right-8 flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[12px] font-medium border border-emerald-100">
-            <Sparkles size={14} /> AI 已完成方案规划
+            <Sparkles size={14} /> 智能 已完成方案规划
           </div>
           <h3 className="text-[24px] font-bold text-neutral-900 tracking-tight mb-2">
             执行预览
@@ -170,10 +170,10 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
         </div>
 
         <div className="p-8 space-y-10">
-          {/* 2. AI 方案拆解 */}
+          {/* 2. 智能 方案拆解 */}
           <div>
             <h4 className="text-[16px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
-              <Layers className="text-indigo-500" size={18} /> AI 方案拆解
+              <Layers className="text-indigo-500" size={18} /> 智能 方案拆解
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {/* 卡 1：项目计划 */}

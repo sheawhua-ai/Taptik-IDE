@@ -527,10 +527,10 @@ export const Strategy: React.FC<{
                   <h2 className="text-[18px] font-bold text-neutral-900">调整方案参数</h2>
                 </div>
                 <p className="text-[13px] text-neutral-500">
-                  修改运营参数，AI 将重新生成对应的起盘计划
+                  修改运营参数，系统将重新生成对应的起盘计划
                 </p>
 
-                {/* AI Assistant Chat inside Adjust Drawer */}
+                {/* 智能 Assistant Chat inside Adjust Drawer */}
                 <div className="mt-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <Bot size={16} className="text-indigo-600" />
@@ -618,7 +618,7 @@ export const Strategy: React.FC<{
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">账号矩阵与内容策略 <span className="text-[11px] font-normal text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">AI 自动调优</span></label>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">账号矩阵与内容策略 <span className="text-[11px] font-normal text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">系统自动调优</span></label>
                     <div className="space-y-3">
                       
                       {/* 专业号 */}
@@ -653,7 +653,7 @@ export const Strategy: React.FC<{
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
                           <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>真实反馈、软便改善记录、挑食应对过程</p></div>
-                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>系统下发要求 &rarr; KOC 回传 &rarr; AI 校验排版</p></div>
+                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>系统下发要求 &rarr; KOC 回传 &rarr; 系统校验排版</p></div>
                         </div>
                       </div>
 

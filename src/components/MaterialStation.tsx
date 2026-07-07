@@ -25,14 +25,14 @@ const MOCK_TAGS = ['封面首选', '宠物换粮', '双十一备用', '已获授
 export const MaterialStation: React.FC<MaterialStationProps> = ({
   activeProject,
 }) => {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState('unused');
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   const categories = [
-    { id: 'all', label: '全部素材', icon: ImageIcon },
-    { id: 'smart_high_ctr', label: '高点击率素材', icon: Sparkles },
-    { id: 'smart_recent', label: '最近常用', icon: FolderOpen },
+    { id: 'unused', label: '未发布 (待使用)', icon: FolderOpen },
+    { id: 'cover', label: '首图专用', icon: ImageIcon },
+    { id: 'published', label: '已发布 (防重)', icon: Cloud },
     { id: 'review', label: '待验收', icon: CheckCircle2 },
     { id: 'risk', label: '高风险', icon: ShieldAlert },
   ];
@@ -51,13 +51,15 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
       status: i % 3 === 0 ? 'unused' : 'used',
       isRisk: i === 2 || i === 7,
       needsReview: i === 4 || i === 5,
+      isCover: i % 4 === 0,
       tags: Array.from(new Set(itemTags)) // deduplicate
     };
   });
 
   const filteredData = mockData.filter(item => {
-    if (activeCategory === 'smart_high_ctr') return item.id % 2 === 0;
-    if (activeCategory === 'smart_recent') return item.id % 3 === 0;
+    if (activeCategory === 'cover') return item.isCover;
+    if (activeCategory === 'unused') return item.status === 'unused';
+    if (activeCategory === 'published') return item.status === 'used';
     if (activeCategory === 'risk' && !item.isRisk) return false;
     if (activeCategory === 'review' && !item.needsReview) return false;
     
@@ -139,6 +141,9 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
           </div>
           
           <div className="flex items-center gap-3">
+             <button className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[12px] font-medium rounded-lg transition-colors flex items-center gap-1.5">
+               <ShieldAlert size={14} /> 设置审核标准
+             </button>
              <span className="text-[12px] text-neutral-500">共 {filteredData.length} 个素材</span>
           </div>
         </div>
@@ -165,9 +170,19 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                      
                      {/* Minimal Status Tags */}
                      <div className="absolute top-2 left-2 flex flex-col gap-1">
+                        {item.isCover && (
+                          <span className="bg-indigo-500 text-white text-[10px] px-2 py-1 rounded font-bold shadow-sm w-fit">
+                            首图专用
+                          </span>
+                        )}
                         {item.status === 'unused' && (
                           <span className="bg-white/90 backdrop-blur-md text-neutral-800 text-[10px] px-2 py-1 rounded font-bold shadow-sm w-fit">
                             未使用
+                          </span>
+                        )}
+                        {item.status === 'used' && (
+                          <span className="bg-emerald-500 text-white text-[10px] px-2 py-1 rounded font-bold shadow-sm w-fit flex items-center gap-1">
+                            <CheckCircle2 size={10} /> 已发布
                           </span>
                         )}
                         {item.isRisk && (
@@ -290,15 +305,64 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                        </button>
                      </div>
                    </div>
+
+                   {selectedItem.isCover && (
+                     <div className="pt-4 border-t border-neutral-100">
+                       <div className="flex items-center justify-between mb-3">
+                         <div className="text-neutral-900 font-bold text-[13px] flex items-center gap-1.5">
+                           <ImageIcon size={14} className="text-indigo-500" />
+                           首图应用策略
+                         </div>
+                       </div>
+                       <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-[12px] text-indigo-900 leading-relaxed space-y-2 mb-4">
+                         <p><strong>契合标准：</strong>干货合集型、对比评测型</p>
+                         <p><strong>建议文案：</strong>搭配“干货合集”、“超全对比”、“避坑指南”等标题文案更易起量。知识库推荐使用“红黑榜”形式进行排版加工。</p>
+                       </div>
+                     </div>
+                   )}
+
+                   {(selectedItem.needsReview || selectedItem.isRisk) && (
+                     <div className="pt-4 border-t border-neutral-100">
+                       <div className="flex items-center justify-between mb-3">
+                         <div className="text-neutral-900 font-bold text-[13px] flex items-center gap-1.5">
+                           <Sparkles size={14} className="text-indigo-500" />
+                           AI 预审报告
+                         </div>
+                       </div>
+                       <div className={`p-3 rounded-lg text-[12px] leading-relaxed mb-4 ${selectedItem.isRisk ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-orange-50 text-orange-700 border border-orange-100'}`}>
+                         {selectedItem.isRisk 
+                           ? "【高风险】发现图片中出现竞品 Logo 或包装。建议使用 AI 消除功能挽救，或打回重拍。" 
+                           : "【建议优化】色调偏暗，不符合知识库中『双十一明亮暖色调』标准。可一键 AI 调色。"}
+                       </div>
+                     </div>
+                   )}
                 </div>
                 
-                <div className="flex flex-col gap-2">
-                  <button className="w-full py-2.5 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm">
-                    插入至当前项目
-                  </button>
-                  <button className="w-full py-2.5 bg-white border border-neutral-200 text-rose-600 rounded-lg text-[13px] font-bold hover:bg-rose-50 transition-colors shadow-sm flex items-center justify-center gap-2">
-                    <Trash2 size={16} /> 移除素材
-                  </button>
+                <div className="flex flex-col gap-2 mt-auto">
+                  {selectedItem.needsReview || selectedItem.isRisk ? (
+                    <>
+                      <button className="w-full py-2.5 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm">
+                        {selectedItem.isRisk ? 'AI 智能消除竞品' : '一键 AI 调色挽救'}
+                      </button>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button className="w-full py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-[13px] font-bold hover:bg-emerald-100 transition-colors shadow-sm">
+                          强行通过
+                        </button>
+                        <button className="w-full py-2 bg-white border border-neutral-200 text-rose-600 rounded-lg text-[13px] font-bold hover:bg-rose-50 transition-colors shadow-sm flex items-center justify-center gap-1">
+                          <Trash2 size={14} /> 打回重拍
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <button className="w-full py-2.5 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm">
+                        插入至当前项目
+                      </button>
+                      <button className="w-full py-2.5 bg-white border border-neutral-200 text-rose-600 rounded-lg text-[13px] font-bold hover:bg-rose-50 transition-colors shadow-sm flex items-center justify-center gap-2">
+                        <Trash2 size={16} /> 移除素材
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>

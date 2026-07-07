@@ -39,7 +39,7 @@ export default function Layout() {
  </NavLink>
  <NavLink to="/merchant-matrix" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors font-sans text-[13px] font-medium ${isActive ? 'bg-white text-[#5157a7] shadow-sm ring-1 ring-zinc-200' : 'text-zinc-500 hover:bg-zinc-200/50 hover:translate-x-1 transition-transform duration-200'}`}>
  <span className="material-symbols-outlined text-[18px]">grid_view</span>
- 商家与AI配置
+ 商家与智能配置
  </NavLink>
  <NavLink to="/task-dispatch" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors font-sans text-[13px] font-medium ${isActive ? 'bg-white text-[#5157a7] shadow-sm ring-1 ring-zinc-200' : 'text-zinc-500 hover:bg-zinc-200/50 hover:translate-x-1 transition-transform duration-200'}`}>
  <span className="material-symbols-outlined text-[18px]">assignment_add</span>

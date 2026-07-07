@@ -90,7 +90,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
                   <span className="text-[14px] font-bold text-neutral-900">KOC矩阵 · 8 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">AI已分配人设，可生成</span>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">智能已分配人设，可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-neutral-500 font-medium">人设群</div>

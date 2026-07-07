@@ -37,7 +37,7 @@ export function ExecutionResult() {
             内容任务已编排
           </h3>
           <p className="text-[14px] text-neutral-500 mt-1">
-            AI 已完成项目拆解，下一步请处理内容完整度、素材缺口与任务分发。
+            系统已完成项目拆解，下一步请处理内容完整度、素材缺口与任务分发。
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-[13px] font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full">
@@ -397,7 +397,7 @@ export function ExecutionResult() {
                         <div className="flex items-center gap-2 mb-2">
                           <Sparkles size={14} className="text-indigo-500" />
                           <span className="text-[12px] font-bold text-indigo-900">
-                            AI 正在协同修改
+                            智能修正中
                           </span>
                         </div>
                         <div className="bg-white p-2 border border-indigo-100 rounded text-[11px] text-neutral-700 mb-2 line-through opacity-70">
@@ -427,7 +427,7 @@ export function ExecutionResult() {
                           继续改
                         </button>
                         <button className="flex-1 min-w-[70px] py-2 bg-white border border-neutral-200 text-neutral-700 text-[11px] font-medium rounded-lg hover:bg-neutral-50">
-                          还是太 AI
+                          口吻不自然
                         </button>
                         <button className="flex-1 min-w-[70px] py-2 bg-white border border-neutral-200 text-neutral-700 text-[11px] font-medium rounded-lg hover:bg-neutral-50">
                           保留原版
@@ -499,7 +499,7 @@ export function ExecutionResult() {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 text-[12px] font-medium text-neutral-700">
                             <ImageIcon size={14} className="text-primary-500" />{" "}
-                            AI 推荐素材
+                            系统推荐素材
                           </div>
                           <span className="text-[10px] text-neutral-400">
                             来源：历史回传库
@@ -793,12 +793,6 @@ export function ExecutionResult() {
 
                       <div className="space-y-1.5 mb-4 text-[11px]">
                         <div className="flex justify-between">
-                          <span className="text-neutral-500">负责人</span>
-                          <span className="font-medium text-neutral-900 flex items-center gap-1">
-                            <Users size={12} /> 李店长
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
                           <span className="text-neutral-500">通知渠道</span>
                           <span className="text-neutral-700">
                             企微 / 飞书{" "}
@@ -807,13 +801,9 @@ export function ExecutionResult() {
                             </span>
                           </span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-neutral-500">截止时间</span>
-                          <span className="text-neutral-700">今日 18:00</span>
-                        </div>
                       </div>
                       <div className="bg-neutral-50 p-2.5 rounded text-[11px] text-neutral-600 mb-3 border border-neutral-100">
-                        <strong>AI 任务说明：</strong> 需要 3
+                        <strong>任务说明：</strong> 需要 3
                         段狗狗吃粮的真实短视频，背景要明亮，尽量体现狗子开心。
                       </div>
                       <div className="text-[10px] text-neutral-500 space-y-1 mb-4">
@@ -830,7 +820,7 @@ export function ExecutionResult() {
                           <div className="mt-0.5">•</div>
                           <div>
                             <span className="text-neutral-700">不合格时：</span>
-                            重拍 / AI 改写拍摄要求 / 素材库替代
+                            重拍 / 调整拍摄要求 / 素材库替代
                           </div>
                         </div>
                       </div>

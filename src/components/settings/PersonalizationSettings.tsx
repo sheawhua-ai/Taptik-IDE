@@ -9,7 +9,7 @@ export const PersonalizationSettings = () => {
  <div className="flex items-center justify-between">
  <div>
  <h4 className="text-[16px] font-semibold text-slate-900">基本风格和语调</h4>
- <p className="text-[13px] text-slate-500 mt-1">设置 AI 助手回复你的风格和语调。这不会影响 AI 助手的功能。</p>
+ <p className="text-[13px] text-slate-500 mt-1">设置 智能 助手回复你的风格和语调。这不会影响 智能 助手的功能。</p>
  </div>
  <select className="border border-slate-200 bg-white px-4 py-2 rounded-lg text-[13px] text-slate-700 outline-none focus:border-primary-500 shadow-sm cursor-pointer w-32">
  <option>默认</option>
@@ -26,7 +26,7 @@ export const PersonalizationSettings = () => {
  <div className="flex items-center justify-between">
  <div>
  <h4 className="text-[16px] font-semibold text-slate-900">加载过程欢迎语</h4>
- <p className="text-[13px] text-slate-500 mt-1">在 AI 生成等待过程中展示辅助提示。关闭后可在这里重新打开。</p>
+ <p className="text-[13px] text-slate-500 mt-1">在 智能 生成等待过程中展示辅助提示。关闭后可在这里重新打开。</p>
  </div>
  <button 
  onClick={() => setLoadingGreeting(!loadingGreeting)}
@@ -42,7 +42,7 @@ export const PersonalizationSettings = () => {
  <div className="space-y-4">
  <div>
  <h4 className="text-[16px] font-semibold text-slate-900 mb-1">自定义指令</h4>
- <p className="text-[13px] text-slate-500">告诉 AI 助手你希望它始终遵循的规则和偏好，这会直接影响所有对话。</p>
+ <p className="text-[13px] text-slate-500">告诉 智能 助手你希望它始终遵循的规则和偏好，这会直接影响所有对话。</p>
  </div>
  
  <div className="relative">

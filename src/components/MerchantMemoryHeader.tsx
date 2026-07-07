@@ -141,10 +141,10 @@ export function MerchantMemoryHeader({
                     </div>
                   </div>
 
-                  {/* AI Suggestion Chain */}
+                  {/* 智能 Suggestion Chain */}
                   <div>
                     <h4 className="text-[13px] font-bold text-neutral-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                      <Sparkles size={16} /> AI 建议链路
+                      <Sparkles size={16} /> 智能 建议链路
                     </h4>
                     <div className="relative pl-3 space-y-4 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-indigo-100">
                       {[

@@ -57,7 +57,7 @@ export function MerchantProfileDrawer({
     setMessages(prev => [...prev, newMsg]);
     setInputValue("");
 
-    // Simulate AI extraction
+    // Simulate 智能 extraction
     setTimeout(() => {
       const aiResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),

@@ -30,7 +30,7 @@ export const MemorySettings = () => {
 
  <div className="w-full bg-white border border-slate-200 rounded-xl p-4 flex items-start gap-4">
  <p className="text-[13px] text-slate-600 leading-relaxed flex-1 line-clamp-2">
- **工作背景** 用户是小红书AI运营SaaS平台TAPTIK的创始人，团队目前仅有2名兼职开发人员（1名Python全栈、1名Rust/Tauri方向），核心任务是在有限的研发资源下为TAPTIK搭建竞争壁垒，并已制定包含...
+ **工作背景** 用户是小红书智能运营SaaS平台TAPTIK的创始人，团队目前仅有2名兼职开发人员（1名Python全栈、1名Rust/Tauri方向），核心任务是在有限的研发资源下为TAPTIK搭建竞争壁垒，并已制定包含...
  </p>
  <div className="shrink-0 text-right">
  <div className="text-[14px] text-slate-900">来自对话的记忆</div>
@@ -43,8 +43,8 @@ export const MemorySettings = () => {
 
  <div className="flex items-center justify-between">
  <div>
- <h4 className="text-[16px] font-semibold text-slate-900">从其他AI导入记忆</h4>
- <p className="text-[13px] text-slate-500 mt-1">一键同步你在其他AI上的使用习惯。</p>
+ <h4 className="text-[16px] font-semibold text-slate-900">从其他智能导入记忆</h4>
+ <p className="text-[13px] text-slate-500 mt-1">一键同步你在其他智能上的使用习惯。</p>
  </div>
  <button 
  onClick={() => setIsImportModalOpen(true)}
@@ -85,7 +85,7 @@ export const MemorySettings = () => {
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-3">
  <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[12px] text-slate-600">1</div>
- <span className="text-[14px] text-slate-800">复制以下提示词到其他AI对话中</span>
+ <span className="text-[14px] text-slate-800">复制以下提示词到其他智能对话中</span>
  </div>
  <button className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-slate-50 rounded-lg text-[12px] font-medium text-slate-600 transition-colors border border-transparent hover:border-slate-200">
  <Copy size={14} /> 复制

@@ -68,7 +68,7 @@ export const ExecutionQueue: React.FC<{ onClose?: () => void }> = ({ onClose }) 
               <div>
                 <h4 className="text-[13px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
                   <Loader2 size={14} className="animate-spin text-indigo-500" />
-                  AI 正在处理 {runningCount} 项
+                  智能 正在处理 {runningCount} 项
                 </h4>
                 <div className="space-y-3">
                   {queue.filter(q => q.status === "running").map(item => (
@@ -86,7 +86,7 @@ export const ExecutionQueue: React.FC<{ onClose?: () => void }> = ({ onClose }) 
               <div>
                 <h4 className="text-[13px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
                   <CheckCircle2 size={14} className="text-emerald-500" />
-                  AI 已完成 {completedCount} 项
+                  智能 已完成 {completedCount} 项
                 </h4>
                 <div className="space-y-3">
                   {queue.filter(q => q.status === "completed").map(item => (

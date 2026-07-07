@@ -32,7 +32,7 @@ export default function ReverseLab() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-neutral-900 flex items-center gap-2">
             <ShieldAlert className="text-rose-500" />
-            AI 内容违规预检与健康度评分
+            智能 内容违规预检与健康度评分
           </h2>
           <p className="text-sm text-neutral-500 mt-1">发布前自动检查广告法违禁词、平台敏感词，提供多维度质量评估。</p>
         </div>
@@ -67,7 +67,7 @@ export default function ReverseLab() {
             className="mt-4 w-full bg-neutral-900 text-white py-3.5 rounded-xl text-[14px] font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-neutral-800 disabled:opacity-50"
           >
             {isAnalyzing ? (
-              <><RefreshCw size={18} className="animate-spin" /> AI 深度检测中...</>
+              <><RefreshCw size={18} className="animate-spin" /> 智能 深度检测中...</>
             ) : (
               <><Activity size={18} /> 开始全方位预检</>
             )}
@@ -114,7 +114,7 @@ export default function ReverseLab() {
                     onClick={handleRewrite}
                     className="shrink-0 bg-rose-600 text-white px-5 py-3 rounded-xl font-bold text-[14px] shadow-lg shadow-rose-600/20 hover:bg-rose-700 active:scale-95 transition-all flex items-center gap-2"
                   >
-                    <Sparkles size={16} /> AI 一键合规改写
+                    <Sparkles size={16} /> 智能 一键合规改写
                   </button>
                 </div>
               ) : (
@@ -188,7 +188,7 @@ export default function ReverseLab() {
                         <AlertTriangle size={16} className="text-rose-500 mt-0.5 shrink-0" />
                         <div>
                           <span className="text-[12px] font-bold text-neutral-900 block mb-1">广告法绝对化用语</span>
-                          <p className="text-[11px] text-neutral-500 leading-relaxed">发现「全网第一」、「绝对」等词汇，违反《广告法》第9条。强烈建议修改或使用 AI 一键合规。</p>
+                          <p className="text-[11px] text-neutral-500 leading-relaxed">发现「全网第一」、「绝对」等词汇，违反《广告法》第9条。强烈建议修改或使用 智能 一键合规。</p>
                         </div>
                       </div>
                       <div className="p-3 border-l-4 border-rose-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">

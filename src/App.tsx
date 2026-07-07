@@ -137,12 +137,9 @@ import { Logo } from "./components/Logo";
 
 // 6 Rings Components
 import { Strategy } from "./components/rings/Strategy";
-import { ContentProduction } from "./components/rings/ContentProduction";
-import { Publishing } from "./components/rings/Publishing";
-import { Interaction } from "./components/rings/Interaction";
-import { ExecutionCenter } from "./components/rings/ExecutionCenter";
+import { ExecutionResult } from "./components/rings/ExecutionResult";
 import { CRM } from "./components/rings/CRM";
-import { Metrics } from "./components/rings/Metrics";
+import { ProjectReview } from "./components/rings/ProjectReview";
 
 import { SubagentChat } from "./components/SubagentChat";
 import { ExecutionQueue } from "./components/ExecutionQueue";
@@ -151,7 +148,6 @@ import { ProjectSwitcherModal } from "./components/ProjectSwitcherModal";
 import { CreateProjectModal } from "./components/CreateProjectModal";
 
 // Existing Pages
-import MerchantMatrix from "./pages/MerchantMatrix";
 import { InlineAIToolbar } from "./components/InlineAIToolbar";
 
 // --- Types & Config ---
@@ -344,11 +340,9 @@ const PROJECT_HISTORY_ITEMS = [
 ];
 
 const PROJECT_TABS = [
-  { id: "strategy", name: "操盘建议", icon: Compass },
-  { id: "matrix", name: "商家运营流", icon: LayoutGrid },
-  { id: "content", name: "账号与发布", icon: Sparkles },
-  { id: "interaction", name: "协同任务", icon: MessageSquare },
-  { id: "metrics", name: "数据与机会", icon: BarChart2 },
+  { id: "strategy", name: "操盘策略", icon: Compass },
+  { id: "execution", name: "执行中心", icon: LayoutGrid },
+  { id: "review", name: "复盘与归因", icon: BarChart2 },
 ];
 
 export default function App() {
@@ -397,7 +391,7 @@ export default function App() {
           {
             id: "new-1",
             role: "agent",
-            content: "欢迎加入！我是您的 AI 增长伙伴。",
+            content: "欢迎加入！系统初始化完毕。",
           },
           {
             id: "new-2",
@@ -438,7 +432,7 @@ export default function App() {
 
   const [activeNav, setActiveNav] = useState("workflow");
   const [workflowTab, setWorkflowTab] = useState<
-    "strategy" | "matrix" | "content" | "execution" | "interaction" | "metrics"
+    "strategy" | "execution" | "review"
   >("strategy");
   const [focusMode, setFocusMode] = useState<
     "normal" | "creation" | "monitoring" | "review"
@@ -1573,7 +1567,7 @@ export default function App() {
                       项目中心暂未解锁
                     </h3>
                     <p className="text-neutral-500 text-sm max-w-sm leading-relaxed mb-6">
-                      该商家还在冷启动配置阶段。请先前往工作台，与 AI
+                      该商家还在冷启动配置阶段。请先前往工作台，与智能搭档
                       完成基于对话的「商家画像基座建设」，以解锁后续的运营流水线。
                     </p>
                     <button
@@ -1592,26 +1586,18 @@ export default function App() {
                       />
                     )}
 
-                    {workflowTab === "matrix" && <MerchantMatrix />}
+                    {workflowTab === "execution" && <ExecutionResult />}
 
-                    {workflowTab === "content" && (
-                      <AccountPublishing />
-                    )}
-
-                    {workflowTab === "interaction" && (
-                      <Interaction hasData={hasData} />
-                    )}
-
-                    {workflowTab === "metrics" && <Metrics />}
+                    {workflowTab === "review" && <ProjectReview />}
                   </>
                 )}
               </div>
 
-              {/* 环境感知 AI 搭档侧边栏 */}
+              {/* 智能搭档侧边栏 */}
               <AnimatePresence>
                 {showSubagentChat &&
                   focusMode !== "review" &&
-                  workflowTab !== "matrix" && (
+                  workflowTab !== "execution" && (
                     <motion.div
                       initial={{ width: 0, opacity: 0 }}
                       animate={{ width: 400, opacity: 1 }}

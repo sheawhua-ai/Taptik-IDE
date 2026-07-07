@@ -46,7 +46,7 @@ export default function GlobalRadar() {
  <div className="flex justify-between items-start mb-10">
  <div>
  <p className="text-zinc-400 text-xs font-medium mb-1">算力大盘</p>
- <h3 className="text-xl font-semibold tracking-tight">AI 算力消耗速率</h3>
+ <h3 className="text-xl font-semibold tracking-tight">智能 算力消耗速率</h3>
  </div>
  <span className="material-symbols-outlined text-zinc-500">memory</span>
  </div>

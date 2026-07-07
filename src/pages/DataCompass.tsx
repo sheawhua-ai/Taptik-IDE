@@ -33,8 +33,8 @@ export default function DataCompass() {
       id: 1,
       type: 'warning',
       title: '笔记互动率异常偏低',
-      desc: '昨日发布的《夏季干皮护肤》首日互动率 1.2%（均值 3.5%）。AI 诊断发现：标题缺乏情绪词，封面与内容关联度弱。',
-      action: '查看 AI 改写建议',
+      desc: '昨日发布的《夏季干皮护肤》首日互动率 1.2%（均值 3.5%）。智能 诊断发现：标题缺乏情绪词，封面与内容关联度弱。',
+      action: '查看 智能 改写建议',
       icon: AlertTriangle,
       color: 'text-amber-500',
       bgColor: 'bg-amber-50',
@@ -56,7 +56,7 @@ export default function DataCompass() {
       type: 'action',
       title: '评论区未及时回复',
       desc: '有 12 条高意向询单评论（含“多少钱”、“求链接”）滞留超过 2 小时未回复。',
-      action: '一键 AI 批量回复',
+      action: '一键 智能 批量回复',
       icon: Bell,
       color: 'text-rose-500',
       bgColor: 'bg-rose-50',
@@ -70,9 +70,9 @@ export default function DataCompass() {
         <div>
           <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900 flex items-center gap-3">
             <Activity className="text-indigo-600" size={28} />
-            AI 运营驾驶舱
+            智能 运营驾驶舱
           </h2>
-          <p className="text-neutral-500 mt-2 font-medium">从数据监控到主动洞察，AI 接管您的业务异常与增长机会</p>
+          <p className="text-neutral-500 mt-2 font-medium">从数据监控到主动洞察，智能 接管您的业务异常与增长机会</p>
         </div>
         <div className="flex gap-3">
           <button className="flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg text-sm font-bold shadow-md hover:bg-neutral-800 transition-colors">
@@ -84,7 +84,7 @@ export default function DataCompass() {
 
       <div className="grid grid-cols-12 gap-8">
         
-        {/* Left: AI Active Push Panel (Direction 1) */}
+        {/* Left: 智能 Active Push Panel (Direction 1) */}
         <div className="col-span-12 lg:col-span-4 flex flex-col space-y-6">
           <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex flex-col h-full relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-rose-500 to-amber-500"></div>
@@ -92,7 +92,7 @@ export default function DataCompass() {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-[16px] font-bold flex items-center gap-2 text-neutral-900">
                 <Bell size={18} className="text-indigo-500" />
-                AI 巡检预警与建议
+                智能 巡检预警与建议
               </h3>
               <span className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 text-[11px] font-bold rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> 实时监控中
@@ -175,7 +175,7 @@ export default function DataCompass() {
             </div>
           </div>
 
-          {/* AI Action Dashboard */}
+          {/* 智能 Action Dashboard */}
           <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex-1 flex flex-col">
             <h3 className="text-[16px] font-bold flex items-center gap-2 text-neutral-900 mb-6">
               <Sparkles size={18} className="text-indigo-500" />
@@ -195,7 +195,7 @@ export default function DataCompass() {
                   </p>
                 </div>
                 <div className="bg-white border border-neutral-200 p-4 rounded-lg">
-                  <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> AI 建议执行动作</h5>
+                  <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
                   <p className="text-[12px] text-neutral-700 mb-3">一键将本周五待发布的 5 篇图文转为混剪视频，并调整下周内容矩阵比例。</p>
                   <button className="w-full bg-neutral-900 text-white text-[12px] font-bold py-2 rounded-md hover:bg-neutral-800 transition-colors">
                     应用比例调整
@@ -215,7 +215,7 @@ export default function DataCompass() {
                   </p>
                 </div>
                 <div className="bg-white border border-neutral-200 p-4 rounded-lg">
-                  <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> AI 建议执行动作</h5>
+                  <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
                   <p className="text-[12px] text-neutral-700 mb-3">调用知识库一键替换草稿箱中 12 篇相关笔记的核心痛点词与 SEO 标签。</p>
                   <button className="w-full bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold py-2 rounded-md hover:bg-neutral-50 transition-colors flex justify-center items-center gap-1">
                     批量修改标签 <ChevronRight size={14} />
@@ -236,7 +236,7 @@ export default function DataCompass() {
               <Users size={20} className="text-indigo-600" />
               竞品情报与对标
             </h3>
-            <p className="text-[13px] text-neutral-500 mt-1">添加并监控对标账号，AI 自动梳理爆款笔记与高意向评论</p>
+            <p className="text-[13px] text-neutral-500 mt-1">添加并监控对标账号，自动梳理爆款笔记与高意向评论</p>
           </div>
           <button className="text-[13px] font-bold flex items-center gap-1.5 bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-colors">
             <Plus size={16} /> 添加对标账号
@@ -265,11 +265,11 @@ export default function DataCompass() {
             ))}
           </div>
 
-          {/* AI Comments Summarization & Dispatch */}
+          {/* 智能 Comments Summarization & Dispatch */}
           <div className="flex-1 border border-neutral-200 rounded-xl flex flex-col overflow-hidden bg-white">
             <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
               <h4 className="text-[14px] font-bold text-neutral-900 flex items-center gap-2">
-                <Sparkles size={16} className="text-indigo-500" /> AI 重点评论梳理 (近 24 小时)
+                <Sparkles size={16} className="text-indigo-500" /> 智能 重点评论梳理 (近 24 小时)
               </h4>
               <div className="relative">
                 <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
@@ -300,7 +300,7 @@ export default function DataCompass() {
                   <div className="flex items-start gap-2 mb-4">
                     <Sparkles size={14} className="text-indigo-500 shrink-0 mt-0.5" />
                     <p className="text-[12px] text-indigo-900/80 leading-relaxed font-medium">
-                      AI 洞察：{comment.aiSummary}
+                      智能 洞察：{comment.aiSummary}
                     </p>
                   </div>
                   
@@ -331,7 +331,7 @@ export default function DataCompass() {
             >
               <div className="p-5 flex justify-between items-center border-b border-neutral-100 bg-neutral-50/50">
                 <h3 className="font-bold text-[16px] text-neutral-900 flex items-center gap-2">
-                  <MessageSquare size={18} className="text-indigo-600" /> AI 截流回复生成与指派
+                  <MessageSquare size={18} className="text-indigo-600" /> 智能 截流回复生成与指派
                 </h3>
                 <button onClick={() => setShowReplyModal(false)} className="text-neutral-400 hover:text-neutral-900 transition-colors">
                   <X size={18} />
@@ -348,7 +348,7 @@ export default function DataCompass() {
 
                 <div>
                   <h4 className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-1">
-                    <Sparkles size={14} className="text-indigo-500" /> AI 建议回复文案 (可修改)
+                    <Sparkles size={14} className="text-indigo-500" /> 智能 建议回复文案 (可修改)
                   </h4>
                   <textarea 
                     className="w-full h-24 p-3 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-[13px] text-neutral-800 resize-none"

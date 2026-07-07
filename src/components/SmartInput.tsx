@@ -95,9 +95,9 @@ export const SmartInput = forwardRef<HTMLTextAreaElement, SmartInputProps>(({
       { icon: <FileText size={14} />, label: '记忆: 幼犬粮Q2复盘', insert: '[记忆: 幼犬粮Q2复盘]' },
     ],
     '/': [
-      { icon: <Sparkles size={14} />, label: 'AI: 润色当前草稿', insert: '[AI指令: 润色草稿]' },
-      { icon: <Sparkles size={14} />, label: 'AI: 扩写产品卖点', insert: '[AI指令: 扩写卖点]' },
-      { icon: <Sparkles size={14} />, label: 'AI: 生成爆款标题', insert: '[AI指令: 生成标题]' },
+      { icon: <Sparkles size={14} />, label: '智能: 润色当前草稿', insert: '[智能指令: 润色草稿]' },
+      { icon: <Sparkles size={14} />, label: '智能: 扩写产品卖点', insert: '[智能指令: 扩写卖点]' },
+      { icon: <Sparkles size={14} />, label: '智能: 生成爆款标题', insert: '[智能指令: 生成标题]' },
     ]
   };
 

@@ -94,7 +94,7 @@ export const InlineAIToolbar: React.FC = () => {
         {isProcessing ? (
           <div className="flex items-center gap-2 px-3 py-1 text-white text-[12px]">
             <RefreshCw size={14} className="animate-spin text-indigo-400" />
-            <span>AI 处理中...</span>
+            <span>智能 处理中...</span>
           </div>
         ) : (
           <>

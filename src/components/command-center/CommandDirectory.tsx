@@ -21,7 +21,7 @@ const COMMAND_EXAMPLES = [
  category: '📝 内容生成类',
  commands: [
  { template: '为 [行业名称] 生成 5 篇爆文草稿', preview: '基于行业热点自动生成内容' },
- { template: '改写这篇笔记使其更符合 [风格] 的网感', preview: '去AI味，增加小红书风格' },
+ { template: '改写这篇笔记使其更符合 [风格] 的网感', preview: '去智能味，增加小红书风格' },
  { template: '基于爆款词 [关键词] 生成 3 个优质标题', preview: '用蓝海词生成高点击标题' },
  ]
  },

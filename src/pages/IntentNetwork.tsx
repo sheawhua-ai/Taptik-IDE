@@ -20,7 +20,7 @@ export default function IntentNetwork() {
  <span className="text-[10px] text-zinc-400 italic">2 分钟前</span>
  </div>
  <p className="text-xs text-zinc-700 leading-relaxed mb-3">
- 用户 @DesignMaster 咨询“价格与企业版区别”，AI 识别为核心购买意图，导购未能在 5 分钟内响应。
+ 用户 @DesignMaster 咨询“价格与企业版区别”，智能 识别为核心购买意图，导购未能在 5 分钟内响应。
  </p>
  <button className="w-full text-[11px] py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-all">人工快速截流</button>
  </div>
@@ -120,12 +120,12 @@ export default function IntentNetwork() {
  </div>
  </section>
 
- {/* 右侧：AI 自动回复监控 */}
+ {/* 右侧：自动回复监控 */}
  <section className="col-span-12 lg:col-span-4 flex flex-col gap-4 overflow-hidden h-full">
  <div className="flex items-center justify-between px-1">
  <h2 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
  <span className="material-symbols-outlined text-orange-500">policy</span>
- AI 自动回复监控
+ 自动回复监控
  </h2>
  <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-[10px] rounded-full border border-orange-200">实时拦截中</span>
  </div>
@@ -137,7 +137,7 @@ export default function IntentNetwork() {
  <span className="text-[10px] text-orange-600 border border-orange-200 px-2 py-0.5 rounded bg-white">偏离商业意图</span>
  </div>
  <div className="text-xs text-zinc-600 mb-3 bg-white p-3 rounded-xl border border-zinc-100">
- <span className=" text-zinc-800">AI 回复：</span>目前黑色没有现货了哦，建议您看看其他颜色。
+ <span className=" text-zinc-800">智能 回复：</span>目前黑色没有现货了哦，建议您看看其他颜色。
  </div>
  <div className="text-[11px] text-orange-700 flex items-start gap-1.5 bg-orange-100/50 p-3 rounded-xl">
  <span className="material-symbols-outlined text-[14px] shrink-0 mt-0.5">warning</span>
@@ -155,7 +155,7 @@ export default function IntentNetwork() {
  <span className="text-[10px] text-green-600 border border-green-200 px-2 py-0.5 rounded bg-green-50">意图符合</span>
  </div>
  <div className="text-xs text-zinc-600 bg-zinc-50 p-3 rounded-xl border border-zinc-100">
- <span className=" text-zinc-800">AI 回复：</span>周末客流较多，建议您提前预约专属顾问，我们可以为您安排免排队通道哦~ 需要帮您预约吗？
+ <span className=" text-zinc-800">智能 回复：</span>周末客流较多，建议您提前预约专属顾问，我们可以为您安排免排队通道哦~ 需要帮您预约吗？
  </div>
  </div>
  </div>

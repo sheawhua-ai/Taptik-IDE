@@ -52,7 +52,7 @@ const MODULES = [
     desc: '目标客户、痛点、常见问题、购买顾虑、情绪反馈。',
     stats: { total: 86, highConf: 62, pending: 12, recent: 45, gaps: 4 },
     examples: [
-      { title: '新手养狗人群痛点', meta: '画像｜AI 推断｜适用：笔记/内容审核', tags: ['已同步 Skill', '高可信'], tagColors: ['bg-purple-50 text-purple-700', 'bg-indigo-50 text-indigo-700'], refs: 28 }
+      { title: '新手养狗人群痛点', meta: '画像｜系统推断｜适用：笔记/内容审核', tags: ['已同步 Skill', '高可信'], tagColors: ['bg-purple-50 text-purple-700', 'bg-indigo-50 text-indigo-700'], refs: 28 }
     ]
   },
   {
@@ -145,13 +145,13 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
       <div className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
         <div className="max-w-6xl mx-auto space-y-8">
           
-          {/* Layer 1: AI Memory Diagnosis */}
+          {/* Layer 1: 智能 Memory Diagnosis */}
           <div className="bg-white border border-neutral-200 rounded-[20px] p-6 shadow-sm flex flex-col md:flex-row gap-8 items-start relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
             <div className="shrink-0 w-48 relative z-10">
               <div className="flex items-center gap-2 mb-2">
                 <AlertCircle size={18} className="text-amber-500" />
-                <h3 className="text-[15px] font-bold text-neutral-900">AI 记忆诊断</h3>
+                <h3 className="text-[15px] font-bold text-neutral-900">智能 记忆诊断</h3>
               </div>
               <p className="text-[13px] text-neutral-500">当前最影响运营的 3 个记忆缺口</p>
               
@@ -181,7 +181,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
               <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-4">
                 <div className="text-[14px] font-bold text-amber-900 mb-2">缺客户审核偏好</div>
                 <div className="text-[12px] text-amber-700/80 leading-relaxed">
-                  <span className="font-bold text-amber-800">影响：</span>内容出稿通过率、AI 改稿方向
+                  <span className="font-bold text-amber-800">影响：</span>内容出稿通过率、智能 改稿方向
                 </div>
               </div>
             </div>
@@ -315,7 +315,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
 
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-[18px] font-bold text-neutral-900">AI 从「2024幼犬喂养指南.pdf」提取 15 条记忆</h4>
+                        <h4 className="text-[18px] font-bold text-neutral-900">智能 从「2024幼犬喂养指南.pdf」提取 15 条记忆</h4>
                         <div className="flex gap-2">
                           <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[12px] font-bold rounded-lg">商家事实 5</span>
                           <span className="px-2 py-1 bg-purple-50 text-purple-700 text-[12px] font-bold rounded-lg">内容规则 3</span>
@@ -340,7 +340,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                             
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-[13px]">
                                <div>
-                                 <div className="text-neutral-500 mb-1">AI 建议分类</div>
+                                 <div className="text-neutral-500 mb-1">智能 建议分类</div>
                                  <select className="w-full p-2 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-900 font-medium outline-none">
                                    <option>内容规则</option>
                                  </select>
@@ -463,7 +463,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
                       <Info size={18} className="text-amber-600 mt-0.5 shrink-0" />
                       <div className="text-[13px] text-amber-900 leading-relaxed">
-                        <strong className="font-bold">AI 已根据当前项目、自动回复、内容审核和历史反馈识别关键缺口。</strong> 把“缺知识”变成可执行任务，优先补齐影响面大的记忆。
+                        <strong className="font-bold">智能 已根据当前项目、自动回复、内容审核和历史反馈识别关键缺口。</strong> 把“缺知识”变成可执行任务，优先补齐影响面大的记忆。
                       </div>
                     </div>
 
@@ -481,7 +481,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                           </div>
                           <div className="text-[13px]">
                             <span className="font-bold text-neutral-500 w-16 inline-block">风险：</span>
-                            <span className="font-medium text-rose-600">当前 AI 容易回答过泛，且有医疗化表达风险。</span>
+                            <span className="font-medium text-rose-600">当前 智能 容易回答过泛，且有医疗化表达风险。</span>
                           </div>
                           <div className="text-[13px]">
                             <span className="font-bold text-neutral-500 w-16 inline-block">状态：</span>
@@ -499,7 +499,7 @@ export const KnowledgeMemory: React.FC<KnowledgeMemoryProps> = ({
                               <MessageSquare size={16} /> 发给客户补充
                             </button>
                             <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors text-center">
-                              <Brain size={16} /> 让 AI 根据历史记录草拟
+                              <Brain size={16} /> 让 智能 根据历史记录草拟
                             </button>
                             <button className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] font-bold text-neutral-700 hover:bg-neutral-100 flex flex-col items-center gap-1.5 transition-colors">
                               <Database size={16} /> 从团队经验复用

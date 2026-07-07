@@ -32,7 +32,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  const MARKET_SKILLS = [
  { id: 'expert_agent_1', name: '李佳琦级带货大师', category: 'agent', price: '￥999/月', stats: '2k+', desc: '经过 1000+ 场头部主播直播切片训练的带货 Agent，强驱动转化逻辑。', author: 'Top Expert Network', icon: Bot },
  { id: 'expert_agent_2', name: '美妆爆款写手矩阵', category: 'agent', price: '￥399/月', stats: '5k+', desc: '小红书头部 MCN 内部数据蒸馏的员工 Agent，擅长多账号铺量分发。', author: 'Beauty MCN', icon: Bot },
- { id: 'rag_node', name: '全域 RAG 知识中心', category: 'data', price: '￥0.05/次', stats: '1.2w+', desc: '实时检索品牌私域文档，减少 AI 幻觉，确保输出合规。', author: 'Zenith Labs', icon: Filter },
+ { id: 'rag_node', name: '全域 RAG 知识中心', category: 'data', price: '￥0.05/次', stats: '1.2w+', desc: '实时检索品牌私域文档，减少 智能 幻觉，确保输出合规。', author: 'Zenith Labs', icon: Filter },
  { id: 'attribution', name: '全链路 ROI 归因', category: 'data', price: '￥199/月', stats: '8k+', desc: '打通前后端转化的归因模型，自动生成投放效能分析报表。', author: 'Zenith Data', icon: Target },
  { id: 'xhs_matrix', name: 'KOC 异构矩阵引擎', category: 'content', price: '￥0.12/篇', stats: '2.5w+', desc: '支持视觉级别异构，一键生成千人千面的差异化笔记内容。', author: 'Official', icon: Layers },
  { id: 'visual_ops', name: '视觉脱敏 Mutator', category: 'vision', price: '￥0.02/图', stats: '4.1w+', desc: '深度物理级去重，绕过平台 MD5 与相似度检测，确保首发权重。', author: 'Official', icon: Dna },
@@ -57,7 +57,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  },
  {
  id: 'my_2',
- name: 'AI 爆文逻辑蒸馏器',
+ name: '智能 爆文逻辑蒸馏器',
  category: 'content',
  price: '￥0.05/次',
  stats: '1.2w+',
@@ -184,7 +184,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <div className="max-w-[420px] mx-auto">
  <div className="bg-neutral-0 rounded-[32px] shadow-2xl border border-neutral-200/50 overflow-hidden min-h-[500px]">
  <div className="bg-neutral-900 p-7 pb-8 text-neutral-0 relative">
- <h2 className="text-xl font-semibold tracking-tight">AI 种草文案引擎</h2>
+ <h2 className="text-xl font-semibold tracking-tight">智能 种草文案引擎</h2>
  <p className="text-[12px] opacity-60 mt-1 font-medium">全平台爆款逻辑蒸馏</p>
  </div>
  <div className="p-8 space-y-6 bg-neutral-0 rounded-t-[32px] -mt-6 relative z-20">

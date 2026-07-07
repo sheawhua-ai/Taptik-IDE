@@ -8,7 +8,7 @@ export default function TaskDispatch() {
   // SOP Nodes State
   const nodes = [
     { id: '1', title: '全网选题推荐', type: 'ai', icon: Search, status: 'completed' },
-    { id: '2', title: 'AI 批量写稿', type: 'ai', icon: FileText, status: 'completed' },
+    { id: '2', title: '智能 批量写稿', type: 'ai', icon: FileText, status: 'completed' },
     { id: '3', title: '素材拍摄回传', type: 'human', icon: Camera, status: 'active' },
     { id: '4', title: '健康度预审', type: 'ai', icon: CheckCircle2, status: 'waiting' },
     { id: '5', title: '定时自动排期', type: 'system', icon: Send, status: 'waiting' }
@@ -69,7 +69,7 @@ export default function TaskDispatch() {
                     node.type === 'human' ? 'bg-amber-50 text-amber-600' :
                     'bg-neutral-100 text-neutral-600'
                   }`}>
-                    {node.type === 'ai' ? 'AI 节点' : node.type === 'human' ? '人工审核' : '系统调度'}
+                    {node.type === 'ai' ? '智能 节点' : node.type === 'human' ? '人工审核' : '系统调度'}
                   </div>
                 </div>
 

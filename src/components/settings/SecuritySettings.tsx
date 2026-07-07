@@ -34,7 +34,7 @@ export const SecuritySettings = () => {
  </div>
  </div>
  <div className="flex-1 p-5 space-y-6">
- <p className="text-[13px] text-slate-500 leading-snug">AI 运行于隔离沙箱，并配置指令、网络访问策略</p>
+ <p className="text-[13px] text-slate-500 leading-snug">智能 运行于隔离沙箱，并配置指令、网络访问策略</p>
  
  <div className="space-y-4">
  <button className="w-full flex items-center justify-between py-2 group">
