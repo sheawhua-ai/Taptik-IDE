@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { StrategyCopilotDrawer } from '../StrategyCopilotDrawer';
 import {
   Compass,
   CheckCircle2,
@@ -41,16 +42,17 @@ export const Strategy: React.FC<{
   
   const [selectedTarget, setSelectedTarget] = useState('搜索卡位');
   
+  const [showCopilot, setShowCopilot] = useState(false);
   const [formValues, setFormValues] = useState({
-    percent1: 70, percent2: 30, amount: 12, days: 7, a01: 3, a02: 3, a05: 2, koc: 4
+    percent1: 70, percent2: 30, amount: 12, days: 7, official: 3, kos: 4, koc_general: 8, koc_real: 5
   });
   
   const handleTargetChange = (t: string) => {
     setSelectedTarget(t);
-    if (t === '搜索卡位') setFormValues({percent1: 70, percent2: 30, amount: 12, days: 7, a01: 3, a02: 3, a05: 2, koc: 4});
-    else if (t === '爆文起量') setFormValues({percent1: 40, percent2: 60, amount: 20, days: 14, a01: 5, a02: 5, a05: 5, koc: 5});
-    else if (t === '线索转化') setFormValues({percent1: 20, percent2: 80, amount: 10, days: 7, a01: 2, a02: 2, a05: 4, koc: 2});
-    else if (t === '账号养成') setFormValues({percent1: 50, percent2: 50, amount: 15, days: 30, a01: 5, a02: 5, a05: 5, koc: 0});
+    if (t === '搜索卡位') setFormValues({percent1: 70, percent2: 30, amount: 12, days: 7, official: 3, kos: 4, koc_general: 8, koc_real: 5});
+    else if (t === '爆文起量') setFormValues({percent1: 40, percent2: 60, amount: 20, days: 14, official: 5, kos: 5, koc_general: 5, koc_real: 5});
+    else if (t === '线索转化') setFormValues({percent1: 20, percent2: 80, amount: 10, days: 7, official: 4, kos: 4, koc_general: 2, koc_real: 0});
+    else if (t === '账号养成') setFormValues({percent1: 50, percent2: 50, amount: 15, days: 30, official: 5, kos: 10, koc_general: 0, koc_real: 0});
   };
 
   
@@ -60,8 +62,33 @@ export const Strategy: React.FC<{
     "suggestion" | "confirming" | "generating" | "running"
   >("suggestion");
   const [generateProgress, setGenerateProgress] = useState(0);
-  const [selectedDirection, setSelectedDirection] = useState("幼犬换粮避坑搜索卡位");
-  const [selectedDesc, setSelectedDesc] = useState("这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。");
+  const [cards, setCards] = useState([
+    {
+      id: "main",
+      title: "幼犬换粮避坑搜索卡位",
+      desc: "这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。",
+      shortDesc: "当前最适合的自然流切入点",
+      label: "推荐优先做"
+    },
+    {
+      id: "backupA",
+      title: "真实喂养场景种草",
+      desc: "适合素材充足时做。主要依赖用户真实投稿的喂养视频，二次剪辑。",
+      shortDesc: "适合素材充足时做",
+      label: "备选 A"
+    },
+    {
+      id: "backupB",
+      title: "高意向私域承接",
+      desc: "适合已有评论和私信积累时做。重点将已有高意向公域用户导流至企微。",
+      shortDesc: "适合已有评论和私信积累时做",
+      label: "备选 B"
+    }
+  ]);
+  const [activeCardId, setActiveCardId] = useState("main");
+  
+  const activeCard = cards.find(c => c.id === activeCardId) || cards[0];
+  const inactiveCards = cards.filter(c => c.id !== activeCardId);
   const [adjustMemory, setAdjustMemory] = useState("only_once");
   const [aiInput, setAiInput] = useState("");
   const [aiMessage, setAiMessage] = useState("");
@@ -72,8 +99,8 @@ export const Strategy: React.FC<{
     setIsAiThinking(true);
     setTimeout(() => {
       setIsAiThinking(false);
-      setAiMessage("没问题，我已经将主攻目标切换为“自然流起量”，并为您增加了真实客户快发的篇数（加至20篇），下方的参数已自动为您更新。");
-      setFormValues({ ...formValues, koc: 20 });
+      setAiMessage("没问题，我已经将主攻目标切换为“自然流起量”，并为您调整了客户号的篇数（加至20篇），下方的参数已自动为您更新。");
+      setFormValues({ ...formValues, koc_real: 20 });
       setSelectedTarget("自然流起量");
       setAiInput("");
     }, 1500);
@@ -185,17 +212,16 @@ export const Strategy: React.FC<{
                  </div>
                  <div className="relative z-10">
                     <div className="flex items-center gap-2 text-rose-700 font-bold mb-4 text-[13px] bg-rose-50 px-3 py-1.5 rounded-full w-fit">
-                      <Bot size={16} /> 推荐优先做
+                      <Bot size={16} /> {activeCard.label}
                     </div>
                     <h3 className="text-[28px] font-bold text-neutral-900 mb-8 tracking-tight">
-                      {selectedDirection}
+                      {activeCard.title}
                     </h3>
-
                     <div className="space-y-8">
                       <div>
                         <div className="text-[14px] font-bold text-neutral-900 mb-2">为什么做：</div>
                         <div className="text-[14px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-                          {selectedDesc}
+                          {activeCard.desc}
                         </div>
                       </div>
                       
@@ -258,21 +284,17 @@ export const Strategy: React.FC<{
 
               {/* 备选方案 */}
               <div className="flex flex-col gap-4">
-                <div className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-rose-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setSelectedDirection("真实喂养场景种草"); setSelectedDesc("适合素材充足时做。主要依赖用户真实投稿的喂养视频，二次剪辑。"); } }}>
-                  <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">备选 A</div>
-                  <h4 className="text-[18px] font-bold text-neutral-900 mb-2">真实喂养场景种草</h4>
-                  <p className="text-[13px] text-neutral-500 mb-6">适合素材充足时做</p>
-                  {flowState === "suggestion" && <div className="text-[13px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
-                </div>
-                <div className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-rose-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setSelectedDirection("高意向私域承接"); setSelectedDesc("适合已有评论和私信积累时做。重点将已有高意向公域用户导流至企微。"); } }}>
-                  <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">备选 B</div>
-                  <h4 className="text-[18px] font-bold text-neutral-900 mb-2">高意向私域承接</h4>
-                  <p className="text-[13px] text-neutral-500 mb-6">适合已有评论和私信积累时做</p>
-                  {flowState === "suggestion" && <div className="text-[13px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
-                </div>
+                {inactiveCards.map(card => (
+                  <div key={card.id} className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-rose-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setActiveCardId(card.id); } }}>
+                    <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">{card.label}</div>
+                    <h4 className="text-[18px] font-bold text-neutral-900 mb-2">{card.title}</h4>
+                    <p className="text-[13px] text-neutral-500 mb-6">{card.shortDesc}</p>
+                    {flowState === "suggestion" && <div className="text-[13px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
+                  </div>
+                ))}
                 {flowState === "suggestion" && (
-                  <button onClick={() => window.dispatchEvent(new CustomEvent('open-expert-app', { detail: { expert: '操盘副手', context: '除了现有的方案，还有其他适合的备选方向吗？' }}))} className="mt-2 text-[13px] font-bold text-neutral-500 hover:text-neutral-800 flex items-center justify-center gap-2 bg-white border border-neutral-200 py-4 rounded-3xl border-dashed hover:border-neutral-300 transition-colors">
-                     <Plus size={18} /> 换一组方案
+                  <button onClick={() => setShowCopilot(true)} className="mt-2 text-[13px] font-bold text-neutral-500 hover:text-neutral-800 flex items-center justify-center gap-2 bg-white border border-neutral-200 py-4 rounded-3xl border-dashed hover:border-neutral-300 transition-colors">
+                     <Plus size={18} /> 新建项目流
                   </button>
                 )}
               </div>
@@ -337,22 +359,22 @@ export const Strategy: React.FC<{
                       <h4 className="text-[13px] font-bold text-neutral-500 mb-4">账号组合：</h4>
                       <div className="grid grid-cols-4 gap-4">
                         <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">官方号 <span className="text-blue-600">3 篇</span></h5>
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">专业号 <span className="text-blue-600">3 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">建立可信度</div>
                           <div className="text-[11px] text-neutral-400">专业科普打法 · 品牌素材库</div>
                         </div>
                         <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">KOS <span className="text-indigo-600">4 篇</span></h5>
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">员工号 <span className="text-indigo-600">4 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">补充服务视角</div>
                           <div className="text-[11px] text-neutral-400">顾问经验打法 · 需门店场景</div>
                         </div>
                         <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">泛素人分发 <span className="text-emerald-600">8 篇</span></h5>
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">KOC矩阵 <span className="text-emerald-600">8 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">铺真实体验</div>
                           <div className="text-[11px] text-neutral-400">泛生活种草 · 人工预设人设</div>
                         </div>
                         <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">真实客户快发 <span className="text-amber-600">5 篇</span></h5>
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">客户号 <span className="text-amber-600">5 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">现身说法</div>
                           <div className="text-[11px] text-neutral-400">即时生成打法 · 现场扫码发</div>
                         </div>
@@ -371,8 +393,8 @@ export const Strategy: React.FC<{
 
                   <div className="flex flex-wrap items-center gap-3">
                     <button onClick={() => window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'matrix' } }))} className="px-6 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2">生成项目流 <ArrowRight size={16} /></button>
-                    <button onClick={() => setShowAdjustDrawer(true)} className="px-5 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors">调整账号组合</button>
-                    <button className="px-5 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors">换一套起盘打法</button>
+                    
+                    <button onClick={() => setShowCopilot(true)} className="px-5 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors">新建项目流</button>
                   </div>
                 </div>
               )}
@@ -568,53 +590,54 @@ export const Strategy: React.FC<{
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容比例</label>
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1">
-                        <div className="text-[12px] text-neutral-500 mb-1">素人口吻</div>
-                        <div className="relative"><input type="number" value={formValues.percent1} onChange={e => setFormValues({...formValues, percent1: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">%</span></div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容比例与执行</label>
+                    <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
+                      <div className="flex items-center gap-6 mb-4">
+                        <div className="flex-1">
+                          <div className="text-[12px] text-neutral-500 mb-1">素人口吻</div>
+                          <div className="text-[16px] font-bold text-neutral-900">{formValues.percent1}%</div>
+                        </div>
+                        <div className="w-[1px] h-8 bg-neutral-100" />
+                        <div className="flex-1">
+                          <div className="text-[12px] text-neutral-500 mb-1">专业科普</div>
+                          <div className="text-[16px] font-bold text-neutral-900">{formValues.percent2}%</div>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <div className="text-[12px] text-neutral-500 mb-1">专业科普</div>
-                        <div className="relative"><input type="number" value={formValues.percent2} onChange={e => setFormValues({...formValues, percent2: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">%</span></div>
+                      <div className="flex items-center gap-6 pt-4 border-t border-neutral-100">
+                        <div className="flex-1">
+                          <div className="text-[12px] text-neutral-500 mb-1">总内容数量</div>
+                          <div className="text-[16px] font-bold text-neutral-900">{formValues.amount} 篇</div>
+                        </div>
+                        <div className="w-[1px] h-8 bg-neutral-100" />
+                        <div className="flex-1">
+                          <div className="text-[12px] text-neutral-500 mb-1">执行周期</div>
+                          <div className="text-[16px] font-bold text-neutral-900">{formValues.days} 天</div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容数量</label>
-                      <div className="relative"><input type="number" value={formValues.amount} onChange={e => setFormValues({...formValues, amount: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">篇</span></div>
-                    </div>
-                    <div>
-                      <label className="block text-[13px] font-bold text-neutral-700 mb-2">执行周期</label>
-                      <div className="relative"><input type="number" value={formValues.days} onChange={e => setFormValues({...formValues, days: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-lg pl-3 pr-8 py-2 text-[13px]" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">天</span></div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">账号矩阵与内容策略</label>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">账号矩阵与内容策略 <span className="text-[11px] font-normal text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">AI 自动调优</span></label>
                     <div className="space-y-3">
-                      {/* 官方/专业号 */}
+                      
+                      {/* 专业号 */}
                       <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500"></span>专业号 (A05)</span>
-                          <div className="relative w-20"><input type="number" value={formValues.a05} onChange={e => setFormValues({...formValues, a05: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">篇</span></div>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500"></span>专业号</span>
+                          <span className="text-[16px] font-bold text-neutral-900">{formValues.official} 篇</span>
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
                           <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>品牌背书、专业成分科普</p></div>
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>员工选用官方精美海报、高清素材或棚拍</p></div>
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>选用官方精美海报、高清素材或棚拍</p></div>
                         </div>
                       </div>
 
-                      {/* 员工/人设号 */}
+                      {/* 员工号 */}
                       <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500"></span>员工/人设号 (A01/A02)</span>
-                          <div className="flex gap-2">
-                             <div className="relative w-[72px]"><input type="number" value={formValues.a01} onChange={e => setFormValues({...formValues, a01: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 text-[11px] font-medium">A01</span></div>
-                             <div className="relative w-[72px]"><input type="number" value={formValues.a02} onChange={e => setFormValues({...formValues, a02: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-neutral-50 border border-neutral-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 text-[11px] font-medium">A02</span></div>
-                          </div>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500"></span>员工号</span>
+                          <span className="text-[16px] font-bold text-neutral-900">{formValues.kos} 篇</span>
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
                           <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>测评对比、避坑指南、个人养宠经验</p></div>
@@ -622,38 +645,32 @@ export const Strategy: React.FC<{
                         </div>
                       </div>
 
-                      {/* 外部 KOC */}
-                      <div className="bg-emerald-50/30 border border-emerald-100 shadow-sm rounded-xl p-4 space-y-3">
+                      {/* KOC矩阵 */}
+                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>外部 KOC 矩阵</span>
-                          <div className="relative w-20"><input type="number" value={formValues.koc} onChange={e => setFormValues({...formValues, koc: parseInt(e.target.value)||0})} className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield] w-full bg-white border border-emerald-200 rounded-md pl-2 pr-6 py-1.5 text-[13px] text-center font-medium" /><span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 text-[13px]">篇</span></div>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>KOC矩阵</span>
+                          <span className="text-[16px] font-bold text-neutral-900">{formValues.koc_general} 篇</span>
                         </div>
-                        <div className="bg-white p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5 border border-emerald-100/50">
+                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
                           <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>真实反馈、软便改善记录、挑食应对过程</p></div>
-                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>需在此预置 KOC 取材模式，影响下游分发流转</p></div>
-                        </div>
-                        
-                        <div className="pt-2 border-t border-emerald-100 space-y-2">
-                           <label className="flex items-start gap-2 cursor-pointer group">
-                             <input type="radio" name="koc_mode" defaultChecked className="mt-0.5 accent-emerald-600" />
-                             <div>
-                               <div className="text-[13px] font-medium text-neutral-900 group-hover:text-emerald-700 transition-colors">KOC 领取任务时自行实拍回传</div>
-                               <div className="text-[11px] text-neutral-500 mt-0.5">流程：系统下发拍摄要求 &rarr; KOC 回传 &rarr; AI 校验合排</div>
-                             </div>
-                           </label>
-    
-                           <label className="flex items-start gap-2 cursor-pointer group">
-                             <input type="radio" name="koc_mode" className="mt-0.5 accent-emerald-600" />
-                             <div>
-                               <div className="text-[13px] font-medium text-neutral-900 group-hover:text-emerald-700 transition-colors">商家云端下发标准素材包</div>
-                               <div className="text-[11px] text-neutral-500 mt-0.5">流程：员工上传素材 &rarr; 生成多种配图 &rarr; 下发给 KOC 发布</div>
-                             </div>
-                           </label>
+                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>系统下发要求 &rarr; KOC 回传 &rarr; AI 校验排版</p></div>
                         </div>
                       </div>
+
+                      {/* 客户号 */}
+                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500"></span>客户号 (现场快发)</span>
+                          <span className="text-[16px] font-bold text-neutral-900">{formValues.koc_real} 篇</span>
+                        </div>
+                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
+                          <div className="flex gap-2"><span className="text-amber-500 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>门店现身说法、真实购买记录</p></div>
+                          <div className="flex gap-2"><span className="text-amber-500 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>生成动态体验码 &rarr; 现场扫码 &rarr; 即时合成文案发布</p></div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-[13px] font-bold text-neutral-700 mb-2">风险边界 (系统预置)</label>
                     <div className="space-y-2">
@@ -810,8 +827,8 @@ export const Strategy: React.FC<{
             </motion.div>
           </>
         )}
+        {showCopilot && <StrategyCopilotDrawer onClose={() => setShowCopilot(false)} isNewProject={false} />}
       </AnimatePresence>
-
     </div>
   );
 };

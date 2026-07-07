@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StrategyCopilotDrawer } from '../components/StrategyCopilotDrawer';
 import { ContentDetailDrawer } from '../components/rings/ContentDetailDrawer';
 import { PublishDrawer } from '../components/rings/PublishDrawer';
 import { ChannelsDrawer } from '../components/rings/ChannelsDrawer';
@@ -59,6 +60,7 @@ const MOCK_PROJECTS = [
 
 export default function MerchantMatrix() {
   const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [showCopilot, setShowCopilot] = useState(false);
   const [activeDrawer, setActiveDrawer] = useState<'add_batch' | 'materials' | 'interaction' | 'content_detail' | 'publish' | 'channels_detail' | null>(null);
 
   const handleNodeClick = (node: any) => {
@@ -96,7 +98,7 @@ export default function MerchantMatrix() {
           </div>
         </div>
         <div>
-          <button className="flex items-center gap-2 bg-neutral-900 text-white px-4 py-2 rounded-xl text-[13px] font-bold shadow-md hover:bg-neutral-800 transition-colors">
+          <button onClick={() => setShowCopilot(true)} className="flex items-center gap-2 bg-neutral-900 text-white px-4 py-2 rounded-xl text-[13px] font-bold shadow-md hover:bg-neutral-800 transition-colors">
             <Plus size={16} /> 新建项目流
           </button>
         </div>
@@ -362,8 +364,8 @@ export default function MerchantMatrix() {
              </motion.div>
            </div>
         )}
+        {showCopilot && <StrategyCopilotDrawer onClose={() => setShowCopilot(false)} isNewProject={true} />}
       </AnimatePresence>
-
     </div>
   );
 }

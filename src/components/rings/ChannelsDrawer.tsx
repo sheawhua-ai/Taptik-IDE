@@ -54,7 +54,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  <span className="text-[14px] font-bold text-neutral-900">官方号 A01/A05 · 3 篇</span>
+                  <span className="text-[14px] font-bold text-neutral-900">专业号 · 3 篇</span>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">可生成</span>
               </div>
@@ -71,7 +71,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                  <span className="text-[14px] font-bold text-neutral-900">员工 KOS · 4 篇</span>
+                  <span className="text-[14px] font-bold text-neutral-900">员工号 · 4 篇</span>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">可生成</span>
               </div>
@@ -88,7 +88,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span className="text-[14px] font-bold text-neutral-900">泛素人分发 · 8 篇</span>
+                  <span className="text-[14px] font-bold text-neutral-900">KOC矩阵 · 8 篇</span>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">AI已分配人设，可生成</span>
               </div>
@@ -107,7 +107,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-amber-500" />
-                  <span className="text-[14px] font-bold text-neutral-900">真实客户快发 · 30 篇</span>
+                  <span className="text-[14px] font-bold text-neutral-900">客户号 · 30 篇</span>
                 </div>
                 <span className="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">可生成快发入口</span>
               </div>
