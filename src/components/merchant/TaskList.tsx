@@ -37,7 +37,7 @@ export const TaskList: React.FC = () => {
  <div key={task.id} className="bg-white rounded-[32px] border border-neutral-200 p-6 shadow-sm hover:shadow-xl transition-all group">
  <div className="flex items-center justify-between mb-6">
  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
- task.status === 'done' ? 'bg-success-50 text-success-500' : 
+ task.status === 'done' ? 'bg-neutral-100 text-neutral-900' : 
  task.status === 'running' ? 'bg-primary-50 text-primary-500' : 'bg-neutral-50 text-neutral-400'
  }`}>
  <Layout size={24} />
@@ -56,7 +56,7 @@ export const TaskList: React.FC = () => {
  </div>
  <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
  <div 
- className={`h-full transition-all duration-1000 ${task.status === 'done' ? 'bg-success-500' : 'bg-primary-500'}`} 
+ className={`h-full transition-all duration-1000 ${task.status === 'done' ? 'bg-neutral-900' : 'bg-primary-500'}`} 
  style={{ width: `${task.progress}%` }} 
  />
  </div>
@@ -73,7 +73,7 @@ export const TaskList: React.FC = () => {
  ) : task.status === 'paused' ? (
  <button className="p-2 bg-primary-500 text-white rounded-lg hover:scale-110 transition-transform"><Play size={14}/></button>
  ) : (
- <div className="flex items-center gap-1 text-success-500 text-[12px] "><CheckCircle2 size={14}/> 已完成</div>
+ <div className="flex items-center gap-1 text-neutral-900 text-[12px] "><CheckCircle2 size={14}/> 已完成</div>
  )}
  </div>
  </div>

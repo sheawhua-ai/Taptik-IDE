@@ -40,7 +40,7 @@ export function ExecutionResult() {
             系统已完成项目拆解，下一步请处理内容完整度、素材缺口与任务分发。
           </p>
         </div>
-        <div className="flex items-center gap-1.5 text-[13px] font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full">
+        <div className="flex items-center gap-1.5 text-[13px] font-medium text-neutral-900 bg-neutral-100 px-3 py-1.5 rounded-full">
           <CheckCircle2 size={16} /> 已保存到商家知识库
         </div>
       </div>
@@ -49,7 +49,7 @@ export function ExecutionResult() {
       <div className="bg-neutral-50 border border-neutral-100 p-5 rounded-2xl flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <div className="w-5 h-5 rounded-full bg-neutral-200 text-neutral-900 flex items-center justify-center">
               <Check size={12} />
             </div>
             <span className="font-bold text-neutral-900 text-[15px]">
@@ -67,10 +67,10 @@ export function ExecutionResult() {
       <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 gap-4">
         {/* 卡片 1 */}
         <div
-          className="border border-emerald-200 rounded-2xl p-5 hover:border-emerald-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
+          className="border border-neutral-200 rounded-2xl p-5 hover:border-neutral-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
           onClick={() => setActiveDrawer("review")}
         >
-          <div className="absolute top-0 left-0 w-1 h-full bg-emerald-400"></div>
+          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-400"></div>
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-bold text-neutral-900 flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-neutral-100 text-[10px] flex items-center justify-center font-bold text-neutral-500">
@@ -78,7 +78,7 @@ export function ExecutionResult() {
               </span>
               内容确认
             </h4>
-            <span className="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">
+            <span className="text-[11px] font-medium text-neutral-900 bg-neutral-100 px-2 py-1 rounded border border-neutral-200">
               待处理 3
             </span>
           </div>
@@ -99,9 +99,9 @@ export function ExecutionResult() {
               </div>
             </div>
             <div className="text-[12px] text-neutral-500 flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-300 mt-1.5 shrink-0"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-neutral-300 mt-1.5 shrink-0"></div>
               <div>
-                <span className="font-medium text-emerald-700">
+                <span className="font-medium text-neutral-900">
                   处理后流向：
                 </span>
                 通过后进入素材补齐或直接派发
@@ -109,17 +109,17 @@ export function ExecutionResult() {
             </div>
           </div>
 
-          <button className="w-full py-2 bg-neutral-50 group-hover:bg-emerald-50 text-emerald-700 rounded-lg text-[13px] font-medium transition-colors border border-transparent group-hover:border-emerald-200">
+          <button className="w-full py-2 bg-neutral-50 group-hover:bg-neutral-100 text-neutral-900 rounded-lg text-[13px] font-medium transition-colors border border-transparent group-hover:border-neutral-200">
             开始确认
           </button>
         </div>
 
         {/* 卡片 2 */}
         <div
-          className="border border-neutral-200 rounded-2xl p-5 hover:border-amber-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
+          className="border border-neutral-200 rounded-2xl p-5 hover:border-primary-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
           onClick={() => setActiveDrawer("material")}
         >
-          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-200 group-hover:bg-amber-400 transition-colors"></div>
+          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-200 group-hover:bg-primary-400 transition-colors"></div>
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-bold text-neutral-900 flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-neutral-100 text-[10px] flex items-center justify-center font-bold text-neutral-500">
@@ -127,7 +127,7 @@ export function ExecutionResult() {
               </span>
               素材补齐
             </h4>
-            <span className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100">
+            <span className="text-[11px] font-medium text-primary-600 bg-primary-50 px-2 py-1 rounded border border-primary-100">
               待处理 4
             </span>
           </div>
@@ -148,25 +148,25 @@ export function ExecutionResult() {
               </div>
             </div>
             <div className="text-[12px] text-neutral-500 flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-300 mt-1.5 shrink-0"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-300 mt-1.5 shrink-0"></div>
               <div>
-                <span className="font-medium text-amber-700">处理后流向：</span>
+                <span className="font-medium text-primary-700">处理后流向：</span>
                 装填完毕进入待发布池
               </div>
             </div>
           </div>
 
-          <button className="w-full py-2 bg-neutral-50 group-hover:bg-amber-50 text-amber-700 rounded-lg text-[13px] font-medium transition-colors border border-transparent group-hover:border-amber-200">
+          <button className="w-full py-2 bg-neutral-50 group-hover:bg-primary-50 text-primary-700 rounded-lg text-[13px] font-medium transition-colors border border-transparent group-hover:border-primary-200">
             自动装配素材
           </button>
         </div>
 
         {/* 卡片 3 */}
         <div
-          className="border border-neutral-200 rounded-2xl p-5 hover:border-indigo-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
+          className="border border-neutral-200 rounded-2xl p-5 hover:border-primary-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
           onClick={() => setActiveDrawer("internal")}
         >
-          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-200 group-hover:bg-indigo-400 transition-colors"></div>
+          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-200 group-hover:bg-primary-400 transition-colors"></div>
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-bold text-neutral-900 flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-neutral-100 text-[10px] flex items-center justify-center font-bold text-neutral-500">
@@ -174,7 +174,7 @@ export function ExecutionResult() {
               </span>
               任务派发
             </h4>
-            <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded border border-indigo-100">
+            <span className="text-[11px] font-medium text-primary-600 bg-primary-50 px-2 py-1 rounded border border-primary-100">
               待派发 2
             </span>
           </div>
@@ -195,9 +195,9 @@ export function ExecutionResult() {
               </div>
             </div>
             <div className="text-[12px] text-neutral-500 flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-indigo-300 mt-1.5 shrink-0"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-300 mt-1.5 shrink-0"></div>
               <div>
-                <span className="font-medium text-indigo-700">处理后流向：</span>
+                <span className="font-medium text-primary-700">处理后流向：</span>
                 提交后进入素材验收池
               </div>
             </div>
@@ -210,10 +210,10 @@ export function ExecutionResult() {
 
         {/* 卡片 4 */}
         <div
-          className="border border-neutral-200 rounded-2xl p-5 hover:border-indigo-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
+          className="border border-neutral-200 rounded-2xl p-5 hover:border-primary-400 transition-colors bg-white shadow-sm flex flex-col relative overflow-hidden group cursor-pointer"
           onClick={() => setActiveDrawer("external")}
         >
-          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-200 group-hover:bg-indigo-400 transition-colors"></div>
+          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-200 group-hover:bg-primary-400 transition-colors"></div>
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-bold text-neutral-900 flex items-center gap-1.5">
               <span className="w-5 h-5 rounded-full bg-neutral-100 text-[10px] flex items-center justify-center font-bold text-neutral-500">
@@ -221,7 +221,7 @@ export function ExecutionResult() {
               </span>
               外部入口
             </h4>
-            <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded border border-indigo-100">
+            <span className="text-[11px] font-medium text-primary-600 bg-primary-50 px-2 py-1 rounded border border-primary-100">
               待生成 3
             </span>
           </div>
@@ -242,9 +242,9 @@ export function ExecutionResult() {
               </div>
             </div>
             <div className="text-[12px] text-neutral-500 flex items-start gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-indigo-300 mt-1.5 shrink-0"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-300 mt-1.5 shrink-0"></div>
               <div>
-                <span className="font-medium text-indigo-700">
+                <span className="font-medium text-primary-700">
                   处理后流向：
                 </span>
                 外部领取后按规则回传或发布
@@ -252,7 +252,7 @@ export function ExecutionResult() {
             </div>
           </div>
 
-          <button className="w-full py-2 bg-neutral-50 group-hover:bg-indigo-50 text-indigo-700 rounded-lg text-[13px] font-medium transition-colors border border-transparent group-hover:border-indigo-200">
+          <button className="w-full py-2 bg-neutral-50 group-hover:bg-primary-50 text-primary-700 rounded-lg text-[13px] font-medium transition-colors border border-transparent group-hover:border-primary-200">
             生成接单入口
           </button>
         </div>
@@ -321,14 +321,14 @@ export function ExecutionResult() {
             >
               {activeDrawer === "review" && (
                 <>
-                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-emerald-50/50">
+                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-100/50">
                     <div>
                       <h3 className="font-bold text-neutral-900 text-[16px]">
                         内容包快速审核
                       </h3>
                       <p className="text-[12px] text-neutral-500 mt-1">
                         当前：3 个待审核 |{" "}
-                        <span className="text-emerald-600">
+                        <span className="text-neutral-900">
                           已沉淀到「宠物食品自然流笔记」能力中
                         </span>
                       </p>
@@ -360,10 +360,10 @@ export function ExecutionResult() {
                         <span className="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-[10px] rounded">
                           素人口吻
                         </span>
-                        <span className="px-2 py-0.5 bg-amber-50 text-amber-600 border border-amber-100 text-[10px] rounded">
+                        <span className="px-2 py-0.5 bg-primary-50 text-primary-600 border border-primary-100 text-[10px] rounded">
                           缺实拍图
                         </span>
-                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-100 text-[10px] rounded">
+                        <span className="px-2 py-0.5 bg-primary-50 text-primary-600 border border-primary-100 text-[10px] rounded">
                           建议外部体验领取
                         </span>
                       </div>
@@ -393,25 +393,25 @@ export function ExecutionResult() {
                         "很多新手铲屎官遇到狗子不吃饭，第一反应就是饿它一顿！其实幼犬挑食很可能是换粮方式不对..."
                       </div>
 
-                      <div className="bg-indigo-50/50 border border-indigo-100 rounded-lg p-3 mb-4 relative">
+                      <div className="bg-primary-50/50 border border-primary-100 rounded-lg p-3 mb-4 relative">
                         <div className="flex items-center gap-2 mb-2">
-                          <Sparkles size={14} className="text-indigo-500" />
-                          <span className="text-[12px] font-bold text-indigo-900">
+                          <Sparkles size={14} className="text-primary-500" />
+                          <span className="text-[12px] font-bold text-primary-900">
                             智能修正中
                           </span>
                         </div>
-                        <div className="bg-white p-2 border border-indigo-100 rounded text-[11px] text-neutral-700 mb-2 line-through opacity-70">
+                        <div className="bg-white p-2 border border-primary-100 rounded text-[11px] text-neutral-700 mb-2 line-through opacity-70">
                           原版：很多新手铲屎官遇到狗子不吃饭...
                         </div>
-                        <div className="bg-white p-2 border border-indigo-200 rounded text-[11px] text-indigo-900 font-medium mb-3 shadow-sm">
+                        <div className="bg-white p-2 border border-primary-200 rounded text-[11px] text-primary-900 font-medium mb-3 shadow-sm">
                           修改后：别再饿狗子了！幼犬挑食 90% 是你换粮的锅...
                         </div>
 
-                        <div className="flex items-center gap-2 mt-2 pt-2 border-t border-indigo-100">
+                        <div className="flex items-center gap-2 mt-2 pt-2 border-t border-primary-100">
                           <input
                             type="text"
                             placeholder="不满意？输入修改要求..."
-                            className="flex-1 text-[11px] bg-white border border-indigo-100 rounded px-2 py-1.5 focus:outline-none focus:border-indigo-300"
+                            className="flex-1 text-[11px] bg-white border border-primary-100 rounded px-2 py-1.5 focus:outline-none focus:border-primary-300"
                           />
                           <button className="px-3 py-1.5 bg-neutral-900 text-white text-[11px] rounded hover:bg-neutral-800 shadow-sm transition-colors">
                             提交修改
@@ -420,7 +420,7 @@ export function ExecutionResult() {
                       </div>
 
                       <div className="flex flex-wrap gap-2 pt-2 border-t border-neutral-100">
-                        <button className="flex-1 min-w-[70px] py-2 bg-emerald-500 text-white text-[11px] font-medium rounded-lg hover:bg-emerald-600">
+                        <button className="flex-1 min-w-[70px] py-2 bg-neutral-900 text-white text-[11px] font-medium rounded-lg hover:bg-neutral-900">
                           采用
                         </button>
                         <button className="flex-1 min-w-[70px] py-2 bg-white border border-neutral-200 text-neutral-700 text-[11px] font-medium rounded-lg hover:bg-neutral-50">
@@ -432,7 +432,7 @@ export function ExecutionResult() {
                         <button className="flex-1 min-w-[70px] py-2 bg-white border border-neutral-200 text-neutral-700 text-[11px] font-medium rounded-lg hover:bg-neutral-50">
                           保留原版
                         </button>
-                        <button className="flex-1 min-w-[70px] py-2 bg-white border border-red-200 text-red-600 text-[11px] font-medium rounded-lg hover:bg-red-50">
+                        <button className="flex-1 min-w-[70px] py-2 bg-white border border-primary-200 text-primary-600 text-[11px] font-medium rounded-lg hover:bg-primary-50">
                           批注退回
                         </button>
                       </div>
@@ -458,7 +458,7 @@ export function ExecutionResult() {
 
               {activeDrawer === "material" && (
                 <>
-                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-amber-50/50">
+                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-primary-50/50">
                     <div>
                       <h3 className="font-bold text-neutral-900 text-[16px]">
                         内容需求素材匹配
@@ -481,10 +481,10 @@ export function ExecutionResult() {
                         幼犬软便必看指南
                       </h4>
                       <div className="flex gap-2 mb-3">
-                        <span className="text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">
+                        <span className="text-[11px] text-primary-600 bg-primary-50 px-2 py-0.5 rounded border border-primary-100">
                           缺封面图
                         </span>
-                        <span className="text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">
+                        <span className="text-[11px] text-primary-600 bg-primary-50 px-2 py-0.5 rounded border border-primary-100">
                           缺场景图
                         </span>
                         <span className="text-[11px] text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
@@ -509,15 +509,15 @@ export function ExecutionResult() {
                           <div className="w-24 shrink-0 flex flex-col gap-1">
                             <div className="w-24 h-24 bg-neutral-200 rounded object-cover flex items-center justify-center text-[10px] text-neutral-400 relative">
                               封面_01.jpg
-                              <div className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[8px] px-1 rounded shadow">
+                              <div className="absolute -top-1 -right-1 bg-neutral-900 text-white text-[8px] px-1 rounded shadow">
                                 85%匹配
                               </div>
                             </div>
                             <div className="flex flex-wrap gap-1">
-                              <span className="text-[8px] px-1 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded">
+                              <span className="text-[8px] px-1 py-0.5 bg-neutral-100 text-neutral-900 border border-neutral-200 rounded">
                                 适合封面
                               </span>
-                              <span className="text-[8px] px-1 py-0.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded">
+                              <span className="text-[8px] px-1 py-0.5 bg-primary-50 text-primary-600 border border-primary-100 rounded">
                                 重复度低
                               </span>
                             </div>
@@ -526,7 +526,7 @@ export function ExecutionResult() {
                           <div className="w-24 shrink-0 flex flex-col gap-1">
                             <div className="w-24 h-24 bg-neutral-200 rounded object-cover flex items-center justify-center text-[10px] text-neutral-400 relative">
                               场景_03.mp4
-                              <div className="absolute -top-1 -right-1 bg-amber-500 text-white text-[8px] px-1 rounded shadow">
+                              <div className="absolute -top-1 -right-1 bg-primary-500 text-white text-[8px] px-1 rounded shadow">
                                 70%匹配
                               </div>
                             </div>
@@ -534,7 +534,7 @@ export function ExecutionResult() {
                               <span className="text-[8px] px-1 py-0.5 bg-neutral-100 text-neutral-600 border border-neutral-200 rounded">
                                 适合正文
                               </span>
-                              <span className="text-[8px] px-1 py-0.5 bg-amber-50 text-amber-600 border border-amber-100 rounded">
+                              <span className="text-[8px] px-1 py-0.5 bg-primary-50 text-primary-600 border border-primary-100 rounded">
                                 真人感弱
                               </span>
                             </div>
@@ -555,7 +555,7 @@ export function ExecutionResult() {
                       </button>
                     </div>
 
-                    <div className="mt-auto text-center text-[11px] text-amber-600 bg-amber-50 py-2 rounded-lg border border-amber-100">
+                    <div className="mt-auto text-center text-[11px] text-primary-600 bg-primary-50 py-2 rounded-lg border border-primary-100">
                       本项目素材库覆盖度 70%，仍缺幼犬真实喂食场景
                     </div>
                   </div>
@@ -579,7 +579,7 @@ export function ExecutionResult() {
 
               {activeDrawer === "external" && (
                 <>
-                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-indigo-50/50">
+                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-primary-50/50">
                     <div>
                       <h3 className="font-bold text-neutral-900 text-[16px]">
                         外部领取与分发
@@ -599,14 +599,14 @@ export function ExecutionResult() {
                     <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded bg-indigo-100 flex items-center justify-center text-indigo-600">
+                          <div className="w-6 h-6 rounded bg-primary-100 flex items-center justify-center text-primary-600">
                             <QrCode size={14} />
                           </div>
                           <h4 className="font-bold text-[14px] text-neutral-900">
                             扫码即发布包
                           </h4>
                         </div>
-                        <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] text-primary-600 bg-primary-50 px-2 py-0.5 rounded">
                           未生成
                         </span>
                       </div>
@@ -650,14 +650,14 @@ export function ExecutionResult() {
                     <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded bg-emerald-100 flex items-center justify-center text-emerald-600">
+                          <div className="w-6 h-6 rounded bg-neutral-200 flex items-center justify-center text-neutral-900">
                             <ImageIcon size={14} />
                           </div>
                           <h4 className="font-bold text-[14px] text-neutral-900">
                             真实体验领取
                           </h4>
                         </div>
-                        <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded">
                           已有2人领取
                         </span>
                       </div>
@@ -699,14 +699,14 @@ export function ExecutionResult() {
                     <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded bg-indigo-100 flex items-center justify-center text-indigo-600">
+                          <div className="w-6 h-6 rounded bg-primary-100 flex items-center justify-center text-primary-600">
                             <LinkIcon size={14} />
                           </div>
                           <h4 className="font-bold text-[14px] text-neutral-900">
                             单篇发布链接
                           </h4>
                         </div>
-                        <span className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] text-primary-600 bg-primary-50 px-2 py-0.5 rounded">
                           已生成
                         </span>
                       </div>
@@ -760,7 +760,7 @@ export function ExecutionResult() {
 
               {activeDrawer === "internal" && (
                 <>
-                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-indigo-50/50">
+                  <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-primary-50/50">
                     <div>
                       <h3 className="font-bold text-neutral-900 text-[16px]">
                         内部任务派发
@@ -782,12 +782,12 @@ export function ExecutionResult() {
                         <h4 className="font-bold text-[14px] text-neutral-900">
                           幼犬到家实拍补充
                         </h4>
-                        <span className="text-[10px] text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">
+                        <span className="text-[10px] text-primary-600 bg-primary-50 px-2 py-0.5 rounded border border-primary-100">
                           高优
                         </span>
                       </div>
                       <div className="text-[10px] text-neutral-400 mb-3 flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary-400"></div>
                         未发送
                       </div>
 
@@ -796,7 +796,7 @@ export function ExecutionResult() {
                           <span className="text-neutral-500">通知渠道</span>
                           <span className="text-neutral-700">
                             企微 / 飞书{" "}
-                            <span className="text-[9px] text-emerald-600 bg-emerald-50 px-1 rounded ml-1">
+                            <span className="text-[9px] text-neutral-900 bg-neutral-100 px-1 rounded ml-1">
                               身份已绑定
                             </span>
                           </span>

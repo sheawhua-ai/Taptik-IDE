@@ -126,7 +126,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                     </div>
                     <div className="flex items-end gap-2">
                       <span className="text-3xl font-semibold text-neutral-900">42</span>
-                      <span className="text-[11px] text-success-500 bg-success-50 px-1.5 py-0.5 rounded pb-1">个</span>
+                      <span className="text-[11px] text-neutral-900 bg-neutral-100 px-1.5 py-0.5 rounded pb-1">个</span>
                     </div>
                   </div>
                   
@@ -169,11 +169,11 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                     <span className="text-[11px] text-primary-500 bg-primary-50 px-1.5 py-0.5 rounded pb-1">条</span>
                   </div>
                 </div>
-                <div className="bg-white p-5 rounded-[20px] border border-rose-100 bg-rose-50/30 flex flex-col justify-between">
-                  <div className="text-[12px] text-rose-500 mb-2 flex items-center gap-1.5"><AlertCircle size={14}/> 异常/限流账号</div>
+                <div className="bg-white p-5 rounded-[20px] border border-primary-100 bg-primary-50/30 flex flex-col justify-between">
+                  <div className="text-[12px] text-primary-500 mb-2 flex items-center gap-1.5"><AlertCircle size={14}/> 异常/限流账号</div>
                   <div className="flex items-end gap-2">
-                    <span className="text-3xl font-semibold text-rose-600">1</span>
-                    <span className="text-[11px] text-rose-600 bg-rose-100 px-1.5 py-0.5 rounded pb-1">个</span>
+                    <span className="text-3xl font-semibold text-primary-600">1</span>
+                    <span className="text-[11px] text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded pb-1">个</span>
                   </div>
                 </div>
               </div>
@@ -183,8 +183,8 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-[15px] font-semibold text-neutral-900">入网账号流水</h3>
                   <div className="text-[12px] text-neutral-500 flex gap-4">
-                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-success-500"></div> 正常运行</span>
-                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-warning-500 text-amber-500"></div> 异常或限流</span>
+                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-neutral-900"></div> 正常运行</span>
+                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-neutral-400 text-primary-500"></div> 异常或限流</span>
                   </div>
                 </div>
                 
@@ -198,11 +198,11 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                           <div>
                             <div className="flex items-center gap-2 mb-0.5">
                               <h4 className="text-[15px] font-semibold text-neutral-900">{acc.name}</h4>
-                              <div className={`w-2 h-2 rounded-full ${acc.health === 'good' ? 'bg-success-500' : acc.health === 'warning' ? 'bg-amber-500' : 'bg-rose-500'}`} />
+                              <div className={`w-2 h-2 rounded-full ${acc.health === 'good' ? 'bg-neutral-900' : acc.health === 'warning' ? 'bg-primary-500' : 'bg-primary-500'}`} />
                             </div>
                             <div className="flex items-center gap-1.5 mt-1">
                               <span className="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{acc.type}</span>
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${acc.loginStatus === 'managed' ? 'text-primary-600 bg-primary-50' : 'text-indigo-600 bg-indigo-50'}`}>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${acc.loginStatus === 'managed' ? 'text-primary-600 bg-primary-50' : 'text-primary-600 bg-primary-50'}`}>
                                 {acc.loginStatus === 'managed' ? 'PC/App静默挂载' : '云端监控'}
                               </span>
                             </div>
@@ -224,7 +224,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                             </div>
                             <div>
                               <div className="text-[10px] text-neutral-400 mb-1">聚光ROI</div>
-                              <div className="text-[13px] font-medium text-success-600">{acc.juguangData?.roi || '-'}</div>
+                              <div className="text-[13px] font-medium text-neutral-900">{acc.juguangData?.roi || '-'}</div>
                             </div>
                             <div>
                               <div className="text-[10px] text-neutral-400 mb-1">笔记赞藏</div>
@@ -244,18 +244,18 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         </div>
                       ) : (
                         <div className="space-y-4">
-                          <div className="grid grid-cols-3 gap-2 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
+                          <div className="grid grid-cols-3 gap-2 p-3 bg-primary-50/50 rounded-xl border border-primary-100/50">
                             <div>
-                              <div className="text-[10px] text-indigo-400 mb-1">预计粉丝增速</div>
-                              <div className={`text-[13px] font-medium ${acc.monitoringData?.growthRate?.includes('+') ? 'text-success-600' : 'text-rose-500'}`}>{acc.monitoringData?.growthRate || '-'}</div>
+                              <div className="text-[10px] text-primary-400 mb-1">预计粉丝增速</div>
+                              <div className={`text-[13px] font-medium ${acc.monitoringData?.growthRate?.includes('+') ? 'text-neutral-900' : 'text-primary-500'}`}>{acc.monitoringData?.growthRate || '-'}</div>
                             </div>
                             <div>
-                              <div className="text-[10px] text-indigo-400 mb-1">赞藏互动率</div>
-                              <div className="text-[13px] font-medium text-indigo-700">{acc.monitoringData?.engagementRate || '-'}</div>
+                              <div className="text-[10px] text-primary-400 mb-1">赞藏互动率</div>
+                              <div className="text-[13px] font-medium text-primary-700">{acc.monitoringData?.engagementRate || '-'}</div>
                             </div>
                             <div>
-                              <div className="text-[10px] text-indigo-400 mb-1">品牌词提及</div>
-                              <div className="text-[13px] font-medium text-indigo-700">{acc.monitoringData?.brandMentions || 0}次</div>
+                              <div className="text-[10px] text-primary-400 mb-1">品牌词提及</div>
+                              <div className="text-[13px] font-medium text-primary-700">{acc.monitoringData?.brandMentions || 0}次</div>
                             </div>
                           </div>
                           <div className="space-y-2">
@@ -263,11 +263,11 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                             <div className="space-y-1.5">
                               <div className="text-[12px] text-neutral-600 bg-white border border-neutral-100 rounded-lg p-2 truncate flex items-center justify-between">
                                 <span className="truncate">· 测评了10款宠物零食，推荐...</span>
-                                <span className="text-indigo-500 text-[10px] bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
+                                <span className="text-primary-500 text-[10px] bg-primary-50 px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
                               </div>
                               <div className="text-[12px] text-neutral-600 bg-white border border-neutral-100 rounded-lg p-2 truncate flex items-center justify-between">
                                 <span className="truncate">· 铲屎官必看的换粮指南</span>
-                                <span className="text-indigo-500 text-[10px] bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
+                                <span className="text-primary-500 text-[10px] bg-primary-50 px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
                               </div>
                             </div>
                           </div>
@@ -297,7 +297,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                     <img src={task.image} alt={task.title} className="w-16 h-16 rounded-xl object-cover" />
                     <div className="flex flex-col gap-1.5 overflow-hidden w-full">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${task.status === '已完成发文' ? 'bg-success-50 text-success-600' : 'bg-primary-50 text-primary-600'}`}>{task.status}</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${task.status === '已完成发文' ? 'bg-neutral-100 text-neutral-900' : 'bg-primary-50 text-primary-600'}`}>{task.status}</span>
                         <h4 className="text-[15px] font-semibold text-neutral-900 truncate">{task.title}</h4>
                       </div>
                       <div className="flex gap-4 text-[12px] text-neutral-400">
@@ -318,7 +318,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         </button>
                       </>
                     ) : (
-                      <span className="px-4 py-2 text-success-500 font-medium text-[13px] flex items-center gap-1.5">
+                      <span className="px-4 py-2 text-neutral-900 font-medium text-[13px] flex items-center gap-1.5">
                         <CheckCircle2 size={16} /> 已归档复盘
                       </span>
                     )}
@@ -333,7 +333,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
       {showQrCode && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowQrCode(null)}>
           <div className="w-[320px] bg-white rounded-[24px] shadow-2xl p-6 flex flex-col items-center" onClick={e => e.stopPropagation()}>
-            <div className="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-primary-50 text-primary-500 rounded-full flex items-center justify-center mb-4">
               <QrCode size={24} />
             </div>
             <h3 className="text-[16px] font-semibold text-neutral-900 mb-1">手机扫码提取物料</h3>

@@ -42,39 +42,39 @@ export const SearchTasksModal: React.FC<SearchTasksModalProps> = ({ isOpen, onCl
  exit={{ opacity: 0, scale: 0.95, y: -20 }}
  className="relative w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col"
  >
- <div className="p-4 border-b border-slate-100 flex items-center gap-3 bg-slate-50/50">
- <Search size={20} className="text-slate-400 shrink-0 ml-2" />
+ <div className="p-4 border-b border-neutral-100 flex items-center gap-3 bg-neutral-50/50">
+ <Search size={20} className="text-neutral-400 shrink-0 ml-2" />
  <input 
  autoFocus
  type="text"
  placeholder="搜索任务"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="flex-1 bg-transparent border-none outline-none text-[16px] text-slate-800 placeholder:text-slate-400 placeholder:font-normal"
+ className="flex-1 bg-transparent border-none outline-none text-[16px] text-neutral-800 placeholder:text-neutral-400 placeholder:font-normal"
  />
  <button 
  onClick={onClose}
- className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
+ className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-400 hover:bg-neutral-200 hover:text-neutral-600 transition-colors"
  >
  <X size={16} />
  </button>
  </div>
  
  <div className="p-6 max-h-[60vh] overflow-y-auto">
- <div className="text-[13px] text-slate-400 mb-4 px-2 tracking-wide">
+ <div className="text-[13px] text-neutral-400 mb-4 px-2 tracking-wide">
  搜索到 {MOCK_SEARCH_RESULTS.length} 个任务
  </div>
  <div className="space-y-1">
  {MOCK_SEARCH_RESULTS.map((item) => (
  <button 
  key={item.id}
- className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors group"
+ className="w-full flex items-center justify-between p-3 hover:bg-neutral-50 rounded-xl transition-colors group"
  onClick={onClose}
  >
- <span className="text-[14px] text-slate-700 truncate max-w-[400px]">
+ <span className="text-[14px] text-neutral-700 truncate max-w-[400px]">
  {item.title}
  </span>
- <div className="flex items-center gap-2 text-[12px] text-slate-400 group-hover:text-slate-500 font-mono">
+ <div className="flex items-center gap-2 text-[12px] text-neutral-400 group-hover:text-neutral-500 font-mono">
  <item.icon size={14} className="shrink-0" strokeWidth={1.5} />
  <span className="truncate">{item.time}</span>
  </div>

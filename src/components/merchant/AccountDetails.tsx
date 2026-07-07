@@ -96,7 +96,7 @@ export const AccountDetails: React.FC = () => {
  <div className="relative z-10">
  <div className="flex items-center justify-between mb-8">
  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10"><CreditCard size={24} className="text-primary-400"/></div>
- <span className="px-3 py-1 bg-success-500 text-white text-[10px] rounded-lg uppercase tracking-widest">至尊版</span>
+ <span className="px-3 py-1 bg-neutral-900 text-white text-[10px] rounded-lg uppercase tracking-widest">至尊版</span>
  </div>
  <h4 className="text-[20px] font-semibold mb-2">服务有效期</h4>
  <p className="text-[13px] text-white/40 font-medium mb-6">该商家当前版本为 [旗舰版]</p>

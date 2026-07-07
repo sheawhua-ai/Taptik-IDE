@@ -52,7 +52,7 @@ export const StaffManager: React.FC = () => {
  <div className="bg-white rounded-[32px] border border-neutral-200 overflow-hidden shadow-sm">
  <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
  <div className="relative">
- <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+ <Search size={16} className="absolute left-3 top-1/2 -tranneutral-y-1/2 text-neutral-400" />
  <input 
  type="text" 
  placeholder="搜索名称或邮箱..." 
@@ -107,7 +107,7 @@ export const StaffManager: React.FC = () => {
  </td>
  <td className="px-8 py-5">
  <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-success-500" />
+ <div className="w-2 h-2 rounded-full bg-neutral-900" />
  <span className="text-[13px] text-neutral-700">在线</span>
  </div>
  </td>
@@ -116,7 +116,7 @@ export const StaffManager: React.FC = () => {
  <div className="flex items-center justify-end gap-2">
  <button className="p-2 text-neutral-400 hover:text-neutral-900"><Key size={18}/></button>
  <button className="p-2 text-neutral-400 hover:text-neutral-900"><Settings size={18}/></button>
- <button className="p-2 text-neutral-400 hover:text-danger-500"><Trash2 size={18}/></button>
+ <button className="p-2 text-neutral-400 hover:text-primary-500"><Trash2 size={18}/></button>
  </div>
  </td>
  </tr>

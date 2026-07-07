@@ -139,9 +139,9 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
  </div>
  
  <div className="flex items-center gap-4">
- <div className="hidden xl:flex items-center gap-3 px-4 py-2 bg-success-50 text-success-700 rounded-xl border border-success-100">
+ <div className="hidden xl:flex items-center gap-3 px-4 py-2 bg-neutral-100 text-success-700 rounded-xl border border-success-100">
  <span className="text-[11px] ">飞书集成: 正常运行中</span>
- <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
+ <div className="w-2 h-2 rounded-full bg-neutral-900 animate-pulse" />
  </div>
  <button className="p-2.5 bg-neutral-0 border border-neutral-200 rounded-xl text-neutral-400 hover:text-neutral-900 transition-all">
  <Settings size={20}/>
@@ -163,7 +163,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
  <div className="relative z-10">
  <div className="flex items-center gap-2 mb-2">
  <h2 className="text-[20px] font-semibold text-neutral-900 tracking-tight">专属商家入驻引擎</h2>
- <span className="px-2 py-0.5 bg-success-50 text-success-600 text-[10px] rounded-lg">绑定分销 ID</span>
+ <span className="px-2 py-0.5 bg-neutral-100 text-neutral-900 text-[10px] rounded-lg">绑定分销 ID</span>
  </div>
  <p className="text-[14px] text-neutral-500 font-medium mb-8 max-w-lg">
  系统已根据您的代理商 ID 自动生成入驻入口。新商家注册后将自动获得您的「业务模板库」共享权限。
@@ -226,7 +226,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
  </div>
  <div className="flex items-center gap-3">
  <div className="relative">
- <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+ <Search size={16} className="absolute left-3 top-1/2 -tranneutral-y-1/2 text-neutral-400" />
  <input placeholder="搜索商家 ID..." className="pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] w-64 outline-none focus:border-primary-500" />
  </div>
  <button className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] shadow-lg">直接手动开号</button>
@@ -261,7 +261,7 @@ export const ServiceManagement: React.FC<ServiceManagementProps> = ({
  </div>
  </td>
  <td className="px-8 py-5">
- <span className="px-2.5 py-1 bg-success-50 text-success-600 text-[10px] rounded-lg border border-success-100">活跃商户</span>
+ <span className="px-2.5 py-1 bg-neutral-100 text-neutral-900 text-[10px] rounded-lg border border-success-100">活跃商户</span>
  </td>
  <td className="px-8 py-5">
  <div className="flex items-center gap-4">

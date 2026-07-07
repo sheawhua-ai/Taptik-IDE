@@ -93,27 +93,27 @@ export const InlineAIToolbar: React.FC = () => {
       >
         {isProcessing ? (
           <div className="flex items-center gap-2 px-3 py-1 text-white text-[12px]">
-            <RefreshCw size={14} className="animate-spin text-indigo-400" />
+            <RefreshCw size={14} className="animate-spin text-primary-400" />
             <span>智能 处理中...</span>
           </div>
         ) : (
           <>
             <button onClick={() => handleAction('rewrite')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
-              <Sparkles size={14} className="text-indigo-400" />
+              <Sparkles size={14} className="text-primary-400" />
               润色
             </button>
             <div className="w-[1px] h-4 bg-neutral-700 mx-1"></div>
             <button onClick={() => handleAction('tone')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
-              <ThumbsUp size={14} className="text-emerald-400" />
+              <ThumbsUp size={14} className="text-neutral-400" />
               更像真实素人
             </button>
             <button onClick={() => handleAction('shorter')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
-              <Scissors size={14} className="text-amber-400" />
+              <Scissors size={14} className="text-primary-400" />
               精简
             </button>
             <div className="w-[1px] h-4 bg-neutral-700 mx-1"></div>
             <button onClick={() => handleAction('analyze')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
-              <Sparkles size={14} className="text-indigo-400" />
+              <Sparkles size={14} className="text-primary-400" />
               分析这段原因
             </button>
           </>

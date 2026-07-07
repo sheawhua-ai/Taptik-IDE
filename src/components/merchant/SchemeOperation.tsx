@@ -182,7 +182,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  <div className="flex items-center gap-6">
  <div>
  <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse"/>
+ <div className="w-2 h-2 rounded-full bg-neutral-900 animate-pulse"/>
  <span className="text-[11px] text-neutral-900">流水线就绪</span>
  </div>
  </div>

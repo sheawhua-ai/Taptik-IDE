@@ -25,11 +25,11 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
         </div>
         
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex gap-3">
-             <div className="mt-0.5"><Sparkles size={18} className="text-indigo-600" /></div>
+          <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 flex gap-3">
+             <div className="mt-0.5"><Sparkles size={18} className="text-primary-600" /></div>
              <div>
-               <h4 className="text-[14px] font-bold text-indigo-900 mb-1">条件已就绪</h4>
-               <p className="text-[13px] text-indigo-800 leading-relaxed">
+               <h4 className="text-[14px] font-bold text-primary-900 mb-1">条件已就绪</h4>
+               <p className="text-[13px] text-primary-800 leading-relaxed">
                  所有账号和泛素人人设已在策划阶段确认完毕，可直接进入内容生成。真实客户部分将生成扫码入口。
                </p>
              </div>
@@ -38,11 +38,11 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
           <div className="grid grid-cols-2 gap-3 mb-2">
             <div className="bg-white p-4 rounded-xl border border-neutral-200 flex flex-col gap-1 shadow-sm">
               <span className="text-[12px] font-medium text-neutral-500">可直接生成正文</span>
-              <span className="text-[20px] font-bold text-emerald-600">15 <span className="text-[12px] font-normal text-emerald-600/80">篇</span></span>
+              <span className="text-[20px] font-bold text-neutral-900">15 <span className="text-[12px] font-normal text-neutral-900/80">篇</span></span>
             </div>
             <div className="bg-white p-4 rounded-xl border border-neutral-200 flex flex-col gap-1 shadow-sm">
               <span className="text-[12px] font-medium text-neutral-500">待生成现场快发码</span>
-              <span className="text-[20px] font-bold text-amber-600">30 <span className="text-[12px] font-normal text-amber-600/80">个</span></span>
+              <span className="text-[20px] font-bold text-primary-600">30 <span className="text-[12px] font-normal text-primary-600/80">个</span></span>
             </div>
           </div>
 
@@ -53,10 +53,10 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
             <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                  <div className="w-2 h-2 rounded-full bg-primary-500" />
                   <span className="text-[14px] font-bold text-neutral-900">专业号 · 3 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">可生成</span>
+                <span className="text-[11px] font-bold text-neutral-900 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded">可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-neutral-500 font-medium">人设</div>
@@ -70,10 +70,10 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
             <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                  <div className="w-2 h-2 rounded-full bg-primary-500" />
                   <span className="text-[14px] font-bold text-neutral-900">员工号 · 4 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">可生成</span>
+                <span className="text-[11px] font-bold text-neutral-900 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded">可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-neutral-500 font-medium">人设</div>
@@ -87,10 +87,10 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
             <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <div className="w-2 h-2 rounded-full bg-neutral-900" />
                   <span className="text-[14px] font-bold text-neutral-900">KOC矩阵 · 8 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">智能已分配人设，可生成</span>
+                <span className="text-[11px] font-bold text-neutral-900 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded">智能已分配人设，可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-neutral-500 font-medium">人设群</div>
@@ -106,10 +106,10 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
             <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
               <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500" />
+                  <div className="w-2 h-2 rounded-full bg-primary-500" />
                   <span className="text-[14px] font-bold text-neutral-900">客户号 · 30 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">可生成快发入口</span>
+                <span className="text-[11px] font-bold text-primary-700 bg-primary-50 border border-primary-100 px-2 py-0.5 rounded">可生成快发入口</span>
               </div>
               <div className="p-4 grid grid-cols-[70px_1fr] gap-y-3 text-[13px]">
                 <div className="text-neutral-500 font-medium">生成方式</div>

@@ -122,22 +122,22 @@ export const SwitchAccountModal: React.FC<SwitchAccountModalProps> = ({
  >
  <div className="flex flex-col px-6 pt-6 pb-4 border-b border-neutral-100">
  <div className="flex items-center justify-between mb-4">
- <h2 className="text-[18px] font-semibold text-slate-900 tracking-tight">切换账号</h2>
+ <h2 className="text-[18px] font-semibold text-neutral-900 tracking-tight">切换账号</h2>
  <button 
  onClick={onClose}
- className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors"
+ className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700 transition-colors"
  >
  <X size={16} />
  </button>
  </div>
  <div className="relative">
- <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+ <Search size={16} className="absolute left-3.5 top-1/2 -tranneutral-y-1/2 text-neutral-400" />
  <input
  type="text"
  placeholder="搜索主体名称、行业..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full h-10 pl-9 pr-4 bg-slate-50 border border-slate-200 focus:border-primary-500 outline-none rounded-xl text-[13px] text-slate-900 placeholder:text-slate-400 transition-colors "
+ className="w-full h-10 pl-9 pr-4 bg-neutral-50 border border-neutral-200 focus:border-primary-500 outline-none rounded-xl text-[13px] text-neutral-900 placeholder:text-neutral-400 transition-colors "
  />
  </div>
  </div>
@@ -151,18 +151,18 @@ export const SwitchAccountModal: React.FC<SwitchAccountModalProps> = ({
  onSwitchRole(acc.role);
  onClose();
  }}
- className={`w-full text-left flex items-start gap-3 p-4 rounded-2xl transition-all ${selectedAccountId === acc.id ? 'bg-primary-50 ring-1 ring-primary-200' : 'hover:bg-slate-50 bg-white border border-slate-100'}`}
+ className={`w-full text-left flex items-start gap-3 p-4 rounded-2xl transition-all ${selectedAccountId === acc.id ? 'bg-primary-50 ring-1 ring-primary-200' : 'hover:bg-neutral-50 bg-white border border-neutral-100'}`}
  >
- <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center shrink-0 mt-0.5 ${selectedAccountId === acc.id ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20' : 'bg-slate-100 text-slate-500'}`}>
+ <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center shrink-0 mt-0.5 ${selectedAccountId === acc.id ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20' : 'bg-neutral-100 text-neutral-500'}`}>
  <acc.icon size={18} />
  </div>
  <div className="flex-1 min-w-0 flex flex-col">
  <div className="flex items-center gap-1.5 mb-1">
- <span className="text-[14px] text-slate-900 truncate">{acc.label}</span>
+ <span className="text-[14px] text-neutral-900 truncate">{acc.label}</span>
  </div>
- <div className="text-[12px] text-slate-500 truncate flex items-center gap-2">
+ <div className="text-[12px] text-neutral-500 truncate flex items-center gap-2">
  {acc.industry && (
- <span className="shrink-0 bg-slate-100 text-slate-600 px-1.5 rounded-md text-[11px] ">{acc.industry}</span>
+ <span className="shrink-0 bg-neutral-100 text-neutral-600 px-1.5 rounded-md text-[11px] ">{acc.industry}</span>
  )}
  <span className="truncate">{acc.desc}</span>
  </div>
@@ -172,14 +172,14 @@ export const SwitchAccountModal: React.FC<SwitchAccountModalProps> = ({
  )}
  </button>
  )) : (
- <div className="py-8 text-center text-[13px] text-slate-400 ">
+ <div className="py-8 text-center text-[13px] text-neutral-400 ">
  没有找到匹配的账号
  </div>
  )}
  </div>
  
- <div className="p-4 border-t border-slate-100 bg-slate-50 shrink-0">
- <button className="w-full py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-[14px] hover:bg-slate-50 transition-colors">
+ <div className="p-4 border-t border-neutral-100 bg-neutral-50 shrink-0">
+ <button className="w-full py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] hover:bg-neutral-50 transition-colors">
  添加其他账号
  </button>
  </div>

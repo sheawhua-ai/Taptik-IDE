@@ -131,7 +131,7 @@ export const Strategy: React.FC<{
             <span className="w-1 h-1 rounded-full bg-neutral-300" />
             <span>当前阶段：冷启动 / 搜索卡位不足</span>
             <span className="w-1 h-1 rounded-full bg-neutral-300" />
-            <span className="text-emerald-600">画像完整度：92%</span>
+            <span className="text-neutral-900">画像完整度：92%</span>
             <button className="text-[12px] font-medium text-neutral-500 hover:text-neutral-700 transition-colors bg-neutral-100 px-2 py-0.5 rounded ml-2" onClick={() => window.dispatchEvent(new CustomEvent('open-merchant-profile-drawer'))}>查看画像缺口</button>
           </div>
           <div className="flex items-center gap-3 relative">
@@ -139,7 +139,7 @@ export const Strategy: React.FC<{
               onClick={() => setShowSkillPanel(!showSkillPanel)}
               className="text-[14px] font-bold text-neutral-900 flex items-center gap-1.5 hover:bg-neutral-50 px-2 py-1 -ml-2 rounded-lg transition-colors"
             >
-              <Compass size={16} className="text-rose-600" /> 
+              <Compass size={16} className="text-primary-600" /> 
               当前打法：{selectedSkill}
               <ChevronDown size={14} className="text-neutral-400" />
             </button>
@@ -174,10 +174,10 @@ export const Strategy: React.FC<{
                       ].map(skill => {
                         const isActive = skill.name === selectedSkill;
                         return (
-                        <div key={skill.name} onClick={() => { setPreviewSkill(skill); setShowSkillOverviewDrawer(true); setShowSkillPanel(false); }} className={`p-3 rounded-lg cursor-pointer flex flex-col gap-1 transition-colors ${isActive ? 'bg-rose-50 border border-rose-100' : 'hover:bg-neutral-50 border border-transparent'}`}>
+                        <div key={skill.name} onClick={() => { setPreviewSkill(skill); setShowSkillOverviewDrawer(true); setShowSkillPanel(false); }} className={`p-3 rounded-lg cursor-pointer flex flex-col gap-1 transition-colors ${isActive ? 'bg-primary-50 border border-primary-100' : 'hover:bg-neutral-50 border border-transparent'}`}>
                           <div className="flex justify-between items-center">
-                            <span className={`text-[13px] font-bold ${isActive ? 'text-rose-900' : 'text-neutral-700'}`}>{skill.name}</span>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${isActive ? 'bg-rose-100 text-rose-700' : 'bg-neutral-100 text-neutral-500'}`}>{skill.tag}</span>
+                            <span className={`text-[13px] font-bold ${isActive ? 'text-primary-900' : 'text-neutral-700'}`}>{skill.name}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${isActive ? 'bg-primary-100 text-primary-700' : 'bg-neutral-100 text-neutral-500'}`}>{skill.tag}</span>
                           </div>
                           <div className="text-[11px] text-neutral-500">{skill.desc}</div>
                         </div>
@@ -190,8 +190,8 @@ export const Strategy: React.FC<{
             </AnimatePresence>
           </div>
         </div>
-        <div className="text-[12px] text-amber-800 bg-amber-50 px-4 py-2 rounded-xl border border-amber-100 flex items-center gap-2 font-medium">
-          <Sparkles size={16} className="text-amber-500" /> 
+        <div className="text-[12px] text-primary-800 bg-primary-50 px-4 py-2 rounded-xl border border-primary-100 flex items-center gap-2 font-medium">
+          <Sparkles size={16} className="text-primary-500" /> 
           发现机会：6 个长尾词 / 2 个账号可承接 / 素材覆盖 70%
         </div>
       </div>
@@ -205,13 +205,13 @@ export const Strategy: React.FC<{
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="xl:col-span-2 bg-white rounded-3xl border border-rose-100 p-8 shadow-sm relative overflow-hidden"
+                className="xl:col-span-2 bg-white rounded-3xl border border-primary-100 p-8 shadow-sm relative overflow-hidden"
               >
                  <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                   <Target size={160} />
                  </div>
                  <div className="relative z-10">
-                    <div className="flex items-center gap-2 text-rose-700 font-bold mb-4 text-[13px] bg-rose-50 px-3 py-1.5 rounded-full w-fit">
+                    <div className="flex items-center gap-2 text-primary-700 font-bold mb-4 text-[13px] bg-primary-50 px-3 py-1.5 rounded-full w-fit">
                       <Bot size={16} /> {activeCard.label}
                     </div>
                     <h3 className="text-[28px] font-bold text-neutral-900 mb-8 tracking-tight">
@@ -230,7 +230,7 @@ export const Strategy: React.FC<{
                         <div className="flex flex-wrap gap-2.5">
                           {["7 天项目流", "12 篇内容任务包", "8 个素材需求", "3 个账号排期建议", "1 套私域承接话术"].map(item => (
                             <span key={item} className="text-[13px] bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg font-medium shadow-sm flex items-center gap-1.5">
-                              <CheckCircle2 size={14} className="text-emerald-500" /> {item}
+                              <CheckCircle2 size={14} className="text-neutral-900" /> {item}
                             </span>
                           ))}
                         </div>
@@ -239,7 +239,7 @@ export const Strategy: React.FC<{
                       <div>
                         <div className="text-[14px] font-bold text-neutral-900 mb-3">推荐处理顺序：</div>
                         <div className="flex items-center gap-2 text-[13px] text-neutral-700 font-medium overflow-x-auto pb-2">
-                           <span className="bg-rose-50 text-rose-700 px-4 py-2 rounded-lg border border-rose-100 whitespace-nowrap">内容确认</span> <ArrowRight size={16} className="text-neutral-300" />
+                           <span className="bg-primary-50 text-primary-700 px-4 py-2 rounded-lg border border-primary-100 whitespace-nowrap">内容确认</span> <ArrowRight size={16} className="text-neutral-300" />
                            <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">素材补齐</span> <ArrowRight size={16} className="text-neutral-300" />
                            <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">账号排期</span> <ArrowRight size={16} className="text-neutral-300" />
                            <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">线索承接</span>
@@ -259,7 +259,7 @@ export const Strategy: React.FC<{
                         </button>
                       )}
                       {(flowState === "generating" || flowState === "running") && (
-                        <div className="px-6 py-3.5 bg-rose-50 text-rose-700 rounded-xl text-[14px] font-bold flex items-center gap-2 border border-rose-100">
+                        <div className="px-6 py-3.5 bg-primary-50 text-primary-700 rounded-xl text-[14px] font-bold flex items-center gap-2 border border-primary-100">
                           <CheckCircle2 size={16} /> 已采用
                         </div>
                       )}
@@ -274,7 +274,7 @@ export const Strategy: React.FC<{
                       <div className="flex-1" />
                       <button
                         onClick={() => setShowEvidenceDrawer(true)}
-                        className="px-4 py-3.5 text-rose-600 text-[13px] font-bold hover:bg-rose-50 rounded-xl transition-colors flex items-center gap-1.5"
+                        className="px-4 py-3.5 text-primary-600 text-[13px] font-bold hover:bg-primary-50 rounded-xl transition-colors flex items-center gap-1.5"
                       >
                         为什么推荐这个方向？ <ChevronRight size={16} />
                       </button>
@@ -285,11 +285,11 @@ export const Strategy: React.FC<{
               {/* 备选方案 */}
               <div className="flex flex-col gap-4">
                 {inactiveCards.map(card => (
-                  <div key={card.id} className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-rose-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setActiveCardId(card.id); } }}>
+                  <div key={card.id} className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-primary-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setActiveCardId(card.id); } }}>
                     <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">{card.label}</div>
                     <h4 className="text-[18px] font-bold text-neutral-900 mb-2">{card.title}</h4>
                     <p className="text-[13px] text-neutral-500 mb-6">{card.shortDesc}</p>
-                    {flowState === "suggestion" && <div className="text-[13px] font-bold text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
+                    {flowState === "suggestion" && <div className="text-[13px] font-bold text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
                   </div>
                 ))}
                 {flowState === "suggestion" && (
@@ -306,14 +306,14 @@ export const Strategy: React.FC<{
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl border border-rose-200 p-8 shadow-xl mt-8"
+              className="bg-white rounded-3xl border border-primary-200 p-8 shadow-xl mt-8"
             >
               {flowState === "generating" ? (
                 <>
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h3 className="text-[20px] font-semibold text-neutral-900 flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full border-2 border-rose-500 border-t-transparent animate-spin" />
+                        <div className="w-4 h-4 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
                         正在生成起盘任务...
                       </h3>
                     </div>
@@ -321,7 +321,7 @@ export const Strategy: React.FC<{
                   <div className="space-y-5">
                     <div className="h-2.5 w-full bg-neutral-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-rose-500 transition-all duration-300"
+                        className="h-full bg-primary-500 transition-all duration-300"
                         style={{ width: `${generateProgress}%` }}
                       />
                     </div>
@@ -344,7 +344,7 @@ export const Strategy: React.FC<{
               ) : (
                 <div className="space-y-6">
                   <h3 className="text-[20px] font-bold text-neutral-900 flex items-center gap-2">
-                    <CheckCircle2 className="text-emerald-500" size={24} /> 本轮起盘单：幼犬换粮避坑搜索卡位
+                    <CheckCircle2 className="text-neutral-900" size={24} /> 本轮起盘单：幼犬换粮避坑搜索卡位
                   </h3>
                   
                   <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
@@ -358,32 +358,32 @@ export const Strategy: React.FC<{
                     <div className="mb-6 pb-6 border-b border-neutral-100">
                       <h4 className="text-[13px] font-bold text-neutral-500 mb-4">账号组合：</h4>
                       <div className="grid grid-cols-4 gap-4">
-                        <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">专业号 <span className="text-blue-600">3 篇</span></h5>
+                        <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">专业号 <span className="text-primary-600">3 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">建立可信度</div>
                           <div className="text-[11px] text-neutral-400">专业科普打法 · 品牌素材库</div>
                         </div>
-                        <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">员工号 <span className="text-indigo-600">4 篇</span></h5>
+                        <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">员工号 <span className="text-primary-600">4 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">补充服务视角</div>
                           <div className="text-[11px] text-neutral-400">顾问经验打法 · 需门店场景</div>
                         </div>
-                        <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">KOC矩阵 <span className="text-emerald-600">8 篇</span></h5>
+                        <div className="bg-neutral-100/50 p-4 rounded-xl border border-neutral-200/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">KOC矩阵 <span className="text-neutral-900">8 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">铺真实体验</div>
                           <div className="text-[11px] text-neutral-400">泛生活种草 · 人工预设人设</div>
                         </div>
-                        <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">客户号 <span className="text-amber-600">5 篇</span></h5>
+                        <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">客户号 <span className="text-primary-600">5 篇</span></h5>
                           <div className="text-[12px] font-medium text-neutral-500 mb-2">现身说法</div>
                           <div className="text-[11px] text-neutral-400">即时生成打法 · 现场扫码发</div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                      <h4 className="text-[13px] font-bold text-amber-800 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> 当前最大前置条件：</h4>
-                      <ul className="text-[13px] text-amber-700 space-y-1.5 font-medium">
+                    <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100">
+                      <h4 className="text-[13px] font-bold text-primary-800 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> 当前最大前置条件：</h4>
+                      <ul className="text-[13px] text-primary-700 space-y-1.5 font-medium">
                         <li>• 泛素人需要先预设账号人设</li>
                         <li>• 真实客户需要现场扫码</li>
                         <li>• KOS 需要确认营养顾问人设</li>
@@ -429,7 +429,7 @@ export const Strategy: React.FC<{
                   <X size={20} />
                 </button>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-rose-50 rounded-xl text-rose-600 flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary-50 rounded-xl text-primary-600 flex items-center justify-center">
                     <Sparkles size={20} />
                   </div>
                   <h2 className="text-[18px] font-bold text-neutral-900">推荐依据</h2>
@@ -446,7 +446,7 @@ export const Strategy: React.FC<{
                   </h3>
                   <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
                     <div className="text-[13px] text-neutral-700 leading-relaxed">目标人群是新手犬主，核心顾虑是软便和换粮失败。</div>
-                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                    <button className="mt-3 text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
 
@@ -456,7 +456,7 @@ export const Strategy: React.FC<{
                   </h3>
                   <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
                     <div className="text-[13px] text-neutral-700 leading-relaxed">“幼犬换粮软便”、“幼犬不吃粮怎么办”等长尾词搜索量上升 32%。</div>
-                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                    <button className="mt-3 text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
 
@@ -466,7 +466,7 @@ export const Strategy: React.FC<{
                   </h3>
                   <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
                     <div className="text-[13px] text-neutral-700 leading-relaxed">A01 测评号适合承接避坑内容，A05 专业号适合承接科普内容，当前排期空闲。</div>
-                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                    <button className="mt-3 text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
 
@@ -476,7 +476,7 @@ export const Strategy: React.FC<{
                   </h3>
                   <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
                     <div className="text-[13px] text-neutral-700 leading-relaxed">现有素材覆盖率 70%，缺失真实喂食和便便状态场景图。</div>
-                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                    <button className="mt-3 text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
 
@@ -484,9 +484,9 @@ export const Strategy: React.FC<{
                   <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
                     <ShieldCheck size={14} /> 风险提醒
                   </h3>
-                  <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4">
-                    <div className="text-[13px] text-rose-800 leading-relaxed">品牌属于宠物食品，内容生成时不能承诺治疗效果，避免绝对化功效表达。</div>
-                    <button className="mt-3 text-[12px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
+                  <div className="bg-primary-50 border border-primary-100 rounded-2xl p-4">
+                    <div className="text-[13px] text-primary-800 leading-relaxed">品牌属于宠物食品，内容生成时不能承诺治疗效果，避免绝对化功效表达。</div>
+                    <button className="mt-3 text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">查看来源 <ArrowRight size={14} /></button>
                   </div>
                 </div>
               </div>
@@ -531,25 +531,25 @@ export const Strategy: React.FC<{
                 </p>
 
                 {/* 智能 Assistant Chat inside Adjust Drawer */}
-                <div className="mt-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 flex flex-col gap-3">
+                <div className="mt-4 p-4 bg-primary-50/50 rounded-xl border border-primary-100 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
-                    <Bot size={16} className="text-indigo-600" />
-                    <span className="text-[13px] font-bold text-indigo-900">操盘副手</span>
+                    <Bot size={16} className="text-primary-600" />
+                    <span className="text-[13px] font-bold text-primary-900">操盘副手</span>
                   </div>
                   
                   {isAiThinking ? (
-                    <div className="text-[13px] text-indigo-800 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" />
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                    <div className="text-[13px] text-primary-800 bg-white p-3 rounded-lg border border-primary-100 shadow-sm flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                      <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
                       <span className="ml-1">正在理解您的意图并调整参数...</span>
                     </div>
                   ) : aiMessage ? (
-                    <div className="text-[13px] text-indigo-800 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm leading-relaxed">
+                    <div className="text-[13px] text-primary-800 bg-white p-3 rounded-lg border border-primary-100 shadow-sm leading-relaxed">
                       {aiMessage}
                     </div>
                   ) : (
-                    <div className="text-[13px] text-indigo-800 bg-white p-3 rounded-lg border border-indigo-100 shadow-sm leading-relaxed">
+                    <div className="text-[13px] text-primary-800 bg-white p-3 rounded-lg border border-primary-100 shadow-sm leading-relaxed">
                       您可以直接告诉我怎么调整，例如：“把真实客户的篇数加到 20 篇”，或者“更偏向自然流起量”。我会自动帮您修改下方的参数。
                     </div>
                   )}
@@ -563,12 +563,12 @@ export const Strategy: React.FC<{
                         if (e.key === 'Enter' && aiInput) handleAiSubmit();
                       }}
                       placeholder="输入您的调整需求..." 
-                      className="w-full bg-white border border-indigo-200 rounded-lg pl-3 pr-10 py-2 text-[13px] focus:outline-none focus:border-indigo-400"
+                      className="w-full bg-white border border-primary-200 rounded-lg pl-3 pr-10 py-2 text-[13px] focus:outline-none focus:border-primary-400"
                     />
                     <button 
                       onClick={handleAiSubmit}
                       disabled={!aiInput || isAiThinking}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-indigo-600 hover:text-indigo-700 disabled:text-indigo-300 bg-indigo-50 p-1 rounded-md transition-colors"
+                      className="absolute right-2 top-1/2 -tranneutral-y-1/2 text-primary-600 hover:text-primary-700 disabled:text-primary-300 bg-primary-50 p-1 rounded-md transition-colors"
                     >
                       <Send size={14} />
                     </button>
@@ -582,7 +582,7 @@ export const Strategy: React.FC<{
                     <label className="block text-[13px] font-bold text-neutral-700 mb-2">主攻目标</label>
                     <div className="grid grid-cols-2 gap-2">
                       {['搜索卡位', '爆文起量', '线索转化', '账号养成'].map(t => (
-                        <button key={t} onClick={() => handleTargetChange(t)} className={`py-2 px-3 text-[13px] font-medium rounded-lg border text-center transition-colors ${t === selectedTarget ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                        <button key={t} onClick={() => handleTargetChange(t)} className={`py-2 px-3 text-[13px] font-medium rounded-lg border text-center transition-colors ${t === selectedTarget ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
                           {t}
                         </button>
                       ))}
@@ -618,13 +618,13 @@ export const Strategy: React.FC<{
                   </div>
 
                   <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">账号矩阵与内容策略 <span className="text-[11px] font-normal text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">系统自动调优</span></label>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">账号矩阵与内容策略 <span className="text-[11px] font-normal text-primary-600 bg-primary-50 px-2 py-0.5 rounded">系统自动调优</span></label>
                     <div className="space-y-3">
                       
                       {/* 专业号 */}
                       <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500"></span>专业号</span>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary-500"></span>专业号</span>
                           <span className="text-[16px] font-bold text-neutral-900">{formValues.official} 篇</span>
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
@@ -636,7 +636,7 @@ export const Strategy: React.FC<{
                       {/* 员工号 */}
                       <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-indigo-500"></span>员工号</span>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary-500"></span>员工号</span>
                           <span className="text-[16px] font-bold text-neutral-900">{formValues.kos} 篇</span>
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
@@ -648,24 +648,24 @@ export const Strategy: React.FC<{
                       {/* KOC矩阵 */}
                       <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>KOC矩阵</span>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-neutral-900"></span>KOC矩阵</span>
                           <span className="text-[16px] font-bold text-neutral-900">{formValues.koc_general} 篇</span>
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
-                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>真实反馈、软便改善记录、挑食应对过程</p></div>
-                          <div className="flex gap-2"><span className="text-emerald-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>系统下发要求 &rarr; KOC 回传 &rarr; 系统校验排版</p></div>
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>真实反馈、软便改善记录、挑食应对过程</p></div>
+                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>系统下发要求 &rarr; KOC 回传 &rarr; 系统校验排版</p></div>
                         </div>
                       </div>
 
                       {/* 客户号 */}
                       <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500"></span>客户号 (现场快发)</span>
+                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary-500"></span>客户号 (现场快发)</span>
                           <span className="text-[16px] font-bold text-neutral-900">{formValues.koc_real} 篇</span>
                         </div>
                         <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
-                          <div className="flex gap-2"><span className="text-amber-500 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>门店现身说法、真实购买记录</p></div>
-                          <div className="flex gap-2"><span className="text-amber-500 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>生成动态体验码 &rarr; 现场扫码 &rarr; 即时合成文案发布</p></div>
+                          <div className="flex gap-2"><span className="text-primary-500 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>门店现身说法、真实购买记录</p></div>
+                          <div className="flex gap-2"><span className="text-primary-500 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>生成动态体验码 &rarr; 现场扫码 &rarr; 即时合成文案发布</p></div>
                         </div>
                       </div>
 
@@ -674,9 +674,9 @@ export const Strategy: React.FC<{
                   <div>
                     <label className="block text-[13px] font-bold text-neutral-700 mb-2">风险边界 (系统预置)</label>
                     <div className="space-y-2">
-                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-rose-400" /> 不能承诺治疗</div>
-                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-rose-400" /> 不提竞品</div>
-                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-rose-400" /> 不使用夸张功效词</div>
+                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-400" /> 不能承诺治疗</div>
+                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-400" /> 不提竞品</div>
+                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-400" /> 不使用夸张功效词</div>
                     </div>
                   </div>
 
@@ -688,15 +688,15 @@ export const Strategy: React.FC<{
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">是否记住这次调整？</div>
                   <div className="flex items-center gap-4">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={adjustMemory === 'only_once'} onChange={() => setAdjustMemory('only_once')} className="accent-rose-600" />
+                      <input type="radio" checked={adjustMemory === 'only_once'} onChange={() => setAdjustMemory('only_once')} className="accent-primary-600" />
                       <span className="text-[13px] text-neutral-700">仅本次使用</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={adjustMemory === 'merchant'} onChange={() => setAdjustMemory('merchant')} className="accent-rose-600" />
+                      <input type="radio" checked={adjustMemory === 'merchant'} onChange={() => setAdjustMemory('merchant')} className="accent-primary-600" />
                       <span className="text-[13px] text-neutral-700">记为该商家偏好</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={adjustMemory === 'team'} onChange={() => setAdjustMemory('team')} className="accent-rose-600" />
+                      <input type="radio" checked={adjustMemory === 'team'} onChange={() => setAdjustMemory('team')} className="accent-primary-600" />
                       <span className="text-[13px] text-neutral-700">提交为团队打法</span>
                     </label>
                   </div>
@@ -742,7 +742,7 @@ export const Strategy: React.FC<{
                   <X size={20} />
                 </button>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-rose-50 rounded-xl text-rose-600 flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary-50 rounded-xl text-primary-600 flex items-center justify-center">
                     <Compass size={20} />
                   </div>
                   <div>
@@ -776,7 +776,7 @@ export const Strategy: React.FC<{
                         <span className="font-medium text-neutral-900">70%</span>
                       </div>
                       <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-rose-400 w-[70%]" />
+                        <div className="h-full bg-primary-400 w-[70%]" />
                       </div>
                       
                       <div className="flex items-center justify-between text-[13px] pt-2">
@@ -784,7 +784,7 @@ export const Strategy: React.FC<{
                         <span className="font-medium text-neutral-900">30%</span>
                       </div>
                       <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-emerald-400 w-[30%]" />
+                        <div className="h-full bg-neutral-400 w-[30%]" />
                       </div>
                     </div>
                   </div>
@@ -793,15 +793,15 @@ export const Strategy: React.FC<{
                     <h3 className="text-[13px] font-bold text-neutral-900 mb-2">默认风险拦截规则</h3>
                     <ul className="space-y-2 text-[13px] text-neutral-600">
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                        <CheckCircle2 size={16} className="text-neutral-900 shrink-0" />
                         拦截所有“包治百病”、“首选”等绝对化词汇
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                        <CheckCircle2 size={16} className="text-neutral-900 shrink-0" />
                         避开直接点名竞品进行拉踩的内容
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                        <CheckCircle2 size={16} className="text-neutral-900 shrink-0" />
                         医药相关描述需符合最新广告法规范
                       </li>
                     </ul>
@@ -819,7 +819,7 @@ export const Strategy: React.FC<{
                         setFlowState("suggestion");
                     }
                   }}
-                  className="w-full py-3.5 bg-rose-600 text-white rounded-xl text-[14px] font-bold hover:bg-rose-700 transition-colors shadow-lg shadow-rose-200 active:scale-95"
+                  className="w-full py-3.5 bg-primary-600 text-white rounded-xl text-[14px] font-bold hover:bg-primary-700 transition-colors shadow-lg shadow-primary-200 active:scale-95"
                 >
                   {selectedSkill === previewSkill.name ? '当前已应用此打法' : '应用此打法'}
                 </button>

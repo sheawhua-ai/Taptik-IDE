@@ -143,7 +143,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
       >
         {/* 1. 执行摘要卡 */}
         <div className="bg-white p-8 border-b border-neutral-100 relative">
-          <div className="absolute top-8 right-8 flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[12px] font-medium border border-emerald-100">
+          <div className="absolute top-8 right-8 flex items-center gap-1.5 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-[12px] font-medium border border-neutral-200">
             <Sparkles size={14} /> 智能 已完成方案规划
           </div>
           <h3 className="text-[24px] font-bold text-neutral-900 tracking-tight mb-2">
@@ -173,7 +173,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
           {/* 2. 智能 方案拆解 */}
           <div>
             <h4 className="text-[16px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
-              <Layers className="text-indigo-500" size={18} /> 智能 方案拆解
+              <Layers className="text-primary-500" size={18} /> 智能 方案拆解
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {/* 卡 1：项目计划 */}
@@ -223,7 +223,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   </div>
                   <button
                     onClick={() => handleCollaborate("group")}
-                    className="flex items-center gap-1 text-[12px] text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded transition-colors"
+                    className="flex items-center gap-1 text-[12px] text-primary-600 hover:bg-primary-50 px-2 py-1 rounded transition-colors"
                   >
                     调整
                   </button>
@@ -233,7 +233,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   <div className="bg-neutral-50 border border-neutral-100 rounded-xl p-3">
                     <div className="text-[13px] font-bold text-neutral-900 mb-1">
                       素人避坑组{" "}
-                      <span className="ml-1 text-indigo-600">8 篇</span>
+                      <span className="ml-1 text-primary-600">8 篇</span>
                     </div>
                     <div className="text-[11px] text-neutral-500 leading-relaxed">
                       用于自然流测试，强调避坑经验、真实场景、评论钩子
@@ -242,7 +242,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   <div className="bg-neutral-50 border border-neutral-100 rounded-xl p-3">
                     <div className="text-[13px] font-bold text-neutral-900 mb-1">
                       专业科普组{" "}
-                      <span className="ml-1 text-indigo-600">4 篇</span>
+                      <span className="ml-1 text-primary-600">4 篇</span>
                     </div>
                     <div className="text-[11px] text-neutral-500 leading-relaxed">
                       用于专业背书，承接信任建立和品牌表达
@@ -276,10 +276,10 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[13px] font-bold text-indigo-600 mb-1">
+                      <div className="text-[13px] font-bold text-primary-600 mb-1">
                         预计 3 篇
                       </div>
-                      <button className="text-[11px] text-neutral-400 hover:text-indigo-600 transition-colors opacity-0 group-hover:opacity-100">
+                      <button className="text-[11px] text-neutral-400 hover:text-primary-600 transition-colors opacity-0 group-hover:opacity-100">
                         调整分配
                       </button>
                     </div>
@@ -297,10 +297,10 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[13px] font-bold text-indigo-600 mb-1">
+                      <div className="text-[13px] font-bold text-primary-600 mb-1">
                         预计 3 篇
                       </div>
-                      <button className="text-[11px] text-neutral-400 hover:text-indigo-600 transition-colors opacity-0 group-hover:opacity-100">
+                      <button className="text-[11px] text-neutral-400 hover:text-primary-600 transition-colors opacity-0 group-hover:opacity-100">
                         调整分配
                       </button>
                     </div>
@@ -318,10 +318,10 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[13px] font-bold text-indigo-600 mb-1">
+                      <div className="text-[13px] font-bold text-primary-600 mb-1">
                         预计 2 篇
                       </div>
-                      <button className="text-[11px] text-neutral-400 hover:text-indigo-600 transition-colors opacity-0 group-hover:opacity-100">
+                      <button className="text-[11px] text-neutral-400 hover:text-primary-600 transition-colors opacity-0 group-hover:opacity-100">
                         调整分配
                       </button>
                     </div>
@@ -352,7 +352,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
           {/* 3. 请确认的关键判断 */}
           <div>
             <h4 className="text-[16px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
-              <CheckCircle2 className="text-emerald-500" size={18} />{" "}
+              <CheckCircle2 className="text-neutral-900" size={18} />{" "}
               请确认以下关键判断
             </h4>
             <div className="space-y-3">
@@ -373,7 +373,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   </div>
                   <button
                     onClick={() => handleCollaborate("direction")}
-                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-primary-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>
@@ -397,7 +397,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   </div>
                   <button
                     onClick={() => handleCollaborate("group")}
-                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-primary-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>
@@ -421,7 +421,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   </div>
                   <button
                     onClick={() => handleCollaborate("dist")}
-                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-primary-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>
@@ -445,7 +445,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   </div>
                   <button
                     onClick={() => handleCollaborate("sync")}
-                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:text-primary-600 text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>

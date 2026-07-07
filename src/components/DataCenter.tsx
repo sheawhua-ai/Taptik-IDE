@@ -56,7 +56,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">报告类型</div>
                   <div className="grid grid-cols-3 gap-2">
                     {['项目复盘', '客户汇报', '投流复盘'].map((type, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
                         {type}
                       </button>
                     ))}
@@ -67,7 +67,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">复盘范围</div>
                   <div className="grid grid-cols-2 gap-2">
                     {['Q2 幼犬粮推新项目', '全商家大盘', '指定账号矩阵', '指定内容批次'].map((scope, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
                         {scope}
                       </button>
                     ))}
@@ -78,7 +78,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">面向对象</div>
                   <div className="grid grid-cols-3 gap-2">
                     {['内部团队', '客户方', '个人复盘'].map((target, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
                         {target}
                       </button>
                     ))}
@@ -89,7 +89,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">报告重点</div>
                   <div className="grid grid-cols-2 gap-2">
                     {['效果与结论', '问题与改进', '下一步执行建议', '投流策略调优'].map((focus, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 || i === 2 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 || i === 2 ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
                         {focus}
                       </button>
                     ))}
@@ -100,19 +100,19 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">数据口径</div>
                   <div className="p-4 bg-neutral-50 rounded-xl border border-neutral-100 space-y-3">
                     <label className="flex items-center gap-3">
-                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       <span className="text-[13px] text-neutral-700">小红书自然流笔记（已接入）</span>
                     </label>
                     <label className="flex items-center gap-3">
-                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       <span className="text-[13px] text-neutral-700">手动回传私信线索（含手工单）</span>
                     </label>
                     <label className="flex items-center gap-3">
-                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       <span className="text-[13px] text-neutral-700">聚光投流消耗数据（已接入）</span>
                     </label>
                     <label className="flex items-center gap-3">
-                      <input type="checkbox" className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <input type="checkbox" className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       <span className="text-[13px] text-neutral-400">低置信推断数据（展示可能不准的推测）</span>
                     </label>
                   </div>
@@ -127,7 +127,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 </button>
                 <button 
                   onClick={() => setIsGenerateReportOpen(false)}
-                  className="flex-[2] py-3 bg-indigo-600 text-white rounded-xl text-[13px] font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20"
+                  className="flex-[2] py-3 bg-primary-600 text-white rounded-xl text-[13px] font-bold hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 shadow-md shadow-primary-600/20"
                 >
                   <Sparkles size={16} /> 开始生成
                 </button>
@@ -156,7 +156,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-neutral-50/50">
                 <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm">
                   <div className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider mb-2">{selectedEvidence.group}</div>
-                  <h4 className="text-[16px] font-bold text-neutral-900 mb-4">{selectedEvidence.metric}：<span className="text-indigo-600">{selectedEvidence.value}</span></h4>
+                  <h4 className="text-[16px] font-bold text-neutral-900 mb-4">{selectedEvidence.metric}：<span className="text-primary-600">{selectedEvidence.value}</span></h4>
                   
                   <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
                     <div>
@@ -165,7 +165,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     </div>
                     <div>
                       <div className="text-[11px] text-neutral-400 mb-1">置信度</div>
-                      <div className="text-[13px] font-bold text-emerald-600">极高（100% 接入真实数据）</div>
+                      <div className="text-[13px] font-bold text-neutral-900">极高（100% 接入真实数据）</div>
                     </div>
                   </div>
                 </div>
@@ -173,7 +173,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <div>
                   <h4 className="text-[14px] font-bold text-neutral-900 mb-4 flex items-center justify-between">
                     <span>相关笔记 {selectedEvidence.evidence}</span>
-                    <button className="text-[12px] text-indigo-600 font-bold hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors">
+                    <button className="text-[12px] text-primary-600 font-bold hover:text-primary-700 bg-primary-50 px-3 py-1.5 rounded-lg transition-colors">
                       查看全部明细
                     </button>
                   </h4>
@@ -183,12 +183,12 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       { title: '幼犬刚到家，第一口粮怎么选', account: '新手铲屎官', type: '投流', stat: '线索成本 ￥32' },
                       { title: '软便克星，这三款平价粮绝了', account: '宠物大百科', type: '自然流', stat: '转化率 3.8%' }
                     ].map((note, i) => (
-                      <div key={i} className="bg-white p-4 rounded-xl border border-neutral-200 shadow-sm flex items-center justify-between gap-4 cursor-pointer hover:border-indigo-300 transition-colors">
+                      <div key={i} className="bg-white p-4 rounded-xl border border-neutral-200 shadow-sm flex items-center justify-between gap-4 cursor-pointer hover:border-primary-300 transition-colors">
                         <div className="overflow-hidden">
                           <div className="text-[13px] font-bold text-neutral-900 truncate mb-1">{note.title}</div>
                           <div className="flex items-center gap-2">
                             <span className="text-[11px] text-neutral-500">{note.account}</span>
-                            <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">{note.type}</span>
+                            <span className="text-[10px] font-bold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded">{note.type}</span>
                           </div>
                         </div>
                         <div className="text-[12px] font-bold text-neutral-700 bg-neutral-100 px-2 py-1 rounded shrink-0">
@@ -233,7 +233,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <div>
                   <div className="text-[13px] font-bold text-neutral-900 mb-2">经验内容</div>
                   <textarea 
-                    className="w-full h-24 p-4 bg-white border border-neutral-200 rounded-xl text-[14px] text-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none shadow-sm"
+                    className="w-full h-24 p-4 bg-white border border-neutral-200 rounded-xl text-[14px] text-neutral-700 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all resize-none shadow-sm"
                     defaultValue={selectedExperience.title}
                   />
                 </div>
@@ -246,11 +246,11 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       { title: '团队公共经验库', desc: '全团队可见，作为通用行业打法积累', checked: false },
                       { title: '内容 Skill (内容方向生成器)', desc: '下次执行类似项目时，系统将自动调用此规则', checked: true }
                     ].map((dest, i) => (
-                      <label key={i} className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${dest.checked ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white border-neutral-200 hover:bg-neutral-50'}`}>
-                        <input type="checkbox" defaultChecked={dest.checked} className="mt-0.5 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                      <label key={i} className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${dest.checked ? 'bg-primary-50/50 border-primary-200' : 'bg-white border-neutral-200 hover:bg-neutral-50'}`}>
+                        <input type="checkbox" defaultChecked={dest.checked} className="mt-0.5 rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                         <div>
-                          <div className={`text-[13px] font-bold mb-0.5 ${dest.checked ? 'text-indigo-900' : 'text-neutral-900'}`}>{dest.title}</div>
-                          <div className={`text-[12px] ${dest.checked ? 'text-indigo-600/80' : 'text-neutral-500'}`}>{dest.desc}</div>
+                          <div className={`text-[13px] font-bold mb-0.5 ${dest.checked ? 'text-primary-900' : 'text-neutral-900'}`}>{dest.title}</div>
+                          <div className={`text-[12px] ${dest.checked ? 'text-primary-600/80' : 'text-neutral-500'}`}>{dest.desc}</div>
                         </div>
                       </label>
                     ))}
@@ -267,7 +267,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 </button>
                 <button 
                   onClick={() => setIsExperienceDrawerOpen(false)}
-                  className="py-3 bg-indigo-600 text-white rounded-xl text-[13px] font-bold hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-600/20"
+                  className="py-3 bg-primary-600 text-white rounded-xl text-[13px] font-bold hover:bg-primary-700 transition-colors shadow-md shadow-primary-600/20"
                 >
                   确认沉淀
                 </button>
@@ -293,7 +293,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               </div>
               
               <div className="p-4 border-b border-neutral-100 bg-neutral-50/50 flex gap-2 overflow-x-auto custom-scrollbar shrink-0">
-                <button className="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-[13px] font-bold flex items-center gap-2 whitespace-nowrap">
+                <button className="px-4 py-2 bg-primary-50 text-primary-700 border border-primary-200 rounded-lg text-[13px] font-bold flex items-center gap-2 whitespace-nowrap">
                   <Sparkles size={14} /> 智能改写客户口吻
                 </button>
                 <button className="px-4 py-2 bg-white text-neutral-700 border border-neutral-200 rounded-lg text-[13px] font-medium whitespace-nowrap hover:bg-neutral-50">
@@ -314,7 +314,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div>
                     <h4 className="text-[14px] font-bold text-neutral-900 mb-2">核心结论</h4>
                     <textarea 
-                      className="w-full h-24 p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+                      className="w-full h-24 p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-700 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 resize-none"
                       defaultValue="本期项目超额完成目标，曝光量超出预期 20%，CPA 降低 15%。核心增量来自于“软便避坑”选题与“素人开箱”素材的组合打法。"
                     />
                   </div>
@@ -324,22 +324,22 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <div className="space-y-2">
                       <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-xl bg-neutral-50">
                         <span className="text-[13px] text-neutral-700">总产出线索: 2,450</span>
-                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       </div>
                       <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-xl bg-neutral-50">
                         <span className="text-[13px] text-neutral-700">幼犬软便选题转化率: 3.2% (+15%)</span>
-                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       </div>
                       <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-xl bg-neutral-50">
                         <span className="text-[13px] text-neutral-700">素人号互动成本: ￥2.4 (-20%)</span>
-                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-indigo-600 focus:ring-indigo-600" />
+                        <input type="checkbox" defaultChecked className="rounded border-neutral-300 text-primary-600 focus:ring-primary-600" />
                       </div>
                     </div>
                   </div>
 
                   <div>
                     <h4 className="text-[14px] font-bold text-neutral-900 mb-2">内部待解决问题 (当前已隐藏)</h4>
-                    <div className="p-3 border border-dashed border-amber-200 rounded-xl bg-amber-50/50 text-[13px] text-amber-700/60 line-through">
+                    <div className="p-3 border border-dashed border-primary-200 rounded-xl bg-primary-50/50 text-[13px] text-primary-700/60 line-through">
                       达人响应慢，导致发布节奏断档。
                     </div>
                   </div>
@@ -347,7 +347,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div>
                     <h4 className="text-[14px] font-bold text-neutral-900 mb-2">下一步计划</h4>
                     <textarea 
-                      className="w-full h-24 p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+                      className="w-full h-24 p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-700 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 resize-none"
                       defaultValue="1. 增加素人号投放比例，优化投放结构。\n2. 将“软便避坑”选题横向拓展至“泪痕”、“黑下巴”等健康方向。\n3. 加快优质内容的产出节奏。"
                     />
                   </div>
@@ -364,7 +364,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <button className="flex-1 py-3 bg-white border border-neutral-200 text-neutral-900 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
                   复制文本
                 </button>
-                <button className="flex-1 py-3 bg-indigo-600 text-white rounded-xl text-[13px] font-bold hover:bg-indigo-700 transition-colors shadow-sm">
+                <button className="flex-1 py-3 bg-primary-600 text-white rounded-xl text-[13px] font-bold hover:bg-primary-700 transition-colors shadow-sm">
                   同步到飞书
                 </button>
               </div>
@@ -395,7 +395,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
           <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
             <div>
               <h2 className="text-xl font-bold text-neutral-900 mb-2">{selectedItem.title}</h2>
-              <div className="inline-flex px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider items-center gap-1.5 bg-indigo-50 text-indigo-700">
+              <div className="inline-flex px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider items-center gap-1.5 bg-primary-50 text-primary-700">
                 <Sparkles size={14} />
                 系统判断
               </div>
@@ -425,7 +425,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
             <div className="bg-neutral-50/80 rounded-2xl p-5 border border-neutral-100">
               <h4 className="text-[12px] font-bold text-neutral-900 mb-2 uppercase tracking-widest flex items-center gap-1.5">
-                <Sparkles size={14} className="text-amber-500" /> 建议动作
+                <Sparkles size={14} className="text-primary-500" /> 建议动作
               </h4>
               <p className="text-[14px] text-neutral-900 font-medium leading-relaxed">{selectedItem.aiSuggestion || '将此组合沉淀为标准打法，并在下一轮项目中复用。'}</p>
             </div>
@@ -461,9 +461,9 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               <input
                 type="text"
                 placeholder="告诉系统 你的判断，例如：这几篇不是内容问题..."
-                className="w-full pl-4 pr-10 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+                className="w-full pl-4 pr-10 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] placeholder:text-neutral-400 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/10 transition-all"
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-neutral-900 text-white rounded-lg flex items-center justify-center hover:bg-neutral-800 transition-colors">
+              <button className="absolute right-2 top-1/2 -tranneutral-y-1/2 w-7 h-7 bg-neutral-900 text-white rounded-lg flex items-center justify-center hover:bg-neutral-800 transition-colors">
                 <ArrowUp size={14} />
               </button>
             </div>
@@ -488,7 +488,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
             <div className="bg-neutral-900 text-white rounded-[32px] p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl shrink-0">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
-                  <Sparkles size={24} className="text-amber-300" />
+                  <Sparkles size={24} className="text-primary-300" />
                 </div>
                 <div>
                   <h3 className="text-[12px] text-white/50 font-bold uppercase tracking-widest mb-1.5">系统洞察</h3>
@@ -518,7 +518,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   }
                 }}
                 placeholder="问数据，例如：本周哪些内容方向带来私信最多？排除投流，只看自然流。"
-                className="w-full pl-5 pr-14 py-4 bg-white border border-neutral-200 rounded-2xl text-[14px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+                className="w-full pl-5 pr-14 py-4 bg-white border border-neutral-200 rounded-2xl text-[14px] placeholder:text-neutral-400 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/10 transition-all shadow-sm"
               />
               <button 
                 onClick={() => {
@@ -526,7 +526,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     setTempAnalysisQuery(searchInput);
                   }
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm"
+                className="absolute right-3 top-1/2 -tranneutral-y-1/2 w-10 h-10 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm"
               >
                 <Search size={18} />
               </button>
@@ -556,7 +556,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <div 
                   key={i} 
                   onClick={() => setSelectedDashboard(board)}
-                  className="bg-white border border-neutral-200 rounded-[24px] p-6 shadow-sm flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
+                  className="bg-white border border-neutral-200 rounded-[24px] p-6 shadow-sm flex flex-col justify-between hover:border-primary-300 hover:shadow-md transition-all cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <h4 className="text-[16px] font-bold text-neutral-900">{board.name}</h4>
@@ -568,7 +568,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     </div>
                     <div>
                       <div className="text-[11px] text-neutral-400 mb-1">最近结论</div>
-                      <div className={`text-[13px] font-bold ${board.anomaly === '无异常' ? 'text-neutral-500' : 'text-indigo-600'}`}>{board.anomaly}</div>
+                      <div className={`text-[13px] font-bold ${board.anomaly === '无异常' ? 'text-neutral-500' : 'text-primary-600'}`}>{board.anomaly}</div>
                     </div>
                     <div>
                       <div className="text-[11px] text-neutral-400 mb-1">范围</div>
@@ -609,24 +609,24 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               </div>
             </div>
 
-            <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 shrink-0 flex flex-col gap-5">
+            <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 shrink-0 flex flex-col gap-5">
               <div className="flex items-start gap-3">
-                <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                 <div>
-                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统结论</h5>
-                  <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                  <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统结论</h5>
+                  <p className="text-[14px] text-primary-800/80 leading-relaxed">
                     本周私信主要由 <span className="font-bold">幼犬软便避坑</span> 贡献（65%）。由于排除了投流影响，该方向的自然流转化效率远超大盘，建议立即将该方向加入重点追投资源。
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 pt-5 border-t border-indigo-100/50">
+              <div className="grid grid-cols-2 gap-4 pt-5 border-t border-primary-100/50">
                 <div>
-                  <div className="text-[11px] text-indigo-400 mb-1">数据口径</div>
-                  <div className="text-[13px] text-indigo-900 font-bold">本周｜自然流｜排除投流</div>
+                  <div className="text-[11px] text-primary-400 mb-1">数据口径</div>
+                  <div className="text-[13px] text-primary-900 font-bold">本周｜自然流｜排除投流</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-indigo-400 mb-1">建议动作</div>
-                  <div className="text-[13px] text-indigo-900 font-bold">加大该方向内容排期，复刻优质素材</div>
+                  <div className="text-[11px] text-primary-400 mb-1">建议动作</div>
+                  <div className="text-[13px] text-primary-900 font-bold">加大该方向内容排期，复刻优质素材</div>
                 </div>
               </div>
             </div>
@@ -644,7 +644,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <div key={i} className="flex items-center gap-3 text-[12px]">
                         <span className="w-24 truncate text-neutral-600">{item.name}</span>
                         <div className="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-400 rounded-full" style={{ width: item.width }}></div>
+                          <div className="h-full bg-primary-400 rounded-full" style={{ width: item.width }}></div>
                         </div>
                         <span className="font-bold text-neutral-900 w-8">{item.count}</span>
                       </div>
@@ -665,7 +665,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                           <div className="text-[12px] font-bold text-neutral-900 truncate">{note.title}</div>
                           <div className="text-[10px] text-neutral-400">{note.account}</div>
                         </div>
-                        <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
+                        <span className="text-[11px] font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
                       </div>
                     ))}
                   </div>
@@ -676,9 +676,9 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <input
                   type="text"
                   placeholder="继续追问，例如：对比上周数据有何变化？"
-                  className="w-full pl-5 pr-14 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-[13px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all shadow-sm"
+                  className="w-full pl-5 pr-14 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-[13px] placeholder:text-neutral-400 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/10 transition-all shadow-sm"
                 />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 mt-1 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm">
+                <button className="absolute right-3 top-1/2 -tranneutral-y-1/2 mt-1 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm">
                   <ArrowUp size={16} />
                 </button>
               </div>
@@ -713,30 +713,30 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               </div>
             </div>
 
-            <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 shrink-0 flex flex-col gap-5">
+            <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 shrink-0 flex flex-col gap-5">
               <div className="flex items-start gap-3">
-                <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                 <div>
-                  <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统结论</h5>
-                  <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                  <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统结论</h5>
+                  <p className="text-[14px] text-primary-800/80 leading-relaxed">
                     {selectedDashboard.anomaly === '无异常' 
                       ? '当前各项指标表现平稳，没有发现明显的波动。' 
                       : `${selectedDashboard.name}：${selectedDashboard.anomaly}，且 CVR（曝光-私信）远高于平均。建议立即将该方向加入重点追投资源。`}
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 pt-5 border-t border-indigo-100/50">
+              <div className="grid grid-cols-3 gap-4 pt-5 border-t border-primary-100/50">
                 <div>
-                  <div className="text-[11px] text-indigo-400 mb-1">口径说明</div>
-                  <div className="text-[13px] text-indigo-900 font-bold">{selectedDashboard.scope || '全部数据'}</div>
+                  <div className="text-[11px] text-primary-400 mb-1">口径说明</div>
+                  <div className="text-[13px] text-primary-900 font-bold">{selectedDashboard.scope || '全部数据'}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-indigo-400 mb-1">关键变化</div>
-                  <div className="text-[13px] text-indigo-900 font-bold">相关指标较上期提升 15%</div>
+                  <div className="text-[11px] text-primary-400 mb-1">关键变化</div>
+                  <div className="text-[13px] text-primary-900 font-bold">相关指标较上期提升 15%</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-indigo-400 mb-1">异常项</div>
-                  <div className="text-[13px] text-indigo-900 font-bold">{selectedDashboard.anomaly}</div>
+                  <div className="text-[11px] text-primary-400 mb-1">异常项</div>
+                  <div className="text-[13px] text-primary-900 font-bold">{selectedDashboard.anomaly}</div>
                 </div>
               </div>
             </div>
@@ -754,7 +754,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <div key={i} className="flex items-center gap-3 text-[12px]">
                         <span className="w-24 truncate text-neutral-600">{item.name}</span>
                         <div className="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-400 rounded-full" style={{ width: item.width }}></div>
+                          <div className="h-full bg-primary-400 rounded-full" style={{ width: item.width }}></div>
                         </div>
                         <span className="font-bold text-neutral-900 w-8">{item.count}</span>
                       </div>
@@ -775,7 +775,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                           <div className="text-[12px] font-bold text-neutral-900 truncate">{note.title}</div>
                           <div className="text-[10px] text-neutral-400">{note.account}</div>
                         </div>
-                        <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
+                        <span className="text-[11px] font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
                       </div>
                     ))}
                   </div>
@@ -786,9 +786,9 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <input
                   type="text"
                   placeholder="排除投流内容，只看自然流。"
-                  className="w-full pl-5 pr-14 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-[13px] placeholder:text-neutral-400 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/10 transition-all shadow-sm"
+                  className="w-full pl-5 pr-14 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-[13px] placeholder:text-neutral-400 focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/10 transition-all shadow-sm"
                 />
-                <button className="absolute right-3 top-1/2 -translate-y-1/2 mt-1 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm">
+                <button className="absolute right-3 top-1/2 -tranneutral-y-1/2 mt-1 w-9 h-9 bg-neutral-900 text-white rounded-xl flex items-center justify-center hover:bg-neutral-800 transition-colors shadow-sm">
                   <ArrowUp size={16} />
                 </button>
               </div>
@@ -825,19 +825,19 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <option>幼犬换粮避坑项目</option>
                   <option>平价烘焙粮评测</option>
                 </select>
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -tranneutral-y-1/2 text-neutral-500 pointer-events-none" />
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-6 pb-10">
               {attributionTab === '项目概览' && (
                 <>
-                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
                     <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
+                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
                           本项目私信增长主要由 <span className="font-bold">3 篇素人口吻笔记</span>贡献，其中 2 篇来自 A01/A02 自然流，1 篇由 A01 薯条加热放大。
                         </p>
                       </div>
@@ -854,7 +854,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     ].map((card, i) => (
                       <div 
                         key={i} 
-                        className="bg-white border border-neutral-200 rounded-[20px] p-5 shadow-sm flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer"
+                        className="bg-white border border-neutral-200 rounded-[20px] p-5 shadow-sm flex flex-col justify-between hover:border-primary-300 hover:shadow-md transition-all cursor-pointer"
                         onClick={() => setSelectedItem({
                           title: `${card.title}归因动作`,
                           aiJudgment: card.result,
@@ -916,8 +916,8 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                                 <span className="text-neutral-500">{note.account}</span>
                                 <span className="px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded">{note.type}</span>
                                 <span className={`px-1.5 py-0.5 rounded border ${
-                                  note.promo === '可聚光' ? 'bg-indigo-50 border-indigo-100 text-indigo-700' :
-                                  note.promo === '可加热' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
+                                  note.promo === '可聚光' ? 'bg-primary-50 border-primary-100 text-primary-700' :
+                                  note.promo === '可加热' ? 'bg-neutral-100 border-neutral-200 text-neutral-900' :
                                   'bg-neutral-100 border-neutral-200 text-neutral-500'
                                 }`}>{note.promo}</span>
                               </div>
@@ -943,12 +943,12 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
               {attributionTab === '笔记贡献' && (
                 <>
-                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
                     <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
+                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
                           本周 38 篇笔记中，<span className="font-bold">6 篇贡献了 72% 私信</span>，其中 4 篇是素人口吻避坑内容，2 篇经过薯条加热。
                         </p>
                       </div>
@@ -994,8 +994,8 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                                 <span className="text-neutral-500">{note.type}</span>
                                 <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
                                 <span className={`px-1.5 py-0.5 rounded border ${
-                                  note.promo === '可聚光' ? 'bg-indigo-50 border-indigo-100 text-indigo-700' :
-                                  note.promo === '可加热' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
+                                  note.promo === '可聚光' ? 'bg-primary-50 border-primary-100 text-primary-700' :
+                                  note.promo === '可加热' ? 'bg-neutral-100 border-neutral-200 text-neutral-900' :
                                   'bg-neutral-100 border-neutral-200 text-neutral-500'
                                 }`}>{note.promo}</span>
                               </div>
@@ -1026,12 +1026,12 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
               {attributionTab === '账号承接' && (
                 <>
-                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
                     <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
+                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
                           A01/A02 承接素人口吻内容效果稳定，A05 专业科普转化高；<span className="font-bold">A03 连续 3 天互动率异常，建议暂停分发。</span>
                         </p>
                       </div>
@@ -1055,7 +1055,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                         { name: 'A03 宠物健康说', type: '矩阵号', focus: '干货科普', status: 'anomaly', msg: 12, conv: 0, reason: '连续 3 天互动率下降，疑似被限流' },
                         { name: '官方旗舰店', type: '品牌官号', focus: '产品宣发', status: 'normal', msg: 89, conv: 32, reason: '品牌背书强，转化率最高' }
                       ].map((acc, i) => (
-                        <div key={i} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+                        <div key={i} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
                           onClick={() => setSelectedItem({
                             title: '账号效果归因',
                             aiJudgment: acc.reason,
@@ -1069,7 +1069,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                             <div>
                               <div className="flex items-center gap-2 mb-1.5">
                                 <h4 className="text-[15px] font-bold text-neutral-900">{acc.name}</h4>
-                                {acc.status === 'anomaly' && <span className="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 rounded text-[10px] font-bold">异常</span>}
+                                {acc.status === 'anomaly' && <span className="px-1.5 py-0.5 bg-primary-50 text-primary-600 border border-primary-100 rounded text-[10px] font-bold">异常</span>}
                               </div>
                               <div className="flex items-center gap-2 text-[11px] text-neutral-500">
                                 <span>{acc.type}</span>
@@ -1107,12 +1107,12 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
               {attributionTab === '投流效果' && (
                 <>
-                  <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-4">
+                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
                     <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                       <div>
-                        <h5 className="text-[14px] font-bold text-indigo-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-indigo-800/80 leading-relaxed">
+                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
+                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
                           本周投流带来 38% 曝光增量，但私信转化主要来自自然流。<span className="font-bold">A01 的薯条加热 CPA 最低，建议继续小额测试。</span>
                         </p>
                       </div>
@@ -1156,8 +1156,8 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                                 <span className="text-neutral-500 font-medium">{note.account}</span>
                                 <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
                                 <span className={`px-1.5 py-0.5 rounded border font-medium ${
-                                  note.type === '薯条' ? 'bg-orange-50 border-orange-100 text-orange-700' :
-                                  note.type === '聚光' ? 'bg-blue-50 border-blue-100 text-blue-700' :
+                                  note.type === '薯条' ? 'bg-primary-50 border-primary-100 text-primary-700' :
+                                  note.type === '聚光' ? 'bg-primary-50 border-primary-100 text-primary-700' :
                                   'bg-neutral-100 border-neutral-200 text-neutral-500'
                                 }`}>{note.type}</span>
                               </div>
@@ -1227,8 +1227,8 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-neutral-500">
                     <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-neutral-300"></span> 范围：Q2 幼犬粮推新项目</div>
                     <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-neutral-300"></span> 周期：2024-05-12 至 2024-06-12</div>
-                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> 数据：小红书笔记 + 手动回传私信 + 投流消耗</div>
-                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 未接入：企微成交、订单复购</div>
+                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary-400"></span> 数据：小红书笔记 + 手动回传私信 + 投流消耗</div>
+                    <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary-400"></span> 未接入：企微成交、订单复购</div>
                   </div>
                 </div>
                 <div className="text-right">
@@ -1238,28 +1238,28 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               </div>
               
               {/* 2. 系统总结 */}
-              <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 relative">
+              <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 relative">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <Sparkles size={64} className="text-indigo-900" />
+                  <Sparkles size={64} className="text-primary-900" />
                 </div>
-                <h4 className="text-[15px] font-bold text-indigo-900 mb-5 flex items-center gap-2"><Sparkles size={18} className="text-indigo-500"/> 核心结论</h4>
+                <h4 className="text-[15px] font-bold text-primary-900 mb-5 flex items-center gap-2"><Sparkles size={18} className="text-primary-500"/> 核心结论</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-indigo-400 uppercase tracking-wider">结果</div>
-                    <div className="text-[14px] text-indigo-900 font-medium">曝光超预期 20%，CPA 降低 15%。</div>
+                    <div className="text-[12px] font-bold text-primary-400 uppercase tracking-wider">结果</div>
+                    <div className="text-[14px] text-primary-900 font-medium">曝光超预期 20%，CPA 降低 15%。</div>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-indigo-400 uppercase tracking-wider">有效动作</div>
-                    <div className="text-[14px] text-indigo-900 font-medium">素人口吻 + 真实喂食素材组合表现最好。</div>
+                    <div className="text-[12px] font-bold text-primary-400 uppercase tracking-wider">有效动作</div>
+                    <div className="text-[14px] text-primary-900 font-medium">素人口吻 + 真实喂食素材组合表现最好。</div>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-amber-500 uppercase tracking-wider">主要问题</div>
-                    <div className="text-[14px] text-amber-900 font-medium bg-amber-50 p-2 rounded border border-amber-100">达人响应慢，导致发布节奏断档。</div>
+                    <div className="text-[12px] font-bold text-primary-500 uppercase tracking-wider">主要问题</div>
+                    <div className="text-[14px] text-primary-900 font-medium bg-primary-50 p-2 rounded border border-primary-100">达人响应慢，导致发布节奏断档。</div>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-emerald-600 uppercase tracking-wider">下一步</div>
-                    <div className="text-[14px] text-emerald-900 font-medium bg-emerald-50 p-2 rounded border border-emerald-100">提高素人内容比例，提前派发素材任务。</div>
+                    <div className="text-[12px] font-bold text-neutral-900 uppercase tracking-wider">下一步</div>
+                    <div className="text-[14px] text-neutral-900 font-medium bg-neutral-100 p-2 rounded border border-neutral-200">提高素人内容比例，提前派发素材任务。</div>
                   </div>
                 </div>
               </div>
@@ -1278,18 +1278,18 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     { group: '投流表现', metric: '大字报首图线索成本', value: '￥45', change: '-12%', evidence: '涉及 15 个计划' },
                     { group: '进度异常', metric: '尾部达人延期率', value: '45%', change: '高风险', evidence: '涉及 24 个任务' }
                   ].map((data, i) => (
-                    <div key={i} className="p-5 border border-neutral-200 rounded-2xl bg-white hover:border-indigo-300 transition-colors shadow-sm flex flex-col justify-between">
+                    <div key={i} className="p-5 border border-neutral-200 rounded-2xl bg-white hover:border-primary-300 transition-colors shadow-sm flex flex-col justify-between">
                       <div className="mb-4">
                         <div className="flex justify-between items-start mb-2">
                           <span className="text-[11px] font-bold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded uppercase">{data.group}</span>
-                          <span className={`text-[12px] font-bold ${(data.change.includes('+') || data.change.includes('-')) && !data.change.includes('高') ? 'text-emerald-600' : 'text-amber-600'}`}>{data.change}</span>
+                          <span className={`text-[12px] font-bold ${(data.change.includes('+') || data.change.includes('-')) && !data.change.includes('高') ? 'text-neutral-900' : 'text-primary-600'}`}>{data.change}</span>
                         </div>
                         <div className="text-[13px] text-neutral-600 mb-1">{data.metric}</div>
                         <div className="text-[20px] font-bold text-neutral-900">{data.value}</div>
                       </div>
                       <button 
                         onClick={() => { setSelectedEvidence(data); setIsEvidenceDrawerOpen(true); }}
-                        className="text-[12px] text-indigo-600 font-bold hover:text-indigo-700 flex items-center justify-between bg-indigo-50/50 p-2 rounded-lg transition-colors w-full"
+                        className="text-[12px] text-primary-600 font-bold hover:text-primary-700 flex items-center justify-between bg-primary-50/50 p-2 rounded-lg transition-colors w-full"
                       >
                         {data.evidence} <ChevronRight size={14} />
                       </button>
@@ -1308,13 +1308,13 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   ].map((exp, i) => (
                     <div key={i} className="flex items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
                           <Database size={16} />
                         </div>
                         <div>
                           <div className="text-[14px] font-bold text-neutral-900 mb-1">{exp.title}</div>
                           <div className="flex items-center gap-2 text-[11px] text-neutral-500">
-                            建议沉淀至：<span className="font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{exp.dest}</span>
+                            建议沉淀至：<span className="font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded">{exp.dest}</span>
                           </div>
                         </div>
                       </div>
@@ -1347,10 +1347,10 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <button 
                       key={i} 
                       onClick={() => setActiveNav(action.navKey)}
-                      className="p-4 border border-neutral-200 rounded-xl bg-white hover:border-indigo-300 hover:shadow-md transition-all group flex flex-col text-left"
+                      className="p-4 border border-neutral-200 rounded-xl bg-white hover:border-primary-300 hover:shadow-md transition-all group flex flex-col text-left"
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-indigo-100 transition-colors text-neutral-500 group-hover:text-indigo-600">
+                        <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-primary-100 transition-colors text-neutral-500 group-hover:text-primary-600">
                           <ArrowUp size={14} className="rotate-45" />
                         </div>
                       </div>
@@ -1372,7 +1372,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   >
                     <Database size={16} /> 编辑并导出
                   </button>
-                  <button className="px-5 py-2 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-xl text-[13px] font-bold shadow-sm hover:bg-indigo-100 transition-colors">
+                  <button className="px-5 py-2 bg-primary-50 border border-primary-200 text-primary-700 rounded-xl text-[13px] font-bold shadow-sm hover:bg-primary-100 transition-colors">
                     同步飞书文档
                   </button>
                 </div>
@@ -1398,11 +1398,11 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
 
         {dataSubNav === 'blueocean' && (
           <div className="p-8 space-y-8 animate-in fade-in duration-500">
-            <div className="bg-indigo-50 border border-indigo-100 text-indigo-900 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+            <div className="bg-primary-50 border border-primary-100 text-primary-900 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-start gap-3">
-                <Sparkles size={20} className="text-indigo-500 shrink-0 mt-0.5" />
+                <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
                 <p className="text-[14px] leading-relaxed font-medium">
-                  当前发现 3 个可测方向，其中<span className="font-bold text-indigo-700">「幼犬软便避坑」</span>搜索竞争低、评论需求高，适合自然流测试。
+                  当前发现 3 个可测方向，其中<span className="font-bold text-primary-700">「幼犬软便避坑」</span>搜索竞争低、评论需求高，适合自然流测试。
                 </p>
               </div>
             </div>
@@ -1422,7 +1422,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     </div>
                     <div className="flex justify-between items-center text-[13px]">
                       <span className="text-neutral-400">竞争强度</span>
-                      <span className="font-bold text-emerald-600">{card.comp}</span>
+                      <span className="font-bold text-neutral-900">{card.comp}</span>
                     </div>
                     <div className="flex justify-between items-center text-[13px]">
                       <span className="text-neutral-400">低粉爆款</span>
@@ -1434,11 +1434,11 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     </div>
                     <div className="flex justify-between items-center text-[13px]">
                       <span className="text-neutral-400">商家匹配度</span>
-                      <span className="font-bold text-indigo-600">{card.match}</span>
+                      <span className="font-bold text-primary-600">{card.match}</span>
                     </div>
                     <div className="flex justify-between items-center text-[13px] pt-3 border-t border-neutral-100">
                       <span className="text-neutral-400">风险点</span>
-                      <span className="font-bold text-amber-600">{card.risk}</span>
+                      <span className="font-bold text-primary-600">{card.risk}</span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">

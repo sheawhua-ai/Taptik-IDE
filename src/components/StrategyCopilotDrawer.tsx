@@ -49,7 +49,7 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
       >
         <div className="h-16 border-b border-neutral-200 flex items-center justify-between px-6 shrink-0 bg-white">
           <div className="flex items-center gap-2">
-            <Bot size={20} className="text-indigo-600" />
+            <Bot size={20} className="text-primary-600" />
             <h3 className="font-bold text-[18px] text-neutral-900">
               {isNewProject ? '新建项目流 · 操盘副手' : '新建项目流 · 操盘副手'}
             </h3>
@@ -68,10 +68,10 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
                   <div className={`max-w-[80%] rounded-2xl p-4 text-[14px] leading-relaxed shadow-sm ${
                     m.role === 'user' 
                       ? 'bg-neutral-900 text-white rounded-br-none' 
-                      : 'bg-indigo-50/80 border border-indigo-100/50 text-indigo-900 rounded-bl-none'
+                      : 'bg-primary-50/80 border border-primary-100/50 text-primary-900 rounded-bl-none'
                   }`}>
                     {m.role === 'ai' && (
-                       <div className="flex items-center gap-1.5 mb-2 text-indigo-600 font-bold text-[12px]">
+                       <div className="flex items-center gap-1.5 mb-2 text-primary-600 font-bold text-[12px]">
                          <Sparkles size={14} /> 操盘副手
                        </div>
                     )}
@@ -82,17 +82,17 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
               
               {isThinking && (
                 <div className="flex justify-start">
-                  <div className="bg-indigo-50/80 border border-indigo-100/50 text-indigo-900 rounded-2xl rounded-bl-none p-4 shadow-sm flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" />
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                  <div className="bg-primary-50/80 border border-primary-100/50 text-primary-900 rounded-2xl rounded-bl-none p-4 shadow-sm flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" />
+                    <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                    <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
                   </div>
                 </div>
               )}
             </div>
 
             <div className="p-4 bg-white border-t border-neutral-100">
-              <div className="relative flex items-end bg-neutral-50 border border-neutral-200 rounded-2xl overflow-hidden focus-within:border-indigo-400 focus-within:ring-1 focus-within:ring-indigo-400 transition-all shadow-inner">
+              <div className="relative flex items-end bg-neutral-50 border border-neutral-200 rounded-2xl overflow-hidden focus-within:border-primary-400 focus-within:ring-1 focus-within:ring-primary-400 transition-all shadow-inner">
                 <textarea
                   value={input}
                   onChange={e => setInput(e.target.value)}
@@ -108,7 +108,7 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isThinking}
-                  className="absolute right-3 bottom-3 p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:bg-neutral-300 transition-colors shadow-sm"
+                  className="absolute right-3 bottom-3 p-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 disabled:opacity-50 disabled:bg-neutral-300 transition-colors shadow-sm"
                 >
                   <Send size={16} />
                 </button>
@@ -128,41 +128,41 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
             </div>
 
             <div className="flex-1 p-5 space-y-4 overflow-y-auto">
-              <div className={`p-4 rounded-xl border transition-all ${slotsFilled >= 1 ? 'bg-emerald-50 border-emerald-200 shadow-sm' : 'bg-white border-neutral-200 text-neutral-400'}`}>
+              <div className={`p-4 rounded-xl border transition-all ${slotsFilled >= 1 ? 'bg-neutral-100 border-neutral-200 shadow-sm' : 'bg-white border-neutral-200 text-neutral-400'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
-                    <Compass size={14} className={slotsFilled >= 1 ? 'text-emerald-600' : ''} />
+                    <Compass size={14} className={slotsFilled >= 1 ? 'text-neutral-900' : ''} />
                     <span className="text-[13px] font-bold">主攻目标</span>
                   </div>
-                  {slotsFilled >= 1 && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded">已明确</span>}
+                  {slotsFilled >= 1 && <span className="text-[10px] font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
                 </div>
-                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 1 ? 'text-emerald-800' : ''}`}>
+                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 1 ? 'text-neutral-900' : ''}`}>
                   {slotsFilled >= 1 ? '偏向自然流起量，搜索卡位辅助' : '待确认...'}
                 </div>
               </div>
 
-              <div className={`p-4 rounded-xl border transition-all ${slotsFilled >= 2 ? 'bg-emerald-50 border-emerald-200 shadow-sm' : 'bg-white border-neutral-200 text-neutral-400'}`}>
+              <div className={`p-4 rounded-xl border transition-all ${slotsFilled >= 2 ? 'bg-neutral-100 border-neutral-200 shadow-sm' : 'bg-white border-neutral-200 text-neutral-400'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
-                    <FileText size={14} className={slotsFilled >= 2 ? 'text-emerald-600' : ''} />
+                    <FileText size={14} className={slotsFilled >= 2 ? 'text-neutral-900' : ''} />
                     <span className="text-[13px] font-bold">内容风格</span>
                   </div>
-                  {slotsFilled >= 2 && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded">已明确</span>}
+                  {slotsFilled >= 2 && <span className="text-[10px] font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
                 </div>
-                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 2 ? 'text-emerald-800' : ''}`}>
+                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 2 ? 'text-neutral-900' : ''}`}>
                   {slotsFilled >= 2 ? '侧重素人真实体验，低营销感' : '待确认...'}
                 </div>
               </div>
 
-              <div className={`p-4 rounded-xl border transition-all ${slotsFilled >= 3 ? 'bg-emerald-50 border-emerald-200 shadow-sm' : 'bg-white border-neutral-200 text-neutral-400'}`}>
+              <div className={`p-4 rounded-xl border transition-all ${slotsFilled >= 3 ? 'bg-neutral-100 border-neutral-200 shadow-sm' : 'bg-white border-neutral-200 text-neutral-400'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
-                    <Sparkles size={14} className={slotsFilled >= 3 ? 'text-emerald-600' : ''} />
+                    <Sparkles size={14} className={slotsFilled >= 3 ? 'text-neutral-900' : ''} />
                     <span className="text-[13px] font-bold">账号配比</span>
                   </div>
-                  {slotsFilled >= 3 && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded">已明确</span>}
+                  {slotsFilled >= 3 && <span className="text-[10px] font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
                 </div>
-                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 3 ? 'text-emerald-800' : ''}`}>
+                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 3 ? 'text-neutral-900' : ''}`}>
                   {slotsFilled >= 3 ? '加大客户快发比例，减少KOS' : '待确认...'}
                 </div>
               </div>

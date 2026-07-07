@@ -134,7 +134,7 @@ export const SmartInput = forwardRef<HTMLTextAreaElement, SmartInputProps>(({
                 <button
                   key={idx}
                   onClick={() => handleInsert(item.insert)}
-                  className="w-full text-left px-3 py-2 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg flex items-center gap-2 text-[13px] text-neutral-700 transition-colors focus:bg-indigo-50 focus:outline-none"
+                  className="w-full text-left px-3 py-2 hover:bg-primary-50 hover:text-primary-700 rounded-lg flex items-center gap-2 text-[13px] text-neutral-700 transition-colors focus:bg-primary-50 focus:outline-none"
                 >
                   <span className="opacity-70">{item.icon}</span>
                   {item.label}

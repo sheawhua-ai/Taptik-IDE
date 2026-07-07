@@ -20,7 +20,7 @@ export const CRM: React.FC = () => {
  <div className="flex flex-col h-full bg-white overflow-hidden">
  <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
  <Users size={24} />
  </div>
  <div>
@@ -33,7 +33,7 @@ export const CRM: React.FC = () => {
  <button className="px-4 py-2 bg-neutral-50 text-neutral-600 rounded-xl text-[12px] hover:bg-neutral-100 transition-all border border-neutral-100 flex items-center gap-2">
  <FileText size={16}/> 留资表单配置
  </button>
- <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-1px] transition-all flex items-center gap-2">
+ <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:tranneutral-y-[-1px] transition-all flex items-center gap-2">
  <UserPlus size={16}/> 手动录入线索
  </button>
  </div>
@@ -44,16 +44,16 @@ export const CRM: React.FC = () => {
  {/* KPI Cards */}
  <div className="grid grid-cols-4 gap-6">
  {[
- { label: '今日新增线索', value: '12', trend: '+20%', color: 'text-indigo-500' },
- { label: '待处理', value: '5', trend: 'Critical', color: 'text-rose-500' },
- { label: '本月转化率', value: '4.2%', trend: '+0.5%', color: 'text-emerald-500' },
- { label: '成交金额 (GMV)', value: '¥58k', trend: '+12%', color: 'text-indigo-500' },
+ { label: '今日新增线索', value: '12', trend: '+20%', color: 'text-primary-500' },
+ { label: '待处理', value: '5', trend: 'Critical', color: 'text-primary-500' },
+ { label: '本月转化率', value: '4.2%', trend: '+0.5%', color: 'text-neutral-900' },
+ { label: '成交金额 (GMV)', value: '¥58k', trend: '+12%', color: 'text-primary-500' },
  ].map((kpi, idx) => (
  <div key={idx} className="bg-white p-6 rounded-[32px] border border-neutral-100 shadow-sm group hover:scale-[1.02] transition-all">
  <p className="text-[11px] text-neutral-400 uppercase tracking-widest mb-3">{kpi.label}</p>
  <div className="flex items-end justify-between">
  <span className={`text-3xl tracking-tighter ${kpi.color}`}>{kpi.value}</span>
- <span className={`text-[10px] px-1.5 py-0.5 rounded ${kpi.trend === 'Critical' ? 'bg-rose-50 text-rose-500' : 'bg-emerald-50 text-emerald-500'}`}>{kpi.trend === 'Critical' ? '紧迫' : kpi.trend}</span>
+ <span className={`text-[10px] px-1.5 py-0.5 rounded ${kpi.trend === 'Critical' ? 'bg-primary-50 text-primary-500' : 'bg-neutral-100 text-neutral-900'}`}>{kpi.trend === 'Critical' ? '紧迫' : kpi.trend}</span>
  </div>
  </div>
  ))}
@@ -82,7 +82,7 @@ export const CRM: React.FC = () => {
  
  <div className="flex items-center gap-4">
  <div className="relative">
- <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+ <Search size={16} className="absolute left-3 top-1/2 -tranneutral-y-1/2 text-neutral-400" />
  <input 
  placeholder="搜索姓名、手机号..."
  className="pl-10 pr-4 py-2 bg-white border border-neutral-200 rounded-xl text-[12px] outline-none focus:border-primary-500 transition-all w-64"
@@ -108,7 +108,7 @@ export const CRM: React.FC = () => {
  <div>
  <p className="text-[10px] text-neutral-400 uppercase tracking-widest mb-1">意向维度</p>
  <div className="flex flex-wrap gap-1">
- <span className="px-2 py-0.5 bg-indigo-50 text-indigo-500 text-[10px] rounded border border-indigo-100">{lead.product}</span>
+ <span className="px-2 py-0.5 bg-primary-50 text-primary-500 text-[10px] rounded border border-primary-100">{lead.product}</span>
  <span className="px-2 py-0.5 bg-neutral-50 text-neutral-400 text-[10px] rounded border border-neutral-100">{lead.budget}</span>
  </div>
  </div>
@@ -124,7 +124,7 @@ export const CRM: React.FC = () => {
  <p className="text-[14px] text-neutral-900">{lead.time}</p>
  </div>
  {lead.status === 'new' && (
- <div className="w-10 h-10 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center border border-amber-100 animate-pulse">
+ <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-xl flex items-center justify-center border border-primary-100 animate-pulse">
  <AlertCircle size={18} />
  </div>
  )}
@@ -132,7 +132,7 @@ export const CRM: React.FC = () => {
  </div>
  
  <div className="flex gap-2">
- <button className="px-6 py-2.5 bg-neutral-900 text-white rounded-2xl text-[12px] hover:bg-primary-500 transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0">
+ <button className="px-6 py-2.5 bg-neutral-900 text-white rounded-2xl text-[12px] hover:bg-primary-500 transition-all opacity-0 group-hover:opacity-100 tranneutral-x-4 group-hover:tranneutral-x-0">
  立即联系
  </button>
  <button className="p-2.5 hover:bg-neutral-50 rounded-xl text-neutral-400 transition-all"><MoreVertical size={20}/></button>

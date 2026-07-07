@@ -140,7 +140,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  </div>
  <div className="w-px h-6 bg-neutral-200 mx-1" />
  <div className="relative">
- <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+ <Search size={16} className="absolute left-3 top-1/2 -tranneutral-y-1/2 text-neutral-400" />
  <input 
  type="text" 
  placeholder="快速定位方案..." 
@@ -190,7 +190,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <td className="px-8 py-6 text-[13px] text-neutral-400">{scheme.updatedAt}</td>
  <td className="px-8 py-6">
  <span className={`px-2 py-0.5 text-[10px] rounded-lg ${
- scheme.status === '信息已完善' ? 'bg-success-50 text-success-600' : 'bg-neutral-100 text-neutral-400'
+ scheme.status === '信息已完善' ? 'bg-neutral-100 text-neutral-900' : 'bg-neutral-100 text-neutral-400'
  }`}>
  {scheme.status}
  </span>
@@ -205,7 +205,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  </button>
  <div className="w-px h-4 bg-neutral-100 mx-1" />
  <button className="p-2.5 text-neutral-400 hover:text-primary-500 hover:bg-primary-50 rounded-xl transition-all" title="编辑资料"><Edit3 size={18}/></button>
- <button className="p-2.5 text-neutral-400 hover:text-danger-500 hover:bg-danger-50 rounded-xl transition-all" title="删除"><Trash2 size={18}/></button>
+ <button className="p-2.5 text-neutral-400 hover:text-primary-500 hover:bg-primary-50 rounded-xl transition-all" title="删除"><Trash2 size={18}/></button>
  </div>
  </td>
  </tr>

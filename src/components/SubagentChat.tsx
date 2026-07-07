@@ -420,7 +420,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
               >
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${sub.status === "completed" ? "bg-emerald-500 text-white" : sub.status === "running" ? "bg-neutral-900 text-white animate-pulse" : "bg-white border border-neutral-200 text-neutral-300"}`}
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${sub.status === "completed" ? "bg-neutral-900 text-white" : sub.status === "running" ? "bg-neutral-900 text-white animate-pulse" : "bg-white border border-neutral-200 text-neutral-300"}`}
                   >
                     {sub.status === "completed" ? (
                       <Check size={12} strokeWidth={4} />
@@ -486,7 +486,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
               {currentExpert}
             </h3>
             <div className="flex items-center gap-1.5 mt-1.2">
-              <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="w-1 h-1 rounded-full bg-neutral-900 animate-pulse" />
               <p className="text-[10px] text-neutral-500">在线监控中</p>
             </div>
           </div>
@@ -520,7 +520,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
                       setMessages([]);
                       setShowOptions(false);
                     }}
-                    className="w-full text-left px-3 py-2 text-[12px] text-rose-500 hover:bg-rose-50 flex items-center gap-2 transition-colors"
+                    className="w-full text-left px-3 py-2 text-[12px] text-primary-500 hover:bg-primary-50 flex items-center gap-2 transition-colors"
                   >
                     <Trash2 size={14} /> 清除会话记录
                   </button>
@@ -542,9 +542,9 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
             className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}
           >
             {msg.role === "user" && msg.contextPill && (
-              <div className="flex items-center gap-1.5 px-3 py-2 bg-white text-indigo-600 rounded-xl text-[12px] shadow-sm mb-2 max-w-[90%] border border-indigo-100">
+              <div className="flex items-center gap-1.5 px-3 py-2 bg-white text-primary-600 rounded-xl text-[12px] shadow-sm mb-2 max-w-[90%] border border-primary-100">
                 <FileText size={14} className="shrink-0" />
-                <span className="shrink-0 text-indigo-800">
+                <span className="shrink-0 text-primary-800">
                   {msg.contextPill.type}
                 </span>
                 <span className="text-neutral-400 px-1">|</span>
@@ -587,16 +587,16 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
       <div className="p-4 bg-white border-t border-neutral-100 relative">
         <div className="relative bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 focus-within:border-primary-500/50 focus-within:ring-4 focus-within:ring-primary-500/5 transition-all">
           {contextPill && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-indigo-600 rounded-xl text-[12px] shadow-sm mb-1 ml-1 mt-1 max-w-[90%] border border-indigo-100 w-max">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-primary-600 rounded-xl text-[12px] shadow-sm mb-1 ml-1 mt-1 max-w-[90%] border border-primary-100 w-max">
               <FileText size={14} className="shrink-0" />
-              <span className="shrink-0 text-indigo-800">{contextPill.type}</span>
+              <span className="shrink-0 text-primary-800">{contextPill.type}</span>
               <span className="text-neutral-400 px-1">|</span>
               <span className="truncate text-neutral-600 max-w-[200px]">
                 {contextPill.text}
               </span>
               <button
                 onClick={() => setContextPill(null)}
-                className="ml-2 text-neutral-400 hover:text-rose-500 transition-colors"
+                className="ml-2 text-neutral-400 hover:text-primary-500 transition-colors"
               >
                 <X size={12} />
               </button>

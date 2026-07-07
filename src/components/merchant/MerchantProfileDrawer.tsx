@@ -146,14 +146,14 @@ export function MerchantProfileDrawer({
                 <div className="flex items-end justify-between mb-2">
                   <span className="text-[13px] font-bold text-neutral-700">画像完整度 72%</span>
                   <div className="flex gap-3 text-[12px] font-medium">
-                    <span className="text-emerald-600">已确认 18</span>
-                    <span className="text-amber-600">待确认 5</span>
-                    <span className="text-rose-600">缺失 {missingItems.filter(i => !i.completed).length}</span>
+                    <span className="text-neutral-900">已确认 18</span>
+                    <span className="text-primary-600">待确认 5</span>
+                    <span className="text-primary-600">缺失 {missingItems.filter(i => !i.completed).length}</span>
                   </div>
                 </div>
                 <div className="w-full bg-neutral-200 h-1.5 rounded-full mb-4 overflow-hidden flex">
-                  <div className="bg-emerald-500 h-full" style={{ width: "60%" }}></div>
-                  <div className="bg-amber-400 h-full" style={{ width: "12%" }}></div>
+                  <div className="bg-neutral-900 h-full" style={{ width: "60%" }}></div>
+                  <div className="bg-primary-400 h-full" style={{ width: "12%" }}></div>
                 </div>
                 <div className="flex items-center gap-4 text-[11px] text-neutral-500">
                   <span className="flex items-center gap-1"><Clock size={12} /> 最近更新：今天 14:20</span>
@@ -163,19 +163,19 @@ export function MerchantProfileDrawer({
 
               {/* 缺失项 */}
               {missingItems.length > 0 && (
-                <div className="bg-white border border-rose-100 rounded-xl p-4 shadow-sm">
-                  <h3 className="text-[12px] font-bold text-rose-900 flex items-center gap-1.5 mb-3 uppercase tracking-wider">
-                    <AlertCircle size={14} className="text-rose-600" />
+                <div className="bg-white border border-primary-100 rounded-xl p-4 shadow-sm">
+                  <h3 className="text-[12px] font-bold text-primary-900 flex items-center gap-1.5 mb-3 uppercase tracking-wider">
+                    <AlertCircle size={14} className="text-primary-600" />
                     关键缺口待补齐
                   </h3>
                   <div className="space-y-2.5">
                     {missingItems.map((item, idx) => (
                       <div key={item.id} className={`flex items-center justify-between group ${item.completed ? 'opacity-50' : ''}`}>
                         <div className={`flex items-center gap-2 text-[13px] font-medium ${item.completed ? 'text-neutral-400 line-through' : 'text-neutral-700'}`}>
-                          <span className={`${item.completed ? 'text-neutral-400' : 'text-rose-400'} font-bold`}>{idx + 1}.</span> {item.text}
+                          <span className={`${item.completed ? 'text-neutral-400' : 'text-primary-400'} font-bold`}>{idx + 1}.</span> {item.text}
                         </div>
                         {item.completed ? (
-                          <div className="text-[12px] font-bold text-emerald-600 flex items-center gap-1">
+                          <div className="text-[12px] font-bold text-neutral-900 flex items-center gap-1">
                             <CheckCircle2 size={14} /> 已补全
                           </div>
                         ) : (
@@ -240,7 +240,7 @@ export function MerchantProfileDrawer({
                                 <div className="text-[13px] text-neutral-800 font-medium bg-neutral-50 px-3 py-2 rounded-lg border border-neutral-100 flex justify-between items-center">
                                   <span>{item.value}</span>
                                   {item.status === 'confirmed' ? (
-                                    <CheckCircle2 size={16} className="text-emerald-500" />
+                                    <CheckCircle2 size={16} className="text-neutral-900" />
                                   ) : null}
                                 </div>
                               </div>

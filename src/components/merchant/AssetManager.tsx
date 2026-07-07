@@ -94,7 +94,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
 
  <div className="flex items-center gap-4 mb-8">
  <div className="flex-1 relative">
- <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+ <Search size={18} className="absolute left-4 top-1/2 -tranneutral-y-1/2 text-neutral-400" />
  <input 
  type="text" 
  placeholder="按名称、标签搜索素材..." 
@@ -122,7 +122,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <motion.div 
  key={asset.id}
  layout
- className="bg-neutral-0 rounded-[32px] border border-neutral-200 shadow-sm overflow-hidden group hover:shadow-2xl hover:translate-y-[-4px] transition-all"
+ className="bg-neutral-0 rounded-[32px] border border-neutral-200 shadow-sm overflow-hidden group hover:shadow-2xl hover:tranneutral-y-[-4px] transition-all"
  >
  <div className="aspect-square bg-neutral-100 relative overflow-hidden">
  {asset.type === 'image' || asset.type === 'video' ? (
@@ -136,17 +136,17 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <div className="absolute inset-0 bg-neutral-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
  <button className="p-3 bg-white text-neutral-900 rounded-xl hover:scale-110 transition-transform shadow-xl"><Eye size={18}/></button>
  <button className="p-3 bg-white text-neutral-900 rounded-xl hover:scale-110 transition-transform shadow-xl"><Download size={18}/></button>
- <button className="p-3 bg-white text-danger-500 rounded-xl hover:scale-110 transition-transform shadow-xl"><Trash2 size={18}/></button>
+ <button className="p-3 bg-white text-primary-500 rounded-xl hover:scale-110 transition-transform shadow-xl"><Trash2 size={18}/></button>
  </div>
 
  <div className="absolute top-4 left-4">
  {asset.status === 'processing' && (
- <div className="px-3 py-1 bg-warning-500 text-white text-[10px] rounded-lg flex items-center gap-1.5 shadow-lg">
+ <div className="px-3 py-1 bg-neutral-400 text-white text-[10px] rounded-lg flex items-center gap-1.5 shadow-lg">
  <Clock size={12} className="animate-spin" /> 处理中
  </div>
  )}
  {asset.status === 'ready' && (
- <div className="px-3 py-1 bg-success-500 text-white text-[10px] rounded-lg flex items-center gap-1.5 shadow-lg">
+ <div className="px-3 py-1 bg-neutral-900 text-white text-[10px] rounded-lg flex items-center gap-1.5 shadow-lg">
  <CheckCircle2 size={12} /> 就绪
  </div>
  )}
@@ -199,7 +199,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <td className="px-8 py-4 font-mono text-[13px] text-neutral-400">{asset.size}</td>
  <td className="px-8 py-4">
  <div className="flex items-center gap-2">
- <div className={`w-2 h-2 rounded-full ${asset.status === 'ready' ? 'bg-success-500' : 'bg-warning-500'}`} />
+ <div className={`w-2 h-2 rounded-full ${asset.status === 'ready' ? 'bg-neutral-900' : 'bg-neutral-400'}`} />
  <span className="text-[13px] text-neutral-700">{asset.status === 'ready' ? '就绪' : '处理中'}</span>
  </div>
  </td>

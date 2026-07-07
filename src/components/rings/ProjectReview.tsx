@@ -29,8 +29,8 @@ const MOCK_EVENTS: EventItem[] = [
     type: '爆文苗子',
     title: '幼犬挑食其实是你的锅',
     icon: Flame,
-    color: 'text-rose-500',
-    bgColor: 'bg-rose-50',
+    color: 'text-primary-500',
+    bgColor: 'bg-primary-50',
     evidence: '发布 3 小时互动率高于账号均值 2.4 倍，评论集中在“换粮软便”。',
     impact: '影响当前“幼犬换粮”项目',
     aiSuggestion: '建议追加 10 篇同方向变体，并沉淀为下一轮操盘建议。',
@@ -41,8 +41,8 @@ const MOCK_EVENTS: EventItem[] = [
     type: '素材表现优异',
     title: '实拍+大字报封面点击率创新高',
     icon: Image,
-    color: 'text-emerald-500',
-    bgColor: 'bg-emerald-50',
+    color: 'text-neutral-900',
+    bgColor: 'bg-neutral-100',
     evidence: '该素材组合点击率达 15%，比历史平均高 40%。',
     impact: '可大幅提升后续笔记点击率',
     aiSuggestion: '将此类封面加入优质素材库，并在接下来的项目中优先使用。',
@@ -53,8 +53,8 @@ const MOCK_EVENTS: EventItem[] = [
     type: '高意向评论',
     title: '关于“冻干猫粮”的 2 条意向评论',
     icon: MessageSquare,
-    color: 'text-indigo-500',
-    bgColor: 'bg-indigo-50',
+    color: 'text-primary-500',
+    bgColor: 'bg-primary-50',
     evidence: '评论包含明确购买意向：“求链接”、“怎么买”。',
     impact: '潜在转化线索',
     aiSuggestion: '建议立即回复，并推送到客服企微群跟进。',
@@ -107,17 +107,17 @@ export const ProjectReview: React.FC = () => {
               {/* KPI Cards */}
               <div className="grid grid-cols-4 gap-4">
               {[
-                { title: '已发内容', value: '42', unit: '篇', icon: FileText, color: 'text-blue-500', trend: '+12' },
-                { title: '累计曝光', value: '12.8', unit: 'w', icon: Eye, color: 'text-indigo-500', trend: '+2.1w' },
-                { title: '互动总量', value: '3,492', unit: '次', icon: MousePointerClick, color: 'text-emerald-500', trend: '+450' },
-                { title: '高意向线索', value: '18', unit: '条', icon: Target, color: 'text-rose-500', trend: '+5' },
+                { title: '已发内容', value: '42', unit: '篇', icon: FileText, color: 'text-primary-500', trend: '+12' },
+                { title: '累计曝光', value: '12.8', unit: 'w', icon: Eye, color: 'text-primary-500', trend: '+2.1w' },
+                { title: '互动总量', value: '3,492', unit: '次', icon: MousePointerClick, color: 'text-neutral-900', trend: '+450' },
+                { title: '高意向线索', value: '18', unit: '条', icon: Target, color: 'text-primary-500', trend: '+5' },
               ].map((kpi, i) => (
                 <div key={i} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center">
                       <kpi.icon size={16} className={kpi.color} />
                     </div>
-                    <span className="text-[12px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded flex items-center gap-1">
+                    <span className="text-[12px] font-medium text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded flex items-center gap-1">
                       <TrendingUp size={12} /> {kpi.trend}
                     </span>
                   </div>
@@ -133,13 +133,13 @@ export const ProjectReview: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-[15px] text-neutral-900 flex items-center gap-2">
-                  <Sparkles size={16} className="text-indigo-500" />
+                  <Sparkles size={16} className="text-primary-500" />
                   智能业务发现
                 </h3>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 {MOCK_EVENTS.map(event => (
-                  <div key={event.id} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-indigo-200 transition-colors flex flex-col">
+                  <div key={event.id} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-primary-200 transition-colors flex flex-col">
                     <div className="flex items-center gap-2 mb-3">
                       <div className={`w-6 h-6 rounded-md flex items-center justify-center ${event.bgColor} ${event.color}`}>
                         <event.icon size={14} />
@@ -182,8 +182,8 @@ export const ProjectReview: React.FC = () => {
                 {/* Bars */}
                 {[20, 35, 25, 45, 60, 50, 75, 90].map((h, i) => (
                   <div key={i} className="w-8 flex flex-col items-center gap-2 z-10">
-                    <div className="w-full bg-indigo-100 rounded-t-sm" style={{ height: `${h}%` }}>
-                      <div className="w-full bg-indigo-500 rounded-t-sm transition-all" style={{ height: `${h * 0.7}%` }}></div>
+                    <div className="w-full bg-primary-100 rounded-t-sm" style={{ height: `${h}%` }}>
+                      <div className="w-full bg-primary-500 rounded-t-sm transition-all" style={{ height: `${h * 0.7}%` }}></div>
                     </div>
                   </div>
                 ))}

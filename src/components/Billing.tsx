@@ -45,7 +45,7 @@ export const Billing: React.FC = () => {
  <p className="text-[13px] text-neutral-500 mt-2">¥ 3,990 / 年</p>
  </div>
  <div className="space-y-3 mt-6">
- <div className="flex items-center gap-2 text-[12px] text-success-600 bg-success-50 px-3 py-2 rounded-xl border border-success-100/50">
+ <div className="flex items-center gap-2 text-[12px] text-neutral-900 bg-neutral-100 px-3 py-2 rounded-xl border border-success-100/50">
  <Activity size={14} /> 生效中 (剩余 342 天)
  </div>
  </div>
@@ -90,7 +90,7 @@ export const Billing: React.FC = () => {
  <div className="text-[11px] text-neutral-300 uppercase tracking-tighter mb-0.5">执行引擎</div>
  <div className="text-[13px] text-neutral-600">{row.engine}</div>
  </div>
- <div className="w-20 text-right text-lg text-danger-500 tracking-tighter">
+ <div className="w-20 text-right text-lg text-primary-500 tracking-tighter">
  {row.cost}
  </div>
  </div>

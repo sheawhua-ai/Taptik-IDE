@@ -263,7 +263,7 @@ const handleExecute = (customQuery?: string) => {
                   <div className="w-4 h-1 bg-neutral-300 rounded-full group-hover:bg-primary-500 group-hover:w-6 transition-all duration-300" />
                   
                   {/* Tooltip */}
-                  <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-neutral-200 shadow-xl rounded-lg p-3 w-48 z-50 pointer-events-none origin-left scale-95 group-hover:scale-100 duration-200">
+                  <div className="absolute left-6 top-1/2 -tranneutral-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-neutral-200 shadow-xl rounded-lg p-3 w-48 z-50 pointer-events-none origin-left scale-95 group-hover:scale-100 duration-200">
                     <p className="text-[12px] text-neutral-600 line-clamp-2 leading-relaxed">
                       {msg.content || "快捷指令"}
                     </p>
@@ -304,7 +304,7 @@ const handleExecute = (customQuery?: string) => {
               <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center max-w-2xl mx-auto px-4 mt-8">
                 <div className="w-16 h-16 bg-neutral-900 rounded-3xl flex items-center justify-center text-white shadow-2xl mb-8 relative">
                   <Bot size={32} />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border border-white" />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-neutral-900 rounded-full border-4 border border-white" />
                 </div>
                 <h2 className="text-[28px] font-semibold text-neutral-900 tracking-tight leading-snug mb-3">
                   {isNewMerchant
@@ -531,8 +531,8 @@ const handleExecute = (customQuery?: string) => {
 
                       {msg.card && msg.card.type === "result" && (
                         <div className="mt-3 bg-white border border-neutral-200/60 rounded-2xl p-5 shadow-sm text-left relative overflow-hidden text-neutral-900 w-full min-w-[400px]">
-                          <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
-                          <h3 className="text-[16px] font-semibold mb-4 text-emerald-600 flex items-center gap-2">
+                          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-900" />
+                          <h3 className="text-[16px] font-semibold mb-4 text-neutral-900 flex items-center gap-2">
                             <CheckCircle2 size={18} />
                             {msg.card.title}
                           </h3>
@@ -553,7 +553,7 @@ const handleExecute = (customQuery?: string) => {
                             ))}
                           </div>
 
-                          <div className="bg-emerald-50 text-emerald-800 text-[13px] p-3 rounded-xl mb-5 font-medium border border-emerald-100">
+                          <div className="bg-neutral-100 text-neutral-900 text-[13px] p-3 rounded-xl mb-5 font-medium border border-neutral-200">
                             {msg.card.recommendation}
                           </div>
 
@@ -561,7 +561,7 @@ const handleExecute = (customQuery?: string) => {
                             {msg.card.actions?.map((action, idx) => (
                               <button
                                 key={idx}
-                                className={`px-4 py-1.5 rounded-xl text-[12px] font-medium transition-colors ${idx === 0 ? "bg-neutral-900 text-white hover:bg-emerald-600" : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200"}`}
+                                className={`px-4 py-1.5 rounded-xl text-[12px] font-medium transition-colors ${idx === 0 ? "bg-neutral-900 text-white hover:bg-neutral-900" : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200"}`}
                               >
                                 {action}
                               </button>
@@ -726,19 +726,19 @@ const handleExecute = (customQuery?: string) => {
                                   id: "s1",
                                   name: "提取竞品核心痛点",
                                   icon: Target,
-                                  color: "text-rose-500",
+                                  color: "text-primary-500",
                                 },
                                 {
                                   id: "s2",
                                   name: "小红书笔记一键清洗",
                                   icon: Sparkles,
-                                  color: "text-indigo-500",
+                                  color: "text-primary-500",
                                 },
                                 {
                                   id: "s3",
                                   name: "分析爆文率",
                                   icon: LineChart,
-                                  color: "text-emerald-500",
+                                  color: "text-neutral-900",
                                 },
                               ].map((skill) => (
                                 <button
@@ -1082,27 +1082,27 @@ const handleExecute = (customQuery?: string) => {
                 const typeConfig = {
                   troubleshoot: {
                     label: "排查",
-                    color: "text-rose-600",
-                    dot: "bg-rose-500",
-                    bg: "bg-rose-50/50 border border-rose-100",
+                    color: "text-primary-600",
+                    dot: "bg-primary-500",
+                    bg: "bg-primary-50/50 border border-primary-100",
                   },
                   opportunity: {
                     label: "机会",
-                    color: "text-emerald-600",
-                    dot: "bg-emerald-500",
-                    bg: "bg-emerald-50/50 border border-emerald-100",
+                    color: "text-neutral-900",
+                    dot: "bg-neutral-900",
+                    bg: "bg-neutral-100/50 border border-neutral-200",
                   },
                   optimize: {
                     label: "优化",
-                    color: "text-indigo-600",
-                    dot: "bg-indigo-500",
-                    bg: "bg-indigo-50/50 border border-indigo-100",
+                    color: "text-primary-600",
+                    dot: "bg-primary-500",
+                    bg: "bg-primary-50/50 border border-primary-100",
                   },
                   collaboration: {
                     label: "协同",
-                    color: "text-indigo-600",
-                    dot: "bg-indigo-500",
-                    bg: "bg-indigo-50/50 border border-indigo-100",
+                    color: "text-primary-600",
+                    dot: "bg-primary-500",
+                    bg: "bg-primary-50/50 border border-primary-100",
                   },
                 }[s.type as string] || {
                   label: "提示",

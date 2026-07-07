@@ -219,7 +219,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <h3 className="text-xl font-semibold text-neutral-900 tracking-tight">商业化准入配置</h3>
  <p className="text-[12px] text-neutral-400 mt-1">设置您的 Skill 变现规则（需满足平台门槛）</p>
  </div>
- <div className="px-4 py-2 bg-warning-50 text-warning-600 rounded-xl text-[10px] uppercase tracking-widest border border-warning-100 flex items-center gap-2">
+ <div className="px-4 py-2 bg-neutral-100 text-warning-600 rounded-xl text-[10px] uppercase tracking-widest border border-warning-100 flex items-center gap-2">
  <Activity size={14}/> 准入阈值：500 次
  </div>
  </div>
@@ -228,7 +228,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <div className="flex items-center gap-3 mb-4">
  <div className="w-8 h-8 bg-neutral-900 text-neutral-0 rounded-lg flex items-center justify-center text-[10px] ">!</div>
  <p className="text-[12px] text-neutral-600 ">
- 根据平台协议，您的新 Skill 在累计获得 <span className="text-neutral-900">500 次</span> 调用前将保持 <span className="text-success-500">免费开源状态</span>。
+ 根据平台协议，您的新 Skill 在累计获得 <span className="text-neutral-900">500 次</span> 调用前将保持 <span className="text-neutral-900">免费开源状态</span>。
  </p>
  </div>
  <div className="h-1.5 w-full bg-neutral-200 rounded-full overflow-hidden">
@@ -293,7 +293,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
 
  <div className="flex items-center gap-8">
  <div className="relative flex-1 max-w-md">
- <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"/>
+ <Search size={18} className="absolute left-4 top-1/2 -tranneutral-y-1/2 text-neutral-400"/>
  <input 
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
@@ -370,7 +370,7 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <div className="flex items-center gap-2 text-[10px] text-neutral-400 uppercase tracking-widest">
  <span className="text-primary-500">{sk.stats} 活跃</span>
  </div>
- <ArrowUpRight size={14} className="text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+ <ArrowUpRight size={14} className="text-neutral-300 group-hover:tranneutral-x-0.5 group-hover:-tranneutral-y-0.5 transition-transform" />
  </div>
  </div>
  ))}

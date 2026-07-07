@@ -24,7 +24,7 @@ export const Publishing: React.FC = () => {
  <div className="flex flex-col h-full bg-white overflow-hidden relative">
  <div className="h-20 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white z-10">
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center">
+ <div className="w-10 h-10 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center">
  <Calendar size={24} />
  </div>
  <div>
@@ -45,7 +45,7 @@ export const Publishing: React.FC = () => {
  <div className="h-8 w-px bg-neutral-100" />
  
  <div className="flex gap-2">
- <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-1px] transition-all flex items-center gap-2">
+ <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:tranneutral-y-[-1px] transition-all flex items-center gap-2">
  <Plus size={16}/> 新建排期
  </button>
  </div>
@@ -69,8 +69,8 @@ export const Publishing: React.FC = () => {
  </div>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">已发布</span></div>
- <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-indigo-500" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">待执行</span></div>
+ <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-neutral-900" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">已发布</span></div>
+ <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-primary-500" /> <span className="text-[11px] text-neutral-400 uppercase tracking-widest">待执行</span></div>
  </div>
  </div>
  <div className="bg-white border border-neutral-100 rounded-[32px] shadow-sm overflow-hidden">
@@ -92,9 +92,9 @@ export const Publishing: React.FC = () => {
  <div 
  key={idx} 
  onClick={() => setSelectedItem(item)}
- className={`p-1.5 rounded-lg border-l-2 shadow-sm group/item flex flex-col gap-0.5 cursor-pointer hover:translate-y-[-1px] transition-all ${
- item.status === 'published' ? 'bg-emerald-50/50 border-emerald-500' : 
- item.status === 'scheduled' ? 'bg-indigo-50/50 border-indigo-500' : 
+ className={`p-1.5 rounded-lg border-l-2 shadow-sm group/item flex flex-col gap-0.5 cursor-pointer hover:tranneutral-y-[-1px] transition-all ${
+ item.status === 'published' ? 'bg-neutral-100/50 border-neutral-900' : 
+ item.status === 'scheduled' ? 'bg-primary-50/50 border-primary-500' : 
  'bg-neutral-50 border-neutral-300'
  }`}
  >
@@ -113,17 +113,17 @@ export const Publishing: React.FC = () => {
  <div className="grid grid-cols-3 gap-8">
  <div className="bg-white p-8 rounded-[40px] border border-neutral-100 shadow-sm relative overflow-hidden">
  <h4 className="text-[14px] font-semibold text-neutral-900 mb-6 flex items-center gap-2">
- <AlertCircle size={16} className="text-rose-500" /> 执行预警
+ <AlertCircle size={16} className="text-primary-500" /> 执行预警
  </h4>
  <div className="space-y-4">
- <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100 flex items-start gap-4 flex-col">
+ <div className="p-4 bg-primary-50 rounded-2xl border border-primary-100 flex items-start gap-4 flex-col">
  <div className="flex items-start gap-4 w-full">
-   <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500 shadow-sm shrink-0">
+   <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary-500 shadow-sm shrink-0">
    <LayoutGrid size={20} />
    </div>
    <div className="flex-1">
-   <p className="text-[13px] font-bold text-rose-900">素材未提交</p>
-   <p className="text-[11px] text-rose-600 mt-1">崂山民宿素材缺失（已超时 24h）</p>
+   <p className="text-[13px] font-bold text-primary-900">素材未提交</p>
+   <p className="text-[11px] text-primary-600 mt-1">崂山民宿素材缺失（已超时 24h）</p>
    </div>
  </div>
  <button
@@ -141,7 +141,7 @@ export const Publishing: React.FC = () => {
         })
       );
    }}
-   className="px-4 py-2 bg-white text-rose-600 text-[12px] font-medium rounded-lg border border-rose-200 hover:bg-rose-100 transition-colors w-full flex items-center justify-center gap-2"
+   className="px-4 py-2 bg-white text-primary-600 text-[12px] font-medium rounded-lg border border-primary-200 hover:bg-primary-100 transition-colors w-full flex items-center justify-center gap-2"
  >
    调用副手处理 <ArrowRight size={14} />
  </button>
@@ -161,10 +161,10 @@ export const Publishing: React.FC = () => {
  <div className="space-y-2">
  <div className="flex justify-between text-[11px] uppercase tracking-tighter">
  <span className="text-neutral-400">图文 (60%)</span>
- <span className="text-emerald-400">已达标</span>
+ <span className="text-neutral-400">已达标</span>
  </div>
  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
- <div className="h-full bg-emerald-500 w-[60%]" />
+ <div className="h-full bg-neutral-900 w-[60%]" />
  </div>
  </div>
  <div className="space-y-2">
@@ -184,10 +184,10 @@ export const Publishing: React.FC = () => {
  <h4 className="text-[14px] font-semibold uppercase tracking-[0.2em] mb-1 opacity-50">连接状态</h4>
  <p className="text-xl ">发布连接器</p>
  </div>
- <RefreshCw size={24} className="text-indigo-500 group-hover:rotate-180 transition-transform duration-1000" />
+ <RefreshCw size={24} className="text-primary-500 group-hover:rotate-180 transition-transform duration-1000" />
  </div>
  <div className="mt-6 flex items-center gap-3">
- <div className="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center border border-indigo-100">
+ <div className="w-12 h-12 bg-primary-50 text-primary-500 rounded-2xl flex items-center justify-center border border-primary-100">
  <Share2 size={24} />
  </div>
  <div>
@@ -210,7 +210,7 @@ export const Publishing: React.FC = () => {
  <div className="w-[480px] h-full bg-white shadow-2xl relative z-10 flex flex-col">
  <div className="p-8 border-b border-neutral-100 flex items-center justify-between">
  <div className="flex items-center gap-3">
- <div className={`p-2 rounded-xl ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-indigo-50 text-indigo-500'}`}>
+ <div className={`p-2 rounded-xl ${selectedItem.status === 'published' ? 'bg-neutral-100 text-neutral-900' : 'bg-primary-50 text-primary-500'}`}>
  <FileText size={20}/>
  </div>
  <h3 className="text-lg font-semibold text-neutral-900">排期详情</h3>
@@ -224,7 +224,7 @@ export const Publishing: React.FC = () => {
  <div className="space-y-4">
  <div className="flex items-center justify-between">
  <span className="text-[11px] text-neutral-400 uppercase tracking-widest">排期标题</span>
- <span className={`px-2.5 py-1 rounded-lg text-[10px] uppercase ${selectedItem.status === 'published' ? 'bg-emerald-50 text-emerald-500' : 'bg-indigo-50 text-indigo-500'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
+ <span className={`px-2.5 py-1 rounded-lg text-[10px] uppercase ${selectedItem.status === 'published' ? 'bg-neutral-100 text-neutral-900' : 'bg-primary-50 text-primary-500'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
  </div>
  <p className="text-xl text-neutral-900 leading-tight">{selectedItem.title}</p>
  </div>

@@ -13,9 +13,9 @@ export interface Agent {
 
 export const AVAILABLE_AGENTS: Agent[] = [
  { id: 'core', name: 'Taptik 智能大脑', desc: '全局业务管家，可调度所有子节点智能体', icon: Bot, iconBg: 'bg-neutral-900', iconColor: 'text-white' },
- { id: 'strategy', name: '策略专家', desc: '负责蓝海挖掘、竞品分析与选题规划', icon: Target, iconBg: 'bg-rose-50', iconColor: 'text-rose-500' },
+ { id: 'strategy', name: '策略专家', desc: '负责蓝海挖掘、竞品分析与选题规划', icon: Target, iconBg: 'bg-primary-50', iconColor: 'text-primary-500' },
  { id: 'content', name: '全域内容打法团队', desc: '基于热点批量合成笔记，矩阵自动分发', icon: Sparkles, iconBg: 'bg-primary-50', iconColor: 'text-primary-500' },
- { id: 'interaction', name: '客资转化智能体', desc: '监控全域消息，执行意向分级与转化 SOP', icon: MessageSquare, iconBg: 'bg-orange-50', iconColor: 'text-orange-500' },
+ { id: 'interaction', name: '客资转化智能体', desc: '监控全域消息，执行意向分级与转化 SOP', icon: MessageSquare, iconBg: 'bg-primary-50', iconColor: 'text-primary-500' },
 ];
 
 interface AgentSelectorProps {

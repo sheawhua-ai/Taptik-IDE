@@ -74,7 +74,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
  
  <div className="flex items-center gap-4">
  <div className="relative flex-1 group">
- <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-primary-500 transition-colors" />
+ <Search size={16} className="absolute left-3.5 top-1/2 -tranneutral-y-1/2 text-neutral-400 group-focus-within:text-primary-500 transition-colors" />
  <input 
  type="text"
  placeholder="搜索商家名称或标签..."
@@ -148,7 +148,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
  </div>
  <div className="flex flex-col xl:flex-row items-center gap-1 bg-neutral-50 px-2 py-1 rounded-md border border-neutral-100 shrink-0">
  <div className="flex items-center gap-1">
- <AlertCircle size={10} className="text-warning-500" />
+ <AlertCircle size={10} className="text-neutral-400" />
  <span className="text-[12px] text-neutral-700">{proj.stats?.pendingLeads || 0}</span>
  </div>
  <span className="text-[9px] text-neutral-400 ">待回</span>
@@ -159,14 +159,14 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({ isOp
  <div className="col-span-3 lg:col-span-3 flex items-center min-w-0">
  <div className="flex items-center gap-2">
  {proj.stats?.profileCompleteness === 100 ? (
- <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 rounded-md shrink-0">
- <CheckCircle2 size={12} className="text-emerald-500" />
- <span className="text-[11px] text-emerald-600">已完善</span>
+ <div className="flex items-center gap-1.5 px-2 py-1 bg-neutral-100 rounded-md shrink-0">
+ <CheckCircle2 size={12} className="text-neutral-900" />
+ <span className="text-[11px] text-neutral-900">已完善</span>
  </div>
  ) : (
  <div className="flex items-center gap-2 shrink-0">
  <div className="w-10 xl:w-16 h-1.5 bg-neutral-100 rounded-full overflow-hidden shrink-0">
- <div className="h-full bg-amber-400 rounded-full" style={{ width: `${proj.stats?.profileCompleteness || 0}%` }} />
+ <div className="h-full bg-primary-400 rounded-full" style={{ width: `${proj.stats?.profileCompleteness || 0}%` }} />
  </div>
  <span className="text-[11px] text-neutral-500">{proj.stats?.profileCompleteness || 0}%</span>
  </div>
