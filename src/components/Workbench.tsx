@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, Send, Image as ImageIcon, FileText, CheckCircle2, ChevronRight, Hash, 
   Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
-  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu, PanelLeftOpen, Folder
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu, PanelLeftOpen, Folder, Search
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AgentSelector } from './command-center/AgentSelector';
@@ -51,6 +51,16 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEscortOpen, setIsEscortOpen] = useState(false);
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const [hasDiscovered, setHasDiscovered] = useState(false);
+
+  const runDiscovery = () => {
+    setIsDiscovering(true);
+    setTimeout(() => {
+      setIsDiscovering(false);
+      setHasDiscovered(true);
+    }, 2000);
+  };
   const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
   const [activeAgentId, setActiveAgentId] = useState('taptik-ai');
   const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
@@ -1062,9 +1072,11 @@ const handleExecute = (customQuery?: string) => {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
+                  {hasDiscovered && (
                   <span className="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] rounded-md">
                     {proactiveSuggestions.length} 项
                   </span>
+                  )}
                   <button
                     onClick={() => setIsEscortOpen(false)}
                     className="text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 p-1 rounded-md transition-colors"
@@ -1078,6 +1090,35 @@ const handleExecute = (customQuery?: string) => {
               </p>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+              {!hasDiscovered ? (
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+                   <div className="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-400 mb-2">
+                     <Search size={24} />
+                   </div>
+                   <div>
+                     <h4 className="text-[14px] font-bold text-neutral-900 mb-1">自动发现机会与风险</h4>
+                     <p className="text-[12px] text-neutral-500 max-w-[200px]">需要 IDE 在线。点击按钮触发 Agent 进行深度数据分析。</p>
+                   </div>
+                   <button
+                     onClick={runDiscovery}
+                     disabled={isDiscovering}
+                     className="flex items-center gap-2 px-5 py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors disabled:opacity-50 mt-2"
+                   >
+                     {isDiscovering ? (
+                       <>
+                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                         Agent 分析中...
+                       </>
+                     ) : (
+                       <>
+                         <Search size={16} />
+                         开始发现
+                       </>
+                     )}
+                   </button>
+                </div>
+              ) : (
+                <>
               {proactiveSuggestions.map((s) => {
                 const typeConfig = {
                   troubleshoot: {
@@ -1157,6 +1198,8 @@ const handleExecute = (customQuery?: string) => {
                   </div>
                 );
               })}
+                </>
+              )}
             </div>
           </div>
         ) : null}

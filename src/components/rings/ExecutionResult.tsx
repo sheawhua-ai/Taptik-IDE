@@ -165,13 +165,13 @@ export function ExecutionResult() {
   );
 
   return (
-    <div className="space-y-6 relative min-h-screen">
+    <div className="h-full flex flex-col bg-neutral-50/40 relative">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="px-8 pt-8 pb-4 flex-shrink-0 flex justify-between items-end">
         <div>
-          <h3 className="text-[20px] font-semibold text-neutral-900">
+          <h2 className="text-[20px] font-bold text-neutral-900">
             执行中心 (统一任务流)
-          </h3>
+          </h2>
           <p className="text-[14px] text-neutral-500 mt-1">
             聚合发布前后所有人工节点，按商业价值排序，处理后自动沉淀资产与规则。
           </p>
@@ -181,8 +181,10 @@ export function ExecutionResult() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 mb-6">
+      <div className="flex-1 overflow-y-auto px-8 pb-12">
+        <div className="space-y-6">
+          {/* Tabs */}
+          <div className="flex items-center gap-2 mb-6">
         {["全部", "发布前", "发布中", "发布后"].map((tab) => (
           <button
             key={tab}
@@ -320,6 +322,8 @@ export function ExecutionResult() {
             </motion.div>
           ))}
         </AnimatePresence>
+      </div>
+        </div>
       </div>
 
       {/* Task Context Drawer */}
