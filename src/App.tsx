@@ -115,7 +115,6 @@ import { SkillMarket } from "./components/SkillMarket";
 import { DataCenter } from "./components/DataCenter";
 import { MaterialStation } from "./components/MaterialStation";
 import { KnowledgeMemory } from "./components/KnowledgeMemory";
-import { AccountPublishing } from "./components/AccountPublishing";
 import { Billing } from "./components/Billing";
 import { ServiceManagement } from "./components/ServiceManagement";
 import { Workbench } from "./components/Workbench";
