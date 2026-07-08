@@ -1,332 +1,204 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  AlertTriangle,
-  AlertCircle,
-  MessageSquare,
-  Image as ImageIcon,
-  CheckCircle2,
-  X,
-  FileText,
-  User,
-  History,
-  ShieldAlert,
-  Zap,
-  ArrowRight,
-  Database,
-  Filter,
-  Check,
-  Sparkles
+  AlertTriangle, AlertCircle, MessageSquare, Image as ImageIcon,
+  CheckCircle2, X, FileText, User, History, ShieldAlert,
+  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, PlayCircle, BookOpen, Send
 } from "lucide-react";
 
-type Priority = "critical" | "high" | "medium" | "low";
-type Stage = "发布前" | "发布中" | "发布后";
-type AutoBoundary = "可一键处理" | "需确认" | "需负责人介入" | "仅记录不处理";
+type QueueState = "可直接处理" | "需要确认" | "等待外部" | "网络暂停" | "已完成";
 
 interface Task {
   id: string;
   type: string;
-  priority: Priority;
+  priority: "critical" | "high" | "medium" | "low";
   title: string;
   reason: string;
   impact: string;
   recommendation: string;
   source: string;
-  stage: Stage;
-  autoBoundary: AutoBoundary;
+  queue: QueueState;
+  backendState: "ready" | "running" | "paused" | "waiting_human" | "waiting_network" | "waiting_local_file" | "waiting_external_upload" | "completed" | "failed" | "cancelled";
 }
 
 const TASKS: Task[] = [
   {
-    id: "t1",
-    type: "负面风险",
-    priority: "critical",
-    title: "评论区出现严重负面舆情",
-    reason: "用户投诉产品质量，已引发 3 条跟评附和。",
-    impact: "可能影响该爆款笔记后续 30% 转化率及品牌口碑",
-    recommendation: "隐藏该评论 / 官方致歉回复 / 内部核实",
-    source: "「幼犬换粮避坑第 6 篇」 / A02 避坑号",
-    stage: "发布后",
-    autoBoundary: "需负责人介入",
+    id: "t1", type: "批量处理", priority: "medium", title: "内容确认：12 篇待快速过目",
+    reason: "包含 8 篇达人种草笔记和 4 篇品牌背书笔记，AI 已按「幼犬换粮避坑」人设完成撰写。", impact: "确认后将自动排期进入明日发布队列",
+    recommendation: "批量确认无误并授权排期发布", source: "项目：幼犬换粮避坑搜索卡位", queue: "需要确认", backendState: "waiting_human"
   },
   {
-    id: "t2",
-    type: "发布异常",
-    priority: "critical",
-    title: "两篇核心引流笔记发布失败",
-    reason: "平台提示：账号存在违规风险，内容含营销词违规。",
-    impact: "直接影响今日 40% 的排期发布及整体线索获客量",
-    recommendation: "一键修改违规词并重发 / 申诉 / 延期排期",
-    source: "「双十一平替清单」 / 矩阵号 C, D",
-    stage: "发布中",
-    autoBoundary: "需确认",
+    id: "t2", type: "需要确认", priority: "high", title: "线索承接：18 条高意向私信待分流",
+    reason: "笔记发布后产生多条类似“求链接”、“具体在哪买”的私信。", impact: "及时互动可大幅提升首单转化率及笔记流量权重",
+    recommendation: "AI 已拟定个性化回复话术，建议批量授权发送", source: "项目：双十一冲刺企划", queue: "可直接处理", backendState: "ready"
   },
   {
-    id: "t3",
-    type: "高意向线索",
-    priority: "high",
-    title: "用户咨询线下门店地址",
-    reason: "用户明确询问：“北京朝阳区有店吗？周末想带狗去看看”",
-    impact: "极高意向转化机会，预计客单价 ¥500+",
-    recommendation: "回复门店位置 + 引导加企微领取换粮表",
-    source: "「幼犬换粮避坑第 6 篇」 / A02 避坑号",
-    stage: "发布后",
-    autoBoundary: "需确认",
+    id: "t3", type: "网络暂停", priority: "critical", title: "发布异常：2 篇发布失败需处理",
+    reason: "平台提示：网络波动导致发布超时，或包含潜在营销敏感词。", impact: "影响核心种草矩阵的更新节奏",
+    recommendation: "等待网络恢复后一键重试，或授权 AI 微调敏感词后重发", source: "A02 避坑号 / 矩阵号 C", queue: "需要确认", backendState: "waiting_human"
   },
   {
-    id: "t4",
-    type: "素材补齐",
-    priority: "high",
-    title: "3 篇笔记缺乏产品白底图",
-    reason: "AI 编排策略要求在图 3 加入白底对比图，但库中无合适素材",
-    impact: "影响 3 篇笔记的完整度，导致排期阻塞",
-    recommendation: "一键派发拍摄任务给【设计部】 / 从历史素材库调取",
-    source: "项目：双十一冲刺企划",
-    stage: "发布前",
-    autoBoundary: "需确认",
-  },
-  {
-    id: "t5",
-    type: "评论待回复",
-    priority: "medium",
-    title: "批量处理 15 条普通评论 (已合并)",
-    reason: "同一篇笔记下产生多条相似询问（如：多少钱、怎么买）",
-    impact: "互动率维护，提升笔记权重",
-    recommendation: "批量发送 AI 拟人的价格引导回复",
-    source: "「秋冬新品首发」 / 主账号",
-    stage: "发布后",
-    autoBoundary: "可一键处理",
-  },
-  {
-    id: "t6",
-    type: "内容确认",
-    priority: "medium",
-    title: "5 篇 AI 撰写的种草笔记待确认",
-    reason: "已按照最新的【幼犬避坑】人设生成，需确认语气",
-    impact: "影响明日发布排期 25% 进度",
-    recommendation: "批量通过并排期 / 抽取 1 篇细调",
-    source: "项目：秋冬种草矩阵",
-    stage: "发布前",
-    autoBoundary: "需确认",
-  },
-  {
-    id: "t7",
-    type: "复盘沉淀",
-    priority: "low",
-    title: "沉淀：高转化话术库",
-    reason: "客服 A 使用的话术昨日转化率提升 40%，建议沉淀为通用规则",
-    impact: "提升全团队私域转化率",
-    recommendation: "加入知识与规则层，供 AI 学习应用",
-    source: "客服聊天记录",
-    stage: "发布后",
-    autoBoundary: "仅记录不处理",
-  },
+    id: "t4", type: "等待外部", priority: "high", title: "素材补齐：3 个方向缺 8 组图",
+    reason: "内容编排要求展示产品颗粒度细节和对比图，当前素材库中无合适素材。", impact: "阻塞相关 8 篇笔记的最终生成与排期",
+    recommendation: "已通过企微通知前端员工实拍回传，等待中...", source: "项目：双十一冲刺企划", queue: "等待外部", backendState: "waiting_external_upload"
+  }
 ];
 
-const priorityColors = {
-  critical: "bg-rose-50 text-rose-700 border-rose-200",
-  high: "bg-amber-50 text-amber-700 border-amber-200",
-  medium: "bg-blue-50 text-blue-700 border-blue-200",
-  low: "bg-neutral-50 text-neutral-600 border-neutral-200",
-};
-
-const priorityLabels = {
-  critical: "极高优",
-  high: "高优",
-  medium: "中优",
-  low: "低优",
-};
-
-const boundaryColors = {
-  "可一键处理": "bg-emerald-50 text-emerald-700 border-emerald-200",
-  "需确认": "bg-amber-50 text-amber-700 border-amber-200",
-  "需负责人介入": "bg-rose-50 text-rose-700 border-rose-200",
-  "仅记录不处理": "bg-neutral-100 text-neutral-600 border-neutral-200",
-};
-
 export function ExecutionResult() {
-  const [activeTab, setActiveTab] = useState<Stage | "全部">("全部");
+  const [activeQueue, setActiveQueue] = useState<QueueState>("需要确认");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  
+  const filteredTasks = TASKS.filter(t => t.queue === activeQueue);
 
-  useEffect(() => {
-    window.dispatchEvent(
-      new CustomEvent("set-custom-greeting", {
-        detail: {
-          greeting:
-            "执行中心已升级为统一任务流。\n\nAI 已自动去重并合并了 15 条相似评论。当前有 2 个极高优风险需要您立即处理，否则将影响今日分发排期。\n\n您可以对我说：\n“一键处理所有中优任务”\n“把高优线索分给小李”\n“处理违规异常”",
-          expert: "执行中心助手",
-        },
-      }),
-    );
-  }, []);
+  const stats = {
+    today: TASKS.filter(t => t.queue !== '已完成').length,
+    ready: TASKS.filter(t => t.queue === '可直接处理').length,
+    confirm: TASKS.filter(t => t.queue === '需要确认').length,
+    waiting: TASKS.filter(t => t.queue === '等待外部').length,
+    paused: TASKS.filter(t => t.queue === '网络暂停').length
+  };
 
-  const filteredTasks = TASKS.filter(
-    (t) => activeTab === "全部" || t.stage === activeTab
-  );
+  const getPriorityColor = (priority: Task["priority"]) => {
+    switch (priority) {
+      case "critical": return "bg-rose-50 text-rose-700 border-rose-200";
+      case "high": return "bg-orange-50 text-orange-700 border-orange-200";
+      case "medium": return "bg-blue-50 text-blue-700 border-blue-200";
+      case "low": return "bg-neutral-50 text-neutral-600 border-neutral-200";
+    }
+  };
+
+  const getPriorityLabel = (priority: Task["priority"]) => {
+    switch (priority) {
+      case "critical": return "最高优";
+      case "high": return "高优";
+      case "medium": return "中优";
+      case "low": return "低优";
+    }
+  };
 
   return (
-    <div className="h-full flex flex-col bg-neutral-50/40 relative">
-      {/* Header */}
-      <div className="px-8 pt-8 pb-4 flex-shrink-0 flex justify-between items-end">
-        <div>
-          <h2 className="text-[20px] font-bold text-neutral-900">
-            执行中心 (统一任务流)
-          </h2>
-          <p className="text-[14px] text-neutral-500 mt-1">
-            聚合发布前后所有人工节点，按商业价值排序，处理后自动沉淀资产与规则。
-          </p>
-        </div>
-        <div className="flex items-center gap-1.5 text-[13px] font-medium text-primary-700 bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-lg">
-          <Zap size={16} /> AI 已过滤合并 23 条重复事件
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-8 pb-12">
-        <div className="space-y-6">
-          {/* Tabs */}
-          <div className="flex items-center gap-2 mb-6">
-        {["全部", "发布前", "发布中", "发布后"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`px-4 py-2 rounded-lg text-[13px] font-bold transition-all ${
-              activeTab === tab
-                ? "bg-neutral-900 text-white shadow-sm"
-                : "bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-50"
-            }`}
-          >
-            {tab}
+    <div className="h-full flex flex-col bg-white overflow-hidden text-neutral-900 rounded-2xl shadow-sm border border-neutral-100 relative">
+      {/* 顶部统计区 */}
+      <div className="px-8 py-6 border-b border-neutral-100 bg-neutral-50/50">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-[20px] font-bold text-neutral-900 flex items-center gap-2">
+              <Zap className="text-primary-600" />
+              执行队列
+            </h2>
+            <div className="text-[13px] text-neutral-500 mt-1 font-medium">系统按优先级批量推进，电脑在线时自动处理队列。</div>
+          </div>
+          <button className="px-6 py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
+            <PlayCircle size={18} /> 继续处理 {stats.today} 项
           </button>
-        ))}
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <div className="px-4 py-2 bg-white rounded-lg border border-neutral-200 shadow-sm flex items-center gap-2">
+            <span className="text-[12px] font-medium text-neutral-500">今日待处理</span>
+            <span className="text-[16px] font-bold text-neutral-900">{stats.today}</span>
+          </div>
+          <div className="px-4 py-2 bg-white rounded-lg border border-neutral-200 shadow-sm flex items-center gap-2">
+            <span className="text-[12px] font-medium text-neutral-500">可继续</span>
+            <span className="text-[16px] font-bold text-neutral-900">{stats.ready}</span>
+          </div>
+          <div className="px-4 py-2 bg-white rounded-lg border border-neutral-200 shadow-sm flex items-center gap-2">
+            <span className="text-[12px] font-medium text-neutral-500">需确认</span>
+            <span className="text-[16px] font-bold text-neutral-900">{stats.confirm}</span>
+          </div>
+          <div className="px-4 py-2 bg-white rounded-lg border border-neutral-200 shadow-sm flex items-center gap-2">
+            <span className="text-[12px] font-medium text-neutral-500">等待外部</span>
+            <span className="text-[16px] font-bold text-neutral-900">{stats.waiting}</span>
+          </div>
+          <div className="px-4 py-2 bg-white rounded-lg border border-neutral-200 shadow-sm flex items-center gap-2">
+            <span className="text-[12px] font-medium text-neutral-500">网络/离线暂停</span>
+            <span className="text-[16px] font-bold text-neutral-900">{stats.paused}</span>
+          </div>
+        </div>
       </div>
 
-      {/* Task List */}
-      <div className="flex flex-col gap-4 pb-20">
-        <AnimatePresence>
-          {filteredTasks.map((task) => (
-            <motion.div
-              key={task.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              onClick={() => setSelectedTask(task)}
-              className="bg-white border border-neutral-200 rounded-2xl p-5 hover:border-neutral-400 hover:shadow-md transition-all cursor-pointer relative overflow-hidden group"
+      {/* Tabs */}
+      <div className="px-8 pt-2 border-b border-neutral-100 bg-white">
+        <div className="flex items-center gap-6">
+          {(["可直接处理", "需要确认", "等待外部", "网络暂停", "已完成"] as QueueState[]).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveQueue(tab)}
+              className={`pb-3 flex items-center gap-2 text-[14px] font-bold border-b-2 transition-colors ${
+                activeQueue === tab 
+                  ? 'border-neutral-900 text-neutral-900' 
+                  : 'border-transparent text-neutral-500 hover:text-neutral-700'
+              }`}
             >
-              {/* Priority Bar Indicator */}
-              <div
-                className={`absolute left-0 top-0 bottom-0 w-1 ${
-                  task.priority === "critical"
-                    ? "bg-rose-500"
-                    : task.priority === "high"
-                    ? "bg-amber-500"
-                    : task.priority === "medium"
-                    ? "bg-blue-500"
-                    : "bg-neutral-400"
-                }`}
-              />
+              {tab}
+              <span className={`px-2 py-0.5 rounded-full text-[11px] ${
+                activeQueue === tab ? 'bg-neutral-100 text-neutral-900' : 'bg-neutral-100 text-neutral-500'
+              }`}>{TASKS.filter(t => t.queue === tab).length}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-              <div className="flex items-start justify-between">
+      {/* List */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-neutral-50/50">
+        <div className="max-w-[800px] mx-auto space-y-4">
+          {filteredTasks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
+              <CheckCircle2 size={48} className="text-neutral-300 mb-4" />
+              <h3 className="text-[16px] font-bold text-neutral-900 mb-2">队列已清空</h3>
+              <p className="text-[13px] text-neutral-500">当前没有需要处理的任务</p>
+            </div>
+          ) : (
+            filteredTasks.map((task) => (
+              <div
+                key={task.id}
+                onClick={() => setSelectedTask(task)}
+                className="bg-white rounded-2xl p-5 border border-neutral-200 shadow-sm hover:shadow-md hover:border-neutral-300 transition-all cursor-pointer flex gap-4 items-start"
+              >
+                {/* 状态图标 */}
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                  task.queue === "可直接处理" ? "bg-primary-50 text-primary-600" :
+                  task.queue === "需要确认" ? "bg-amber-50 text-amber-600" :
+                  "bg-neutral-100 text-neutral-500"
+                }`}>
+                  {task.queue === "可直接处理" && <Zap size={20} />}
+                  {task.queue === "需要确认" && <User size={20} />}
+                  {task.queue === "等待外部" && <Clock size={20} />}
+                </div>
+
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
-                        priorityColors[task.priority]
-                      }`}
-                    >
-                      {priorityLabels[task.priority]}
+                    <span className={`text-[11px] px-2 py-0.5 rounded-md font-bold border ${getPriorityColor(task.priority)}`}>
+                      {getPriorityLabel(task.priority)}
                     </span>
-                    <span className="text-[13px] font-bold text-neutral-900">
-                      {task.type}
-                    </span>
-                    <span className="text-neutral-300 mx-1">|</span>
-                    <span className="text-[12px] text-neutral-500">
-                      阶段: {task.stage}
-                    </span>
-                    <span
-                      className={`ml-2 px-2 py-0.5 rounded text-[10px] font-bold border ${
-                        boundaryColors[task.autoBoundary]
-                      }`}
-                    >
-                      {task.autoBoundary}
+                    <span className="text-[12px] font-medium text-neutral-500 flex items-center gap-1">
+                      <FolderOpen size={12} /> {task.source}
                     </span>
                   </div>
-                  <h4 className="text-[16px] font-bold text-neutral-900 mb-3 group-hover:text-primary-600 transition-colors">
-                    {task.title}
-                  </h4>
+                  <h3 className="text-[16px] font-bold text-neutral-900 mb-1">{task.title}</h3>
+                  <p className="text-[13px] text-neutral-500 mb-3 line-clamp-2">{task.reason}</p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded bg-neutral-100 flex items-center justify-center shrink-0 mt-0.5">
-                        <AlertCircle size={12} className="text-neutral-500" />
-                      </div>
-                      <div>
-                        <div className="text-[11px] font-bold text-neutral-400 mb-0.5">为什么要处理</div>
-                        <div className="text-[13px] text-neutral-700 leading-snug">{task.reason}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded bg-neutral-100 flex items-center justify-center shrink-0 mt-0.5">
-                        <Zap size={12} className="text-neutral-500" />
-                      </div>
-                      <div>
-                        <div className="text-[11px] font-bold text-neutral-400 mb-0.5">影响范围</div>
-                        <div className="text-[13px] text-neutral-700 leading-snug">{task.impact}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded bg-primary-50 flex items-center justify-center shrink-0 mt-0.5">
-                        <Sparkles size={12} className="text-primary-500" />
-                      </div>
-                      <div>
-                        <div className="text-[11px] font-bold text-primary-600 mb-0.5">AI 推荐动作</div>
-                        <div className="text-[13px] text-neutral-900 font-medium leading-snug">{task.recommendation}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded bg-neutral-100 flex items-center justify-center shrink-0 mt-0.5">
-                        <Database size={12} className="text-neutral-500" />
-                      </div>
-                      <div>
-                        <div className="text-[11px] font-bold text-neutral-400 mb-0.5">来源上下文</div>
-                        <div className="text-[13px] text-neutral-600 leading-snug">{task.source}</div>
-                      </div>
+                  <div className="bg-neutral-50 p-3 rounded-lg border border-neutral-100 flex items-start gap-2">
+                    <Sparkles size={14} className="text-primary-600 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-[12px] font-bold text-neutral-700">推荐动作</div>
+                      <div className="text-[12px] text-neutral-600">{task.recommendation}</div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="pl-6 flex flex-col items-end gap-2 border-l border-neutral-100 ml-6 min-w-[140px]">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedTask(task);
-                    }}
-                    className="w-full py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm"
-                  >
-                    处理任务
+                <div className="shrink-0 flex items-center h-full">
+                  <button className="text-neutral-400 hover:text-neutral-900">
+                    <ArrowRight size={20} />
                   </button>
-                  {task.autoBoundary === "可一键处理" && (
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                      className="w-full py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm"
-                    >
-                      AI 一键执行
-                    </button>
-                  )}
                 </div>
               </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Task Context Drawer */}
+      {/* Task Detail Modal */}
       <AnimatePresence>
         {selectedTask && (
           <>
@@ -335,28 +207,27 @@ export function ExecutionResult() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedTask(null)}
-              className="fixed inset-0 bg-neutral-900/20 backdrop-blur-sm z-50"
+              className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] z-40"
             />
             <motion.div
-              initial={{ x: "100%", opacity: 0.5 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "100%", opacity: 0.5 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-4 right-4 bottom-4 w-[600px] bg-white rounded-2xl shadow-2xl z-50 flex flex-col border border-neutral-200 overflow-hidden"
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "100%", opacity: 0 }}
+              transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
+              className="absolute bottom-0 left-[10%] right-[10%] top-[10%] bg-white rounded-t-3xl shadow-2xl z-50 flex flex-col border border-neutral-200 overflow-hidden"
             >
-              {/* Drawer Header */}
-              <div className="px-6 py-5 border-b border-neutral-100 flex items-start justify-between bg-neutral-50/50">
+              {/* Header */}
+              <div className="px-8 py-5 border-b border-neutral-100 flex items-center justify-between bg-white relative z-10">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
-                        priorityColors[selectedTask.priority]
-                      }`}
-                    >
-                      {priorityLabels[selectedTask.priority]}
+                    <span className={`text-[11px] px-2 py-0.5 rounded-md font-bold border ${getPriorityColor(selectedTask.priority)}`}>
+                      {getPriorityLabel(selectedTask.priority)}
                     </span>
-                    <span className="text-[13px] font-medium text-neutral-500">
-                      {selectedTask.type}
+                    <span className="text-[12px] text-neutral-500 font-medium bg-neutral-100 px-2 py-0.5 rounded-md">
+                      所属项目: {selectedTask.source}
+                    </span>
+                    <span className="text-[12px] text-neutral-500 font-medium bg-neutral-100 px-2 py-0.5 rounded-md">
+                      状态: {selectedTask.backendState}
                     </span>
                   </div>
                   <h2 className="text-[20px] font-bold text-neutral-900">
@@ -371,133 +242,148 @@ export function ExecutionResult() {
                 </button>
               </div>
 
-              {/* Context Container */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
                 
-                {/* 1. Context Info */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                    <div className="text-[11px] font-bold text-neutral-400 mb-3 flex items-center gap-1.5">
-                      <Database size={14} /> 所属上下文
-                    </div>
-                    <div className="space-y-3">
+                {selectedTask.title.includes("内容确认：12 篇待快速过目") ? (
+                  <div className="space-y-6">
+                    <div className="bg-primary-50 rounded-xl p-4 border border-primary-100 flex items-center justify-between">
                       <div>
-                        <div className="text-[10px] text-neutral-400">所属项目</div>
-                        <div className="text-[13px] font-medium text-neutral-900">双十一冲刺企划</div>
+                        <h4 className="text-[14px] font-bold text-primary-900 mb-1 flex items-center gap-2">
+                          <Sparkles size={16} className="text-primary-600" /> AI 已按「幼犬换粮避坑」人设完成撰写
+                        </h4>
+                        <p className="text-[12px] text-primary-700">
+                          包含 8 篇达人种草笔记和 4 篇品牌背书笔记，确认后将自动排期进入明日发布队列
+                        </p>
                       </div>
-                      <div>
-                        <div className="text-[10px] text-neutral-400">发布账号</div>
-                        <div className="text-[13px] font-medium text-neutral-900">A02 避坑号</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-neutral-400">来源</div>
-                        <div className="text-[13px] font-medium text-neutral-900">{selectedTask.source}</div>
+                      <div className="text-[13px] font-bold text-primary-600 bg-white px-3 py-1.5 rounded-lg border border-primary-100">
+                        覆盖 12 个长尾搜索词
                       </div>
                     </div>
-                  </div>
-
-                  <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                    <div className="text-[11px] font-bold text-neutral-400 mb-3 flex items-center gap-1.5">
-                      <User size={14} /> 用户画像与历史
-                    </div>
-                    {selectedTask.priority === "high" || selectedTask.priority === "critical" ? (
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-neutral-200 shrink-0" />
-                          <div>
-                            <div className="text-[13px] font-bold text-neutral-900">@狗子妈妈</div>
-                            <div className="text-[10px] text-neutral-500">活跃高净值客户</div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] text-neutral-400">历史沟通</div>
-                          <div className="text-[12px] text-neutral-700 mt-1">2 个月前曾咨询过夏季换粮，未成交。当前具有极高复粉可能。</div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center h-20 text-[12px] text-neutral-400">
-                        暂无强关联用户画像
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* 2. Detail Content */}
-                <div>
-                  <h4 className="text-[14px] font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                    <FileText size={16} className="text-neutral-500" /> 相关正文/素材
-                  </h4>
-                  <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100 text-[13px] text-neutral-700 leading-relaxed">
-                    {selectedTask.type === "素材补齐" ? (
-                      <div className="flex gap-4">
-                        <div className="w-24 h-24 bg-neutral-200 rounded-lg flex items-center justify-center text-neutral-400">无封面</div>
-                        <div className="flex-1">
-                          <p className="font-bold mb-1">排期阻塞</p>
-                          <p>大纲要求展示产品颗粒度细节，但图库中未找到。建议立刻使用手机实拍补齐。</p>
-                        </div>
-                      </div>
-                    ) : selectedTask.type.includes("评论") || selectedTask.type.includes("线索") || selectedTask.priority === "critical" ? (
-                      <div className="space-y-3">
-                        <div className="bg-white p-3 rounded-lg border border-neutral-100">
-                          <span className="text-primary-600 font-bold mr-2">@用户:</span>
-                          {selectedTask.reason}
-                        </div>
-                        {selectedTask.priority === "critical" && (
-                          <div className="bg-rose-50 text-rose-700 p-3 rounded-lg border border-rose-100 flex items-start gap-2">
-                            <ShieldAlert size={16} className="shrink-0 mt-0.5" />
-                            <span className="font-medium text-[12px]">系统判定：涉及违禁词或品牌声誉风险，已触发阻断，建议人工快速核查。</span>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <p>这里是笔记的完整正文预览。如果需要确认内容，可直接在此处查看并编辑。</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* 3. AI Recommendation & Writeback */}
-                <div className="bg-primary-50 rounded-xl p-5 border border-primary-100">
-                  <h4 className="text-[14px] font-bold text-primary-900 mb-2 flex items-center gap-2">
-                    <Sparkles size={16} className="text-primary-600" /> AI 建议处理动作
-                  </h4>
-                  <p className="text-[13px] text-primary-800 font-medium mb-4 leading-relaxed">
-                    {selectedTask.recommendation}
-                  </p>
-                  
-                  <div className="h-px bg-primary-100 w-full my-4" />
-                  
-                  <div className="flex items-start gap-2">
-                    <History size={14} className="text-primary-500 shrink-0 mt-0.5" />
+                    
                     <div>
-                      <div className="text-[12px] font-bold text-primary-700">处理后回写机制</div>
-                      <div className="text-[11px] text-primary-600 mt-1 leading-snug">
-                        完成本任务后，AI 将自动把处理结果沉淀至：<br/>
-                        <span className="font-medium">1. 知识与规则层</span> (更新商家记忆)<br/>
-                        <span className="font-medium">2. 客户档案</span> (若涉及用户)<br/>
-                        <span className="font-medium">3. 数据复盘</span> (修正分析基线)
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-[14px] font-bold text-neutral-900">生成的内容预览</h4>
+                        <span className="text-[12px] text-neutral-500">已默认全选</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        {[
+                          { title: "别再乱喂幼犬了！换粮避坑指南", cover: "bg-orange-100", author: "养宠小助手", tag: "达人种草" },
+                          { title: "三个月泰迪换粮日记，肠胃脆弱必看", cover: "bg-blue-100", author: "泰迪麻麻", tag: "达人种草" },
+                          { title: "新手铲屎官必修课：幼犬怎么挑选狗粮？", cover: "bg-green-100", author: "汪星研究所", tag: "专业科普" },
+                          { title: "特唯普幼犬粮测评，到底值不值得买？", cover: "bg-purple-100", author: "萌宠评测局", tag: "专业测评" }
+                        ].map((note, idx) => (
+                          <div key={idx} className="border border-neutral-200 rounded-xl p-3 flex gap-3 bg-white hover:border-primary-300 transition-colors cursor-pointer group shadow-sm">
+                            <div className={`w-20 h-24 rounded-lg shrink-0 ${note.cover} flex items-center justify-center`}>
+                              <ImageIcon className="text-black/10" size={24} />
+                            </div>
+                            <div className="flex flex-col justify-between flex-1 py-1">
+                              <div>
+                                <div className="text-[13px] font-bold text-neutral-900 line-clamp-2 leading-tight group-hover:text-primary-600 transition-colors">{note.title}</div>
+                                <div className="text-[11px] text-neutral-500 mt-1 flex items-center gap-2">
+                                  <span>{note.author}</span>
+                                  <span className="px-1 py-0.5 bg-neutral-100 rounded text-[9px]">{note.tag}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between mt-2">
+                                <span className="text-[10px] bg-green-50 text-green-600 px-2 py-0.5 rounded border border-green-100">已符合人设</span>
+                                <div className="w-4 h-4 rounded flex items-center justify-center bg-primary-600 text-white shadow-sm">
+                                  <CheckCircle2 size={12} strokeWidth={3} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-center text-[12px] text-neutral-500 mt-4 font-medium flex items-center justify-center gap-2 cursor-pointer hover:text-neutral-700">
+                        查看其余 8 篇
+                        <ChevronDown size={14} />
                       </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="text-[14px] font-bold text-neutral-900 mb-2">为什么要处理</h4>
+                        <p className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100 h-full">
+                          {selectedTask.reason}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="text-[14px] font-bold text-neutral-900 mb-2">影响范围</h4>
+                        <p className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100 h-full">
+                          {selectedTask.impact}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-primary-50 rounded-xl p-6 border border-primary-100">
+                      <h4 className="text-[14px] font-bold text-primary-900 mb-2 flex items-center gap-2">
+                        <Sparkles size={16} className="text-primary-600" /> 推荐动作
+                      </h4>
+                      <p className="text-[14px] text-primary-800 font-medium mb-4 leading-relaxed">
+                        {selectedTask.recommendation}
+                      </p>
+                    </div>
+
+                    {selectedTask.queue === "等待外部" && (
+                      <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 flex items-start gap-3">
+                        <Clock className="text-amber-600 shrink-0 mt-0.5" size={18} />
+                        <div>
+                          <div className="text-[13px] font-bold text-amber-900">当前阻塞原因</div>
+                          <div className="text-[12px] text-amber-700 mt-1">
+                            外部系统或人工处理未完成。任务已挂起 (Paused)，等待外部回调恢复。
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+                
               </div>
 
-              {/* Drawer Footer Actions */}
-              <div className="p-4 border-t border-neutral-100 bg-white flex items-center justify-end gap-3 shrink-0">
-                <button
-                  onClick={() => setSelectedTask(null)}
-                  className="px-6 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors"
-                >
-                  暂不处理
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedTask(null);
-                  }}
-                  className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors flex items-center gap-2 shadow-md"
-                >
-                  {selectedTask.autoBoundary === "可一键处理" ? "授权 AI 执行并沉淀" : "确认处理并沉淀到资产库"}
-                  <ArrowRight size={16} />
-                </button>
+              {/* Actions */}
+              <div className="p-5 border-t border-neutral-100 bg-white flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <div className="flex items-center gap-2">
+                  <button className="px-5 py-3 text-neutral-600 text-[13px] font-bold hover:bg-neutral-50 rounded-xl transition-colors">
+                    查看项目档案
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  {selectedTask.title.includes("内容确认") ? (
+                    <>
+                      <button className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors flex items-center gap-2">
+                        <BookOpen size={16} /> 转为知识记忆
+                      </button>
+                      <button className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors flex items-center gap-2">
+                        <UserPlus size={16} /> 改派
+                      </button>
+                      <button
+                        onClick={() => setSelectedTask(null)}
+                        className="px-6 py-3 bg-primary-600 text-white rounded-xl text-[13px] font-bold hover:bg-primary-700 transition-colors flex items-center gap-2 shadow-md"
+                      >
+                        <Send size={16} /> 确认并排期发布
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors">
+                        暂不处理
+                      </button>
+                      <button className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors flex items-center gap-2">
+                        <UserPlus size={16} /> 改派
+                      </button>
+                      <button
+                        onClick={() => setSelectedTask(null)}
+                        className="px-6 py-3 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors flex items-center gap-2 shadow-md"
+                      >
+                        确认处理并归档
+                        <ArrowRight size={16} />
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </motion.div>
           </>

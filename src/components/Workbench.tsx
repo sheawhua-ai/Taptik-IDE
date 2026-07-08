@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Bot, Send, Image as ImageIcon, FileText, CheckCircle2, ChevronRight, Hash, 
+  Bot, Send, Image as ImageIcon, Workflow, FileText, CheckCircle2, ChevronRight, Hash, 
   Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
   Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu, PanelLeftOpen, Folder, Search
 } from 'lucide-react';
@@ -50,18 +50,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   const [selectedShortcut, setSelectedShortcut] = useState<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isEscortOpen, setIsEscortOpen] = useState(false);
-  const [isDiscovering, setIsDiscovering] = useState(false);
-  const [hasDiscovered, setHasDiscovered] = useState(false);
-
-  const runDiscovery = () => {
-    setIsDiscovering(true);
-    setTimeout(() => {
-      setIsDiscovering(false);
-      setHasDiscovered(true);
-    }, 2000);
-  };
-  const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
+    const [isAgentSelectorOpen, setIsAgentSelectorOpen] = useState(false);
   const [activeAgentId, setActiveAgentId] = useState('taptik-ai');
   const [isCommandDirOpen, setIsCommandDirOpen] = useState(false);
   const [isAttachMenuOpen, setIsAttachMenuOpen] = useState(false);
@@ -72,28 +61,6 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const proactiveSuggestions = [
-    {
-      id: 1,
-      type: "troubleshoot",
-      title: "近期评论区有客诉趋势",
-      desc: "检测到 3 篇笔记下方存在对发货速度的负面评论。",
-      suggestion: "自动提炼客诉焦点，为您生成回复话术及安抚方案。",
-      action: "生成应对方案",
-    },
-    {
-      id: 2,
-      type: "opportunity",
-      title: "该品类「无谷」搜索词暴增",
-      desc: "行业数据显示「无谷」搜索环比增长 240%。",
-      suggestion: "可针对性补充无谷相关的种草笔记和商品说明。",
-      action: "补充商品说明",
-    },
-  ];
-
-  const handleExecuteSuggestion = (suggestion: any) => {
-    handleExecute(`执行建议：${suggestion.action}`);
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1061,163 +1028,7 @@ const handleExecute = (customQuery?: string) => {
               />
             </div>
           </div>
-        ) : isEscortOpen ? (
-          <div className="w-[300px] 2xl:w-[340px] border-l border-neutral-200 bg-[#fbfbfb] flex flex-col shrink-0 relative z-20 shadow-[-4px_0_24px_rgba(0,0,0,0.02)]">
-            <div className="p-4 border-b border-neutral-100 bg-white shrink-0">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck size={18} className="text-primary-500" />
-                  <span className="text-[15px] font-semibold text-neutral-900">
-                    主动护航
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {hasDiscovered && (
-                  <span className="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] rounded-md">
-                    {proactiveSuggestions.length} 项
-                  </span>
-                  )}
-                  <button
-                    onClick={() => setIsEscortOpen(false)}
-                    className="text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 p-1 rounded-md transition-colors"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              </div>
-              <p className="text-[11px] text-neutral-500 leading-tight">
-                基于当前商家、项目和数据自动发现机会与风险
-              </p>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-              {!hasDiscovered ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-                   <div className="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-400 mb-2">
-                     <Search size={24} />
-                   </div>
-                   <div>
-                     <h4 className="text-[14px] font-bold text-neutral-900 mb-1">自动发现机会与风险</h4>
-                     <p className="text-[12px] text-neutral-500 max-w-[200px]">需要 IDE 在线。点击按钮触发 Agent 进行深度数据分析。</p>
-                   </div>
-                   <button
-                     onClick={runDiscovery}
-                     disabled={isDiscovering}
-                     className="flex items-center gap-2 px-5 py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors disabled:opacity-50 mt-2"
-                   >
-                     {isDiscovering ? (
-                       <>
-                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                         Agent 分析中...
-                       </>
-                     ) : (
-                       <>
-                         <Search size={16} />
-                         开始发现
-                       </>
-                     )}
-                   </button>
-                </div>
-              ) : (
-                <>
-              {proactiveSuggestions.map((s) => {
-                const typeConfig = {
-                  troubleshoot: {
-                    label: "排查",
-                    color: "text-primary-600",
-                    dot: "bg-primary-500",
-                    bg: "bg-primary-50/50 border border-primary-100",
-                  },
-                  opportunity: {
-                    label: "机会",
-                    color: "text-neutral-900",
-                    dot: "bg-neutral-900",
-                    bg: "bg-neutral-100/50 border border-neutral-200",
-                  },
-                  optimize: {
-                    label: "优化",
-                    color: "text-primary-600",
-                    dot: "bg-primary-500",
-                    bg: "bg-primary-50/50 border border-primary-100",
-                  },
-                  collaboration: {
-                    label: "协同",
-                    color: "text-primary-600",
-                    dot: "bg-primary-500",
-                    bg: "bg-primary-50/50 border border-primary-100",
-                  },
-                }[s.type as string] || {
-                  label: "提示",
-                  color: "text-neutral-600",
-                  dot: "bg-neutral-400",
-                  bg: "bg-neutral-50 border border-neutral-200",
-                };
-
-                return (
-                  <div
-                    key={s.id}
-                    className="bg-white border border-neutral-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-neutral-200 transition-all group relative flex flex-col"
-                  >
-                    <div className="flex items-center gap-2.5 mb-3">
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full ${typeConfig.dot}`}
-                      />
-                      <h4 className="text-[14px] font-medium text-neutral-900 tracking-tight truncate flex-1">
-                        {s.title}
-                      </h4>
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-md flex-shrink-0 ${typeConfig.bg} ${typeConfig.color}`}
-                      >
-                        {typeConfig.label}
-                      </span>
-                    </div>
-                    <div className="mb-3">
-                      <p className="text-[12px] text-neutral-500 leading-relaxed mb-2">
-                        <span className="font-medium text-neutral-700">
-                          为什么重要：
-                        </span>
-                        <br />
-                        {s.desc}
-                      </p>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed">
-                        <span className="font-medium text-neutral-700">
-                          建议动作：
-                        </span>
-                        <br />
-                        {(s as any).suggestion}
-                      </p>
-                    </div>
-
-                    <div className="flex justify-end mt-auto pt-2 border-t border-neutral-50">
-                      <button
-                        onClick={() => handleExecuteSuggestion(s)}
-                        className="px-4 py-1.5 bg-neutral-50 text-neutral-700 hover:bg-neutral-900 hover:text-white rounded-[10px] text-[12px] font-medium transition-colors"
-                      >
-                        {s.action}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-                </>
-              )}
-            </div>
-          </div>
         ) : null}
-
-        {/* Collapsed Escort Toggle */}
-        {!isNewMerchant && !isEscortOpen && (
-          <div className="absolute right-0 top-[20%] z-30">
-            <button
-              onClick={() => setIsEscortOpen(true)}
-              className="bg-white border border-neutral-200 border-r-0 shadow-sm p-2 rounded-l-xl flex items-center gap-2 group hover:pr-4 transition-all"
-            >
-              <ShieldCheck size={18} className="text-primary-500" />
-              <span className="text-[12px] font-medium text-neutral-600 hidden group-hover:block whitespace-nowrap">
-                主动护航
-              </span>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

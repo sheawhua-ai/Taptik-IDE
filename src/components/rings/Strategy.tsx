@@ -35,7 +35,7 @@ export const Strategy: React.FC<{
 }> = ({ hasData = true, strategyData = [] }) => {
   const [showEvidenceDrawer, setShowEvidenceDrawer] = useState(false);
   const [showAdjustDrawer, setShowAdjustDrawer] = useState(false);
-  const [showSkillPanel, setShowSkillPanel] = useState(false);
+  
   const [selectedSkill, setSelectedSkill] = useState('美妆搜索种草打法');
   const [showSkillOverviewDrawer, setShowSkillOverviewDrawer] = useState(false);
   const [previewSkill, setPreviewSkill] = useState<{name: string, tag: string, desc: string} | null>(null);
@@ -58,10 +58,12 @@ export const Strategy: React.FC<{
   
   
   
+  const [isInitialGenerating, setIsInitialGenerating] = useState(false);
+  
   const [flowState, setFlowState] = useState<
-    "suggestion" | "confirming" | "generating" | "running"
-  >("suggestion");
-  const [generateProgress, setGenerateProgress] = useState(0);
+    "idle" | "diagnosing" | "diagnosis" | "generating" | "suggestion" | "creating" | "done"
+  >("idle");
+  
   const [cards, setCards] = useState([
     {
       id: "main",
@@ -86,14 +88,12 @@ export const Strategy: React.FC<{
     }
   ]);
   const [activeCardId, setActiveCardId] = useState("main");
-  
   const activeCard = cards.find(c => c.id === activeCardId) || cards[0];
   const inactiveCards = cards.filter(c => c.id !== activeCardId);
   const [adjustMemory, setAdjustMemory] = useState("only_once");
   const [aiInput, setAiInput] = useState("");
   const [aiMessage, setAiMessage] = useState("");
   const [isAiThinking, setIsAiThinking] = useState(false);
-
   const handleAiSubmit = () => {
     if (!aiInput) return;
     setIsAiThinking(true);
@@ -105,101 +105,157 @@ export const Strategy: React.FC<{
       setAiInput("");
     }, 1500);
   };
+  const [diagnosisProgress, setDiagnosisProgress] = useState(0);
+  const [generateProgress, setGenerateProgress] = useState(0);
 
+  const startDiagnosis = () => {
+    setFlowState("diagnosing");
+    setDiagnosisProgress(0);
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      setDiagnosisProgress(step * 25);
+      if (step >= 4) {
+        clearInterval(interval);
+        setTimeout(() => setFlowState("diagnosis"), 500);
+      }
+    }, 600);
+  };
 
   const startGenerating = () => {
     setFlowState("generating");
     setGenerateProgress(0);
+    let step = 0;
     const interval = setInterval(() => {
-      setGenerateProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setFlowState("running");
-          return 100;
-        }
-        return prev + 10;
-      });
+      step++;
+      setGenerateProgress(step * 20);
+      if (step >= 5) {
+        clearInterval(interval);
+        setTimeout(() => setFlowState("suggestion"), 500);
+      }
     }, 400);
   };
+  
+  const startCreating = () => {
+    setFlowState("creating");
+    setTimeout(() => {
+      setFlowState("done");
+    }, 2000);
+  };
+
 
   return (
     <div className="flex flex-col h-full w-full bg-neutral-50/40 overflow-hidden relative">
-      <div className="border-b border-neutral-100 px-8 py-5 flex items-center justify-between shrink-0 bg-white relative z-20">
-        <div className="flex flex-col gap-2 relative z-20">
-          <div className="text-[12px] text-neutral-500 font-medium flex items-center gap-2">
-            <span>商家：宠物食品组</span>
-            <span className="w-1 h-1 rounded-full bg-neutral-300" />
-            <span>当前阶段：冷启动 / 搜索卡位不足</span>
-            <span className="w-1 h-1 rounded-full bg-neutral-300" />
-            <span className="text-neutral-900">画像完整度：92%</span>
-            <button className="text-[12px] font-medium text-neutral-500 hover:text-neutral-700 transition-colors bg-neutral-100 px-2 py-0.5 rounded ml-2" onClick={() => window.dispatchEvent(new CustomEvent('open-merchant-profile-drawer'))}>查看画像缺口</button>
-          </div>
-          <div className="flex items-center gap-3 relative">
-            <button 
-              onClick={() => setShowSkillPanel(!showSkillPanel)}
-              className="text-[14px] font-bold text-neutral-900 flex items-center gap-1.5 hover:bg-neutral-50 px-2 py-1 -ml-2 rounded-lg transition-colors"
-            >
-              <Compass size={16} className="text-primary-600" /> 
-              当前打法：{selectedSkill}
-              <ChevronDown size={14} className="text-neutral-400" />
-            </button>
-            <button className="text-[12px] text-neutral-500 font-medium hover:text-neutral-700 px-2 py-1">刷新建议</button>
-
-            {/* Skill Panel Dropdown */}
-            <AnimatePresence>
-              {showSkillPanel && (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => setShowSkillPanel(false)}
-                    className="fixed inset-0 z-40"
-                  />
-                  <motion.div 
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 5 }}
-                    className="absolute top-full left-0 mt-2 w-80 bg-white border border-neutral-200 shadow-xl rounded-xl z-50 overflow-hidden"
-                  >
-                    <div className="p-3 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
-                      <div className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider">切换打法 (Skills)</div>
-                    </div>
-                    <div className="p-2 space-y-1">
-                      {[
-                        { name: '通用小红书打法', tag: '系统', desc: '适合无明显行业特征的冷启动' },
-                        { name: '美妆搜索种草打法', tag: '团队版', desc: '适合高溢价/功效型产品，侧重长尾搜索' },
-                        { name: '团队自定义打法', tag: '自定义', desc: '根据最新复盘调整的草稿' },
-                        { name: '上次成功打法', tag: '记忆', desc: '上周五表现最好的内容配比' }
-                      ].map(skill => {
-                        const isActive = skill.name === selectedSkill;
-                        return (
-                        <div key={skill.name} onClick={() => { setPreviewSkill(skill); setShowSkillOverviewDrawer(true); setShowSkillPanel(false); }} className={`p-3 rounded-lg cursor-pointer flex flex-col gap-1 transition-colors ${isActive ? 'bg-primary-50 border border-primary-100' : 'hover:bg-neutral-50 border border-transparent'}`}>
-                          <div className="flex justify-between items-center">
-                            <span className={`text-[13px] font-bold ${isActive ? 'text-primary-900' : 'text-neutral-700'}`}>{skill.name}</span>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${isActive ? 'bg-primary-100 text-primary-700' : 'bg-neutral-100 text-neutral-500'}`}>{skill.tag}</span>
-                          </div>
-                          <div className="text-[11px] text-neutral-500">{skill.desc}</div>
-                        </div>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-        <div className="text-[12px] text-primary-800 bg-primary-50 px-4 py-2 rounded-xl border border-primary-100 flex items-center gap-2 font-medium">
-          <Sparkles size={16} className="text-primary-500" /> 
-          发现机会：6 个长尾词 / 2 个账号可承接 / 素材覆盖 70%
-        </div>
-      </div>
-
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8">
         <div className="max-w-[1200px] mx-auto space-y-6">
           {/* 方案区 */}
-          {flowState !== "confirming" && (
+          {flowState === "idle" && (
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-6 py-20">
+               <div className="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center text-primary-600 mb-2">
+                 <Activity size={40} />
+               </div>
+               <div>
+                 <h3 className="text-[18px] font-bold text-neutral-900 mb-3">商家状态诊断</h3>
+                 <p className="text-[14px] text-neutral-500 max-w-md mx-auto leading-relaxed">
+                   正在读取商家记忆、项目数据、素材状态、历史复盘...
+                 </p>
+               </div>
+               <button 
+                 onClick={startDiagnosis}
+                 className="px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
+               >
+                 <Activity size={16} /> 开始全盘诊断
+               </button>
+            </div>
+          )}
+
+          {flowState === "diagnosing" && (
+            <div className="flex flex-col items-center justify-center py-20 space-y-8">
+              <div className="relative w-24 h-24">
+                <div className="absolute inset-0 bg-primary-100 rounded-full animate-ping opacity-50"></div>
+                <div className="absolute inset-2 bg-primary-200 rounded-full animate-pulse opacity-75"></div>
+                <div className="absolute inset-4 bg-primary-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                  <Activity size={32} className="animate-pulse" />
+                </div>
+              </div>
+              <div className="text-center space-y-2">
+                <h3 className="text-[18px] font-bold text-neutral-900">Agent 深度诊断中</h3>
+                <p className="text-[14px] text-neutral-500">正在综合评估各项数据指标...</p>
+              </div>
+              <div className="w-64 space-y-2">
+                <div className="flex items-center justify-between text-[12px] text-neutral-600 font-medium">
+                  <span>诊断进度</span>
+                  <span>{diagnosisProgress}%</span>
+                </div>
+                <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary-600 rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${diagnosisProgress}%` }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-4 text-[12px] text-neutral-400 font-medium">
+                <span className={`flex items-center gap-1 ${diagnosisProgress >= 25 ? 'text-primary-600' : ''}`}><CheckCircle2 size={14}/> 读取商家记忆</span>
+                <span className={`flex items-center gap-1 ${diagnosisProgress >= 50 ? 'text-primary-600' : ''}`}><CheckCircle2 size={14}/> 调取历史复盘</span>
+                <span className={`flex items-center gap-1 ${diagnosisProgress >= 75 ? 'text-primary-600' : ''}`}><CheckCircle2 size={14}/> 分析素材状态</span>
+              </div>
+            </div>
+          )}
+
+          {flowState === "diagnosis" && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-3xl border border-neutral-200 p-8 shadow-sm"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
+                  <AlertCircle size={20} />
+                </div>
+                <div>
+                  <h3 className="text-[18px] font-bold text-neutral-900">商家状态诊断结果</h3>
+                  <p className="text-[13px] text-neutral-500 mt-1">发现 3 项核心问题，亟需调整打法</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-6 mb-8">
+                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
+                  <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
+                    <User size={16} className="text-neutral-400" /> 用户认知断层
+                  </div>
+                  <div className="text-[14px] text-neutral-900 font-medium leading-relaxed">
+                    当前品牌内容偏离了初级养宠用户“通俗易懂”的需求，专业术语过多，跳出率高达 68%。
+                  </div>
+                </div>
+                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
+                  <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
+                    <ImageIcon size={16} className="text-neutral-400" /> 素材枯竭风险
+                  </div>
+                  <div className="text-[14px] text-neutral-900 font-medium leading-relaxed">
+                    真实测评类素材储备仅余 12 组，低于安全线，无法支撑高频的达人分发。
+                  </div>
+                </div>
+                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
+                  <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
+                    <Activity size={16} className="text-neutral-400" /> 转化效率下降
+                  </div>
+                  <div className="text-[14px] text-neutral-900 font-medium leading-relaxed">
+                    近期高意向线索流失率增加，私信导流话术已被平台限流，需更新引流路径。
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end border-t border-neutral-100 pt-6">
+                <button 
+                  onClick={() => setFlowState("suggestion")}
+                  className="px-6 py-3 bg-primary-600 text-white rounded-xl text-[14px] font-bold hover:bg-primary-700 transition-colors shadow-md flex items-center gap-2"
+                >
+                  <Sparkles size={16} /> 基于诊断生成打法推荐
+                </button>
+              </div>
+            </motion.div>
+          )}
+          {flowState !== "idle" && flowState !== "confirming" && (
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* 主推方案 */}
               <motion.div
@@ -225,26 +281,7 @@ export const Strategy: React.FC<{
                         </div>
                       </div>
                       
-                      <div>
-                        <div className="text-[14px] font-bold text-neutral-900 mb-3">预计产出：</div>
-                        <div className="flex flex-wrap gap-2.5">
-                          {["7 天项目流", "12 篇内容任务包", "8 个素材需求", "3 个账号排期建议", "1 套私域承接话术"].map(item => (
-                            <span key={item} className="text-[13px] bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg font-medium shadow-sm flex items-center gap-1.5">
-                              <CheckCircle2 size={14} className="text-neutral-900" /> {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
 
-                      <div>
-                        <div className="text-[14px] font-bold text-neutral-900 mb-3">推荐处理顺序：</div>
-                        <div className="flex items-center gap-2 text-[13px] text-neutral-700 font-medium overflow-x-auto pb-2">
-                           <span className="bg-primary-50 text-primary-700 px-4 py-2 rounded-lg border border-primary-100 whitespace-nowrap">内容确认</span> <ArrowRight size={16} className="text-neutral-300" />
-                           <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">素材补齐</span> <ArrowRight size={16} className="text-neutral-300" />
-                           <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">账号排期</span> <ArrowRight size={16} className="text-neutral-300" />
-                           <span className="bg-neutral-100 text-neutral-700 px-4 py-2 rounded-lg border border-neutral-200 whitespace-nowrap">线索承接</span>
-                        </div>
-                      </div>
                     </div>
 
                     <div className="mt-10 pt-6 border-t border-neutral-100 flex flex-wrap items-center gap-3">
@@ -255,12 +292,12 @@ export const Strategy: React.FC<{
                           }}
                           className="px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
                         >
-                          <Play size={16} /> 采用此方案
+                          <Play size={16} /> 采用方案并创建项目
                         </button>
                       )}
                       {(flowState === "generating" || flowState === "running") && (
                         <div className="px-6 py-3.5 bg-primary-50 text-primary-700 rounded-xl text-[14px] font-bold flex items-center gap-2 border border-primary-100">
-                          <CheckCircle2 size={16} /> 已采用
+                          <CheckCircle2 size={16} /> 项目已创建
                         </div>
                       )}
                       
@@ -392,7 +429,17 @@ export const Strategy: React.FC<{
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3">
-                    <button onClick={() => window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'matrix' } }))} className="px-6 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2">生成项目流 <ArrowRight size={16} /></button>
+                    <button 
+                      onClick={() => {
+                        setFlowState("creating");
+                        setTimeout(() => {
+                           window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'execution' } }));
+                        }, 2500);
+                      }} 
+                      className="px-6 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
+                    >
+                      创建项目档案并生成队列 <ArrowRight size={16} />
+                    </button>
                     
                     <button onClick={() => setShowCopilot(true)} className="px-5 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors">新建项目流</button>
                   </div>
@@ -400,6 +447,26 @@ export const Strategy: React.FC<{
               )}
             </motion.div>
           )}
+          {flowState === "creating" && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="h-full flex flex-col items-center justify-center py-20 space-y-6"
+            >
+              <div className="w-20 h-20 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-2 relative overflow-hidden">
+                <div className="absolute inset-0 bg-primary-100 animate-pulse opacity-50" />
+                <Layers size={32} className="relative z-10" />
+              </div>
+              <div className="text-center space-y-2">
+                <h3 className="text-[18px] font-bold text-neutral-900">正在创建项目档案与执行队列...</h3>
+                <p className="text-[14px] text-neutral-500">已将素材需求下发，等待分配执行账号</p>
+              </div>
+              <div className="w-64 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                 <div className="h-full bg-primary-600 rounded-full animate-[progress_2.5s_ease-in-out_forwards]" style={{ width: '100%' }} />
+              </div>
+            </motion.div>
+          )}
+
         </div>
       </div>
 

@@ -63,7 +63,7 @@ const MOCK_EVENTS: EventItem[] = [
 ];
 
 export const ProjectReview: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'results' | 'attribution' | 'dashboards'>('results');
+  const [activeTab, setActiveTab] = useState<'results' | 'discovery' | 'dashboards'>('results');
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
   return (
@@ -86,11 +86,9 @@ export const ProjectReview: React.FC = () => {
             结果追踪
           </button>
           <button 
-            onClick={() => setActiveTab('attribution')}
-            className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all ${activeTab === 'attribution' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            数据归因
-          </button>
+            onClick={() => setActiveTab('discovery')}
+            className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all ${activeTab === 'discovery' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
+          >归因发现</button>
           <button 
             onClick={() => setActiveTab('dashboards')}
             className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all ${activeTab === 'dashboards' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
@@ -153,9 +151,27 @@ export const ProjectReview: React.FC = () => {
                       <strong>系统建议：</strong>{event.aiSuggestion}
                     </div>
                     
-                    <button className="w-full py-2 bg-neutral-900 text-white text-[13px] font-medium rounded-lg hover:bg-neutral-800 transition-colors">
-                      {event.actionText}
-                    </button>
+                    <div className="flex flex-col gap-2 mt-auto">
+                      <div className="grid grid-cols-2 gap-2">
+                        <button className="py-2 bg-neutral-900 text-white text-[12px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm text-center">
+                          {event.actionText}
+                        </button>
+                        <button className="py-2 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm text-center">
+                          沉淀为商家记忆
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button className="py-1.5 bg-neutral-50 border border-neutral-200 text-neutral-600 text-[11px] font-medium rounded hover:bg-neutral-100 transition-colors text-center">
+                          加入下轮策略
+                        </button>
+                        <button className="py-1.5 bg-neutral-50 border border-neutral-200 text-neutral-600 text-[11px] font-medium rounded hover:bg-neutral-100 transition-colors text-center">
+                          沉淀为打法
+                        </button>
+                        <button className="py-1.5 bg-neutral-50 border border-neutral-200 text-neutral-600 text-[11px] font-medium rounded hover:bg-neutral-100 transition-colors text-center">
+                          生成跟进任务
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -203,7 +219,7 @@ export const ProjectReview: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'attribution' && (
+        {activeTab === 'discovery' && (
           <div className="flex-1 overflow-hidden relative">
             <DataCenter dataSubNav="roi_attribution" setDataSubNav={() => {}} setActiveNav={() => {}} />
           </div>

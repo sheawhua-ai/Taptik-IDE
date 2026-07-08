@@ -108,7 +108,7 @@ import {
   Store,
   MoreHorizontal,
   Edit2,
-} from "lucide-react";
+CheckSquare, } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 import { SkillMarket } from "./components/SkillMarket";
@@ -139,6 +139,7 @@ import { Strategy } from "./components/rings/Strategy";
 import { ExecutionResult } from "./components/rings/ExecutionResult";
 import { CRM } from "./components/rings/CRM";
 import { ProjectReview } from "./components/rings/ProjectReview";
+import { ProjectAssets } from "./components/rings/ProjectAssets";
 
 import { SubagentChat } from "./components/SubagentChat";
 import { ExecutionQueue } from "./components/ExecutionQueue";
@@ -341,7 +342,8 @@ const PROJECT_HISTORY_ITEMS = [
 const PROJECT_TABS = [
   { id: "strategy", name: "操盘策略", icon: Compass },
   { id: "execution", name: "执行中心", icon: LayoutGrid },
-  { id: "review", name: "复盘与归因", icon: BarChart2 },
+  { id: "assets", name: "项目档案", icon: Target },
+  { id: "review", name: "复盘归因", icon: BarChart2 },
 ];
 
 export default function App() {
@@ -430,6 +432,16 @@ export default function App() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const [activeNav, setActiveNav] = useState("workflow");
+    useEffect(() => {
+    const handleNav = (e: any) => {
+      if (e.detail?.tab) {
+        setWorkflowTab(e.detail.tab);
+      }
+    };
+    window.addEventListener('nav-to-tab', handleNav);
+    return () => window.removeEventListener('nav-to-tab', handleNav);
+  }, []);
+
   const [workflowTab, setWorkflowTab] = useState<
     "strategy" | "execution" | "review"
   >("strategy");
@@ -497,7 +509,7 @@ export default function App() {
       const { task } = e.detail || {};
       if (task) {
         setPendingExpert('操盘副手');
-        setPendingContext(`【处理数据事件】\n对象：${task.title}\n建议动作：${task.aiActionText}\n\n请直接执行此动作，或给出进一步的调整建议。`);
+        setPendingContext(`【处理数据事件】对象：${task.title}建议动作：${task.aiActionText}请直接执行此动作，或给出进一步的调整建议。`);
         setActiveSidebarMode("chat");
         setShowSubagentChat(true);
         setIsSidebarCollapsed(true);
@@ -1074,7 +1086,7 @@ export default function App() {
         >
           <button
             onClick={() => setActiveNav("workbench")}
-            title={isSidebarCollapsed ? "新建任务" : undefined}
+            title={isSidebarCollapsed ? "新对话" : undefined}
             className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} rounded-xl transition-all group border border-transparent ${activeNav === "workbench" ? "bg-white text-slate-900 shadow-sm" : "hover:bg-white hover:shadow-sm text-slate-700"} mb-2`}
           >
             <div
@@ -1083,7 +1095,7 @@ export default function App() {
               <Plus size={14} strokeWidth={3} />
             </div>
             {!isSidebarCollapsed && (
-              <span className="text-[13px] ">新建任务</span>
+              <span className="text-[13px] ">新对话</span>
             )}
           </button>
 
@@ -1110,13 +1122,11 @@ export default function App() {
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between group">
-                    <span className="text-[12px] text-slate-500 font-medium px-2">
-                      项目
-                    </span>
+                    <span className="text-[12px] text-slate-500 font-medium px-2">对话空间</span>
                     <button
                       onClick={() => setIsCreateProjectModalOpen(true)}
                       className="hover:text-slate-700 text-slate-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="新建项目"
+                      title="新建对话空间"
                     >
                       <Plus size={14} />
                     </button>
@@ -1237,18 +1247,35 @@ export default function App() {
 
                             {/* Session Menu Dropdown */}
                             {activeSessionMenuId === session.id && (
-                              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 session-menu-container">
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full">
-                                  打开会话
+                              <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 session-menu-container">
+                                <div className="px-4 py-1.5 text-[11px] font-bold text-slate-400 tracking-wider">沉淀为...</div>
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <Database size={14} className="text-slate-400" /> 商家记忆
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full">
-                                  分享对话
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <User size={14} className="text-slate-400" /> 我的记忆
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full">
-                                  沉淀为 Skill
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <FileText size={14} className="text-slate-400" /> 打法草稿
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors text-left w-full mt-1 pt-2 border-t border-slate-100">
-                                  删除
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <Lightbulb size={14} className="text-slate-400" /> 新项目方案
+                                </button>
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <CheckSquare size={14} className="text-slate-400" /> 执行任务
+                                </button>
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <BarChart2 size={14} className="text-slate-400" /> 数据看板
+                                </button>
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <ImageIcon size={14} className="text-slate-400" /> 素材需求
+                                </button>
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <Compass size={14} className="text-slate-400" /> 内容方向
+                                </button>
+                                <div className="h-px bg-slate-100 my-1 w-full" />
+                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
+                                  <Archive size={14} className="text-slate-400" /> 归档
                                 </button>
                               </div>
                             )}
@@ -1550,7 +1577,7 @@ export default function App() {
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-full hover:bg-rose-100 transition-colors"
                 >
                   <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse" />
-                  <span className="text-[12px] font-bold">待处理 9</span>
+                  
                 </button>
               </div>
             </div>
@@ -1587,6 +1614,7 @@ export default function App() {
 
                     {workflowTab === "execution" && <ExecutionResult />}
 
+                    {workflowTab === "assets" && <ProjectAssets />}
                     {workflowTab === "review" && <ProjectReview />}
                   </>
                 )}

@@ -35,7 +35,7 @@ const SPACES = [
 
 const CATEGORIES = [
   { id: "brand", label: "品牌与产品", icon: BookOpen, desc: "品牌定位、产品池、价格体系、核心卖点" },
-  { id: "account", label: "账号矩阵", icon: Layout, desc: "账号定位、KOS 人设、引流路径" },
+  { id: "account", label: "账号矩阵", icon: Layout, desc: "商家定位、KOS 人设、引流路径" },
   { id: "customer", label: "客户与痛点", icon: Users, desc: "目标客户画像、需求痛点、购买顾虑、真实反馈" },
   { id: "content", label: "内容与图文", icon: FileText, desc: "标题规则、沟通风格、图文/视频规范、首图要求" },
   { id: "rules", label: "禁区与流转", icon: ShieldAlert, desc: "禁用表达、价格红线、品牌禁区、流转规则" },
