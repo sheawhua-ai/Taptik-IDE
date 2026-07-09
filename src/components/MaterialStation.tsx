@@ -238,8 +238,8 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
         </div>
 
         {/* Grid Area */}
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-white">
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4">
             {filteredData.map((item) => (
               <div 
                 key={item.id} 
@@ -278,7 +278,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
                    </div>
                 </div>
                 <div>
-                  <div className="text-[13px] font-bold text-neutral-900 mb-1 truncate group-hover:text-primary-700 transition-colors">
+                  <div className="text-[12px] font-bold text-neutral-900 mb-1 truncate group-hover:text-primary-700 transition-colors">
                     {item.name}
                   </div>
                   <div className="text-[11px] text-neutral-500 flex items-center gap-2 mb-1.5">
