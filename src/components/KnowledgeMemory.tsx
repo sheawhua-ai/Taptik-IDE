@@ -5,7 +5,8 @@ import {
   Database, Users, Image as ImageIcon, Plus, FileText, Link as LinkIcon, MessageSquare,
   Clock, Settings, History, Info, Activity, AlertCircle, AlertTriangle, BookOpen, X,
   Check, Edit3, Trash2, GitMerge, Eye, FileCode2, PieChart, Sparkles, Folder, Download,
-  Send, PenTool, LayoutTemplate, Network, Layout, ShieldAlert
+  Send, PenTool, LayoutTemplate, Network, Layout, ShieldAlert, FolderOpen
+  , Maximize2, Minimize2
 } from "lucide-react";
 
 type SpaceType = "merchant" | "strategy";
@@ -126,6 +127,7 @@ function StrategyView() {
   const [activeStrategyTab, setActiveStrategyTab] = React.useState<"memories" | "strategies">("memories");
   const [isEditingDetail, setIsEditingDetail] = React.useState(false);
   const [isStrategyFormOpen, setIsStrategyFormOpen] = React.useState(false);
+  const [isFullScreen, setIsFullScreen] = React.useState(false);
 
   const filters = ["全部", "随笔", "创意", "客户原话", "竞品分析", "素材判断", "话术模板", "打法", "待验证"];
 
@@ -164,7 +166,7 @@ function StrategyView() {
       callStatus: "已启用", 
       scope: "宠物食品 / 冷启动 / 搜索卡位",
       usableFor: "操盘建议、账号组合、内容分配、素材任务",
-      source: "导入文件 (起号SOP.docx)", 
+      source: "本地文件 (起号SOP.docx)", 
       attachments: [{ name: "宠物食品起号SOP_v2.docx", type: "word", size: "2.4 MB" }],
       structuredContent: [
          { title: "一、人设搭建", desc: "建议采用'前大厂营养师'或'资深繁育人'人设，强调专业与真实性。避开同质化的'铲屎官'人设。" },
@@ -285,7 +287,7 @@ function StrategyView() {
                     <LinkIcon size={14} /> 解析链接
                   </button>
                   <button className="flex items-center gap-1.5 text-neutral-500 hover:text-neutral-700 transition-colors text-[13px] font-medium">
-                    <Upload size={14} /> 导入文件
+                    <FolderOpen size={14} /> 选择本地文件
                   </button>
                 </div>
                 {!inputText && (
@@ -442,16 +444,21 @@ function StrategyView() {
             initial={{ x: 400, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 400, opacity: 0 }}
-            className="absolute top-0 right-0 bottom-0 w-[400px] bg-white border-l border-neutral-200 shadow-2xl flex flex-col z-50"
+            className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-[400px]'} transition-all duration-300 bg-white border-l border-neutral-200 shadow-2xl flex flex-col z-50`}
           >
             <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
               <h3 className="font-bold text-neutral-900 flex items-center gap-2">
                 <Database size={18} className="text-neutral-500" />
                 记忆详情
               </h3>
-              <button onClick={() => {setSelectedMemory(null); setIsEditingDetail(false);}} className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors">
-                <X size={18} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setIsFullScreen(!isFullScreen)} className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors">
+                  {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                </button>
+                <button onClick={() => {setSelectedMemory(null); setIsEditingDetail(false);}} className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors">
+                  <X size={18} />
+                </button>
+              </div>
             </div>
             
             <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar relative">
@@ -720,6 +727,7 @@ export function KnowledgeMemory() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isMerging, setIsMerging] = useState(false);
@@ -1115,10 +1123,10 @@ export function KnowledgeMemory() {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-[18px] font-bold text-neutral-900">本地资料库</h2>
-                    <p className="text-[13px] text-neutral-500 mt-1">上传原始资料，AI 会自动解析并提取商家候选记忆条目。</p>
+                    <p className="text-[13px] text-neutral-500 mt-1">配置本地文件夹映射后，AI 会自动监控其中的原始资料并解析。</p>
                   </div>
                   <button className="py-2 px-4 bg-neutral-900 text-white rounded-lg text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2">
-                    <Upload size={16} /> 导入新资料
+                    <FolderOpen size={16} /> 更改文件夹映射
                   </button>
                 </div>
                 
@@ -1138,7 +1146,7 @@ export function KnowledgeMemory() {
                         <div>
                           <h4 className="font-bold text-[14px] text-neutral-900 group-hover:text-primary-700 transition-colors">{file.name}</h4>
                           <div className="text-[12px] text-neutral-500 mt-1 flex items-center gap-3">
-                            <span className="flex items-center gap-1.5"><Clock size={12} /> {file.time}上传</span>
+                            <span className="flex items-center gap-1.5"><Clock size={12} /> {file.time}同步</span>
                             <span className="flex items-center gap-1.5"><Database size={12} /> 提取了 {file.count} 条记忆</span>
                             {file.pending > 0 && <span className="text-amber-700 font-bold bg-amber-50 px-1.5 rounded border border-amber-200">{file.pending} 条待确认</span>}
                           </div>
@@ -1179,7 +1187,7 @@ export function KnowledgeMemory() {
               initial={{ y: "100%", opacity: 0.5 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: "100%", opacity: 0.5 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
               className="absolute left-1/2 bottom-0 w-[600px] -translate-x-1/2 bg-white rounded-t-2xl shadow-2xl z-50 flex flex-col border border-neutral-200"
               style={{ maxHeight: '80vh' }}
             >
@@ -1251,17 +1259,25 @@ export function KnowledgeMemory() {
               initial={{ x: "100%", opacity: 0.5 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0.5 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 right-0 bottom-0 w-[500px] bg-white shadow-2xl z-50 flex flex-col border-l border-neutral-200"
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+              className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-[500px]'} transition-all duration-300 bg-white shadow-2xl z-50 flex flex-col border-l border-neutral-200`}
             >
               <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-[#fafafa]">
                 <h3 className="text-[16px] font-bold text-neutral-900">资料库文件详情</h3>
-                <button
-                  onClick={() => setSelectedSourceFile(null)}
-                  className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-300 transition-colors"
-                >
-                  <X size={16} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-300 transition-colors"
+                  >
+                    {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                  </button>
+                  <button
+                    onClick={() => setSelectedSourceFile(null)}
+                    className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-300 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
@@ -1275,7 +1291,7 @@ export function KnowledgeMemory() {
                   <div>
                     <h4 className="font-bold text-[16px] text-neutral-900">{selectedSourceFile.name}</h4>
                     <div className="text-[12px] text-neutral-500 mt-1 flex items-center gap-3">
-                      <span>{selectedSourceFile.time}上传</span>
+                      <span>{selectedSourceFile.time}同步</span>
                       <span>·</span>
                       <span className={"font-bold px-1.5 py-0.5 rounded " + (
                             selectedSourceFile.status === '已入库' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
@@ -1357,17 +1373,25 @@ export function KnowledgeMemory() {
               initial={{ x: "100%", opacity: 0.5 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0.5 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 right-0 bottom-0 w-[500px] bg-white shadow-2xl z-50 flex flex-col border-l border-neutral-200"
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+              className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-[500px]'} transition-all duration-300 bg-white shadow-2xl z-50 flex flex-col border-l border-neutral-200`}
             >
               <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-[#fafafa]">
                 <h3 className="text-[16px] font-bold text-neutral-900">记忆详情</h3>
-                <button
-                  onClick={() => setSelectedMemory(null)}
-                  className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-300 transition-colors"
-                >
-                  <X size={16} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-300 transition-colors"
+                  >
+                    {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                  </button>
+                  <button
+                    onClick={() => setSelectedMemory(null)}
+                    className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-300 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">

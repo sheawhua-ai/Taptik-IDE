@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
-  X, Store, Target, AlertCircle, ArrowRight, Search
+  X, Store, Target, AlertCircle, ArrowRight, Search, Maximize2, Minimize2
 } from 'lucide-react';
 
 interface MerchantProfileDrawerProps {
@@ -16,6 +16,7 @@ export function MerchantProfileDrawer({
   onClose,
   projectName,
 }: MerchantProfileDrawerProps) {
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [missingItems] = useState([
     { id: 1, text: "私域承接流程不完整", desc: "缺少用户添加企微后的标准SOP", sourceDoc: "知识库未收录 / 需补充《私域SOP操作手册》", completed: false },
     { id: 2, text: "核心卖点支撑证据不足", desc: "主推款产品缺少专利证明或权威背书资料", sourceDoc: "需补充至知识库文件夹《产品资质与背书》", completed: false },
@@ -38,8 +39,8 @@ export function MerchantProfileDrawer({
             initial={{ x: "100%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
-            transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-            className="fixed top-0 right-0 bottom-0 w-[420px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+            transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+            className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-[420px]'} bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200 transition-all duration-300`}
           >
             {/* Header */}
             <div className="shrink-0 px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-white relative z-10">
@@ -54,12 +55,20 @@ export function MerchantProfileDrawer({
                   </div>
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors"
-              >
-                <X size={18} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsFullScreen(!isFullScreen)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors"
+                >
+                  {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* Profile Overview */}
@@ -73,9 +82,34 @@ export function MerchantProfileDrawer({
                   <div className="absolute inset-0 bg-white/20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent)' }}></div>
                 </div>
               </div>
-              <p className="text-[12px] text-neutral-500 leading-relaxed">
+              <p className="text-[12px] text-neutral-500 leading-relaxed mb-4">
                 商家画像由知识库自动抽取生成。当前仍有部分信息未对齐，补充后将进一步提升策略生成的准确性。
               </p>
+              
+              <div className="space-y-3">
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] font-bold text-neutral-400">品牌心智</span>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">专业严谨</span>
+                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">配方透明</span>
+                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">新手友好</span>
+                    </div>
+                 </div>
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] font-bold text-neutral-400">核心受众</span>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">精致养宠女性</span>
+                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">成分党</span>
+                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">高客单价</span>
+                    </div>
+                 </div>
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] font-bold text-neutral-400">主推品优势</span>
+                    <p className="text-[12px] text-neutral-800 font-medium bg-white p-2.5 rounded-lg border border-neutral-200">
+                      80%鲜肉含量，0谷物添加，特别添加益生菌呵护幼犬玻璃胃。
+                    </p>
+                 </div>
+              </div>
             </div>
 
             {/* Missing Gaps List */}

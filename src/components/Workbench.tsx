@@ -453,7 +453,7 @@ const handleExecute = (customQuery?: string) => {
                                 className="animate-spin text-primary-500"
                               />
                               <span className="text-[14px] font-medium">
-                                Agent 正在执行: {msg.card.currentStep}
+                                AI 正在执行: {msg.card.currentStep}
                               </span>
                             </div>
                             <ChevronDown
@@ -844,11 +844,11 @@ const handleExecute = (customQuery?: string) => {
                   <div className="flex items-center justify-between py-5 px-6 border-b border-neutral-50 bg-[#fafafa]">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-neutral-900 text-white rounded-[10px] flex items-center justify-center shadow-sm">
-                        <Workflow size={14} />
+                        <Network size={14} />
                       </div>
                       <div>
                         <h3 className="text-[14px] font-semibold text-neutral-900 tracking-tight">
-                          Agent 瀑布工作流
+                          全自动编排列
                         </h3>
                         <div className="text-[11px] text-neutral-500 mt-0.5 tracking-wide">
                           任务执行链路
@@ -956,7 +956,7 @@ const handleExecute = (customQuery?: string) => {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 px-2.5 py-1 bg-primary-50 text-primary-600 rounded-lg text-[11px] ">
                   <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-                  Agent 正在运行
+                  AI 正在运行
                 </div>
                 <div className="flex items-center gap-2 text-[13px] text-neutral-600">
                   <span className="text-neutral-400 ">当前节点:</span>{" "}

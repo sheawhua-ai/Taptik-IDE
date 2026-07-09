@@ -529,6 +529,10 @@ export default function App() {
     window.addEventListener("collapse-sidebar", handleCollapseSidebar);
     window.addEventListener("open-expert", handleOpenExpertApp);
     window.addEventListener("start-ai-action", handleStartAction);
+    
+    const handleToKnowledge = () => setActiveNav("knowledge");
+    window.addEventListener("switch-to-knowledge", handleToKnowledge);
+
     return () => {
       window.removeEventListener("nav-to-factory", handleToFactory);
       window.removeEventListener("nav-to-strategy", handleToStrategy);
@@ -539,6 +543,7 @@ export default function App() {
       window.removeEventListener("collapse-sidebar", handleCollapseSidebar);
       window.removeEventListener("open-expert", handleOpenExpertApp);
       window.removeEventListener("start-ai-action", handleStartAction);
+      window.removeEventListener("switch-to-knowledge", handleToKnowledge);
     };
   }, []);
 
@@ -1726,7 +1731,7 @@ export default function App() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
               className="w-1/2 bg-white h-full shadow-2xl flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >

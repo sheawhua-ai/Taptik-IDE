@@ -60,7 +60,7 @@ const MOCK_DATA = Array.from({ length: 20 }).map((_, i) => {
     usageCount: isPublished ? 2 : 0,
     lastUsedTime: isPublished ? '2026-07-01' : null,
     
-    source: i % 2 === 0 ? '本地导入' : 'KOC 回传',
+    source: i % 2 === 0 ? '本地文件夹' : 'KOC 回传',
   };
 });
 
@@ -322,7 +322,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
               initial={{ x: "100%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
               className="absolute right-0 top-0 bottom-0 w-[480px] bg-white border-l border-neutral-200 z-30 shadow-2xl flex flex-col"
             >
               <div className="h-14 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0 bg-white">
@@ -683,7 +683,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
         {activeDrawer && (
           <div className="fixed inset-0 z-50 flex justify-end">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" onClick={() => setActiveDrawer(null)} />
-            <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative w-[560px] bg-white h-full shadow-2xl flex flex-col">
+            <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: "tween", duration: 0.25, ease: "easeOut" }} className="relative w-[560px] bg-white h-full shadow-2xl flex flex-col">
               {/* Common Header */}
               <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-100 shrink-0">
                 <h3 className="text-[16px] font-bold text-neutral-900">

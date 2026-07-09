@@ -43,7 +43,7 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
         className="w-[800px] bg-neutral-50 h-full shadow-2xl flex flex-col relative z-10"
         onClick={(e) => e.stopPropagation()}
       >

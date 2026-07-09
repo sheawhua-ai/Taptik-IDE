@@ -17,7 +17,7 @@ import {
   User,
   Users,
   Layers,
-  ShieldCheck,
+  ShieldCheck, Maximize2, Minimize2,
   Plus,
   Settings2,
   FileText,
@@ -38,6 +38,7 @@ export const Strategy: React.FC<{
   
   const [selectedSkill, setSelectedSkill] = useState('美妆搜索种草打法');
   const [showSkillOverviewDrawer, setShowSkillOverviewDrawer] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [previewSkill, setPreviewSkill] = useState<{name: string, tag: string, desc: string} | null>(null);
   
   const [selectedTarget, setSelectedTarget] = useState('搜索卡位');
@@ -117,7 +118,7 @@ export const Strategy: React.FC<{
       setDiagnosisProgress(step * 25);
       if (step >= 4) {
         clearInterval(interval);
-        setTimeout(() => setFlowState("diagnosis"), 500);
+        setTimeout(() => setFlowState("suggestion"), 500);
       }
     }, 600);
   };
@@ -131,7 +132,7 @@ export const Strategy: React.FC<{
       setGenerateProgress(step * 20);
       if (step >= 5) {
         clearInterval(interval);
-        setTimeout(() => setFlowState("suggestion"), 500);
+        setTimeout(() => setFlowState("running"), 500);
       }
     }, 400);
   };
@@ -146,11 +147,11 @@ export const Strategy: React.FC<{
 
   return (
     <div className="flex flex-col h-full w-full bg-neutral-50/40 overflow-hidden relative">
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8">
-        <div className="max-w-[1200px] mx-auto space-y-6">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-5">
+        <div className="max-w-[1200px] mx-auto space-y-4">
           {/* 方案区 */}
           {flowState === "idle" && (
-            <div className="h-full flex flex-col items-center justify-center text-center space-y-6 py-20">
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-6">
                <div className="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center text-primary-600 mb-2">
                  <Activity size={40} />
                </div>
@@ -170,7 +171,7 @@ export const Strategy: React.FC<{
           )}
 
           {flowState === "diagnosing" && (
-            <div className="flex flex-col items-center justify-center py-20 space-y-8">
+            <div className="flex flex-col items-center justify-center py-6 space-y-4">
               <div className="relative w-24 h-24">
                 <div className="absolute inset-0 bg-primary-100 rounded-full animate-ping opacity-50"></div>
                 <div className="absolute inset-2 bg-primary-200 rounded-full animate-pulse opacity-75"></div>
@@ -179,7 +180,7 @@ export const Strategy: React.FC<{
                 </div>
               </div>
               <div className="text-center space-y-2">
-                <h3 className="text-[18px] font-bold text-neutral-900">Agent 深度诊断中</h3>
+                <h3 className="text-[18px] font-bold text-neutral-900">AI 深度诊断中</h3>
                 <p className="text-[14px] text-neutral-500">正在综合评估各项数据指标...</p>
               </div>
               <div className="w-64 space-y-2">
@@ -202,13 +203,13 @@ export const Strategy: React.FC<{
             </div>
           )}
 
-          {flowState === "diagnosis" && (
+          {["suggestion", "generating", "running", "creating", "done"].includes(flowState) && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl border border-neutral-200 p-8 shadow-sm"
+              className="bg-white rounded-3xl border border-neutral-200 p-5 shadow-sm"
             >
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
                   <AlertCircle size={20} />
                 </div>
@@ -218,7 +219,7 @@ export const Strategy: React.FC<{
                 </div>
               </div>
               
-              <div className="grid grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-3 gap-6 mb-4">
                 <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
                   <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
                     <User size={16} className="text-neutral-400" /> 用户认知断层
@@ -244,36 +245,27 @@ export const Strategy: React.FC<{
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-center justify-end border-t border-neutral-100 pt-6">
-                <button 
-                  onClick={() => setFlowState("suggestion")}
-                  className="px-6 py-3 bg-primary-600 text-white rounded-xl text-[14px] font-bold hover:bg-primary-700 transition-colors shadow-md flex items-center gap-2"
-                >
-                  <Sparkles size={16} /> 基于诊断生成打法推荐
-                </button>
-              </div>
             </motion.div>
           )}
-          {flowState !== "idle" && flowState !== "confirming" && (
+          {["suggestion", "generating", "running", "creating", "done"].includes(flowState) && (
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* 主推方案 */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="xl:col-span-2 bg-white rounded-3xl border border-primary-100 p-8 shadow-sm relative overflow-hidden"
+                className="xl:col-span-2 bg-white rounded-3xl border border-primary-100 p-5 shadow-sm relative overflow-hidden"
               >
-                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                 <div className="absolute top-0 right-0 p-5 opacity-5 pointer-events-none">
                   <Target size={160} />
                  </div>
                  <div className="relative z-10">
                     <div className="flex items-center gap-2 text-primary-700 font-bold mb-4 text-[13px] bg-primary-50 px-3 py-1.5 rounded-full w-fit">
                       <Bot size={16} /> {activeCard.label}
                     </div>
-                    <h3 className="text-[28px] font-bold text-neutral-900 mb-8 tracking-tight">
+                    <h3 className="text-[28px] font-bold text-neutral-900 mb-4 tracking-tight">
                       {activeCard.title}
                     </h3>
-                    <div className="space-y-8">
+                    <div className="space-y-4">
                       <div>
                         <div className="text-[14px] font-bold text-neutral-900 mb-2">为什么做：</div>
                         <div className="text-[14px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100">
@@ -284,7 +276,7 @@ export const Strategy: React.FC<{
 
                     </div>
 
-                    <div className="mt-10 pt-6 border-t border-neutral-100 flex flex-wrap items-center gap-3">
+                    <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-wrap items-center gap-3">
                       {(flowState === "suggestion") && (
                         <button
                           onClick={() => {
@@ -325,7 +317,7 @@ export const Strategy: React.FC<{
                   <div key={card.id} className={`bg-white rounded-3xl border p-6 shadow-sm transition-colors group ${flowState === "suggestion" ? "border-neutral-200 hover:border-primary-200 cursor-pointer" : "border-neutral-200 opacity-50 cursor-not-allowed"}`} onClick={() => { if(flowState === "suggestion") { setActiveCardId(card.id); } }}>
                     <div className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">{card.label}</div>
                     <h4 className="text-[18px] font-bold text-neutral-900 mb-2">{card.title}</h4>
-                    <p className="text-[13px] text-neutral-500 mb-6">{card.shortDesc}</p>
+                    <p className="text-[13px] text-neutral-500 mb-4">{card.shortDesc}</p>
                     {flowState === "suggestion" && <div className="text-[13px] font-bold text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">选择此方向 <ArrowRight size={16} /></div>}
                   </div>
                 ))}
@@ -343,11 +335,11 @@ export const Strategy: React.FC<{
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl border border-primary-200 p-8 shadow-xl mt-8"
+              className="bg-white rounded-3xl border border-primary-200 p-5 shadow-xl mt-8"
             >
               {flowState === "generating" ? (
                 <>
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-[20px] font-semibold text-neutral-900 flex items-center gap-2">
                         <div className="w-4 h-4 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
@@ -379,20 +371,20 @@ export const Strategy: React.FC<{
                   </div>
                 </>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <h3 className="text-[20px] font-bold text-neutral-900 flex items-center gap-2">
                     <CheckCircle2 className="text-neutral-900" size={24} /> 本轮起盘单：幼犬换粮避坑搜索卡位
                   </h3>
                   
                   <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
-                    <div className="mb-6 pb-6 border-b border-neutral-100">
+                    <div className="mb-4 pb-6 border-b border-neutral-100">
                       <h4 className="text-[13px] font-bold text-neutral-500 mb-2">目标：</h4>
                       <p className="text-[15px] text-neutral-800 leading-relaxed">
                         用 7 天时间铺 20 篇内容，抢占“幼犬换粮软便 / 幼犬不吃粮 / 换粮拉稀”等长尾搜索词。
                       </p>
                     </div>
 
-                    <div className="mb-6 pb-6 border-b border-neutral-100">
+                    <div className="mb-4 pb-6 border-b border-neutral-100">
                       <h4 className="text-[13px] font-bold text-neutral-500 mb-4">账号组合：</h4>
                       <div className="grid grid-cols-4 gap-4">
                         <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
@@ -451,7 +443,7 @@ export const Strategy: React.FC<{
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="h-full flex flex-col items-center justify-center py-20 space-y-6"
+              className="h-full flex flex-col items-center justify-center py-6 space-y-4"
             >
               <div className="w-20 h-20 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 mb-2 relative overflow-hidden">
                 <div className="absolute inset-0 bg-primary-100 animate-pulse opacity-50" />
@@ -485,16 +477,24 @@ export const Strategy: React.FC<{
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-[440px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+              className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-full max-w-[440px]'} transition-all duration-300 bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200`}
             >
               <div className="shrink-0 border-b border-neutral-100 p-6 relative">
-                <button
-                  onClick={() => setShowEvidenceDrawer(false)}
-                  className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="absolute top-6 right-6 flex items-center gap-2">
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                  >
+                    {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                  </button>
+                  <button
+                    onClick={() => setShowEvidenceDrawer(false)}
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-primary-50 rounded-xl text-primary-600 flex items-center justify-center">
                     <Sparkles size={20} />
@@ -506,7 +506,7 @@ export const Strategy: React.FC<{
                 </p>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                 <div className="space-y-2">
                   <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
                     <User size={14} /> 商家画像
@@ -577,16 +577,24 @@ export const Strategy: React.FC<{
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-[500px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+              className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-full max-w-[500px]'} transition-all duration-300 bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200`}
             >
               <div className="shrink-0 border-b border-neutral-100 p-6 relative">
-                <button
-                  onClick={() => setShowAdjustDrawer(false)}
-                  className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="absolute top-6 right-6 flex items-center gap-2">
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                  >
+                    {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                  </button>
+                  <button
+                    onClick={() => setShowAdjustDrawer(false)}
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-neutral-100 rounded-xl text-neutral-700 flex items-center justify-center">
                     <Settings2 size={20} />
@@ -643,7 +651,7 @@ export const Strategy: React.FC<{
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                 <div className="space-y-4">
                   <div>
                     <label className="block text-[13px] font-bold text-neutral-700 mb-2">主攻目标</label>
@@ -798,16 +806,24 @@ export const Strategy: React.FC<{
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-[440px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+              className="absolute top-0 right-0 bottom-0 w-full max-w-[440px] bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200"
             >
               <div className="shrink-0 border-b border-neutral-100 p-6 relative">
-                <button
-                  onClick={() => setShowSkillOverviewDrawer(false)}
-                  className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="absolute top-6 right-6 flex items-center gap-2">
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                  >
+                    {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                  </button>
+                  <button
+                    onClick={() => setShowSkillOverviewDrawer(false)}
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-primary-50 rounded-xl text-primary-600 flex items-center justify-center">
                     <Compass size={20} />
@@ -826,7 +842,7 @@ export const Strategy: React.FC<{
                 </p>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-[13px] font-bold text-neutral-900 mb-2">打法核心逻辑</h3>

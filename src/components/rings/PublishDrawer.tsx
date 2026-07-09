@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
-  X, CheckCircle2, Send, QrCode, Smartphone, ExternalLink, Calendar, Users
+  X, CheckCircle2, Send, QrCode, Smartphone, ExternalLink, Calendar, Users, Maximize2, Minimize2
 } from 'lucide-react';
 
 export const PublishDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" />
@@ -13,8 +14,8 @@ export const PublishDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =>
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="w-[600px] bg-white h-full shadow-2xl flex flex-col relative z-10"
+        transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+        className={`${isFullScreen ? 'w-full' : 'w-[600px]'} transition-all duration-300 bg-white h-full shadow-2xl flex flex-col relative z-10`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">

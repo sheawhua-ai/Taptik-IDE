@@ -51,8 +51,8 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  const newUnit: AgentUnit = {
  id: Date.now().toString(),
  title: `生成指令: ${command.slice(0, 10)}...`,
- sub: '多 Agent 协同作业中',
- thought: '已调度文案增强 Agent。正在检索商户素材库中的海报模板进行自动适配...',
+ sub: '多 AI 协同作业中',
+ thought: '已调度文案增强 AI。正在检索商户素材库中的海报模板进行自动适配...',
  status: 'running',
  output: {}
  };
@@ -117,7 +117,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  className="mr-3 px-8 py-4 bg-neutral-900 text-white rounded-[22px] text-[13px] flex items-center gap-2 hover:bg-neutral-800 active:scale-95 transition-all disabled:bg-neutral-100"
  >
  {isRunning ? <RefreshCw size={18} className="animate-spin"/> : <Sparkles size={18}/>}
- 派遣 Agent
+ 派遣 AI
  </button>
  </div>
  </div>

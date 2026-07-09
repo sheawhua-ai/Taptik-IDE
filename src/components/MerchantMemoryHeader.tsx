@@ -49,6 +49,7 @@ export function MerchantMemoryHeader({
             <div className="flex items-center gap-3 text-[12px] text-neutral-500 font-medium">
               <span className="flex items-center gap-1"><Users size={12}/> 宠物食品行业 / 品牌方</span>
               <span className="flex items-center gap-1"><Target size={12}/> 核心品类：幼犬主粮</span>
+              <span className="flex items-center gap-1 text-primary-600 ml-2 hover:text-primary-700 bg-primary-50 px-2.5 py-1 rounded-md transition-colors">查看商家画像</span>
             </div>
           </div>
         </div>

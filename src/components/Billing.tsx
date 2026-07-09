@@ -27,7 +27,7 @@ export const Billing: React.FC = () => {
  <span className="text-5xl tracking-tighter">4,720.00</span>
  <span className="text-neutral-500 text-lg ">人民币 (可用抵扣)</span>
  </div>
- <p className="text-neutral-400 text-[13px] font-medium max-w-md">基于 Agent 的全自动消耗结算。直接扣取可用人民币抵扣金，单次调用精细至厘。</p>
+ <p className="text-neutral-400 text-[13px] font-medium max-w-md">基于 AI 的全自动消耗结算。直接扣取可用人民币抵扣金，单次调用精细至厘。</p>
  </div>
  <div className="relative z-10 flex items-center gap-3 mt-8">
  <button className="bg-neutral-0 text-neutral-900 hover:bg-neutral-100 px-8 py-3.5 rounded-2xl text-[14px] shadow-xl transition-all active:scale-95">钱包充值</button>
@@ -59,7 +59,7 @@ export const Billing: React.FC = () => {
  <div className="flex items-center justify-between">
  <div>
  <h2 className="text-lg font-semibold text-neutral-900 tracking-tight">消耗流水细分</h2>
- <p className="text-[13px] text-neutral-400 ">每日 00:00 自动校对 Agent 执行日志并清结算</p>
+ <p className="text-[13px] text-neutral-400 ">每日 00:00 自动校对 AI 执行日志并清结算</p>
  </div>
  <button className="text-[12px] text-neutral-500 border border-neutral-200 bg-neutral-0 hover:bg-neutral-50 px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
  <Download size={14}/> 导出报表

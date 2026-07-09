@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, CheckCircle2, Bot, ChevronRight, Wand2, FileText, 
   Image as ImageIcon, Compass, Send, CheckCircle, Clock,
-  MessageSquare, User, Smartphone, Users, Link, Bell, CheckSquare, Edit3
+  MessageSquare, User, Smartphone, Users, Link, Bell, CheckSquare, Edit3, Maximize2, Minimize2
 } from 'lucide-react';
 
 const GROUPS = [
@@ -89,6 +89,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
   const [editTitle, setEditTitle] = useState("");
   const [editTags, setEditTags] = useState("");
   const [showLearningToast, setShowLearningToast] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   
   // 智能 Rewrite state
   const [aiPrompt, setAiPrompt] = useState("");
@@ -149,8 +150,8 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="w-[1000px] bg-neutral-50 h-full shadow-2xl flex flex-col relative z-10"
+        transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+        className={`${isFullScreen ? 'w-full' : 'w-[1000px]'} transition-all duration-300 bg-neutral-50 h-full shadow-2xl flex flex-col relative z-10`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="h-16 border-b border-neutral-200 flex items-center justify-between px-6 shrink-0 bg-white">
@@ -167,9 +168,14 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
               </motion.div>
             )}
           </div>
-          <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
-            <X size={18} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setIsFullScreen(!isFullScreen)} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
+              {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+            </button>
+            <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
+              <X size={18} />
+            </button>
+          </div>
         </div>
         
         <div className="flex-1 flex overflow-hidden">
