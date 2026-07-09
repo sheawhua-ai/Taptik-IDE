@@ -30,57 +30,55 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  const [showGitModal, setShowGitModal] = React.useState(false);
 
  const MARKET_SKILLS = [
- { id: 'expert_agent_1', name: '李佳琦级带货大师', category: 'agent', price: '￥999/月', stats: '2k+', desc: '经过 1000+ 场头部主播直播切片训练的带货智能体，强驱动转化逻辑。', author: 'Top Expert Network', icon: Bot },
- { id: 'expert_agent_2', name: '美妆爆款写手矩阵', category: 'agent', price: '￥399/月', stats: '5k+', desc: '小红书头部 MCN 内部数据蒸馏的虚拟打工人，擅长多账号铺量分发。', author: 'Beauty MCN', icon: Bot },
- { id: 'rag_node', name: '全域 RAG 知识中心', category: 'data', price: '￥0.05/次', stats: '1.2w+', desc: '实时检索品牌私域文档，减少 智能 幻觉，确保输出合规。', author: 'Zenith Labs', icon: Filter },
- { id: 'attribution', name: '全链路 ROI 归因', category: 'data', price: '￥199/月', stats: '8k+', desc: '打通前后端转化的归因模型，自动生成投放效能分析报表。', author: 'Zenith Data', icon: Target },
- { id: 'xhs_matrix', name: 'KOC 异构矩阵引擎', category: 'content', price: '￥0.12/篇', stats: '2.5w+', desc: '支持视觉级别异构，一键生成千人千面的差异化笔记内容。', author: 'Official', icon: Layers },
- { id: 'visual_ops', name: '视觉脱敏 Mutator', category: 'vision', price: '￥0.02/图', stats: '4.1w+', desc: '深度物理级去重，绕过平台 MD5 与相似度检测，确保首发权重。', author: 'Official', icon: Dna },
- { id: 'copy_distill', name: '爆文逻辑蒸馏器', category: 'content', price: '免费', stats: '9k+', desc: '输入 5 篇对标笔记，自动提取其情绪钩子、排版逻辑与关键词分布。', author: 'AIGC Creator', icon: Filter },
+  { id: 'expert_agent_1', name: '李佳琦级带货大师', category: 'agent', stats: '2k+ 安装', desc: '经过 1000+ 场头部主播直播切片训练的带货智能体，强驱动转化逻辑。', author: 'Top Expert Network', icon: Bot, citations: 2450 },
+  { id: 'expert_agent_2', name: '美妆爆款写手矩阵', category: 'agent', stats: '5k+ 安装', desc: '小红书头部 MCN 内部数据蒸馏的虚拟打工人，擅长多账号铺量分发。', author: 'Beauty MCN', icon: Bot, citations: 5120 },
+  { id: 'rag_node', name: '全域 RAG 知识中心', category: 'data', stats: '1.2w+ 安装', desc: '实时检索品牌私域文档，减少 智能 幻觉，确保输出合规。', author: 'Zenith Labs', icon: Filter, citations: 12400 },
+  { id: 'attribution', name: '全链路 ROI 归因', category: 'data', stats: '8k+ 安装', desc: '打通前后端转化的归因模型，自动生成投放效能分析报表。', author: 'Zenith Data', icon: Target, citations: 8250 },
+  { id: 'xhs_matrix', name: 'KOC 异构矩阵引擎', category: 'content', stats: '2.5w+ 安装', desc: '支持视觉级别异构，一键生成千人千面的差异化笔记内容。', author: 'Official', icon: Layers, citations: 25900 },
+  { id: 'visual_ops', name: '视觉脱敏 Mutator', category: 'vision', stats: '4.1w+ 安装', desc: '深度物理级去重，绕过平台 MD5 与相似度检测，确保首发权重。', author: 'Official', icon: Dna, citations: 41200 },
+  { id: 'copy_distill', name: '爆文逻辑蒸馏器', category: 'content', stats: '9k+ 安装', desc: '输入 5 篇对标笔记，自动提取其情绪钩子、排版逻辑与关键词分布。', author: 'AIGC Creator', icon: Filter, citations: 9180 },
  ];
 
  const MY_SKILLS = [
- { 
- id: 'my_1', 
- name: '全域视觉去重工具', 
- category: 'vision', 
- price: '免费', 
- stats: '42 / 500', 
- desc: '基于视觉特征哈希的深度去重，当前处于冷启动期。', 
- author: 'hua xu', 
- progress: 8.4, 
- icon: Dna,
- isSelfCreated: true,
- revenue: 0,
- calls: 42,
- targetCalls: 500
- },
- {
- id: 'my_2',
- name: '智能 爆文逻辑蒸馏器',
- category: 'content',
- price: '￥0.05/次',
- stats: '1.2w+',
- desc: '输入 5 篇对标笔记，自动提取其情绪钩子、排版逻辑与关键词分布。',
- author: 'hua xu',
- progress: 100,
- icon: Filter,
- isSelfCreated: true,
- revenue: 12450.50,
- calls: 12400,
- targetCalls: 500
- },
- { 
- id: 'expert_agent_2', 
- name: '美妆爆款写手矩阵', 
- category: 'agent', 
- price: '￥399/月', 
- stats: '5k+', 
- desc: '小红书头部 MCN 内部数据蒸馏的虚拟打工人，擅长多账号铺量分发。', 
- author: 'Beauty MCN', 
- icon: Bot,
- isSelfCreated: false
- },
+  { 
+   id: 'my_1', 
+   name: '全域视觉去重工具', 
+   category: 'vision', 
+   stats: '42 / 100 引用', 
+   desc: '基于视觉特征哈希的深度去重，当前处于冷启动期。', 
+   author: 'hua xu', 
+   progress: 42, 
+   icon: Dna,
+   isSelfCreated: true,
+   revenue: 0,
+   citations: 42,
+   targetCalls: 100
+  },
+  {
+   id: 'my_2',
+   name: '智能 爆文逻辑蒸馏器',
+   category: 'content',
+   stats: '1.2w+ 引用',
+   desc: '输入 5 篇对标笔记，自动提取其情绪钩子、排版逻辑与关键词分布。',
+   author: 'hua xu',
+   progress: 100,
+   icon: Filter,
+   isSelfCreated: true,
+   revenue: 12450.50,
+   citations: 12400,
+   targetCalls: 100
+  },
+  { 
+   id: 'expert_agent_2', 
+   name: '美妆爆款写手矩阵', 
+   category: 'agent', 
+   stats: '5k+ 引用', 
+   desc: '小红书头部 MCN 内部数据蒸馏的虚拟打工人，擅长多账号铺量分发。', 
+   author: 'Beauty MCN', 
+   icon: Bot,
+   isSelfCreated: false,
+   citations: 5120
+  },
  ];
 
  const CATEGORIES = [
@@ -216,11 +214,11 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <div className="relative z-10">
  <div className="flex items-center justify-between mb-8">
  <div>
- <h3 className="text-xl font-semibold text-neutral-900 tracking-tight">商业化准入配置</h3>
- <p className="text-[12px] text-neutral-400 mt-1">设置您的 Skill 变现规则（需满足平台门槛）</p>
+ <h3 className="text-xl font-semibold text-neutral-900 tracking-tight">自建资产分成结算配置</h3>
+ <p className="text-[12px] text-neutral-400 mt-1">设置您的自建 Skill 在平台被引用时的分成结算规则</p>
  </div>
  <div className="px-4 py-2 bg-neutral-100 text-warning-600 rounded-xl text-[10px] uppercase tracking-widest border border-warning-100 flex items-center gap-2">
- <Activity size={14}/> 准入阈值：500 次
+ <Activity size={14}/> 结算因数：￥0.05/次
  </div>
  </div>
 
@@ -228,38 +226,34 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  <div className="flex items-center gap-3 mb-4">
  <div className="w-8 h-8 bg-neutral-900 text-neutral-0 rounded-lg flex items-center justify-center text-[10px] ">!</div>
  <p className="text-[12px] text-neutral-600 ">
- 根据平台协议，您的新 Skill 在累计获得 <span className="text-neutral-900">500 次</span> 调用前将保持 <span className="text-neutral-900">免费开源状态</span>。
+ 根据平台最新协议，自建技能对终端用户完全免费挂载与调用，变现分成按引用次数进行生态分发。
  </p>
  </div>
- <div className="h-1.5 w-full bg-neutral-200 rounded-full overflow-hidden">
- <div className="h-full bg-neutral-400 w-[0%] rounded-full" />
+
+ </div>
+
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <div className="p-5 border border-neutral-200 rounded-2xl flex flex-col gap-2 bg-neutral-50/50">
+ <div className="flex items-center justify-between">
+  <span className="text-[13px] font-bold text-neutral-800">已被用户策略/工作流引用</span>
+  <div className="text-[11px] text-primary-600 font-bold bg-primary-50 px-2 py-0.5 rounded">免流接入中</div>
+ </div>
+ <p className="text-[11px] text-neutral-500">
+  一旦用户在其执行中心、操盘策略或自动流中引用了本技能，系统将自动记录并实时上报，保证开发者的分发收益。
+ </p>
+ </div>
+ <div className="p-5 border border-neutral-200 rounded-2xl flex flex-col gap-2 bg-neutral-50/50">
+ <div className="flex items-center justify-between">
+  <span className="text-[13px] font-bold text-neutral-800">分成结算起算门槛</span>
+  <div className="text-[11px] text-warning-600 font-bold bg-warning-50 px-2 py-0.5 rounded">100次引用</div>
+ </div>
+ <p className="text-[11px] text-neutral-500">
+  技能上线后需在生态中积累达 100 次的被引用频次（验证稳定性及成效）后，即可自动开启每季度平台自动划拨结算。
+ </p>
  </div>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-40 pointer-events-none grayscale">
- <div className="p-5 border-2 border-neutral-100 rounded-2xl flex flex-col gap-3 bg-neutral-50">
- <div className="flex items-center justify-between">
- <span className="text-[13px] text-neutral-900">按次计费</span>
- <div className="w-4 h-4 rounded-full border-2 border-neutral-300" />
- </div>
- <div className="flex items-baseline gap-1">
- <span className="text-[11px] text-neutral-400">建议定价：</span>
- <span className="text-[12px] text-neutral-900">￥0.05 ~ 0.5</span>
- </div>
- </div>
- <div className="p-5 border-2 border-neutral-100 rounded-2xl flex flex-col gap-3 bg-neutral-50">
- <div className="flex items-center justify-between">
- <span className="text-[13px] text-neutral-900">按月订阅</span>
- <div className="w-4 h-4 rounded-full border-2 border-neutral-300" />
- </div>
- <div className="flex items-baseline gap-1">
- <span className="text-[11px] text-neutral-400">建议定价：</span>
- <span className="text-[12px] text-neutral-900">￥99 ~ 299</span>
- </div>
- </div>
- </div>
-
- <p className="text-[10px] text-neutral-400 mt-6 text-center italic">达成 500 次调用后，以上定价选项将自动激活</p>
+ <p className="text-[10px] text-neutral-400 mt-6 text-center italic">平台统一补贴并分发自建技能，无须由使用者付费购买</p>
  </div>
  </div>
  </div>
@@ -347,30 +341,32 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  </div>
  )}
 
- <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-20">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-20">
  {(skillMarketTab === 'my' ? MY_SKILLS : filteredSkills).map(sk => (
- <div key={sk.id} onClick={() => setSelectedSkill(sk)} className="flex flex-col p-5 rounded-3xl border border-neutral-100 hover:border-primary-500/30 hover:bg-primary-50/20 transition-all cursor-pointer group bg-neutral-0 shadow-sm hover:shadow-xl relative overflow-hidden">
- <div className="flex items-start justify-between mb-4">
+ <div key={sk.id} onClick={() => setSelectedSkill(sk)} className="flex flex-col p-4 rounded-2xl border border-neutral-100 hover:border-primary-500/30 hover:bg-primary-50/10 transition-all cursor-pointer group bg-neutral-0 shadow-sm hover:shadow-lg relative overflow-hidden">
+ <div className="flex items-start justify-between mb-3">
  {sk.icon && (
- <div className="w-10 h-10 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-500 transition-all flex-shrink-0">
- <sk.icon size={20} />
+ <div className="w-8 h-8 rounded-lg bg-neutral-50 border border-neutral-100 flex items-center justify-center text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-500 transition-all flex-shrink-0">
+ <sk.icon size={16} />
  </div>
  )}
- <div className="text-[14px] text-neutral-900 group-hover:text-primary-500 transition-colors uppercase tracking-tighter">{sk.price}</div>
  </div>
  
- <div className="space-y-1.5 flex-1">
- <h3 className="text-[15px] font-semibold text-neutral-900 flex items-center gap-2">
+ <div className="space-y-1 flex-1">
+ <h3 className="text-[13px] font-bold text-neutral-900 flex items-center gap-1.5 line-clamp-1">
  {sk.name}
  </h3>
- <p className="text-[11px] text-neutral-500 leading-relaxed line-clamp-2">{sk.desc}</p>
+ <p className="text-[11px] text-neutral-400 leading-snug line-clamp-2">{sk.desc}</p>
  </div>
 
- <div className="mt-4 pt-4 border-t border-neutral-50 flex items-center justify-between">
- <div className="flex items-center gap-2 text-[10px] text-neutral-400 uppercase tracking-widest">
- <span className="text-primary-500">{sk.stats} 活跃</span>
+ <div className="mt-3 pt-3 border-t border-neutral-50 flex items-center justify-between text-[11px]">
+ <div className="flex items-center gap-1.5 text-neutral-500">
+ <span className="font-semibold text-neutral-800">{sk.citations ? `${sk.citations.toLocaleString()} 次引用` : sk.stats}</span>
  </div>
- <ArrowUpRight size={14} className="text-neutral-300 group-hover:tranneutral-x-0.5 group-hover:-tranneutral-y-0.5 transition-transform" />
+ <div className="flex items-center gap-1 text-[10px] text-neutral-400">
+ <span className="opacity-85 text-[9px] truncate max-w-[80px]">作者: {sk.author}</span>
+ <ArrowUpRight size={12} className="text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+ </div>
  </div>
  </div>
  ))}
@@ -399,12 +395,19 @@ export const SkillMarket: React.FC<SkillMarketProps> = ({
  </div>
  <div className="grid grid-cols-2 gap-4">
  <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
- <h5 className="text-[10px] font-semibold text-neutral-400 uppercase mb-1">计费方式</h5>
- <p className="text-[14px] text-neutral-900">{selectedSkill.price}</p>
+ <h5 className="text-[10px] font-semibold text-neutral-400 uppercase mb-1">功能分类</h5>
+ <p className="text-[14px] text-neutral-900 font-medium">
+  {selectedSkill.category === 'agent' ? '行业专家' :
+   selectedSkill.category === 'content' ? '内容模型' :
+   selectedSkill.category === 'vision' ? '视觉策略' :
+   selectedSkill.category === 'data' ? '数据归因' : '通用组件'}
+ </p>
  </div>
  <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
- <h5 className="text-[10px] font-semibold text-neutral-400 uppercase mb-1">分类</h5>
- <p className="text-[14px] text-primary-500 uppercase">{selectedSkill.category}</p>
+ <h5 className="text-[10px] font-semibold text-neutral-400 uppercase mb-1">生态分成</h5>
+ <p className="text-[14px] text-neutral-900 font-medium">
+  {selectedSkill.isSelfCreated ? '生态分成结算中' : '平台公用资产'}
+ </p>
  </div>
  </div>
  </div>

@@ -892,8 +892,12 @@ export function KnowledgeMemory() {
                         
                         <div className="space-y-3">
                           <div className="text-[12px] flex items-start gap-2">
+                            <span className="font-bold text-neutral-400 shrink-0 w-12">包含：</span>
+                            <span className="text-neutral-600 leading-snug">{cat.desc}</span>
+                          </div>
+                          <div className="text-[12px] flex items-start gap-2">
                             <span className="font-bold text-neutral-400 shrink-0 w-12">影响：</span>
-                            <span className="text-neutral-600 leading-snug">{['brand', 'account'].includes(cat.id) ? '操盘建议、内容生成、发布审核、私域回复' : '内容策划、素材匹配、话术策略'}</span>
+                            <span className="text-neutral-500 leading-snug">{['brand', 'account'].includes(cat.id) ? '操盘建议、内容生成、发布审核、私域回复' : '内容策划、素材匹配、话术策略'}</span>
                           </div>
                           {missingCount > 0 && (
                             <div className="text-[12px] flex items-start gap-2 bg-rose-50 p-2 rounded-lg border border-rose-100">

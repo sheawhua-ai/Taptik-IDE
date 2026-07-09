@@ -336,34 +336,34 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
 
               <div className="flex-1 overflow-y-auto p-6 bg-[#fafafa] custom-scrollbar">
                 
-                {/* Image Preview */}
-                <div className={`w-full aspect-video rounded-xl flex items-center justify-center mb-6 border ${selectedItem.storage_state === 'missing_file' ? 'bg-neutral-50 border-dashed border-rose-200' : 'bg-neutral-100 border-neutral-200 shadow-sm'}`}>
-                   {selectedItem.storage_state === 'missing_file' ? (
-                     <div className="flex flex-col items-center text-rose-300">
-                       <ImageOff size={48} className="mb-2" />
-                       <span className="text-[12px] font-bold text-rose-400">本地源文件已丢失，缩略图缓存已失效</span>
-                     </div>
-                   ) : (
-                     <ImageIcon size={48} className="text-neutral-300" />
-                   )}
+                                {/* Compact Image Preview & Header */}
+                <div className="flex gap-4 mb-6 items-start">
+                   <div className={`w-28 h-28 shrink-0 rounded-xl flex items-center justify-center border ${selectedItem.storage_state === 'missing_file' ? 'bg-neutral-50 border-dashed border-rose-200' : 'bg-neutral-100 border-neutral-200 shadow-sm'}`}>
+                     {selectedItem.storage_state === 'missing_file' ? (
+                       <ImageOff size={24} className="text-rose-300" />
+                     ) : (
+                       <ImageIcon size={32} className="text-neutral-300" />
+                     )}
+                   </div>
+                   <div className="flex-1 overflow-hidden pt-1">
+                      <h3 className="text-[14px] font-bold text-neutral-900 leading-snug break-all mb-2">{selectedItem.name}</h3>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {getUsageBadge(selectedItem.usage_state)}
+                        {getReviewBadge(selectedItem.review_state)}
+                        {selectedItem.storage_state === 'missing_file' && <span className="bg-rose-50 text-rose-700 border border-rose-200 px-1.5 py-0.5 rounded text-[10px] font-bold">本地丢失</span>}
+                      </div>
+                      <div className="text-[11px] text-neutral-500 font-mono break-all line-clamp-2" title={selectedItem.localPath}>
+                        {selectedItem.localPath}
+                      </div>
+                   </div>
                 </div>
-
                 <div className="space-y-6">
                   
                   {/* Basic Info */}
                   <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
                     <h4 className="text-[13px] font-bold text-neutral-900 mb-4 pb-2 border-b border-neutral-100">基础信息</h4>
                     <div className="space-y-3">
-                      <div className="flex justify-between items-start text-[12px]">
-                        <span className="text-neutral-500 w-24 shrink-0">文件名称</span>
-                        <span className="text-neutral-900 font-medium break-all text-right">{selectedItem.name}</span>
-                      </div>
-                      <div className="flex justify-between items-start text-[12px]">
-                        <span className="text-neutral-500 w-24 shrink-0">本地路径</span>
-                        <span className={`font-medium break-all text-right ${selectedItem.storage_state === 'missing_file' ? 'text-rose-600 line-through decoration-rose-300' : 'text-neutral-900'}`}>
-                          {selectedItem.localPath}
-                        </span>
-                      </div>
+                      
                       <div className="grid grid-cols-2 gap-3 pt-2">
                         <div>
                           <div className="text-[11px] text-neutral-500 mb-1">大小 & 格式</div>
