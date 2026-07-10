@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { ContentReviewWorkbench } from './ContentReviewWorkbench';
+import { InteractionWorkbench } from './InteractionWorkbench';
+import { ShootingAndUploadWorkbench } from './ShootingAndUploadWorkbench';
 import {
   AlertTriangle, AlertCircle, MessageSquare, Image as ImageIcon,
   CheckCircle2, X, FileText, User, History, ShieldAlert,
-  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal
+  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal, Info
 } from "lucide-react";
 import { NoteEditor, TextSelection } from "./NoteEditor";
 
@@ -12,10 +15,11 @@ type Section = "优先处理" | "连续处理" | "等待中";
 interface Task {
   id: string;
   type: string;
-  priority: "critical" | "high" | "medium" | "low";
   title: string;
   projects: string[];
-  reason: string;
+  accounts?: string[];
+  deadline?: string;
+  impact?: string;
   aiRecommendation: string;
   aiReasoning: string;
   section: Section;
@@ -24,54 +28,82 @@ interface Task {
 
 const TASKS: Task[] = [
   {
-    id: "t1", type: "内容审核", priority: "high", title: "12 篇笔记待审核",
+    id: "t1", type: "内容审核", title: "12 篇笔记待审核",
     projects: ["幼犬换粮避坑搜索卡位", "日常种草A组"],
-    reason: "通过后才能进入素材匹配和排期。",
-    aiRecommendation: "建议先通过 8 篇低风险稿，剩下 4 篇逐篇调整。",
+    accounts: ["A02避坑号", "官方小助手", "小王探店"],
+    deadline: "今日 18:00",
+    impact: "影响明日发布排期",
+    aiRecommendation: "建议按内容审核的标准逐一审核，确保无违规词和事实错误。",
     aiReasoning: "口吻符合 KOS 人设，无禁用表达，素材要求明确。",
     section: "连续处理",
-    mainAction: "按建议过稿"
+    mainAction: "开始审核"
   },
   {
-    id: "t2", type: "互动承接", priority: "critical", title: "18 条高意向私信待分流",
+    id: "t2", type: "互动承接", title: "18 条互动待处理",
     projects: ["双十一冲刺企划", "门店KOC矩阵"],
-    reason: "笔记发布后产生多条求链接私信，影响私信转化。",
-    aiRecommendation: "建议先回复 6 条高意向咨询，普通互动可批量延后。",
+    accounts: ["全部矩阵账号"],
+    deadline: "今日 20:00",
+    impact: "可能流失高意向线索",
+    aiRecommendation: "建议优先回复 6 条高意向咨询，普通互动可批量延后。",
     aiReasoning: "已根据知识库匹配最佳回复话术，意向度高建议立即响应。",
     section: "连续处理",
     mainAction: "先处理高意向"
   },
   {
-    id: "t3", type: "发布异常", priority: "high", title: "2 篇发布失败需处理",
+    id: "t3", type: "发布异常", title: "2 篇发布失败需处理",
     projects: ["日常种草A组"],
-    reason: "网络波动或包含潜在营销敏感词导致发布阻塞。",
+    accounts: ["官方小助手"],
+    deadline: "今日 22:00",
+    impact: "影响今日发文计划",
     aiRecommendation: "建议 1 篇网络恢复后重试，1 篇先弱化营销表达再发。",
     aiReasoning: "平台风控升级，营销词可能导致限流，弱化表达更安全。",
     section: "优先处理",
     mainAction: "按建议处理"
   },
   {
-    id: "t4", type: "素材匹配", priority: "high", title: "3 篇笔记缺产品底图",
-    projects: ["双十一冲刺企划", "爆款返场项目"],
-    reason: "当前笔记需要真实的产品喂食场景图作为底图进行成图合成。",
-    aiRecommendation: "建议 2 篇可用本地素材，1 篇需要补拍。",
-    aiReasoning: "本地图库找到相似场景，直接合成效率最高；余下 1 篇无合适图需补拍。",
+    id: "shoot1", type: "拍摄安排待确认", title: "4个场景拍摄包待确认",
+    projects: ["幼犬换粮搜索卡位"],
+    aiRecommendation: "涉及12篇已审核笔记，共18个素材位",
+    aiReasoning: "建议合并相同门店、商品和动作，减少重复布景",
     section: "优先处理",
-    mainAction: "按建议配图"
+    mainAction: "确认拍摄安排"
   },
   {
-    id: "t5", type: "回传验收", priority: "medium", title: "店长 A 已回传 5 张场景图",
+    id: "shoot2", type: "拍摄任务待派发", title: "门店喂食场景待派发",
     projects: ["门店KOC矩阵"],
-    reason: "门店店长的补拍任务已完成提交，等待验收确认。",
-    aiRecommendation: "建议 4 张可用，2 张需要重拍。",
-    aiReasoning: "4 张构图光线符合要求，2 张轻微模糊不建议用于首图。",
-    section: "等待中",
-    mainAction: "采用可用素材"
+    aiRecommendation: "需要完成6个拍摄动作，支持6篇笔记",
+    aiReasoning: "尚未指定执行人",
+    section: "连续处理",
+    mainAction: "选择执行人并派发"
   },
   {
-    id: "t6", type: "风险处理", priority: "critical", title: "1 条高风险负面评论",
+    id: "shoot3", type: "素材异常待处理", title: "3个素材位需要人工处理",
+    projects: ["幼犬换粮搜索卡位"],
+    aiRecommendation: "2项连续上传3次不合格，1项现场无法完成",
+    aiReasoning: "需人工确认是否换用本地素材或放宽要求",
+    section: "连续处理",
+    mainAction: "处理异常"
+  },
+  {
+    id: "shoot4", type: "消费者体验需要协助", title: "2位参与者需要协助",
+    projects: ["幼犬换粮真实体验"],
+    aiRecommendation: "1位认为图片判断有误，1位发布结果暂未识别",
+    aiReasoning: "体验流程受阻，建议尽快协助",
+    section: "连续处理",
+    mainAction: "查看并处理"
+  },
+  {
+    id: "shoot5", type: "笔记素材已齐", title: "7篇笔记素材已齐",
+    projects: ["幼犬换粮搜索卡位"],
+    aiRecommendation: "所需素材已全部到位，可进入发布准备",
+    aiReasoning: "已完成审核与配图，即将排期发布",
+    section: "等待中",
+    mainAction: "查看就绪笔记"
+  },
+  {
+    id: "t6", type: "风险处理", title: "1 条高风险负面评论",
     projects: ["幼犬换粮避坑搜索卡位"],
-    reason: "触发品牌声誉风险词库，需要紧急响应。",
+    accounts: ["官方旗舰店"],
     aiRecommendation: "建议先隐藏该评论，并准备官方回复，等待内部确认。",
     aiReasoning: "涉及产品质量投诉，盲目回复可能引发公关危机，先隔离处理。",
     section: "优先处理",
@@ -85,6 +117,22 @@ export function ExecutionResult() {
   const [completedFlow, setCompletedFlow] = useState<{message: string, isClosing: boolean} | null>(null);
   const [showMoreActions, setShowMoreActions] = useState(false);
   const [isExploring, setIsExploring] = useState(false);
+  const [refreshingCategory, setRefreshingCategory] = useState<Record<string, boolean>>({});
+  
+  const handleRefreshCategory = (category: string) => {
+    setRefreshingCategory(prev => ({ ...prev, [category]: true }));
+    setTimeout(() => {
+      setRefreshingCategory(prev => ({ ...prev, [category]: false }));
+    }, 1500);
+  };
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [schedules, setSchedules] = useState<Record<string, { frequency: string, offline: string }>>({
+    '内容审核': { frequency: 'manual', offline: 'startup' },
+    '互动承接': { frequency: '10m', offline: 'background' },
+    '发布异常': { frequency: '1h', offline: 'startup' },
+    '素材匹配': { frequency: 'manual', offline: 'startup' },
+    '风险处理': { frequency: 'realtime', offline: 'background' },
+  });
   const handleExplore = () => {
     setIsExploring(true);
     setTimeout(() => {
@@ -112,7 +160,7 @@ export function ExecutionResult() {
     }
   };
 
-  const sections: Section[] = ["优先处理", "连续处理", "等待中"];
+  const categories = ["内容审核", "互动承接", "发布异常", "素材匹配", "风险处理"];
 
   return (
     <div className="h-full flex flex-col bg-[#fcfcfc] overflow-hidden text-neutral-900 rounded-2xl border border-neutral-100 shadow-sm relative">
@@ -122,14 +170,14 @@ export function ExecutionResult() {
           <h2 className="text-[18px] font-bold text-neutral-900">
             执行中心
           </h2>
-          <button 
-            onClick={handleExplore}
-            disabled={isExploring}
-            className="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold transition-all shadow-sm hover:bg-neutral-800 active:scale-95 flex items-center gap-2 disabled:opacity-80"
-          >
-            <RefreshCw size={14} className={isExploring ? "animate-spin" : ""} /> 
-            {isExploring ? "Agent 探索中..." : "让 Agent 发现新任务"}
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setShowScheduleModal(true)}
+              className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold transition-all shadow-sm hover:bg-neutral-50 flex items-center gap-2"
+            >
+              <Clock size={14} /> 刷新规则
+            </button>
+          </div>
         </div>
         <p className="text-[14px] text-neutral-500 font-medium">
           当前有 6 件事项需要处理，其中 3 件会影响今天推进。
@@ -138,85 +186,107 @@ export function ExecutionResult() {
 
       {/* Main Flow List */}
       <div className="flex-1 overflow-y-auto p-8 relative">
-        <div className="max-w-4xl mx-auto space-y-10">
-          {sections.map(section => {
-            const tasksInSection = TASKS.filter(t => t.section === section);
-            if (tasksInSection.length === 0) return null;
-
-            return (
-              <div key={section} className="space-y-4">
-                <h3 className="text-[14px] font-bold text-neutral-900 flex items-center gap-2">
-                  {section === '优先处理' && <AlertOctagon size={16} className="text-rose-500" />}
-                  {section === '连续处理' && <Layers size={16} className="text-primary-500" />}
-                  {section === '等待中' && <Clock size={16} className="text-neutral-400" />}
-                  {section}
-                  <span className="text-[12px] font-medium text-neutral-400 ml-1">{tasksInSection.length}</span>
-                </h3>
-                
-                <div className="space-y-4">
-                  {tasksInSection.map(task => (
-                    <div 
-                      key={task.id}
-                      onClick={() => setSelectedTask(task)}
-                      className="group bg-white border border-neutral-100 hover:border-primary-500/30 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all cursor-pointer flex gap-6"
-                    >
-                      {/* Left: Task Info */}
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-[11px] font-bold text-neutral-600 px-2 py-0.5 bg-neutral-100 rounded border border-neutral-200">
-                              {task.type}
-                            </span>
-                            {task.priority === 'critical' && (
-                              <span className="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
-                                紧急
-                              </span>
-                            )}
-                          </div>
-                          <h4 className="text-[16px] font-bold text-neutral-900 mb-1">{task.title}</h4>
-                          <div className="text-[12px] text-neutral-500 font-medium mb-3 flex items-center gap-1">
-                            <FolderOpen size={14} /> 涉及：{task.projects.join("、")}
-                          </div>
-                          <p className="text-[13px] text-neutral-600 bg-neutral-50/50 p-3 rounded-xl border border-neutral-100">
-                            <span className="font-semibold text-neutral-700">原因：</span>{task.reason}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Right: AI Suggestion & Actions */}
-                      <div className="w-[320px] bg-primary-50/30 border border-primary-100/50 rounded-xl p-4 flex flex-col justify-between shrink-0 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-3 opacity-10">
-                          <Sparkles size={48} className="text-primary-500" />
-                        </div>
-                        <div className="relative z-10">
-                           <div className="text-[11px] font-bold text-primary-600 mb-1 flex items-center gap-1">
-                             <Sparkles size={12} /> AI 建议
-                           </div>
-                           <p className="text-[14px] text-neutral-900 font-medium leading-relaxed">
-                             {task.aiRecommendation}
-                           </p>
-                        </div>
-                        <div className="flex items-center gap-2 mt-4 relative z-10">
-                           <button className="flex-1 bg-neutral-900 text-white text-[13px] font-bold py-2.5 rounded-lg hover:bg-neutral-800 transition-colors">
-                             {task.mainAction}
-                           </button>
-                           <button className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-lg hover:bg-neutral-50 transition-colors">
-                             查看明细
-                           </button>
-                        </div>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+          {TASKS.map(task => (
+            <div 
+              key={task.id}
+              onClick={() => setSelectedTask(task)}
+              className="group bg-white border border-neutral-200 hover:border-primary-400 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col min-h-[320px]"
+            >
+               {/* Card Header: Type & Refresh */}
+               <div className="flex items-center justify-between mb-4 pb-4 border-b border-neutral-100 shrink-0">
+                  <div className="flex items-center gap-2">
+                    {task.type === '内容审核' && <FileText size={16} className="text-primary-500" />}
+                    {task.type === '互动承接' && <User size={16} className="text-blue-500" />}
+                    {task.type === '发布异常' && <AlertOctagon size={16} className="text-rose-500" />}
+                                        {task.type === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
+                    {task.type === '风险处理' && <ShieldAlert size={16} className="text-rose-600" />}
+                    <span className="text-[14px] font-bold text-neutral-900">{task.type}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-neutral-400">
+                     <span>上次刷新: 2小时前{schedules[task.type]?.frequency !== 'manual' && ' · 下次执行: 10:00'}</span>
+                     <button 
+                       onClick={(e) => { e.stopPropagation(); handleRefreshCategory(task.type); }}
+                       className="hover:text-neutral-700 flex items-center gap-1"
+                     >
+                       <RefreshCw size={12} className={refreshingCategory[task.type] ? "animate-spin" : ""} /> 
+                     </button>
+                  </div>
+               </div>
+               
+               {/* Task Body */}
+               <h4 className="text-[16px] leading-snug font-bold text-neutral-900 mb-4 group-hover:text-primary-600 transition-colors">{task.title}</h4>
+               
+               <div className="space-y-3 mb-4 text-[12px] text-neutral-600">
+                  <div className="flex items-start gap-2">
+                    <FolderOpen size={14} className="mt-0.5 text-neutral-400 shrink-0" />
+                    <span><span className="text-neutral-400">涉及项目：</span>{task.projects.join("、")}</span>
+                  </div>
+                  {task.accounts && (
+                    <div className="flex items-start gap-2">
+                      <User size={14} className="mt-0.5 text-neutral-400 shrink-0" />
+                      <span><span className="text-neutral-400">涉及账号：</span>{task.accounts.join("、")}</span>
+                    </div>
+                  )}
+                  {(task.deadline || task.impact) && (
+                    <div className="flex items-start gap-2 text-amber-700 bg-amber-50 p-2.5 rounded-lg mt-2 border border-amber-100/50">
+                      <Clock size={14} className="mt-0.5 shrink-0" />
+                      <div>
+                        {task.deadline && (
+                          <span className="font-bold mr-2 inline-flex items-center gap-1 group/tooltip relative">
+                            截至 {task.deadline}
+                            <Info size={12} className="text-amber-500/70" />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover/tooltip:block w-max bg-neutral-800 text-white text-[10px] px-2 py-1 rounded shadow-lg font-normal">
+                              由项目排期与时效要求推算
+                            </div>
+                          </span>
+                        )}
+                        {task.impact && <span>{task.impact}</span>}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+                  )}
+               </div>
+
+               {/* AI Recommendation */}
+               <div className="mt-auto">
+                 <div className="bg-primary-50/50 rounded-xl p-3 border border-primary-100/50 relative overflow-hidden group-hover:bg-primary-50 transition-colors">
+                    <Sparkles size={40} className="absolute -right-3 -bottom-3 text-primary-100 rotate-12" />
+                    <div className="flex items-center gap-1.5 mb-1.5 relative z-10">
+                      <Sparkles size={12} className="text-primary-500" />
+                      <span className="text-[11px] font-bold text-primary-700">AI 执行建议</span>
+                    </div>
+                    <p className="text-[12px] text-neutral-700 leading-relaxed relative z-10 font-medium line-clamp-2">
+                      {task.aiRecommendation}
+                    </p>
+                 </div>
+               </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Task Detail Panel Overlay */}
       <AnimatePresence>
-        {selectedTask && (
+        {selectedTask && selectedTask.type === '内容审核' && (
+          <ContentReviewWorkbench task={selectedTask} onClose={() => setSelectedTask(null)} />
+        )}
+        {selectedTask && selectedTask.type === '互动承接' && (
+          <InteractionWorkbench task={selectedTask} onClose={() => setSelectedTask(null)} />
+        )}
+        {selectedTask && ['拍摄安排待确认', '拍摄任务待派发', '素材异常待处理', '消费者体验需要协助', '笔记素材已齐'].includes(selectedTask.type) && (
+          <ShootingAndUploadWorkbench 
+            initialTab={
+              selectedTask.type === '消费者体验需要协助' ? 'consumer' :
+              selectedTask.type === '笔记素材已齐' ? 'progress' :
+              selectedTask.type === '素材异常待处理' ? 'exception' : 'employee'
+            }
+            onClose={() => setSelectedTask(null)} 
+          />
+        )}
+      </AnimatePresence>
+      
+      <AnimatePresence>
+        {selectedTask && selectedTask.type !== '内容审核' && selectedTask.type !== '互动承接' && !['拍摄安排待确认', '拍摄任务待派发', '素材异常待处理', '消费者体验需要协助', '笔记素材已齐'].includes(selectedTask.type) && (
           <div className="absolute inset-0 z-50 flex justify-end">
             <motion.div 
               initial={{ opacity: 0 }}
@@ -564,6 +634,73 @@ export function ExecutionResult() {
                      <Check size={16} />
                    </button>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* Schedule Settings Modal */}
+      <AnimatePresence>
+        {showScheduleModal && (
+          <div className="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-[100] flex items-center justify-center">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-xl w-[600px] overflow-hidden"
+            >
+              <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
+                <h3 className="text-[16px] font-bold text-neutral-900">事件类型刷新规则</h3>
+                <button onClick={() => setShowScheduleModal(false)} className="text-neutral-400 hover:text-neutral-700">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-6">
+                <p className="text-[13px] text-neutral-500 mb-6">
+                  配置不同类型事件的 Agent 自动探索频率。部分定时任务依赖 IDE 在线状态，您可配置离线时的补救策略。
+                </p>
+                
+                <div className="space-y-4">
+                  {Object.entries(schedules).map(([type, config]: [string, any]) => (
+                    <div key={type} className="flex items-center justify-between p-4 border border-neutral-200 rounded-xl">
+                       <div className="w-[120px]">
+                         <div className="text-[14px] font-bold text-neutral-900">{type}</div>
+                       </div>
+                       <div className="flex-1 grid grid-cols-2 gap-4">
+                         <div>
+                           <div className="text-[11px] font-bold text-neutral-500 mb-1.5">探索频率</div>
+                           <select 
+                             value={config.frequency}
+                             onChange={(e) => setSchedules({...schedules, [type]: { ...config, frequency: e.target.value }})}
+                             className="w-full text-[13px] border border-neutral-200 rounded-lg p-2 focus:outline-none focus:border-primary-500"
+                           >
+                             <option value="manual">手动刷新</option>
+                             <option value="1h">每 1 小时</option>
+                             <option value="12h">每 12 小时</option>
+                             <option value="24h">每 24 小时</option>
+                           </select>
+                         </div>
+                         <div>
+                           <div className="text-[11px] font-bold text-neutral-500 mb-1.5 flex items-center gap-1">IDE 离线策略 <span className="text-amber-500" title="因为刷新依赖 IDE 在线，不在线时如何处理"><AlertOctagon size={12}/></span></div>
+                           <select 
+                             value={config.offline}
+                             onChange={(e) => setSchedules({...schedules, [type]: { ...config, offline: e.target.value }})}
+                             className="w-full text-[13px] border border-neutral-200 rounded-lg p-2 focus:outline-none focus:border-primary-500"
+                           >
+                             <option value="startup">上线时开机启动 (推荐)</option>
+                             <option value="background">后台云监控 (消耗云积分)</option>
+                             <option value="ignore">忽略，等待下次定时</option>
+                           </select>
+                         </div>
+                       </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="px-6 py-4 border-t border-neutral-100 flex justify-end">
+                <button onClick={() => setShowScheduleModal(false)} className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors">
+                  完成配置
+                </button>
               </div>
             </motion.div>
           </div>
