@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  FolderOpen, Target, Calendar, LayoutTemplate, FileText, Image as ImageIcon, Users, MessageSquare, AlertCircle, ArrowRight, Activity, BarChart2, Archive, CheckCircle2, X, Link, Play, ChevronLeft, AlertOctagon, Zap, ShieldCheck
+  FolderOpen, Target, Calendar, LayoutTemplate, FileText, Image as ImageIcon, Users, MessageSquare, AlertCircle, ArrowRight, Activity, BarChart2, Archive, CheckCircle2, X, Link, Play, ChevronLeft, AlertOctagon, Zap, ShieldCheck, Info
 } from "lucide-react";
 
 type ProjectStatus = "进行中" | "待启动" | "已暂停" | "已完成" | "已归档";
-type DetailTab = "总览" | "内容资产" | "素材与任务" | "发布与账号" | "线索与沉淀";
+type DetailTab = "总览" | "内容资产" | "素材与任务" | "发布与账号" | "线索与沉淀" | "客户参与";
 
 export function ProjectAssets() {
   const [activeTab, setActiveTab] = useState<ProjectStatus>("进行中");
@@ -88,7 +88,7 @@ export function ProjectAssets() {
         {/* Detail Tabs */}
         <div className="px-8 pt-4 border-b border-neutral-100 bg-white shrink-0">
           <div className="flex items-center gap-6">
-            {(["总览", "内容资产", "素材与任务", "发布与账号", "线索与沉淀"] as DetailTab[]).map((tab) => (
+            {(["总览", "内容资产", "素材与任务", "发布与账号", "线索与沉淀", "客户参与"] as DetailTab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setDetailTab(tab)}
@@ -200,8 +200,42 @@ export function ProjectAssets() {
              </div>
            )}
            
+           {detailTab === "客户参与" && (
+             <div className="max-w-5xl mx-auto space-y-6">
+                <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
+                   <div className="flex items-center justify-between mb-6 pb-6 border-b border-neutral-100">
+                     <div className="flex items-center gap-4 text-[14px] font-bold text-neutral-900">
+                       <span className="text-primary-700 bg-primary-50 px-3 py-1 rounded-lg">30个名额</span>
+                       <span className="text-neutral-500">已领取 12</span>
+                       <span className="text-neutral-500">已生成笔记包 10</span>
+                       <span className="text-neutral-500">素材已齐 6</span>
+                       <span className="text-neutral-500">已发布 4</span>
+                       <span className="text-rose-600 bg-rose-50 px-3 py-1 rounded-lg">需协助 2</span>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <button className="px-4 py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm">展示二维码</button>
+                       <button className="px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors">复制参与链接</button>
+                       <button className="px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors">预览客户H5</button>
+                       <button className="px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors">对话调整入口</button>
+                       <button className="px-4 py-2 bg-rose-50 text-rose-700 border border-rose-100 rounded-lg text-[13px] font-bold hover:bg-rose-100 transition-colors">暂停领取</button>
+                     </div>
+                   </div>
+                   
+                   <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-[13px] text-blue-800 flex items-center gap-2 mb-6">
+                     <Info size={16} /> 新设置只影响之后领取的客户，不修改已经生成的笔记包。
+                   </div>
+
+                   {/* List of generated packages or participating customers could go here */}
+                   <div className="text-center py-10 text-neutral-400">
+                      <CheckCircle2 size={48} className="mx-auto mb-4 text-neutral-300" />
+                      <p className="text-[14px] font-medium">当前已有 12 位客户参与，可前往执行中心查看异常事项。</p>
+                   </div>
+                </div>
+             </div>
+           )}
+           
            {/* Fallback for other tabs */}
-           {detailTab !== "总览" && detailTab !== "内容资产" && (
+           {detailTab !== "总览" && detailTab !== "内容资产" && detailTab !== "客户参与" && (
              <div className="py-20 flex flex-col items-center justify-center text-neutral-400">
                 <CheckCircle2 size={48} className="mb-4 text-neutral-300" />
                 <p className="text-[15px] font-medium">{detailTab}模块数据为空或建设中</p>

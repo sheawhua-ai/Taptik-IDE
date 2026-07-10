@@ -40,10 +40,9 @@ export function InteractionWorkbench({ task, onClose }: { task?: any, onClose?: 
       {/* Top Navigation */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-6">
-          <button onClick={onClose} className="text-neutral-500 hover:text-neutral-900 mr-2 flex items-center gap-2">
-            <X size={20} />
+          <div className="mr-2 flex items-center gap-2">
             <h2 className="text-[16px] font-bold text-neutral-900">互动承接</h2>
-          </button>
+          </div>
           <div className="h-4 w-px bg-neutral-200 mx-2"></div>
           {tabs.map(tab => (
             <button
@@ -70,6 +69,9 @@ export function InteractionWorkbench({ task, onClose }: { task?: any, onClose?: 
         <div className="flex items-center gap-3">
           <button className="px-4 py-2 border border-neutral-200 text-neutral-700 bg-white rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
             承接规则配置
+          </button>
+          <button onClick={onClose} className="ml-2 text-neutral-500 hover:text-neutral-900 p-1">
+            <X size={20} />
           </button>
         </div>
       </div>

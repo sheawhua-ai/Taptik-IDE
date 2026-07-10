@@ -157,9 +157,6 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
       <div className="bg-white border-b border-neutral-200 px-6 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <button onClick={onClose} className="text-neutral-500 hover:text-neutral-900">
-              <X size={20} />
-            </button>
             <h2 className="text-[16px] font-bold text-neutral-900">内容审核｜共12篇</h2>
           </div>
           
@@ -183,6 +180,12 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
               <span>缺账号角色 0</span>
             </div>
           </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button onClick={onClose} className="text-neutral-500 hover:text-neutral-900 p-1">
+            <X size={20} />
+          </button>
         </div>
       </div>
 

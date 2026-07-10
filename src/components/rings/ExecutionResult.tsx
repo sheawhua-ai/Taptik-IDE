@@ -6,7 +6,7 @@ import { ShootingAndUploadWorkbench } from './ShootingAndUploadWorkbench';
 import {
   AlertTriangle, AlertCircle, MessageSquare, Image as ImageIcon,
   CheckCircle2, X, FileText, User, History, ShieldAlert,
-  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal, Info
+  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal, Info, Camera
 } from "lucide-react";
 import { NoteEditor, TextSelection } from "./NoteEditor";
 
@@ -61,44 +61,15 @@ const TASKS: Task[] = [
     mainAction: "按建议处理"
   },
   {
-    id: "shoot1", type: "拍摄安排待确认", title: "4个场景拍摄包待确认",
-    projects: ["幼犬换粮搜索卡位"],
-    aiRecommendation: "涉及12篇已审核笔记，共18个素材位",
-    aiReasoning: "建议合并相同门店、商品和动作，减少重复布景",
+    id: "t4", type: "拍摄与回传", title: "16 项拍摄回传待处理",
+    projects: ["幼犬换粮搜索卡位", "门店KOC矩阵", "幼犬换粮真实体验"],
+    accounts: ["全部矩阵账号"],
+    deadline: "今日 19:00",
+    impact: "影响明日发布排期",
+    aiRecommendation: "建议优先处理 3 个素材异常，其次确认 4 个场景拍摄包。",
+    aiReasoning: "素材异常直接阻塞已定排期的笔记，体验协助可与日常确认并行。",
     section: "优先处理",
-    mainAction: "确认拍摄安排"
-  },
-  {
-    id: "shoot2", type: "拍摄任务待派发", title: "门店喂食场景待派发",
-    projects: ["门店KOC矩阵"],
-    aiRecommendation: "需要完成6个拍摄动作，支持6篇笔记",
-    aiReasoning: "尚未指定执行人",
-    section: "连续处理",
-    mainAction: "选择执行人并派发"
-  },
-  {
-    id: "shoot3", type: "素材异常待处理", title: "3个素材位需要人工处理",
-    projects: ["幼犬换粮搜索卡位"],
-    aiRecommendation: "2项连续上传3次不合格，1项现场无法完成",
-    aiReasoning: "需人工确认是否换用本地素材或放宽要求",
-    section: "连续处理",
-    mainAction: "处理异常"
-  },
-  {
-    id: "shoot4", type: "消费者体验需要协助", title: "2位参与者需要协助",
-    projects: ["幼犬换粮真实体验"],
-    aiRecommendation: "1位认为图片判断有误，1位发布结果暂未识别",
-    aiReasoning: "体验流程受阻，建议尽快协助",
-    section: "连续处理",
-    mainAction: "查看并处理"
-  },
-  {
-    id: "shoot5", type: "笔记素材已齐", title: "7篇笔记素材已齐",
-    projects: ["幼犬换粮搜索卡位"],
-    aiRecommendation: "所需素材已全部到位，可进入发布准备",
-    aiReasoning: "已完成审核与配图，即将排期发布",
-    section: "等待中",
-    mainAction: "查看就绪笔记"
+    mainAction: "进入工作台"
   },
   {
     id: "t6", type: "风险处理", title: "1 条高风险负面评论",
@@ -199,7 +170,8 @@ export function ExecutionResult() {
                     {task.type === '内容审核' && <FileText size={16} className="text-primary-500" />}
                     {task.type === '互动承接' && <User size={16} className="text-blue-500" />}
                     {task.type === '发布异常' && <AlertOctagon size={16} className="text-rose-500" />}
-                                        {task.type === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
+                    {task.type === '拍摄与回传' && <Camera size={16} className="text-emerald-500" />}
+                    {task.type === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
                     {task.type === '风险处理' && <ShieldAlert size={16} className="text-rose-600" />}
                     <span className="text-[14px] font-bold text-neutral-900">{task.type}</span>
                   </div>
@@ -273,20 +245,16 @@ export function ExecutionResult() {
         {selectedTask && selectedTask.type === '互动承接' && (
           <InteractionWorkbench task={selectedTask} onClose={() => setSelectedTask(null)} />
         )}
-        {selectedTask && ['拍摄安排待确认', '拍摄任务待派发', '素材异常待处理', '消费者体验需要协助', '笔记素材已齐'].includes(selectedTask.type) && (
+        {selectedTask && selectedTask.type === '拍摄与回传' && (
           <ShootingAndUploadWorkbench 
-            initialTab={
-              selectedTask.type === '消费者体验需要协助' ? 'consumer' :
-              selectedTask.type === '笔记素材已齐' ? 'progress' :
-              selectedTask.type === '素材异常待处理' ? 'exception' : 'employee'
-            }
+            initialTab={'exception'}
             onClose={() => setSelectedTask(null)} 
           />
         )}
       </AnimatePresence>
       
       <AnimatePresence>
-        {selectedTask && selectedTask.type !== '内容审核' && selectedTask.type !== '互动承接' && !['拍摄安排待确认', '拍摄任务待派发', '素材异常待处理', '消费者体验需要协助', '笔记素材已齐'].includes(selectedTask.type) && (
+        {selectedTask && selectedTask.type !== '内容审核' && selectedTask.type !== '互动承接' && selectedTask.type !== '拍摄与回传' && (
           <div className="absolute inset-0 z-50 flex justify-end">
             <motion.div 
               initial={{ opacity: 0 }}

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ExecutionResult } from "./ExecutionResult";
+import { CustomerConfigDrawer } from "./CustomerConfigDrawer";
 
 export const Strategy: React.FC<{
   hasData?: boolean;
@@ -35,6 +36,7 @@ export const Strategy: React.FC<{
 }> = ({ hasData = true, strategyData = [] }) => {
   const [showEvidenceDrawer, setShowEvidenceDrawer] = useState(false);
   const [showAdjustDrawer, setShowAdjustDrawer] = useState(false);
+  const [showCustomerConfig, setShowCustomerConfig] = useState(false);
   
   const [selectedSkill, setSelectedSkill] = useState('美妆搜索种草打法');
   const [showSkillOverviewDrawer, setShowSkillOverviewDrawer] = useState(false);
@@ -408,6 +410,23 @@ export const Strategy: React.FC<{
                           <div className="text-[11px] text-neutral-400">即时生成打法 · 现场扫码发</div>
                         </div>
                       </div>
+                      
+                      {formValues.koc_real > 0 && (
+                        <div className="mt-4 bg-white border border-neutral-200 rounded-xl p-5 flex items-center justify-between shadow-sm">
+                           <div>
+                             <h5 className="font-bold text-[15px] text-neutral-900 mb-1.5 flex items-center gap-2">真实客户发布 · {formValues.koc_real}篇 <span className="text-[11px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-bold">待确认</span></h5>
+                             <div className="text-[13px] text-neutral-500 space-y-1.5">
+                               <p>• 需要{formValues.koc_real}位真实客户，每人发布1篇</p>
+                               <p>• 已生成5个动态问题，覆盖：首次体验、复购反馈、真实顾虑、使用过程</p>
+                               <p>• 每人限领1次，客户H5方案待确认</p>
+                             </div>
+                           </div>
+                           <div className="flex flex-col gap-2.5">
+                             <button onClick={() => setShowCustomerConfig(true)} className="px-5 py-2.5 bg-primary-600 text-white rounded-lg text-[13px] font-bold hover:bg-primary-700 transition-colors shadow-sm">查看与确认</button>
+                             <button className="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors">手机端预览</button>
+                           </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100">
@@ -578,7 +597,7 @@ export const Strategy: React.FC<{
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
-              className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-full max-w-[500px]'} transition-all duration-300 bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200`}
+              className={`fixed top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-full max-w-[500px]'} transition-all duration-300 bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200`}
             >
               <div className="shrink-0 border-b border-neutral-100 p-6 relative">
                 <div className="absolute top-6 right-6 flex items-center gap-2">
@@ -911,6 +930,19 @@ export const Strategy: React.FC<{
           </>
         )}
         {showCopilot && <StrategyCopilotDrawer onClose={() => setShowCopilot(false)} isNewProject={false} />}
+        
+        <CustomerConfigDrawer 
+          isOpen={showCustomerConfig} 
+          onClose={() => setShowCustomerConfig(false)}
+          onConfirm={() => {
+            setShowCustomerConfig(false);
+            setFlowState("creating");
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('nav-to-tab', { detail: { tab: 'execution' } }));
+            }, 2500);
+          }}
+          planAmount={formValues.koc_real}
+        />
       </AnimatePresence>
     </div>
   );
