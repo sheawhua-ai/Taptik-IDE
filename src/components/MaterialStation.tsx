@@ -162,7 +162,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
           </div>
         </div>
         
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           <div className="bg-white border border-neutral-100 rounded-xl p-3 shadow-sm flex flex-col gap-1">
              <div className="text-[11px] text-neutral-500 font-bold">本地已索引</div>
              <div className="text-[18px] font-bold text-neutral-900">12,450 <span className="text-[12px] font-normal text-neutral-400">张</span></div>
@@ -174,10 +174,6 @@ export const MaterialStation: React.FC<MaterialStationProps> = ({
           <div className="bg-white border border-neutral-100 rounded-xl p-3 shadow-sm flex flex-col gap-1">
              <div className="text-[11px] text-neutral-500 font-bold">当前商家素材池</div>
              <div className="text-[18px] font-bold text-emerald-700">8,920 <span className="text-[12px] font-normal text-emerald-600/70">张</span></div>
-          </div>
-          <div className="bg-rose-50 border border-rose-100 rounded-xl p-3 shadow-sm flex flex-col gap-1">
-             <div className="text-[11px] text-rose-700 font-bold">当前内容缺口</div>
-             <div className="text-[13px] font-bold text-rose-900 leading-snug mt-1">缺真实喂食场景 8 组</div>
           </div>
           <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 shadow-sm flex flex-col gap-1">
              <div className="text-[11px] text-blue-700 font-bold">服务器缓存占用</div>

@@ -89,8 +89,15 @@ export const CustomerConfigDrawer: React.FC<{
                       </div>
                       
                       <div className="bg-white p-4 rounded-xl shadow-sm border border-neutral-100">
-                        <div className="text-[13px] font-bold text-neutral-900 mb-2">2. 换粮过程中遇到了什么问题？</div>
-                        <textarea className="w-full bg-neutral-50 border border-neutral-200 rounded-lg p-3 text-[13px]" rows={3} placeholder="例如：便便变软，或者挑食不吃..."></textarea>
+                        <div className="text-[13px] font-bold text-neutral-900 mb-2">2. 换粮过程中遇到了什么问题？(单选)</div>
+                        <div className="space-y-2">
+                          <button className="w-full text-left px-4 py-2 border border-neutral-200 text-neutral-600 rounded-lg text-[13px]">便便变软或拉稀</button>
+                          <button className="w-full text-left px-4 py-2 border border-primary-500 bg-primary-50 text-primary-700 rounded-lg text-[13px] font-medium flex justify-between items-center">
+                            挑食不爱吃
+                            <CheckCircle size={16} />
+                          </button>
+                          <button className="w-full text-left px-4 py-2 border border-neutral-200 text-neutral-600 rounded-lg text-[13px]">一切正常</button>
+                        </div>
                       </div>
                       
                       <button className="w-full py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-bold">
@@ -109,52 +116,44 @@ export const CustomerConfigDrawer: React.FC<{
                   {/* AI Generated Config Blocks */}
                   <div>
                     <h3 className="text-[16px] font-bold text-neutral-900 mb-4 flex items-center gap-2">
-                      <Bot size={18} className="text-primary-600" /> 动态问题
+                      <Bot size={18} className="text-primary-600" /> 当前配置方案
                     </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      {['狗狗年龄与品种', '换粮前的核心痛点', '使用本品后的排便情况', '真实的复购意愿'].map((q, i) => (
-                        <div 
-                          key={i} 
-                          className="p-4 border border-neutral-200 rounded-xl hover:border-primary-400 cursor-pointer transition-colors"
-                          onClick={() => setAiInput(`告诉操盘副手，关于"${q}"这个问题需要怎么调整……`)}
-                        >
-                          <div className="text-[14px] font-bold text-neutral-800 mb-1">{i+1}. {q}</div>
-                          <div className="text-[12px] text-neutral-500">点击调整此问题</div>
+                    <div className="space-y-4">
+                      <div className="p-4 border border-neutral-200 rounded-xl bg-neutral-50 shadow-sm">
+                        <div className="text-[13px] font-bold text-neutral-800 mb-2">动态问题 (共4个)</div>
+                        <ul className="list-disc list-inside text-[12px] text-neutral-600 space-y-1">
+                          <li>狗狗年龄与品种</li>
+                          <li>换粮前的核心痛点</li>
+                          <li>使用本品后的排便情况</li>
+                          <li>真实的复购意愿</li>
+                        </ul>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-4 border border-neutral-200 rounded-xl bg-neutral-50 shadow-sm">
+                          <div className="text-[13px] font-bold text-neutral-800 mb-2">领取规则</div>
+                          <div className="text-[12px] text-neutral-600">每人1次 · 同产品排他 · 活动有效7天</div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
 
-                  <div>
-                    <h3 className="text-[16px] font-bold text-neutral-900 mb-4">领取规则</h3>
-                    <div className="flex items-center gap-2">
-                      {['每人1次', '同产品排他', '活动有效7天'].map((r, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-neutral-100 text-neutral-700 rounded-md text-[13px] font-medium">{r}</span>
-                      ))}
-                    </div>
-                  </div>
+                        <div className="p-4 border border-neutral-200 rounded-xl bg-neutral-50 shadow-sm">
+                          <div className="text-[13px] font-bold text-neutral-800 mb-2">奖励条件</div>
+                          <div className="text-[12px] text-neutral-600">完成问答及发布后奖励。不强制好评。</div>
+                        </div>
+                      </div>
 
-                  <div>
-                    <h3 className="text-[16px] font-bold text-neutral-900 mb-4">奖励与完成条件</h3>
-                    <div className="bg-primary-50 text-primary-800 p-4 rounded-xl border border-primary-100 text-[13px] leading-relaxed">
-                      完成问答、图片通过并成功发布后获得奖励。奖励不要求好评。
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-[16px] font-bold text-neutral-900">笔记包生成规则</h3>
-                      <button className="text-[13px] text-primary-600 font-medium flex items-center gap-1">查看生成逻辑 <ChevronDown size={14} /></button>
-                    </div>
-                    <div className="p-4 border border-neutral-200 rounded-xl bg-neutral-50">
-                      <div className="flex items-center justify-between text-[13px] font-bold text-neutral-700">
-                        <span>回答形成发布画像</span>
-                        <ArrowRight size={14} className="text-neutral-400" />
-                        <span>匹配真实内容角度</span>
-                        <ArrowRight size={14} className="text-neutral-400" />
-                        <span>生成1篇正文</span>
-                        <ArrowRight size={14} className="text-neutral-400" />
-                        <span>生成拍摄要求</span>
+                      <div className="p-4 border border-neutral-200 rounded-xl bg-neutral-50 shadow-sm">
+                        <div className="flex items-center justify-between mb-3 text-[13px] font-bold text-neutral-800">
+                          <span>笔记包生成逻辑</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[12px] text-neutral-600 bg-white p-3 rounded-lg border border-neutral-100">
+                          <span>画像提取</span>
+                          <ArrowRight size={14} className="text-neutral-300 mx-1" />
+                          <span>匹配切入点</span>
+                          <ArrowRight size={14} className="text-neutral-300 mx-1" />
+                          <span>生成正文</span>
+                          <ArrowRight size={14} className="text-neutral-300 mx-1" />
+                          <span>拍摄要求</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -171,32 +170,27 @@ export const CustomerConfigDrawer: React.FC<{
                         <p>{aiDiff}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-blue-600 text-white rounded-md font-bold text-[12px]">应用这版</button>
-                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 rounded-md font-bold text-[12px]">保留原版</button>
+                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-blue-600 text-white rounded-md font-bold text-[12px] hover:bg-blue-700 transition-colors">应用修改</button>
+                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 rounded-md font-bold text-[12px] hover:bg-blue-50 transition-colors">撤销</button>
                       </div>
                     </div>
                   )}
 
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {['减少问题', '加强真实使用校验', '调整领取规则', '修改奖励说明'].map(cmd => (
-                      <button 
-                        key={cmd}
-                        onClick={() => handleAiCommand(cmd)}
-                        className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-full text-[12px] transition-colors"
-                      >
-                        {cmd}
-                      </button>
-                    ))}
-                  </div>
                   <div className="relative">
                     <input 
                       type="text" 
                       value={aiInput}
                       onChange={(e) => setAiInput(e.target.value)}
-                      placeholder="告诉操盘副手需要怎么改，例如：问题控制在4个，只面向已使用过的复购客户..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && aiInput) handleAiCommand(aiInput);
+                      }}
+                      placeholder="告诉操盘副手需要怎么改，例如：问题控制在4个，只面向复购客户..."
                       className="w-full bg-neutral-50 border border-neutral-200 rounded-xl pl-4 pr-12 py-3.5 text-[14px] focus:outline-none focus:border-primary-400 focus:bg-white transition-colors"
                     />
                     <button 
+                      onClick={() => {
+                        if (aiInput) handleAiCommand(aiInput);
+                      }}
                       className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                     >
                       <Send size={16} />

@@ -21,7 +21,7 @@ interface Scheme {
 const MOCK_SCHEMES: Scheme[] = [
  { id: '69', name: '夏季新品推广案', status: '信息已完善', notes: 1, distribution: 0, updatedAt: '2026-03-30 10:19' },
  { id: '66', name: 'API 测试方案_已改名', status: '信息已完善', notes: 3, distribution: 12, updatedAt: '2026-03-29 15:40' },
- { id: '63', name: '全自动增长试验', status: '草稿', notes: 0, distribution: 0, updatedAt: '2026-03-28 09:12' },
+ { id: '63', name: '全自动增长试验', status: '待启动', notes: 0, distribution: 0, updatedAt: '2026-03-28 09:12' },
 ];
 
 export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => {

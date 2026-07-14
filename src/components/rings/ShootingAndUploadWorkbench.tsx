@@ -14,6 +14,7 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
   const [activeTab, setActiveTab] = useState(initialTab);
   const [activeEmployeeView, setActiveEmployeeView] = useState('list'); // list, confirm, dispatch, detail
   const [activeConsumerView, setActiveConsumerView] = useState('list'); // list, create, progress, image_detail
+  const [taskStatusView, setTaskStatusView] = useState<'quick' | 'action' | 'wait'>('action');
 
   const renderTopActions = () => {
     switch (activeTab) {
@@ -37,10 +38,9 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
             <div className="flex items-center gap-3 mb-1">
               <h2 className="text-[18px] font-bold text-neutral-900">拍摄与回传</h2>
               <span className="px-2 py-0.5 bg-neutral-100 text-neutral-600 rounded text-[12px] font-medium">当前18篇笔记需要素材</span>
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-[12px] font-medium border border-emerald-100">7篇素材已齐</span>
-              <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[12px] font-medium border border-blue-100">6篇拍摄中</span>
-              <span className="px-2 py-0.5 bg-rose-50 text-rose-600 rounded text-[12px] font-medium border border-rose-100">5篇仍有缺口</span>
-              <span className="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-[12px] font-medium border border-amber-100">3项需要介入</span>
+              <span onClick={() => setTaskStatusView('quick')} className={`px-2 py-1 rounded text-[12px] font-bold border cursor-pointer transition-colors ${taskStatusView === 'quick' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>快速确认 (4)</span>
+              <span onClick={() => setTaskStatusView('action')} className={`px-2 py-1 rounded text-[12px] font-bold border cursor-pointer transition-colors ${taskStatusView === 'action' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>需要处理 (12)</span>
+              <span onClick={() => setTaskStatusView('wait')} className={`px-2 py-1 rounded text-[12px] font-bold border cursor-pointer transition-colors ${taskStatusView === 'wait' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>等待推进 (5)</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -560,7 +560,7 @@ function EmployeeDetailView({ onBack }: { onBack: () => void }) {
           <div className="p-4 bg-amber-50 border-t border-amber-200 flex items-start gap-3 shrink-0">
             <AlertCircle size={16} className="text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <div className="text-[13px] font-bold text-amber-800 mb-1">仍需补拍 2 张表示素材位缺口</div>
+              <div className="text-[13px] font-bold text-amber-800 mb-1">仍需补拍 2 张表示待传素材位</div>
               <div className="text-[12px] text-amber-700">不得和上传图片数量混算。未达到要求的图片不计入完成进度。</div>
             </div>
           </div>
@@ -582,7 +582,7 @@ function EmployeeDetailView({ onBack }: { onBack: () => void }) {
               <div className="text-[13px] font-bold text-neutral-900 mb-1">门店真实体验</div>
               <div className="text-[11px] text-rose-500 font-bold mb-2">缺1张包装正面图</div>
               <div className="flex flex-col gap-1.5 mt-2">
-                <button className="w-full py-1.5 bg-neutral-900 text-white rounded text-[11px] font-bold hover:bg-neutral-800">通知补拍缺口</button>
+                <button className="w-full py-1.5 bg-neutral-900 text-white rounded text-[11px] font-bold hover:bg-neutral-800">通知待补拍项</button>
                 <button className="w-full py-1.5 bg-white border border-neutral-200 rounded text-[11px] font-bold hover:bg-neutral-50">改用本地素材</button>
                 <button className="w-full py-1.5 bg-white border border-neutral-200 rounded text-[11px] font-bold hover:bg-neutral-50">调整素材要求</button>
                 <button className="w-full py-1.5 bg-white border border-neutral-200 rounded text-[11px] font-bold hover:bg-neutral-50">调整笔记内容</button>
@@ -593,7 +593,7 @@ function EmployeeDetailView({ onBack }: { onBack: () => void }) {
               <div className="text-[13px] font-bold text-neutral-900 mb-1">适口性体验</div>
               <div className="text-[11px] text-rose-500 font-bold mb-2">缺1张真实进食图</div>
               <div className="flex flex-col gap-1.5 mt-2">
-                <button className="w-full py-1.5 bg-neutral-900 text-white rounded text-[11px] font-bold hover:bg-neutral-800">通知补拍缺口</button>
+                <button className="w-full py-1.5 bg-neutral-900 text-white rounded text-[11px] font-bold hover:bg-neutral-800">通知待补拍项</button>
                 <button className="w-full py-1.5 bg-white border border-neutral-200 rounded text-[11px] font-bold hover:bg-neutral-50">改用本地素材</button>
               </div>
             </div>
@@ -940,7 +940,7 @@ function ProgressTab() {
               <th className="p-4">发布账号</th>
               <th className="p-4">进度 (必需/可选)</th>
               <th className="p-4">素材来源</th>
-              <th className="p-4">状态 / 缺口</th>
+              <th className="p-4">状态 / 待传</th>
               <th className="p-4 text-right">操作</th>
             </tr>
           </thead>

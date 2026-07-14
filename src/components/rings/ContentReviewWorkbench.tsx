@@ -6,12 +6,13 @@ import {
   ShieldAlert, Sparkles, CheckCircle2, CornerUpLeft, ArrowRightLeft, ListChecks, Search
 } from 'lucide-react';
 
-export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: () => void }) {
+export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeNoteId, setActiveNoteId] = useState('n1');
   const [textSelection, setTextSelection] = useState<{text: string, start: number, end: number} | null>(null);
-  const [activeRightTab, setActiveRightTab] = useState<'issues' | 'basis' | 'local_edit' | 'full_edit' | 'history'>('issues');
+  const [activeRightTab, setActiveRightTab] = useState<'issues' | 'basis' | 'local_edit' | '' | 'history'>('issues');
   const [showBatchConfirm, setShowBatchConfirm] = useState(false);
+  const [taskStatusView, setTaskStatusView] = useState<'quick' | 'action' | 'wait'>('action');
   const [activeArea, setActiveArea] = useState<'title' | 'content' | 'tags' | 'materials' | null>(null);
   
   // Local edit states
@@ -162,22 +163,18 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
           
           <div className="h-4 w-px bg-neutral-200 mx-2"></div>
           
-          <div className="flex items-center gap-4 text-[13px]">
-            <div onClick={() => setShowBatchConfirm(true)} className="flex items-center gap-1.5 cursor-pointer hover:bg-neutral-50 px-2 py-1 rounded">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span className="text-neutral-600">可批量确认 <strong className="text-neutral-900">8</strong></span>
+          <div className="flex items-center gap-2 text-[13px]">
+            <div onClick={() => { setTaskStatusView('quick'); setShowBatchConfirm(true); }} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${taskStatusView === 'quick' ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+              <span className={`w-2 h-2 rounded-full ${taskStatusView === 'quick' ? 'bg-emerald-500' : 'bg-neutral-300'}`}></span>
+              <span>快速确认 (8)</span>
             </div>
-            <div onClick={() => setShowBatchConfirm(false)} className="flex items-center gap-1.5 cursor-pointer hover:bg-neutral-50 px-2 py-1 rounded">
-              <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-              <span className="text-neutral-600">需逐篇审核 <strong className="text-neutral-900">3</strong></span>
+            <div onClick={() => { setTaskStatusView('action'); setShowBatchConfirm(false); }} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${taskStatusView === 'action' ? 'bg-rose-50 border-rose-200 text-rose-700 font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+              <span className={`w-2 h-2 rounded-full ${taskStatusView === 'action' ? 'bg-rose-500' : 'bg-neutral-300'}`}></span>
+              <span>需要处理 (4)</span>
             </div>
-            <div className="flex items-center gap-1.5 cursor-pointer hover:bg-neutral-50 px-2 py-1 rounded">
-              <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-              <span className="text-neutral-600">事实待核实 <strong className="text-neutral-900">1</strong></span>
-            </div>
-            <div className="flex items-center gap-1.5 text-neutral-400">
-              <span className="w-2 h-2 rounded-full bg-neutral-300"></span>
-              <span>缺账号角色 0</span>
+            <div onClick={() => setTaskStatusView('wait')} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${taskStatusView === 'wait' ? 'bg-amber-50 border-amber-200 text-amber-700 font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+              <span className={`w-2 h-2 rounded-full ${taskStatusView === 'wait' ? 'bg-amber-500' : 'bg-neutral-300'}`}></span>
+              <span>等待推进 (6)</span>
             </div>
           </div>
         </div>
@@ -207,15 +204,15 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
                   <ChevronRight size={14} className="text-neutral-400 rotate-90" />
                   幼犬换粮避坑搜索卡位
                 </div>
-                <span className="text-neutral-400">{notes.filter(n => !n.isReviewed).length}</span>
+                <span className="text-neutral-400">{notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false)).length}</span>
               </div>
               
               <div className="pl-6 pr-2 space-y-3">
                 {/* Account Type Group */}
                 <div>
-                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-1">KOS员工号 ({notes.filter(n => !n.isReviewed && n.accountType === "KOS员工号").length})</div>
+                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-1">KOS员工号 ({notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === "KOS员工号").length})</div>
                    <div className="space-y-1.5">
-                     {notes.filter(n => !n.isReviewed && n.accountType === 'KOS员工号').map(n => (
+                     {notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === 'KOS员工号').map(n => (
                        <div 
                          key={n.id}
                          onClick={() => setActiveNoteId(n.id)}
@@ -242,9 +239,9 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
                 
                 {/* Brand Account Group */}
                 <div>
-                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-3">品牌主账号 ({notes.filter(n => !n.isReviewed && n.accountType === "品牌主账号").length})</div>
+                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-3">品牌主账号 ({notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === "品牌主账号").length})</div>
                    <div className="space-y-1.5">
-                     {notes.filter(n => !n.isReviewed && n.accountType === '品牌主账号').map(n => (
+                     {notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === '品牌主账号').map(n => (
                        <div 
                          key={n.id}
                          onClick={() => setActiveNoteId(n.id)}
@@ -345,9 +342,9 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
                     </button>
                   </div>
                   <div className="flex gap-2 justify-end">
-                    <button onClick={() => setShowMemoryPrompt(false)} className="px-3 py-1.5 text-[12px] text-neutral-300 hover:text-white">暂不记录</button>
-                    <button className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded text-[12px] font-medium transition-colors">整理为打法草稿</button>
-                    <button className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 rounded text-[12px] font-medium transition-colors">本商家遵循</button>
+                    <button onClick={() => setShowMemoryPrompt(false)} className="px-3 py-1.5 text-[12px] text-neutral-300 hover:text-white">仅本项目使用</button>
+                    <button className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded text-[12px] font-medium transition-colors">记为该商家的内容偏好</button>
+                    <button className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 rounded text-[12px] font-medium transition-colors">整理为我的运营方法</button>
                   </div>
                 </motion.div>
               )}
@@ -459,10 +456,13 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
              
              <div className="flex items-center gap-3">
                <button className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm">
+                 退回重写
+               </button>
+               <button className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm">
                  保存修改
                </button>
                <button onClick={handleApprove} className="px-6 py-2.5 bg-neutral-900 text-white text-[13px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-2">
-                 确认审核并查看下一篇 <ChevronRight size={16} />
+                 确认并查看下一篇 <ChevronRight size={16} />
                </button>
              </div>
           </div>
@@ -617,7 +617,7 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
                 )}
 
                 <div className="pt-4 border-t border-neutral-100">
-                  <button onClick={() => setActiveRightTab('full_edit')} className="w-full py-2.5 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 rounded-xl text-[13px] font-bold transition-colors">
+                  <button onClick={() => setActiveRightTab('')} className="w-full py-2.5 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 rounded-xl text-[13px] font-bold transition-colors">
                     调整全文
                   </button>
                 </div>
@@ -770,7 +770,7 @@ export function ContentReviewWorkbench({ task, onClose }: { task: any, onClose: 
               </div>
             )}
 
-            {activeRightTab === 'full_edit' && (
+            {activeRightTab === '' && (
               <div className="h-full flex flex-col">
                 <div className="flex-1 flex flex-col space-y-6">
                   <div>

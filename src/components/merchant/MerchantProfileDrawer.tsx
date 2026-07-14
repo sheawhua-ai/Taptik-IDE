@@ -49,7 +49,7 @@ export function MerchantProfileDrawer({
                   <Target size={20} />
                 </div>
                 <div>
-                  <h2 className="text-[16px] font-bold text-neutral-900">商家画像与缺口</h2>
+                  <h2 className="text-[16px] font-bold text-neutral-900">商家画像与资产</h2>
                   <div className="text-[12px] text-neutral-500 font-medium flex items-center gap-1.5 mt-0.5">
                     <Store size={12} /> {projectName}
                   </div>
@@ -117,7 +117,7 @@ export function MerchantProfileDrawer({
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-[14px] font-bold text-neutral-900 flex items-center gap-2">
                   <AlertCircle size={16} className="text-primary-600" />
-                  关键缺口待补齐
+                  关键资产待补齐
                 </h3>
                 <span className="text-[11px] font-medium bg-neutral-100 text-neutral-500 px-2 py-0.5 rounded-md">
                   4 项建议

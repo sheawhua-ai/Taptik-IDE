@@ -11,7 +11,7 @@ import {
   Bot,
   AlertCircle,
   ArrowRight,
-  Sparkles,
+  Sparkles, Clock,
   Play,
   Hash,
   User,
@@ -23,6 +23,7 @@ import {
   FileText,
   X,
   MessageSquare,
+  Info,
   Send,
   Image as ImageIcon
 } from "lucide-react";
@@ -46,6 +47,7 @@ export const Strategy: React.FC<{
   const [selectedTarget, setSelectedTarget] = useState('搜索卡位');
   
   const [showCopilot, setShowCopilot] = useState(false);
+  const [showAdjustCopilotPopover, setShowAdjustCopilotPopover] = useState(false);
   const [formValues, setFormValues] = useState({
     percent1: 70, percent2: 30, amount: 12, days: 7, official: 3, kos: 4, koc_general: 8, koc_real: 5
   });
@@ -71,21 +73,30 @@ export const Strategy: React.FC<{
     {
       id: "main",
       title: "幼犬换粮避坑搜索卡位",
-      desc: "这是当前最适合该商家的自然流切入点。低粉爆款信号正在增强，且品牌卖点可以自然植入。建议直接做内容矩阵铺设，先不进行硬广投流。",
+      problemToSolve: "解决初级用户缺乏通俗内容导致的跳出率高、以及搜索长尾词占位不足的问题。",
+      whyNow: "近期“幼犬换粮拉稀”等长尾搜索词热度上升，且当前同质化内容较多，亟需以新口吻填补空白。",
+      accountsAndContent: "以专业号科普为辅助，重点使用KOS和素人号发布真实避坑经验。",
+      prerequisites: "无特殊前置条件，当前素材库可直接支撑。",
       shortDesc: "当前最适合的自然流切入点",
       label: "推荐优先做"
     },
     {
       id: "backupA",
       title: "真实喂养场景种草",
-      desc: "适合素材充足时做。主要依赖用户真实投稿的喂养视频，二次剪辑。",
+      problemToSolve: "解决素材单一，真实信任感不足的问题。",
+      whyNow: "品牌处于信任建立期，需要大量普通消费者的真实反馈背书。",
+      accountsAndContent: "全部依赖真实消费者体验号和野生KOC，发布宠物日常食用视频。",
+      prerequisites: "需要补充至少 30 个素人开箱及喂养真实素材。",
       shortDesc: "适合素材充足时做",
       label: "备选 A"
     },
     {
       id: "backupB",
       title: "高意向私域承接",
-      desc: "适合已有评论和私信积累时做。重点将已有高意向公域用户导流至企微。",
+      problemToSolve: "解决公域互动流失、无法持续触达复购的问题。",
+      whyNow: "近期评论区求购意向增加，但平台私信管控严格，急需引流到私域。",
+      accountsAndContent: "官方号配合店长/客服号，在评论区和私信进行一对一钩子话术承接。",
+      prerequisites: "需要已配置好企业微信链路，且账号有一定权重抗封禁。",
       shortDesc: "适合已有评论和私信积累时做",
       label: "备选 B"
     }
@@ -209,42 +220,57 @@ export const Strategy: React.FC<{
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl border border-neutral-200 p-5 shadow-sm"
+              className="bg-white rounded-3xl border border-neutral-200 p-6 shadow-sm mb-6"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
-                  <AlertCircle size={20} />
-                </div>
-                <div>
-                  <h3 className="text-[18px] font-bold text-neutral-900">商家状态诊断结果</h3>
-                  <p className="text-[13px] text-neutral-500 mt-1">发现 3 项核心问题，亟需调整打法</p>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center">
+                    <Activity size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-[18px] font-bold text-neutral-900">商家诊断报告</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[13px] font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded">当前阶段：起步探索期</span>
+                      <span className="text-[12px] text-neutral-500">基于过往 3 个月数据分析</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-3 gap-6 mb-4">
-                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
-                  <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
-                    <User size={16} className="text-neutral-400" /> 用户认知断层
+
+              <div className="mb-6">
+                <h4 className="text-[14px] font-bold text-neutral-900 mb-3 flex items-center gap-2">
+                  <AlertCircle size={16} className="text-rose-500" /> 识别到 3 项主要阻碍
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50">
+                    <div className="text-[13px] font-bold text-neutral-900 mb-2">用户认知断层</div>
+                    <div className="text-[13px] text-neutral-600 leading-relaxed">
+                      当前内容偏离初级养宠用户需求，专业术语过多。跳出率高达 68%。
+                    </div>
                   </div>
-                  <div className="text-[14px] text-neutral-900 font-medium leading-relaxed">
-                    当前品牌内容偏离了初级养宠用户“通俗易懂”的需求，专业术语过多，跳出率高达 68%。
+                  <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50">
+                    <div className="text-[13px] font-bold text-neutral-900 mb-2">素材枯竭风险</div>
+                    <div className="text-[13px] text-neutral-600 leading-relaxed">
+                      真实测评类素材储备仅余 12 组，低于安全线，无法支撑后续高频分发。
+                    </div>
+                  </div>
+                  <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50">
+                    <div className="text-[13px] font-bold text-neutral-900 mb-2">转化路径流失</div>
+                    <div className="text-[13px] text-neutral-600 leading-relaxed">
+                      高意向线索流失率环比增加，私信导流话术已被限流，需更新引流路径。
+                    </div>
                   </div>
                 </div>
-                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
-                  <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
-                    <ImageIcon size={16} className="text-neutral-400" /> 素材枯竭风险
-                  </div>
-                  <div className="text-[14px] text-neutral-900 font-medium leading-relaxed">
-                    真实测评类素材储备仅余 12 组，低于安全线，无法支撑高频的达人分发。
-                  </div>
-                </div>
-                <div className="bg-neutral-50 p-5 rounded-2xl border border-neutral-100">
-                  <div className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">
-                    <Activity size={16} className="text-neutral-400" /> 转化效率下降
-                  </div>
-                  <div className="text-[14px] text-neutral-900 font-medium leading-relaxed">
-                    近期高意向线索流失率增加，私信导流话术已被平台限流，需更新引流路径。
-                  </div>
+              </div>
+
+              <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100 flex items-start gap-3">
+                <Info size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-700 mb-1">部分信息不足，暂按以下假设生成策略：</div>
+                  <ul className="text-[13px] text-neutral-500 list-disc list-inside space-y-1">
+                    <li>假设客单价区间为 100-200 元（未连接订单系统）。</li>
+                    <li>假设下个月预算上限为 1 万元（未提供明确预算表）。</li>
+                  </ul>
                 </div>
               </div>
             </motion.div>
@@ -268,17 +294,35 @@ export const Strategy: React.FC<{
                       {activeCard.title}
                     </h3>
                     <div className="space-y-4">
-                      <div>
-                        <div className="text-[14px] font-bold text-neutral-900 mb-2">为什么做：</div>
-                        <div className="text-[14px] text-neutral-600 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-                          {activeCard.desc}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-[13px] font-bold text-neutral-900 mb-1.5 flex items-center gap-1.5"><Target size={14} className="text-primary-500" /> 本轮解决什么问题</div>
+                          <div className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-3 rounded-xl border border-neutral-100 min-h-[60px]">
+                            {activeCard.problemToSolve}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[13px] font-bold text-neutral-900 mb-1.5 flex items-center gap-1.5"><Clock size={14} className="text-amber-500" /> 为什么现在做</div>
+                          <div className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-3 rounded-xl border border-neutral-100 min-h-[60px]">
+                            {activeCard.whyNow}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[13px] font-bold text-neutral-900 mb-1.5 flex items-center gap-1.5"><Users size={14} className="text-blue-500" /> 预计账号与方向</div>
+                          <div className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-3 rounded-xl border border-neutral-100 min-h-[60px]">
+                            {activeCard.accountsAndContent}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[13px] font-bold text-neutral-900 mb-1.5 flex items-center gap-1.5"><ShieldCheck size={14} className="text-emerald-500" /> 主要前置条件</div>
+                          <div className="text-[13px] text-neutral-600 leading-relaxed bg-neutral-50 p-3 rounded-xl border border-neutral-100 min-h-[60px]">
+                            {activeCard.prerequisites}
+                          </div>
                         </div>
                       </div>
-                      
-
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-wrap items-center gap-3">
+                    <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center gap-3">
                       {(flowState === "suggestion") && (
                         <button
                           onClick={() => {
@@ -286,7 +330,7 @@ export const Strategy: React.FC<{
                           }}
                           className="px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center gap-2"
                         >
-                          <Play size={16} /> 采用方案并创建项目
+                          <CheckCircle2 size={16} /> 采用此方向
                         </button>
                       )}
                       {(flowState === "generating" || flowState === "running") && (
@@ -300,14 +344,7 @@ export const Strategy: React.FC<{
                         className="px-6 py-3.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors flex items-center gap-2 shadow-sm"
                         disabled={flowState !== "suggestion"}
                       >
-                        <Settings2 size={16} /> 调整方案
-                      </button>
-                      <div className="flex-1" />
-                      <button
-                        onClick={() => setShowEvidenceDrawer(true)}
-                        className="px-4 py-3.5 text-primary-600 text-[13px] font-bold hover:bg-primary-50 rounded-xl transition-colors flex items-center gap-1.5"
-                      >
-                        为什么推荐这个方向？ <ChevronRight size={16} />
+                        <MessageSquare size={16} /> 告诉 AI 怎么调整
                       </button>
                     </div>
                  </div>
@@ -388,26 +425,33 @@ export const Strategy: React.FC<{
 
                     <div className="mb-4 pb-6 border-b border-neutral-100">
                       <h4 className="text-[13px] font-bold text-neutral-500 mb-4">账号组合：</h4>
-                      <div className="grid grid-cols-4 gap-4">
-                        <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">专业号 <span className="text-primary-600">3 篇</span></h5>
-                          <div className="text-[12px] font-medium text-neutral-500 mb-2">建立可信度</div>
-                          <div className="text-[11px] text-neutral-400">专业科普打法 · 品牌素材库</div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-3">专业号 <span className="text-primary-600 font-bold ml-1">3 篇</span></h5>
+                          <div className="space-y-2 text-[12px] text-neutral-600">
+                            <div className="flex"><span className="text-neutral-400 w-16">任务:</span><span>成分科普、品牌背书</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">素材:</span><span>品牌素材库直取</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">发布:</span><span>系统直连发布</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">互动:</span><span>私信通授权直发</span></div>
+                          </div>
                         </div>
-                        <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">员工号 <span className="text-primary-600">4 篇</span></h5>
-                          <div className="text-[12px] font-medium text-neutral-500 mb-2">补充服务视角</div>
-                          <div className="text-[11px] text-neutral-400">顾问经验打法 · 需门店场景</div>
+                        <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-3">员工号 <span className="text-primary-600 font-bold ml-1">4 篇</span></h5>
+                          <div className="space-y-2 text-[12px] text-neutral-600">
+                            <div className="flex"><span className="text-neutral-400 w-16">任务:</span><span>顾问经验分享、避坑</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">素材:</span><span>员工手机回传 (待指派)</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">发布:</span><span>扫码授权发布</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">互动:</span><span>人工复制回复</span></div>
+                          </div>
                         </div>
-                        <div className="bg-neutral-100/50 p-4 rounded-xl border border-neutral-200/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">KOC矩阵 <span className="text-neutral-900">8 篇</span></h5>
-                          <div className="text-[12px] font-medium text-neutral-500 mb-2">铺真实体验</div>
-                          <div className="text-[11px] text-neutral-400">泛生活种草 · 人工预设人设</div>
-                        </div>
-                        <div className="bg-primary-50/50 p-4 rounded-xl border border-primary-100/50">
-                          <h5 className="font-bold text-[14px] text-neutral-900 mb-1">客户号 <span className="text-primary-600">5 篇</span></h5>
-                          <div className="text-[12px] font-medium text-neutral-500 mb-2">现身说法</div>
-                          <div className="text-[11px] text-neutral-400">即时生成打法 · 现场扫码发</div>
+                        <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
+                          <h5 className="font-bold text-[14px] text-neutral-900 mb-3">KOC矩阵 <span className="text-primary-600 font-bold ml-1">8 篇</span></h5>
+                          <div className="space-y-2 text-[12px] text-neutral-600">
+                            <div className="flex"><span className="text-neutral-400 w-16">任务:</span><span>泛生活种草、软便记录</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">素材:</span><span>外部达人回传</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">发布:</span><span>人工图文代发</span></div>
+                            <div className="flex"><span className="text-neutral-400 w-16">互动:</span><span>仅做监控不干预</span></div>
+                          </div>
                         </div>
                       </div>
                       
@@ -616,194 +660,153 @@ export const Strategy: React.FC<{
                 </div>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-neutral-100 rounded-xl text-neutral-700 flex items-center justify-center">
-                    <Settings2 size={20} />
+                    <MessageSquare size={20} />
                   </div>
-                  <h2 className="text-[18px] font-bold text-neutral-900">调整方案参数</h2>
+                  <h2 className="text-[18px] font-bold text-neutral-900">告诉 AI 怎么调整</h2>
                 </div>
                 <p className="text-[13px] text-neutral-500">
-                  修改运营参数，系统将重新生成对应的起盘计划
+                  输入自然语言要求，AI 将自动更新当前主推方案
                 </p>
+              </div>
 
-                {/* 智能 Assistant Chat inside Adjust Drawer */}
-                <div className="mt-4 p-4 bg-primary-50/50 rounded-xl border border-primary-100 flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <Bot size={16} className="text-primary-600" />
-                    <span className="text-[13px] font-bold text-primary-900">操盘副手</span>
-                  </div>
+              <div className="flex-1 flex flex-col overflow-hidden bg-neutral-50/50">
+                {/* Chat History Area */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                   <div className="flex gap-3">
+                     <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0">
+                       <Bot size={16} />
+                     </div>
+                     <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-neutral-200 shadow-sm text-[14px] text-neutral-700 max-w-[85%] leading-relaxed">
+                       你好，我是 Taptik Copilot。当前的【幼犬换粮避坑搜索卡位】方案有哪里需要调整吗？你可以直接告诉我，比如：“减少专业科普，增加真实体验内容”。
+                     </div>
+                   </div>
+
+                   {aiMessage && (
+                     <>
+                       <div className="flex gap-3 flex-row-reverse">
+                         <div className="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center shrink-0">
+                           <User size={16} />
+                         </div>
+                         <div className="bg-neutral-900 text-white p-4 rounded-2xl rounded-tr-none shadow-sm text-[14px] max-w-[85%] leading-relaxed">
+                           {aiInput || "减少专业科普，增加真实体验内容"}
+                         </div>
+                       </div>
+                       
+                       <div className="flex gap-3">
+                         <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0">
+                           <Bot size={16} />
+                         </div>
+                         <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-neutral-200 shadow-sm text-[14px] text-neutral-700 max-w-[85%] leading-relaxed">
+                           {aiMessage}
+                         </div>
+                       </div>
+                     </>
+                   )}
+                   
+                   {isAiThinking && (
+                     <div className="flex gap-3">
+                       <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center shrink-0">
+                         <Bot size={16} />
+                       </div>
+                       <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-neutral-200 shadow-sm text-[14px] text-neutral-700 flex items-center gap-2">
+                         <div className="w-2 h-2 bg-neutral-300 rounded-full animate-bounce" />
+                         <div className="w-2 h-2 bg-neutral-300 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                         <div className="w-2 h-2 bg-neutral-300 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                       </div>
+                     </div>
+                   )}
+                </div>
+
+                {/* Advanced Settings Toggle */}
+                <div className="px-6 py-3 border-t border-neutral-100 bg-white">
+                  <button 
+                    onClick={() => setShowAdjustCopilotPopover(!showAdjustCopilotPopover)}
+                    className="text-[13px] font-bold text-neutral-500 hover:text-neutral-900 flex items-center gap-1.5 transition-colors"
+                  >
+                    <Settings2 size={14} /> 
+                    {showAdjustCopilotPopover ? "收起高级参数" : "展开高级参数"}
+                  </button>
                   
-                  {isAiThinking ? (
-                    <div className="text-[13px] text-primary-800 bg-white p-3 rounded-lg border border-primary-100 shadow-sm flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" />
-                      <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                      <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-                      <span className="ml-1">正在理解您的意图并调整参数...</span>
-                    </div>
-                  ) : aiMessage ? (
-                    <div className="text-[13px] text-primary-800 bg-white p-3 rounded-lg border border-primary-100 shadow-sm leading-relaxed">
-                      {aiMessage}
-                    </div>
-                  ) : (
-                    <div className="text-[13px] text-primary-800 bg-white p-3 rounded-lg border border-primary-100 shadow-sm leading-relaxed">
-                      您可以直接告诉我怎么调整，例如：“把真实客户的篇数加到 20 篇”，或者“更偏向自然流起量”。我会自动帮您修改下方的参数。
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {showAdjustCopilotPopover && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="py-4 space-y-4">
+                          <div>
+                            <label className="block text-[13px] font-bold text-neutral-700 mb-2">主攻目标</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {['搜索卡位', '爆文起量', '线索转化', '账号养成'].map(t => (
+                                <button key={t} onClick={() => handleTargetChange(t)} className={`py-2 px-3 text-[13px] font-medium rounded-lg border text-center transition-colors ${t === selectedTarget ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+                                  {t}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容比例与执行</label>
+                            <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 shadow-sm grid grid-cols-2 gap-4">
+                                <div className="flex-1">
+                                  <div className="text-[12px] text-neutral-500 mb-1">素人口吻</div>
+                                  <div className="text-[16px] font-bold text-neutral-900">{formValues.percent1}%</div>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-[12px] text-neutral-500 mb-1">专业科普</div>
+                                  <div className="text-[16px] font-bold text-neutral-900">{formValues.percent2}%</div>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-[12px] text-neutral-500 mb-1">总内容数量</div>
+                                  <div className="text-[16px] font-bold text-neutral-900">{formValues.amount} 篇</div>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-[12px] text-neutral-500 mb-1">执行周期</div>
+                                  <div className="text-[16px] font-bold text-neutral-900">{formValues.days} 天</div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-                  <div className="relative mt-1">
-                    <input 
-                      type="text" 
+                {/* Input Area */}
+                <div className="p-6 bg-white border-t border-neutral-100 shrink-0">
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
                       value={aiInput}
                       onChange={(e) => setAiInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && aiInput) handleAiSubmit();
-                      }}
-                      placeholder="输入您的调整需求..." 
-                      className="w-full bg-white border border-primary-200 rounded-lg pl-3 pr-10 py-2 text-[13px] focus:outline-none focus:border-primary-400"
+                      onKeyDown={(e) => e.key === 'Enter' && handleAiSubmit()}
+                      placeholder="减少专业科普，增加真实体验内容..."
+                      className="w-full pl-4 pr-12 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[14px] text-neutral-900 focus:outline-none focus:border-primary-500 focus:bg-white transition-colors"
                     />
-                    <button 
+                    <button
                       onClick={handleAiSubmit}
                       disabled={!aiInput || isAiThinking}
-                      className="absolute right-2 top-1/2 -tranneutral-y-1/2 text-primary-600 hover:text-primary-700 disabled:text-primary-300 bg-primary-50 p-1 rounded-md transition-colors"
+                      className="absolute right-2 p-1.5 bg-neutral-900 text-white rounded-lg disabled:opacity-50 disabled:bg-neutral-300 transition-colors"
                     >
-                      <Send size={14} />
+                      <Send size={16} />
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">主攻目标</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {['搜索卡位', '爆文起量', '线索转化', '账号养成'].map(t => (
-                        <button key={t} onClick={() => handleTargetChange(t)} className={`py-2 px-3 text-[13px] font-medium rounded-lg border text-center transition-colors ${t === selectedTarget ? 'bg-primary-50 border-primary-200 text-primary-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">内容比例与执行</label>
-                    <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
-                      <div className="flex items-center gap-6 mb-4">
-                        <div className="flex-1">
-                          <div className="text-[12px] text-neutral-500 mb-1">素人口吻</div>
-                          <div className="text-[16px] font-bold text-neutral-900">{formValues.percent1}%</div>
-                        </div>
-                        <div className="w-[1px] h-8 bg-neutral-100" />
-                        <div className="flex-1">
-                          <div className="text-[12px] text-neutral-500 mb-1">专业科普</div>
-                          <div className="text-[16px] font-bold text-neutral-900">{formValues.percent2}%</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-6 pt-4 border-t border-neutral-100">
-                        <div className="flex-1">
-                          <div className="text-[12px] text-neutral-500 mb-1">总内容数量</div>
-                          <div className="text-[16px] font-bold text-neutral-900">{formValues.amount} 篇</div>
-                        </div>
-                        <div className="w-[1px] h-8 bg-neutral-100" />
-                        <div className="flex-1">
-                          <div className="text-[12px] text-neutral-500 mb-1">执行周期</div>
-                          <div className="text-[16px] font-bold text-neutral-900">{formValues.days} 天</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-2">账号矩阵与内容策略 <span className="text-[11px] font-normal text-primary-600 bg-primary-50 px-2 py-0.5 rounded">系统自动调优</span></label>
-                    <div className="space-y-3">
-                      
-                      {/* 专业号 */}
-                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary-500"></span>专业号</span>
-                          <span className="text-[16px] font-bold text-neutral-900">{formValues.official} 篇</span>
-                        </div>
-                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>品牌背书、专业成分科普</p></div>
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>选用官方精美海报、高清素材或棚拍</p></div>
-                        </div>
-                      </div>
-
-                      {/* 员工号 */}
-                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary-500"></span>员工号</span>
-                          <span className="text-[16px] font-bold text-neutral-900">{formValues.kos} 篇</span>
-                        </div>
-                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>测评对比、避坑指南、个人养宠经验</p></div>
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">素材操作：</span>员工领取实拍任务，回传生活化场景配图</p></div>
-                        </div>
-                      </div>
-
-                      {/* KOC矩阵 */}
-                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-neutral-900"></span>KOC矩阵</span>
-                          <span className="text-[16px] font-bold text-neutral-900">{formValues.koc_general} 篇</span>
-                        </div>
-                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>真实反馈、软便改善记录、挑食应对过程</p></div>
-                          <div className="flex gap-2"><span className="text-neutral-400 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>系统下发要求 &rarr; KOC 回传 &rarr; 系统校验排版</p></div>
-                        </div>
-                      </div>
-
-                      {/* 客户号 */}
-                      <div className="bg-white border border-neutral-200 shadow-sm rounded-xl p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[14px] font-bold text-neutral-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary-500"></span>客户号 (现场快发)</span>
-                          <span className="text-[16px] font-bold text-neutral-900">{formValues.koc_real} 篇</span>
-                        </div>
-                        <div className="bg-neutral-50 p-3 rounded-lg text-[12px] text-neutral-600 space-y-1.5">
-                          <div className="flex gap-2"><span className="text-primary-500 shrink-0 mt-0.5"><Compass size={14}/></span><p><span className="font-bold text-neutral-700">视角定调：</span>门店现身说法、真实购买记录</p></div>
-                          <div className="flex gap-2"><span className="text-primary-500 shrink-0 mt-0.5"><ImageIcon size={14}/></span><p><span className="font-bold text-neutral-700">分发路径：</span>生成动态体验码 &rarr; 现场扫码 &rarr; 即时合成文案发布</p></div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">风险边界 (系统预置)</label>
-                    <div className="space-y-2">
-                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-400" /> 不能承诺治疗</div>
-                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-400" /> 不提竞品</div>
-                       <div className="text-[13px] text-neutral-600 flex items-center gap-2"><CheckCircle2 size={14} className="text-primary-400" /> 不使用夸张功效词</div>
-                    </div>
-                  </div>
-
+              <div className="shrink-0 border-t border-neutral-100 p-6 bg-white space-y-4">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      setShowAdjustDrawer(false);
+                      startGenerating();
+                    }}
+                    className="flex-1 py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    确认修改，重新生成方案
+                  </button>
                 </div>
-              </div>
-
-              <div className="shrink-0 border-t border-neutral-100 p-6 bg-neutral-50/50 space-y-4">
-                <div>
-                  <div className="text-[13px] font-bold text-neutral-900 mb-2">是否记住这次调整？</div>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={adjustMemory === 'only_once'} onChange={() => setAdjustMemory('only_once')} className="accent-primary-600" />
-                      <span className="text-[13px] text-neutral-700">仅本次使用</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={adjustMemory === 'merchant'} onChange={() => setAdjustMemory('merchant')} className="accent-primary-600" />
-                      <span className="text-[13px] text-neutral-700">记为该商家偏好</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" checked={adjustMemory === 'team'} onChange={() => setAdjustMemory('team')} className="accent-primary-600" />
-                      <span className="text-[13px] text-neutral-700">提交为团队打法</span>
-                    </label>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setShowAdjustDrawer(false);
-                    startGenerating();
-                  }}
-                  className="w-full py-3.5 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-lg active:scale-95"
-                >
-                  确认修改，重新生成起盘清单
-                </button>
               </div>
             </motion.div>
           </>

@@ -26,6 +26,7 @@ import {
 
 export function InteractionWorkbench({ task, onClose }: { task?: any, onClose?: () => void }) {
   const [activeTab, setActiveTab] = useState<'private_msg' | 'comment' | 'intercept' | 'competitor' | 'risk'>('private_msg');
+  const [taskStatusView, setTaskStatusView] = useState<'quick' | 'action' | 'wait'>('action');
 
   const tabs = [
     { id: 'private_msg', label: '私信承接', icon: MessageCircle, count: 5 },
@@ -40,8 +41,13 @@ export function InteractionWorkbench({ task, onClose }: { task?: any, onClose?: 
       {/* Top Navigation */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-6">
-          <div className="mr-2 flex items-center gap-2">
+          <div className="mr-2 flex items-center gap-4">
             <h2 className="text-[16px] font-bold text-neutral-900">互动承接</h2>
+            <div className="flex items-center gap-2">
+              <span onClick={() => setTaskStatusView('quick')} className={`px-2 py-1 rounded-lg text-[12px] font-bold border cursor-pointer transition-colors ${taskStatusView === 'quick' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>快速确认 (12)</span>
+              <span onClick={() => setTaskStatusView('action')} className={`px-2 py-1 rounded-lg text-[12px] font-bold border cursor-pointer transition-colors ${taskStatusView === 'action' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>需要处理 (6)</span>
+              <span onClick={() => setTaskStatusView('wait')} className={`px-2 py-1 rounded-lg text-[12px] font-bold border cursor-pointer transition-colors ${taskStatusView === 'wait' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>等待推进 (2)</span>
+            </div>
           </div>
           <div className="h-4 w-px bg-neutral-200 mx-2"></div>
           {tabs.map(tab => (
@@ -109,7 +115,7 @@ function PrivateMsgTab() {
         <div>
           <div className="text-[14px] font-bold text-neutral-900 mb-1">接待账号：品牌主账号</div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">私信通已开通</span>
+            <span className="text-[11px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium flex items-center gap-1"><Send size={10} /> 支持直接发送</span>
             <div className="h-3 w-px bg-neutral-200"></div>
             <span className="text-[11px] text-neutral-500 flex items-center gap-1"><Check size={10}/>可发图文</span>
             <span className="text-[11px] text-neutral-500 flex items-center gap-1"><Check size={10}/>可发商品卡</span>
@@ -224,10 +230,10 @@ function PrivateMsgTab() {
                 onChange={e => setReplyText(e.target.value)}
               />
               <button 
-                className={`w-full py-2.5 rounded-xl text-[13px] font-bold transition-colors shadow-sm ${hasUnconfirmed ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed' : 'bg-neutral-900 text-white hover:bg-neutral-800'}`}
+                className={`w-full py-2.5 rounded-xl text-[13px] font-bold transition-colors shadow-sm flex items-center justify-center gap-2 ${hasUnconfirmed ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed' : 'bg-neutral-900 text-white hover:bg-neutral-800'}`}
                 disabled={hasUnconfirmed} 
               >
-                发送私信
+                发送并查看下一篇
               </button>
               <div className="grid grid-cols-2 gap-2 mt-2">
                 <button 
@@ -243,6 +249,11 @@ function PrivateMsgTab() {
                   推送图文
                 </button>
               </div>
+            </div>
+            
+            <div className="border-t border-neutral-100 pt-4 flex flex-wrap gap-2">
+              <button className="px-3 py-1.5 text-[12px] font-bold bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200">转客服继续跟进</button>
+              <button className="px-3 py-1.5 text-[12px] font-bold bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200">暂不处理</button>
             </div>
           </div>
         </div>
@@ -262,8 +273,13 @@ function CommentTab() {
   const activeComment = comments.find(c => c.id === activeCommentId) || comments[0];
 
   return (
-    <div className="h-full flex overflow-hidden">
-      {/* Left Column: Grouped by Account and Note */}
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="bg-amber-50 text-amber-700 px-6 py-2.5 text-[12px] font-medium border-b border-amber-100 flex items-center gap-2 shrink-0">
+        <ShieldAlert size={14} className="text-amber-500" />
+        因平台风控，评论不支持系统直接代发，请检查文案后点击「复制回复」并人工前往对应平台操作。
+      </div>
+      <div className="h-full flex overflow-hidden">
+        {/* Left Column: Grouped by Account and Note */}
       <div className="w-[300px] bg-white border-r border-neutral-200 flex flex-col shrink-0 overflow-y-auto">
         <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
           <span className="text-[13px] font-bold text-neutral-900">按来源分组</span>
@@ -340,31 +356,32 @@ function CommentTab() {
               className="w-full h-24 p-3 text-[13px] text-neutral-800 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:border-primary-400 resize-none mb-3"
               defaultValue={activeComment.reply}
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2">
               <button className="py-2.5 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors">
-                复制回复
+                复制回复并查看下一篇
               </button>
               <button className="py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors">
-                打开原笔记
+                复制回复并通知账号主
               </button>
             </div>
           </div>
           
           <div className="border-t border-neutral-100 pt-4 flex flex-wrap gap-2">
-            <button className="px-3 py-1.5 text-[12px] font-bold bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200">通知账号主</button>
-            <button className="px-3 py-1.5 text-[12px] font-bold bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200">标记已回复</button>
+            <button className="px-3 py-1.5 text-[12px] font-bold bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200">转客服继续跟进</button>
             <button className="px-3 py-1.5 text-[12px] font-bold bg-neutral-100 text-neutral-600 rounded hover:bg-neutral-200">暂不处理</button>
             
             {/* 只在非品牌账号下显示 转为截流机会 */}
             {activeComment.source !== '品牌主账号' && (
-              <button className="px-3 py-1.5 text-[12px] font-bold bg-blue-50 text-blue-600 border border-blue-200 rounded hover:bg-blue-100">转为截流机会</button>
+              <button className="px-3 py-1.5 text-[12px] font-bold bg-blue-50 text-blue-600 border border-blue-200 rounded hover:bg-blue-100">标记为截流机会</button>
             )}
           </div>
         </div>
       </div>
     </div>
+    </div>
   );
 }
+
 function InterceptTab() {
   return (
     <div className="h-full flex overflow-hidden">

@@ -770,7 +770,7 @@ export function KnowledgeMemory() {
         new CustomEvent("set-custom-greeting", {
           detail: {
             greeting:
-              "欢迎来到商家知识与记忆库。AI 已从最近的 28 条评论和 6 条私信中提取了新的客户反馈（待确认）。当前运营资料完整度 82%，影响运营的最大缺口是「KOS 店长号人设」。",
+              "欢迎来到商家知识与记忆库。AI 已从最近的 28 条评论和 6 条私信中提取了新的客户反馈（待确认）。当前运营资料完整度 82%，影响运营的待确认项是「KOS 店长号人设」。",
             expert: "知识流转助手",
           },
         })
@@ -821,7 +821,7 @@ export function KnowledgeMemory() {
                 <div className="mt-4 flex gap-8">
                   <div className="flex-1 max-w-xl">
                     <div className="text-[12px] font-bold text-neutral-400 mb-2 flex items-center gap-1.5">
-                      <AlertTriangle size={14} className="text-amber-500" /> 当前影响运营的缺口：
+                      <AlertTriangle size={14} className="text-amber-500" /> 当前待补充资料：
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <span className="px-2.5 py-1 bg-white border border-rose-200 text-rose-600 text-[12px] rounded-md font-medium shadow-sm">缺私域承接话术 (影响私信流转)</span>

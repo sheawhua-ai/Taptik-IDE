@@ -19,8 +19,9 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState('全部');
   const [tempAnalysisQuery, setTempAnalysisQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [attributionTab, setAttributionTab] = useState('项目概览');
+  const [attributionTab, setAttributionTab] = useState('发现结论');
   const [attributionFilter, setAttributionFilter] = useState('全部笔记');
+  const [actionConfirmPopup, setActionConfirmPopup] = useState<{title: string, action: string} | null>(null);
 
   // Scheduled Reports State
   const [selectedReportTab, setSelectedReportTab] = useState('项目复盘');
@@ -796,401 +797,96 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
           </div>
         )}
 
-        {dataSubNav === 'roi_attribution' && (
+                {dataSubNav === 'roi_attribution' && (
           <div className="p-8 space-y-8 animate-in fade-in duration-500 flex flex-col h-full overflow-hidden">
             <div className="flex items-center justify-between shrink-0">
               <div>
-                <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2">效果归因</h3>
-                <p className="text-[13px] text-neutral-400 mt-1">找出哪些内容、账号、素材和投放动作真正带来了结果。</p>
+                <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2">复盘归因</h3>
+                <p className="text-[13px] text-neutral-400 mt-1">智能分析数据，发现执行结与策略偏差</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 bg-neutral-100 p-2 rounded-2xl w-fit shrink-0">
-              <div className="flex bg-white rounded-xl shadow-sm p-1">
-                {['项目概览', '笔记贡献', '账号承接', '投流效果'].map((tab) => (
-                  <button 
-                    key={tab} 
-                    onClick={() => {
-                      setAttributionTab(tab);
-                      setAttributionFilter(tab === '笔记贡献' ? '全部笔记' : tab === '账号承接' ? '全部账号' : tab === '投流效果' ? '全部记录' : '贡献笔记');
-                    }}
-                    className={`px-4 py-1.5 rounded-lg text-[13px] font-bold transition-colors ${attributionTab === tab ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50'}`}
-                  >
-                    {tab}
-                  </button>
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-10">
+              <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                {[
+                  {
+                    conclusion: '素人口吻比官方口吻转化率高 30%',
+                    basis: '2 篇素人笔记带来 15 条私信，3 篇官方笔记仅 2 条',
+                    scope: '当前项目 5 篇相关笔记',
+                    confidence: '高 (92%)',
+                    impact: '建议后续该品类取消官方口吻发布，全量采用素人体验测评口吻。'
+                  },
+                  {
+                    conclusion: '“真实喂食”场景图比“棚拍白底图”点击率高 40%',
+                    basis: 'A/B 测试显示，场景图 CTR 8.5%，白底图 CTR 4.1%',
+                    scope: '最近 12 篇带图笔记',
+                    confidence: '极高 (98%)',
+                    impact: '影响素材产出标准：后续所有视觉均需带入真实生活场景。'
+                  },
+                  {
+                    conclusion: '周末晚 8-10 点发布互动量翻倍',
+                    basis: '历史数据：周末晚间平均互动 120，其他时段平均 45',
+                    scope: '过去 30 天全部 45 篇笔记',
+                    confidence: '中 (75%)',
+                    impact: '可优化发布排期池，将核心转化笔记集中在周末晚间。'
+                  }
+                ].map((card, i) => (
+                  <div key={i} className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm break-inside-avoid">
+                    <div className="flex items-start gap-3 mb-4">
+                      <Sparkles size={18} className="text-primary-500 shrink-0 mt-0.5" />
+                      <h4 className="text-[15px] font-bold text-neutral-900">{card.conclusion}</h4>
+                    </div>
+                    <div className="space-y-3 mb-6">
+                      <div className="text-[12px]">
+                        <span className="text-neutral-500 block mb-1">数据依据</span>
+                        <span className="font-medium text-neutral-900">{card.basis}</span>
+                      </div>
+                      <div className="text-[12px]">
+                        <span className="text-neutral-500 block mb-1">样本覆盖范围</span>
+                        <span className="font-medium text-neutral-900">{card.scope}</span>
+                      </div>
+                      <div className="text-[12px]">
+                        <span className="text-neutral-500 block mb-1">AI 置信度</span>
+                        <span className="font-bold text-primary-600">{card.confidence}</span>
+                      </div>
+                      <div className="text-[12px] bg-primary-50 p-3 rounded-xl border border-primary-100/50">
+                        <span className="text-primary-800 font-bold block mb-1">对当前打法影响</span>
+                        <span className="text-primary-700 leading-relaxed">{card.impact}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <button onClick={() => setActionConfirmPopup({title: card.conclusion, action: '立即处理'})} className="w-full py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-bold hover:bg-neutral-800 transition-colors">立即处理</button>
+                      <button onClick={() => setActionConfirmPopup({title: card.conclusion, action: '下轮验证'})} className="w-full py-2 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[12px] font-bold hover:bg-neutral-50 transition-colors">下轮验证</button>
+                      <button className="w-full py-2 text-neutral-500 hover:bg-neutral-50 rounded-xl text-[12px] font-bold transition-colors">保留观察</button>
+                    </div>
+                  </div>
                 ))}
               </div>
-              <div className="relative">
-                <select className="appearance-none bg-transparent pl-4 pr-10 py-2 text-[13px] font-bold text-neutral-900 focus:outline-none cursor-pointer">
-                  <option>幼犬换粮避坑项目</option>
-                  <option>平价烘焙粮评测</option>
-                </select>
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -tranneutral-y-1/2 text-neutral-500 pointer-events-none" />
-              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-6 pb-10">
-              {attributionTab === '项目概览' && (
-                <>
-                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
-                    <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
-                      <div>
-                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
-                          本项目私信增长主要由 <span className="font-bold">3 篇素人口吻笔记</span>贡献，其中 2 篇来自 A01/A02 自然流，1 篇由 A01 薯条加热放大。
-                        </p>
-                      </div>
+            <AnimatePresence>
+              {actionConfirmPopup && (
+                <div className="fixed inset-0 z-[200] bg-neutral-900/40 backdrop-blur-sm flex items-center justify-center">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-white rounded-3xl shadow-2xl p-6 w-[400px]"
+                  >
+                    <h3 className="text-[16px] font-bold text-neutral-900 mb-2">{actionConfirmPopup.action}已确认</h3>
+                    <p className="text-[13px] text-neutral-500 mb-6">对于「{actionConfirmPopup.title}」的结论，您希望如何沉淀该经验？</p>
+                    <div className="space-y-2">
+                      <button onClick={() => setActionConfirmPopup(null)} className="w-full text-left px-4 py-3 bg-neutral-50 hover:bg-primary-50 hover:text-primary-700 border border-neutral-200 hover:border-primary-200 rounded-xl text-[13px] font-bold transition-colors">更新商家记忆</button>
+                      <button onClick={() => setActionConfirmPopup(null)} className="w-full text-left px-4 py-3 bg-neutral-50 hover:bg-primary-50 hover:text-primary-700 border border-neutral-200 hover:border-primary-200 rounded-xl text-[13px] font-bold transition-colors">提炼为我的运营方法</button>
+                      <button onClick={() => setActionConfirmPopup(null)} className="w-full text-left px-4 py-3 bg-neutral-50 hover:bg-primary-50 hover:text-primary-700 border border-neutral-200 hover:border-primary-200 rounded-xl text-[13px] font-bold transition-colors">加入下轮项目建议</button>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {[
-                      { title: '内容方向', result: '素人口吻内容贡献 68% 私信', action: '复刻内容结构', flow: '项目与内容' },
-                      { title: '素材类型', result: '真实喂食封面 CTR 高 40%', action: '沉淀素材经验', flow: '素材库' },
-                      { title: '账号承接', result: 'A01/A02 表现稳定，A03 异常', action: '调整账号承接', flow: '账号与发布' },
-                      { title: '发布时间', result: '18:00-21:00 表现最好', action: '同步排期建议', flow: '账号与发布' },
-                      { title: '投流/加热', result: 'A01 薯条加热曝光增量 32%', action: '加入投流观察', flow: '账号与发布' }
-                    ].map((card, i) => (
-                      <div 
-                        key={i} 
-                        className="bg-white border border-neutral-200 rounded-[20px] p-5 shadow-sm flex flex-col justify-between hover:border-primary-300 hover:shadow-md transition-all cursor-pointer"
-                        onClick={() => setSelectedItem({
-                          title: `${card.title}归因动作`,
-                          aiJudgment: card.result,
-                          evidence: `基于本项目多维度交叉分析得出该结论。`,
-                          aiSuggestion: `建议立即${card.action}。`,
-                          actionText: card.action,
-                          flowTo: card.flow
-                        })}
-                      >
-                        <div>
-                          <div className="text-[11px] text-neutral-400 uppercase tracking-widest mb-2">{card.title}</div>
-                          <div className="text-[13px] font-bold text-neutral-900 leading-snug">{card.result}</div>
-                        </div>
-                        <button className="mt-4 w-full py-2 bg-neutral-50 text-neutral-700 text-[12px] font-bold rounded-lg hover:bg-neutral-100 transition-colors border border-transparent hover:border-neutral-200">
-                          {card.action}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-                      <h4 className="font-bold text-neutral-900">贡献明细</h4>
-                      <div className="flex gap-2">
-                        {['贡献笔记', '异常笔记', '投流笔记'].map((tab) => (
-                          <button 
-                            key={tab} 
-                            onClick={() => setAttributionFilter(tab)}
-                            className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}`}
-                          >
-                            {tab}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="divide-y divide-neutral-100">
-                      {[
-                        { title: '换粮拉稀？你可能做错了这三步', account: 'A01 养宠日记', type: '素人', promo: '可聚光', msg: 45, ctr: '12%', status: 'best' },
-                        { title: '幼犬刚到家，第一口粮怎么选', account: 'A02 新手铲屎官', type: 'KOC', promo: '可加热', msg: 32, ctr: '8%', status: 'normal' },
-                        { title: '软便克星，这三款平价粮绝了', account: '外部达人-小萌宠', type: '外部', promo: '仅回传数据', msg: 28, ctr: '15%', status: 'normal' },
-                      ].map((note, i) => (
-                        <div key={i} className="p-5 flex items-center justify-between hover:bg-neutral-50 cursor-pointer transition-colors group"
-                          onClick={() => setSelectedItem({
-                            title: '笔记效果归因',
-                            aiJudgment: '这篇表现好主要因为真实喂食封面提高点击，A01 账号近期健康，18:00 发布时间匹配目标人群。薯条加热带来曝光放大，但私信转化主要来自自然流。',
-                            evidence: `自然流曝光 12w，加热曝光 3.8w；私信转化 45 条，CTR ${note.ctr}。`,
-                            aiSuggestion: '建议复刻此内容结构，并在相似账号矩阵中铺发。',
-                            actionText: '复刻这篇内容',
-                            flowTo: '项目与内容'
-                          })}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-400 shrink-0 group-hover:bg-white group-hover:shadow-sm transition-all">
-                              <Image size={18} />
-                            </div>
-                            <div>
-                              <div className="text-[14px] font-bold text-neutral-900 mb-1">{note.title}</div>
-                              <div className="flex items-center gap-2 text-[11px]">
-                                <span className="text-neutral-500">{note.account}</span>
-                                <span className="px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded">{note.type}</span>
-                                <span className={`px-1.5 py-0.5 rounded border ${
-                                  note.promo === '可聚光' ? 'bg-primary-50 border-primary-100 text-primary-700' :
-                                  note.promo === '可加热' ? 'bg-neutral-100 border-neutral-200 text-neutral-900' :
-                                  'bg-neutral-100 border-neutral-200 text-neutral-500'
-                                }`}>{note.promo}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-6">
-                            <div className="text-center">
-                              <div className="text-[11px] text-neutral-400 mb-1">CTR</div>
-                              <div className="text-[14px] font-bold text-neutral-900">{note.ctr}</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-[11px] text-neutral-400 mb-1">私信</div>
-                              <div className="text-[14px] font-bold text-neutral-900">{note.msg}</div>
-                            </div>
-                            <ChevronRight size={18} className="text-neutral-300 group-hover:text-neutral-500 transition-colors" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
+                    <button onClick={() => setActionConfirmPopup(null)} className="mt-4 w-full py-2 text-[12px] text-neutral-400 hover:text-neutral-600">暂不处理</button>
+                  </motion.div>
+                </div>
               )}
-
-              {attributionTab === '笔记贡献' && (
-                <>
-                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
-                    <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
-                      <div>
-                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
-                          本周 38 篇笔记中，<span className="font-bold">6 篇贡献了 72% 私信</span>，其中 4 篇是素人口吻避坑内容，2 篇经过薯条加热。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-5 border-b border-neutral-100 flex flex-wrap gap-2 bg-neutral-50/50">
-                      {['全部笔记', '自然流', '投流/加热', '高私信', '高收藏', '高互动', '低效笔记', '异常笔记'].map((tab) => (
-                        <button 
-                          key={tab} 
-                          onClick={() => setAttributionFilter(tab)}
-                          className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white'}`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="divide-y divide-neutral-100">
-                      {[
-                        { title: '换粮拉稀？你可能做错了这三步', account: 'A01 养宠日记', type: '素人', promo: '可聚光', msg: 45, ctr: '12%', status: 'best', tags: ['爆文苗子', '高私信', '可复刻'] },
-                        { title: '幼犬刚到家，第一口粮怎么选', account: 'A02 新手铲屎官', type: 'KOC', promo: '可加热', msg: 32, ctr: '8%', status: 'normal', tags: ['账号贡献高'] },
-                        { title: '软便克星，这三款平价粮绝了', account: '外部达人-小萌宠', type: '外部', promo: '仅回传数据', msg: 28, ctr: '15%', status: 'normal', tags: ['素材贡献高'] },
-                      ].map((note, i) => (
-                        <div key={i} className="p-5 flex flex-col md:flex-row md:items-center justify-between hover:bg-neutral-50 cursor-pointer transition-colors group gap-4"
-                          onClick={() => setSelectedItem({
-                            title: '笔记效果归因',
-                            aiJudgment: '这篇表现好主要因为真实喂食封面提高点击，A01 账号近期健康，18:00 发布时间匹配目标人群。',
-                            evidence: `自然流曝光 12w，加热曝光 3.8w；私信转化 45 条。`,
-                            aiSuggestion: '建议复刻此内容结构，并在相似账号矩阵中铺发。',
-                            actionText: '复刻这篇内容',
-                            flowTo: '项目与内容'
-                          })}
-                        >
-                          <div className="flex items-start gap-4 flex-1">
-                            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-400 shrink-0 group-hover:bg-white group-hover:shadow-sm transition-all mt-1">
-                              <Image size={20} />
-                            </div>
-                            <div className="flex-1">
-                              <div className="text-[14px] font-bold text-neutral-900 mb-2">{note.title}</div>
-                              <div className="flex flex-wrap items-center gap-2 text-[11px] mb-3">
-                                <span className="text-neutral-500 font-medium">{note.account}</span>
-                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
-                                <span className="text-neutral-500">{note.type}</span>
-                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
-                                <span className={`px-1.5 py-0.5 rounded border ${
-                                  note.promo === '可聚光' ? 'bg-primary-50 border-primary-100 text-primary-700' :
-                                  note.promo === '可加热' ? 'bg-neutral-100 border-neutral-200 text-neutral-900' :
-                                  'bg-neutral-100 border-neutral-200 text-neutral-500'
-                                }`}>{note.promo}</span>
-                              </div>
-                              <div className="flex flex-wrap gap-1.5">
-                                {note.tags.map(tag => (
-                                  <span key={tag} className="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-[10px] rounded-md font-medium border border-neutral-200">{tag}</span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-8 shrink-0">
-                            <div className="text-center">
-                              <div className="text-[11px] text-neutral-400 mb-1">CTR</div>
-                              <div className="text-[15px] font-bold text-neutral-900">{note.ctr}</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-[11px] text-neutral-400 mb-1">私信</div>
-                              <div className="text-[15px] font-bold text-neutral-900">{note.msg}</div>
-                            </div>
-                            <ChevronRight size={20} className="text-neutral-300 group-hover:text-neutral-500 transition-colors" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {attributionTab === '账号承接' && (
-                <>
-                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
-                    <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
-                      <div>
-                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
-                          A01/A02 承接素人口吻内容效果稳定，A05 专业科普转化高；<span className="font-bold">A03 连续 3 天互动率异常，建议暂停分发。</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-5 border-b border-neutral-100 flex flex-wrap gap-2 bg-neutral-50/50">
-                      {['全部账号', '品牌官号', '矩阵号', '员工 KOS', '合作达人/KOC', '外部账号池'].map((tab) => (
-                        <button 
-                          key={tab} 
-                          onClick={() => setAttributionFilter(tab)}
-                          className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white'}`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 bg-neutral-50/30">
-                      {[
-                        { name: 'A01 养宠日记', type: '矩阵号', focus: '素人避坑', status: 'normal', msg: 124, conv: 18, reason: '表现稳定，适合承接素人流内容' },
-                        { name: 'A03 宠物健康说', type: '矩阵号', focus: '干货科普', status: 'anomaly', msg: 12, conv: 0, reason: '连续 3 天互动率下降，疑似被限流' },
-                        { name: '官方旗舰店', type: '品牌官号', focus: '产品宣发', status: 'normal', msg: 89, conv: 32, reason: '品牌背书强，转化率最高' }
-                      ].map((acc, i) => (
-                        <div key={i} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
-                          onClick={() => setSelectedItem({
-                            title: '账号效果归因',
-                            aiJudgment: acc.reason,
-                            evidence: `近7天发布 5 篇内容，平均私信 ${acc.msg} 条，线索 ${acc.conv} 个。`,
-                            aiSuggestion: acc.status === 'anomaly' ? '建议暂停承接新内容，排查账号状态。' : '建议继续承接此类内容，适当增加排期。',
-                            actionText: acc.status === 'anomaly' ? '暂停承接' : '生成账号复盘',
-                            flowTo: '账号与发布'
-                          })}
-                        >
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <div className="flex items-center gap-2 mb-1.5">
-                                <h4 className="text-[15px] font-bold text-neutral-900">{acc.name}</h4>
-                                {acc.status === 'anomaly' && <span className="px-1.5 py-0.5 bg-primary-50 text-primary-600 border border-primary-100 rounded text-[10px] font-bold">异常</span>}
-                              </div>
-                              <div className="flex items-center gap-2 text-[11px] text-neutral-500">
-                                <span>{acc.type}</span>
-                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
-                                <span>主攻: {acc.focus}</span>
-                              </div>
-                            </div>
-                            <ChevronRight size={18} className="text-neutral-300" />
-                          </div>
-                          
-                          <div className="grid grid-cols-3 gap-2 mb-4">
-                            <div className="bg-neutral-50 rounded-lg p-2 text-center">
-                              <div className="text-[10px] text-neutral-400 mb-1">自然流贡献</div>
-                              <div className="text-[13px] font-bold text-neutral-900">45%</div>
-                            </div>
-                            <div className="bg-neutral-50 rounded-lg p-2 text-center">
-                              <div className="text-[10px] text-neutral-400 mb-1">私信贡献</div>
-                              <div className="text-[13px] font-bold text-neutral-900">{acc.msg}</div>
-                            </div>
-                            <div className="bg-neutral-50 rounded-lg p-2 text-center">
-                              <div className="text-[10px] text-neutral-400 mb-1">转化贡献</div>
-                              <div className="text-[13px] font-bold text-neutral-900">{acc.conv}</div>
-                            </div>
-                          </div>
-                          
-                          <div className="text-[12px] text-neutral-600 bg-neutral-50/80 p-2.5 rounded-lg border border-neutral-100">
-                            <span className="font-bold text-neutral-700">系统: </span>{acc.reason}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {attributionTab === '投流效果' && (
-                <>
-                  <div className="bg-primary-50/50 border border-primary-100 rounded-2xl p-6 flex flex-col gap-4">
-                    <div className="flex items-start gap-3">
-                      <Sparkles size={20} className="text-primary-500 shrink-0 mt-0.5" />
-                      <div>
-                        <h5 className="text-[14px] font-bold text-primary-900 mb-1">系统归因结论</h5>
-                        <p className="text-[14px] text-primary-800/80 leading-relaxed">
-                          本周投流带来 38% 曝光增量，但私信转化主要来自自然流。<span className="font-bold">A01 的薯条加热 CPA 最低，建议继续小额测试。</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white border border-neutral-200 rounded-[24px] shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-5 border-b border-neutral-100 flex flex-wrap gap-2 bg-neutral-50/50">
-                      {['全部记录', '自然流', '薯条', '聚光', 'KOS 加热', '未投流'].map((tab) => (
-                        <button 
-                          key={tab} 
-                          onClick={() => setAttributionFilter(tab)}
-                          className={`px-4 py-1.5 rounded-lg text-[12px] font-bold transition-colors ${attributionFilter === tab ? 'bg-white border border-neutral-200 text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 hover:bg-white'}`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="divide-y divide-neutral-100">
-                      {[
-                        { title: '换粮拉稀？你可能做错了这三步', account: 'A01 养宠日记', type: '薯条', amount: '￥200', views: '3.8w', cpa: '￥4.5', status: 'effective', tags: ['投流有效', '可聚光'] },
-                        { title: '幼犬刚到家，第一口粮怎么选', account: 'A02 新手铲屎官', type: '聚光', amount: '￥500', views: '8.2w', cpa: '￥12.8', status: 'ineffective', tags: ['投流无效', 'CPA过高'] },
-                        { title: '软便克星，这三款平价粮绝了', account: '官方旗舰店', type: '自然流', amount: '￥0', views: '12w', cpa: '-', status: 'normal', tags: ['仅自然流'] },
-                      ].map((note, i) => (
-                        <div key={i} className="p-5 flex flex-col md:flex-row md:items-center justify-between hover:bg-neutral-50 cursor-pointer transition-colors group gap-4"
-                          onClick={() => setSelectedItem({
-                            title: '投流效果归因',
-                            aiJudgment: note.status === 'effective' ? '小额测试表现优异，互动成本低于大盘 40%。' : note.status === 'ineffective' ? '转化成本过高，建议停止。' : '自然流表现好，无需投流。',
-                            evidence: `消耗 ${note.amount}，带来曝光 ${note.views}，CPA ${note.cpa}。`,
-                            aiSuggestion: note.status === 'effective' ? '建议继续追加 500 元预算测试。' : '建议停止投流，排查素材原因。',
-                            actionText: note.status === 'effective' ? '追加预算建议' : '停止投流',
-                            flowTo: '账号与发布'
-                          })}
-                        >
-                          <div className="flex items-start gap-4 flex-1">
-                            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-400 shrink-0 group-hover:bg-white group-hover:shadow-sm transition-all mt-1">
-                              <Image size={20} />
-                            </div>
-                            <div className="flex-1">
-                              <div className="text-[14px] font-bold text-neutral-900 mb-2">{note.title}</div>
-                              <div className="flex flex-wrap items-center gap-2 text-[11px] mb-3">
-                                <span className="text-neutral-500 font-medium">{note.account}</span>
-                                <span className="w-1 h-1 rounded-full bg-neutral-300"></span>
-                                <span className={`px-1.5 py-0.5 rounded border font-medium ${
-                                  note.type === '薯条' ? 'bg-primary-50 border-primary-100 text-primary-700' :
-                                  note.type === '聚光' ? 'bg-primary-50 border-primary-100 text-primary-700' :
-                                  'bg-neutral-100 border-neutral-200 text-neutral-500'
-                                }`}>{note.type}</span>
-                              </div>
-                              <div className="flex flex-wrap gap-1.5">
-                                {note.tags.map(tag => (
-                                  <span key={tag} className="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-[10px] rounded-md font-medium border border-neutral-200">{tag}</span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-8 shrink-0">
-                            <div className="text-center">
-                              <div className="text-[11px] text-neutral-400 mb-1">消耗</div>
-                              <div className="text-[15px] font-bold text-neutral-900">{note.amount}</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-[11px] text-neutral-400 mb-1">CPA</div>
-                              <div className="text-[15px] font-bold text-neutral-900">{note.cpa}</div>
-                            </div>
-                            <ChevronRight size={20} className="text-neutral-300 group-hover:text-neutral-500 transition-colors" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            </AnimatePresence>
           </div>
         )}
-
-
-
         {dataSubNav === 'scheduled' && (
           <div className="p-8 space-y-8 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
@@ -1429,7 +1125,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <span className="font-bold text-neutral-900">{card.hits}</span>
                     </div>
                     <div className="flex justify-between items-center text-[13px]">
-                      <span className="text-neutral-400">内容缺口</span>
+                      <span className="text-neutral-400">未满足需求</span>
                       <span className="font-bold text-neutral-900 truncate max-w-[120px]" title={card.gap}>{card.gap}</span>
                     </div>
                     <div className="flex justify-between items-center text-[13px]">
@@ -1447,7 +1143,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                         title: `蓝海立项: ${card.title}`,
                         aiJudgment: '蓝海潜力极高，建议快速跟进占据心智。',
                         evidence: `搜索热度${card.heat}，竞争强度${card.comp}，目前低粉爆款已有${card.hits}。`,
-                        aiSuggestion: '围绕“真实经验类不足”的缺口，铺设首批测试内容。',
+                        aiSuggestion: '围绕“真实经验类不足”的痛点，铺设首批测试内容。',
                         actionText: '生成操盘建议',
                         flowTo: '操盘建议'
                       })}

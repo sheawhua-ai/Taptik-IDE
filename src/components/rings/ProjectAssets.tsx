@@ -5,18 +5,18 @@ import {
 } from "lucide-react";
 
 type ProjectStatus = "进行中" | "待启动" | "已暂停" | "已完成" | "已归档";
-type DetailTab = "总览" | "内容资产" | "素材与任务" | "发布与账号" | "线索与沉淀" | "客户参与";
+type DetailTab = "项目总览" | "内容包" | "素材与拍摄" | "发布与账号" | "互动与线索" | "消费者参与" | "调整与复盘";
 
 export function ProjectAssets() {
   const [activeTab, setActiveTab] = useState<ProjectStatus>("进行中");
   const [selectedProject, setSelectedProject] = useState<any>(null);
-  const [detailTab, setDetailTab] = useState<DetailTab>("总览");
+  const [detailTab, setDetailTab] = useState<DetailTab>("项目总览");
 
   const MOCK_PROJECTS = [
     {
       id: "p1",
       name: "幼犬换粮避坑搜索卡位",
-      status: "执行中",
+      status: "进行中",
       target: "搜索卡位 + 私域承接",
       period: "2026-07-01 至 2026-07-07",
       strategy: "美妆搜索种草打法",
@@ -67,14 +67,16 @@ export function ProjectAssets() {
                  <div className="flex items-center gap-1.5"><Target size={14} className="text-neutral-400" /> 目标：{selectedProject.target}</div>
                  <div className="flex items-center gap-1.5"><Calendar size={14} className="text-neutral-400" /> 周期：7 天</div>
                  <div className="flex items-center gap-1.5"><FileText size={14} className="text-neutral-400" /> 内容：42 / 50</div>
-                 <div className="flex items-center gap-1.5"><ImageIcon size={14} className="text-neutral-400" /> 素材缺口：8</div>
+                 <div className="flex items-center gap-1.5"><ImageIcon size={14} className="text-neutral-400" /> 待传素材：8</div>
                  <div className="flex items-center gap-1.5"><MessageSquare size={14} className="text-neutral-400" /> 线索：18</div>
                  <div className="flex items-center gap-1.5 text-rose-600"><AlertOctagon size={14} /> 当前卡点：3 个</div>
               </div>
               <div className="flex items-center gap-2">
-                 <button className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-bold hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-1.5">
-                   <Zap size={14} /> 进入执行队列
-                 </button>
+                 {(selectedProject?.status !== "已完成" && selectedProject?.status !== "已归档") && (
+                   <button className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-bold hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-1.5">
+                     <Zap size={14} /> 查看相关执行事项
+                   </button>
+                 )}
                  <button className="px-4 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[12px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
                    生成复盘
                  </button>
@@ -88,7 +90,7 @@ export function ProjectAssets() {
         {/* Detail Tabs */}
         <div className="px-8 pt-4 border-b border-neutral-100 bg-white shrink-0">
           <div className="flex items-center gap-6">
-            {(["总览", "内容资产", "素材与任务", "发布与账号", "线索与沉淀", "客户参与"] as DetailTab[]).map((tab) => (
+            {(["项目总览", "内容包", "素材与拍摄", "发布与账号", "互动与线索", "消费者参与", "调整与复盘"] as DetailTab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setDetailTab(tab)}
@@ -105,7 +107,7 @@ export function ProjectAssets() {
 
         {/* Detail Content */}
         <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/50 custom-scrollbar">
-           {detailTab === "总览" && (
+           {detailTab === "项目总览" && (
              <div className="max-w-5xl mx-auto space-y-6">
                 <div className="grid grid-cols-3 gap-6">
                    <div className="col-span-2 space-y-6">
@@ -162,10 +164,10 @@ export function ProjectAssets() {
              </div>
            )}
 
-           {detailTab === "内容资产" && (
+           {detailTab === "内容包" && (
              <div className="max-w-5xl mx-auto space-y-6">
                <div className="flex items-center gap-2">
-                 {["全部", "待确认", "待素材", "待发布", "已发布", "发布失败"].map(t => (
+                 {["全部", "待派发", "已派发", "素材已齐", "等待审核", "准备发布", "已发布"].map(t => (
                    <button key={t} className="px-3 py-1.5 rounded-lg text-[12px] font-bold bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50">
                      {t}
                    </button>
@@ -189,7 +191,7 @@ export function ProjectAssets() {
                          </td>
                          <td className="p-4"><span className="text-[12px] text-neutral-600 font-medium">正式笔记</span></td>
                          <td className="p-4"><span className="text-[12px] text-neutral-600 font-medium">KOS / 店长</span></td>
-                         <td className="p-4"><span className="text-[12px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">待确认</span></td>
+                         <td className="p-4"><span className="text-[12px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">等待审核</span></td>
                          <td className="p-4">
                             <button className="text-[12px] text-primary-600 font-bold hover:text-primary-700">查看详情</button>
                          </td>
@@ -200,7 +202,7 @@ export function ProjectAssets() {
              </div>
            )}
            
-           {detailTab === "客户参与" && (
+           {detailTab === "消费者参与" && (
              <div className="max-w-5xl mx-auto space-y-6">
                 <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
                    <div className="flex items-center justify-between mb-6 pb-6 border-b border-neutral-100">
@@ -228,7 +230,7 @@ export function ProjectAssets() {
                    {/* List of generated packages or participating customers could go here */}
                    <div className="text-center py-10 text-neutral-400">
                       <CheckCircle2 size={48} className="mx-auto mb-4 text-neutral-300" />
-                      <p className="text-[14px] font-medium">当前已有 12 位客户参与，可前往执行中心查看异常事项。</p>
+                      <p className="text-[14px] font-medium">当前已有 12 位客户参与，可前往进行中心查看异常事项。</p>
                    </div>
                 </div>
              </div>
@@ -257,7 +259,7 @@ export function ProjectAssets() {
               <FolderOpen size={24} className="text-primary-500" />
               项目档案
             </h2>
-            <p className="text-[13px] text-neutral-500 mt-1">查看每个项目的内容、素材、发布、线索和沉淀结果。需要处理的事项会进入执行中心。</p>
+            <p className="text-[13px] text-neutral-500 mt-1">查看每个项目的内容、素材、发布、线索和沉淀结果。需要处理的事项会进入进行中心。</p>
           </div>
         </div>
       </div>
@@ -283,7 +285,7 @@ export function ProjectAssets() {
       {/* Project Cards */}
       <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/50 custom-scrollbar">
         <div className="max-w-5xl mx-auto space-y-4">
-          {MOCK_PROJECTS.filter(p => activeTab === "进行中" ? p.status === "执行中" : p.status === activeTab).map(project => (
+          {MOCK_PROJECTS.filter(p => activeTab === "进行中" ? p.status === "进行中" : p.status === activeTab).map(project => (
              <div key={project.id} className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
                    <div className="flex items-center gap-3">
@@ -343,7 +345,7 @@ export function ProjectAssets() {
                 </div>
              </div>
           ))}
-          {MOCK_PROJECTS.filter(p => activeTab === "进行中" ? p.status === "执行中" : p.status === activeTab).length === 0 && (
+          {MOCK_PROJECTS.filter(p => activeTab === "进行中" ? p.status === "进行中" : p.status === activeTab).length === 0 && (
              <div className="py-20 flex flex-col items-center justify-center text-neutral-400">
                <Archive size={48} className="mb-4 text-neutral-300" />
                <p className="text-[15px] font-medium">暂无{activeTab}的项目</p>
