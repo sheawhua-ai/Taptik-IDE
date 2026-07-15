@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { ContentReviewWorkbench } from './ContentReviewWorkbench';
 import { InteractionWorkbench } from './InteractionWorkbench';
 import { ShootingAndUploadWorkbench } from './ShootingAndUploadWorkbench';
+import { PublishExceptionWorkbench } from './PublishExceptionWorkbench';
+
 import {
   AlertTriangle, AlertCircle, MessageSquare, Image as ImageIcon,
   CheckCircle2, X, FileText, User, History, ShieldAlert,
@@ -192,10 +194,18 @@ export function ExecutionResult() {
             onClose={() => setSelectedTask(null)} 
           />
         )}
+      
+        {selectedTask && (selectedTask.moduleName === '发布与账号' || selectedTask.moduleName === '发布异常') && (
+          <PublishExceptionWorkbench onClose={() => setSelectedTask(null)} />
+        )}
+        {selectedTask && (selectedTask.moduleName === '异常与风险' || selectedTask.moduleName === '风险处理') && (
+          <InteractionWorkbench onClose={() => setSelectedTask(null)} />
+        )}
+
       </AnimatePresence>
       
       <AnimatePresence>
-        {selectedTask && selectedTask.moduleName !== '内容审核' && selectedTask.moduleName !== '互动承接' && selectedTask.moduleName !== '素材与回传' && (
+        {selectedTask && selectedTask.moduleName !== '内容审核' && selectedTask.moduleName !== '互动承接' && selectedTask.moduleName !== '素材与回传' && selectedTask.moduleName !== '发布与账号' && selectedTask.moduleName !== '发布异常' && selectedTask.moduleName !== '异常与风险' && selectedTask.moduleName !== '风险处理' && (
           <div className="absolute inset-0 z-50 flex justify-end">
             <motion.div 
               initial={{ opacity: 0 }}
