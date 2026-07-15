@@ -31,11 +31,11 @@ const TASKS: Task[] = [
     mainAction: "进入内容审核"
   },
   {
-    id: "t2", moduleName: "拍摄与回传", importantResult: "16 项拍摄回传待处理",
+    id: "t2", moduleName: "素材与回传", importantResult: "16 项拍摄回传待处理",
     statusQuick: 4, statusAction: 12, statusWait: 5,
     projectsDesc: "门店KOC矩阵等 2 个项目",
     aiWork: "已智能分拆场景和素材需求",
-    mainAction: "进入拍摄与回传"
+    mainAction: "进入素材与回传"
   },
   {
     id: "t3", moduleName: "发布与账号", importantResult: "2 篇发布失败需处理",
@@ -132,7 +132,7 @@ export function ExecutionResult() {
                     {task.moduleName === '内容审核' && <FileText size={16} className="text-primary-500" />}
                     {task.moduleName === '互动承接' && <User size={16} className="text-blue-500" />}
                     {task.moduleName === '发布与账号' && <AlertOctagon size={16} className="text-rose-500" />}
-                    {task.moduleName === '拍摄与回传' && <Camera size={16} className="text-emerald-500" />}
+                    {task.moduleName === '素材与回传' && <Camera size={16} className="text-emerald-500" />}
                     {task.moduleName === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
                     {task.moduleName === '异常与风险' && <ShieldAlert size={16} className="text-rose-600" />}
                     <span className="text-[14px] font-bold text-neutral-900">{task.moduleName}</span>
@@ -186,7 +186,7 @@ export function ExecutionResult() {
         {selectedTask && selectedTask.moduleName === '互动承接' && (
           <InteractionWorkbench onClose={() => setSelectedTask(null)} />
         )}
-        {selectedTask && selectedTask.moduleName === '拍摄与回传' && (
+        {selectedTask && selectedTask.moduleName === '素材与回传' && (
           <ShootingAndUploadWorkbench 
             initialTab={'exception'}
             onClose={() => setSelectedTask(null)} 
@@ -195,7 +195,7 @@ export function ExecutionResult() {
       </AnimatePresence>
       
       <AnimatePresence>
-        {selectedTask && selectedTask.moduleName !== '内容审核' && selectedTask.moduleName !== '互动承接' && selectedTask.moduleName !== '拍摄与回传' && (
+        {selectedTask && selectedTask.moduleName !== '内容审核' && selectedTask.moduleName !== '互动承接' && selectedTask.moduleName !== '素材与回传' && (
           <div className="absolute inset-0 z-50 flex justify-end">
             <motion.div 
               initial={{ opacity: 0 }}
