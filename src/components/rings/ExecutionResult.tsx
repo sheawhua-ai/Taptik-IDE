@@ -8,7 +8,7 @@ import { PublishExceptionWorkbench } from './PublishExceptionWorkbench';
 import {
   AlertTriangle, AlertCircle, MessageSquare, MessageCircle, Image as ImageIcon,
   CheckCircle2, X, FileText, User, History, ShieldAlert,
-  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal, Info, Camera
+  Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal, Info, Camera, Settings2
 } from "lucide-react";
 import { NoteEditor, TextSelection } from "./NoteEditor";
 
@@ -61,14 +61,7 @@ export function ExecutionResult() {
   const [completedFlow, setCompletedFlow] = useState<{message: string, isClosing: boolean} | null>(null);
   const [showMoreActions, setShowMoreActions] = useState(false);
   const [isExploring, setIsExploring] = useState(false);
-  const [refreshingCategory, setRefreshingCategory] = useState<Record<string, boolean>>({});
   
-  const handleRefreshCategory = (category: string) => {
-    setRefreshingCategory(prev => ({ ...prev, [category]: true }));
-    setTimeout(() => {
-      setRefreshingCategory(prev => ({ ...prev, [category]: false }));
-    }, 1500);
-  };
   const handleExplore = () => {
     setIsExploring(true);
     setTimeout(() => {
@@ -83,6 +76,14 @@ export function ExecutionResult() {
   const [lastRefreshTime, setLastRefreshTime] = useState<number | null>(null);
   const [isGlobalRefreshing, setIsGlobalRefreshing] = useState(false);
   const [globalRefreshMessage, setGlobalRefreshMessage] = useState<string | null>(null);
+
+  const [isAutoRefreshMenuOpen, setIsAutoRefreshMenuOpen] = useState(false);
+  const [autoRefreshConfig, setAutoRefreshConfig] = useState<Record<string, string>>({
+    '内容审核': 'never',
+    '素材与回传': 'never',
+    '发布调度': 'never',
+    '互动承接': 'never'
+  });
 
   const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
   const isOnCooldown = lastRefreshTime !== null && (Date.now() - lastRefreshTime < COOLDOWN_MS);
@@ -131,6 +132,59 @@ export function ExecutionResult() {
             执行中心
           </h2>
           <div className="flex items-center gap-3">
+            <div className="relative">
+              <button 
+                onClick={() => setIsAutoRefreshMenuOpen(!isAutoRefreshMenuOpen)}
+                className="p-2 rounded-lg border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 cursor-pointer flex items-center justify-center transition-colors"
+                title="设置自动刷新"
+              >
+                <Settings2 size={16} />
+              </button>
+              
+              <AnimatePresence>
+                {isAutoRefreshMenuOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsAutoRefreshMenuOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 top-full mt-2 w-[320px] bg-white rounded-xl shadow-xl border border-neutral-200 z-50 overflow-hidden"
+                    >
+                      <div className="p-4 border-b border-neutral-100 bg-neutral-50">
+                        <h3 className="text-[14px] font-bold text-neutral-900 mb-1">自动任务队列</h3>
+                        <p className="text-[12px] text-neutral-500 leading-relaxed">
+                          配置各模块的自动刷新频率。自动任务需要在系统登录状态时启用，且会消耗 Token。
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {['内容审核', '素材与回传', '发布调度', '互动承接'].map((module) => (
+                          <div key={module} className="flex items-center justify-between p-3 hover:bg-neutral-50 rounded-lg transition-colors">
+                            <span className="text-[13px] font-medium text-neutral-700">{module}</span>
+                            <select
+                              value={autoRefreshConfig[module]}
+                              onChange={(e) => setAutoRefreshConfig(prev => ({ ...prev, [module]: e.target.value }))}
+                              className="text-[12px] border-neutral-200 rounded-md py-1 px-2 bg-white text-neutral-700 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            >
+                              <option value="never">不自动刷新</option>
+                              <option value="15m">每 15 分钟</option>
+                              <option value="1h">每小时</option>
+                              <option value="4h">每 4 小时</option>
+                              <option value="daily">每天一次</option>
+                            </select>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+            
             <div className="relative group">
               <button 
                 onClick={handleGlobalRefresh}
@@ -167,18 +221,14 @@ export function ExecutionResult() {
                   <div className="flex items-center gap-2">
                     {task.moduleName === '内容审核' && <FileText size={16} className="text-primary-500" />}
                     {task.moduleName === '互动承接' && <MessageCircle size={16} className="text-blue-500" />}
-                    {task.moduleName === '发布调度' && <AlertOctagon size={16} className="text-rose-500" />}
+                    {task.moduleName === '发布调度' && <Send size={16} className="text-primary-600" />}
                     {task.moduleName === '素材与回传' && <Camera size={16} className="text-emerald-500" />}
                     {task.moduleName === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
                     <span className="text-[14px] font-bold text-neutral-900">{task.moduleName}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-neutral-400">
-                     <button 
-                       onClick={(e) => { e.stopPropagation(); handleRefreshCategory(task.moduleName); }}
-                       className="hover:text-neutral-700 flex items-center gap-1"
-                     >
-                       <RefreshCw size={12} className={refreshingCategory[task.moduleName] ? "animate-spin" : ""} /> 
-                     </button>
+                  <div className="flex items-center gap-1 text-[11px] text-neutral-400">
+                    <Clock size={12} />
+                    <span>刚刚更新</span>
                   </div>
                </div>
                
