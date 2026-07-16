@@ -6,7 +6,7 @@ import { ShootingAndUploadWorkbench } from './ShootingAndUploadWorkbench';
 import { PublishExceptionWorkbench } from './PublishExceptionWorkbench';
 
 import {
-  AlertTriangle, AlertCircle, MessageSquare, Image as ImageIcon,
+  AlertTriangle, AlertCircle, MessageSquare, MessageCircle, Image as ImageIcon,
   CheckCircle2, X, FileText, User, History, ShieldAlert,
   Zap, ArrowRight, Database, Filter, Check, Sparkles, Clock, Pause, RefreshCw, ChevronDown, FolderOpen, UserPlus, Maximize2, Minimize2, PlayCircle, BookOpen, Send, LayoutList, Layers, Network, ZapOff, CheckCircle, RotateCcw, AlertOctagon, Eye, Plus, MoreHorizontal, Info, Camera
 } from "lucide-react";
@@ -40,11 +40,11 @@ const TASKS: Task[] = [
     mainAction: "进入素材与回传"
   },
   {
-    id: "t3", moduleName: "发布与账号", importantResult: "2 篇发布失败需处理",
-    statusQuick: 0, statusAction: 2, statusWait: 1,
+    id: "t3", moduleName: "发布调度", importantResult: "17 项发布事项",
+    statusQuick: 12, statusAction: 3, statusWait: 2,
     projectsDesc: "日常种草A组",
-    aiWork: "已定位发布异常及风控原因",
-    mainAction: "进入发布与账号"
+    aiWork: "A02 避坑号连续发布失败，已影响 4 篇笔记排期",
+    mainAction: "进入发布调度"
   },
   {
     id: "t4", moduleName: "互动承接", importantResult: "18 条互动待处理",
@@ -52,13 +52,6 @@ const TASKS: Task[] = [
     projectsDesc: "双十一冲刺企划",
     aiWork: "已匹配高优话术并识别意图",
     mainAction: "进入互动承接"
-  },
-  {
-    id: "t5", moduleName: "异常与风险", importantResult: "1 条高风险负面评论",
-    statusQuick: 0, statusAction: 1, statusWait: 0,
-    projectsDesc: "幼犬换粮搜索卡位",
-    aiWork: "已阻断发酵并生成应急话术草稿",
-    mainAction: "进入异常与风险"
   }
 ];
 
@@ -87,6 +80,30 @@ export function ExecutionResult() {
   const [agentInput, setAgentInput] = useState("");
   const [isAgentModifying, setIsAgentModifying] = useState(false);
 
+  const [lastRefreshTime, setLastRefreshTime] = useState<number | null>(null);
+  const [isGlobalRefreshing, setIsGlobalRefreshing] = useState(false);
+  const [globalRefreshMessage, setGlobalRefreshMessage] = useState<string | null>(null);
+
+  const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+  const isOnCooldown = lastRefreshTime !== null && (Date.now() - lastRefreshTime < COOLDOWN_MS);
+
+  const handleGlobalRefresh = () => {
+    if (isOnCooldown || isGlobalRefreshing) return;
+    
+    setIsGlobalRefreshing(true);
+    setGlobalRefreshMessage(null);
+    
+    setTimeout(() => {
+      setIsGlobalRefreshing(false);
+      setGlobalRefreshMessage("更新了 2 条待办");
+      setLastRefreshTime(Date.now());
+      
+      setTimeout(() => {
+        setGlobalRefreshMessage(null);
+      }, 3000);
+    }, 2000);
+  };
+
   const handleComplete = (flow: string, closeTask: boolean = true) => {
     setCompletedFlow({ message: flow, isClosing: closeTask });
     setShowMoreActions(false);
@@ -103,7 +120,7 @@ export function ExecutionResult() {
     }
   };
 
-  const categories = ["内容审核", "互动承接", "发布异常", "素材匹配", "风险处理"];
+  const categories = ["内容审核", "互动承接", "发布异常", "素材匹配"];
 
   return (
     <div className="h-full flex flex-col bg-[#fcfcfc] overflow-hidden text-neutral-900 rounded-2xl border border-neutral-100 shadow-sm relative">
@@ -113,6 +130,23 @@ export function ExecutionResult() {
           <h2 className="text-[18px] font-bold text-neutral-900">
             执行中心
           </h2>
+          <div className="flex items-center gap-3">
+            <div className="relative group">
+              <button 
+                onClick={handleGlobalRefresh}
+                className={`p-2 rounded-lg border transition-colors flex items-center justify-center ${
+                  isOnCooldown || isGlobalRefreshing ? 'border-neutral-200 bg-neutral-50 text-neutral-400 cursor-not-allowed' : 'border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 cursor-pointer'
+                }`}
+              >
+                <RefreshCw size={16} className={isGlobalRefreshing ? "animate-spin" : ""} />
+              </button>
+              <div className={`absolute top-full right-0 mt-2 whitespace-nowrap bg-neutral-900 text-white text-[12px] px-3 py-1.5 rounded-lg pointer-events-none transition-opacity z-50 ${isGlobalRefreshing || globalRefreshMessage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                {isGlobalRefreshing ? '事项智能体巡查中...' :
+                 globalRefreshMessage ? globalRefreshMessage :
+                 isOnCooldown ? '冷却中' : '刷新执行事项'}
+              </div>
+            </div>
+          </div>
         </div>
         <p className="text-[14px] text-neutral-500 font-medium">
           当前有 6 件事项需要处理，其中 3 件会影响今天推进。
@@ -121,7 +155,7 @@ export function ExecutionResult() {
 
       {/* Main Flow List */}
       <div className="flex-1 overflow-y-auto p-8 relative">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+        <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
           {TASKS.map(task => (
             <div 
               key={task.id}
@@ -132,11 +166,10 @@ export function ExecutionResult() {
                <div className="flex items-center justify-between mb-4 pb-4 border-b border-neutral-100 shrink-0">
                   <div className="flex items-center gap-2">
                     {task.moduleName === '内容审核' && <FileText size={16} className="text-primary-500" />}
-                    {task.moduleName === '互动承接' && <User size={16} className="text-blue-500" />}
-                    {task.moduleName === '发布与账号' && <AlertOctagon size={16} className="text-rose-500" />}
+                    {task.moduleName === '互动承接' && <MessageCircle size={16} className="text-blue-500" />}
+                    {task.moduleName === '发布调度' && <AlertOctagon size={16} className="text-rose-500" />}
                     {task.moduleName === '素材与回传' && <Camera size={16} className="text-emerald-500" />}
                     {task.moduleName === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
-                    {task.moduleName === '异常与风险' && <ShieldAlert size={16} className="text-rose-600" />}
                     <span className="text-[14px] font-bold text-neutral-900">{task.moduleName}</span>
                   </div>
                   <div className="flex items-center gap-2 text-[11px] text-neutral-400">
@@ -153,10 +186,27 @@ export function ExecutionResult() {
                <div className="flex-1 flex flex-col">
                   <h3 className="text-[18px] font-bold text-neutral-900 mb-4">{task.importantResult}</h3>
                   
-                  <div className="flex items-center gap-3 text-[12px] mb-4">
-                    <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">快速确认 {task.statusQuick}</span>
-                    <span className="text-rose-600 bg-rose-50 px-2 py-1 rounded">需要处理 {task.statusAction}</span>
-                    <span className="text-neutral-500 bg-neutral-50 px-2 py-1 rounded border border-neutral-100">等待推进 {task.statusWait}</span>
+                  <div className="flex items-center gap-2 text-[12px] mb-4 flex-wrap">
+                    {task.moduleName === '发布调度' ? (
+                      <>
+                        <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">待发布 12</span>
+                        <span className="text-blue-600 bg-blue-50 px-2 py-1 rounded">等待手机发布 3</span>
+                        <span className="text-rose-600 bg-rose-50 px-2 py-1 rounded">发布失败 2</span>
+                        <span className="text-amber-600 bg-amber-50 px-2 py-1 rounded">账号需关注 1</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
+                          {task.moduleName === '互动承接' ? '待处理' : '快速确认'} {task.statusQuick}
+                        </span>
+                        <span className="text-rose-600 bg-rose-50 px-2 py-1 rounded">
+                          {task.moduleName === '互动承接' ? '待核实' : '需要处理'} {task.statusAction}
+                        </span>
+                        <span className="text-neutral-500 bg-neutral-50 px-2 py-1 rounded border border-neutral-100">
+                          {task.moduleName === '互动承接' ? '24h待跟进' : '等待推进'} {task.statusWait}
+                        </span>
+                      </>
+                    )}
                   </div>
                   
                   <div className="text-[13px] text-neutral-500 mb-4 flex items-start gap-1.5">
@@ -195,17 +245,13 @@ export function ExecutionResult() {
           />
         )}
       
-        {selectedTask && (selectedTask.moduleName === '发布与账号' || selectedTask.moduleName === '发布异常') && (
+        {selectedTask && (selectedTask.moduleName === '发布调度' || selectedTask.moduleName === '发布异常') && (
           <PublishExceptionWorkbench onClose={() => setSelectedTask(null)} />
         )}
-        {selectedTask && (selectedTask.moduleName === '异常与风险' || selectedTask.moduleName === '风险处理') && (
-          <InteractionWorkbench onClose={() => setSelectedTask(null)} />
-        )}
-
-      </AnimatePresence>
+        </AnimatePresence>
       
       <AnimatePresence>
-        {selectedTask && selectedTask.moduleName !== '内容审核' && selectedTask.moduleName !== '互动承接' && selectedTask.moduleName !== '素材与回传' && selectedTask.moduleName !== '发布与账号' && selectedTask.moduleName !== '发布异常' && selectedTask.moduleName !== '异常与风险' && selectedTask.moduleName !== '风险处理' && (
+        {selectedTask && selectedTask.moduleName !== '内容审核' && selectedTask.moduleName !== '互动承接' && selectedTask.moduleName !== '素材与回传' && selectedTask.moduleName !== '发布调度' && selectedTask.moduleName !== '发布异常' && (
           <div className="absolute inset-0 z-50 flex justify-end">
             <motion.div 
               initial={{ opacity: 0 }}
@@ -278,9 +324,26 @@ export function ExecutionResult() {
                       <FolderOpen size={14} /> 涉及项目：{selectedTask.projectsDesc}
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">快速确认 ({selectedTask.statusQuick})</span>
-                      <span className="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-[12px] font-bold border border-rose-200 cursor-pointer hover:bg-rose-100 transition-colors">需要处理 ({selectedTask.statusAction})</span>
-                      <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">等待推进 ({selectedTask.statusWait})</span>
+                      {selectedTask.moduleName === '发布调度' ? (
+                        <>
+                          <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">待发布 (12)</span>
+                          <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg text-[12px] font-bold border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors">等待手机发布 (3)</span>
+                          <span className="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-[12px] font-bold border border-rose-200 cursor-pointer hover:bg-rose-100 transition-colors">发布失败 (2)</span>
+                          <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">账号需关注 (1)</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">
+                            {selectedTask.moduleName === '互动承接' ? '待处理' : '快速确认'} ({selectedTask.statusQuick})
+                          </span>
+                          <span className="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-[12px] font-bold border border-rose-200 cursor-pointer hover:bg-rose-100 transition-colors">
+                            {selectedTask.moduleName === '互动承接' ? '待核实' : '需要处理'} ({selectedTask.statusAction})
+                          </span>
+                          <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">
+                            {selectedTask.moduleName === '互动承接' ? '24h待跟进' : '等待推进'} ({selectedTask.statusWait})
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <h2 className="text-[22px] font-bold text-neutral-900">{selectedTask.importantResult}</h2>
@@ -373,24 +436,6 @@ export function ExecutionResult() {
                        </div>
                     )}
 
-                    {selectedTask.moduleName === '风险处理' && (
-                       <div className="p-5 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                          <h4 className="text-[14px] font-bold text-neutral-900 mb-4">高风险互动</h4>
-                          <div className="p-4 bg-rose-50 border border-rose-100 rounded-lg flex gap-3">
-                             <div className="w-10 h-10 rounded-full bg-rose-200 flex items-center justify-center shrink-0 text-rose-600">
-                               <User size={20} />
-                             </div>
-                             <div>
-                                <div className="text-[13px] font-bold text-rose-900 mb-1">@用户778899</div>
-                                <p className="text-[13px] text-rose-800 mb-3">你们家狗粮吃完我家狗直接吐了，品控太差了吧！！</p>
-                                <div className="bg-white border border-rose-200 p-3 rounded-lg text-[13px] text-neutral-800">
-                                   <span className="text-primary-600 font-bold mr-1 mb-1 block">拟定官方回复 (待审):</span>
-                                   非常抱歉给您带来不好的体验！狗狗换粮期间肠胃比较敏感，我们非常重视您的情况。专属售后客服已通过私信联系您，请您留意，我们会负责到底！
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    )}
                  </div>
 
                  {/* Right: AI Suggestion Card or Agent Panel */}
@@ -528,10 +573,6 @@ export function ExecutionResult() {
                              <button onClick={() => handleComplete('标记人工处理')} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">标记人工处理</button>
                            </>
                          )}
-                         {selectedTask.moduleName === '风险处理' && (
-                           <>
-                           </>
-                         )}
                          <div className="h-px bg-neutral-100 my-1 w-full" />
                          <button onClick={() => handleComplete('进入项目档案', false)} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">进入项目档案</button>
                        </motion.div>
@@ -547,13 +588,13 @@ export function ExecutionResult() {
                    {selectedTask.moduleName === '内容审核' && <button onClick={() => handleComplete('请在左侧直接编辑内容', false)} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">调整一下</button>}
                    {selectedTask.moduleName === '素材匹配' && <button onClick={() => handleComplete('已为您重新匹配素材', false)} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">换一组</button>}
                    {selectedTask.moduleName === '发布异常' && <button onClick={() => handleComplete('已进入修改流程', false)} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">调整处理方式</button>}
-                   {selectedTask.moduleName === '风险处理' && <button onClick={() => handleComplete('已暂缓处理')} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">暂不处理</button>}
+                   
                    
                    <button 
-                     onClick={() => handleComplete(selectedTask.moduleName === '风险处理' ? '确认处理成功' : '采纳建议，处理成功')} 
+                     onClick={() => handleComplete('采纳建议，处理成功')} 
                      className="px-8 py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-md flex items-center gap-2"
                    >
-                     {selectedTask.moduleName === '风险处理' ? '确认处理' : '采纳建议'}
+                     {'采纳建议'}
                      <Check size={16} />
                    </button>
                 </div>

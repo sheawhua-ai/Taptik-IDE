@@ -9,6 +9,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 
 import { DataCenter } from '../DataCenter';
+import { CompetitorObservation } from './CompetitorObservation';
 
 interface EventItem {
   id: string;
@@ -63,7 +64,7 @@ const MOCK_EVENTS: EventItem[] = [
 ];
 
 export const ProjectReview: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'results' | 'discovery' | 'dashboards'>('results');
+  const [activeTab, setActiveTab] = useState<'results' | 'discovery' | 'dashboards' | 'competitor'>('results');
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
   return (
@@ -94,6 +95,12 @@ export const ProjectReview: React.FC = () => {
             className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all ${activeTab === 'dashboards' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
           >
             数据大屏
+          </button>
+          <button 
+            onClick={() => setActiveTab('competitor')}
+            className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all ${activeTab === 'competitor' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'}`}
+          >
+            竞品观察
           </button>
         </div>
       </div>
@@ -222,6 +229,12 @@ export const ProjectReview: React.FC = () => {
         {activeTab === 'discovery' && (
           <div className="flex-1 overflow-hidden relative">
             <DataCenter dataSubNav="roi_attribution" setDataSubNav={() => {}} setActiveNav={() => {}} />
+          </div>
+        )}
+
+        {activeTab === 'competitor' && (
+          <div className="flex-1 overflow-hidden relative">
+            <CompetitorObservation />
           </div>
         )}
 

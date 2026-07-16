@@ -84,7 +84,7 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
         <div className="px-6 py-4 border-b border-neutral-200 flex justify-between items-center bg-white shrink-0">
           <div className="flex items-center gap-6">
             <h2 className="text-[18px] font-bold text-neutral-900 flex items-center gap-2">
-              <Camera className="text-primary-600" size={20} />
+              <Camera className="text-emerald-600" size={20} />
               素材与回传
             </h2>
             <div className="flex space-x-1 bg-neutral-100 p-1 rounded-lg">
@@ -105,9 +105,14 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
               ))}
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-neutral-100 rounded-full text-neutral-500">
-            <X size={20} />
-          </button>
+                    <div className="flex items-center gap-4">
+            <button className="text-neutral-500 hover:text-neutral-900 p-2 rounded-full hover:bg-neutral-100 transition-colors flex items-center justify-center">
+              <RefreshCw size={18} />
+            </button>
+            <button onClick={onClose} className="p-2 hover:bg-neutral-100 rounded-full text-neutral-500">
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         {/* ================= Body ================= */}

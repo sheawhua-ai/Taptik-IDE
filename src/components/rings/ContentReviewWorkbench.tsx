@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Check, AlertOctagon, User, Tag, Plus, Image as ImageIcon,
-  ChevronRight, RefreshCw, History, AlignLeft, Info,
+  ChevronRight, RefreshCw, History, AlignLeft, Info, FileText,
   ShieldAlert, Sparkles, CheckCircle2, CornerUpLeft, ArrowRightLeft, ListChecks, Search
 } from 'lucide-react';
 
@@ -158,7 +158,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
       <div className="bg-white border-b border-neutral-200 px-6 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <h2 className="text-[16px] font-bold text-neutral-900">内容审核｜共12篇</h2>
+            <h2 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
+              <FileText className="text-primary-600" size={20} />
+              内容审核｜共12篇
+            </h2>
           </div>
           
           <div className="h-4 w-px bg-neutral-200 mx-2"></div>
@@ -180,6 +183,9 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="flex items-center gap-4">
+                    <button className="text-neutral-500 hover:text-neutral-900 p-2 rounded-full hover:bg-neutral-100 transition-colors flex items-center justify-center">
+            <RefreshCw size={18} />
+          </button>
           <button onClick={onClose} className="text-neutral-500 hover:text-neutral-900 p-1">
             <X size={20} />
           </button>

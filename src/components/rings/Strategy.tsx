@@ -602,6 +602,31 @@ export const Strategy: React.FC<{
 
                 <div className="space-y-2">
                   <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+                    <Eye size={14} /> 竞品依据
+                  </h3>
+                  <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4 relative group">
+                    <div className="absolute top-4 right-4 px-2 py-1 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded">本轮已引用</div>
+                    <div className="text-[13px] font-bold text-neutral-900 mb-1">幼犬换粮软便</div>
+                    <div className="text-[11px] text-neutral-500 mb-3">近7天监测6篇竞品笔记</div>
+                    <div className="text-[13px] text-neutral-700 leading-relaxed mb-3">
+                      <strong>关键发现：</strong>竞品笔记下充斥大量关于软便的负面讨论，用户迫切需要安全平稳的换粮方法。
+                    </div>
+                    <div className="bg-white border border-neutral-100 rounded-xl p-3 mb-3">
+                      <p className="text-[12px] italic text-neutral-600 mb-1">"按照说明换粮还是拉稀了，到底怎么回事？"</p>
+                      <p className="text-[12px] italic text-neutral-600">"吃了三天，大便不成形，是这粮的问题吗？"</p>
+                    </div>
+                    <div className="text-[13px] text-primary-700 font-medium mb-3">
+                      <strong>影响：</strong>补充换粮过渡内容，强化成分安全性证明。
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">前往竞品观察 <ArrowRight size={14} /></button>
+                      <button className="text-[12px] font-bold text-neutral-500 hover:text-neutral-700 flex items-center gap-1 ml-auto">暂不采用</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-[12px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-2 mb-3">
                     <FileText size={14} /> 素材条件
                   </h3>
                   <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4">
