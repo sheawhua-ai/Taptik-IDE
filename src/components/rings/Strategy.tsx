@@ -25,6 +25,7 @@ import {
   MessageSquare,
   Info,
   Send,
+  Eye,
   Image as ImageIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";

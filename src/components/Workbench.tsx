@@ -6,7 +6,7 @@ import {
   Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu, PanelLeftOpen, PanelRightClose, Folder, Search, Network
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { AgentSelector } from './command-center/AgentSelector';
+import { AgentSelector, AVAILABLE_AGENTS } from './command-center/AgentSelector';
 import { SmartInput } from './SmartInput';
 
 
@@ -34,11 +34,10 @@ interface WorkbenchProps {
 }
 
 const QUICK_SHORTCUTS = [
-  { id: '1', name: '文档处理', action: '帮我总结和处理这份文档。' },
-  { id: '2', name: '金融服务', action: '提供金融分析和建议。' },
-  { id: '3', name: '高考我帮你', action: '解答高考相关问题并提供志愿建议。' },
-  { id: '4', name: '数据分析及可视化', action: '帮我分析这些数据并生成可视化图表。' },
-  { id: '5', name: '深度研究', action: '对这个主题进行深入的学术和市场研究。' }
+  { id: '1', name: '商家画像', action: '帮我生成商家画像。' },
+  { id: '2', name: '蓝海词挖掘', action: '帮我挖掘蓝海词。' },
+  { id: '3', name: '选题规划', action: '帮我做个选题规划。' },
+  { id: '4', name: '爆款拆解', action: '帮我拆解一下这个爆款。' }
 ];
 
 const SUGGESTIONS = ['生成商品文案', '分析用户数据', '优化运营策略'];

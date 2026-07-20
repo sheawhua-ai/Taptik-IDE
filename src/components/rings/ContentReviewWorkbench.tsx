@@ -12,8 +12,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   const [textSelection, setTextSelection] = useState<{text: string, start: number, end: number} | null>(null);
   const [activeRightTab, setActiveRightTab] = useState<'issues' | 'basis' | 'local_edit' | '' | 'history'>('issues');
   const [showBatchConfirm, setShowBatchConfirm] = useState(false);
-  const [taskStatusView, setTaskStatusView] = useState<'quick' | 'action' | 'wait'>('action');
+  const [primaryTab, setPrimaryTab] = useState<'pending' | 'confirmed' | 'rejected'>('pending');
+  const [pendingFilter, setPendingFilter] = useState<'all' | 'quick' | 'action'>('action');
   const [activeArea, setActiveArea] = useState<'title' | 'content' | 'tags' | 'materials' | null>(null);
+
   
   // Local edit states
   const [localEditInput, setLocalEditInput] = useState('');
@@ -24,6 +26,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   
   // Memory prompt
   const [showMemoryPrompt, setShowMemoryPrompt] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   
   // 模拟笔记数据
   const [showReviewed, setShowReviewed] = useState(false);
@@ -71,29 +74,42 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
       history: [
         { time: '09:30', action: '系统生成初稿', user: 'AI' }
       ]
+    },
+    {
+      id: 'n2',
+      project: '幼犬换粮避坑搜索卡位',
+      accountType: 'KOS员工号',
+      accountName: '官方小助手',
+      title: '科学换粮，告别幼犬软便烦恼',
+      content: '品牌主账号内容...',
+      rawContent: '品牌主账号内容...',
+      status: '需逐篇处理',
+      mainIssue: '无明显问题',
+      tags: ['科学喂养'],
+      fixedRole: '宠物营养师',
+      expressedAngle: '专业科普',
+      target: '建立品牌专业形象',
+      structure: '痛点引入 -> 科学原理 -> 解决方案',
+      materialReq: '需要：产品高清图',
+      materialStatus: '不齐全',
+      canBatchConfirm: false, isReviewed: false,
+      history: [
+        { time: '09:30', action: '系统生成初稿', user: 'AI' }
+      ]
     }
   ]);
 
-  
+  const activeNote = notes.find(n => n.id === activeNoteId) || notes[0];
+
   const handleApprove = () => {
-    setNotes(prev => prev.map(n => n.id === activeNoteId ? { ...n, isReviewed: true } : n));
+    setNotes(prev => prev.map(n => n.id === activeNoteId ? { ...n, isReviewed: true, status: '已确认' } : n));
+    setToastMessage("内容已确认，已进入素材匹配");
+    setTimeout(() => setToastMessage(null), 3000);
     const nextUnreviewed = notes.find(n => n.id !== activeNoteId && !n.isReviewed);
     if (nextUnreviewed) {
       setActiveNoteId(nextUnreviewed.id);
     }
   };
-
-  const activeNote = notes.find(n => n.id === activeNoteId) || notes[0];
-
-
-  useEffect(() => {
-    if (contentRef.current && activeNote) {
-      if (!contentRef.current.innerHTML || contentRef.current.dataset.noteId !== activeNote.id) {
-        contentRef.current.innerHTML = activeNote.content;
-        contentRef.current.dataset.noteId = activeNote.id;
-      }
-    }
-  }, [activeNote]);
 
   const clearHighlight = () => {
     if (contentRef.current) {
@@ -160,30 +176,29 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
           <div className="flex items-center gap-2">
             <h2 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
               <FileText className="text-primary-600" size={20} />
-              内容审核｜共12篇
+              内容审核
             </h2>
           </div>
           
           <div className="h-4 w-px bg-neutral-200 mx-2"></div>
           
           <div className="flex items-center gap-2 text-[13px]">
-            <div onClick={() => { setTaskStatusView('quick'); setShowBatchConfirm(true); }} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${taskStatusView === 'quick' ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
-              <span className={`w-2 h-2 rounded-full ${taskStatusView === 'quick' ? 'bg-emerald-500' : 'bg-neutral-300'}`}></span>
-              <span>快速确认 (8)</span>
+            <div onClick={() => setPrimaryTab('pending')} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${primaryTab === 'pending' ? 'bg-neutral-900 border-neutral-900 text-white font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+              待审核 (12)
             </div>
-            <div onClick={() => { setTaskStatusView('action'); setShowBatchConfirm(false); }} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${taskStatusView === 'action' ? 'bg-rose-50 border-rose-200 text-rose-700 font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
-              <span className={`w-2 h-2 rounded-full ${taskStatusView === 'action' ? 'bg-rose-500' : 'bg-neutral-300'}`}></span>
-              <span>需要处理 (4)</span>
+            <div onClick={() => setPrimaryTab('confirmed')} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${primaryTab === 'confirmed' ? 'bg-neutral-900 border-neutral-900 text-white font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+              已确认 (6)
             </div>
-            <div onClick={() => setTaskStatusView('wait')} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${taskStatusView === 'wait' ? 'bg-amber-50 border-amber-200 text-amber-700 font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
-              <span className={`w-2 h-2 rounded-full ${taskStatusView === 'wait' ? 'bg-amber-500' : 'bg-neutral-300'}`}></span>
-              <span>等待推进 (6)</span>
+            <div onClick={() => setPrimaryTab('rejected')} className={`flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg border transition-colors ${primaryTab === 'rejected' ? 'bg-neutral-900 border-neutral-900 text-white font-bold' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>
+              已退回 (1)
             </div>
           </div>
         </div>
-
         <div className="flex items-center gap-4">
-                    <button className="text-neutral-500 hover:text-neutral-900 p-2 rounded-full hover:bg-neutral-100 transition-colors flex items-center justify-center">
+          <div className="text-[12px] text-neutral-500 bg-neutral-50 px-3 py-1.5 rounded-lg border border-neutral-100 cursor-pointer hover:bg-neutral-100 transition-colors">
+            <span className="font-bold text-neutral-700">6 篇内容已确认</span>，正在进入素材准备或发布安排。
+          </div>
+          <button className="text-neutral-500 hover:text-neutral-900 p-2 rounded-full hover:bg-neutral-100 transition-colors flex items-center justify-center">
             <RefreshCw size={18} />
           </button>
           <button onClick={onClose} className="text-neutral-500 hover:text-neutral-900 p-1">
@@ -191,15 +206,33 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
           </button>
         </div>
       </div>
-
+      
       {/* Main 3 Columns */}
       <div className="flex-1 flex overflow-hidden">
         
         {/* Left Column: Note List */}
         <div className="w-[300px] bg-white border-r border-neutral-200 flex flex-col shrink-0 overflow-hidden">
-          <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
-            <h3 className="text-[13px] font-bold text-neutral-900">待审核列表</h3>
-            <span className="text-[12px] text-neutral-500">按项目分组</span>
+          <div className="p-4 border-b border-neutral-100 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-[13px] font-bold text-neutral-900">待审核列表</h3>
+              <span className="text-[12px] text-neutral-500">按项目分组</span>
+            </div>
+            {primaryTab === 'pending' && (
+              <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-lg">
+                <button 
+                  onClick={() => { setPendingFilter('quick'); setShowBatchConfirm(true); }}
+                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-md transition-colors ${pendingFilter === 'quick' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
+                >
+                  可快速确认 8
+                </button>
+                <button 
+                  onClick={() => { setPendingFilter('action'); setShowBatchConfirm(false); }}
+                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-md transition-colors ${pendingFilter === 'action' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
+                >
+                  需逐篇处理 4
+                </button>
+              </div>
+            )}
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-4">
             
@@ -210,15 +243,15 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   <ChevronRight size={14} className="text-neutral-400 rotate-90" />
                   幼犬换粮避坑搜索卡位
                 </div>
-                <span className="text-neutral-400">{notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false)).length}</span>
+                <span className="text-neutral-400">{notes.filter(n => !n.isReviewed && (pendingFilter === 'quick' ? n.status === '可确认' : pendingFilter === 'action' ? n.status !== '可确认' : true)).length}</span>
               </div>
               
               <div className="pl-6 pr-2 space-y-3">
                 {/* Account Type Group */}
                 <div>
-                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-1">KOS员工号 ({notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === "KOS员工号").length})</div>
+                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-1">KOS员工号 ({notes.filter(n => !n.isReviewed && (pendingFilter === 'quick' ? n.status === '可确认' : pendingFilter === 'action' ? n.status !== '可确认' : true) && n.accountType === "KOS员工号").length})</div>
                    <div className="space-y-1.5">
-                     {notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === 'KOS员工号').map(n => (
+                     {notes.filter(n => !n.isReviewed && (pendingFilter === 'quick' ? n.status === '可确认' : pendingFilter === 'action' ? n.status !== '可确认' : true) && n.accountType === 'KOS员工号').map(n => (
                        <div 
                          key={n.id}
                          onClick={() => setActiveNoteId(n.id)}
@@ -245,9 +278,9 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                 
                 {/* Brand Account Group */}
                 <div>
-                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-3">品牌主账号 ({notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === "品牌主账号").length})</div>
+                   <div className="text-[11px] font-bold text-neutral-500 mb-2 mt-3">品牌主账号 ({notes.filter(n => !n.isReviewed && (pendingFilter === 'quick' ? n.status === '可确认' : pendingFilter === 'action' ? n.status !== '可确认' : true) && n.accountType === "品牌主账号").length})</div>
                    <div className="space-y-1.5">
-                     {notes.filter(n => !n.isReviewed && (taskStatusView === 'quick' ? true : taskStatusView === 'action' ? n.id === 'n2' : false) && n.accountType === '品牌主账号').map(n => (
+                     {notes.filter(n => !n.isReviewed && (pendingFilter === 'quick' ? n.status === '可确认' : pendingFilter === 'action' ? n.status !== '可确认' : true) && n.accountType === '品牌主账号').map(n => (
                        <div 
                          key={n.id}
                          onClick={() => setActiveNoteId(n.id)}
@@ -928,8 +961,8 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   <button onClick={() => setShowBatchConfirm(false)} className="px-6 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors">
                     转为逐篇审核
                   </button>
-                  <button onClick={() => setShowBatchConfirm(false)} className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm">
-                    确认所选内容
+                  <button onClick={() => { setShowBatchConfirm(false); setToastMessage("内容已确认，已进入素材匹配"); setTimeout(() => setToastMessage(null), 3000); }} className="px-6 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm">
+                    确认所选内容并进入下一环节
                   </button>
                 </div>
               </div>
@@ -937,7 +970,19 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
           </div>
         )}
       </AnimatePresence>
-
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.95 }} 
+            animate={{ opacity: 1, y: 0, scale: 1 }} 
+            exit={{ opacity: 0, y: 50, scale: 0.95 }} 
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] bg-neutral-900 text-white px-6 py-3 rounded-xl shadow-xl flex items-center gap-3"
+          >
+            <Check size={18} className="text-emerald-400" />
+            <span className="text-[14px] font-medium">{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
