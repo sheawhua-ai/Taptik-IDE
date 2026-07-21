@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Check, TrendingUp, Search, Users, FileText, Clock, Database, Sparkles, X, ChevronRight, CheckCircle2, Circle, AlertCircle, FolderOpen, ArrowRight, Save, MessageSquare, Settings2, Info, ChevronDown, CheckCircle, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, Check, TrendingUp, Search, Users, FileText, Clock, Database, Sparkles, X, ChevronRight, CheckCircle2, Circle, AlertCircle, FolderOpen, ArrowRight, Save, MessageSquare, Settings2, Info, ChevronDown, CheckCircle, AlertTriangle, Compass } from 'lucide-react';
 
 interface StrategyProps {
   hasData?: boolean;
@@ -46,11 +46,22 @@ const STRATEGIES = [
     focus: '铺设高信服度评测，强力控制单次拍摄成本',
     allocation: '80%预算用于KOS/KOC铺量，20%用于信息流追投',
     metrics: { content: 42, days: 14, budget: 8000 },
+    condition: '客单价高，私信链路跑通',
+    whyNot: '大流量曝光有限，见效相对稳定但不爆发。',
+    switchCondition: '如果私信成本大幅上升，或转单率严重下滑，需切换策略。',
     altSummary: '利用长尾搜索词的流量红利，通过KOS矩阵发布真实评测内容，截流精准意向用户，引导至私域完成高客单转化。'
   },
   {
     id: 's2',
     title: 'KOC 达人铺量蓄水',
+    rationaleDetails: [
+      { text: '品牌声量较弱需要曝光', fact: '当前社交媒体提及率低，自然流量匮乏。' },
+      { text: '素材成本低', fact: 'KOC达人可以通过置换或极低费用获取海量种草笔记。' }
+    ],
+    solution: '品牌认知度低，初期信任难以建立',
+    focus: '大量铺设真实场景种草，提高品牌曝光频次',
+    allocation: '100%预算用于KOC产品置换及微薄稿费',
+    metrics: { content: 120, days: 30, budget: 5000 },
     condition: '品牌声量极弱，急需扩大圈层曝光',
     whyNot: '当期私域转化的直接贡献率较弱，无法满足当前GMV目标要求。',
     switchCondition: '如果当前目标从【高ROI转化】变更为【大促前大面积蓄水种草】，建议切换此策略。',
@@ -59,6 +70,14 @@ const STRATEGIES = [
   {
     id: 's3',
     title: '信息流强转化模型',
+    rationaleDetails: [
+      { text: '已有成熟高转化素材', fact: '上月跑出单篇获客成本<15元的黄金素材。' },
+      { text: '需要快速消耗预算换取GMV', fact: '大促临近，对转化效率要求极高。' }
+    ],
+    solution: '自然流起量慢，转化规模受限',
+    focus: '集中预算测试放量，实时监控ROI及耗损',
+    allocation: '90%预算用于成熟跑量素材的竞价追投，10%用于素材微调',
+    metrics: { content: 5, days: 7, budget: 20000 },
     condition: '预算充足，且已跑出高转化素材模型',
     whyNot: '缺乏已被验证的高转化跑量模型，直接进行高频次的信息流竞价测试成本及风险过高。',
     switchCondition: '如果单篇评测笔记自然流量爆发并跑通转化模型，且预算追加到2万元以上，可切换此策略放大。',
@@ -238,11 +257,17 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
   const [kosCount, setKosCount] = useState(defaultKos);
   const [kocCount, setKocCount] = useState(defaultKoc);
   
+  const [brandCost, setBrandCost] = useState(0);
+  const [kosCost, setKosCost] = useState(150);
+  const [kocCost, setKocCost] = useState(50);
+  const [infoFlowBudget, setInfoFlowBudget] = useState(2000);
+  const [executionDays, setExecutionDays] = useState(15);
+  
   const [budget, setBudget] = useState(strategy.metrics.budget);
   const [isBudgetManual, setIsBudgetManual] = useState(false);
   
   // 联动逻辑：随着内容数量变化，自动重新计算预估消耗
-  const calculatedBudget = brandCount * 0 + kosCount * 150 + kocCount * 50 + 2000; // 假设 info flow budget = 2000固定
+  const calculatedBudget = brandCount * brandCost + kosCount * kosCost + kocCount * kocCost + infoFlowBudget;
   
   const handleCalculate = () => {
     setBudget(calculatedBudget);
@@ -264,7 +289,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
     }
     
     if (diff < 0) {
-       impacts.push({ type: 'warn', text: `预算下调，信息流追投空间被压缩 (- ${Math.abs(diff)}元)` });
+       impacts.push({ type: 'warn', text: `总预算下调 (- ${Math.abs(diff)}元)` });
     }
     
     if (budget < calculatedBudget && isBudgetManual) {
@@ -304,7 +329,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                       <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[120px]">渠道</th>
                       <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[100px]">内容量</th>
                       <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[100px]">可用账号</th>
-                      <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[120px]">单篇预估成本</th>
+                      <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[120px]">单篇预估成本(元)</th>
                       <th className="pb-3 text-[12px] font-bold text-neutral-500">策略用途</th>
                     </tr>
                   </thead>
@@ -312,28 +337,34 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                     <tr className="border-b border-neutral-100">
                       <td className="py-4 font-bold text-neutral-800">品牌官号</td>
                       <td className="py-4">
-                        <input type="number" value={brandCount} onChange={e => setBrandCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none" />
+                        <input type="number" value={brandCount} onChange={e => setBrandCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
                       <td className="py-4 text-neutral-600">1个</td>
-                      <td className="py-4 text-neutral-600">0元 (内部制作)</td>
+                      <td className="py-4 text-neutral-600">
+                        <input type="number" value={brandCost} onChange={e => setBrandCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      </td>
                       <td className="py-4 text-neutral-500 text-[12px]">官方背书定调</td>
                     </tr>
                     <tr className="border-b border-neutral-100 bg-primary-50/30">
                       <td className="py-4 font-bold text-primary-900 flex items-center gap-1">KOS/员工号 <Sparkles size={12} className="text-primary-500"/></td>
                       <td className="py-4">
-                        <input type="number" value={kosCount} onChange={e => setKosCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-white border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none" />
+                        <input type="number" value={kosCount} onChange={e => setKosCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-white border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
                       <td className="py-4 text-neutral-600">6个</td>
-                      <td className="py-4 text-neutral-600">约 150元</td>
+                      <td className="py-4 text-neutral-600">
+                        <input type="number" value={kosCost} onChange={e => setKosCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-white border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      </td>
                       <td className="py-4 text-primary-700/80 text-[12px] font-medium">搜索长尾截流与私信承接</td>
                     </tr>
                     <tr className="border-b border-neutral-100">
                       <td className="py-4 font-bold text-neutral-800">KOC/素人</td>
                       <td className="py-4">
-                        <input type="number" value={kocCount} onChange={e => setKocCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none" />
+                        <input type="number" value={kocCount} onChange={e => setKocCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
                       <td className="py-4 text-neutral-600">招募池充足</td>
-                      <td className="py-4 text-neutral-600">约 50元 (置换)</td>
+                      <td className="py-4 text-neutral-600">
+                        <input type="number" value={kocCost} onChange={e => setKocCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      </td>
                       <td className="py-4 text-neutral-500 text-[12px]">外围真实口碑铺设</td>
                     </tr>
                     <tr>
@@ -341,7 +372,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                       <td className="py-4 text-neutral-400">—</td>
                       <td className="py-4 text-neutral-400">—</td>
                       <td className="py-4 font-bold text-neutral-900">
-                        动态分配
+                        <input type="number" value={infoFlowBudget} onChange={e => setInfoFlowBudget(Number(e.target.value))} className="w-20 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
                       <td className="py-4 text-neutral-500 text-[12px]">放大自然流优质笔记</td>
                     </tr>
@@ -352,22 +383,30 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
           </div>
           
           <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden p-6">
-            <label className="text-[15px] font-bold text-neutral-900 block mb-4">预算规划</label>
-            <div className="flex items-start gap-8">
+            <label className="text-[15px] font-bold text-neutral-900 block mb-4">全局参数设置</label>
+            <div className="flex items-start gap-12">
                <div className="flex-1">
                  <div className="text-[13px] text-neutral-500 mb-1">当前项目总预算 (元)</div>
                  <div className="flex items-center gap-3">
-                   <input type="number" value={budget} onChange={e => {setBudget(Number(e.target.value)); setIsBudgetManual(true);}} className="w-32 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-[16px] font-bold text-neutral-900 focus:border-primary-500 focus:outline-none" />
+                   <input type="number" value={budget} onChange={e => {setBudget(Number(e.target.value)); setIsBudgetManual(true);}} className="w-32 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-[16px] font-bold text-neutral-900 focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                    {isBudgetManual && <button onClick={handleCalculate} className="text-[12px] font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded">依内容量重算</button>}
                  </div>
                </div>
-               <div className="w-px h-12 bg-neutral-200"></div>
+               
                <div className="flex-1">
+                 <div className="text-[13px] text-neutral-500 mb-1">执行周期 (天)</div>
+                 <div className="flex items-center gap-3">
+                   <input type="number" value={executionDays} onChange={e => setExecutionDays(Number(e.target.value))} className="w-32 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-[16px] font-bold text-neutral-900 focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                 </div>
+               </div>
+               
+               <div className="w-px h-12 bg-neutral-200 hidden"></div>
+               <div className="flex-1 hidden">
                  <div className="text-[13px] text-neutral-500 mb-1">原策略建议预算</div>
                  <div className="text-[16px] font-bold text-neutral-800">{strategy.metrics.budget} <span className="text-[12px] font-normal text-neutral-400 ml-1">元</span></div>
                </div>
-               <div className="w-px h-12 bg-neutral-200"></div>
-               <div className="flex-1">
+               <div className="w-px h-12 bg-neutral-200 hidden"></div>
+               <div className="flex-1 hidden">
                  <div className="text-[13px] text-neutral-500 mb-1">差值</div>
                  <div className={`text-[16px] font-bold ${diffBudget < 0 ? 'text-orange-600' : diffBudget > 0 ? 'text-emerald-600' : 'text-neutral-500'}`}>
                    {diffBudget > 0 ? '+' : ''}{diffBudget} <span className="text-[12px] font-normal ml-1">元</span>
@@ -422,9 +461,10 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
   const [showAltStrategies, setShowAltStrategies] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [activeStrategyId, setActiveStrategyId] = useState('s1');
 
-  const primaryStrategy = STRATEGIES[0];
-  const alternateStrategies = STRATEGIES.slice(1);
+  const primaryStrategy = STRATEGIES.find(s => s.id === activeStrategyId) || STRATEGIES[0];
+  const alternateStrategies = STRATEGIES.filter(s => s.id !== activeStrategyId);
 
   const handleCreateProject = () => {
     alert('项目创建成功！即将进入[执行空间]开启内容分发工作流...');
@@ -444,9 +484,6 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
     return (
       <div className="max-w-[1000px] mx-auto py-12 animate-in fade-in duration-300">
         <div className="text-center mb-12">
-          <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Sparkles size={32} className="text-primary-600" />
-          </div>
           <h2 className="text-[28px] font-bold text-neutral-900 mb-3">AI 操盘策略推演</h2>
           <p className="text-[15px] text-neutral-500 max-w-[600px] mx-auto mb-8">
             系统将基于知识与记忆中的商家事实数据，自动推演最适合当期的营销打法、资源分配比例以及预估成果。
@@ -470,7 +507,7 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
             {isGenerating ? (
               <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> 正在诊断推演中...</>
             ) : (
-              <><Sparkles size={18} /> 生成操盘策略</>
+              <><Compass size={18} /> 生成操盘策略</>
             )}
           </button>
         </div>
@@ -538,23 +575,25 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
       <div className="space-y-6">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h2 className="text-[24px] font-bold text-neutral-900 mb-2 flex items-center gap-2">
-               <Sparkles className="text-primary-600" /> 操盘策略已生成
+            <h2 className="text-[20px] font-bold text-neutral-900 mb-2">
+               操盘策略已生成
             </h2>
             <p className="text-[14px] text-neutral-500">基于完整的商家事实诊断，为您推荐以下运营打法。</p>
           </div>
           <div className="flex gap-3">
             <button 
-              onClick={() => setIsGenerated(false)}
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("open-subagent", { detail: { action: 'discuss_strategy' } }));
+              }}
               className="px-4 py-2.5 bg-neutral-100 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-200 transition-colors flex items-center gap-2"
             >
-              <Sparkles size={16} /> 生成操盘策略
+              <MessageSquare size={16} /> 重新探讨策略
             </button>
             <button 
               onClick={() => setShowDiagnosisDetail(true)}
-              className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors shadow-sm"
+              className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors shadow-sm flex items-center gap-2"
             >
-              查看诊断详情
+              <Info size={16} /> 查看诊断详情
             </button>
           </div>
         </div>
@@ -635,7 +674,7 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
           {showAltStrategies && (
             <div className="grid grid-cols-2 gap-6 mt-4 animate-in fade-in slide-in-from-top-4 duration-300">
               {alternateStrategies.map(strategy => (
-                <div key={strategy.id} className="bg-white border border-neutral-200 p-6 rounded-3xl shadow-sm hover:border-neutral-300 transition-all">
+                <div key={strategy.id} onClick={() => { setActiveStrategyId(strategy.id); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="bg-white border border-neutral-200 p-6 rounded-3xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer">
                   <h4 className="text-[18px] font-bold text-neutral-900 mb-4">{strategy.title}</h4>
                   <div className="space-y-4">
                     <div>

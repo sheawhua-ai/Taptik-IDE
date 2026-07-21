@@ -801,7 +801,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
           <div className="p-8 space-y-8 animate-in fade-in duration-500 flex flex-col h-full overflow-hidden">
             <div className="flex items-center justify-between shrink-0">
               <div>
-                <h3 className="text-xl font-semibold text-neutral-900 tracking-tight flex items-center gap-2">复盘归因</h3>
+                <h3 className="text-[20px] font-bold text-neutral-900">复盘归因</h3>
                 <p className="text-[13px] text-neutral-400 mt-1">智能分析数据，发现执行结与策略偏差</p>
               </div>
             </div>

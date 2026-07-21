@@ -128,7 +128,7 @@ export function ExecutionResult() {
       {/* Top Header */}
       <div className="px-8 py-5 border-b border-neutral-100 bg-white shrink-0">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-[18px] font-bold text-neutral-900">
+          <h2 className="text-[20px] font-bold text-neutral-900">
             执行中心
           </h2>
           <div className="flex items-center gap-3">

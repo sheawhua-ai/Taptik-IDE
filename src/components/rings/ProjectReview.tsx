@@ -71,8 +71,7 @@ export const ProjectReview: React.FC = () => {
     <div className="h-full flex flex-col bg-[#fafafa]">
       <div className="px-8 pt-8 pb-4 flex-shrink-0 flex justify-between items-end">
         <div>
-          <h2 className="text-[20px] font-bold text-neutral-900 flex items-center gap-2">
-            <Target className="text-primary-500" />
+          <h2 className="text-[20px] font-bold text-neutral-900">
             复盘与归因
           </h2>
           <p className="text-[14px] text-neutral-500 mt-1">

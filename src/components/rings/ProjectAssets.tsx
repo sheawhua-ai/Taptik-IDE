@@ -694,8 +694,7 @@ export function ProjectAssets() {
       <div className="px-8 pt-6 border-b border-neutral-100 bg-white shrink-0">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-[20px] font-bold text-neutral-900 flex items-center gap-2">
-              <FolderOpen size={24} className="text-primary-500" />
+            <h2 className="text-[20px] font-bold text-neutral-900">
               项目档案
             </h2>
             <p className="text-[13px] text-neutral-500 mt-1">长期保存项目沉淀、发布记录、账号资产与互动线索结果。卡点处理请前往执行中心。</p>
