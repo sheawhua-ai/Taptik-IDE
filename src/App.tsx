@@ -529,7 +529,14 @@ export default function App() {
     window.addEventListener("open-expert", handleOpenExpertApp);
     window.addEventListener("start-ai-action", handleStartAction);
     
-    const handleToKnowledge = () => setActiveNav("knowledge");
+    const handleToKnowledge = (e: any) => {
+      setActiveNav("knowledge");
+      if (e.detail) {
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent("knowledge-navigate", { detail: e.detail }));
+        }, 100);
+      }
+    };
     window.addEventListener("switch-to-knowledge", handleToKnowledge);
 
     return () => {
@@ -1605,6 +1612,7 @@ export default function App() {
                       <Strategy
                         hasData={hasData}
                         strategyData={onboardingData.strategyKeywords}
+                        merchantId={activeProjectId}
                       />
                     )}
 

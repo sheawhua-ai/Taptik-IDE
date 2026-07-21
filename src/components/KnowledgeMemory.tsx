@@ -780,6 +780,30 @@ export function KnowledgeMemory() {
     }
   }, [activeSpace]);
 
+  useEffect(() => {
+    const handleNavigate = (e: any) => {
+      const { targetModule, action } = e.detail;
+      setActiveSpace("merchant");
+      if (action === 'file_mapping') {
+        setActiveTab("source");
+        setIsCompletingProfile(false);
+      } else {
+        setActiveTab("memory");
+        if (targetModule) {
+          setActiveCategory(targetModule);
+        }
+      }
+      if (action === 'ai_interview') {
+        setIsCompletingProfile(false);
+        setTimeout(() => {
+           window.dispatchEvent(new CustomEvent('open-expert', { detail: { expert: '资料补齐助手', context: `我们需要补充关于【${targetModule}】的资料。` } }));
+        }, 100);
+      }
+    };
+    window.addEventListener("knowledge-navigate", handleNavigate);
+    return () => window.removeEventListener("knowledge-navigate", handleNavigate);
+  }, []);
+
   const filteredMemories = MOCK_MEMORIES.filter(m => activeCategory === "all" || m.category === activeCategory);
 
   return (
@@ -1129,8 +1153,8 @@ export function KnowledgeMemory() {
                     <h2 className="text-[18px] font-bold text-neutral-900">本地资料库</h2>
                     <p className="text-[13px] text-neutral-500 mt-1">配置本地文件夹映射后，AI 会自动监控其中的原始资料并解析。</p>
                   </div>
-                  <button className="py-2 px-4 bg-neutral-900 text-white rounded-lg text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2">
-                    <FolderOpen size={16} /> 更改文件夹映射
+                  <button onClick={() => { setIsCompletingProfile(false); setActiveTab("source"); }} className="py-2 px-4 bg-neutral-900 text-white rounded-lg text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2">
+                    <FolderOpen size={16} /> 配置本地文件映射
                   </button>
                 </div>
                 
@@ -1232,11 +1256,11 @@ export function KnowledgeMemory() {
                       </div>
                       <p className="text-[12px] text-neutral-500 mb-4">{missing.desc}</p>
                       <div className="flex gap-2">
-                        <button className="px-3 py-1.5 bg-neutral-900 text-white text-[12px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-1.5">
+                        <button onClick={() => { setIsCompletingProfile(false); setTimeout(() => { window.dispatchEvent(new CustomEvent('open-expert', { detail: { expert: '资料补齐助手', context: `我们需要补充关于缺失资料【${missing.title}】的信息。` } })) }, 100); }} className="px-3 py-1.5 bg-neutral-900 text-white text-[12px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-1.5">
                           <Sparkles size={14} /> 开启 AI 访谈
                         </button>
-                        <button className="px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm">
-                          手动填写
+                        <button onClick={() => { setIsCompletingProfile(false); setActiveTab("source"); }} className="px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm flex items-center gap-1.5">
+                          <FolderOpen size={14} /> 配置本地文件映射
                         </button>
                       </div>
                     </div>

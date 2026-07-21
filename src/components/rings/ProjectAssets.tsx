@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  FolderOpen, Target, Calendar, LayoutTemplate, FileText, Image as ImageIcon, Users, MessageSquare, AlertCircle, ArrowRight, Activity, BarChart2, Archive, CheckCircle2, X, Link, Play, ChevronLeft, AlertOctagon, Zap, ShieldCheck, Info, User, Clock, Check, MoreHorizontal, MessageCircle, Send, CheckCircle
+  FolderOpen, Target, Calendar, LayoutTemplate, FileText, Image as ImageIcon, Users, MessageSquare, AlertCircle, ArrowRight, Activity, BarChart2, Archive, CheckCircle2, X, Link, Play, ChevronLeft, AlertOctagon, Zap, ShieldCheck, Info, User, Clock, Check, MoreHorizontal, Plus, Trash2, MessageCircle, Send, CheckCircle
 } from "lucide-react";
 
 type MainTab = "项目" | "账号资产";
@@ -14,6 +14,7 @@ export function ProjectAssets() {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [detailTab, setDetailTab] = useState<DetailTab>("项目总览");
   const [publishSubTab, setPublishSubTab] = useState<"发布进度" | "参与账号">("发布进度");
+  const [accountView, setAccountView] = useState<"list" | "add" | "remove">("list");
   const [selectedAccount, setSelectedAccount] = useState<any>(null);
 
   const MOCK_PROJECTS = [
@@ -839,11 +840,22 @@ export function ProjectAssets() {
         </>
       )}
 
-      {mainTab === "账号资产" && (
-        <div className="flex-1 overflow-hidden flex">
+      {mainTab === "账号资产" && accountView === 'list' && (
+        <div className="flex-1 overflow-hidden flex relative">
            {/* Account List */}
            <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/50 custom-scrollbar">
              <div className="max-w-6xl mx-auto space-y-8">
+               <div className="flex justify-between items-center">
+                 <h2 className="text-[20px] font-bold text-neutral-900">账号资产管理</h2>
+                 <div className="flex gap-3">
+                   <button onClick={() => setAccountView('add')} className="px-4 py-2 bg-primary-600 text-white rounded-lg text-[13px] font-bold hover:bg-primary-700 transition-colors flex items-center gap-2">
+                     <Plus size={16} /> 新增账号
+                   </button>
+                   <button onClick={() => setAccountView('remove')} className="px-4 py-2 bg-white border border-neutral-200 text-neutral-600 rounded-lg text-[13px] font-bold hover:bg-neutral-50 transition-colors flex items-center gap-2">
+                     <Trash2 size={16} /> 移除账号
+                   </button>
+                 </div>
+               </div>
                
                {["自有及可调度账号", "外部合作账号", "发布后识别账号"].map(group => {
                  const accounts = MOCK_ACCOUNTS.filter(a => a.group === group);
@@ -910,12 +922,20 @@ export function ProjectAssets() {
            {/* Account Drawer */}
            <AnimatePresence>
              {selectedAccount && (
-               <motion.div 
-                 initial={{ x: 400, opacity: 0 }}
-                 animate={{ x: 0, opacity: 1 }}
-                 exit={{ x: 400, opacity: 0 }}
-                 className="w-[400px] bg-white border-l border-neutral-200 shadow-2xl flex flex-col z-10 shrink-0"
-               >
+               <>
+                 <motion.div 
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: 1 }}
+                   exit={{ opacity: 0 }}
+                   onClick={() => setSelectedAccount(null)}
+                   className="absolute inset-0 bg-neutral-900/20 z-20"
+                 />
+                 <motion.div 
+                   initial={{ x: 500, opacity: 0 }}
+                   animate={{ x: 0, opacity: 1 }}
+                   exit={{ x: 500, opacity: 0 }}
+                   className="absolute inset-y-0 right-0 w-[500px] bg-white border-l border-neutral-200 shadow-2xl flex flex-col z-30 shrink-0"
+                 >
                   <div className="p-5 border-b border-neutral-100 flex justify-between items-center bg-neutral-50">
                      <h3 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
                        <User size={18} className="text-primary-600" />
@@ -1001,8 +1021,100 @@ export function ProjectAssets() {
                      )}
                   </div>
                </motion.div>
+               </>
              )}
            </AnimatePresence>
+        </div>
+      )}
+      
+      {/* Add Account View */}
+      {mainTab === "账号资产" && accountView === 'add' && (
+        <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/50">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-4 mb-6">
+              <button onClick={() => setAccountView('list')} className="p-2 hover:bg-neutral-200 rounded-lg text-neutral-500 transition-colors">
+                <ChevronLeft size={20} />
+              </button>
+              <h2 className="text-[20px] font-bold text-neutral-900">新增账号</h2>
+            </div>
+            
+            <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[13px] font-bold text-neutral-700">小红书昵称</label>
+                  <input type="text" className="w-full border border-neutral-300 rounded-xl px-4 py-2 text-[14px] focus:outline-none focus:border-primary-500" placeholder="请输入小红书昵称" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[13px] font-bold text-neutral-700">主页链接 / 小红书号</label>
+                  <input type="text" className="w-full border border-neutral-300 rounded-xl px-4 py-2 text-[14px] focus:outline-none focus:border-primary-500" placeholder="请输入链接或ID" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[13px] font-bold text-neutral-700">账号类型</label>
+                  <select className="w-full border border-neutral-300 rounded-xl px-4 py-2 text-[14px] focus:outline-none focus:border-primary-500 bg-white">
+                    <option>KOS</option>
+                    <option>专业号</option>
+                    <option>KOC</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[13px] font-bold text-neutral-700">人设方向</label>
+                  <input type="text" className="w-full border border-neutral-300 rounded-xl px-4 py-2 text-[14px] focus:outline-none focus:border-primary-500" placeholder="例如：成分党评测" />
+                </div>
+              </div>
+              <div className="pt-6 border-t border-neutral-100 flex justify-end gap-3">
+                <button onClick={() => setAccountView('list')} className="px-6 py-2 bg-white border border-neutral-200 text-neutral-700 font-bold rounded-xl text-[13px] hover:bg-neutral-50 transition-colors">取消</button>
+                <button onClick={() => setAccountView('list')} className="px-6 py-2 bg-primary-600 text-white font-bold rounded-xl text-[13px] hover:bg-primary-700 transition-colors">确认新增</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Remove Account View */}
+      {mainTab === "账号资产" && accountView === 'remove' && (
+        <div className="flex-1 overflow-y-auto p-8 bg-neutral-50/50">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-4 mb-6">
+              <button onClick={() => setAccountView('list')} className="p-2 hover:bg-neutral-200 rounded-lg text-neutral-500 transition-colors">
+                <ChevronLeft size={20} />
+              </button>
+              <h2 className="text-[20px] font-bold text-neutral-900">移除账号</h2>
+            </div>
+            
+            <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-[15px] font-bold text-neutral-800">选择要移除的账号</h3>
+                <div className="flex gap-2">
+                  <input type="text" placeholder="搜索账号名称..." className="border border-neutral-300 rounded-lg px-3 py-1.5 text-[13px] focus:outline-none focus:border-primary-500" />
+                  <button className="px-4 py-1.5 bg-rose-600 text-white font-bold rounded-lg text-[13px] hover:bg-rose-700 transition-colors">批量移除</button>
+                </div>
+              </div>
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-neutral-50 border-b border-neutral-100 text-[12px] text-neutral-500 font-bold">
+                    <th className="p-3 w-10"><input type="checkbox" className="rounded" /></th>
+                    <th className="p-3">账号名称</th>
+                    <th className="p-3">类型</th>
+                    <th className="p-3">状态</th>
+                    <th className="p-3">关联项目数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3].map(i => (
+                    <tr key={i} className="border-b border-neutral-100 hover:bg-neutral-50">
+                      <td className="p-3"><input type="checkbox" className="rounded" /></td>
+                      <td className="p-3 font-medium text-[13px]">小红书-A0{i}</td>
+                      <td className="p-3 text-[13px] text-neutral-500">KOS</td>
+                      <td className="p-3 text-[13px]">
+                        <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded">正常</span>
+                      </td>
+                      <td className="p-3 text-[13px] text-neutral-500">3个</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>
