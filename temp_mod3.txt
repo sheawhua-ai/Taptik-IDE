@@ -1,0 +1,178 @@
+                 >
+                   <Trash2 size={14} />
+                 </button>
+               </div>
+             ))}
+           </div>
+        </section>
+
+        {/* Module 3: Execution Channels */}
+        <section>
+           <h2 className="text-[18px] font-extrabold text-neutral-900 mb-6 flex items-center gap-2">
+             <Activity size={18} className="text-neutral-400" /> 执行通道
+           </h2>
+           <div className="space-y-6">
+             {/* KOC Channel */}
+             <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+               <div className="bg-neutral-50 p-4 border-b border-neutral-200 flex justify-between items-center">
+                 <div className="flex items-center gap-2 font-bold text-[15px]">
+                   <Users size={16} className="text-neutral-500" /> KOC消费者共创
+                 </div>
+                 <div className="text-[12px] text-neutral-500">默认1参与者=1笔记，不固定绑定账号</div>
+               </div>
+               <div className="p-6 grid grid-cols-3 gap-8">
+                 <div className="space-y-4">
+                   <div className="flex justify-between items-center">
+                     <span className="text-[13px] text-neutral-500">计划参与人数</span>
+                     <input type="number" value={draft.koc.planCount} onChange={e => setDraft({...draft, koc: {...draft.koc, planCount: Number(e.target.value)}})} className="w-16 bg-transparent outline-none border-b border-transparent focus:border-neutral-300 font-bold text-right" />
+                   </div>
+                   <div className="flex justify-between items-center">
+                     <span className="text-[13px] text-neutral-500">预计形成笔记</span>
+                     <input type="number" value={draft.koc.notes} onChange={e => setDraft({...draft, koc: {...draft.koc, notes: Number(e.target.value)}})} className="w-16 bg-transparent outline-none border-b border-transparent focus:border-neutral-300 font-bold text-right" />
+                   </div>
+                   <div className="flex justify-between items-center">
+                     <span className="text-[13px] text-neutral-500">每日招募配额</span>
+                     <div className="flex items-center gap-1 font-bold">
+                       <input type="number" value={draft.koc.dailyRecruit} onChange={e => setDraft({...draft, koc: {...draft.koc, dailyRecruit: Number(e.target.value)}})} className="w-12 bg-transparent outline-none border-b border-transparent focus:border-neutral-300 text-right" />
+                       <span className="text-neutral-500 font-normal">/ 天</span>
+                     </div>
+                   </div>
+                   <div className="flex justify-between items-center">
+                     <span className="text-[13px] text-neutral-500">执行时间</span>
+                     <input type="date" value={draft.koc.recruitDates} onChange={e => setDraft({...draft, koc: {...draft.koc, recruitDates: e.target.value}})} className="w-24 bg-transparent outline-none border-b border-transparent focus:border-neutral-300 font-bold text-right" />
+                   </div>
+                 </div>
+                 <div className="space-y-3 col-span-2">
+                   <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg border border-neutral-100">
+                     <div>
+                       <div className="text-[11px] text-neutral-500 mb-1">使用内容包</div>
+                       <div className="text-[13px] font-bold">{draft.koc.contentPack}</div>
+                     </div>
+                     <button onClick={() => setDrawer("koc_pack")} className="text-[12px] font-bold text-primary-600 hover:underline">编辑内容包</button>
+                   </div>
+                   <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg border border-neutral-100">
+                     <div>
+                       <div className="text-[11px] text-neutral-500 mb-1">参与者信息采集表</div>
+                       <div className="text-[13px] font-bold">{draft.koc.form}</div>
+                     </div>
+                     <button onClick={() => setDrawer("koc_form")} className="text-[12px] font-bold text-primary-600 hover:underline">配置问卷</button>
+                   </div>
+                   <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg border border-neutral-100">
+                     <div>
+                       <div className="text-[11px] text-neutral-500 mb-1">素材任务</div>
+                       <div className="text-[13px] font-bold">{draft.koc.assetTask}</div>
+                     </div>
+                     <button onClick={() => setDrawer("koc_task")} className="text-[12px] font-bold text-primary-600 hover:underline">配置任务</button>
+                   </div>
+                 </div>
+               </div>
+               <div className="bg-neutral-50 p-3 border-t border-neutral-100 flex justify-between items-center px-6">
+                 <span className="text-[12px] text-neutral-500">任务页面准备就绪</span>
+                 <div className="flex gap-3">
+                   <button className="text-[12px] font-bold px-3 py-1.5 bg-white border border-neutral-200 rounded shadow-sm hover:bg-neutral-50">预览页面</button>
+                   <button className="text-[12px] font-bold px-3 py-1.5 bg-neutral-900 text-white rounded shadow-sm hover:bg-neutral-800">生成招募入口</button>
+                 </div>
+               </div>
+             </div>
+
+             {/* KOS Channel */}
+             <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+               <div className="bg-neutral-50 p-4 border-b border-neutral-200 flex items-center gap-2 font-bold text-[15px]">
+                 <CheckCircle2 size={16} className="text-neutral-500" /> 店长号 / KOS
+               </div>
+               <div className="p-4 overflow-x-auto">
+                 <table className="w-full text-left border-collapse text-[13px]">
+                   <thead>
+                     <tr className="text-neutral-500 border-b border-neutral-100">
+                       <th className="font-medium pb-2 pr-4">具体账号</th>
+                       <th className="font-medium pb-2 pr-4">指定员工</th>
+                       <th className="font-medium pb-2 pr-4">计划发文</th>
+                       <th className="font-medium pb-2 pr-4">执行时间</th>
+                       
+                       <th className="font-medium pb-2 pr-4">内容方向</th>
+                       <th className="font-medium pb-2">素材状态</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {draft.kos.map((k:any) => (
+                       <tr key={k.id} className="border-b border-neutral-50 last:border-0">
+                         <td className="py-3 pr-4 font-bold">{k.name}</td>
+                         <td className="py-3 pr-4">
+                           <button onClick={() => setDrawer("employee")} className="text-primary-600 hover:underline">{k.pic}</button>
+                         </td>
+                         <td className="py-3 pr-4"><input type="number" value={k.notes} onChange={e => setDraft({...draft, kos: draft.kos.map((x:any) => x.id === k.id ? {...x, notes: Number(e.target.value)} : x)})} className="w-12 bg-neutral-100 rounded px-2 py-1 outline-none text-center" /></td>
+                         <td className="py-3 pr-4"><input type="date" value={k.date} onChange={e => setDraft({...draft, kos: draft.kos.map((x:any) => x.id === k.id ? {...x, date: e.target.value} : x)})} className="w-20 bg-transparent outline-none border-b border-transparent focus:border-neutral-300" /></td>
+                         <td className="py-3 pr-4">
+                           <select value={k.direction} onChange={e => setDraft({...draft, kos: draft.kos.map((x:any) => x.id === k.id ? {...x, direction: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer max-w-[150px] truncate">
+                             <option>科学换粮指南</option>
+                             <option>真实体验分享</option>
+                             <option>换粮季活动宣发</option>
+                           </select>
+                         </td>
+                         <td className="py-3">
+                           <span className={`px-2 py-1 rounded text-[11px] ${k.assets==='已齐'?'bg-emerald-50 text-emerald-600':'bg-amber-50 text-amber-600'}`}>{k.assets}</span>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+             </div>
+             
+             {/* Brand Channel */}
+             <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+               <div className="bg-neutral-50 p-4 border-b border-neutral-200 flex items-center gap-2 font-bold text-[15px]">
+                 <CheckCircle2 size={16} className="text-neutral-500" /> 品牌主号
+               </div>
+               <div className="p-4 overflow-x-auto">
+                 <table className="w-full text-left border-collapse text-[13px]">
+                   <thead>
+                     <tr className="text-neutral-500 border-b border-neutral-100">
+                       <th className="font-medium pb-2 pr-4">具体账号</th>
+                       <th className="font-medium pb-2 pr-4">指定员工</th>
+                       <th className="font-medium pb-2 pr-4">计划发文</th>
+                       <th className="font-medium pb-2 pr-4">执行时间</th>
+                       
+                       <th className="font-medium pb-2 pr-4">内容方向</th>
+                       <th className="font-medium pb-2">数据回收</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {draft.brand.map((b:any) => (
+                       <tr key={b.id} className="border-b border-neutral-50 last:border-0">
+                         <td className="py-3 pr-4 font-bold">{b.name}</td>
+                         <td className="py-3 pr-4">
+                           <button onClick={() => setDrawer("employee")} className="text-primary-600 hover:underline">{b.pic}</button>
+                         </td>
+                         <td className="py-3 pr-4"><input type="number" value={b.notes} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, notes: Number(e.target.value)} : x)})} className="w-12 bg-neutral-100 rounded px-2 py-1 outline-none text-center" /></td>
+                         <td className="py-3 pr-4"><input type="date" value={b.time} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, time: e.target.value} : x)})} className="w-20 bg-transparent outline-none border-b border-transparent focus:border-neutral-300" /></td>
+                         <td className="py-3 pr-4">
+                           <select value={b.publishType} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, publishType: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer">
+                             <option>系统代发</option>
+                             <option>人工下发</option>
+                           </select>
+                         </td>
+                         <td className="py-3 pr-4">
+                           <select value={b.direction} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, direction: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer max-w-[150px] truncate">
+                             <option>换粮季活动宣发</option>
+                             <option>科学换粮指南</option>
+                             <option>真实体验分享</option>
+                           </select>
+                         </td>
+                         <td className="py-3 text-neutral-600">
+                           <select value={b.dataRecovery} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, dataRecovery: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer">
+                             <option>自动追踪</option>
+                             <option>人工回填</option>
+                           </select>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+             </div>
+           </div>
+        </section>
+
+        {/* Module 4: Calendar & Plans */}
+        <section>

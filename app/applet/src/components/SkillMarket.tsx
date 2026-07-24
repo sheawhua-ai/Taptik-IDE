@@ -10,6 +10,15 @@ interface SkillMarketProps {
   setSelectedSkill?: (val: any) => void;
 }
 
-export const SkillMarket: React.FC<SkillMarketProps> = () => {
-  return <ExpertSkillCenter />;
+export const SkillMarket: React.FC<SkillMarketProps> = ({
+  skillMarketTab = 'agent'
+}) => {
+  const initialTab =
+    skillMarketTab === 'my'
+      ? 'my_capabilities'
+      : skillMarketTab === 'skill'
+      ? 'skills'
+      : 'experts';
+
+  return <ExpertSkillCenter initialTab={initialTab} />;
 };

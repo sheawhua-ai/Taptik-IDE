@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ProjectCenter } from "./components/merchant/ProjectCenter";
 import { AccountAssets } from "./components/merchant/AccountAssets";
 import { BlueOcean } from "./components/merchant/BlueOcean";
+import { SearchKeywordsExplorer } from "./components/merchant/SearchKeywordsExplorer";
 import { TopicStrategy } from "./components/merchant/TopicStrategy";
 
 
@@ -144,6 +145,8 @@ import { Logo } from "./components/Logo";
 // 6 Rings Components
 import { Strategy } from "./components/rings/Strategy";
 import { ExecutionResult } from "./components/rings/ExecutionResult";
+import { ExecutionCenter } from "./components/merchant/ExecutionCenter";
+import { AIReview } from "./components/merchant/AIReview";
 import { CRM } from "./components/rings/CRM";
 import { ProjectReview } from "./components/rings/ProjectReview";
 import { ProjectAssets } from "./components/rings/ProjectAssets";
@@ -310,7 +313,7 @@ const SIDE_NAV_ITEMS = [
   },
   {
     id: "skills",
-    name: "技能和专家",
+    name: "运营能力中心",
     icon: Zap,
   },
 ];
@@ -536,6 +539,10 @@ export default function App() {
     window.addEventListener("collapse-sidebar", handleCollapseSidebar);
     window.addEventListener("open-expert", handleOpenExpertApp);
     window.addEventListener("start-ai-action", handleStartAction);
+    const handleToSearchExplorer = () => {
+      setActiveNav("search_explorer");
+    };
+    window.addEventListener("nav-to-search-explorer", handleToSearchExplorer);
     const handleToSkillCreate = () => {
       setActiveNav("skills");
       setCreatingSkill(true);
@@ -564,6 +571,7 @@ export default function App() {
       window.removeEventListener("start-ai-action", handleStartAction);
       window.removeEventListener("switch-to-knowledge", handleToKnowledge);
       window.removeEventListener("nav-to-skill-create", handleToSkillCreate);
+      window.removeEventListener("nav-to-search-explorer", handleToSearchExplorer);
     };
   }, []);
 
@@ -1156,6 +1164,8 @@ export default function App() {
             </button>
           ))}
 
+
+
           <div className="border-t border-[#e9eaec] mt-6 pt-4 mb-2 w-full px-3">
             {!isSidebarCollapsed && (
               <div className="flex flex-col gap-4">
@@ -1644,9 +1654,9 @@ export default function App() {
                       />
                     )}
 
-                    {workflowTab === "execution" && <ExecutionResult />}
+                    {workflowTab === "execution" && <ExecutionCenter />}
 
-                    {workflowTab === "review" && <ProjectReview />}
+                    {workflowTab === "review" && <AIReview />}
                     {workflowTab === "accounts" && <AccountAssets />}
                     {workflowTab === "blueocean" && <BlueOcean />}
                     {workflowTab === "topics" && <TopicStrategy />}
@@ -1709,6 +1719,9 @@ export default function App() {
 
         {activeNav === "materials" && (
           <MaterialStation activeProject={activeProject} />
+        )}
+        {activeNav === "search_explorer" && (
+          <SearchKeywordsExplorer activeProject={activeProject} />
         )}
         {activeNav === "knowledge" && (
           <KnowledgeMemory activeProject={activeProject} />

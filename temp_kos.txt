@@ -1,0 +1,101 @@
+                 <table className="w-full text-left border-collapse text-[13px]">
+                   <thead>
+                     <tr className="text-neutral-500 border-b border-neutral-100">
+                       <th className="font-medium pb-2 pr-4">具体账号</th>
+                       <th className="font-medium pb-2 pr-4">指定员工</th>
+                       <th className="font-medium pb-2 pr-4">计划发文</th>
+                       <th className="font-medium pb-2 pr-4">日期</th>
+                       
+                       <th className="font-medium pb-2 pr-4">内容方向</th>
+                       <th className="font-medium pb-2">素材状态</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {draft.kos.map((k:any) => (
+                       <tr key={k.id} className="border-b border-neutral-50 last:border-0">
+                         <td className="py-3 pr-4 font-bold">{k.name}</td>
+                         <td className="py-3 pr-4">
+                           <button onClick={() => setDrawer("employee")} className="text-primary-600 hover:underline">{k.pic}</button>
+                         </td>
+                         <td className="py-3 pr-4"><input type="number" value={k.notes} onChange={e => setDraft({...draft, kos: draft.kos.map((x:any) => x.id === k.id ? {...x, notes: Number(e.target.value)} : x)})} className="w-12 bg-neutral-100 rounded px-2 py-1 outline-none text-center" /></td>
+                         <td className="py-3 pr-4"><input type="text" value={k.date} onChange={e => setDraft({...draft, kos: draft.kos.map((x:any) => x.id === k.id ? {...x, date: e.target.value} : x)})} className="w-20 bg-transparent outline-none border-b border-transparent focus:border-neutral-300" /></td>
+                         <td className="py-3 pr-4">
+                         </td>
+                         <td className="py-3 pr-4">
+                         <td className="py-3 pr-4">
+                           <select value={k.direction} onChange={e => setDraft({...draft, kos: draft.kos.map((x:any) => x.id === k.id ? {...x, direction: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer max-w-[150px] truncate">
+                             <option>科学换粮指南</option>
+                             <option>真实体验分享</option>
+                             <option>换粮季活动宣发</option>
+                           </select>
+                         </td>
+                         <td className="py-3">
+                           <span className={`px-2 py-1 rounded text-[11px] ${k.assets==='已齐'?'bg-emerald-50 text-emerald-600':'bg-amber-50 text-amber-600'}`}>{k.assets}</span>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+             </div>
+             
+             {/* Brand Channel */}
+             <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+               <div className="bg-neutral-50 p-4 border-b border-neutral-200 flex items-center gap-2 font-bold text-[15px]">
+                 <CheckCircle2 size={16} className="text-neutral-500" /> 品牌主号
+               </div>
+               <div className="p-4 overflow-x-auto">
+                 <table className="w-full text-left border-collapse text-[13px]">
+                   <thead>
+                     <tr className="text-neutral-500 border-b border-neutral-100">
+                       <th className="font-medium pb-2 pr-4">具体账号</th>
+                       <th className="font-medium pb-2 pr-4">指定员工</th>
+                       <th className="font-medium pb-2 pr-4">计划发文</th>
+                       <th className="font-medium pb-2 pr-4">时间</th>
+                       
+                       <th className="font-medium pb-2 pr-4">内容方向</th>
+                       <th className="font-medium pb-2">数据回收</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {draft.brand.map((b:any) => (
+                       <tr key={b.id} className="border-b border-neutral-50 last:border-0">
+                         <td className="py-3 pr-4 font-bold">{b.name}</td>
+                         <td className="py-3 pr-4">
+                           <button onClick={() => setDrawer("employee")} className="text-primary-600 hover:underline">{b.pic}</button>
+                         </td>
+                         <td className="py-3 pr-4"><input type="number" value={b.notes} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, notes: Number(e.target.value)} : x)})} className="w-12 bg-neutral-100 rounded px-2 py-1 outline-none text-center" /></td>
+                         <td className="py-3 pr-4"><input type="text" value={b.time} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, time: e.target.value} : x)})} className="w-20 bg-transparent outline-none border-b border-transparent focus:border-neutral-300" /></td>
+                         <td className="py-3 pr-4">
+                           <select value={b.publishType} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, publishType: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer">
+                             <option>系统代发</option>
+                             <option>人工下发</option>
+                           </select>
+                         </td>
+                         <td className="py-3 pr-4">
+                           <select value={b.direction} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, direction: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer max-w-[150px] truncate">
+                             <option>换粮季活动宣发</option>
+                             <option>科学换粮指南</option>
+                             <option>真实体验分享</option>
+                           </select>
+                         </td>
+                         <td className="py-3 text-neutral-600">
+                           <select value={b.dataRecovery} onChange={e => setDraft({...draft, brand: draft.brand.map((x:any) => x.id === b.id ? {...x, dataRecovery: e.target.value} : x)})} className="bg-transparent outline-none cursor-pointer">
+                             <option>自动追踪</option>
+                             <option>人工回填</option>
+                           </select>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+             </div>
+           </div>
+        </section>
+
+        {/* Module 4: Calendar & Plans */}
+        <section>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-[18px] font-extrabold text-neutral-900 flex items-center gap-2">
+              <Calendar size={18} className="text-neutral-400" /> 日历与笔记计划
