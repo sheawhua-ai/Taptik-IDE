@@ -11,7 +11,7 @@ import {
 export function KnowledgeMemory() {
   const [activeSpace, setActiveSpace] = useState<"merchant" | "personal">("merchant");
   const [merchantTab, setMerchantTab] = useState<"overview" | "critical" | "source">("overview");
-  const [personalTab, setPersonalTab] = useState<"quick" | "experiences" | "methods">("quick");
+  const [personalTab, setPersonalTab] = useState<"quick" | "experiences">("quick");
 
   // Merchant State
   const [criticalFilter, setCriticalFilter] = useState("需要处理");
@@ -25,8 +25,8 @@ export function KnowledgeMemory() {
   const [selectedExp, setSelectedExp] = useState<any>(null);
   const [isEditingExp, setIsEditingExp] = useState(false);
   const [editingExpContent, setEditingExpContent] = useState("");
-  const [selectedMethod, setSelectedMethod] = useState<any>(null);
   const [quickNote, setQuickNote] = useState("");
+  const [quickNoteStatus, setQuickNoteStatus] = useState<"idle" | "saving" | "saved_normal" | "saved_skill">("idle");
   const [showSaveMenu, setShowSaveMenu] = useState(false);
   const [criticalSearch, setCriticalSearch] = useState("");
   
@@ -58,14 +58,11 @@ export function KnowledgeMemory() {
   ];
 
   const experiencesData = [
-    { id: "e1", title: "发现宠物食品类目下，第一人称开箱视频点击率高 20%", type: "通用经验", scope: "宠物食品 / 开箱视频", valStatus: "已验证", callStatus: "可参考", date: "今天 10:30", source: "我的观察", content: "通过对比3个宠物粮项目，第一人称视角的开箱不仅点击率高，且评论区关于产品颗粒大小的疑问明显减少。", sample: "3个项目", metric: "点击率", result: "平均提升20%" },
-    { id: "e2", title: "下次尝试把所有干粮的包装都做成深色系，看起来更高端一点", type: "待验证想法", scope: "宠物食品", valStatus: "待验证", callStatus: "不调用", date: "昨天 16:45", source: "灵感随笔", content: "看到竞品黑色包装质感很好，下次向客户提议。" },
-    { id: "e3", title: "遇到软便问题，统一回复'换粮过渡期常见现象，建议搭配益生菌'", type: "指定商家经验", scope: "当前商家", valStatus: "已验证", callStatus: "已应用", date: "3天前", source: "客户反馈总结", content: "由于产品高蛋白，极易引起肠胃敏感犬只软便，必须准备标准话术防御。", riskWarning: "存在功效表达风险，应用前需检查" }
-  ];
-
-  const methodsData = [
-    { id: "m1", name: "宠物食品小红书起号打法 v2.0", type: "操盘打法", scope: "宠物食品 / 冷启动 / 搜索卡位", callStatus: "已应用", valStatus: "已验证", steps: [{title: "一、人设搭建", desc: "建议采用'前大厂营养师'或'资深繁育人'人设，强调专业与真实性。避开同质化的'铲屎官'人设。"}, {title: "二、首月30篇SOP", desc: "前10篇侧重干货与测评铺垫，中间10篇引入软植入，最后10篇配合活动强转化。"}], applicable: "宠物食品类目", inapplicable: "成熟期大品牌，预算充足直接投流", needsConfirm: true, appliedTo: "当前商家 / 日常种草 / 内容生成" },
-    { id: "m2", name: "高转化单品测评图文框架", type: "写作框架", scope: "宠物食品 / 日常种草", callStatus: "已应用", valStatus: "已验证", steps: [{title: "封面", desc: "产品高清特写 + 核心痛点大字报"}, {title: "正文第一段", desc: "抛出铲屎官常见痛点引发共鸣"}, {title: "正文第二段", desc: "成分解析，数据支撑背书"}], applicable: "所有功能性宠物食品", inapplicable: "纯外观零食", needsConfirm: false, appliedTo: "当前商家 / 达人分发 / 图文规范" }
+    { id: "e1", title: "发现宠物食品类目下，第一人称开箱视频点击率高 20%", expType: "运营结论", scope: "宠物食品 / 开箱视频", valStatus: "已验证", callStatus: "可参考", date: "今天 10:30", source: "我的观察", content: "通过对比3个宠物粮项目，第一人称视角的开箱不仅点击率高，且评论区关于产品颗粒大小的疑问明显减少。", sample: "3个项目", metric: "点击率", result: "平均提升20%", relatedSkill: null },
+    { id: "e2", title: "尝试把所有干粮的包装都做成深色系", expType: "待验证假设", scope: "宠物食品", valStatus: "待验证", callStatus: "仅保存", date: "昨天 16:45", source: "灵感随笔", content: "看到竞品黑色包装质感很好，下次向客户提议。", sample: null, relatedSkill: null },
+    { id: "e3", title: "遇到软便问题，统一回复'换粮过渡期常见现象，建议搭配益生菌'", expType: "客户原话", scope: "当前商家", valStatus: "已验证", callStatus: "限定范围参考", date: "3天前", source: "客户反馈总结", content: "由于产品高蛋白，极易引起肠胃敏感犬只软便，必须准备标准话术防御。", riskWarning: "存在功效表达风险，应用前需检查", sample: null, relatedSkill: null },
+    { id: "m1", title: "宠物食品小红书起号打法 v2.0", expType: "方法", scope: "宠物食品 / 冷启动", valStatus: "已验证", callStatus: "可参考", date: "5天前", source: "经验沉淀", content: "一、人设搭建\n建议采用'前大厂营养师'或'资深繁育人'人设，强调专业与真实性。避开同质化的'铲屎官'人设。\n\n二、首月30篇SOP\n前10篇侧重干货与测评铺垫，中间10篇引入软植入，最后10篇配合活动强转化。", applicable: "宠物食品类目", inapplicable: "成熟期大品牌，预算充足直接投流", relatedSkill: "宠物食品起号Skill v1.0", steps: [{title: "一、人设搭建", desc: "建议采用'前大厂营养师'..."}] },
+    { id: "m2", title: "高转化单品测评图文框架", expType: "模板", scope: "宠物食品 / 日常种草", valStatus: "有依据", callStatus: "可参考", date: "1周前", source: "爆款拆解", content: "封面：产品高清特写 + 核心痛点大字报\n正文第一段：抛出铲屎官常见痛点引发共鸣\n正文第二段：成分解析，数据支撑背书", applicable: "所有功能性宠物食品", inapplicable: "纯外观零食", relatedSkill: null }
   ];
 
   // Actions for Drawer
@@ -75,18 +72,19 @@ export function KnowledgeMemory() {
     setSelectedSource(null);
     setSelectedExp(null);
     setIsEditingExp(false);
-    setSelectedMethod(null);
   };
 
   // Helper
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "可用": case "已采用": case "已应用": case "已验证": case "已启用": return "text-emerald-600 bg-emerald-50 border-emerald-200";
+      case "可用": case "已采用": case "已验证": case "已启用": return "text-emerald-600 bg-emerald-50 border-emerald-200";
       case "待确认": case "内容有变化": case "需要处理": case "待验证": return "text-amber-600 bg-amber-50 border-amber-200";
+      case "有依据": return "text-blue-600 bg-blue-50 border-blue-200";
       case "有冲突": case "无法读取": return "text-red-600 bg-red-50 border-red-200";
       case "处理中": return "text-blue-600 bg-blue-50 border-blue-200";
-      case "已失效": case "不调用": return "text-neutral-500 bg-neutral-100 border-neutral-200";
+      case "已失效": case "仅保存": return "text-neutral-500 bg-neutral-100 border-neutral-200";
       case "可参考": return "text-blue-600 bg-blue-50 border-blue-200";
+      case "限定范围参考": return "text-purple-600 bg-purple-50 border-purple-200";
       default: return "text-neutral-600 bg-neutral-100 border-neutral-200";
     }
   };
@@ -336,13 +334,13 @@ export function KnowledgeMemory() {
           {activeSpace === "personal" && (
             <motion.div initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} className="space-y-6">
               <div className="flex gap-2">
-                {["quick", "experiences", "methods"].map((tab) => (
+                {["quick", "experiences"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => {setPersonalTab(tab as any); closeDrawers();}}
                     className={"px-4 py-2 rounded-xl text-[14px] font-bold transition-colors " + (personalTab === tab ? "bg-white text-neutral-900 border border-neutral-200 shadow-sm" : "text-neutral-500 hover:bg-neutral-100")}
                   >
-                    {tab === "quick" ? "快速记录" : tab === "experiences" ? "经验库" : "方法与模板"}
+                    {tab === "quick" ? "快速记录" : "经验库"}
                   </button>
                 ))}
               </div>
@@ -354,7 +352,7 @@ export function KnowledgeMemory() {
                     <PenTool size={18} className="text-primary-500" />
                     随手记一条
                   </h2>
-                  <div className="relative">
+                  <div className="relative mb-3">
                     <textarea
                       value={quickNote}
                       onChange={e => setQuickNote(e.target.value)}
@@ -371,12 +369,51 @@ export function KnowledgeMemory() {
                         </button>
                       </div>
                       <div className="relative">
-                        <button onClick={() => { setQuickNote(""); }} className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2">
-                          保存并由AI自动分类 <Sparkles size={14} />
+                        <button 
+                          onClick={() => { 
+                            setQuickNoteStatus("saving"); 
+                            setTimeout(() => setQuickNoteStatus(quickNote.includes("SOP") || quickNote.includes("步骤") ? "saved_skill" : "saved_normal"), 1500); 
+                          }} 
+                          disabled={quickNoteStatus === "saving"}
+                          className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold shadow-sm hover:bg-neutral-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+                        >
+                          {quickNoteStatus === "saving" ? (
+                            <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> 处理中...</>
+                          ) : (
+                            <>保存并由AI整理 <Sparkles size={14} /></>
+                          )}
                         </button>
                       </div>
                     </div>
                   </div>
+                  
+                  {quickNoteStatus === "idle" && (
+                     <div className="text-[12px] text-neutral-400">默认只保存在我的经验中，不会直接影响任何商家结果。</div>
+                  )}
+                  
+                  {quickNoteStatus === "saved_normal" && (
+                    <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col gap-3 mt-4">
+                       <div className="flex items-center gap-2 text-[13px] font-bold text-blue-800">
+                         <CheckCircle2 size={16} className="text-blue-600" /> 已保存为待验证经验。
+                       </div>
+                       <div className="flex gap-2">
+                         <button onClick={() => {setQuickNote(""); setQuickNoteStatus("idle");}} className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 rounded-lg text-[12px] font-bold hover:bg-blue-50 transition-colors shadow-sm">设为可参考</button>
+                         <button onClick={() => {setQuickNote(""); setQuickNoteStatus("idle");}} className="px-3 py-1.5 bg-white border border-blue-200 text-blue-700 rounded-lg text-[12px] font-bold hover:bg-blue-50 transition-colors shadow-sm">在下次相关任务中验证</button>
+                       </div>
+                    </motion.div>
+                  )}
+                  
+                  {quickNoteStatus === "saved_skill" && (
+                    <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} className="bg-primary-50 border border-primary-200 rounded-xl p-4 flex flex-col gap-3 mt-4">
+                       <div className="flex items-center gap-2 text-[13px] font-bold text-primary-800">
+                         <CheckCircle2 size={16} className="text-primary-600" /> 已保存。这条经验包含稳定步骤，验证后可蒸馏为Skill。
+                       </div>
+                       <div className="flex gap-2">
+                         <button onClick={() => {setQuickNote(""); setQuickNoteStatus("idle");}} className="px-3 py-1.5 bg-white border border-primary-200 text-primary-700 rounded-lg text-[12px] font-bold hover:bg-primary-50 transition-colors shadow-sm">设为可参考</button>
+                         <button onClick={() => {setQuickNote(""); setQuickNoteStatus("idle");}} className="px-3 py-1.5 bg-white border border-primary-200 text-primary-700 rounded-lg text-[12px] font-bold hover:bg-primary-50 transition-colors shadow-sm">在下次相关任务中验证</button>
+                       </div>
+                    </motion.div>
+                  )}
                 </div>
               )}
 
@@ -384,22 +421,27 @@ export function KnowledgeMemory() {
               {personalTab === "experiences" && (
                 <div className="space-y-6">
                   <div className="flex gap-2">
-                     {["全部", "待验证", "已验证", "已应用"].map(f => (
+                     {["全部", "待验证", "可参考", "已蒸馏"].map(f => (
                        <button key={f} onClick={() => setExpFilter(f)} className={"px-4 py-2 rounded-full text-[13px] font-bold transition-colors border " + (expFilter === f ? "bg-neutral-900 text-white border-neutral-900" : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50")}>
                          {f}
                        </button>
                      ))}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {experiencesData.filter(e => expFilter === "全部" || e.valStatus === expFilter || e.callStatus === expFilter).map(exp => (
+                    {experiencesData.filter(e => expFilter === "全部" || (expFilter === "已蒸馏" ? e.relatedSkill !== null : e.valStatus === expFilter || e.callStatus === expFilter)).map(exp => (
                       <div key={exp.id} onClick={() => setSelectedExp(exp)} className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm hover:border-primary-300 transition-all cursor-pointer flex flex-col h-full group">
                         <div className="flex justify-between items-start mb-3">
                           <span className={"px-2 py-0.5 rounded text-[11px] font-bold border " + getStatusColor(exp.valStatus)}>{exp.valStatus}</span>
                           <span className={"px-2 py-0.5 rounded text-[11px] font-bold border " + getStatusColor(exp.callStatus)}>{exp.callStatus}</span>
                         </div>
                         <h3 className="text-[15px] font-bold text-neutral-900 mb-2 leading-snug group-hover:text-primary-700 transition-colors line-clamp-2">{exp.title}</h3>
+                        {exp.relatedSkill && (
+                          <div className="mb-2 text-[12px] text-primary-600 bg-primary-50 px-2 py-1 rounded inline-block font-medium">
+                            已蒸馏为：{exp.relatedSkill}
+                          </div>
+                        )}
                         <div className="flex flex-wrap gap-2 mb-4 mt-auto">
-                          <span className="text-[11px] text-neutral-500 bg-neutral-50 px-2 py-1 rounded border border-neutral-100">{exp.type}</span>
+                          <span className="text-[11px] text-neutral-500 bg-neutral-50 px-2 py-1 rounded border border-neutral-100">{exp.expType}</span>
                           <span className="text-[11px] text-neutral-500 bg-neutral-50 px-2 py-1 rounded border border-neutral-100 truncate max-w-[150px]">{exp.scope}</span>
                         </div>
                       </div>
@@ -407,42 +449,8 @@ export function KnowledgeMemory() {
                   </div>
                 </div>
               )}
-
-              {/* Methods */}
-              {personalTab === "methods" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {methodsData.map(m => (
-                    <div key={m.id} onClick={() => setSelectedMethod(m)} className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm hover:border-primary-300 transition-all cursor-pointer flex flex-col h-full group">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600">
-                            {m.type.includes("模板") || m.type.includes("框架") ? <LayoutTemplate size={20}/> : <Network size={20}/>}
-                          </div>
-                          <div>
-                            <h3 className="text-[16px] font-bold text-neutral-900 group-hover:text-primary-700 transition-colors">{m.name}</h3>
-                            <span className="text-[12px] text-neutral-500">{m.type}</span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                           <span className={"px-2 py-0.5 rounded text-[11px] font-bold border " + getStatusColor(m.valStatus)}>{m.valStatus}</span>
-                           <span className={"px-2 py-0.5 rounded text-[11px] font-bold border " + getStatusColor(m.callStatus)}>{m.callStatus}</span>
-                        </div>
-                      </div>
-                      <div className="bg-neutral-50 rounded-xl p-4 mb-4 text-[13px] text-neutral-700">
-                        <span className="font-bold text-neutral-900 mb-1 block">适用范围：</span>
-                        {m.scope}
-                      </div>
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-neutral-100">
-                         {m.needsConfirm && <span className="text-[12px] text-amber-600 flex items-center gap-1 bg-amber-50 px-2 py-1 rounded font-medium"><AlertCircle size={12}/> 执行需人工确认</span>}
-                         {!m.needsConfirm && <span className="text-[12px] text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded font-medium"><CheckCircle size={12}/> 自动执行</span>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </motion.div>
           )}
-
         </div>
       </div>
 
@@ -635,11 +643,25 @@ export function KnowledgeMemory() {
                        className="w-full text-[14px] text-neutral-900 leading-relaxed bg-white p-4 rounded-xl border border-primary-500 focus:outline-none min-h-[160px]"
                      />
                    ) : (
-                     <div className="text-[14px] text-neutral-700 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100">
+                     <div className="text-[14px] text-neutral-700 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100 whitespace-pre-line">
                        {selectedExp.content}
                      </div>
                    )}
                 </div>
+                
+                {selectedExp.steps && (
+                  <div>
+                     <h4 className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">内容与步骤</h4>
+                     <div className="space-y-3">
+                       {selectedExp.steps.map((s:any, idx:number) => (
+                          <div key={idx} className="bg-neutral-50 border border-neutral-100 p-4 rounded-xl">
+                            <div className="text-[13px] font-bold text-neutral-900 mb-1">{s.title}</div>
+                            <div className="text-[13px] text-neutral-700 leading-relaxed">{s.desc}</div>
+                          </div>
+                       ))}
+                     </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4 py-4 border-y border-neutral-100">
                    <div>
                      <h4 className="text-[11px] font-bold text-neutral-400 mb-1">验证状态</h4>
@@ -673,7 +695,7 @@ export function KnowledgeMemory() {
                   )}
                   <div>
                      <h4 className="text-[11px] font-bold text-neutral-400 mb-1">经验类型</h4>
-                     <span className="text-[13px] font-medium text-neutral-800 bg-neutral-100 px-2 py-1 rounded">{selectedExp.type}</span>
+                     <span className="text-[13px] font-medium text-neutral-800 bg-neutral-100 px-2 py-1 rounded">{selectedExp.expType}</span>
                   </div>
                   <div>
                      <h4 className="text-[11px] font-bold text-neutral-400 mb-1">适用范围</h4>
@@ -700,12 +722,23 @@ export function KnowledgeMemory() {
                   </div>
                 ) : (
                   <>
-                    <button onClick={() => {
-                      setEditingExpContent(selectedExp.content);
-                      setIsEditingExp(true);
-                    }} className="py-2.5 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-sm text-center">编辑</button>
+                    {(selectedExp.expType === "方法" || selectedExp.expType === "模板" || selectedExp.expType === "SOP") ? (
+                      <button onClick={() => { closeDrawers(); window.dispatchEvent(new CustomEvent("nav-to-skill-create")); }} className="py-2.5 bg-primary-600 text-white font-bold text-[13px] rounded-xl hover:bg-primary-700 transition-colors shadow-sm text-center flex items-center justify-center gap-2">
+                        <Sparkles size={16} /> 蒸馏为 Skill
+                      </button>
+                    ) : selectedExp.expType === "客户原话" || selectedExp.expType === "运营结论" ? (
+                      <button onClick={closeDrawers} className="py-2.5 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-sm text-center">提交为商家待确认知识</button>
+                    ) : (
+                      <button onClick={closeDrawers} className="py-2.5 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-sm text-center">本次作为参考</button>
+                    )}
+                    
                     <div className="flex gap-2">
+                       <button onClick={() => {
+                         setEditingExpContent(selectedExp.content);
+                         setIsEditingExp(true);
+                       }} className="flex-1 py-2 bg-white border border-neutral-200 text-neutral-700 font-bold text-[13px] rounded-xl hover:bg-neutral-50 transition-colors shadow-sm text-center">编辑</button>
                        <button onClick={closeDrawers} className="flex-1 py-2 bg-white border border-neutral-200 text-neutral-700 font-bold text-[13px] rounded-xl hover:bg-neutral-50 transition-colors shadow-sm text-center">设为可参考</button>
+                       <button onClick={closeDrawers} className="flex-1 py-2 bg-white border border-neutral-200 text-neutral-700 font-bold text-[13px] rounded-xl hover:bg-neutral-50 transition-colors shadow-sm text-center">限定参考范围</button>
                        
                        <div className="relative">
                          <button onClick={(e) => {
@@ -715,10 +748,7 @@ export function KnowledgeMemory() {
                            <MoreHorizontal size={16} />
                          </button>
                          <div className="hidden absolute bottom-full right-0 mb-2 w-48 bg-white border border-neutral-200 rounded-xl shadow-lg p-2 flex flex-col z-10">
-                           <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 rounded-lg">退回待验证</button>
-                           <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 rounded-lg">升级为方法</button>
-                           <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 rounded-lg">导出</button>
-                           <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-red-600 hover:bg-red-50 rounded-lg mt-1 border-t border-neutral-100">归档</button>
+                           <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-red-600 hover:bg-red-50 rounded-lg">归档</button>
                          </div>
                        </div>
                     </div>
@@ -728,92 +758,6 @@ export function KnowledgeMemory() {
           </motion.div>
         )}
 
-        {/* Method Drawer */}
-        {selectedMethod && (
-          <motion.div initial={{x:400, opacity:0}} animate={{x:0, opacity:1}} exit={{x:400, opacity:0}} className="absolute top-0 right-0 bottom-0 w-[480px] bg-white border-l border-neutral-200 shadow-2xl flex flex-col z-50">
-             <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-               <h3 className="font-bold text-neutral-900 flex items-center gap-2"><LayoutTemplate size={18} className="text-neutral-500" /> 方法详情</h3>
-               <button onClick={closeDrawers} className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors"><X size={18} /></button>
-             </div>
-             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                <div>
-                   <h4 className="text-[16px] font-bold text-neutral-900 mb-2">{selectedMethod.name}</h4>
-                   <span className="text-[12px] font-medium text-neutral-600 bg-neutral-100 px-2 py-1 rounded inline-block">{selectedMethod.type}</span>
-                </div>
-                
-                <div>
-                   <h4 className="text-[12px] font-bold text-neutral-400 mb-3 uppercase tracking-wider">内容与步骤</h4>
-                   <div className="space-y-3">
-                     {selectedMethod.steps.map((s:any, idx:number) => (
-                        <div key={idx} className="bg-neutral-50 border border-neutral-100 p-4 rounded-xl">
-                          <div className="text-[13px] font-bold text-neutral-900 mb-1">{s.title}</div>
-                          <div className="text-[13px] text-neutral-700 leading-relaxed">{s.desc}</div>
-                        </div>
-                     ))}
-                   </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 py-4 border-y border-neutral-100">
-                   <div>
-                     <h4 className="text-[11px] font-bold text-neutral-400 mb-1">验证状态</h4>
-                     <span className={"px-2 py-1 rounded text-[12px] font-bold border " + getStatusColor(selectedMethod.valStatus)}>{selectedMethod.valStatus}</span>
-                   </div>
-                   <div>
-                     <h4 className="text-[11px] font-bold text-neutral-400 mb-1">当前调用状态</h4>
-                     <span className={"px-2 py-1 rounded text-[12px] font-bold border " + getStatusColor(selectedMethod.callStatus)}>{selectedMethod.callStatus}</span>
-                   </div>
-                </div>
-
-                <div className="space-y-4">
-                  {selectedMethod.appliedTo && (
-                    <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl">
-                       <h4 className="text-[11px] font-bold text-blue-800 mb-1">已应用于</h4>
-                       <div className="text-[13px] text-blue-900 font-medium">{selectedMethod.appliedTo}</div>
-                       <div className="text-[12px] text-blue-700 mt-2 flex items-center gap-1">
-                         {selectedMethod.needsConfirm ? <><AlertCircle size={12}/> 执行方式: 人工确认</> : <><CheckCircle size={12}/> 执行方式: 自动执行</>}
-                       </div>
-                    </div>
-                  )}
-                  <div>
-                     <h4 className="text-[11px] font-bold text-neutral-400 mb-1">适用范围</h4>
-                     <div className="text-[13px] text-neutral-800 bg-neutral-50 p-2 rounded-lg border border-neutral-100">{selectedMethod.scope}</div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                     <div>
-                       <h4 className="text-[11px] font-bold text-neutral-400 mb-1">适用条件</h4>
-                       <div className="text-[13px] text-neutral-800">{selectedMethod.applicable}</div>
-                     </div>
-                     <div>
-                       <h4 className="text-[11px] font-bold text-neutral-400 mb-1">不适用条件</h4>
-                       <div className="text-[13px] text-red-600">{selectedMethod.inapplicable}</div>
-                     </div>
-                  </div>
-                </div>
-             </div>
-             <div className="p-4 border-t border-neutral-200 bg-neutral-50 flex flex-col gap-2">
-                <button onClick={closeDrawers} className="py-2.5 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-sm text-center">应用于商家</button>
-                
-                <div className="flex gap-2">
-                   <button onClick={closeDrawers} className="flex-1 py-2 bg-white border border-neutral-200 text-neutral-700 font-bold text-[13px] rounded-xl hover:bg-neutral-50 transition-colors shadow-sm text-center">编辑</button>
-                   
-                   <div className="relative">
-                     <button onClick={(e) => {
-                       const menu = e.currentTarget.nextElementSibling;
-                       if (menu) menu.classList.toggle('hidden');
-                     }} className="px-3 py-2 bg-white border border-neutral-200 text-neutral-700 font-bold text-[13px] rounded-xl hover:bg-neutral-50 transition-colors shadow-sm text-center flex items-center justify-center">
-                       <MoreHorizontal size={16} />
-                     </button>
-                     <div className="hidden absolute bottom-full right-0 mb-2 w-48 bg-white border border-neutral-200 rounded-xl shadow-lg p-2 flex flex-col z-10">
-                       <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 rounded-lg">设为可参考</button>
-                       <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 rounded-lg">停止应用</button>
-                       <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 rounded-lg">导出</button>
-                       <button onClick={closeDrawers} className="text-left px-3 py-2 text-[13px] text-red-600 hover:bg-red-50 rounded-lg mt-1 border-t border-neutral-100">归档</button>
-                     </div>
-                   </div>
-                </div>
-             </div>
-          </motion.div>
-        )}
       </AnimatePresence>
 
       {/* SubAgent Drawer */}

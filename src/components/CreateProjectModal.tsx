@@ -7,7 +7,7 @@ interface CreateProjectModalProps {
  onClose: () => void;
 }
 
-export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose }) => {
+export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose, onCreate }) => {
  if (!isOpen) return null;
 
  return (
@@ -41,7 +41,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, 
  </div>
 
  <div className="flex flex-col gap-4">
- <button className="flex items-center gap-6 p-6 rounded-2xl bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:border-neutral-300 transition-all group text-left">
+ <button onClick={() => onCreate && onCreate("scratch")} className="flex items-center gap-6 p-6 rounded-2xl bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:border-neutral-300 transition-all group text-left">
  <div className="w-12 h-12 bg-neutral-100 rounded-xl flex items-center justify-center text-neutral-500 shrink-0 group-hover:scale-105 transition-transform">
  <Plus size={24} />
  </div>
@@ -51,7 +51,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, 
  </div>
  </button>
 
- <button className="flex items-center gap-6 p-6 rounded-2xl bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:border-neutral-300 transition-all group text-left">
+ <button onClick={() => onCreate && onCreate("existing")} className="flex items-center gap-6 p-6 rounded-2xl bg-white border border-neutral-200 shadow-sm hover:shadow-md hover:border-neutral-300 transition-all group text-left">
  <div className="w-12 h-12 bg-neutral-50 border border-neutral-200 rounded-xl flex items-center justify-center text-neutral-600 shrink-0 group-hover:scale-105 transition-transform">
  <Folder size={22} />
  </div>

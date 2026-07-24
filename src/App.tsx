@@ -1,4 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ProjectCenter } from "./components/merchant/ProjectCenter";
+import { AccountAssets } from "./components/merchant/AccountAssets";
+import { BlueOcean } from "./components/merchant/BlueOcean";
+import { TopicStrategy } from "./components/merchant/TopicStrategy";
+
+
 import {
   Database,
   Zap,
@@ -13,6 +19,7 @@ import {
   Search,
   Star,
   FolderOpen,
+  FolderKanban,
   Monitor,
   FileText,
   Download,
@@ -293,7 +300,7 @@ const SIDE_NAV_ITEMS = [
   },
   {
     id: "materials",
-    name: "素材库",
+    name: "素材中心",
     icon: ImageIcon,
   },
   {
@@ -340,10 +347,10 @@ const PROJECT_HISTORY_ITEMS = [
 ];
 
 const PROJECT_TABS = [
-  { id: "strategy", name: "操盘策略", icon: Compass },
+  { id: "projects", name: "项目中心", icon: FolderKanban },
   { id: "execution", name: "执行中心", icon: LayoutGrid },
-  { id: "assets", name: "项目档案", icon: Target },
-  { id: "review", name: "复盘归因", icon: BarChart2 },
+  { id: "accounts", name: "账号资产", icon: Users },
+  { id: "review", name: "AI复盘", icon: Sparkles },
 ];
 
 export default function App() {
@@ -442,8 +449,8 @@ export default function App() {
   }, []);
 
   const [workflowTab, setWorkflowTab] = useState<
-    "strategy" | "execution" | "review"
-  >("strategy");
+    "projects" | "execution" | "review"
+  >("projects");
   const [focusMode, setFocusMode] = useState<
     "normal" | "creation" | "monitoring" | "review"
   >("normal");
@@ -459,16 +466,17 @@ export default function App() {
   useEffect(() => {
     const handleToFactory = (e: any) => {
       setActiveNav("workflow");
-      setWorkflowTab("content");
+      setWorkflowTab("projects");
       setActiveMission({ type: "CONTENT_GEN", payload: e.detail });
     };
     const handleToStrategy = () => {
       setActiveNav("workflow");
-      setWorkflowTab("strategy");
+      setWorkflowTab("projects");
     };
     const handleToTab = (e: any) => {
       setActiveNav("workflow");
-      setWorkflowTab(e.detail.tab);
+      const targetTab = (e.detail?.tab === "strategy" || e.detail?.tab === "assets") ? "projects" : (e.detail?.tab || "projects");
+      setWorkflowTab(targetTab);
     };
     const handleToFiles = () => {
       setActiveNav("files");
@@ -528,6 +536,11 @@ export default function App() {
     window.addEventListener("collapse-sidebar", handleCollapseSidebar);
     window.addEventListener("open-expert", handleOpenExpertApp);
     window.addEventListener("start-ai-action", handleStartAction);
+    const handleToSkillCreate = () => {
+      setActiveNav("skills");
+      setCreatingSkill(true);
+    };
+    window.addEventListener("nav-to-skill-create", handleToSkillCreate);
     
     const handleToKnowledge = (e: any) => {
       setActiveNav("knowledge");
@@ -550,6 +563,7 @@ export default function App() {
       window.removeEventListener("open-expert", handleOpenExpertApp);
       window.removeEventListener("start-ai-action", handleStartAction);
       window.removeEventListener("switch-to-knowledge", handleToKnowledge);
+      window.removeEventListener("nav-to-skill-create", handleToSkillCreate);
     };
   }, []);
 
@@ -928,6 +942,20 @@ export default function App() {
       <CreateProjectModal
         isOpen={isCreateProjectModalOpen}
         onClose={() => setIsCreateProjectModalOpen(false)}
+        onCreate={(type) => {
+          const newId = `project-${Date.now()}`;
+          MOCK_PROJECTS[newId] = {
+            id: newId,
+            name: "未命名新项目",
+            isNew: true,
+            lastModified: "刚刚",
+            agentStatus: "idle",
+            role: "brand",
+          };
+          setActiveProjectId(newId);
+          setIsCreateProjectModalOpen(false);
+          // Optional: also switch tab to 'projects' or trigger some notification
+        }}
       />
 
       {/* SaaS Nav Sidebar */}
@@ -1608,18 +1636,20 @@ export default function App() {
                   </div>
                 ) : (
                   <>
-                    {workflowTab === "strategy" && (
-                      <Strategy
+                    {workflowTab === "projects" && (
+                      <ProjectCenter
                         hasData={hasData}
-                        strategyData={onboardingData.strategyKeywords}
-                        merchantId={activeProjectId}
+                        activeProjectId={activeProjectId}
+                        setWorkflowTab={setWorkflowTab as any}
                       />
                     )}
 
                     {workflowTab === "execution" && <ExecutionResult />}
 
-                    {workflowTab === "assets" && <ProjectAssets />}
                     {workflowTab === "review" && <ProjectReview />}
+                    {workflowTab === "accounts" && <AccountAssets />}
+                    {workflowTab === "blueocean" && <BlueOcean />}
+                    {workflowTab === "topics" && <TopicStrategy />}
                   </>
                 )}
               </div>
