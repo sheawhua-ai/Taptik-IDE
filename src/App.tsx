@@ -313,7 +313,7 @@ const SIDE_NAV_ITEMS = [
   },
   {
     id: "skills",
-    name: "运营能力中心",
+    name: "能力中心",
     icon: Zap,
   },
 ];
@@ -1727,14 +1727,16 @@ export default function App() {
           <KnowledgeMemory activeProject={activeProject} />
         )}
         {activeNav === "skills" && (
-          <SkillMarket
-            creatingSkill={creatingSkill}
-            setCreatingSkill={setCreatingSkill}
-            skillMarketTab={skillMarketTab}
-            setSkillMarketTab={setSkillMarketTab}
-            selectedSkill={selectedSkill}
-            setSelectedSkill={setSelectedSkill}
-          />
+          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+            <SkillMarket
+              creatingSkill={creatingSkill}
+              setCreatingSkill={setCreatingSkill}
+              skillMarketTab={skillMarketTab}
+              setSkillMarketTab={setSkillMarketTab}
+              selectedSkill={selectedSkill}
+              setSelectedSkill={setSelectedSkill}
+            />
+          </div>
         )}
         {activeNav === "billing" && (
           <div className="flex-1 flex flex-col h-full overflow-hidden bg-neutral-50">

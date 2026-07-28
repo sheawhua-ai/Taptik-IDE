@@ -8,6 +8,7 @@ import { mockExperts, mockSkills, mockRecommendations, initialMyCapabilities } f
 import { ExpertHome } from './ExpertHome';
 import { SkillHome } from './SkillHome';
 import { MyCapabilities } from './MyCapabilities';
+import { MerchantRecommendationSection } from './MerchantRecommendationSection';
 import { ExpertDetailDrawer } from './ExpertDetailDrawer';
 import { SkillDetailDrawer } from './SkillDetailDrawer';
 import { Workstation } from './Workstation';
@@ -141,8 +142,8 @@ export const ExpertSkillCenter: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50/60 p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
-      {/* Primary Page Header & Subtitle (Requirement 2) */}
+    <div className="w-full min-h-full bg-neutral-50/60 p-6 md:p-8 space-y-6 max-w-7xl mx-auto pb-16">
+      {/* Primary Page Header & Subtitle */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-neutral-200/80 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
@@ -150,7 +151,7 @@ export const ExpertSkillCenter: React.FC = () => {
               <Bot size={22} />
             </div>
             <h1 className="text-[22px] font-black text-neutral-900 tracking-tight">
-              运营能力中心
+              能力中心
             </h1>
           </div>
           {/* Subtitle (Requirement 2) */}
@@ -183,6 +184,15 @@ export const ExpertSkillCenter: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Recommendation Section above Tabs (Requirement 2) */}
+      <MerchantRecommendationSection
+        recommendations={recommendations}
+        onOpenDetail={handleOpenRecDetail}
+        onRunOnce={handleRunRecOnce}
+        onAddToMerchant={handleApplyRecToMerchant}
+        onDismiss={handleDismissRec}
+      />
 
       {/* Primary Navigation Tabs (Requirement 2: 专家, 技能, 我的能力) */}
       <div className="flex items-center gap-3 border-b border-neutral-200/80 pb-px">

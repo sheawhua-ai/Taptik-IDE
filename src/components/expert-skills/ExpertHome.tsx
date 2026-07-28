@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ExpertItem, ProcessCategory, DailyTaskType, MerchantRecommendation, AppScope } from './types';
-import { MerchantRecommendationSection } from './MerchantRecommendationSection';
 import {
   Search, Bot, CheckCircle2, Clock, ShieldAlert, Sparkles,
   ChevronDown, Filter, Play, Eye, Settings, FileText, Sliders, AlertTriangle, Layers, Power
@@ -112,15 +111,6 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Merchant Recommendation Section */}
-      <MerchantRecommendationSection
-        recommendations={recommendations}
-        onOpenDetail={onOpenRecDetail}
-        onRunOnce={onRunRecOnce}
-        onAddToMerchant={onApplyRecToMerchant}
-        onDismiss={onDismissRec}
-      />
-
       {/* Search Bar & Process Category Filter Header */}
       <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-xs space-y-4">
         {/* Unified Search Bar (Requirement 2) */}

@@ -614,6 +614,7 @@ export const INITIAL_MERCHANT_RECOMMENDATIONS: MerchantRecommendation[] = [
   {
     id: 'rec_1',
     type: 'expert',
+    targetId: 'exp_diag_01',
     targetName: '商家诊断专家',
     triggerFact: '当前商家“皇家宠物食品”近30天未进行种草资产与知识库完整度盘点。',
     problemSolved: '解决商家知识库缺口（如缺KOS授权与私域暗号协议），防范后期发文中断。',
@@ -635,6 +636,7 @@ export const INITIAL_MERCHANT_RECOMMENDATIONS: MerchantRecommendation[] = [
   {
     id: 'rec_2',
     type: 'skill',
+    targetId: 'sk_comment_extract_01',
     targetName: '高意向评论与私域抽取',
     triggerFact: '“幼猫换粮抗应激”最新发布的 3 篇笔记评论量突破 120 条，包含大量咨询购粮路径信息。',
     problemSolved: '快速提取高意向线索，避免错过最佳干预窗口。',

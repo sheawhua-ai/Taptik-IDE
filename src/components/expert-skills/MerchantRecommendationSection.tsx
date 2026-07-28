@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { MerchantRecommendation, AppScope } from './types';
+import { MerchantRecommendation } from './types';
 import {
   Sparkles, CheckCircle2, AlertCircle, Clock, ShieldAlert,
-  ArrowRight, FileText, ChevronRight, X, HelpCircle, Eye, Play, Plus, ThumbsDown
+  ArrowRight, FileText, ChevronRight, X, Eye, Play, Plus, Info, Check, HelpCircle
 } from 'lucide-react';
 
 interface MerchantRecommendationSectionProps {
@@ -20,213 +20,221 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
   onAddToMerchant,
   onDismiss
 }) => {
-  const [dismissingId, setDismissingId] = useState<string | null>(null);
-  const [selectedDismissReason, setSelectedDismissReason] = useState<string>('暂时不需要');
-
-  const dismissOptions = [
-    '暂时不需要',
-    '已有相同能力',
-    '推荐不准确',
-    '缺少使用条件',
-    '不再推荐此类能力'
-  ];
+  const [inspectingRec, setInspectingRec] = useState<MerchantRecommendation | null>(null);
 
   if (recommendations.length === 0) {
     return (
-      <div className="bg-emerald-50/50 border border-emerald-200/60 rounded-2xl p-4 flex items-center justify-between text-[13px] text-emerald-900">
+      <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3.5 flex items-center justify-between text-[13px] text-emerald-900 shadow-2xs mb-4">
         <div className="flex items-center gap-2.5">
           <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
-          <span className="font-bold">当前商家“皇家宠物食品”能力储备充分，暂无突发业务缺口预警。</span>
+          <span className="font-extrabold">当前商家“皇家宠物食品”能力储备充分，暂无新的业务缺口发现推荐。</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3.5">
-      {/* Title Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-amber-100/80 text-amber-800 rounded-lg">
-            <Sparkles size={16} />
-          </div>
-          <h2 className="text-[15px] font-extrabold text-neutral-900 tracking-tight">
-            根据当前商家的项目、资料和待办，发现 {recommendations.length} 项能力可能有帮助
-          </h2>
-        </div>
-        <span className="text-[12px] font-medium text-neutral-400">
-          基于实时事实与依据诊断
-        </span>
-      </div>
-
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-2 mb-5">
+      {/* Multiple Single-Sentence Tip Rows */}
+      <div className="space-y-2 animate-in fade-in duration-150">
         {recommendations.map(rec => {
-          const prepStatusStyles = {
-            '可直接运行': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-            '需要补充资料': 'bg-amber-50 text-amber-700 border-amber-200',
-            '需要完成配置': 'bg-blue-50 text-blue-700 border-blue-200',
-            '当前不适用': 'bg-neutral-100 text-neutral-600 border-neutral-200'
-          }[rec.prepStatus];
+            const prepStatusStyles = {
+              '可直接运行': 'bg-emerald-50 text-emerald-800 border-emerald-300',
+              '需要补充资料': 'bg-amber-50 text-amber-800 border-amber-300',
+              '需要完成配置': 'bg-blue-50 text-blue-800 border-blue-300',
+              '当前不适用': 'bg-neutral-100 text-neutral-600 border-neutral-200'
+            }[rec.prepStatus];
 
-          return (
-            <div
-              key={rec.id}
-              className="bg-white rounded-2xl border border-neutral-200/90 shadow-xs hover:border-neutral-300 transition-all p-5 flex flex-col justify-between space-y-4"
-            >
-              {/* Header Info */}
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-md text-[11px] font-extrabold ${
-                        rec.type === 'expert' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {rec.type === 'expert' ? '专家角色' : '执行技能'}
-                      </span>
-                      <h3 className="text-[16px] font-extrabold text-neutral-900">
-                        {rec.targetName}
-                      </h3>
-                    </div>
-                  </div>
-                  <span className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${prepStatusStyles}`}>
+            return (
+              <div
+                key={rec.id}
+                className="bg-white/95 border border-amber-200/80 hover:border-amber-400 rounded-xl p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs transition-all"
+              >
+                {/* Single-Sentence Prompt Line */}
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <span className={`shrink-0 px-2 py-0.5 rounded-md text-[11px] font-black ${
+                    rec.type === 'expert' ? 'bg-purple-100 text-purple-900' : 'bg-blue-100 text-blue-900'
+                  }`}>
+                    {rec.type === 'expert' ? '推荐专家' : '推荐技能'} · {rec.targetName}
+                  </span>
+
+                  {/* One sentence tip */}
+                  <p className="text-[12.5px] font-bold text-neutral-800 truncate">
+                    <span className="text-amber-800 font-extrabold mr-1">提示：</span>
+                    {rec.triggerFact}
+                  </p>
+                </div>
+
+                {/* Right Actions */}
+                <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
+                  <span className={`px-2 py-0.5 rounded-full text-[10.5px] font-extrabold border ${prepStatusStyles}`}>
                     {rec.prepStatus}
                   </span>
-                </div>
 
-                {/* Card Fields 2, 3, 4, 5 */}
-                <div className="space-y-2.5 text-[12.5px] bg-neutral-50/80 p-3.5 rounded-xl border border-neutral-100">
-                  {/* 2. 为什么推荐 */}
-                  <div>
-                    <span className="text-neutral-400 font-extrabold mr-1">为什么推荐：</span>
-                    <span className="text-neutral-800 font-medium">{rec.triggerFact}</span>
-                  </div>
-
-                  {/* 3. 可以解决什么 */}
-                  <div>
-                    <span className="text-neutral-400 font-extrabold mr-1">可以解决什么：</span>
-                    <span className="text-neutral-800 font-medium">{rec.problemSolved}</span>
-                  </div>
-
-                  {/* 4. 使用前还需要什么 */}
-                  <div>
-                    <span className="text-neutral-400 font-extrabold mr-1">使用前还需要什么：</span>
-                    <span className="text-neutral-800 font-medium">{rec.requiredDocsAndConfigs}</span>
-                  </div>
-
-                  {/* 5. 人工确认点 */}
-                  <div>
-                    <span className="text-neutral-400 font-extrabold mr-1">人工确认点：</span>
-                    <span className="text-neutral-800 font-medium">{rec.manualConfirmPoints}</span>
-                  </div>
-                </div>
-
-                {/* Fact vs Inference vs Missing Info Breakdown */}
-                <div className="space-y-1.5 pt-1 text-[11.5px]">
-                  <div className="flex items-center gap-2 text-neutral-600">
-                    <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 rounded font-extrabold text-[10px]">已确认事实</span>
-                    <span className="truncate">{rec.confirmedFacts.join('； ') || '无'}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-neutral-600">
-                    <span className="px-1.5 py-0.5 bg-sky-100 text-sky-800 rounded font-extrabold text-[10px]">系统推断</span>
-                    <span className="truncate">{rec.systemInferences.join('； ') || '无'}</span>
-                  </div>
-                  {rec.missingInfo.length > 0 && (
-                    <div className="flex items-center gap-2 text-amber-700">
-                      <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded font-extrabold text-[10px]">尚缺信息</span>
-                      <span className="truncate">{rec.missingInfo.join('； ')}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Bottom Actions */}
-              <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
-                <button
-                  onClick={() => onOpenDetail(rec)}
-                  className="px-3 py-1.5 bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-lg flex items-center gap-1 transition-all"
-                >
-                  <Eye size={13} /> 查看详情
-                </button>
-
-                <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => onRunOnce(rec)}
-                    className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[12px] font-bold rounded-lg flex items-center gap-1 transition-all"
+                    onClick={() => setInspectingRec(rec)}
+                    className="px-3 py-1 bg-amber-100/90 hover:bg-amber-200 text-amber-900 font-extrabold text-[12px] rounded-lg transition-all flex items-center gap-1"
                   >
-                    <Play size={13} /> 运行一次
+                    <Info size={13} /> 详情
                   </button>
 
                   <button
                     onClick={() => onAddToMerchant(rec)}
-                    className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white text-[12px] font-extrabold rounded-lg flex items-center gap-1 transition-all"
+                    className="px-3 py-1 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[12px] rounded-lg shadow-2xs transition-all flex items-center gap-1"
                   >
-                    <Plus size={13} /> 加入当前商家
+                    <Plus size={13} /> 加入商家
                   </button>
 
                   <button
-                    onClick={() => setDismissingId(rec.id)}
-                    className="px-2.5 py-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 text-[12px] font-medium rounded-lg transition-all"
+                    onClick={() => onDismiss(rec.id, '暂时不需要')}
+                    className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all"
+                    title="暂不需要"
                   >
-                    暂不需要
+                    <X size={15} />
                   </button>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      {/* Dismiss Feedback Modal (Requirement 4) */}
-      {dismissingId && (
+      {/* Recommendation Detailed Inspection Modal (Requirement 2: 查看项目具体能力和详情) */}
+      {inspectingRec && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-xs" onClick={() => setDismissingId(null)} />
-          <div className="relative w-full max-w-sm bg-white rounded-2xl shadow-xl p-5 z-10 space-y-4 animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-              <h3 className="text-[15px] font-extrabold text-neutral-900">选择暂不需要的原因</h3>
-              <button onClick={() => setDismissingId(null)} className="p-1 text-neutral-400 hover:text-neutral-700">
-                <X size={16} />
+          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-xs" onClick={() => setInspectingRec(null)} />
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 z-10 space-y-5 animate-in zoom-in-95 duration-150 border border-neutral-200">
+            {/* Header */}
+            <div className="flex items-start justify-between border-b border-neutral-100 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
+                    inspectingRec.type === 'expert' ? 'bg-purple-100 text-purple-900' : 'bg-blue-100 text-blue-900'
+                  }`}>
+                    {inspectingRec.type === 'expert' ? '推荐专家' : '推荐技能'}
+                  </span>
+                  <h3 className="text-[18px] font-black text-neutral-900">
+                    {inspectingRec.targetName}
+                  </h3>
+                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {inspectingRec.prepStatus}
+                  </span>
+                </div>
+                <p className="text-[12px] font-bold text-neutral-500">
+                  基于皇家宠物食品近期资料库、项目进展与待办问题智能诊断
+                </p>
+              </div>
+
+              <button onClick={() => setInspectingRec(null)} className="p-1.5 text-neutral-400 hover:text-neutral-800 rounded-xl hover:bg-neutral-100 transition-all">
+                <X size={18} />
               </button>
             </div>
 
-            <div className="space-y-2">
-              {dismissOptions.map(opt => (
-                <label
-                  key={opt}
-                  className={`flex items-center justify-between p-3 rounded-xl border text-[13px] font-extrabold cursor-pointer transition-all ${
-                    selectedDismissReason === opt
-                      ? 'border-neutral-900 bg-neutral-50 text-neutral-900'
-                      : 'border-neutral-200 text-neutral-600 hover:border-neutral-300'
-                  }`}
-                >
-                  <span>{opt}</span>
-                  <input
-                    type="radio"
-                    name="dismissReason"
-                    checked={selectedDismissReason === opt}
-                    onChange={() => setSelectedDismissReason(opt)}
-                    className="text-neutral-900 focus:ring-neutral-900"
-                  />
-                </label>
-              ))}
+            {/* Content Details */}
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+              {/* 1. 发现背景与触发事实 */}
+              <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-2xl space-y-1.5">
+                <span className="text-[12px] font-black text-amber-900 block flex items-center gap-1.5">
+                  <Sparkles size={14} className="text-amber-600" /> 1. 推荐触发背景与事实：
+                </span>
+                <p className="text-[13px] font-extrabold text-neutral-800">
+                  {inspectingRec.triggerFact}
+                </p>
+                {inspectingRec.confirmedFacts.length > 0 && (
+                  <ul className="text-[12px] font-medium text-neutral-600 space-y-0.5 pt-1">
+                    {inspectingRec.confirmedFacts.map((fact, idx) => (
+                      <li key={idx}>• {fact}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* 2. 解决的商业与运营问题 */}
+              <div className="p-4 bg-neutral-50 border border-neutral-200/80 rounded-2xl space-y-1">
+                <span className="text-[12px] font-black text-neutral-900 block">
+                  2. 可以解决的实际运营问题：
+                </span>
+                <p className="text-[13px] font-bold text-neutral-700 leading-relaxed">
+                  {inspectingRec.problemSolved}
+                </p>
+              </div>
+
+              {/* 3. 所需输入资料与配置 */}
+              <div className="p-4 bg-blue-50/40 border border-blue-100 rounded-2xl space-y-1">
+                <span className="text-[12px] font-black text-blue-900 block">
+                  3. 项目与能力调用所需输入资料：
+                </span>
+                <ul className="text-[12.5px] font-bold text-neutral-700 space-y-1">
+                  {inspectingRec.requiredDocsAndConfigs.map((doc, idx) => (
+                    <li key={idx}>• {doc}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 4. 人工确认节点 */}
+              <div className="p-4 bg-purple-50/40 border border-purple-100 rounded-2xl space-y-1">
+                <span className="text-[12px] font-black text-purple-900 block">
+                  4. 全程保留的人工确认节点：
+                </span>
+                <ul className="text-[12.5px] font-bold text-neutral-700 space-y-1">
+                  {inspectingRec.manualConfirmPoints.map((pt, idx) => (
+                    <li key={idx}>• {pt}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 5. 诊断推断与缺口 */}
+              {(inspectingRec.systemInferences || inspectingRec.missingInfo) && (
+                <div className="p-4 bg-neutral-50 border border-neutral-200/80 rounded-2xl space-y-2 text-[12px]">
+                  <span className="text-neutral-900 font-black block">5. 深度诊断推断与缺口标定：</span>
+                  {inspectingRec.systemInferences && (
+                    <div>
+                      <span className="text-sky-800 font-extrabold mr-1">[系统推断]</span>
+                      <span className="text-neutral-700 font-medium">{inspectingRec.systemInferences.join('； ')}</span>
+                    </div>
+                  )}
+                  {inspectingRec.missingInfo && inspectingRec.missingInfo.length > 0 && (
+                    <div>
+                      <span className="text-amber-800 font-extrabold mr-1">[尚缺资料]</span>
+                      <span className="text-amber-900 font-medium">{inspectingRec.missingInfo.join('； ')}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="pt-2 flex items-center justify-end gap-2 border-t border-neutral-100">
-              <button
-                onClick={() => setDismissingId(null)}
-                className="px-4 py-2 border border-neutral-200 text-neutral-700 text-[12px] font-bold rounded-xl"
-              >
-                取消
-              </button>
+            {/* Bottom Modal Actions */}
+            <div className="pt-3 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-2">
               <button
                 onClick={() => {
-                  onDismiss(dismissingId, selectedDismissReason);
-                  setDismissingId(null);
+                  onOpenDetail(inspectingRec);
+                  setInspectingRec(null);
                 }}
-                className="px-4 py-2 bg-neutral-900 text-white text-[12px] font-extrabold rounded-xl"
+                className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[12.5px] font-extrabold rounded-xl transition-all flex items-center gap-1.5"
               >
-                确认提交
+                <Eye size={15} /> 查看能力抽屉
               </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    onRunOnce(inspectingRec);
+                    setInspectingRec(null);
+                  }}
+                  className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 text-[12.5px] font-extrabold rounded-xl transition-all flex items-center gap-1.5"
+                >
+                  <Play size={15} /> 工作台试运行
+                </button>
+
+                <button
+                  onClick={() => {
+                    onAddToMerchant(inspectingRec);
+                    setInspectingRec(null);
+                  }}
+                  className="px-5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-[12.5px] font-black rounded-xl shadow-2xs transition-all flex items-center gap-1.5"
+                >
+                  <Plus size={15} /> 加入皇家宠物食品
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -234,3 +242,4 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
     </div>
   );
 };
+

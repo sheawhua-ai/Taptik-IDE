@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { SkillItem, ProcessCategory, DailyTaskType, SkillSourceType, MerchantRecommendation } from './types';
-import { MerchantRecommendationSection } from './MerchantRecommendationSection';
 import {
   Search, Wrench, CheckCircle2, Clock, ShieldAlert, Sparkles,
   ChevronDown, Filter, Play, Eye, Settings, FileText, Layers, Wifi, Terminal, ExternalLink, Plus
@@ -107,15 +106,6 @@ export const SkillHome: React.FC<SkillHomeProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Merchant Recommendations */}
-      <MerchantRecommendationSection
-        recommendations={recommendations}
-        onOpenDetail={onOpenRecDetail}
-        onRunOnce={onRunRecOnce}
-        onAddToMerchant={onApplyRecToMerchant}
-        onDismiss={onDismissRec}
-      />
-
       {/* Search & Multi-Filter Header */}
       <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-xs space-y-4">
         {/* Search Input */}

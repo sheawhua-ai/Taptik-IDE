@@ -52,23 +52,23 @@ export const Workstation: React.FC<WorkstationProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-6 flex flex-col space-y-4">
+    <div className="min-h-screen bg-neutral-50/60 text-neutral-900 p-6 flex flex-col space-y-4 max-w-7xl mx-auto">
       {/* Top Header */}
-      <div className="bg-neutral-800/90 border border-neutral-700/80 p-4 rounded-2xl flex items-center justify-between">
+      <div className="bg-white border border-neutral-200/80 p-4 rounded-2xl shadow-xs flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-purple-900/50 text-purple-300 rounded-xl border border-purple-700/50">
+          <div className="p-2.5 bg-purple-100 text-purple-800 rounded-xl border border-purple-200">
             <Sparkles size={20} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-[18px] font-extrabold text-white">
+              <h1 className="text-[18px] font-black text-neutral-900">
                 {expert.name} · 任务工作台
               </h1>
-              <span className="px-2 py-0.5 bg-purple-950 text-purple-300 border border-purple-800 rounded text-[11px] font-extrabold">
-                AI IDE 模式
+              <span className="px-2 py-0.5 bg-purple-100 text-purple-800 border border-purple-200 rounded text-[11px] font-extrabold">
+                运行模式
               </span>
             </div>
-            <p className="text-[12px] text-neutral-400 font-medium mt-0.5">
+            <p className="text-[12px] text-neutral-500 font-bold mt-0.5">
               由专家编排授权技能执行，全程保留人工确认节点。
             </p>
           </div>
@@ -77,13 +77,13 @@ export const Workstation: React.FC<WorkstationProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onOpenScopeModal(expert)}
-            className="px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 text-neutral-200 text-[12px] font-extrabold rounded-xl transition-all"
+            className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[12px] font-extrabold rounded-xl border border-neutral-200 transition-all"
           >
             当前范围：{expert.appScope === 'merchant' ? '当前商家 (皇家宠物食品)' : '项目范围'}
           </button>
           <button
             onClick={onClose}
-            className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded-xl transition-all"
+            className="p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-all"
           >
             <X size={18} />
           </button>
@@ -93,34 +93,34 @@ export const Workstation: React.FC<WorkstationProps> = ({
       {/* Main Dual Column Layout (Requirement 7) */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Task Control (5 Cols) */}
-        <div className="lg:col-span-5 bg-neutral-800/60 border border-neutral-700/60 rounded-2xl p-5 space-y-5 flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-xs space-y-5 flex flex-col justify-between">
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-700/80 pb-3">
-              <h2 className="text-[15px] font-extrabold text-white flex items-center gap-2">
-                <Shield size={16} className="text-purple-400" /> 任务控制区
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <h2 className="text-[15px] font-extrabold text-neutral-900 flex items-center gap-2">
+                <Shield size={16} className="text-purple-600" /> 任务控制区
               </h2>
-              <span className="text-[11px] text-neutral-400">最小授权模式</span>
+              <span className="text-[11px] font-bold text-neutral-400">最小授权模式</span>
             </div>
 
             {/* 本次任务目标 */}
             <div className="space-y-1.5">
-              <label className="text-[12px] font-extrabold text-neutral-300 block">本次任务目标：</label>
+              <label className="text-[12px] font-extrabold text-neutral-700 block">本次任务目标：</label>
               <textarea
                 rows={3}
                 value={taskGoal}
                 onChange={e => setTaskGoal(e.target.value)}
-                className="w-full p-3 bg-neutral-900 border border-neutral-700 rounded-xl text-[12.5px] text-neutral-200 focus:outline-none focus:border-purple-500 font-medium"
+                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12.5px] text-neutral-900 focus:bg-white focus:outline-none focus:border-purple-600 font-medium transition-all"
               />
             </div>
 
             {/* 本次调用的技能 */}
             <div className="space-y-1.5">
-              <label className="text-[12px] font-extrabold text-neutral-300 block">本次将调用的技能：</label>
+              <label className="text-[12px] font-extrabold text-neutral-700 block">本次将调用的技能：</label>
               <div className="space-y-1.5">
                 {expert.boundSkills?.map(sk => (
-                  <div key={sk.id} className="p-2.5 bg-neutral-900/80 border border-neutral-700/60 rounded-xl flex items-center justify-between text-[12px]">
-                    <span className="font-extrabold text-purple-300">{sk.name}</span>
-                    <span className="text-[11px] text-neutral-400">{sk.oneSentenceDesc}</span>
+                  <div key={sk.id} className="p-2.5 bg-purple-50/60 border border-purple-100 rounded-xl flex items-center justify-between text-[12px]">
+                    <span className="font-extrabold text-purple-900">{sk.name}</span>
+                    <span className="text-[11px] text-purple-700 font-medium">{sk.oneSentenceDesc}</span>
                   </div>
                 ))}
               </div>
@@ -128,8 +128,8 @@ export const Workstation: React.FC<WorkstationProps> = ({
 
             {/* 需要的输入资料 */}
             <div className="space-y-1.5">
-              <label className="text-[12px] font-extrabold text-neutral-300 block">需要的输入资料：</label>
-              <ul className="space-y-1 text-[12px] text-neutral-400 bg-neutral-900/50 p-3 rounded-xl border border-neutral-700/50">
+              <label className="text-[12px] font-extrabold text-neutral-700 block">需要的输入资料：</label>
+              <ul className="space-y-1 text-[12px] text-neutral-600 bg-neutral-50 p-3 rounded-xl border border-neutral-200/80">
                 {expert.inputDocs?.map((doc, i) => (
                   <li key={i}>• {doc}</li>
                 ))}
@@ -137,20 +137,20 @@ export const Workstation: React.FC<WorkstationProps> = ({
             </div>
 
             {/* 人工确认点 */}
-            <div className="p-3 bg-amber-950/40 border border-amber-800/60 rounded-xl space-y-1 text-[12px]">
-              <span className="font-extrabold text-amber-300 block">人工确认点：</span>
-              <p className="text-amber-200/80">{expert.manualConfirmPoints?.join('； ') || '策略写入前需确认'}</p>
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-1 text-[12px]">
+              <span className="font-extrabold text-amber-900 block">人工确认点：</span>
+              <p className="text-amber-800 font-medium">{expert.manualConfirmPoints?.join('； ') || '策略写入前需确认'}</p>
             </div>
 
             {/* 补充说明输入框 */}
             <div className="space-y-1.5">
-              <label className="text-[12px] font-extrabold text-neutral-300 block">补充说明 (可选)：</label>
+              <label className="text-[12px] font-extrabold text-neutral-700 block">补充说明 (可选)：</label>
               <input
                 type="text"
                 placeholder="例如：重点对比换粮前7天的品牌益生菌搭配……"
                 value={extraPrompt}
                 onChange={e => setExtraPrompt(e.target.value)}
-                className="w-full p-2.5 bg-neutral-900 border border-neutral-700 rounded-xl text-[12px] text-neutral-200 focus:outline-none focus:border-purple-500"
+                className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[12px] text-neutral-900 focus:bg-white focus:outline-none focus:border-purple-600 transition-all"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export const Workstation: React.FC<WorkstationProps> = ({
           <button
             onClick={handleRunAnalysis}
             disabled={isAnalyzing}
-            className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-[13.5px] rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.99]"
+            className="w-full py-3 bg-purple-700 hover:bg-purple-600 text-white font-extrabold text-[13.5px] rounded-xl flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-[0.99]"
           >
             {isAnalyzing ? (
               <>
@@ -176,61 +176,61 @@ export const Workstation: React.FC<WorkstationProps> = ({
         </div>
 
         {/* Right Column: Execution & Results (7 Cols) */}
-        <div className="lg:col-span-7 bg-neutral-800/60 border border-neutral-700/60 rounded-2xl p-5 space-y-5 overflow-y-auto max-h-[80vh]">
-          <div className="flex items-center justify-between border-b border-neutral-700/80 pb-3">
-            <h2 className="text-[15px] font-extrabold text-white flex items-center gap-2">
-              <Database size={16} className="text-emerald-400" /> 执行与结果区
+        <div className="lg:col-span-7 bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-xs space-y-5 overflow-y-auto max-h-[80vh]">
+          <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+            <h2 className="text-[15px] font-extrabold text-neutral-900 flex items-center gap-2">
+              <Database size={16} className="text-emerald-600" /> 执行与结果区
             </h2>
             {isResultAdopted && (
-              <span className="px-2.5 py-0.5 bg-emerald-900 text-emerald-300 border border-emerald-700 rounded text-[11px] font-extrabold flex items-center gap-1">
+              <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full text-[11px] font-extrabold flex items-center gap-1">
                 <Check size={12} /> 结果已采用
               </span>
             )}
           </div>
 
           {/* 1. 任务理解 */}
-          <div className="space-y-1.5 bg-neutral-900/60 p-4 rounded-xl border border-neutral-700/60">
-            <span className="text-[12px] font-extrabold text-purple-300 block">1. 任务理解</span>
-            <p className="text-[12.5px] text-neutral-300 leading-relaxed font-medium">
+          <div className="space-y-1.5 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+            <span className="text-[12px] font-extrabold text-purple-900 block">1. 任务理解</span>
+            <p className="text-[12.5px] text-neutral-700 leading-relaxed font-medium">
               专家已理解任务：在限定范围“皇家宠物食品”下，挖掘“幼猫换粮应激软便”的痛点原声。保持人工审阅，不直接自动开销。
             </p>
           </div>
 
           {/* 2. 已读取资料 */}
-          <div className="space-y-1.5 bg-neutral-900/60 p-4 rounded-xl border border-neutral-700/60">
-            <span className="text-[12px] font-extrabold text-blue-300 block">2. 已读取资料</span>
+          <div className="space-y-1.5 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+            <span className="text-[12px] font-extrabold text-blue-900 block">2. 已读取资料</span>
             <div className="flex flex-wrap gap-2 text-[11.5px]">
-              <span className="px-2.5 py-1 bg-neutral-800 text-neutral-300 rounded-lg border border-neutral-700">
+              <span className="px-2.5 py-1 bg-white text-neutral-800 rounded-lg border border-neutral-200 shadow-2xs font-bold">
                 📄 《皇家宠物食品换粮问答手册》
               </span>
-              <span className="px-2.5 py-1 bg-neutral-800 text-neutral-300 rounded-lg border border-neutral-700">
+              <span className="px-2.5 py-1 bg-white text-neutral-800 rounded-lg border border-neutral-200 shadow-2xs font-bold">
                 📊 近30天“换粮软便”搜索词大盘表
               </span>
-              <span className="px-2.5 py-1 bg-neutral-800 text-neutral-300 rounded-lg border border-neutral-700">
+              <span className="px-2.5 py-1 bg-white text-neutral-800 rounded-lg border border-neutral-200 shadow-2xs font-bold">
                 💬 120 条真实转化评论文本
               </span>
             </div>
           </div>
 
           {/* 3. 执行摘要 (Collapsed by default, Requirement 7) */}
-          <div className="bg-neutral-900/60 rounded-xl border border-neutral-700/60 overflow-hidden">
+          <div className="bg-neutral-50 rounded-xl border border-neutral-200 overflow-hidden">
             <button
               onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-              className="w-full p-3.5 flex items-center justify-between text-[12.5px] font-extrabold text-neutral-300 hover:bg-neutral-800/50 transition-all"
+              className="w-full p-3.5 flex items-center justify-between text-[12.5px] font-extrabold text-neutral-800 hover:bg-neutral-100/80 transition-all"
             >
               <span>3. 执行摘要：调用了 2 项技能，读取了 3 类资料，没有执行外部写入。</span>
               {isSummaryExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
             {isSummaryExpanded && (
-              <div className="p-4 pt-1 border-t border-neutral-800 text-[12px] text-neutral-400 space-y-2 animate-in fade-in duration-150">
-                <div className="flex items-center gap-2 text-emerald-400 font-extrabold">
+              <div className="p-4 pt-1 border-t border-neutral-200 text-[12px] text-neutral-600 space-y-2 animate-in fade-in duration-150">
+                <div className="flex items-center gap-2 text-emerald-700 font-extrabold">
                   <CheckCircle2 size={14} /> 技能“蓝海机会假设生成”已运行完成，提炼出 3 个候选假设。
                 </div>
-                <div className="flex items-center gap-2 text-emerald-400 font-extrabold">
+                <div className="flex items-center gap-2 text-emerald-700 font-extrabold">
                   <CheckCircle2 size={14} /> 技能“高意向评论与私域抽取”已运行完成，发现“软便问诊”强诉求。
                 </div>
-                <p className="text-[11.5px] text-neutral-500 pt-1">
+                <p className="text-[11.5px] text-neutral-400 pt-1">
                   注意：按规则仅展示技能级过程，隐藏底层数据库与API工具日志。
                 </p>
               </div>
@@ -238,17 +238,17 @@ export const Workstation: React.FC<WorkstationProps> = ({
           </div>
 
           {/* 4. 结果必须区分 (Requirement 7) */}
-          <div className="space-y-3 bg-neutral-900/80 p-4 rounded-xl border border-neutral-700/80">
-            <span className="text-[13px] font-extrabold text-white block border-b border-neutral-800 pb-2">
+          <div className="space-y-3 bg-neutral-50/80 p-4 rounded-xl border border-neutral-200">
+            <span className="text-[13px] font-extrabold text-neutral-900 block border-b border-neutral-200 pb-2">
               4. 结构化分析结果 (按事实/推断/缺口严格分类)
             </span>
 
             {/* 已确认事实 */}
             <div className="space-y-1">
-              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-emerald-950 text-emerald-300 border border-emerald-800 rounded">
+              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded">
                 已确认事实 (Fact)
               </span>
-              <ul className="text-[12px] text-neutral-300 space-y-1 pt-1 pl-1">
+              <ul className="text-[12px] text-neutral-800 space-y-1 pt-1 pl-1 font-medium">
                 <li>• 搜索词“换粮软便怎么办”近30天指数达到 18,400，月环比增长 45%</li>
                 <li>• 当前商家主推SKU含有益生元与高消化率颗粒成分</li>
               </ul>
@@ -256,10 +256,10 @@ export const Workstation: React.FC<WorkstationProps> = ({
 
             {/* 系统推断 */}
             <div className="space-y-1">
-              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-sky-950 text-sky-300 border border-sky-800 rounded">
+              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-sky-100 text-sky-900 border border-sky-300 rounded">
                 系统推断 (Inference)
               </span>
-              <ul className="text-[12px] text-neutral-300 space-y-1 pt-1 pl-1">
+              <ul className="text-[12px] text-neutral-800 space-y-1 pt-1 pl-1 font-medium">
                 <li>• 养宠新手对传统“7天换粮规程”存在繁琐执行痛点，希望获得无缝不软便的干预解法</li>
                 <li>• 以“换粮软便救星/不翻车换粮”为切入点，预计互动率提升 30% 以上</li>
               </ul>
@@ -267,39 +267,39 @@ export const Workstation: React.FC<WorkstationProps> = ({
 
             {/* 尚缺信息 */}
             <div className="space-y-1">
-              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-amber-950 text-amber-300 border border-amber-800 rounded">
+              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
                 尚缺信息 (Missing Info)
               </span>
-              <p className="text-[12px] text-amber-200/80 pl-1">• 同行竞品“A品牌幼猫粮”在天猫的真实退款率数据</p>
+              <p className="text-[12px] text-amber-900 font-medium pl-1">• 同行竞品“A品牌幼猫粮”在天猫的真实退款率数据</p>
             </div>
 
             {/* 建议验证动作 */}
             <div className="space-y-1">
-              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-purple-950 text-purple-300 border border-purple-800 rounded">
+              <span className="text-[11px] font-extrabold px-2 py-0.5 bg-purple-100 text-purple-900 border border-purple-300 rounded">
                 建议验证动作 (Action)
               </span>
-              <p className="text-[12px] text-purple-200/90 pl-1">• 安排第一波 10 篇 KOC 开展小规模测试发文，观察 14 天进店转化率</p>
+              <p className="text-[12px] text-purple-900 font-medium pl-1">• 安排第一波 10 篇 KOC 开展小规模测试发文，观察 14 天进店转化率</p>
             </div>
           </div>
 
           {/* Result Actions & Manual Decision Area (Requirement 7) */}
-          <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-neutral-700/60">
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-neutral-100">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => alert('允许修改假设：在左侧输入框补充新设定即可。')}
-                className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[12px] font-bold rounded-lg border border-neutral-700"
+                className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[12px] font-extrabold rounded-xl border border-neutral-200 transition-all"
               >
                 修改假设
               </button>
               <button
                 onClick={() => alert('补充资料：请上传新的商家Excel或图片。')}
-                className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[12px] font-bold rounded-lg border border-neutral-700"
+                className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[12px] font-extrabold rounded-xl border border-neutral-200 transition-all"
               >
                 补充资料
               </button>
               <button
                 onClick={handleRunAnalysis}
-                className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[12px] font-bold rounded-lg border border-neutral-700"
+                className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[12px] font-extrabold rounded-xl border border-neutral-200 transition-all"
               >
                 重新运行
               </button>
@@ -307,7 +307,7 @@ export const Workstation: React.FC<WorkstationProps> = ({
 
             <button
               onClick={() => setShowUsageModal(true)}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[13px] rounded-xl shadow-md flex items-center gap-1.5"
+              className="px-5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-[13px] rounded-xl shadow-2xs flex items-center gap-1.5 transition-all"
             >
               <CheckCircle2 size={16} /> 采用结果
             </button>
@@ -318,26 +318,26 @@ export const Workstation: React.FC<WorkstationProps> = ({
       {/* Task Result Usage Selection Modal + Content Preview (Requirement 7 & 17) */}
       {showUsageModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={() => setShowUsageModal(false)} />
-          <div className="relative w-full max-w-xl bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl p-6 z-10 space-y-5">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <h3 className="text-[16px] font-extrabold text-white">采用任务结果：选择用途与预览写入内容</h3>
-              <button onClick={() => setShowUsageModal(false)} className="text-neutral-400 hover:text-white">
+          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-xs" onClick={() => setShowUsageModal(false)} />
+          <div className="relative w-full max-w-xl bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-6 z-10 space-y-5 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <h3 className="text-[16px] font-extrabold text-neutral-900">采用任务结果：选择用途与预览写入内容</h3>
+              <button onClick={() => setShowUsageModal(false)} className="p-1 text-neutral-400 hover:text-neutral-700">
                 <X size={18} />
               </button>
             </div>
 
             {/* Usage Selector */}
             <div className="space-y-2">
-              <label className="text-[12px] font-extrabold text-neutral-300 block">请选择将此分析结果写入的位置：</label>
+              <label className="text-[12px] font-extrabold text-neutral-700 block">请选择将此分析结果写入的位置：</label>
               <div className="space-y-2">
                 {usageOptions.map(opt => (
                   <label
                     key={opt.id}
                     className={`flex items-start gap-3 p-3 rounded-xl border text-[12.5px] cursor-pointer transition-all ${
                       selectedUsage === opt.id
-                        ? 'border-purple-500 bg-purple-950/30 text-white font-extrabold'
-                        : 'border-neutral-800 bg-neutral-950 text-neutral-400 hover:border-neutral-700'
+                        ? 'border-purple-600 bg-purple-50/60 text-purple-950 font-extrabold'
+                        : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300'
                     }`}
                   >
                     <input
@@ -348,7 +348,7 @@ export const Workstation: React.FC<WorkstationProps> = ({
                       className="mt-0.5 text-purple-600 focus:ring-purple-500"
                     />
                     <div>
-                      <div className="text-neutral-200">{opt.label}</div>
+                      <div className="text-neutral-900 font-bold">{opt.label}</div>
                       <div className="text-[11px] text-neutral-500 font-normal mt-0.5">{opt.desc}</div>
                     </div>
                   </label>
@@ -357,17 +357,17 @@ export const Workstation: React.FC<WorkstationProps> = ({
             </div>
 
             {/* Content Write Preview (Requirement 7: Must show preview before writing!) */}
-            <div className="p-3.5 bg-neutral-950 rounded-xl border border-neutral-800 text-[12px] space-y-1.5">
-              <span className="text-purple-300 font-extrabold block text-[11px]">即将写入的内容预览 (Preview):</span>
-              <p className="text-neutral-300 font-medium">
+            <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 text-[12px] space-y-1.5">
+              <span className="text-purple-800 font-extrabold block text-[11px]">即将写入的内容预览 (Preview):</span>
+              <p className="text-neutral-800 font-medium">
                 【策略假设】幼猫换粮软便抗应激切入点：以“7天无应激换粮法+益生元颗粒”为核心钩子，测试第一波 10 篇 KOC 发文，目标指标：互动率 &gt; 4.5%。
               </p>
             </div>
 
-            <div className="pt-2 flex items-center justify-end gap-2 border-t border-neutral-800">
+            <div className="pt-2 flex items-center justify-end gap-2 border-t border-neutral-100">
               <button
                 onClick={() => setShowUsageModal(false)}
-                className="px-4 py-2 bg-neutral-800 text-neutral-300 text-[12px] font-bold rounded-xl"
+                className="px-4 py-2 bg-neutral-100 text-neutral-700 text-[12px] font-bold rounded-xl hover:bg-neutral-200 transition-all"
               >
                 取消
               </button>
@@ -377,7 +377,7 @@ export const Workstation: React.FC<WorkstationProps> = ({
                   setShowUsageModal(false);
                   alert(`已成功将结果采用为【${usageOptions.find(o => o.id === selectedUsage)?.label}】！`);
                 }}
-                className="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white text-[12px] font-extrabold rounded-xl"
+                className="px-5 py-2 bg-purple-700 hover:bg-purple-600 text-white text-[12px] font-extrabold rounded-xl shadow-2xs transition-all"
               >
                 确认并写入
               </button>

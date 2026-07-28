@@ -958,20 +958,6 @@ export const MaterialStation: React.FC<MaterialStationProps> = () => {
                             {ast.type === "video" ? ast.duration || "视频" : "图片"}
                           </div>
 
-                          {/* Usage / Single-Use Lock Badge */}
-                          <div className={`absolute top-2 right-2 px-2 py-0.5 text-[10px] rounded-md font-bold flex items-center gap-1 ${
-                            ast.usageStatus !== "未使用" ? "bg-amber-500 text-white shadow-sm" : "bg-emerald-600 text-white"
-                          }`}>
-                            {ast.usageStatus !== "未使用" ? (
-                              <>
-                                <Lock size={10} />
-                                <span>已使用(全网锁定)</span>
-                              </>
-                            ) : (
-                              <span>单次授权(未使用)</span>
-                            )}
-                          </div>
-
                           {/* Portrait Status Tag if contains portrait */}
                           {ast.authInfo.containsPortrait && (
                             <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/75 backdrop-blur-md text-white text-[9px] font-bold rounded flex items-center gap-1">
@@ -980,7 +966,7 @@ export const MaterialStation: React.FC<MaterialStationProps> = () => {
                                 ast.authInfo.autoBlurredPortrait ? "text-emerald-400" : "text-amber-400"
                               } />
                               {ast.authInfo.isKocSelfPortrait
-                                ? "KOC本人肖像(许可)"
+                                ? "KOC肖像"
                                 : ast.authInfo.autoBlurredPortrait
                                 ? "人脸已打码"
                                 : "肖像未签署"}
@@ -989,29 +975,43 @@ export const MaterialStation: React.FC<MaterialStationProps> = () => {
                         </div>
 
                         {/* Card Info Content */}
-                        <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2">
-                          <div>
-                            <h4 className="text-[13px] font-bold text-neutral-900 truncate leading-snug group-hover:text-primary-600 transition-colors">
-                              {ast.name}
-                            </h4>
-                            
-                            {/* Processing Status Badge */}
-                            <div className="mt-1.5 flex items-center gap-1">
-                              <span className={`px-2 py-0.3 text-[10px] font-bold rounded border ${procStyle}`}>
-                                {ast.processStatus}
-                              </span>
-                              {ast.riskType && (
-                                <span className="text-[10px] text-red-600 truncate max-w-[100px] font-medium">
-                                  {ast.riskType}
+                        <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5">
+                          <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="text-[13px] font-bold text-neutral-900 truncate leading-snug group-hover:text-primary-600 transition-colors">
+                                {ast.name}
+                              </h4>
+                              {ast.processStatus === "AI分析中" && (
+                                <span className="px-1.5 py-0.2 bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-extrabold rounded shrink-0 animate-pulse">
+                                  分析中
                                 </span>
                               )}
+                              {ast.processStatus === "有风险" && (
+                                <span className="px-1.5 py-0.2 bg-red-50 text-red-700 border border-red-200 text-[10px] font-extrabold rounded shrink-0">
+                                  有风险
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Vectorization Image Description Box */}
+                            <div className="bg-neutral-50/80 border border-neutral-100 rounded-xl p-2.5 text-[11.5px] text-neutral-600 space-y-1">
+                              <div className="flex items-center justify-between text-[10px] font-extrabold text-neutral-400">
+                                <span className="flex items-center gap-1 text-primary-700 font-black">
+                                  <Sparkles size={11} className="text-primary-600 shrink-0" />
+                                  向量化描述
+                                </span>
+                                <span className="text-[9.5px] text-neutral-400 font-mono">Embedding</span>
+                              </div>
+                              <p className="line-clamp-2 font-medium text-neutral-800 leading-snug">
+                                {ast.activeDescription || ast.aiVisualFacts || "暂无描述"}
+                              </p>
                             </div>
                           </div>
 
                           {/* Max 3 Tags */}
-                          <div className="flex flex-wrap gap-1 pt-1 border-t border-neutral-100">
+                          <div className="flex flex-wrap gap-1 pt-1.5 border-t border-neutral-100">
                             {ast.tags.slice(0, 3).map((tg, i) => (
-                              <span key={i} className="text-[10px] text-neutral-500 bg-neutral-50 border border-neutral-100 px-1.5 py-0.3 rounded">
+                              <span key={i} className="text-[10px] text-neutral-500 bg-neutral-50 border border-neutral-100 px-1.5 py-0.3 rounded font-medium">
                                 #{tg}
                               </span>
                             ))}
