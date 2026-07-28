@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Image, FileText, Settings, Sparkles } from 'lucide-react';
+import { Image as ImageIcon, FileText, Settings, Sparkles } from 'lucide-react';
 
 interface SmartInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   onValueChange?: (value: string) => void;
@@ -90,7 +90,7 @@ export const SmartInput = forwardRef<HTMLTextAreaElement, SmartInputProps>(({
 
   const menuItems = {
     '@': [
-      { icon: <Image size={14} />, label: '资产: 软便避坑爆款首图', insert: '[资产: 软便避坑爆款首图]' },
+      { icon: <ImageIcon size={14} />, label: '资产: 软便避坑爆款首图', insert: '[资产: 软便避坑爆款首图]' },
       { icon: <Settings size={14} />, label: '规则: 绝不提竞品', insert: '[规则: 绝不提竞品]' },
       { icon: <FileText size={14} />, label: '记忆: 幼犬粮Q2复盘', insert: '[记忆: 幼犬粮Q2复盘]' },
     ],

@@ -160,25 +160,19 @@ export const ExpertSkillCenter: React.FC = () => {
           </p>
         </div>
 
-        {/* Action Buttons: 新建专家, 新建技能, 导入能力包 (Requirement 2 & 16) */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            onClick={() => setShowCreateExpert(true)}
-            className="px-4 py-2.5 bg-purple-700 hover:bg-purple-600 text-white font-extrabold text-[13px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
-          >
-            <Plus size={16} /> 新建专家
-          </button>
-
+        {/* Action Buttons: 新建技能 & 导入能力包 (技能构建入口) */}
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setShowCreateSkill(true)}
-            className="px-4 py-2.5 bg-blue-700 hover:bg-blue-600 text-white font-extrabold text-[13px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
+            className="px-4 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[13px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
           >
             <Plus size={16} /> 新建技能
           </button>
 
           <button
             onClick={() => setShowImportModal(true)}
-            className="px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-extrabold text-[13px] rounded-xl flex items-center gap-1.5 transition-all"
+            className="px-4 py-2.5 bg-white hover:bg-neutral-50 text-neutral-800 font-extrabold text-[13px] rounded-xl border border-neutral-200 flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
+            title="通过外部 JSON、SOP 或 代码库 导入能力包作为新技能"
           >
             <Upload size={16} /> 导入能力包
           </button>

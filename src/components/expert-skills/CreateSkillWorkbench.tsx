@@ -153,23 +153,29 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
           {activeStep === 1 && (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="font-extrabold text-neutral-900 block">选择技能来源：</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="font-extrabold text-neutral-900 block">选择技能构建与来源方式：</label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <button
                     onClick={() => setSelectedSourceType('mine')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left ${selectedSourceType === 'mine' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'mine' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
                   >
-                    自然语言描述 / 我创建
+                    自然语言描述 / 自建
+                  </button>
+                  <button
+                    onClick={() => setSelectedSourceType('external')}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'external' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+                  >
+                    导入外部能力包 (SOP/JSON)
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('from_exp')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left ${selectedSourceType === 'from_exp' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_exp' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
                   >
                     从操盘手经验升级
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('from_project')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left ${selectedSourceType === 'from_project' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_project' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
                   >
                     从项目流程沉淀
                   </button>

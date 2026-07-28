@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LayoutGrid, PenTool, Image, Send, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, X, User } from "lucide-react";
+import { LayoutGrid, PenTool, Image as ImageIcon, Send, MessageSquare, AlertTriangle, CheckCircle2, ChevronRight, X, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function ExecutionCenter() {
@@ -18,7 +18,7 @@ export function ExecutionCenter() {
     {
       id: "assets",
       title: "素材与回传",
-      icon: Image,
+      icon: ImageIcon,
       pending: 8,
       impactToday: 3,
       projects: 1,
