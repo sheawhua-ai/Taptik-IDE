@@ -76,7 +76,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
       ]
     },
     {
-      id: 'n2',
+      id: 'n3',
       project: '幼犬换粮避坑搜索卡位',
       accountType: 'KOS员工号',
       accountName: '官方小助手',
@@ -100,6 +100,12 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   ]);
 
   const activeNote = notes.find(n => n.id === activeNoteId) || notes[0];
+
+  useEffect(() => {
+    if (contentRef.current && activeNote) {
+      contentRef.current.innerHTML = activeNote.content;
+    }
+  }, [activeNoteId]);
 
   const handleApprove = () => {
     setNotes(prev => prev.map(n => n.id === activeNoteId ? { ...n, isReviewed: true, status: '已确认' } : n));
