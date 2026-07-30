@@ -20,6 +20,7 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
   const [expandedEmployeeGroups, setExpandedEmployeeGroups] = useState<string[]>(['g1']);
   const [activeEmployeeGroup, setActiveEmployeeGroup] = useState<string>('g1');
   const [employeeStatus, setEmployeeStatus] = useState<'未派发' | '拍摄中' | '有回传' | '有缺口' | '全部已齐'>('未派发');
+  const [employeeAiStatus, setEmployeeAiStatus] = useState<'可下发' | '需调整' | '阻断下发'>('需调整');
   const [employeeRightPanel, setEmployeeRightPanel] = useState<'default' | 'adjust'>('default');
   const [magnifiedImage, setMagnifiedImage] = useState<string | null>(null);
   const [showOriginalImage, setShowOriginalImage] = useState(false);
@@ -41,7 +42,7 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
   const employeeGroups = [
     {
       id: 'g1', project: '双11大促', name: '门店喂食场景 · 6 篇', executor: '张三', 
-      noteCount: 6, readyCount: 2, blocker: '猫咪不配合', status: '未派发',
+      noteCount: 6, readyCount: 2, blocker: '猫咪不配合', status: '未派发', aiDispatchStatus: '需调整',
       notes: [
         { id: 'n1', title: '探店首发优惠', account: '小红书-A', reqCount: 3, status: '未派发' },
         { id: 'n2', title: '双11囤货指南', account: '小红书-B', reqCount: 2, status: '未派发' }
@@ -49,9 +50,16 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
     },
     {
       id: 'g2', project: '双11大促', name: '户外互动场景 · 4 篇', executor: '李四', 
-      noteCount: 4, readyCount: 4, blocker: '无', status: '全部已齐',
+      noteCount: 4, readyCount: 4, blocker: '无', status: '全部已齐', aiDispatchStatus: '可下发',
       notes: [
         { id: 'n3', title: '周末带狗子出游', account: '小红书-C', reqCount: 4, status: '已齐' }
+      ]
+    },
+    {
+      id: 'g3', project: '日常种草', name: '居家拆箱场景 · 2 篇', executor: '王五',
+      noteCount: 2, readyCount: 0, blocker: '无', status: '有回传', aiDispatchStatus: '可下发',
+      notes: [
+        { id: 'n4', title: '拆箱惊喜', account: '小红书-D', reqCount: 2, status: '有回传' }
       ]
     }
   ];
@@ -135,6 +143,7 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
                         onClick={() => {
                           setActiveEmployeeGroup(group.id);
                           setEmployeeStatus(group.status as any);
+                          setEmployeeAiStatus(group.aiDispatchStatus as any);
                           setEmployeeRightPanel('default');
                         }}
                       >
@@ -334,19 +343,52 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
                         </div>
                       ) : (
                         <div className="space-y-4">
-                          <div className="bg-white border border-neutral-200 rounded-xl p-3 shadow-sm">
-                            <div className="text-[13px] font-bold text-neutral-800 border-b border-neutral-100 pb-2 mb-2">图片1 质检 (不合格原因)</div>
-                            <div className="space-y-2 text-[12px]">
-                              <div className="flex justify-between items-center text-rose-600">
-                                <span className="font-bold">构图</span>
-                                <span>主体过小，背景杂乱</span>
+                          <div className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm">
+                            <h4 className="font-bold text-[13px] text-neutral-800 mb-3 border-b border-neutral-100 pb-2">回传验收单</h4>
+                            
+                            <div className="space-y-4">
+                              <div>
+                                <div className="text-[12px] font-bold text-neutral-700 mb-1">1. 原拍摄要求</div>
+                                <div className="text-[12px] text-neutral-600 bg-neutral-50 p-2 rounded">
+                                  猫咪低头吃罐头，背景稍微虚化，突出罐头包装。
+                                </div>
                               </div>
-                              <div className="flex justify-between items-center text-neutral-600">
-                                <span>清晰度</span>
-                                <span className="text-emerald-600"><CheckCircle2 size={14}/></span>
+                              
+                              <div>
+                                <div className="text-[12px] font-bold text-neutral-700 mb-1">2. 回传素材</div>
+                                <div className="text-[12px] text-neutral-600">已回传 2 张图片</div>
+                              </div>
+                              
+                              <div>
+                                <div className="text-[12px] font-bold text-neutral-700 mb-1">3. AI画面事实提取</div>
+                                <div className="text-[12px] text-neutral-600 bg-neutral-50 p-2 rounded space-y-1">
+                                  <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-emerald-500"/> 检测到猫咪进食动作</div>
+                                  <div className="flex items-center gap-1"><CheckCircle2 size={12} className="text-emerald-500"/> 包含品牌罐头包装</div>
+                                  <div className="flex items-center gap-1"><AlertCircle size={12} className="text-rose-500"/> 背景含其他杂物</div>
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <div className="text-[12px] font-bold text-rose-700 mb-1 flex items-center gap-1"><AlertOctagon size={12}/> 4. 机器判定不符合项</div>
+                                <div className="text-[12px] text-rose-600 bg-rose-50 p-2 rounded">
+                                  构图不佳：主体过小，背景杂乱，未达到突出罐头包装的效果。
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <div className="text-[12px] font-bold text-neutral-700 mb-2">5. 操盘手最终验收结果</div>
+                                <div className="flex gap-2">
+                                  <button className="flex-1 py-1.5 border border-emerald-500 text-emerald-700 bg-emerald-50 rounded text-[12px] font-bold hover:bg-emerald-100">
+                                    强行通过
+                                  </button>
+                                  <button className="flex-1 py-1.5 border border-rose-500 text-rose-700 bg-rose-50 rounded text-[12px] font-bold hover:bg-rose-100">
+                                    打回补拍
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
+                          
                           <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200">
                             <div className="text-[12px] font-bold text-neutral-700 mb-2 flex items-center justify-between">
                               隐私保护状态
@@ -690,7 +732,17 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
             <div className="text-[13px] text-neutral-500">当前任务状态: <span className="font-bold text-neutral-800">{employeeStatus}</span></div>
             <div className="flex gap-3">
               {employeeStatus === '未派发' && (
-                <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors">确认并派发，看下一组</button>
+                <>
+                  {employeeAiStatus === '可下发' && (
+                    <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors">确认并派发，看下一组</button>
+                  )}
+                  {employeeAiStatus === '需调整' && (
+                    <button className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors">调整后派发</button>
+                  )}
+                  {employeeAiStatus === '阻断下发' && (
+                    <button className="px-6 py-2 bg-rose-600 text-white rounded-xl text-[13px] font-bold hover:bg-rose-700 transition-colors">处理阻断项</button>
+                  )}
+                </>
               )}
               {employeeStatus === '拍摄中' && (
                 <>
@@ -738,20 +790,6 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
             )}
           </div>
         )}
-
-        {/* ================= 底部轻量状态条：服务器临时素材 ================= */}
-        <div className="h-10 bg-neutral-900 text-neutral-300 text-[12px] flex items-center justify-between px-6 shrink-0 z-30 relative">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 font-bold text-white"><Server size={14} className="text-neutral-400" /> 服务器临时素材</span>
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 占用量: 1.2GB / 5GB</span>
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 下次清理: 3天后</span>
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> 已标记保留: 24 张</span>
-          </div>
-          <button className="hover:text-white transition-colors flex items-center gap-1.5 bg-neutral-800 px-3 py-1 rounded">
-            <FolderOpen size={14} />
-            查看并选择保存
-          </button>
-        </div>
 
       </div>
     </div>

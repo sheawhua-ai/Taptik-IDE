@@ -564,9 +564,9 @@ export function ProjectCenter({
                   {[
                     { label: "计划笔记", val: totalNotes, unit: "篇" },
                     { label: "已发布", val: publishedCount, unit: "篇" },
-                    { label: "观察中 (已回收链接)", val: observingCount, unit: "篇" },
+                    { label: "观察中", val: observingCount, unit: "篇" },
                     { label: "已完成观察", val: completedObservingCount, unit: "篇" },
-                    { label: "异常项 (发布/数据)", val: currentProject.notes.filter(n => n.publishStatus === "发布异常" || n.resultStatus === "数据异常").length, unit: "项", isRed: true }
+                    { label: "当前未知/未回传", val: currentProject.notes.filter(n => n.publishStatus === "发布异常" || n.resultStatus === "数据异常" || n.resultStatus === "未知").length, unit: "篇", isRed: true }
                   ].map((s) => (
                     <div key={s.label} className="bg-white p-4 rounded-xl border border-neutral-200 shadow-2xs">
                       <div className="text-[12px] text-neutral-500 mb-1">{s.label}</div>

@@ -60,6 +60,9 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
   const [showSuccessToast, setShowSuccessToast] = useState<string | null>(null);
   const [showMobileProgress, setShowMobileProgress] = useState(false);
   const [showMoreActions, setShowMoreActions] = useState(false);
+  const [showManualConfirmModal, setShowManualConfirmModal] = useState(false);
+  const [manualConfirmReason, setManualConfirmReason] = useState('手机上可以正常打开');
+  const [manualConfirmNote, setManualConfirmNote] = useState('');
 
   const tasks: Task[] = [
     {
@@ -91,20 +94,21 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
         noteId: 'xhs_9921k',
         retrieveTime: '2026-07-15 14:30',
         publisher: '小红书-A02',
-        recentResult: '无法打开 (疑似被删除或审核中)'
+        recentResult: '当前无法打开，原因尚未确认。'
       },
 
-      currentJudgement: '系统已成功识别到小红书笔记，但连续 3 次尝试打开均失败，可能笔记已被平台删除或正在人工审核中。',
+      currentJudgement: '系统已成功识别到小红书笔记，但连续 3 次尝试打开均失败。',
       evidence: [
-        '最后一次手机操作：已进入小红书 (14:20)',
-        '系统识别次数：4次',
-        '是否获得小红书笔记编号：是 (xhs_9921k)',
-        '笔记是否可以打开：否'
+        '已获得小红书笔记编号：xhs_9921k',
+        '最近一次手机操作：14:20 已进入小红书',
+        '最近一次检查时间：16:30',
+        '连续检查失败次数：4次',
+        '当前是否可以打开：否'
       ],
-      autoActionNext: '系统已暂停对该笔记的检查。',
-      manualCondition: '需要人工确认笔记真实状态，如果被删，需要通知发布人。',
-      mainAction: '重新核验笔记',
-      moreActions: ['通知发布人确认', '确认平台审核中，稍后再查', '确认未发布或已删除，退回发布'],
+      autoActionNext: '系统无法仅根据无法打开判断笔记是否被删除、正在审核或存在其他情况。',
+      manualCondition: '需要确认笔记真实状态',
+      mainAction: '人工确认结果',
+      moreActions: ['重新检查'],
       aiUpdateTime: '智能判断于 14:35 更新'
     },
     {
@@ -576,24 +580,17 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
           <div className="w-[360px] bg-white border-l border-neutral-200 flex flex-col shrink-0">
             <div className="p-6 border-b border-neutral-100 bg-white flex justify-between items-center">
               <h3 className="font-bold text-[16px] text-neutral-900 flex items-center gap-2">
-                智能分析与决策
+                检查结果与下一步
               </h3>
               <div className="text-[11px] text-neutral-400 flex items-center gap-1">
-                <CheckCircle2 size={12}/> {activeTask.aiUpdateTime.replace('智能判断于 ', '')}
+                <Clock size={12}/> 最近检查: 16:30
               </div>
             </div>
             
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
               
               <div>
-                <div className="text-[13px] font-bold text-neutral-500 mb-3">当前判断</div>
-                <div className={`text-[14px] leading-relaxed font-bold text-neutral-900`}>
-                  {activeTask.currentJudgement}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-[13px] font-bold text-neutral-500 mb-3">判断依据</div>
+                <div className="text-[13px] font-bold text-neutral-500 mb-3">已确认事实</div>
                 <ul className="text-[13px] text-neutral-700 leading-relaxed bg-neutral-50 p-4 rounded-xl border border-neutral-100 space-y-2 font-medium">
                   {activeTask.evidence.map((line, i) => (
                     <li key={i} className="flex items-start gap-2">
@@ -604,16 +601,9 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
               </div>
 
               <div>
-                <div className="text-[13px] font-bold text-neutral-500 mb-3">系统接下来会做什么</div>
-                <div className="text-[13px] text-neutral-700 leading-relaxed font-medium">
+                <div className="text-[13px] font-bold text-neutral-500 mb-3">当前无法确认</div>
+                <div className={`text-[13px] leading-relaxed text-neutral-600 bg-neutral-50 p-4 rounded-xl border border-neutral-100`}>
                   {activeTask.autoActionNext}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-[13px] font-bold text-neutral-500 mb-3">什么时候需要运营介入</div>
-                <div className="text-[13px] leading-relaxed bg-amber-50 p-4 rounded-xl border border-amber-100 text-amber-900 font-bold">
-                  {activeTask.manualCondition}
                 </div>
               </div>
 
@@ -622,7 +612,11 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
             {/* 3. 执行操作 */}
             <div className="p-6 border-t border-neutral-200 bg-white shadow-[0_-4px_10px_rgba(0,0,0,0.02)] relative">
                
-               {activeTask.mainAction ? (
+               {activeTask.mainAction === '人工确认结果' ? (
+                 <button onClick={() => setShowManualConfirmModal(true)} className="w-full py-3.5 rounded-xl text-[14px] font-bold bg-neutral-900 text-white hover:bg-neutral-800 transition-colors shadow-sm mb-3">
+                   人工确认结果
+                 </button>
+               ) : activeTask.mainAction ? (
                  <button onClick={() => handleAction(`已执行操作：${activeTask.mainAction}`)} className="w-full py-3.5 rounded-xl text-[14px] font-bold bg-neutral-900 text-white hover:bg-neutral-800 transition-colors shadow-sm mb-3">
                    {activeTask.mainAction}
                  </button>
@@ -652,7 +646,11 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
                            <button 
                              key={index}
                              onClick={() => {
-                               handleAction(`已执行: ${action}`);
+                               if (action === '人工确认结果') {
+                                 setShowManualConfirmModal(true);
+                               } else {
+                                 handleAction(`已执行: ${action}`);
+                               }
                                setShowMoreActions(false);
                              }}
                              className="w-full text-left px-3 py-2.5 text-[13px] font-bold text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors"
@@ -669,6 +667,75 @@ export function PublishExceptionWorkbench({ onClose, initialSelectedId }: Props)
           </div>
         </div>
       </div>
+
+      {/* Manual Confirm Modal */}
+      <AnimatePresence>
+        {showManualConfirmModal && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40">
+             <motion.div 
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               exit={{ opacity: 0, scale: 0.95 }}
+               className="bg-white rounded-2xl shadow-xl w-[500px] overflow-hidden flex flex-col"
+             >
+                <div className="p-6 border-b border-neutral-100 flex justify-between items-center">
+                  <h3 className="font-bold text-[18px] text-neutral-900">人工确认发布结果</h3>
+                  <button onClick={() => setShowManualConfirmModal(false)} className="text-neutral-400 hover:text-neutral-700"><X size={20}/></button>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-3">选择确认结果</label>
+                    <div className="space-y-2">
+                      {[
+                        '手机上可以正常打开',
+                        '发布人确认笔记仍在审核',
+                        '发布人确认笔记已经删除',
+                        '链接或笔记编号有误',
+                        '当前仍无法确认'
+                      ].map(reason => (
+                        <label key={reason} className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${manualConfirmReason === reason ? 'border-primary-500 bg-primary-50' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+                          <input 
+                            type="radio" 
+                            name="confirmReason" 
+                            value={reason} 
+                            checked={manualConfirmReason === reason}
+                            onChange={() => setManualConfirmReason(reason)}
+                            className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-neutral-300"
+                          />
+                          <span className={`text-[13px] font-bold ${manualConfirmReason === reason ? 'text-primary-900' : 'text-neutral-700'}`}>{reason}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[13px] font-bold text-neutral-700 mb-2">补充说明或证据截图 (可选)</label>
+                    <textarea 
+                      placeholder="填写补充说明，或粘贴图片..."
+                      value={manualConfirmNote}
+                      onChange={(e) => setManualConfirmNote(e.target.value)}
+                      className="w-full p-3 border border-neutral-200 rounded-lg text-[13px] h-24 outline-none focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="p-5 border-t border-neutral-100 bg-neutral-50 flex justify-end gap-3">
+                  <button onClick={() => setShowManualConfirmModal(false)} className="px-5 py-2.5 rounded-xl text-[13px] font-bold text-neutral-600 hover:bg-neutral-200 transition-colors">
+                    取消
+                  </button>
+                  <button 
+                    onClick={() => {
+                      handleAction(`人工确认：${manualConfirmReason}`);
+                      setShowManualConfirmModal(false);
+                    }}
+                    className="px-5 py-2.5 rounded-xl text-[13px] font-bold bg-neutral-900 text-white hover:bg-neutral-800 transition-colors"
+                  >
+                    保存确认结果
+                  </button>
+                </div>
+             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

@@ -506,9 +506,15 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                <button className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 text-[13px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm">
                  保存修改
                </button>
-               <button onClick={handleApprove} className="px-6 py-2.5 bg-neutral-900 text-white text-[13px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-2">
-                 确认并查看下一篇 <ChevronRight size={16} />
-               </button>
+               {activeNote.mainIssue === '事实待核实' || activeNote.mainIssue === '合规风险' ? (
+                 <button onClick={handleApprove} className="px-6 py-2.5 bg-neutral-900 text-white text-[13px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-2">
+                   修改后确认
+                 </button>
+               ) : (
+                 <button onClick={handleApprove} className="px-6 py-2.5 bg-neutral-900 text-white text-[13px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-2">
+                   确认并查看下一篇 <ChevronRight size={16} />
+                 </button>
+               )}
              </div>
           </div>
 
@@ -611,16 +617,39 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                     
                     <div className="space-y-3">
                       {/* Fact Check Issue */}
-                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                      <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
                         <div className="flex items-start gap-2">
-                          <AlertOctagon size={14} className="text-amber-600 shrink-0 mt-0.5" />
-                          <div>
-                            <div className="text-[13px] font-bold text-amber-900 mb-1">事实依据不足</div>
-                            <div className="text-[12px] text-amber-800 leading-relaxed mb-2">
+                          <AlertOctagon size={14} className="text-rose-600 shrink-0 mt-0.5" />
+                          <div className="w-full">
+                            <div className="text-[13px] font-bold text-rose-900 mb-1 flex items-center justify-between">
+                              事实待核实
+                              <span className="text-[11px] bg-rose-200 text-rose-800 px-1.5 py-0.5 rounded font-bold">阻断</span>
+                            </div>
+                            <div className="text-[12px] text-rose-800/80 leading-relaxed mb-2">
                               文中“添加了专利级益生菌”缺乏具体资料支持，建议核实。
                             </div>
-                            <button onClick={() => setActiveRightTab('local_edit')} className="text-[12px] font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1">
-                              <ArrowRightLeft size={12} /> 去修改
+
+                            <div className="space-y-2 mt-3 mb-2">
+                               <div className="text-[11px] bg-white/60 p-2 rounded border border-rose-100 text-rose-900 flex justify-between items-center cursor-pointer hover:bg-white transition-colors">
+                                  <span className="font-medium flex items-center gap-1"><FileText size={12}/> 商家知识检索</span>
+                                  <span className="text-rose-600">无记录</span>
+                               </div>
+                               <div className="text-[11px] bg-white/60 p-2 rounded border border-rose-100 text-rose-900 flex justify-between items-center cursor-pointer hover:bg-white transition-colors">
+                                  <span className="font-medium flex items-center gap-1"><FileText size={12}/> 原始产品资料</span>
+                                  <span className="text-rose-600">未提及</span>
+                               </div>
+                               <div className="text-[11px] bg-white/60 p-2 rounded border border-rose-100 text-rose-900 flex justify-between items-center cursor-pointer hover:bg-white transition-colors">
+                                  <span className="font-medium flex items-center gap-1"><History size={12}/> 操盘手历史确认</span>
+                                  <span className="text-rose-600">无记录</span>
+                               </div>
+                               <div className="text-[11px] bg-white/60 p-2 rounded border border-rose-100 text-rose-900 flex justify-between items-center cursor-pointer hover:bg-white transition-colors">
+                                  <span className="font-medium flex items-center gap-1"><Info size={12}/> 当前缺少</span>
+                                  <span className="text-rose-600">具体的益生菌专利证明文件</span>
+                               </div>
+                            </div>
+                            
+                            <button onClick={() => setActiveRightTab('local_edit')} className="text-[12px] font-bold text-rose-700 hover:text-rose-800 flex items-center gap-1 mt-1 bg-white border border-rose-200 px-3 py-1.5 rounded-lg w-full justify-center">
+                              补充资料或修改表述
                             </button>
                           </div>
                         </div>
@@ -630,10 +659,13 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
                         <div className="flex items-start gap-2">
                           <ShieldAlert size={14} className="text-rose-600 shrink-0 mt-0.5" />
-                          <div>
-                            <div className="text-[13px] font-bold text-rose-900 mb-1">潜在违规风险</div>
+                          <div className="w-full">
+                            <div className="text-[13px] font-bold text-rose-900 mb-1 flex items-center justify-between">
+                              潜在违规风险
+                              <span className="text-[11px] bg-rose-200 text-rose-800 px-1.5 py-0.5 rounded font-bold">阻断</span>
+                            </div>
                             <div className="text-[12px] text-rose-800 leading-relaxed">
-                              “七日换粮法”属于医疗化/绝对化用语风险，在当前平台限流概率高。
+                              “七日换粮法”属于医疗化/绝对化用语风险，需修改以符合合规要求。
                             </div>
                           </div>
                         </div>
@@ -663,7 +695,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
 
                 <div className="pt-4 border-t border-neutral-100">
                   <button onClick={() => setActiveRightTab('')} className="w-full py-2.5 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 rounded-xl text-[13px] font-bold transition-colors">
-                    调整全文
+                    按检查结果修改
                   </button>
                 </div>
               </div>

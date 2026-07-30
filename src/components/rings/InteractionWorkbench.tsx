@@ -676,9 +676,17 @@ function RiskTab() {
                         您好，看到您的反馈了，我们对狗狗的状况非常关心！麻烦您留意一下私信，我们会安排售后专员立刻帮您核实处理。
                      </div>
                   </div>
-                  <button className="w-full py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors shadow-sm">
-                    <Copy size={16}/> 复制回应并去原笔记回复
-                  </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button className="col-span-2 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors shadow-sm">
+                      <Copy size={16}/> 复制回应并去原笔记回复
+                    </button>
+                    <button className="py-2 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[12px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">
+                      屏蔽此用户
+                    </button>
+                    <button className="py-2 bg-white border border-rose-200 text-rose-700 rounded-xl text-[12px] font-bold hover:bg-rose-50 transition-colors shadow-sm">
+                      向平台投诉
+                    </button>
+                  </div>
                </div>
             </div>
 

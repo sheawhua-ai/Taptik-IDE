@@ -138,37 +138,40 @@ export function ExecutionCenter() {
           <>
             {/* Focus Card */}
             {focusNote && (
-              <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-2xs flex flex-col">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[12px] font-bold text-neutral-500">{getCategoryTitle(getCategoryFromNote(focusNote))}</span>
+              <div className="mb-8">
+                <h2 className="text-[16px] font-bold text-neutral-900 mb-4">现在处理</h2>
+                <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-2xs flex flex-col">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12px] font-bold text-neutral-500">{getCategoryTitle(getCategoryFromNote(focusNote))}</span>
+                    </div>
+                    {focusNoteIsBlocker ? (
+                      <span className="bg-rose-50 text-rose-700 px-2 py-0.5 rounded text-[11px] font-bold">阻断</span>
+                    ) : focusNoteIsWarning ? (
+                      <span className="bg-orange-50 text-orange-700 px-2 py-0.5 rounded text-[11px] font-bold">待确认</span>
+                    ) : (
+                      <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[11px] font-bold">待处理</span>
+                    )}
                   </div>
-                  {focusNoteIsBlocker ? (
-                    <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded text-[11px] font-bold">阻断</span>
-                  ) : focusNoteIsWarning ? (
-                    <span className="bg-orange-50 text-orange-700 px-2 py-0.5 rounded text-[11px] font-bold">待确认</span>
-                  ) : (
-                    <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[11px] font-bold">待处理</span>
-                  )}
-                </div>
-                
-                <div className="flex justify-between items-end">
-                  <div className="flex-1 pr-6">
-                    <h2 className="text-[20px] font-extrabold text-neutral-900 mb-1">{focusNote.currentIssue?.message || focusNote.title}</h2>
-                    <div className="text-[13px] text-neutral-500 mb-3">{focusNote.projectName}</div>
-                    <p className="text-[14px] text-neutral-800 font-medium">
-                      {focusNote.currentIssue?.impactScope || (focusNote.publishStatus === '发布异常' ? '已影响笔记排期，建议先确认发布方式。' : '需要你的介入以继续推进。')}
-                    </p>
+                  
+                  <div className="flex justify-between items-end">
+                    <div className="flex-1 pr-6">
+                      <h3 className="text-[20px] font-extrabold text-neutral-900 mb-1">{focusNote.currentIssue?.message || focusNote.title}</h3>
+                      <div className="text-[13px] text-neutral-500 mb-3">{focusNote.projectName}</div>
+                      <p className="text-[14px] text-neutral-800 font-medium">
+                        {focusNote.currentIssue?.impactScope || (focusNote.publishStatus === '发布异常' ? '已影响笔记排期，建议先确认发布方式。' : '需要你的介入以继续推进。')}
+                      </p>
+                    </div>
+                    <button 
+                      onClick={() => setActiveTaskType(getCategoryFromNote(focusNote))}
+                      className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold transition-colors shrink-0"
+                    >
+                      立即处理
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => setActiveTaskType(getCategoryFromNote(focusNote))}
-                    className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold transition-colors shrink-0"
-                  >
-                    开始处理
-                  </button>
-                </div>
-                <div className="mt-5 pt-4 border-t border-neutral-100 text-[11px] text-neutral-400">
-                  排序依据：阻断执行 ＞ 今日到期 ＞ 影响范围 ＞ 等待时长
+                  <div className="mt-5 pt-4 border-t border-neutral-100 text-[11px] text-neutral-400">
+                    排序依据：阻断执行 ＞ 今日到期 ＞ 影响范围 ＞ 等待时长
+                  </div>
                 </div>
               </div>
             )}
@@ -176,7 +179,9 @@ export function ExecutionCenter() {
         )}
 
         {/* 4 Category Inbox Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div>
+          <h2 className="text-[16px] font-bold text-neutral-900 mb-4">全部待办</h2>
+          <div className="grid grid-cols-2 gap-4">
           {taskCategories.map((cat) => (
             <div 
               key={cat.id} 
@@ -215,10 +220,9 @@ export function ExecutionCenter() {
               </div>
             </div>
           ))}
+          </div>
         </div>
-
       </div>
     </div>
   );
 }
-
