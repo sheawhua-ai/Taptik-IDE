@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useProjectStore } from '../../context/ProjectContext';
 import { 
   X, Check, AlertOctagon, User, Tag, Plus, Image as ImageIcon,
   ChevronRight, RefreshCw, History, AlignLeft, Info, FileText,
@@ -30,74 +31,35 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   
   // 模拟笔记数据
   const [showReviewed, setShowReviewed] = useState(false);
-  const [notes, setNotes] = useState([
-    {
-      id: 'n1',
-      project: '幼犬换粮避坑搜索卡位',
-      accountType: 'KOS员工号',
-      accountName: 'A02避坑号',
-      title: '幼犬换粮一定要慢！附换粮周期表',
-      content: `今天给大家分享一下幼犬换粮的经验。很多新手家长刚接狗狗回家，就迫不及待地喂新粮，结果狗狗拉稀软便。其实换粮要遵循<span class="border-b-2 border-rose-400 text-rose-700 bg-rose-50 cursor-pointer px-1">七日换粮法</span>！第一天新粮比例10%，旧粮90%... 另外，如果肠胃敏感，<span class="border-b-2 border-amber-400 text-amber-700 bg-amber-50 cursor-pointer px-1">建议搭配益生菌</span>。`,
-      rawContent: '今天给大家分享一下幼犬换粮的经验。很多新手家长刚接狗狗回家，就迫不及待地喂新粮，结果狗狗拉稀软便。其实换粮要遵循七日换粮法！第一天新粮比例10%，旧粮90%... 另外，如果肠胃敏感，建议搭配益生菌。',
-      status: '建议调整',
-      mainIssue: '事实待核实',
-      tags: ['幼犬换粮', '新手养狗', '换粮软便'],
-      fixedRole: '新手养犬经验分享',
-      expressedAngle: '真实踩坑经历',
-      target: '覆盖换粮常见误区',
-      structure: '问题切入 -> 个人经历 -> 3个误区 -> 换粮建议',
-      materialReq: '需要：幼犬喂食场景、换粮过渡期照片',
-      materialStatus: '已提供：幼犬进食图',
-      canBatchConfirm: false, isReviewed: false,
-      history: [
-        { time: '10:00', action: '系统生成初稿', user: 'AI' }
-      ]
-    },
-    {
-      id: 'n2',
-      project: '幼犬换粮避坑搜索卡位',
-      accountType: '品牌主账号',
-      accountName: '官方小助手',
-      title: '科学换粮，告别幼犬软便烦恼',
-      content: '品牌主账号内容...',
-      rawContent: '品牌主账号内容...',
-      status: '可确认',
-      mainIssue: '无明显问题',
-      tags: ['科学喂养'],
-      fixedRole: '宠物营养师',
-      expressedAngle: '专业科普',
-      target: '建立品牌专业形象',
-      structure: '痛点引入 -> 科学原理 -> 解决方案',
-      materialReq: '需要：产品高清图',
-      materialStatus: '齐全',
-      canBatchConfirm: true, isReviewed: false,
-      history: [
-        { time: '09:30', action: '系统生成初稿', user: 'AI' }
-      ]
-    },
-    {
-      id: 'n3',
-      project: '幼犬换粮避坑搜索卡位',
-      accountType: 'KOS员工号',
-      accountName: '官方小助手',
-      title: '科学换粮，告别幼犬软便烦恼',
-      content: '品牌主账号内容...',
-      rawContent: '品牌主账号内容...',
-      status: '需逐篇处理',
-      mainIssue: '无明显问题',
-      tags: ['科学喂养'],
-      fixedRole: '宠物营养师',
-      expressedAngle: '专业科普',
-      target: '建立品牌专业形象',
-      structure: '痛点引入 -> 科学原理 -> 解决方案',
-      materialReq: '需要：产品高清图',
-      materialStatus: '不齐全',
-      canBatchConfirm: false, isReviewed: false,
-      history: [
-        { time: '09:30', action: '系统生成初稿', user: 'AI' }
-      ]
-    }
-  ]);
+  const { unifiedState } = useProjectStore();
+  const [notes, setNotes] = useState(
+    unifiedState.noteSlots.map(ns => {
+      const draft = unifiedState.contentDrafts.find(d => d.noteSlotId === ns.id);
+      const req = unifiedState.materialRequirements.find(r => r.noteSlotId === ns.id);
+      const task = req ? unifiedState.materialTasks.find(t => t.requirementId === req.id) : null;
+      return {
+        id: ns.id,
+        project: unifiedState.projects.find(p => p.id === ns.projectId)?.name || '',
+        accountType: ns.accountType,
+        accountName: ns.accountName,
+        title: draft?.title || '未命名',
+        content: draft?.body || '',
+        rawContent: draft?.body || '',
+        status: draft?.status === '已确认' ? '可确认' : '建议调整',
+        mainIssue: draft?.status === '已确认' ? '无明显问题' : '事实待核实',
+        tags: draft?.tags || [],
+        fixedRole: ns.contentDirection,
+        expressedAngle: ns.contentDirection,
+        target: '系统生成',
+        structure: '自动生成',
+        materialReq: req?.reqs || '无',
+        materialStatus: task?.status === '已验收' ? '齐全' : '待补充',
+        canBatchConfirm: draft?.status !== '待确认',
+        isReviewed: draft?.status === '已确认',
+        history: [{ time: '10:00', action: '系统生成初稿', user: 'AI' }]
+      };
+    })
+  );
 
   const activeNote = notes.find(n => n.id === activeNoteId) || notes[0];
 

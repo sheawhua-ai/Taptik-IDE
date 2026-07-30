@@ -7,6 +7,7 @@ import {
   FolderOpen, Server, ChevronDown, MapPin, Tag, Smartphone, Eye, EyeOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useProjectStore } from '../../context/ProjectContext';
 
 interface Props {
   onClose: () => void;
@@ -39,46 +40,67 @@ export function ShootingAndUploadWorkbench({ onClose, initialTab = 'employee' }:
   ];
 
   // ================= 员工拍摄 Mock Data =================
-  const employeeGroups = [
-    {
-      id: 'g1', project: '双11大促', name: '门店喂食场景 · 6 篇', executor: '张三', 
-      noteCount: 6, readyCount: 2, blocker: '猫咪不配合', status: '未派发', aiDispatchStatus: '需调整',
-      notes: [
-        { id: 'n1', title: '探店首发优惠', account: '小红书-A', reqCount: 3, status: '未派发' },
-        { id: 'n2', title: '双11囤货指南', account: '小红书-B', reqCount: 2, status: '未派发' }
-      ]
-    },
-    {
-      id: 'g2', project: '双11大促', name: '户外互动场景 · 4 篇', executor: '李四', 
-      noteCount: 4, readyCount: 4, blocker: '无', status: '全部已齐', aiDispatchStatus: '可下发',
-      notes: [
-        { id: 'n3', title: '周末带狗子出游', account: '小红书-C', reqCount: 4, status: '已齐' }
-      ]
-    },
-    {
-      id: 'g3', project: '日常种草', name: '居家拆箱场景 · 2 篇', executor: '王五',
-      noteCount: 2, readyCount: 0, blocker: '无', status: '有回传', aiDispatchStatus: '可下发',
-      notes: [
-        { id: 'n4', title: '拆箱惊喜', account: '小红书-D', reqCount: 2, status: '有回传' }
-      ]
-    }
-  ];
+  const { unifiedState } = useProjectStore();
+  
+  const employeeGroups = unifiedState.projects.map(p => {
+    const slots = unifiedState.noteSlots.filter(ns => ns.projectId === p.id && ns.accountType !== 'KOC');
+    const tasks = slots.map(ns => {
+      const req = unifiedState.materialRequirements.find(r => r.noteSlotId === ns.id);
+      return req ? unifiedState.materialTasks.find(t => t.requirementId === req.id) : null;
+    }).filter(Boolean);
+    
+    return {
+      id: p.id,
+      project: p.name,
+      name: '分配拍摄场景 · ' + slots.length + '篇',
+      executor: tasks[0]?.assignee || '未分配',
+      noteCount: slots.length,
+      readyCount: tasks.filter(t => t?.status === '已验收' || t?.status === '已上传').length,
+      blocker: '无',
+      status: tasks.length > 0 ? tasks[0]?.status : '未派发',
+      aiDispatchStatus: tasks.length > 0 ? '可下发' : '需调整',
+      notes: slots.map(ns => {
+        const draft = unifiedState.contentDrafts.find(d => d.noteSlotId === ns.id);
+        const req = unifiedState.materialRequirements.find(r => r.noteSlotId === ns.id);
+        const task = req ? unifiedState.materialTasks.find(t => t.requirementId === req.id) : null;
+        return {
+          id: ns.id,
+          title: draft?.title || '未命名',
+          account: ns.accountName,
+          reqCount: 2,
+          status: task?.status || '未派发'
+        };
+      })
+    };
+  }).filter(g => g.notes.length > 0);
 
   const toggleEmployeeGroup = (id: string) => {
     setExpandedEmployeeGroups(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]);
   };
 
   // ================= 消费者体验 Mock Data =================
-  const consumerActivities = [
-    {
-      id: 'a1', project: '春季上新体验', name: '新品试吃官', 
-      quota: 100, claimed: 85, surveyCompleted: 80, qualified: 60, published: 45,
-      participants: [
-        { id: 'p1', name: '用户A (领取后未填问卷)', status: '需介入', exceptionType: 'no_survey' },
-        { id: 'p2', name: '用户B (连续三次图片不合格)', status: '需介入', exceptionType: 'bad_image' }
-      ]
-    }
-  ];
+  const consumerActivities = unifiedState.projects.map(p => {
+    const kocSlots = unifiedState.noteSlots.filter(ns => ns.projectId === p.id && ns.accountType === 'KOC');
+    if (kocSlots.length === 0) return null;
+    return {
+      id: p.id + '_consumer',
+      project: p.name,
+      name: 'KOC体验官',
+      quota: kocSlots.length,
+      claimed: kocSlots.filter(s => s.accountName !== '待领取名额 (20个)' && s.accountName !== '待领取名额 (12个)').length,
+      surveyCompleted: kocSlots.length - 2,
+      qualified: kocSlots.length - 3,
+      published: unifiedState.publishTasks.filter(pt => kocSlots.some(ks => ks.id === pt.noteSlotId) && pt.status === '已发布').length,
+      participants: kocSlots.map(ks => {
+        const req = unifiedState.materialRequirements.find(r => r.noteSlotId === ks.id);
+        const task = req ? unifiedState.materialTasks.find(t => t.requirementId === req.id) : null;
+        if (!task || task.status === '待验收') {
+           return { id: ks.id, name: ks.accountName, status: '需介入', exceptionType: 'bad_image' };
+        }
+        return null;
+      }).filter(Boolean)
+    };
+  }).filter(Boolean);
 
   const toggleActivity = (id: string) => {
     setExpandedActivities(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]);
