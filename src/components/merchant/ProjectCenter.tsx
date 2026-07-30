@@ -132,7 +132,7 @@ export function ProjectCenter({
           </div>
 
           <div className="flex flex-wrap gap-1.5 pt-1">
-            {["全部", "准备中", "执行中", "暂停", "观察中", "已完成", "已归档"].map((status) => (
+            {["全部", "准备中", "进行中", "已结束"].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
@@ -167,9 +167,9 @@ export function ProjectCenter({
                 <div className="flex justify-between items-start mb-1.5">
                   <span className="font-bold text-[14px] text-neutral-900 line-clamp-1 flex-1 pr-2">{proj.name}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap ${
-                    proj.status === "执行中" ? "bg-emerald-100 text-emerald-800" :
+                    proj.status === "进行中" ? "bg-emerald-100 text-emerald-800" :
                     proj.status === "准备中" ? "bg-amber-100 text-amber-800" :
-                    proj.status === "观察中" ? "bg-blue-100 text-blue-800" : "bg-neutral-100 text-neutral-600"
+                    proj.status === "已结束" ? "bg-blue-100 text-blue-800" : "bg-neutral-100 text-neutral-600"
                   }`}>
                     {proj.status}
                   </span>
@@ -204,9 +204,9 @@ export function ProjectCenter({
               <div className="flex items-center gap-3">
                 <h1 className="text-[22px] font-extrabold text-neutral-900">{currentProject.name}</h1>
                 <span className={`text-[12px] px-2.5 py-0.5 rounded-full font-bold ${
-                  currentProject.status === "执行中" ? "bg-emerald-100 text-emerald-800" :
+                  currentProject.status === "进行中" ? "bg-emerald-100 text-emerald-800" :
                   currentProject.status === "准备中" ? "bg-amber-100 text-amber-800" :
-                  currentProject.status === "观察中" ? "bg-blue-100 text-blue-800" : "bg-neutral-100 text-neutral-600"
+                  currentProject.status === "已结束" ? "bg-blue-100 text-blue-800" : "bg-neutral-100 text-neutral-600"
                 }`}>
                   {currentProject.status}
                 </span>
@@ -560,14 +560,13 @@ export function ProjectCenter({
               <div className="space-y-6">
                 
                 {/* Fact Summary */}
-                <div className="grid grid-cols-6 gap-4">
+                <div className="grid grid-cols-5 gap-4">
                   {[
                     { label: "计划笔记", val: totalNotes, unit: "篇" },
                     { label: "已发布", val: publishedCount, unit: "篇" },
-                    { label: "已回收链接", val: publishedCount, unit: "条" },
-                    { label: "观察中", val: observingCount, unit: "篇" },
+                    { label: "观察中 (已回收链接)", val: observingCount, unit: "篇" },
                     { label: "已完成观察", val: completedObservingCount, unit: "篇" },
-                    { label: "异常项", val: currentProject.notes.filter(n => n.publishStatus === "发布异常").length, unit: "项", isRed: true }
+                    { label: "异常项 (发布/数据)", val: currentProject.notes.filter(n => n.publishStatus === "发布异常" || n.resultStatus === "数据异常").length, unit: "项", isRed: true }
                   ].map((s) => (
                     <div key={s.label} className="bg-white p-4 rounded-xl border border-neutral-200 shadow-2xs">
                       <div className="text-[12px] text-neutral-500 mb-1">{s.label}</div>

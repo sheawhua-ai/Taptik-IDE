@@ -1,6 +1,6 @@
 // TapTik Unified Project & Task Data Store
 
-export type ProjectStatus = "准备中" | "执行中" | "暂停" | "观察中" | "已完成" | "已归档";
+export type ProjectStatus = "准备中" | "进行中" | "已结束";
 export type NoteType = "KOC" | "店长号/KOS" | "品牌主号";
 export type ContentStatus = "待生成" | "待确认" | "已确认";
 export type MaterialStatus = "无需素材" | "待收集" | "待验收" | "已齐";
@@ -95,7 +95,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: "p1",
     name: "幼犬换粮搜索卡位第三轮",
-    status: "执行中",
+    status: "进行中",
     goal: "验证“换粮软便”真实测评与店长号专业解释能否提升有效咨询与转化线索",
     startDate: "2024-03-01",
     endDate: "2024-03-20",
