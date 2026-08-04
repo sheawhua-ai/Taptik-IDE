@@ -22,6 +22,34 @@ export const mockProjects: Project[] = [
       verifyHypothesis: "真实换粮过程与店长专业解答组合能否带来+30%有效线索",
       continueCondition: "高意向咨询比例>15%且加微率>20%",
       stopCondition: "爆文率<5%或出现产品客诉纠纷"
+    },
+    landingPageSettings: {
+      loginMode: "无需登录",
+      posterTitle: "幼犬换粮体验官与进食记录收集",
+      bannerUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop"
+    }
+  },
+  {
+    id: "p89",
+    merchantId: "m1",
+    name: "青岛酒店婚宴小红书运营方案",
+    status: "准备中",
+    goal: "招募青岛备婚新人与婚礼策划师，输出宴会厅实拍、菜品体验与婚宴布场笔记",
+    startDate: "2026-08-01",
+    endDate: "2026-08-30",
+    budget: "12,000元",
+    strategyProtocol: {
+      targetAudience: "青岛地区2026年备婚新婚夫妇、婚礼策划师",
+      coreProblem: "备婚人群对酒店场地美誉度与实际落地方案缺乏直观信任",
+      solutionSummary: "备婚新娘真实试菜/探店 + 策划师布场案例 + 优惠档期私信引流",
+      verifyHypothesis: "婚宴现场美图+档期答疑能否提升私信问询率",
+      continueCondition: "单篇有效婚礼问询>5条",
+      stopCondition: "无备婚线索或客诉问题"
+    },
+    landingPageSettings: {
+      loginMode: "无需登录",
+      posterTitle: "青岛酒店婚宴小红书运营方案 - 体验官内容投稿",
+      bannerUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop"
     }
   }
 ];
@@ -43,11 +71,14 @@ export const mockContentDrafts: ContentDraft[] = [
 ];
 
 export const mockMaterialRequirements: MaterialRequirement[] = [
-  { id: "mr1", noteSlotId: "ns2", reqs: "需提供2张幼犬进食场景图及1张换粮过渡期照片" }
+  { id: "mr1", noteSlotId: "ns2", reqs: "需提供2张幼犬进食场景图及1张换粮过渡期照片" },
+  { id: "mr_p89_1", projectId: "p89", isProjectLevel: true, reqs: "酒店宴会厅高清全景图与舞台灯光布置照片（至少3张）" },
+  { id: "mr_p89_2", projectId: "p89", isProjectLevel: true, reqs: "婚宴试菜现场主菜品特写与菜单名牌（至少2张）" }
 ];
 
 export const mockMaterialTasks: MaterialTask[] = [
-  { id: "mt1", requirementId: "mr1", assignee: "小红薯_汪汪队", status: "待验收" }
+  { id: "mt1", requirementId: "mr1", assignee: "小红薯_汪汪队", status: "待验收" },
+  { id: "mt_p89_1", requirementId: "mr_p89_1", assignee: "酒店策划团队", status: "执行中" }
 ];
 
 export const mockMaterialAssets: MaterialAsset[] = [
@@ -56,7 +87,7 @@ export const mockMaterialAssets: MaterialAsset[] = [
 
 export const mockPublishTasks: PublishTask[] = [
   { id: "pt1", noteSlotId: "ns1", assignee: "店长号_陆家嘴店", status: "待发布" },
-  { id: "pt2", noteSlotId: "ns2", assignee: "小红薯_汪汪队", status: "未安排" as any },
+  { id: "pt2", noteSlotId: "ns2", assignee: "小红薯_汪汪队", status: "未安排" },
   { id: "pt3", noteSlotId: "ns3", assignee: "品牌官方旗舰店", status: "已发布", publishUrl: "https://www.xiaohongshu.com/explore/65f123456789a" },
   { id: "pt4", noteSlotId: "ns4", assignee: "小红薯_咪咪猫", status: "已回传链接", publishUrl: "https://www.xiaohongshu.com/explore/65f987654321b" }
 ];

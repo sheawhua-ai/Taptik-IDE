@@ -18,6 +18,7 @@ import {
   HelpCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useProjectStore } from "../../context/ProjectContext";
 
 interface Attachment {
   id: string;
@@ -34,6 +35,8 @@ export function CreateProjectWorkstation({
   onCreate: (project: any) => void;
   mode?: "create" | "edit";
 }) {
+  const { addNewProject } = useProjectStore();
+
   const [step, setStep] = useState<"initial" | "confirm">(
     mode === "edit" ? "confirm" : "initial"
   );
@@ -107,17 +110,29 @@ export function CreateProjectWorkstation({
 
   // Final Create Project Action
   const handleFinalCreate = () => {
-    onCreate({
-      id: Date.now().toString(),
+    const newProj = addNewProject({
       name: projectData.name,
       goal: projectData.goal,
-      currentCheckpoint: "筹备就绪",
-      lastActive: "刚刚",
-      kocCount: projectData.kocCount,
+      status: "准备中",
       startDate: projectData.startDate,
       endDate: projectData.endDate,
-      totalNotes,
+      kocCount: projectData.kocCount,
+      strategyProtocol: {
+        coreProblem: "核心问题：行业同质化竞争严重，缺乏品牌独特性认知",
+        targetAudience: "精准潜力客户群体",
+        solutionSummary: "通过多账号矩阵（KOC+KOS+品牌号）进行试用体验与权威背书",
+        verifyHypothesis: "验证真实体验分享能否显著提升搜索拦截与咨询转话率",
+        continueCondition: "正向互动率 > 5% 且获得有效客资线索",
+        stopCondition: "负面反馈过多或获客成本超出预期50%"
+      },
+      landingPageSettings: {
+        loginMode: "无需登录",
+        posterTitle: `${projectData.name} - 体验官招募与内容投稿`,
+        bannerUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop"
+      }
     });
+
+    onCreate(newProj);
   };
 
   return (

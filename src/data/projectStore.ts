@@ -64,6 +64,8 @@ export interface Note {
   }[];
 }
 
+import { LandingPageSettings } from './unifiedStore';
+
 export interface Project {
   id: string;
   name: string;
@@ -73,6 +75,7 @@ export interface Project {
   endDate: string;
   budget: string;
   notes: Note[];
+  landingPageSettings?: LandingPageSettings;
   strategyProtocol: {
     targetAudience: string;
     coreProblem: string;

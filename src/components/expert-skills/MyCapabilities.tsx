@@ -1,259 +1,211 @@
 import React, { useState } from 'react';
-import { MyCapabilityItem, ExpertItem, SkillItem, AppScope } from './types';
+import { MyCapabilityItem, SkillItem, AppScope } from './types';
 import {
-  ShieldCheck, Bot, Wrench, Clock, AlertTriangle, Play, Eye, Settings,
-  Sliders, Layers, Terminal, Power, CheckCircle2, ChevronRight
+  ShieldCheck, AlertTriangle, Eye, CheckCircle2, CheckCircle, Check, Trash2
 } from 'lucide-react';
 
 interface MyCapabilitiesProps {
   capabilities: MyCapabilityItem[];
-  onStartExpertTask: (item: ExpertItem) => void;
-  onOpenExpertDetail: (item: ExpertItem) => void;
   onOpenSkillDetail: (item: SkillItem) => void;
   onTestSkill: (item: SkillItem) => void;
-  onOpenUsageLocations: (item: SkillItem) => void;
-  onModifyConfig: (item: MyCapabilityItem) => void;
-  onAdjustScope: (item: MyCapabilityItem) => void;
-  onToggleDisable: (item: MyCapabilityItem) => void;
+  onUseInProject?: (item: SkillItem) => void;
+  onConfigAutoRun?: (item: SkillItem) => void;
+  onToggleDisable?: (item: MyCapabilityItem) => void;
 }
 
 export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
   capabilities,
-  onStartExpertTask,
-  onOpenExpertDetail,
   onOpenSkillDetail,
-  onTestSkill,
-  onOpenUsageLocations,
-  onModifyConfig,
-  onAdjustScope,
   onToggleDisable
 }) => {
-  const [filterType, setFilterType] = useState<'all' | 'expert' | 'skill' | 'needs_action' | 'disabled'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'enabled' | 'needs_action' | 'disabled'>('all');
 
-  const callableCount = capabilities.filter(c => c.status === 'enabled' || c.status === 'installed').length;
-  const needsActionCount = capabilities.filter(c => c.status === 'needs_config' || c.status === 'test_failed' || (c.pendingConfirmCount && c.pendingConfirmCount > 0)).length;
+  const callableCount = capabilities.filter(c => c.status === 'enabled').length;
+  const needsActionCount = capabilities.filter(c => c.status === 'needs_config' || c.status === 'test_failed').length;
 
   const scopeLabels: Record<AppScope, string> = {
     task: '仅本次任务',
-    project: '当前项目',
-    merchant: '当前商家',
-    all: '全部商家'
+    project: '当前项目生效',
+    merchant: '商家全局生效',
+    all: '所有商家应用'
   };
 
   const filtered = capabilities.filter(item => {
-    if (filterType === 'expert') return item.type === 'expert';
-    if (filterType === 'skill') return item.type === 'skill';
-    if (filterType === 'needs_action') return item.status === 'needs_config' || item.status === 'test_failed' || (item.pendingConfirmCount && item.pendingConfirmCount > 0);
+    if (filterType === 'enabled') return item.status === 'enabled';
+    if (filterType === 'needs_action') return item.status === 'needs_config' || item.status === 'test_failed';
     if (filterType === 'disabled') return item.status === 'disabled';
     return true;
   });
 
   return (
-    <div className="space-y-6">
-      {/* Top Summaries Header (Requirement 9) */}
+    <div className="space-y-4">
+      {/* Summary Header Cards - Concise */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-xs flex items-center gap-4">
-          <div className="p-3 bg-emerald-100 text-emerald-800 rounded-xl">
-            <ShieldCheck size={24} />
+        <div className="bg-white p-4 rounded-2xl border border-neutral-200/90 shadow-xs flex items-center gap-3">
+          <div className="p-2.5 bg-emerald-100 text-emerald-800 rounded-xl">
+            <ShieldCheck size={20} />
           </div>
           <div>
-            <span className="text-[12px] font-bold text-neutral-400 block">当前可调用能力总数</span>
-            <span className="text-[24px] font-extrabold text-neutral-900">{callableCount} 项</span>
+            <span className="text-[12px] font-bold text-neutral-400 block">已安装的技能 · Agent 在对应流程中自动调用</span>
+            <span className="text-[20px] font-black text-neutral-900">{callableCount} 项已启用</span>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-xs flex items-center gap-4">
-          <div className="p-3 bg-amber-100 text-amber-800 rounded-xl">
-            <AlertTriangle size={24} />
+        <div className="bg-white p-4 rounded-2xl border border-neutral-200/90 shadow-xs flex items-center gap-3">
+          <div className="p-2.5 bg-amber-100 text-amber-800 rounded-xl">
+            <AlertTriangle size={20} />
           </div>
           <div>
-            <span className="text-[12px] font-bold text-neutral-400 block">需要配置或测试的能力</span>
-            <span className="text-[24px] font-extrabold text-neutral-900">{needsActionCount} 项</span>
+            <span className="text-[12px] font-bold text-neutral-400 block">数据连接受限或待配置权限</span>
+            <span className="text-[20px] font-black text-neutral-900">{needsActionCount} 项需授权</span>
           </div>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 bg-white p-2 rounded-2xl border border-neutral-200/90 shadow-xs">
+      <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-2xl border border-neutral-200/90 shadow-xs">
         <button
           onClick={() => setFilterType('all')}
-          className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all ${
-            filterType === 'all' ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
+          className={`px-3 py-1.5 rounded-xl text-[12.5px] font-bold transition-all ${
+            filterType === 'all' ? 'bg-neutral-900 text-white shadow-2xs' : 'text-neutral-600 hover:bg-neutral-100'
           }`}
         >
           全部 ({capabilities.length})
         </button>
         <button
-          onClick={() => setFilterType('expert')}
-          className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all ${
-            filterType === 'expert' ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
+          onClick={() => setFilterType('enabled')}
+          className={`px-3 py-1.5 rounded-xl text-[12.5px] font-bold transition-all ${
+            filterType === 'enabled' ? 'bg-neutral-900 text-white shadow-2xs' : 'text-neutral-600 hover:bg-neutral-100'
           }`}
         >
-          专家
-        </button>
-        <button
-          onClick={() => setFilterType('skill')}
-          className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all ${
-            filterType === 'skill' ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
-          }`}
-        >
-          技能
+          正常调用 ({callableCount})
         </button>
         <button
           onClick={() => setFilterType('needs_action')}
-          className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all ${
-            filterType === 'needs_action' ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
+          className={`px-3 py-1.5 rounded-xl text-[12.5px] font-bold transition-all ${
+            filterType === 'needs_action' ? 'bg-amber-600 text-white shadow-2xs' : 'text-neutral-600 hover:bg-neutral-100'
           }`}
         >
-          需要处理 ({needsActionCount})
-        </button>
-        <button
-          onClick={() => setFilterType('disabled')}
-          className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all ${
-            filterType === 'disabled' ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
-          }`}
-        >
-          已停用
+          需数据权限 ({needsActionCount})
         </button>
       </div>
 
-      {/* Capabilities List (Differentiation between Expert Card & Skill Card) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Capabilities List Grid - Clean without title icons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map(item => {
-          if (item.type === 'expert') {
-            const expData = item.refData as ExpertItem;
-            return (
-              /* 9.1 My Expert Card */
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl border border-neutral-200/90 p-5 shadow-xs flex flex-col justify-between space-y-4"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-2.5 bg-purple-50 text-purple-900 rounded-xl">
-                        <Bot size={20} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-[16px] font-extrabold text-neutral-900">{item.name}</h3>
-                          <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-[10.5px] font-extrabold rounded">专家</span>
-                        </div>
-                        <span className="text-[11.5px] font-bold text-neutral-400">
-                          授权范围: {scopeLabels[item.appScope]}
-                        </span>
-                      </div>
-                    </div>
+          const skill: SkillItem = item.refData || {
+            id: item.id,
+            name: item.name,
+            oneSentenceDesc: item.lastResult,
+            goal: item.lastResult,
+            processCategory: 'diagnosis',
+            source: 'official',
+            status: item.status,
+            version: 'v2.0',
+            updatedAt: '2026-08-01',
+            lastTestStatus: 'passed',
+            lastVerifiedResult: item.lastResult,
+            usedByExpertsCount: 0,
+            usedByProjectsCount: 1,
+            usedByExperts: [],
+            usedByProjects: [],
+            applicableScenes: ['全链路适用的标准技能'],
+            inapplicableScenes: [],
+            inputFormat: ['标准结构化项目数据'],
+            outputFormat: ['结构化结论卡片'],
+            manualConfirmPoints: ['核心决策节点需人工签署'],
+            failureHandling: '数据不足时提请补充',
+            requiredPermissions: {
+              readScope: [],
+              writeScope: [],
+              needsNetwork: false,
+              willModifyData: false
+            },
+            appScope: item.appScope
+          };
 
-                    <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[11px] font-extrabold rounded-full border border-emerald-200">
-                      {item.status === 'enabled' ? '可调用' : '需要配置'}
+          const isUnavailable = item.status === 'needs_config' || skill.status === 'needs_config';
+
+          return (
+            <div
+              key={item.id}
+              className={`bg-white rounded-2xl border p-5 flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-all ${
+                isUnavailable ? 'border-amber-200/80 bg-amber-50/10' : 'border-neutral-200/90'
+              }`}
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="text-[15px] font-black text-neutral-900">
+                      {item.name}
+                    </h3>
+                    <span className="text-[11px] font-bold text-neutral-400 block mt-0.5">
+                      生效范围：{scopeLabels[item.appScope]}
                     </span>
                   </div>
 
-                  <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100 space-y-1.5 text-[12px]">
-                    <div>
-                      <span className="text-neutral-400 font-extrabold mr-1">最近完成任务:</span>
-                      <span className="text-neutral-800 font-medium">{item.lastResult || '尚无记录'}</span>
-                    </div>
-                    <div>
-                      <span className="text-neutral-400 font-extrabold mr-1">最近调用时间:</span>
-                      <span className="text-neutral-800 font-medium">{item.lastUsed}</span>
-                    </div>
-                    {expData?.monitoring?.isMonitoring && (
-                      <div className="text-purple-700 font-bold flex items-center gap-1 text-[11px]">
-                        <Clock size={12} /> 存在后台监控任务 (状态: {expData.monitoring.state})
-                      </div>
-                    )}
-                  </div>
+                  <span className={`px-2 py-0.5 rounded-md text-[10.5px] font-extrabold border ${
+                    isUnavailable
+                      ? 'bg-amber-100 text-amber-800 border-amber-300'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  }`}>
+                    {isUnavailable ? '需配置连接' : '已启用'}
+                  </span>
                 </div>
 
-                {/* Expert Card Operations */}
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
-                  <button
-                    onClick={() => onStartExpertTask(expData)}
-                    className="px-4 py-2 bg-neutral-900 text-white font-extrabold text-[12px] rounded-xl flex items-center gap-1.5 shadow-2xs"
-                  >
-                    <Play size={14} /> 发起任务
-                  </button>
+                {/* Purpose / Goal */}
+                <p className="text-[12.5px] text-neutral-700 font-bold line-clamp-2">
+                  {skill.goal || skill.oneSentenceDesc || item.lastResult}
+                </p>
 
-                  <div className="flex items-center gap-2 text-[12px] font-extrabold text-neutral-500">
-                    <button onClick={() => onOpenExpertDetail(expData)} className="hover:text-neutral-900">
-                      查看记录
-                    </button>
-                    <button onClick={() => onAdjustScope(item)} className="hover:text-neutral-900">
-                      调整授权
-                    </button>
-                    <button onClick={() => onToggleDisable(item)} className="hover:text-rose-600">
-                      停用
-                    </button>
-                  </div>
+                {/* Last Result summary */}
+                <div className="text-[11.5px] text-neutral-600 flex items-center gap-1.5 pt-1 border-t border-neutral-100">
+                  <CheckCircle size={13} className="text-emerald-600 shrink-0" />
+                  <span className="font-medium truncate">
+                    执行反馈：{item.lastResult}
+                  </span>
                 </div>
-              </div>
-            );
-          } else {
-            /* 9.2 My Skill Card */
-            const skData = item.refData as SkillItem;
-            return (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl border border-neutral-200/90 p-5 shadow-xs flex flex-col justify-between space-y-4"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-2.5 bg-blue-50 text-blue-900 rounded-xl">
-                        <Wrench size={20} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-[16px] font-extrabold text-neutral-900">{item.name}</h3>
-                          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10.5px] font-extrabold rounded">技能</span>
-                        </div>
-                        <span className="text-[11.5px] font-bold text-neutral-400">
-                          配置状态: {item.status === 'needs_config' ? '需要配置' : '完成'}
-                        </span>
-                      </div>
-                    </div>
 
-                    <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-[11px] font-extrabold rounded-full border border-blue-200">
-                      授权: {scopeLabels[item.appScope]}
+                {isUnavailable && (
+                  <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200/80 flex items-start gap-1.5 text-amber-900 text-[11.5px] font-bold">
+                    <AlertTriangle size={14} className="text-amber-600 shrink-0 mt-0.5" />
+                    <span>
+                      {skill.unavailableReason || '当前技能暂不可用：缺少公开评论数据访问能力，请联系管理员完成配置。'}
                     </span>
                   </div>
+                )}
+              </div>
 
-                  <p className="text-[12.5px] font-bold text-neutral-800 bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-                    {skData?.oneSentenceDesc || '单一步骤可复用执行能力'}
-                  </p>
-
-                  <div className="space-y-1 text-[11.5px] text-neutral-500 font-extrabold">
-                    <div>被使用位置: {skData?.usedByExperts?.map(e => e.name).join('， ') || '通用'}</div>
-                    <div>最近本地测试: {skData?.lastTestStatus === 'passed' ? '已通过' : '待测试'}</div>
-                  </div>
+              {/* Concise Actions: Automatic invocation tag & View details */}
+              <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                <div className="flex-1 py-1.5 px-3 bg-neutral-50 border border-neutral-200/80 rounded-xl text-[12px] font-extrabold text-neutral-700 flex items-center justify-center gap-1.5">
+                  <Check size={13} className="text-emerald-600" />
+                  <span>Agent 自动调度中</span>
                 </div>
 
-                {/* Skill Card Operations (NO "发起任务" button!) */}
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between text-[12px] font-extrabold text-neutral-600">
+                <div className="flex items-center gap-1">
                   <button
-                    onClick={() => onTestSkill(skData)}
-                    className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 rounded-lg flex items-center gap-1"
+                    onClick={() => onOpenSkillDetail(skill)}
+                    className="px-2.5 py-1.5 text-[12px] font-extrabold text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors flex items-center gap-1"
+                    title="查看完整说明"
                   >
-                    <Terminal size={13} /> 本地测试
+                    <Eye size={14} /> 详情
                   </button>
 
-                  <button onClick={() => onOpenUsageLocations(skData)} className="hover:text-neutral-900">
-                    查看使用位置
-                  </button>
-                  <button onClick={() => onModifyConfig(item)} className="hover:text-neutral-900">
-                    修改配置
-                  </button>
-                  <button onClick={() => onToggleDisable(item)} className="hover:text-rose-600">
-                    停用
+                  <button
+                    onClick={() => onToggleDisable?.(item)}
+                    className="p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                    title="移除此技能"
+                  >
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
-            );
-          }
+            </div>
+          );
         })}
       </div>
     </div>
   );
 };
+

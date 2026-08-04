@@ -111,6 +111,41 @@ export function NoteDetailDrawer({ note, onClose, onActionClick, onOpenInExecuti
               )}
             </div>
 
+            {/* Smart Image Matching (AI Recommendation) */}
+            {(note.contentStatus === "待确认" || note.contentStatus === "已确认") && (
+              <div className="bg-white rounded-xl p-4 border border-primary-200 shadow-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-[14px] font-bold text-neutral-900 flex items-center gap-1.5">
+                    <ImageIcon size={16} className="text-primary-600" /> 智能配图建议
+                  </h3>
+                  <button className="text-[12px] text-primary-600 font-bold bg-primary-50 px-3 py-1.5 rounded-md hover:bg-primary-100 transition-colors">
+                    重新扫描素材中心
+                  </button>
+                </div>
+                <div className="space-y-4">
+                   <div>
+                     <h4 className="text-[12px] font-semibold text-neutral-500 mb-2">强烈推荐 (匹配度 &gt; 90%)</h4>
+                     <div className="grid grid-cols-4 gap-2">
+                       <div className="aspect-square bg-neutral-100 rounded-lg flex items-center justify-center text-[10px] text-neutral-400 border border-neutral-200">
+                         [素材封面]
+                       </div>
+                       <div className="aspect-square bg-neutral-100 rounded-lg flex items-center justify-center text-[10px] text-neutral-400 border border-neutral-200">
+                         [素材封面]
+                       </div>
+                     </div>
+                   </div>
+                   <div>
+                     <h4 className="text-[12px] font-semibold text-neutral-500 mb-2">其他可选</h4>
+                     <div className="grid grid-cols-4 gap-2">
+                       <div className="aspect-square bg-neutral-50 rounded-lg flex items-center justify-center text-[10px] text-neutral-400 border border-neutral-100 border-dashed">
+                         暂无更多
+                       </div>
+                     </div>
+                   </div>
+                </div>
+              </div>
+            )}
+
             {/* Material & Material Task */}
             <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-200">
               <div className="flex justify-between items-center mb-3">

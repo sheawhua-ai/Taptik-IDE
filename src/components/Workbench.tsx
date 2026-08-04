@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, Send, Image as ImageIcon, Workflow, FileText, CheckCircle2, ChevronRight, Hash, 
   Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
-  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, Lightbulb, Cpu, PanelLeftOpen, PanelRightClose, Folder, Search, Network
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, ArrowUpRight, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, LineChart, Lightbulb, Cpu, PanelLeftOpen, PanelRightClose, Folder, Search, Network
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AgentSelector, AVAILABLE_AGENTS } from './command-center/AgentSelector';

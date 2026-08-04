@@ -1,227 +1,477 @@
-import React, { useState } from "react";
-import { PenTool, Image as ImageIcon, Send, MessageSquare, AlertTriangle, ChevronRight, CheckCircle2, Search, Filter } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { 
+  PenTool, Image as ImageIcon, Send, MessageSquare, AlertTriangle, 
+  ChevronRight, CheckCircle2, Search, Filter, ArrowLeft, User, Calendar, Clock, RotateCcw
+} from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
-import { Note } from "../../data/projectStore";
 import { ContentReviewWorkbench } from "../rings/ContentReviewWorkbench";
 import { ShootingAndUploadWorkbench } from "../rings/ShootingAndUploadWorkbench";
 import { PublishExceptionWorkbench } from "../rings/PublishExceptionWorkbench";
 import { InteractionWorkbench } from "../rings/InteractionWorkbench";
 
 export function ExecutionCenter() {
-  const { projects, updateNoteStatus, clearNoteIssue } = useProjectStore();
-  const [activeTaskType, setActiveTaskType] = useState<string | null>(null);
+  const { 
+    projects, 
+    enrichedActionTasks, 
+    resolveActionTask, 
+    jumpToProject, 
+    executionNavTarget,
+    setExecutionNavTarget
+  } = useProjectStore();
 
-  // Gather all pending action notes across all projects
-  const allNotes = projects.flatMap((p) => p.notes);
+  const [activeWorkbench, setActiveWorkbench] = useState<string | null>(null);
 
-  const pendingContentNotes = allNotes.filter((n) => n.contentStatus === "待确认" || n.currentIssue?.targetWorkbench === "content");
-  const pendingAssetNotes = allNotes.filter((n) => n.materialStatus === "待验收" || n.currentIssue?.targetWorkbench === "assets");
-  const pendingPublishNotes = allNotes.filter((n) => n.publishStatus === "待发布" || n.publishStatus === "发布异常" || n.currentIssue?.targetWorkbench === "publish");
-  const pendingInteractionNotes = allNotes.filter((n) => (n.metrics && n.metrics.highIntentComments > 0) || n.currentIssue?.targetWorkbench === "interaction");
+  // Filters
+  const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>(
+    executionNavTarget?.projectId || "all"
+  );
+  const [selectedStageFilter, setSelectedStageFilter] = useState<string>("all"); // all, content, assets, publish, interaction
+  const [selectedAssigneeFilter, setSelectedAssigneeFilter] = useState<string>("all");
+  const [selectedDateFilter, setSelectedDateFilter] = useState<string>("all"); // all, today, week
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>("all"); // all, blocker, wait_external
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const taskCategories = [
+  // Sync nav target if changed from outside
+  useEffect(() => {
+    if (executionNavTarget?.projectId) {
+      setSelectedProjectFilter(executionNavTarget.projectId);
+    }
+  }, [executionNavTarget]);
+
+  // All pending tasks across all projects
+  const pendingTasks = enrichedActionTasks.filter((t) => t.status === "pending");
+
+  // Extract assignees list
+  const assignees = Array.from(new Set(pendingTasks.map((t) => t.assignee))).filter(Boolean);
+
+  // Filtered pending tasks
+  const filteredTasks = pendingTasks.filter((t) => {
+    // Project filter
+    if (selectedProjectFilter !== "all" && t.projectId !== selectedProjectFilter) {
+      return false;
+    }
+    // Stage filter
+    if (selectedStageFilter !== "all" && t.impactedStage !== selectedStageFilter) {
+      return false;
+    }
+    // Assignee filter
+    if (selectedAssigneeFilter !== "all" && t.assignee !== selectedAssigneeFilter) {
+      return false;
+    }
+    // Status filter
+    if (selectedStatusFilter === "blocker" && t.severity !== "blocker") {
+      return false;
+    }
+    if (selectedStatusFilter === "wait_external" && (!t.waitOn || t.waitOn.length === 0)) {
+      return false;
+    }
+    // Date filter
+    if (selectedDateFilter === "today") {
+      const today = new Date().toISOString().slice(0, 10);
+      if (t.plannedDate > today) return false;
+    }
+    // Search query
+    if (
+      searchQuery &&
+      !t.issueMessage.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !t.noteTitle.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !t.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // Sort tasks: Blocker first, then date/time
+  const sortedFilteredTasks = [...filteredTasks].sort((a, b) => {
+    const aBlocker = a.severity === "blocker" ? 1 : 0;
+    const bBlocker = b.severity === "blocker" ? 1 : 0;
+    if (aBlocker !== bBlocker) return bBlocker - aBlocker;
+    return a.plannedDate.localeCompare(b.plannedDate);
+  });
+
+  const topFocusTask = sortedFilteredTasks[0];
+
+  // Group counts by stage
+  const pendingContentTasks = pendingTasks.filter((t) => t.impactedStage === "content");
+  const pendingAssetTasks = pendingTasks.filter((t) => t.impactedStage === "assets");
+  const pendingPublishTasks = pendingTasks.filter((t) => t.impactedStage === "publish");
+  const pendingInteractionTasks = pendingTasks.filter((t) => t.impactedStage === "interaction");
+
+  const stageCategories = [
     {
       id: "content",
       title: "内容确认",
       icon: PenTool,
-      pendingCount: pendingContentNotes.length,
-      notes: pendingContentNotes,
-      topIssue: pendingContentNotes.find((n) => n.currentIssue)?.currentIssue?.message || (pendingContentNotes.length > 0 ? "待确认笔记内容" : ""),
-      impactDesc: pendingContentNotes.find((n) => n.currentIssue)?.currentIssue?.impactScope || (pendingContentNotes.length > 0 ? "不确认将影响笔记定稿" : "")
+      count: pendingContentTasks.length,
+      topTask: pendingContentTasks[0]
     },
     {
       id: "assets",
       title: "素材与回传",
       icon: ImageIcon,
-      pendingCount: pendingAssetNotes.length,
-      notes: pendingAssetNotes,
-      topIssue: pendingAssetNotes.find((n) => n.currentIssue)?.currentIssue?.message || (pendingAssetNotes.length > 0 ? "待验收回传素材" : ""),
-      impactDesc: pendingAssetNotes.find((n) => n.currentIssue)?.currentIssue?.impactScope || (pendingAssetNotes.length > 0 ? "不验收将阻断下一步下发" : "")
+      count: pendingAssetTasks.length,
+      topTask: pendingAssetTasks[0]
     },
     {
       id: "publish",
       title: "发布任务与异常",
       icon: Send,
-      pendingCount: pendingPublishNotes.length,
-      notes: pendingPublishNotes,
-      topIssue: pendingPublishNotes.find((n) => n.currentIssue)?.currentIssue?.message || (pendingPublishNotes.length > 0 ? "存在发布异常或待调度" : ""),
-      impactDesc: pendingPublishNotes.find((n) => n.currentIssue)?.currentIssue?.impactScope || (pendingPublishNotes.length > 0 ? "影响发布排期计划" : "")
+      count: pendingPublishTasks.length,
+      topTask: pendingPublishTasks[0]
     },
     {
       id: "interaction",
       title: "互动与线索",
       icon: MessageSquare,
-      pendingCount: pendingInteractionNotes.length,
-      notes: pendingInteractionNotes,
-      topIssue: pendingInteractionNotes.find((n) => n.currentIssue)?.currentIssue?.message || (pendingInteractionNotes.length > 0 ? "包含未回复的高意向咨询" : ""),
-      impactDesc: pendingInteractionNotes.find((n) => n.currentIssue)?.currentIssue?.impactScope || (pendingInteractionNotes.length > 0 ? "影响商机转化率" : "")
+      count: pendingInteractionTasks.length,
+      topTask: pendingInteractionTasks[0]
     }
   ];
 
-  const actionableNotes = allNotes.filter((n) => n.currentIssue || n.contentStatus === "待确认" || n.materialStatus === "待验收" || n.publishStatus === "待发布" || n.publishStatus === "发布异常" || (n.metrics && n.metrics.highIntentComments > 0));
-
-  const sortedActionableNotes = [...actionableNotes].sort((a, b) => {
-    const aIsBlocker = a.currentIssue?.type === "blocker" || a.publishStatus === "发布异常" ? 1 : 0;
-    const bIsBlocker = b.currentIssue?.type === "blocker" || b.publishStatus === "发布异常" ? 1 : 0;
-    if (aIsBlocker !== bIsBlocker) return bIsBlocker - aIsBlocker;
-
-    const aIsWarning = a.currentIssue?.type === "warning" || a.contentStatus === "待确认" || a.materialStatus === "待验收" ? 1 : 0;
-    const bIsWarning = b.currentIssue?.type === "warning" || b.contentStatus === "待确认" || b.materialStatus === "待验收" ? 1 : 0;
-    if (aIsWarning !== bIsWarning) return bIsWarning - aIsWarning;
-
-    return 0;
-  });
-
-  const focusNote = sortedActionableNotes[0];
-
-  const getCategoryFromNote = (note: Note) => {
-    if (note.currentIssue?.targetWorkbench === "content" || note.contentStatus === "待确认") return "content";
-    if (note.currentIssue?.targetWorkbench === "assets" || note.materialStatus === "待验收") return "assets";
-    if (note.currentIssue?.targetWorkbench === "publish" || note.publishStatus === "发布异常" || note.publishStatus === "待发布") return "publish";
-    if (note.currentIssue?.targetWorkbench === "interaction" || (note.metrics && note.metrics.highIntentComments > 0)) return "interaction";
-    return "content";
-  };
-
-  const getCategoryTitle = (id: string) => {
-    const map: Record<string, string> = {
-      content: "内容确认",
-      assets: "素材与回传",
-      publish: "发布任务与异常",
-      interaction: "互动与线索"
-    };
-    return map[id] || "内容确认";
-  };
-
-  if (activeTaskType === "content") {
-    return <ContentReviewWorkbench onClose={() => setActiveTaskType(null)} />;
+  if (activeWorkbench === "content") {
+    return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
   }
-  if (activeTaskType === "assets") {
-    return <ShootingAndUploadWorkbench onClose={() => setActiveTaskType(null)} />;
+  if (activeWorkbench === "assets") {
+    return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
   }
-  if (activeTaskType === "publish") {
-    return <PublishExceptionWorkbench onClose={() => setActiveTaskType(null)} />;
+  if (activeWorkbench === "publish") {
+    return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} />;
   }
-  if (activeTaskType === "interaction") {
-    return <InteractionWorkbench onClose={() => setActiveTaskType(null)} />;
+  if (activeWorkbench === "interaction") {
+    return <InteractionWorkbench onClose={() => setActiveWorkbench(null)} />;
   }
 
-  const focusNoteIsBlocker = focusNote && (focusNote.currentIssue?.type === "blocker" || focusNote.publishStatus === "发布异常");
-  const focusNoteIsWarning = focusNote && (focusNote.currentIssue?.type === "warning" || focusNote.contentStatus === "待确认" || focusNote.materialStatus === "待验收");
+  const targetProject = projects.find((p) => p.id === selectedProjectFilter);
 
   return (
-    <div className="h-full w-full bg-[#f8f9fa] p-8 overflow-y-auto">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="h-full w-full bg-[#f8f9fa] p-8 overflow-y-auto text-neutral-900">
+      <div className="max-w-5xl mx-auto space-y-6">
         
-        {/* Title */}
-        <div className="flex justify-between items-end">
+        {/* Header Bar */}
+        <div className="flex flex-wrap justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-neutral-200 shadow-2xs">
           <div>
-            <h1 className="text-[24px] font-extrabold text-neutral-900 mb-1">执行中心</h1>
-            <p className="text-[13px] text-neutral-500">集中处理各项目中需要你确认、验收或介入的事项。</p>
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-[22px] font-extrabold text-neutral-900">执行中心</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-neutral-900 text-white">
+                全系统共 {pendingTasks.length} 项待处理
+              </span>
+            </div>
+            <p className="text-[13px] text-neutral-500">
+              集中式 ActionTask 任务池：跨项目统一调度、筛选与批量处理
+            </p>
           </div>
+
           <div className="flex items-center gap-3">
-             <button className="p-2 bg-white border border-neutral-200 rounded-lg text-neutral-600 hover:bg-neutral-50 transition-colors">
-               <Filter size={16} />
-             </button>
-             <button className="px-3 py-2 bg-white border border-neutral-200 rounded-lg text-[13px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors">
-               刷新
-             </button>
+            {/* Return to Project button if navigated from Project Center */}
+            {executionNavTarget?.projectId && (
+              <button
+                onClick={() => jumpToProject(executionNavTarget.projectId)}
+                className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 text-[13px] font-bold rounded-xl transition-all flex items-center gap-1.5 border border-neutral-200"
+              >
+                <ArrowLeft size={16} />
+                返回项目：{targetProject?.name || "项目中心"}
+              </button>
+            )}
+
+            <button 
+              onClick={() => {
+                setSelectedProjectFilter("all");
+                setSelectedStageFilter("all");
+                setSelectedAssigneeFilter("all");
+                setSelectedDateFilter("all");
+                setSelectedStatusFilter("all");
+                setSearchQuery("");
+                if (setExecutionNavTarget) setExecutionNavTarget(null);
+              }}
+              className="px-3.5 py-2 bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50 text-[13px] font-bold rounded-xl transition-colors flex items-center gap-1"
+            >
+              <RotateCcw size={14} />
+              重置筛选
+            </button>
           </div>
         </div>
 
-        {actionableNotes.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 border border-neutral-200 shadow-2xs text-center flex flex-col items-center">
-            <CheckCircle2 size={48} className="text-emerald-400 mb-4" />
-            <h2 className="text-[18px] font-bold text-neutral-900 mb-2">当前没有需要你处理的事项</h2>
-            <p className="text-[13px] text-neutral-500 max-w-md">系统会继续推进可自动完成的任务，出现需要确认或介入的情况时会在这里提醒你。</p>
-          </div>
-        ) : (
-          <>
-            {/* Focus Card */}
-            {focusNote && (
-              <div className="mb-8">
-                <h2 className="text-[16px] font-bold text-neutral-900 mb-4">现在处理</h2>
-                <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-2xs flex flex-col">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-bold text-neutral-500">{getCategoryTitle(getCategoryFromNote(focusNote))}</span>
-                    </div>
-                    {focusNoteIsBlocker ? (
-                      <span className="bg-rose-50 text-rose-700 px-2 py-0.5 rounded text-[11px] font-bold">阻断</span>
-                    ) : focusNoteIsWarning ? (
-                      <span className="bg-orange-50 text-orange-700 px-2 py-0.5 rounded text-[11px] font-bold">待确认</span>
-                    ) : (
-                      <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded text-[11px] font-bold">待处理</span>
-                    )}
-                  </div>
-                  
-                  <div className="flex justify-between items-end">
-                    <div className="flex-1 pr-6">
-                      <h3 className="text-[20px] font-extrabold text-neutral-900 mb-1">{focusNote.currentIssue?.message || focusNote.title}</h3>
-                      <div className="text-[13px] text-neutral-500 mb-3">{focusNote.projectName}</div>
-                      <p className="text-[14px] text-neutral-800 font-medium">
-                        {focusNote.currentIssue?.impactScope || (focusNote.publishStatus === '发布异常' ? '已影响笔记排期，建议先确认发布方式。' : '需要你的介入以继续推进。')}
-                      </p>
-                    </div>
-                    <button 
-                      onClick={() => setActiveTaskType(getCategoryFromNote(focusNote))}
-                      className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[14px] font-bold transition-colors shrink-0"
-                    >
-                      立即处理
-                    </button>
-                  </div>
-                  <div className="mt-5 pt-4 border-t border-neutral-100 text-[11px] text-neutral-400">
-                    排序依据：阻断执行 ＞ 今日到期 ＞ 影响范围 ＞ 等待时长
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* 4 Category Inbox Grid */}
-        <div>
-          <h2 className="text-[16px] font-bold text-neutral-900 mb-4">全部待办</h2>
-          <div className="grid grid-cols-2 gap-4">
-          {taskCategories.map((cat) => (
-            <div 
-              key={cat.id} 
-              onClick={() => setActiveTaskType(cat.id)}
-              className="bg-white rounded-xl p-5 border border-neutral-200 shadow-2xs hover:border-neutral-400 transition-all cursor-pointer flex flex-col justify-between group h-[160px]"
+        {/* Filter Controls Bar */}
+        <div className="bg-white p-4 rounded-xl border border-neutral-200 shadow-2xs flex flex-wrap items-center gap-3 text-[13px]">
+          {/* Project Selector */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-neutral-500 font-medium">项目:</span>
+            <select
+              value={selectedProjectFilter}
+              onChange={(e) => setSelectedProjectFilter(e.target.value)}
+              className="px-2.5 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg font-bold text-neutral-800 outline-none focus:border-neutral-400"
             >
-              <div>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-2">
-                    <cat.icon size={18} className="text-neutral-700" />
-                    <h3 className="text-[15px] font-bold text-neutral-900">{cat.title}</h3>
-                  </div>
-                  <div className="text-[18px] font-extrabold text-neutral-900 leading-none">
-                    {cat.pendingCount} <span className="text-[12px] font-normal text-neutral-500">项</span>
-                  </div>
+              <option value="all">全部项目 ({pendingTasks.length}项)</option>
+              {projects.map((p) => {
+                const pCount = pendingTasks.filter((t) => t.projectId === p.id).length;
+                return (
+                  <option key={p.id} value={p.id}>
+                    {p.name} ({pCount}项)
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* Stage Selector */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-neutral-500 font-medium">类型:</span>
+            <select
+              value={selectedStageFilter}
+              onChange={(e) => setSelectedStageFilter(e.target.value)}
+              className="px-2.5 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg font-bold text-neutral-800 outline-none focus:border-neutral-400"
+            >
+              <option value="all">全部类型</option>
+              <option value="content">内容确认 ({pendingContentTasks.length})</option>
+              <option value="assets">素材与回传 ({pendingAssetTasks.length})</option>
+              <option value="publish">发布任务与异常 ({pendingPublishTasks.length})</option>
+              <option value="interaction">互动与线索 ({pendingInteractionTasks.length})</option>
+            </select>
+          </div>
+
+          {/* Assignee Selector */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-neutral-500 font-medium">负责人:</span>
+            <select
+              value={selectedAssigneeFilter}
+              onChange={(e) => setSelectedAssigneeFilter(e.target.value)}
+              className="px-2.5 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg font-bold text-neutral-800 outline-none focus:border-neutral-400"
+            >
+              <option value="all">全部负责人</option>
+              {assignees.map((a) => (
+                <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Status/Blocker Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-neutral-500 font-medium">状态:</span>
+            <select
+              value={selectedStatusFilter}
+              onChange={(e) => setSelectedStatusFilter(e.target.value)}
+              className="px-2.5 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg font-bold text-neutral-800 outline-none focus:border-neutral-400"
+            >
+              <option value="all">全部状态</option>
+              <option value="blocker">仅阻断卡点</option>
+              <option value="wait_external">仅等待外部</option>
+            </select>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={14} />
+            <input
+              type="text"
+              placeholder="搜索任务/笔记/项目..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg outline-none focus:bg-white focus:border-neutral-400 text-[13px]"
+            />
+          </div>
+        </div>
+
+        {/* Focus Card ("现在处理") */}
+        {topFocusTask ? (
+          <div>
+            <h2 className="text-[15px] font-bold text-neutral-900 mb-3 flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-neutral-900" />
+              优先推荐处理
+            </h2>
+            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-2xs flex flex-col relative">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-neutral-100 text-neutral-800 border border-neutral-200">
+                    {topFocusTask.projectName}
+                  </span>
+                  <span className="text-[12px] font-bold text-neutral-500">
+                    [{topFocusTask.noteTitle}]
+                  </span>
                 </div>
                 
-                {cat.pendingCount > 0 ? (
-                  <div>
-                    <div className="text-[13px] font-bold text-neutral-800 line-clamp-1 mb-1">
-                      {cat.topIssue}
-                    </div>
-                    <div className="text-[12px] text-neutral-500 line-clamp-1">
-                      {cat.impactDesc}
-                    </div>
-                  </div>
+                {topFocusTask.severity === "blocker" ? (
+                  <span className="bg-rose-100 text-rose-800 border border-rose-200 px-2.5 py-0.5 rounded text-[11px] font-bold">
+                    阻断卡点
+                  </span>
                 ) : (
-                  <div className="text-[13px] text-neutral-400 flex items-center gap-1.5 mt-2">
-                    <CheckCircle2 size={14} /> 暂无待处理事项
-                  </div>
+                  <span className="bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded text-[11px] font-bold">
+                    待确认
+                  </span>
                 )}
               </div>
 
-              <div className="text-[12px] font-bold text-neutral-500 group-hover:text-neutral-900 flex items-center gap-1 transition-colors">
-                查看全部 <ChevronRight size={14} />
+              <div className="flex flex-wrap justify-between items-end gap-4">
+                <div className="space-y-2 flex-1 min-w-[300px]">
+                  <h3 className="text-[18px] font-extrabold text-neutral-900">
+                    {topFocusTask.issueMessage}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-4 text-[12px] text-neutral-500">
+                    <span className="flex items-center gap-1"><User size={13}/> 负责人: <strong className="text-neutral-800">{topFocusTask.assignee}</strong></span>
+                    <span className="flex items-center gap-1"><Calendar size={13}/> 截止日期: <strong className="text-neutral-800">{topFocusTask.plannedDate}</strong></span>
+                    {topFocusTask.waitOn && (
+                      <span className="flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-medium">
+                        <Clock size={12}/> 等待: {topFocusTask.waitOn}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    onClick={() => resolveActionTask(topFocusTask.id)}
+                    className="px-4 py-2.5 bg-white border border-neutral-300 hover:bg-neutral-100 text-neutral-800 rounded-xl text-[13px] font-bold transition-colors"
+                  >
+                    快捷完成
+                  </button>
+                  <button
+                    onClick={() => setActiveWorkbench(topFocusTask.impactedStage)}
+                    className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[13px] font-bold transition-colors flex items-center gap-1 shadow-2xs"
+                  >
+                    去工作区处理 <ChevronRight size={15} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-neutral-100 text-[11px] text-neutral-400">
+                优先级计算依据：阻断执行 ＞ 截止时间 ＞ 关联影响范围
               </div>
             </div>
-          ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl p-10 border border-neutral-200 shadow-2xs text-center flex flex-col items-center">
+            <CheckCircle2 size={44} className="text-emerald-500 mb-3" />
+            <h2 className="text-[17px] font-bold text-neutral-900 mb-1">当前条件下暂无待处理 ActionTask</h2>
+            <p className="text-[13px] text-neutral-500">已处理完成或无符合当前筛选条件的任务。</p>
+          </div>
+        )}
+
+        {/* 4 Category Workbenches Inbox Grid */}
+        <div>
+          <h2 className="text-[15px] font-bold text-neutral-900 mb-3">各阶段待办统计与直达</h2>
+          <div className="grid grid-cols-2 gap-4">
+            {stageCategories.map((cat) => (
+              <div 
+                key={cat.id} 
+                onClick={() => setActiveWorkbench(cat.id)}
+                className="bg-white rounded-xl p-5 border border-neutral-200 shadow-2xs hover:border-neutral-400 transition-all cursor-pointer flex flex-col justify-between group min-h-[150px]"
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-2">
+                      <cat.icon size={18} className="text-neutral-800" />
+                      <h3 className="text-[15px] font-bold text-neutral-900">{cat.title}</h3>
+                    </div>
+                    <div className="text-[18px] font-extrabold text-neutral-900 leading-none">
+                      {cat.count} <span className="text-[12px] font-normal text-neutral-500">项</span>
+                    </div>
+                  </div>
+                  
+                  {cat.count > 0 && cat.topTask ? (
+                    <div>
+                      <div className="text-[13px] font-bold text-neutral-800 line-clamp-1 mb-1">
+                        {cat.topTask.issueMessage}
+                      </div>
+                      <div className="text-[12px] text-neutral-500 line-clamp-1">
+                        关联笔记：{cat.topTask.noteTitle} ({cat.topTask.assignee})
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-[13px] text-neutral-400 flex items-center gap-1.5 mt-2">
+                      <CheckCircle2 size={14} /> 暂无待处理事项
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-[12px] font-bold text-neutral-500 group-hover:text-neutral-900 flex items-center gap-1 transition-colors pt-3 border-t border-neutral-100">
+                  进入工作区处理 <ChevronRight size={14} />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
+        {/* Full Filtered ActionTask Table */}
+        <div className="bg-white rounded-xl border border-neutral-200 shadow-2xs overflow-hidden">
+          <div className="p-4 border-b border-neutral-200 flex justify-between items-center bg-neutral-50">
+            <h2 className="text-[15px] font-bold text-neutral-900">
+              任务列表 ({sortedFilteredTasks.length} 项)
+            </h2>
+            <span className="text-[12px] text-neutral-500 font-medium">
+              实时同步全系统最新处理结果
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-[13px]">
+              <thead>
+                <tr className="bg-neutral-50 text-neutral-500 border-b border-neutral-200 text-[12px]">
+                  <th className="p-3.5 font-bold">任务说明</th>
+                  <th className="p-3.5 font-bold">所属项目</th>
+                  <th className="p-3.5 font-bold">关联笔记</th>
+                  <th className="p-3.5 font-bold">负责人</th>
+                  <th className="p-3.5 font-bold">截止日期</th>
+                  <th className="p-3.5 font-bold">状态/卡点</th>
+                  <th className="p-3.5 font-bold text-right">操作</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {sortedFilteredTasks.map((task) => (
+                  <tr key={task.id} className="hover:bg-neutral-50 transition-colors">
+                    <td className="p-3.5 font-bold text-neutral-900">
+                      {task.issueMessage}
+                    </td>
+                    <td className="p-3.5 text-neutral-700 font-medium">
+                      {task.projectName}
+                    </td>
+                    <td className="p-3.5 text-neutral-700">
+                      <div className="font-medium line-clamp-1">{task.noteTitle}</div>
+                      <div className="text-[11px] text-neutral-400">{task.accountName}</div>
+                    </td>
+                    <td className="p-3.5 text-neutral-800 font-medium">
+                      {task.assignee}
+                    </td>
+                    <td className="p-3.5 text-neutral-700 font-medium">
+                      {task.plannedDate}
+                    </td>
+                    <td className="p-3.5">
+                      {task.severity === "blocker" ? (
+                        <span className="px-2 py-0.5 text-[11px] font-bold rounded bg-red-100 text-red-800 border border-red-200">
+                          阻断
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 text-[11px] font-bold rounded bg-amber-100 text-amber-800 border border-amber-200">
+                          待确认
+                        </span>
+                      )}
+                      {task.waitOn && (
+                        <span className="ml-1 px-1.5 py-0.5 text-[10px] font-medium rounded bg-neutral-100 text-neutral-600">
+                          等待:{task.waitOn}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3.5 text-right space-x-2">
+                      <button
+                        onClick={() => resolveActionTask(task.id)}
+                        className="px-2.5 py-1 text-[12px] font-bold bg-white border border-neutral-300 hover:bg-neutral-100 text-neutral-800 rounded transition-colors"
+                      >
+                        完成
+                      </button>
+                      <button
+                        onClick={() => setActiveWorkbench(task.impactedStage)}
+                        className="px-3 py-1 text-[12px] font-bold bg-neutral-900 hover:bg-neutral-800 text-white rounded transition-colors"
+                      >
+                        处理
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
   );

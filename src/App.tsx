@@ -313,7 +313,7 @@ const SIDE_NAV_ITEMS = [
   },
   {
     id: "skills",
-    name: "能力中心",
+    name: "技能中心",
     icon: Zap,
   },
 ];
@@ -467,6 +467,14 @@ export default function App() {
   } | null>(null);
 
   useEffect(() => {
+    if (activeNav === "workflow") {
+      setIsChatSpaceExpanded(false);
+    } else if (activeNav === "workbench") {
+      setIsChatSpaceExpanded(true);
+    }
+  }, [activeNav]);
+
+  useEffect(() => {
     const handleToFactory = (e: any) => {
       setActiveNav("workflow");
       setWorkflowTab("projects");
@@ -603,6 +611,7 @@ export default function App() {
   const [isSettingsPopupOpen, setIsSettingsPopupOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isChatSpaceExpanded, setIsChatSpaceExpanded] = useState(true);
   const [isSearchTasksModalOpen, setIsSearchTasksModalOpen] = useState(false);
   const [isTasksFilterDropdownOpen, setIsTasksFilterDropdownOpen] =
     useState(false);
@@ -1170,10 +1179,12 @@ export default function App() {
             {!isSidebarCollapsed && (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between group">
-                    <span className="text-[12px] text-slate-500 font-medium px-2">对话空间</span>
+                  <div className="flex items-center justify-between group cursor-pointer hover:bg-slate-100 rounded-md py-1" onClick={() => setIsChatSpaceExpanded(!isChatSpaceExpanded)}>
+                    <span className="text-[12px] text-slate-500 font-medium px-2 flex items-center gap-1">
+                      {isChatSpaceExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />} 对话空间
+                    </span>
                     <button
-                      onClick={() => setIsCreateProjectModalOpen(true)}
+                      onClick={(e) => { e.stopPropagation(); setIsCreateProjectModalOpen(true); }}
                       className="hover:text-slate-700 text-slate-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       title="新建对话空间"
                     >
@@ -1182,6 +1193,7 @@ export default function App() {
                   </div>
 
                   {/* Project Item */}
+                  {isChatSpaceExpanded && (
                   <div className="flex flex-col gap-0.5">
                     <div className="relative flex items-center justify-between px-2 py-2 rounded-lg bg-slate-100/50 hover:bg-slate-100 cursor-pointer group/project text-slate-800 transition-colors">
                       <div className="flex items-center gap-2 overflow-hidden flex-1">
@@ -1333,6 +1345,7 @@ export default function App() {
                       ))}
                     </div>
                   </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1718,13 +1731,19 @@ export default function App() {
         )}
 
         {activeNav === "materials" && (
-          <MaterialStation activeProject={activeProject} />
+          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+            <MaterialStation activeProject={activeProject} />
+          </div>
         )}
         {activeNav === "search_explorer" && (
-          <SearchKeywordsExplorer activeProject={activeProject} />
+          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+            <SearchKeywordsExplorer activeProject={activeProject} />
+          </div>
         )}
         {activeNav === "knowledge" && (
-          <KnowledgeMemory activeProject={activeProject} />
+          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+            <KnowledgeMemory activeProject={activeProject} />
+          </div>
         )}
         {activeNav === "skills" && (
           <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">

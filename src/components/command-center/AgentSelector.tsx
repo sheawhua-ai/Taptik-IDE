@@ -66,7 +66,7 @@ export const AgentSelector: React.FC<AgentSelectorProps> = ({ isOpen, onClose, a
  onClick={() => { onOpenMarket(); onClose(); }} 
  className="w-full py-2.5 rounded-xl text-[12px] text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200/50 transition-colors flex items-center justify-center gap-2"
  >
- <ShoppingCart size={14} /> 前往专家与技能市场
+ <ShoppingCart size={14} /> 前往技能中心
  </button>
  </div>
  </motion.div>

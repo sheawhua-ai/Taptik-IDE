@@ -61,7 +61,7 @@ export type SkillSourceType =
 
 export type AppScope = 'task' | 'project' | 'merchant' | 'all';
 
-export type TabType = 'experts' | 'skills' | 'my';
+export type TabType = 'skills' | 'my' | 'eval';
 
 // Merchant Capability Recommendation Item
 export interface MerchantRecommendation {
@@ -147,10 +147,13 @@ export interface SkillItem {
   name: string;
   oneSentenceDesc: string;            // 一句话用途
   processCategory: ProcessCategory;   // 适用运营环节
+  stageLabel?: string;                // 适用于哪个运营阶段文案 (如 "商家诊断与能力建设", "蓝海机会挖掘", "项目推进与异常排查", "内容与排期策划")
   dailyTaskTag?: DailyTaskType;       // 日常任务标签
   source: SkillSourceType;            // 来源
+  isComposite?: boolean;              // 是否为由原专家整建制迁移升级为的复合技能
   
   status: StaticStatus;
+  unavailableReason?: string;         // 若因数据通道不可用，展示的具体业务说明提示
   version: string;
   updatedAt: string;
   lastTestStatus: 'passed' | 'failed' | 'untested';
@@ -161,17 +164,42 @@ export interface SkillItem {
   usedByExperts: { id: string; name: string }[];
   usedByProjects: string[];
   
-  // Skill Contract Details
-  goal: string;                       // 技能目标
-  applicableScenes: string[];         // 适用场景
+  // Skill Contract Details (10大业务契约要素)
+  goal: string;                       // 1. 目标：解决什么业务问题。
+  applicableScenes: string[];         // 2. 使用范围：适用商家、项目和阶段。
   inapplicableScenes: string[];       // 不适用场景
-  inputFormat: string[];              // 输入要求
-  outputFormat: string[];             // 输出结果
+  inputFormat: string[];              // 3. 输入：需要哪些项目资料。
+  outputFormat: string[];             // 4. 输出：交付什么结果。
+  executionActions?: {                // 5. 执行动作：是否创建待办、修改方案、发起素材任务
+    willWriteProject: boolean;
+    willCreateTodo: boolean;
+    willCreateMaterialTask: boolean;
+    summary: string;
+  };
+  manualConfirmPoints: string[];      // 6. 人工节点：什么时候必须确认。
+  evidenceRequirements?: string[];    // 7. 证据要求：结论必须引用哪些数据。
+  failureHandling: string;            // 8. 失败处理：数据不足或接口失败怎么办。
+  evaluationStandards?: string[];     // 9. 评测标准：什么情况算成功。
+  versionHistoryNotes?: string;       // 10. 版本记录：变化是否影响现有项目。
+  
   preConditions: string[];            // 前置条件
   executionSteps: string[];           // 执行步骤摘要
   risksAndLimits: string[];           // 限制与风险
-  failureHandling: string;            // 失败处理
-  manualConfirmPoints: string[];      // 人工确认点
+  
+  // 后台维护隐藏字段 (后台参数 / Schema - 仅管理及评测可见，操盘手可折叠/不干扰)
+  backendMetadata?: {
+    executionMode: 'sync' | 'async_batch' | 'event_driven';
+    workflowGraph: string;
+    toolDependencies: string[];
+    dataSourceDependencies: string[];
+    agentWorker: string;
+    timeoutAndBudget: string;
+    idempotencyKey: string;
+    retryPolicy: string;
+    inputOutputSchema: string;
+    evalSetAndThreshold: string;
+  };
+  
   requiredPermissions: {
     readScope: string[];
     writeScope: string[];

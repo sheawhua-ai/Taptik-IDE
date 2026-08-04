@@ -5,6 +5,13 @@ export interface Merchant {
   name: string;
 }
 
+export interface LandingPageSettings {
+  loginMode: "无需登录" | "微信登录";
+  bannerUrl?: string;
+  posterTitle?: string;
+  customUrl?: string;
+}
+
 export interface Project {
   id: string;
   merchantId: string;
@@ -15,6 +22,7 @@ export interface Project {
   endDate: string;
   budget: string;
   strategyProtocol: any;
+  landingPageSettings?: LandingPageSettings;
 }
 
 export interface Round {
@@ -44,8 +52,10 @@ export interface ContentDraft {
 
 export interface MaterialRequirement {
   id: string;
-  noteSlotId: string;
+  projectId?: string;
+  noteSlotId?: string;
   reqs: string;
+  isProjectLevel?: boolean;
 }
 
 export type MaterialTaskStatus = "待认领" | "执行中" | "已上传" | "AI预检" | "待提交" | "待验收" | "部分退回/需补拍" | "已验收" | "已关闭";
@@ -64,7 +74,7 @@ export interface MaterialAsset {
   aiStatus: string;
 }
 
-export type PublishTaskStatus = "待认领" | "准备中" | "待发布" | "发布中" | "已回传链接" | "系统验证中" | "已验证/验证异常" | "人工确认" | "已关闭";
+export type PublishTaskStatus = "未安排" | "待认领" | "准备中" | "待发布" | "发布中" | "已回传链接" | "已发布" | "系统验证中" | "已验证/验证异常" | "人工确认" | "已关闭";
 export interface PublishTask {
   id: string;
   noteSlotId: string;

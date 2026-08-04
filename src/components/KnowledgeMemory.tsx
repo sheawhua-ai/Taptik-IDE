@@ -1983,7 +1983,7 @@ export function KnowledgeMemory({ activeProject }: KnowledgeMemoryProps) {
                 <div className="flex items-center gap-2 pt-1">
                   <button
                     onClick={() => {
-                      showToast("正在跳转至【能力中心】，为您将该经验提炼为 Skill...");
+                      showToast("正在跳转至【技能中心】，为您将该经验提炼为 Skill...");
                       setSelectedExperience(null);
                     }}
                     className="flex-1 py-2 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-800 font-bold text-[12px] rounded-xl transition-colors"
