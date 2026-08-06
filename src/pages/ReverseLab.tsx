@@ -184,21 +184,21 @@ export default function ReverseLab() {
                 <div className="space-y-3">
                   {content.includes("绝绝子") ? (
                     <>
-                      <div className="p-3 border-l-4 border-rose-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">
+                      <div className="p-3 bg-white shadow-sm rounded-xl border border-rose-100 flex items-start gap-3">
                         <AlertTriangle size={16} className="text-rose-500 mt-0.5 shrink-0" />
                         <div>
                           <span className="text-[12px] font-bold text-neutral-900 block mb-1">广告法绝对化用语</span>
                           <p className="text-[11px] text-neutral-500 leading-relaxed">发现「全网第一」、「绝对」等词汇，违反《广告法》第9条。强烈建议修改或使用 智能 一键合规。</p>
                         </div>
                       </div>
-                      <div className="p-3 border-l-4 border-rose-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">
+                      <div className="p-3 bg-white shadow-sm rounded-xl border border-rose-100 flex items-start gap-3">
                         <AlertTriangle size={16} className="text-rose-500 mt-0.5 shrink-0" />
                         <div>
                           <span className="text-[12px] font-bold text-neutral-900 block mb-1">特殊人群承诺风险</span>
                           <p className="text-[11px] text-neutral-500 leading-relaxed">发现「孕妇都能放心闭眼入」。根据平台规范，非特殊用途化妆品不得对孕妇群体做绝对安全承诺。</p>
                         </div>
                       </div>
-                      <div className="p-3 border-l-4 border-amber-500 bg-white shadow-sm rounded-r-xl border-y border-r border-neutral-100 flex items-start gap-3">
+                      <div className="p-3 bg-white shadow-sm rounded-xl border border-amber-100 flex items-start gap-3">
                         <AlertTriangle size={16} className="text-amber-500 mt-0.5 shrink-0" />
                         <div>
                           <span className="text-[12px] font-bold text-neutral-900 block mb-1">营销水军识别预警</span>

@@ -861,7 +861,7 @@ export function ProjectAssets() {
                  if (accounts.length === 0) return null;
                  return (
                    <div key={group}>
-                      <h3 className="text-[15px] font-bold text-neutral-900 mb-4 pl-2 border-l-4 border-primary-500">{group}</h3>
+                      <h3 className="text-[15px] font-bold text-neutral-900 mb-4">{group}</h3>
                       <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden shadow-sm">
                          <table className="w-full text-left border-collapse">
                             <thead>

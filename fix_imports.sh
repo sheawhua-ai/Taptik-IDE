@@ -1,0 +1,1 @@
+sed -i 's|import { Project, Note } from "../../data/projectStore";|import { Project, Note } from "../../data/projectStore";\nimport { calculateProjectPipeline, getNoteDisplayStatus, getActionTextForIssue } from "../../utils/noteStatus";|g' src/components/merchant/ProjectCenter.tsx

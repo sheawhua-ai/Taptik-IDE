@@ -21,7 +21,7 @@ export default function GlobalRadar() {
  </div>
  <h3 className="text-2xl font-semibold mb-6">超时任务阻断中</h3>
  <div className="space-y-4">
- <div className="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm border-l-4 border-tertiary-container">
+ <div className="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm border border-tertiary-container/30">
  <div>
  <p className="text-sm ">Node-042: API Hook Failure</p>
  <p className="text-xs text-on-surface-variant">延时 &gt; 15000ms • 自动熔断激活</p>

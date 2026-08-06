@@ -92,10 +92,10 @@ export const Publishing: React.FC = () => {
  <div 
  key={idx} 
  onClick={() => setSelectedItem(item)}
- className={`p-1.5 rounded-lg border-l-2 shadow-sm group/item flex flex-col gap-0.5 cursor-pointer hover:tranneutral-y-[-1px] transition-all ${
- item.status === 'published' ? 'bg-neutral-100/50 border-neutral-900' : 
- item.status === 'scheduled' ? 'bg-primary-50/50 border-primary-500' : 
- 'bg-neutral-50 border-neutral-300'
+ className={`p-1.5 rounded-lg border shadow-sm group/item flex flex-col gap-0.5 cursor-pointer hover:tranneutral-y-[-1px] transition-all ${
+ item.status === 'published' ? 'bg-neutral-100/50 border-neutral-300' : 
+ item.status === 'scheduled' ? 'bg-primary-50/50 border-primary-200' : 
+ 'bg-neutral-50 border-neutral-200'
  }`}
  >
  <p className="text-[9px] text-neutral-800 leading-tight truncate">{item.title}</p>

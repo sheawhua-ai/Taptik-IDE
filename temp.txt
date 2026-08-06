@@ -1,0 +1,71 @@
+        
+        {/* Header */}
+        <div className="bg-white border-b border-[#EAECF0] shrink-0 px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {!isSidebarOpen && (
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="px-3 py-1.5 border border-[#EAECF0] rounded-xl text-[13px] font-medium text-[#111827] hover:bg-neutral-50 f            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <h1 className="text-[18px] font-bold text-[#111827]">{currentProject.name}</h1>
+                <span className="text-[12px] text-[#667085] bg-neutral-100 px-2 py-0.5 rounded-md">{currentProject.status}</span>
+                <span className="text-[12px] text-[#667085] flex items-center gap-1.5"><Calendar size={12} /> {currentProject.startDate} 至 {currentProject.endDate}</span>
+              </div>
+              <div className="text-[13px] text-[#667085]">
+                {currentProject.description || "验证真实换粮体验与店长专业解释能否提高有效咨询"}
+              </div>
+            </div>
+          </div>
+          <div className="relative">
+            <button 
+              onClick={() => setShowMoreMenu(!showMoreMenu)}
+              className="p-2 text-neutral-400 hover:bg-neutral-100 rounded-xl"
+            >
+              <MoreHorizontal size={18} />
+            </button>
+            {showMoreMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
+                <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-[#EAECF0] rounded-xl shadow-lg z-50 py-1 text-[13px]">
+                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowProjectPlan(true); }}>
+                    <Lightbulb size={14} /> 查看完整方案
+                  </button>
+                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowProjectSettings(true); }}>
+                    <Settings size={14} /> 编辑项目
+                  </button>
+                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); }}>
+                    <Camera size={14} /> 项目素材池
+                  </button>
+                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowLandingPage(true); }}>
+                    <QrCode size={14} /> 消费者发布设置
+                  </button>
+                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}>
+                    <History size={14} /> 操作记录
+                  </button>
+                  <div className="my-1 border-t border-[#EAECF0]" />
+                  <button 
+                    onClick={() => { setShowMoreMenu(false); }}
+                    className="w-full text-left px-4 py-2 hover:bg-neutral-50 text-neutral-700 flex items-center gap-2"
+                  >
+                    结束项目
+                  </button>
+                  <button 
+                    onClick={() => { setShowMoreMenu(false); setShowDeleteConfirm(true); }}
+                    className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2"
+                  >
+                    <Trash2 size={14} /> 删除项目
+                  </button>
+                </div>
+              </>ex items-center gap-2"
+                  >
+                    <Trash2 size={14} /> 结束项目
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="px-6 bg-white border-b border-[#EAECF0] flex gap-6 text-[14px] font-medium shrink-0">
+          {(["概览", "笔记", "数据"] as const).map(tab => (

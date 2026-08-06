@@ -1,0 +1,2 @@
+sed -i 's/<X size={16} \/>/<PanelLeftClose size={16} \/>/g' src/components/merchant/ProjectCenter.tsx
+sed -i 's/import {.*} from "lucide-react";/import { PanelLeftClose, PanelLeftOpen, Plus, Search, Calendar, AlertTriangle, CheckCircle2, History, MoreHorizontal, Settings, FileText, Check, ChevronRight, X, ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, Menu } from "lucide-react";/g' src/components/merchant/ProjectCenter.tsx

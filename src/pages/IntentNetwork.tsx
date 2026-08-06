@@ -74,7 +74,7 @@ export default function IntentNetwork() {
  <h3 className="text-[13px] font-semibold text-zinc-800">客户需求分类: #价格咨询_企业级</h3>
  </div>
  <div className="grid grid-cols-1 gap-3">
- <div className="bg-zinc-50 p-3 rounded-xl border-l-4 border-[#5157a7]">
+ <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-200">
  <div className="flex items-center gap-2 mb-1">
  <span className="text-[11px] text-zinc-800">JD Architecture</span>
  </div>
@@ -101,7 +101,7 @@ export default function IntentNetwork() {
  </h2>
  <button className="material-symbols-outlined text-zinc-400 hover:text-white">add_circle</button>
  </div>
- <div className="p-3 bg-zinc-800 rounded-xl border-l-2 border-[#5157a7]">
+ <div className="p-3 bg-zinc-800 rounded-xl border border-zinc-700">
  <div className="flex items-center justify-between mb-1">
  <span className="text-[10px] text-[#e0e0ff] tracking-tight">优先级: 高</span>
  </div>
