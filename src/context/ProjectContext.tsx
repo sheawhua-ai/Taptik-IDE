@@ -76,6 +76,37 @@ export interface ProjectContextType {
   // New Actions for Notes, Materials, and Landing Pages
   createProjectNote: (projectId: string, noteData: { title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => void;
   batchGenerateProjectNotes: (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => void;
+  createFullOperationsProject: (data: {
+    name: string;
+    goal: string;
+    status?: "准备中" | "进行中" | "已结束";
+    startDate?: string;
+    endDate?: string;
+    budget?: string;
+    strategyProtocol?: any;
+    notes: Array<{
+      title: string;
+      accountType: "KOC" | "店长号/KOS" | "品牌主号";
+      accountName: string;
+      contentDirection: string;
+      plannedDate: string;
+      targetAudience?: string;
+      searchIntent?: string;
+      coreExpression?: string;
+      requiredMaterials?: string[];
+      body?: string;
+      materialMatched?: boolean;
+    }>;
+    materialTasks: Array<{
+      reqs: string;
+      usageScenario?: string;
+      specs?: string;
+      assignee?: string;
+      status?: any;
+      associatedNoteIndices?: number[];
+    }>;
+    matchedAssetsCount?: number;
+  }) => string;
   addProjectMaterialRequirement: (projectId: string, reqs: string, assignee?: string) => void;
   updateLandingPageSettings: (projectId: string, settings: Partial<import("../data/unifiedStore").LandingPageSettings>) => void;
   addConsumerSubmission: (projectId: string, submission: { nickname: string; contentType: string; title: string; body?: string; images: string[]; contact?: string }) => void;
@@ -564,6 +595,147 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   };
 
+  // Create full operations project with notes and material tasks
+  const createFullOperationsProject = (data: {
+    name: string;
+    goal: string;
+    status?: "准备中" | "进行中" | "已结束";
+    startDate?: string;
+    endDate?: string;
+    budget?: string;
+    strategyProtocol?: any;
+    notes: Array<{
+      title: string;
+      accountType: "KOC" | "店长号/KOS" | "品牌主号";
+      accountName: string;
+      contentDirection: string;
+      plannedDate: string;
+      targetAudience?: string;
+      searchIntent?: string;
+      coreExpression?: string;
+      requiredMaterials?: string[];
+      body?: string;
+      materialMatched?: boolean;
+    }>;
+    materialTasks: Array<{
+      reqs: string;
+      usageScenario?: string;
+      specs?: string;
+      assignee?: string;
+      status?: any;
+      associatedNoteIndices?: number[];
+    }>;
+    matchedAssetsCount?: number;
+  }) => {
+    const newId = `p_${Date.now()}`;
+    const newProject: Project = {
+      id: newId,
+      merchantId: "m1",
+      name: data.name,
+      status: data.status || "进行中",
+      goal: data.goal,
+      startDate: data.startDate || new Date().toISOString().split('T')[0],
+      endDate: data.endDate || new Date(Date.now() + 14 * 24 * 3600 * 1000).toISOString().split('T')[0],
+      budget: data.budget || "10,000元",
+      strategyProtocol: data.strategyProtocol || {
+        targetAudience: "目标种草与搜索客户群体",
+        coreProblem: "真实案例不足及搜索卡位缺失",
+        solutionSummary: "KOC试用体验 + 店长号专业科普指导",
+        verifyHypothesis: "真实体验内容能否显著提升咨询与搜索转化",
+        continueCondition: "爆文率>15%",
+        stopCondition: "爆文率<3%"
+      },
+      landingPageSettings: {
+        loginMode: "无需登录",
+        posterTitle: `${data.name} - 体验官招募与内容投稿`,
+        bannerUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop"
+      }
+    };
+
+    const newSlots: NoteSlot[] = [];
+    const newDrafts: ContentDraft[] = [];
+    const newPubTasks: PublishTask[] = [];
+    const newMatReqs: MaterialRequirement[] = [];
+    const newMatTasks: MaterialTask[] = [];
+
+    // Create note slots & drafts
+    data.notes.forEach((note, idx) => {
+      const slotId = `ns_full_${Date.now()}_${idx}`;
+      newSlots.push({
+        id: slotId,
+        projectId: newId,
+        roundId: "r1",
+        accountType: note.accountType,
+        accountName: note.accountName || `${note.accountType}_${idx + 1}`,
+        contentDirection: note.contentDirection,
+        plannedDate: note.plannedDate || new Date().toISOString().split('T')[0]
+      });
+
+      newDrafts.push({
+        id: `cd_full_${Date.now()}_${idx}`,
+        noteSlotId: slotId,
+        status: "已确认",
+        title: note.title,
+        body: note.body || `【目标用户】${note.targetAudience || '幼犬初次换粮宠主'}\n【核心表达】${note.coreExpression || '真实换粮体验解析'}\n【搜索意图】${note.searchIntent || '解决腹泻软便'}\n【所需素材】${(note.requiredMaterials || []).join('、')}`,
+        tags: [note.contentDirection]
+      });
+
+      newPubTasks.push({
+        id: `pt_full_${Date.now()}_${idx}`,
+        noteSlotId: slotId,
+        assignee: note.accountName || "待派发",
+        status: "未安排"
+      });
+    });
+
+    // Create material tasks (status = "待发布")
+    data.materialTasks.forEach((mTask, idx) => {
+      const reqId = `mr_full_${Date.now()}_${idx}`;
+      const firstNoteSlotId = mTask.associatedNoteIndices && mTask.associatedNoteIndices.length > 0 && newSlots[mTask.associatedNoteIndices[0]]
+        ? newSlots[mTask.associatedNoteIndices[0]].id
+        : newSlots[0]?.id;
+
+      newMatReqs.push({
+        id: reqId,
+        projectId: newId,
+        noteSlotId: firstNoteSlotId,
+        reqs: mTask.reqs
+      });
+
+      newMatTasks.push({
+        id: `mt_full_${Date.now()}_${idx}`,
+        requirementId: reqId,
+        assignee: mTask.assignee || "待派发",
+        status: mTask.status || "待发布" as any
+      });
+    });
+
+    setState(prev => {
+      const newEvent: TimelineEvent = {
+        id: `evt-${Date.now()}`,
+        targetId: newId,
+        actor: "操盘手",
+        action: `确认方案并成功创建运营项目: ${data.name} (含${data.notes.length}篇笔记, ${data.materialTasks.length}个待发布素材任务)`,
+        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        isAutomatic: false
+      };
+
+      return {
+        ...prev,
+        projects: [newProject, ...prev.projects],
+        noteSlots: [...prev.noteSlots, ...newSlots],
+        contentDrafts: [...prev.contentDrafts, ...newDrafts],
+        publishTasks: [...prev.publishTasks, ...newPubTasks],
+        materialRequirements: [...prev.materialRequirements, ...newMatReqs],
+        materialTasks: [...prev.materialTasks, ...newMatTasks],
+        timelineEvents: [newEvent, ...prev.timelineEvents]
+      };
+    });
+
+    setSelectedProjectId(newId);
+    return newId;
+  };
+
   // Create new project
   const addNewProject = (projectData: { name: string; goal: string; status?: "准备中" | "进行中" | "已结束"; startDate?: string; endDate?: string; budget?: string; strategyProtocol?: any; landingPageSettings?: any }) => {
     const newId = `p_${Date.now()}`;
@@ -666,6 +838,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         clearNoteIssue,
         createProjectNote,
         batchGenerateProjectNotes,
+        createFullOperationsProject,
         addProjectMaterialRequirement,
         updateLandingPageSettings,
         addConsumerSubmission,

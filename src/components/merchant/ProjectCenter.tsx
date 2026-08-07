@@ -67,12 +67,18 @@ export function ProjectCenter({
   const [activeNoteDetail, setActiveNoteDetail] = useState<Note | null>(null);
   const [activeWorkbench, setActiveWorkbench] = useState<"content" | "assets" | "publish" | "create_project" | null>(null);
 
+  if (!currentProject) {
+    return (
+      <div className="flex-1 flex items-center justify-center text-neutral-400 bg-[#F7F8FA]">
+        请选择左侧项目或新建项目
+      </div>
+    );
+  }
+
   // Action Tasks
-  const projectPendingTasks = currentProject
-    ? enrichedActionTasks.filter(
-        (t) => t.projectId === currentProject.id && t.status === "pending"
-      )
-    : [];
+  const projectPendingTasks = enrichedActionTasks.filter(
+    (t) => t.projectId === currentProject.id && t.status === "pending"
+  );
   const primaryProjectTask = projectPendingTasks[0];
   const secondaryProjectTasksCount = projectPendingTasks.length > 1 ? projectPendingTasks.length - 1 : 0;
 
@@ -91,22 +97,7 @@ export function ProjectCenter({
   if (activeWorkbench === "content") return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
   if (activeWorkbench === "assets") return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
   if (activeWorkbench === "publish") return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} />;
-  if (activeWorkbench === "create_project") return <CreateProjectWorkstation onClose={() => setActiveWorkbench(null)} onCreate={(res) => { setActiveWorkbench(null); if (res?.id) setSelectedProjectId(res.id); }} />;
-
-  if (!currentProject) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center text-neutral-500 bg-[#F7F8FA] p-8 gap-4">
-        <p className="text-[15px] font-medium text-neutral-600">请选择左侧项目，或立即创建一个全新小红书运营项目</p>
-        <button
-          onClick={() => setActiveWorkbench("create_project")}
-          className="px-6 py-2.5 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-all flex items-center gap-2 shadow-xs"
-        >
-          <Plus size={16} />
-          <span>新建小红书运营项目</span>
-        </button>
-      </div>
-    );
-  }
+  if (activeWorkbench === "create_project") return <CreateProjectWorkstation onClose={() => setActiveWorkbench(null)} onCreate={() => setActiveWorkbench(null)} />;
 
   return (
     <div className="h-full w-full flex bg-[#F7F8FA] text-[#111827] relative overflow-hidden">
