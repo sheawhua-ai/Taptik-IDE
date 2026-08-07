@@ -1,24 +1,17 @@
-export type AssetStatus = 'available' | 'in_use' | 'used';
+export type AssetStatus = 'pending' | 'available' | 'reserved' | 'used' | 'unavailable' | 'optimizing';
 export type AssetType = 'image' | 'video';
-
-export interface UnderstandingHistoryItem {
-  id: string;
-  version: number;
-  text: string;
-  updatedBy: string;
-  updatedAt: string;
-}
+export type AssetSourceType = 'operator' | 'clerk' | 'consumer' | 'ai_optimized' | 'other';
+export type CoverSuitability = 'suitable' | 'optimized_suitable' | 'body_only' | 'unrecommended';
 
 export interface UsageRecordItem {
   id: string;
   noteTitle: string;
   project: string;
-  strategy: string;
-  account: string;
+  account?: string;
   publishTime: string;
-  status: 'using' | 'published' | 'released';
-  performanceData?: string;
   operator: string;
+  status: 'reserved' | 'used';
+  positionLabel?: string;
 }
 
 export interface DerivationInfo {
@@ -28,31 +21,35 @@ export interface DerivationInfo {
   modificationType?: string;
   createdBy?: string;
   createdAt?: string;
-  originNoteTitle?: string;
-  originPerformance?: string;
 }
 
 export interface MaterialAsset {
   id: string;
   type: AssetType;
   url: string;
-  duration?: string; // For videos e.g. "00:15"
-  oneSentenceUnderstanding: string; // 40-150 words
-  recommendationUse: string;
-  drawback: string;
+  duration?: string;
+  
   status: AssetStatus;
+  sourceType: AssetSourceType;
   
-  // 来源必填字段 (Section 2.1)
-  merchant: string;
-  sourceProject: string;
-  sourceTask: string;
-  shotName: string;
-  store: string;
-  executor: string;
+  // AI Understanding
+  aiOneLineUnderstanding: string;
+  suitableForCover: CoverSuitability;
+  coverReason: string;
+  recommendationUse: string; // 适合用途
+  
+  // Relationship
+  linkedNoteId?: string;
+  linkedNoteTitle?: string;
+  
+  // Source info
+  uploader: string;
   uploadTime: string;
-  isHistoricalImport?: boolean; // 是否历史导入
+  sourceProject?: string;
+  sourceTask?: string;
+  authStatus?: 'verified' | 'pending' | 'none'; // 授权状态
   
-  // 文件属性
+  // File props
   fileInfo: {
     resolution: string;
     format: string;
@@ -60,69 +57,55 @@ export interface MaterialAsset {
     aspectRatio: string;
   };
   
-  // 历史和记录
-  understandingHistory: UnderstandingHistoryItem[];
+  // Details
   usageRecords: UsageRecordItem[];
   derivationInfo?: DerivationInfo;
   
-  // AI深入分析字段
+  // Full AI Analysis
   fullAiAnalysis: {
     subject: string;
     product: string;
     scene: string;
-    action: string;
     composition: string;
     lightingColor: string;
-    ocrText?: string;
+    drawbacks?: string;
   };
 }
 
+export type TaskStatus = 'draft' | 'collecting' | 'pending_review' | 'completed';
+
 export interface ShotRequirement {
   id: string;
-  shotCode: string;
   shotName: string;
   requirementDesc: string;
   status: 'pending' | 'uploaded' | 'rejected' | 'completed';
   assetId?: string;
   rejectReason?: string;
+  isCover?: boolean;
+  positionLabel?: string;
 }
 
 export interface CollectionTask {
   id: string;
+  status: TaskStatus;
   projectName: string;
-  taskName: string;
-  store: string;
+  taskName: string; // usually linked to target note
+  targetNoteTitle?: string;
   executor: string;
   deadline: string;
   completedCount: number;
   totalCount: number;
-  needsReshootCount: number;
-  blockPoint?: string;
   shootGoal: string;
   shotsList: ShotRequirement[];
-  uploadLogs: {
-    id: string;
-    time: string;
-    executor: string;
-    result: 'pass' | 'reject';
-    detail: string;
-  }[];
-  rejectedRecords: {
-    id: string;
-    shotName: string;
-    reason: string;
-    rejectedAt: string;
-  }[];
 }
 
 export interface NoteImagePosition {
   posIndex: number;
-  label: string; // e.g. "首图：幼犬和产品同时出现"
+  posType: 'cover' | 'body_1' | 'body_2' | 'body_other' | 'backup';
+  label: string; 
   requirementDesc: string;
-  matchedLevel?: 'recommend' | 'other' | 'none';
   matchedAssetId?: string;
-  reason?: string;
-  drawbackNote?: string;
+  status: 'missing' | 'bound';
 }
 
 export interface NoteDraftRequirement {
@@ -134,10 +117,10 @@ export interface NoteDraftRequirement {
 }
 
 export interface FilterState {
-  sourceProject: string;
-  sourceTask: string;
-  mediaType: 'all' | 'image' | 'video';
-  store: string;
+  status: AssetStatus[];
+  sourceType: AssetSourceType | 'all';
+  uploader: string;
+  project: string;
+  suitableForCover: 'all' | 'true' | 'false';
   timeRange: string;
-  usedProject: string;
 }

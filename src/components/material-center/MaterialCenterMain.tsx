@@ -46,20 +46,20 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
     INITIAL_COLLECTION_TASKS
   );
 
-  // 顶部状态切换：可用 / 使用中 / 已使用 (默认进入 "可用", Section 4.3)
+  // 顶部状态切换：待审核 / 可用 / 已预占 / 已使用
   const [activeStatus, setActiveStatus] = useState<AssetStatus>('available');
 
-  // AI自然语言搜索 (Section 4.2)
+  // AI自然语言搜索
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // 筛选器状态 (Section 4.4)
+  // 筛选器状态
   const [filterState, setFilterState] = useState<FilterState>({
-    sourceProject: '',
-    sourceTask: '',
-    mediaType: 'all',
-    store: '',
-    timeRange: '',
-    usedProject: ''
+    status: [],
+    sourceType: 'all',
+    uploader: '',
+    project: '',
+    suitableForCover: 'all',
+    timeRange: ''
   });
 
   // Modals & Drawers 状态
@@ -75,7 +75,8 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
   const statusCounts = useMemo(() => {
     return {
       available: assets.filter((a) => a.status === 'available').length,
-      in_use: assets.filter((a) => a.status === 'in_use').length,
+      pending: assets.filter((a) => a.status === 'pending').length,
+      reserved: assets.filter((a) => a.status === 'reserved').length,
       used: assets.filter((a) => a.status === 'used').length
     };
   }, [assets]);
@@ -89,10 +90,10 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
     return Array.from(set);
   }, [assets]);
 
-  const availableStores = useMemo(() => {
+  const availableUploaders = useMemo(() => {
     const set = new Set<string>();
     assets.forEach((a) => {
-      if (a.store) set.add(a.store);
+      if (a.uploader) set.add(a.uploader);
     });
     return Array.from(set);
   }, [assets]);
@@ -105,26 +106,33 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
 
       // 2. 来源项目匹配
       if (
-        filterState.sourceProject &&
-        asset.sourceProject !== filterState.sourceProject
+        filterState.project &&
+        asset.sourceProject !== filterState.project
       ) {
         return false;
       }
 
-      // 3. 执行门店匹配
-      if (filterState.store && asset.store !== filterState.store) {
+      // 3. 上传者匹配
+      if (filterState.uploader && asset.uploader !== filterState.uploader) {
         return false;
       }
 
-      // 4. 媒体类型匹配
-      if (filterState.mediaType !== 'all') {
-        if (asset.type !== filterState.mediaType) return false;
+      // 4. 来源类型
+      if (filterState.sourceType !== 'all') {
+        if (asset.sourceType !== filterState.sourceType) return false;
       }
 
-      // 5. 自然语言与多维度关键词模糊搜索 (Section 4.2: 画面主体、产品、场景、一句话理解、OCR等)
+      // 5. 封面匹配
+      if (filterState.suitableForCover !== 'all') {
+        const isCover = asset.suitableForCover === 'suitable' || asset.suitableForCover === 'optimized_suitable';
+        if (filterState.suitableForCover === 'true' && !isCover) return false;
+        if (filterState.suitableForCover === 'false' && isCover) return false;
+      }
+
+      // 自然语言搜索
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchUnderstanding = asset.oneSentenceUnderstanding
+        const matchUnderstanding = asset.aiOneLineUnderstanding
           .toLowerCase()
           .includes(q);
         const matchSubject = asset.fullAiAnalysis.subject
@@ -136,19 +144,14 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
         const matchScene = asset.fullAiAnalysis.scene
           .toLowerCase()
           .includes(q);
-        const matchOcr =
-          asset.fullAiAnalysis.ocrText?.toLowerCase().includes(q) || false;
-        const matchProject = asset.sourceProject.toLowerCase().includes(q);
-        const matchTask = asset.sourceTask.toLowerCase().includes(q);
+        const matchProject = (asset.sourceProject || '').toLowerCase().includes(q);
 
         if (
           !matchUnderstanding &&
           !matchSubject &&
           !matchProduct &&
           !matchScene &&
-          !matchOcr &&
-          !matchProject &&
-          !matchTask
+          !matchProject
         ) {
           return false;
         }
@@ -158,7 +161,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
     });
   }, [assets, activeStatus, filterState, searchQuery]);
 
-  // 一句话理解人工修改并同步更新向量与历史 (Section 8.2 & 8.3)
+  // 一句话理解人工修改
   const handleUpdateUnderstanding = async (
     assetId: string,
     newText: string
@@ -168,17 +171,9 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
     setAssets((prev) =>
       prev.map((a) => {
         if (a.id !== assetId) return a;
-        const newHistoryItem = {
-          id: `uh_${Date.now()}`,
-          version: a.understandingHistory.length + 1,
-          text: newText,
-          updatedBy: '主操盘手 (人工修正)',
-          updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-        };
         const updatedAsset = {
           ...a,
-          oneSentenceUnderstanding: newText,
-          understandingHistory: [newHistoryItem, ...a.understandingHistory]
+          aiOneLineUnderstanding: newText,
         };
         if (selectedAssetForDetail?.id === assetId) {
           setSelectedAssetForDetail(updatedAsset);
@@ -188,22 +183,21 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
     );
   };
 
-  // 卡片选择 / 占用事件 (Section 10 素材占用与一次性使用)
+  // 卡片选择 / 预占事件
   const handleSelectAsset = (asset: MaterialAsset) => {
     const targetTitle =
-      activeProject?.name || '极宠家-幼犬换粮攻略种草日记(主推文)';
+      activeProject?.name || '幼犬换粮攻略种草日记';
     const updatedAsset: MaterialAsset = {
       ...asset,
-      status: 'in_use',
+      status: 'reserved',
+      linkedNoteTitle: targetTitle,
       usageRecords: [
         {
           id: `rec_${Date.now()}`,
           noteTitle: targetTitle,
-          project: asset.sourceProject,
-          strategy: '核心词卡位打法',
-          account: '极宠家旗舰店-店长日常',
-          publishTime: '占用中（待发布）',
-          status: 'using',
+          project: asset.sourceProject || '默认项目',
+          publishTime: '预占中（待发布）',
+          status: 'reserved',
           operator: '当前操盘手'
         },
         ...asset.usageRecords
@@ -212,7 +206,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
 
     setAssets((prev) => prev.map((a) => (a.id === asset.id ? updatedAsset : a)));
     alert(
-      `已将该素材选定占用至笔记【${targetTitle}】。\n根据一次性使用原则，素材状态已变更为“使用中（锁定中）”，不再对其他发布任务开放。`
+      `已将该素材预占给笔记【${targetTitle}】。其他未发布笔记默认不可选择此素材。`
     );
   };
 
@@ -222,51 +216,34 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
     modType: string
   ): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const derivativeUnderstanding = `基于优秀已使用爆款【${
-      parentAsset.shotName
-    }】制作的衍生版：进行了【${modType}】。画面保留高表现力核心特征，色彩通透清晰，可作为新的可用素材进行跨项目分发。`;
+    const derivativeUnderstanding = `基于优秀已使用爆款制作的衍生版：进行了【${modType}】。画面保留高表现力核心特征，色彩通透清晰，可作为新的可用素材进行跨项目分发。`;
 
     const newDerivative: MaterialAsset = {
       id: `mat_der_${Date.now().toString().slice(-4)}`,
       type: parentAsset.type,
       url: parentAsset.url,
-      oneSentenceUnderstanding: derivativeUnderstanding,
+      aiOneLineUnderstanding: derivativeUnderstanding,
       recommendationUse: parentAsset.recommendationUse,
-      drawback: '由AI微调生成，具备原素材爆款基因',
+      suitableForCover: 'optimized_suitable',
+      coverReason: 'AI优化后主体更清晰，背景更干净，适合作为封面使用。',
       status: 'available',
-      merchant: parentAsset.merchant,
+      sourceType: 'ai_optimized',
       sourceProject: parentAsset.sourceProject,
-      sourceTask: parentAsset.sourceTask + ' (衍生微调流水线)',
-      shotName: parentAsset.shotName + '·衍生版',
-      store: parentAsset.store,
-      executor: 'AI素材引擎（微调复用生成）',
+      sourceTask: (parentAsset.sourceTask || '') + ' (衍生微调流水线)',
+      uploader: 'AI素材引擎',
       uploadTime: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      authStatus: 'verified',
       fileInfo: parentAsset.fileInfo,
-      understandingHistory: [
-        {
-          id: `uh_der_${Date.now()}`,
-          version: 1,
-          text: derivativeUnderstanding,
-          updatedBy: 'AI视觉引擎 (衍生版多模态理解)',
-          updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-        }
-      ],
       usageRecords: [],
       derivationInfo: {
         parentId: parentAsset.id,
-        parentName: parentAsset.oneSentenceUnderstanding.slice(0, 18) + '...',
+        parentName: parentAsset.aiOneLineUnderstanding.slice(0, 18) + '...',
         familyId:
           parentAsset.derivationInfo?.familyId ||
           `fam_${parentAsset.id.slice(-4)}`,
         modificationType: modType,
         createdBy: '主操盘手 (激活微调)',
-        createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
-        originNoteTitle:
-          parentAsset.usageRecords[0]?.noteTitle || '换粮避坑口碑笔记',
-        originPerformance:
-          parentAsset.usageRecords[0]?.performanceData ||
-          '收藏率与互动明显高出类目平均值42%'
+        createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
       },
       fullAiAnalysis: {
         ...parentAsset.fullAiAnalysis,
@@ -292,40 +269,29 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
       id: `mat_hist_${Date.now().toString().slice(-4)}`,
       type: 'image',
       url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&auto=format&fit=crop&q=80',
-      oneSentenceUnderstanding:
+      aiOneLineUnderstanding:
         '品牌早期沉淀的线下到店实拍场景，包含萌犬日常及宠物主亲密喂食画面，自然真实，无显式广告文案。',
       recommendationUse: '通用到店体验、品牌可信度故事图',
-      drawback: '历史图库分辨率稍逊于新拍机型',
+      suitableForCover: 'suitable',
+      coverReason: '真实场景，自然光线。',
       status: 'available',
-      merchant: '极宠家旗舰店（上海总部）',
+      sourceType: 'other',
       sourceProject: '2025年到店体验计划 (历史导入)',
       sourceTask: '历史图库全量迁移',
-      shotName: '历史档案-真实到店喂养',
-      store: '上海总部样板间',
-      executor: '历史图库管理员',
+      uploader: '历史图库管理员',
       uploadTime: '2025-11-15 10:00',
-      isHistoricalImport: true,
+      authStatus: 'verified',
       fileInfo: {
         resolution: '2048x1536',
         format: 'JPEG',
         size: '1.8 MB',
         aspectRatio: '4:3'
       },
-      understandingHistory: [
-        {
-          id: `uh_hist_${Date.now()}`,
-          version: 1,
-          text: '品牌早期沉淀的线下到店实拍场景，包含萌犬日常及宠物主亲密喂食画面，自然真实，无显式广告文案。',
-          updatedBy: 'AI视觉引擎 (历史图全量多模态转译)',
-          updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-        }
-      ],
       usageRecords: [],
       fullAiAnalysis: {
         subject: '历史到店萌犬相册图',
         product: '极宠家早期试喂礼盒',
         scene: '线下门店体验区',
-        action: '自然到店互动',
         composition: '自然实拍构图',
         lightingColor: '暖色温馨氛围光'
       }
@@ -336,6 +302,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
       `已导入 1 张历史图库素材，AI引擎已为其生成统一【一句话理解】与语义检索向量，并统一标记为“来源：历史导入”。`
     );
   };
+
 
   return (
     <div className="w-full min-h-full bg-neutral-50/60 p-5 md:p-8 space-y-6 max-w-7xl mx-auto pb-20">
@@ -388,7 +355,6 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             onChangeFilterState={setFilterState}
             availableProjects={availableProjects}
             availableTasks={tasks.map((t) => t.taskName)}
-            availableStores={availableStores}
             onOpenUploadModal={() => setShowUploadModal(true)}
             onOpenNoteMatching={() => setShowNoteMatchingModal(true)}
             onImportHistory={handleImportHistory}
@@ -433,37 +399,34 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
               </div>
               <div className="space-y-1">
                 <h3 className="text-[17px] font-black text-neutral-900">
-                  没有找到符合全部条件的可用素材。
+                  暂无符合要求的素材
                 </h3>
               </div>
 
-              <div className="flex items-center justify-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => {
-                    const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-                    if (searchInput) searchInput.focus();
-                  }}
-                  className="px-4 py-2 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-800 font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
-                >
-                  调整描述
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setFilterState({
-                      sourceProject: '',
-                      sourceTask: '',
-                      mediaType: 'all',
-                      store: '',
-                      timeRange: '',
-                      usedProject: ''
-                    });
+                    setTopLevelTab('tasks');
+                    alert('请稍后创建素材任务');
                   }}
                   className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
                 >
-                  查看相近素材
+                  创建素材任务
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowUploadModal(true)}
+                  className="px-4 py-2 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-800 font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
+                >
+                  上传素材
+                </button>
+                <button
+                  type="button"
+                  onClick={() => alert('请选择现有素材并点击AI优化')}
+                  className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
+                >
+                  用AI优化现有素材
                 </button>
               </div>
             </div>

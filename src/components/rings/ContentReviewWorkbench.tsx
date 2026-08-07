@@ -437,12 +437,12 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                         onClick={() => { setActiveArea('materials'); setActiveRightTab('issues'); }}
                       >
                         <div className="text-[13px] font-bold text-neutral-900 flex items-center gap-1.5 mb-2">
-                          <AlertOctagon size={14} /> 配图要求
+                          <AlertOctagon size={14} /> AI配图要求
                         </div>
                         <textarea 
                           className="w-full text-[13px] text-neutral-600 bg-neutral-50 p-3 rounded-lg border border-neutral-100 focus:outline-none focus:border-primary-300 resize-none min-h-[60px]"
                           defaultValue={activeNote.materialReq.replace('需要：', '')}
-                          placeholder="输入配图要求..."
+                          placeholder="输入AI配图要求..."
                         />
                       </div>
                     </div>
@@ -549,10 +549,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   </div>
                 ) : activeArea === 'materials' ? (
                   <div>
-                    <h4 className="text-[13px] font-bold text-neutral-900 mb-3 flex items-center gap-1.5"><Sparkles size={14} className="text-primary-500" /> 配图素材建议</h4>
+                    <h4 className="text-[13px] font-bold text-neutral-900 mb-3 flex items-center gap-1.5"><Sparkles size={14} className="text-primary-500" /> AI配图</h4>
                     
                     <div className="bg-neutral-50 border border-neutral-200 p-4 rounded-xl mb-4">
-                      <div className="text-[13px] font-bold text-neutral-800 mb-2">匹配本地可用素材</div>
+                      <div className="text-[13px] font-bold text-neutral-800 mb-2">匹配可用素材</div>
                       <div className="flex gap-2">
                          <div className="w-16 h-16 bg-neutral-200 rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary-500">
                            <ImageIcon size={20} className="text-neutral-400" />

@@ -57,41 +57,31 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         setGeneratedUnderstanding(understanding);
 
         const newAsset: MaterialAsset = {
-          id: `mat_${Date.now().toString().slice(-4)}`,
+          id: `mat_new_${Date.now().toString().slice(-4)}`,
           type: 'image',
           url: mediaUrl,
-          oneSentenceUnderstanding: understanding,
-          recommendationUse: '新品主图、换粮日记、门店权威测评配图',
-          drawback: '暂无明显画面瑕疵',
-          status: 'available',
-          merchant: '极宠家旗舰店（上海总部）',
+          aiOneLineUnderstanding: understanding,
+          recommendationUse: '自动推荐用途（测试）',
+          suitableForCover: 'suitable',
+          coverReason: 'AI 检查通过，等待审核。',
+          status: 'pending',
+          sourceType: 'operator',
           sourceProject: selectedTask.projectName,
           sourceTask: selectedTask.taskName,
-          shotName: selectedShot.shotName,
-          store: selectedTask.store,
-          executor: selectedTask.executor,
+          uploader: selectedTask.executor,
           uploadTime: new Date().toISOString().replace('T', ' ').slice(0, 16),
+          authStatus: 'pending',
           fileInfo: {
-            resolution: '3024x4032',
+            resolution: '1080x1440',
             format: 'JPEG',
-            size: '3.6 MB',
+            size: '1.2 MB',
             aspectRatio: '3:4'
           },
-          understandingHistory: [
-            {
-              id: `uh_${Date.now()}`,
-              version: 1,
-              text: understanding,
-              updatedBy: 'AI视觉引擎 (自动生成)',
-              updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-            }
-          ],
           usageRecords: [],
           fullAiAnalysis: {
             subject: `${selectedShot.shotName} 主体`,
             product: '极宠家·敏感肠胃呵护粮',
             scene: selectedTask.store,
-            action: '自然到店拍摄与宠物互动',
             composition: '标准3:4小红书竖图比例',
             lightingColor: '高显色自然光'
           }

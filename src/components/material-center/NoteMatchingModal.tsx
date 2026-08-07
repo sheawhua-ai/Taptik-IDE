@@ -199,14 +199,14 @@ export const NoteMatchingModal: React.FC<NoteMatchingModalProps> = ({
                           <div className="flex items-start gap-4">
                             <img
                               src={asset.url}
-                              alt={asset.oneSentenceUnderstanding}
+                              alt={asset.aiOneLineUnderstanding}
                               referrerPolicy="no-referrer"
                               className="w-28 h-28 rounded-xl object-cover border border-neutral-200 shrink-0 cursor-pointer"
                               onClick={() => onViewAssetDetail(asset)}
                             />
                             <div className="space-y-2 flex-1 min-w-0">
                               <p className="text-[13px] font-bold text-neutral-900 leading-relaxed">
-                                {asset.oneSentenceUnderstanding}
+                                {asset.aiOneLineUnderstanding}
                               </p>
                               {/* 推荐依据：用业务解释性语言 (Section 9.5) */}
                               <div className="p-2.5 bg-white rounded-xl border border-neutral-200/80 text-[12px] text-neutral-700 space-y-1">
@@ -268,13 +268,13 @@ export const NoteMatchingModal: React.FC<NoteMatchingModalProps> = ({
                           <div className="flex items-start gap-4">
                             <img
                               src={asset.url}
-                              alt={asset.oneSentenceUnderstanding}
+                              alt={asset.aiOneLineUnderstanding}
                               referrerPolicy="no-referrer"
                               className="w-28 h-28 rounded-xl object-cover border border-neutral-200 shrink-0"
                             />
                             <div className="space-y-2 flex-1 min-w-0">
                               <p className="text-[13px] font-bold text-neutral-900 leading-relaxed">
-                                {asset.oneSentenceUnderstanding}
+                                {asset.aiOneLineUnderstanding}
                               </p>
                               <div className="p-2.5 bg-neutral-50 rounded-xl border border-neutral-200/80 text-[12px] text-neutral-700 space-y-1">
                                 <div className="font-black text-neutral-800">取舍建议说明：</div>

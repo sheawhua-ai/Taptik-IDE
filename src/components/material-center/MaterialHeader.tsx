@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
   Upload, Search, Filter, MoreHorizontal, Sparkles,
-  FileText, History, Trash2, ShieldCheck, CheckSquare, X
+  FileText, History, Trash2, ShieldCheck, CheckSquare, X, Plus
 } from 'lucide-react';
-import { AssetStatus, FilterState } from './types';
+import { AssetStatus, FilterState, AssetSourceType } from './types';
 
 interface MaterialHeaderProps {
   activeStatus: AssetStatus;
@@ -14,11 +14,11 @@ interface MaterialHeaderProps {
   onChangeFilterState: (newState: FilterState) => void;
   availableProjects: string[];
   availableTasks: string[];
-  availableStores: string[];
+  availableUploaders: string[];
   onOpenUploadModal: () => void;
   onOpenNoteMatching: () => void;
   onImportHistory: () => void;
-  statusCounts: { available: number; in_use: number; used: number };
+  statusCounts: { available: number; pending: number; reserved: number; used: number };
 }
 
 export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
@@ -30,7 +30,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
   onChangeFilterState,
   availableProjects,
   availableTasks,
-  availableStores,
+  availableUploaders,
   onOpenUploadModal,
   onOpenNoteMatching,
   onImportHistory,
@@ -39,62 +39,67 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
   const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
   const [showFilterPopover, setShowFilterPopover] = useState<boolean>(false);
 
-  // 状态中文映射 (Section 4.3 极简状态)
   const getStatusLabel = (status: AssetStatus) => {
     switch (status) {
-      case 'available':
-        return '可用';
-      case 'in_use':
-        return '使用中';
-      case 'used':
-        return '已使用';
+      case 'available': return '可用';
+      case 'reserved': return '已预占';
+      case 'used': return '已使用';
+      case 'pending': return '待审核';
+      case 'unavailable': return '不可用';
+      case 'optimizing': return '优化中';
+      default: return '未知状态';
     }
   };
 
-  // 组装自然语言转译筛选说明句 (Section 4.4)
   const getFilterNaturalSummary = () => {
     const parts: string[] = [];
-    if (filterState.sourceProject) {
-      parts.push(`${filterState.sourceProject}中`);
+    if (filterState.project) {
+      parts.push(`${filterState.project}项目中`);
     }
-    if (filterState.store) {
-      parts.push(`由${filterState.store}收集`);
+    if (filterState.uploader) {
+      parts.push(`由${filterState.uploader}上传`);
     }
-    const mediaLabel =
-      filterState.mediaType === 'image'
-        ? '的图片'
-        : filterState.mediaType === 'video'
-        ? '的视频'
-        : '的素材';
+    if (filterState.sourceType !== 'all') {
+      const typeMap: Record<string, string> = {
+        operator: '操盘手上传',
+        clerk: '店员上传',
+        consumer: '消费者/KOC上传',
+        ai_optimized: 'AI优化生成',
+        other: '其他渠道'
+      };
+      parts.push(`来源为${typeMap[filterState.sourceType as string] || ''}`);
+    }
+    if (filterState.suitableForCover !== 'all') {
+      parts.push(filterState.suitableForCover === 'true' ? '适合做封面' : '不适合做封面');
+    }
 
     if (parts.length === 0) {
-      return `正在查看当前商家所有【${getStatusLabel(activeStatus)}】${mediaLabel}`;
+      return `正在查看所有【${getStatusLabel(activeStatus)}】素材`;
     }
-    return `正在查看“${parts.join('')}、当前${getStatusLabel(activeStatus)}”${mediaLabel}`;
+    return `正在查看“${parts.join('、')}”的【${getStatusLabel(activeStatus)}】素材`;
   };
 
   const hasActiveFilters =
-    filterState.sourceProject ||
-    filterState.sourceTask ||
-    filterState.store ||
-    filterState.mediaType !== 'all' ||
+    filterState.project ||
+    filterState.uploader ||
+    filterState.sourceType !== 'all' ||
+    filterState.suitableForCover !== 'all' ||
     filterState.timeRange;
 
   const resetFilters = () => {
     onChangeFilterState({
-      sourceProject: '',
-      sourceTask: '',
-      mediaType: 'all',
-      store: '',
-      timeRange: '',
-      usedProject: ''
+      status: [],
+      sourceType: 'all',
+      uploader: '',
+      project: '',
+      suitableForCover: 'all',
+      timeRange: ''
     });
     setShowFilterPopover(false);
   };
 
   return (
     <div className="space-y-4">
-      {/* 4.1 页面头部：标题 + 副标题 + 补充上传 + 更多 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-2xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
@@ -103,23 +108,29 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
             </h1>
           </div>
           <p className="text-[13px] font-medium text-neutral-500">
-            当前商家全量可用与已用素材，支持自然语言检索与跨项目调用。
+            管理当前商家的云端素材，以及素材与笔记的使用关系。
           </p>
         </div>
 
-        {/* 右上角操作区：补充上传(次级操作) + 更多菜单 */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          {/* 补充上传按钮 (次级操作) */}
+          <button
+            type="button"
+            onClick={() => alert('新建素材任务（跳转或打开表单）')}
+            className="px-3.5 py-2 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 font-bold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
+          >
+            <Plus size={15} />
+            <span>创建素材任务</span>
+          </button>
+
           <button
             type="button"
             onClick={onOpenUploadModal}
-            className="px-3.5 py-2 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 font-bold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
+            className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
           >
             <Upload size={15} />
-            <span>补充上传</span>
+            <span>上传素材</span>
           </button>
 
-          {/* 更多菜单 (Section 4.1: 导入历史素材、存储规则、回收站、批量管理) */}
           <div className="relative">
             <button
               type="button"
@@ -136,45 +147,12 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   type="button"
                   onClick={() => {
                     setShowMoreMenu(false);
-                    onImportHistory();
+                    alert('当前支持通过系统接口对接外部图库。所有外部素材统一接入云端素材库。');
                   }}
                   className="w-full text-left px-3 py-2 hover:bg-neutral-100 rounded-xl flex items-center gap-2 transition-colors"
                 >
                   <History size={15} className="text-neutral-500" />
-                  <span>导入历史素材</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMoreMenu(false);
-                    alert('【商家级存储规则】\n当前商家统一素材池不限空间；原始文件与AI多模态向量自动三副本冷热分层备份，历史来源永久追溯。');
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-neutral-100 rounded-xl flex items-center gap-2 transition-colors"
-                >
-                  <ShieldCheck size={15} className="text-neutral-500" />
-                  <span>存储规则</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMoreMenu(false);
-                    alert('【素材回收站】\n被用户删除或去重的历史素材将保留30天以供恢复；正处于“使用中”或“已使用”的素材无法直接删入回收站。');
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-neutral-100 rounded-xl flex items-center gap-2 transition-colors"
-                >
-                  <Trash2 size={15} className="text-neutral-500" />
-                  <span>回收站 (0)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMoreMenu(false);
-                    alert('【批量管理】\n请选择列表素材进行跨项目绑定查看或导出原图。');
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-neutral-100 rounded-xl flex items-center gap-2 transition-colors"
-                >
-                  <CheckSquare size={15} className="text-neutral-500" />
-                  <span>批量管理</span>
+                  <span>接入其他云端来源</span>
                 </button>
               </div>
             )}
@@ -182,7 +160,6 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
         </div>
       </div>
 
-      {/* 4.2 AI自然语言搜索栏 (顶部核心位置) */}
       <div className="relative w-full">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
           <Search size={18} />
@@ -191,7 +168,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
           type="text"
           value={searchQuery}
           onChange={(e) => onChangeSearchQuery(e.target.value)}
-          placeholder="描述你想找的画面，例如“幼犬和产品同时出现、背景干净、还没有使用过”"
+          placeholder="描述需要的画面，例如“幼犬与产品同时出现，背景干净，适合作为封面”"
           className="w-full pl-11 pr-4 py-3.5 bg-white border border-neutral-200/90 rounded-2xl text-[14px] font-medium text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-neutral-900 shadow-xs transition-all"
         />
         {searchQuery && (
@@ -205,59 +182,29 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
         )}
       </div>
 
-      {/* 4.3 极简中性状态切换 (可用 / 使用中 / 已使用) + 4.4 筛选浮层 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        {/* 不使用红点和多种颜色，全部使用中性色 */}
-        <div className="flex items-center gap-1.5 bg-neutral-100/80 p-1 rounded-2xl border border-neutral-200/80 self-start">
-          <button
-            type="button"
-            onClick={() => onChangeStatus('available')}
-            className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all flex items-center gap-1.5 ${
-              activeStatus === 'available'
-                ? 'bg-white text-neutral-900 shadow-xs'
-                : 'text-neutral-600 hover:text-neutral-900'
-            }`}
-          >
-            <span>可用</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[11px] font-black">
-              {statusCounts.available}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onChangeStatus('in_use')}
-            className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all flex items-center gap-1.5 ${
-              activeStatus === 'in_use'
-                ? 'bg-white text-neutral-900 shadow-xs'
-                : 'text-neutral-600 hover:text-neutral-900'
-            }`}
-          >
-            <span>使用中</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[11px] font-black">
-              {statusCounts.in_use}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onChangeStatus('used')}
-            className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all flex items-center gap-1.5 ${
-              activeStatus === 'used'
-                ? 'bg-white text-neutral-900 shadow-xs'
-                : 'text-neutral-600 hover:text-neutral-900'
-            }`}
-          >
-            <span>已使用</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[11px] font-black">
-              {statusCounts.used}
-            </span>
-          </button>
+        <div className="flex items-center gap-1.5 bg-neutral-100/80 p-1 rounded-2xl border border-neutral-200/80 self-start overflow-x-auto">
+          {(['available', 'reserved', 'used', 'pending'] as AssetStatus[]).map(status => (
+            <button
+              key={status}
+              type="button"
+              onClick={() => onChangeStatus(status)}
+              className={`px-4 py-2 rounded-xl text-[13px] font-extrabold transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                activeStatus === status
+                  ? 'bg-white text-neutral-900 shadow-xs'
+                  : 'text-neutral-600 hover:text-neutral-900'
+              }`}
+            >
+              <span>{getStatusLabel(status)}</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[11px] font-black">
+                {statusCounts[status as keyof typeof statusCounts] || 0}
+              </span>
+            </button>
+          ))}
         </div>
 
-        {/* 4.4 主页面只显示一个“筛选”按钮 -> 点击打开轻量浮层 */}
-        <div className="flex items-center gap-3">
-          <div className="text-[12.5px] font-bold text-neutral-500 hidden lg:block">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="text-[12.5px] font-bold text-neutral-500 hidden lg:block max-w-[200px] truncate" title={getFilterNaturalSummary()}>
             {getFilterNaturalSummary()}
           </div>
 
@@ -272,13 +219,12 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
               }`}
             >
               <Filter size={15} />
-              <span>筛选</span>
+              <span>高级筛选</span>
               {hasActiveFilters && (
                 <span className="w-2 h-2 rounded-full bg-amber-400" />
               )}
             </button>
 
-            {/* 轻量筛选浮层 (Section 4.4) */}
             {showFilterPopover && (
               <div className="absolute right-0 top-11 w-80 bg-white rounded-3xl border border-neutral-200 shadow-2xl p-5 z-40 space-y-4 animate-in fade-in zoom-in-95 duration-150">
                 <div className="flex items-center justify-between border-b pb-2.5">
@@ -296,8 +242,8 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   <div>
                     <label className="text-neutral-500 font-extrabold block mb-1">来源项目</label>
                     <select
-                      value={filterState.sourceProject}
-                      onChange={(e) => onChangeFilterState({ ...filterState, sourceProject: e.target.value })}
+                      value={filterState.project}
+                      onChange={(e) => onChangeFilterState({ ...filterState, project: e.target.value })}
                       className="w-full p-2 bg-neutral-50 border border-neutral-200 rounded-xl font-bold text-neutral-800"
                     >
                       <option value="">全部来源项目</option>
@@ -308,37 +254,46 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-neutral-500 font-extrabold block mb-1">执行门店</label>
+                    <label className="text-neutral-500 font-extrabold block mb-1">上传者</label>
                     <select
-                      value={filterState.store}
-                      onChange={(e) => onChangeFilterState({ ...filterState, store: e.target.value })}
+                      value={filterState.uploader}
+                      onChange={(e) => onChangeFilterState({ ...filterState, uploader: e.target.value })}
                       className="w-full p-2 bg-neutral-50 border border-neutral-200 rounded-xl font-bold text-neutral-800"
                     >
-                      <option value="">全部执行门店</option>
-                      {availableStores.map((s) => (
+                      <option value="">全部上传者</option>
+                      {availableUploaders?.map((s) => (
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-neutral-500 font-extrabold block mb-1">媒体类型</label>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {(['all', 'image', 'video'] as const).map((type) => (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => onChangeFilterState({ ...filterState, mediaType: type })}
-                          className={`py-1.5 rounded-lg text-center font-extrabold transition-all border ${
-                            filterState.mediaType === type
-                              ? 'bg-neutral-900 text-white border-neutral-900'
-                              : 'bg-white hover:bg-neutral-50 text-neutral-700 border-neutral-200'
-                          }`}
-                        >
-                          {type === 'all' ? '全部' : type === 'image' ? '仅图片' : '仅视频'}
-                        </button>
-                      ))}
-                    </div>
+                    <label className="text-neutral-500 font-extrabold block mb-1">来源类型</label>
+                    <select
+                      value={filterState.sourceType}
+                      onChange={(e) => onChangeFilterState({ ...filterState, sourceType: e.target.value as AssetSourceType | 'all' })}
+                      className="w-full p-2 bg-neutral-50 border border-neutral-200 rounded-xl font-bold text-neutral-800"
+                    >
+                      <option value="all">全部来源</option>
+                      <option value="operator">操盘手</option>
+                      <option value="clerk">店员</option>
+                      <option value="consumer">消费者/KOC</option>
+                      <option value="ai_optimized">AI优化生成</option>
+                      <option value="other">其他渠道</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-neutral-500 font-extrabold block mb-1">是否适合封面</label>
+                    <select
+                      value={filterState.suitableForCover}
+                      onChange={(e) => onChangeFilterState({ ...filterState, suitableForCover: e.target.value as 'all'|'true'|'false' })}
+                      className="w-full p-2 bg-neutral-50 border border-neutral-200 rounded-xl font-bold text-neutral-800"
+                    >
+                      <option value="all">不限</option>
+                      <option value="true">适合作为封面</option>
+                      <option value="false">仅适合正文</option>
+                    </select>
                   </div>
                 </div>
 
@@ -357,7 +312,6 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
         </div>
       </div>
 
-      {/* 当存在高级筛选时，下方呈现一行自然语言反馈并可点击清除 */}
       {hasActiveFilters && (
         <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-neutral-100/80 border border-neutral-200/80 text-[12.5px]">
           <span className="font-extrabold text-neutral-800">
