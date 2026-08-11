@@ -8,6 +8,8 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { AgentSelector, AVAILABLE_AGENTS } from './command-center/AgentSelector';
 import { SmartInput } from './SmartInput';
+import { ProjectFilePanel } from './ProjectFilePanel';
+import { File } from 'lucide-react';
 
 
 export interface ChatMessage {
@@ -31,6 +33,7 @@ interface WorkbenchProps {
   setWorkflowTab?: (tab: any) => void;
   messages?: ChatMessage[];
   setMessages?: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  activeProjectId?: string;
 }
 
 const QUICK_SHORTCUTS = [
@@ -43,7 +46,7 @@ const QUICK_SHORTCUTS = [
 const SUGGESTIONS = ['生成商品文案', '分析用户数据', '优化运营策略'];
 
 export const Workbench: React.FC<WorkbenchProps> = ({
-  setActiveNav, setDataSubNav, isNewMerchant, setOnboardingData, onboardingData, onboardingStep, setOnboardingStep, setWorkflowTab, messages = [], setMessages = () => {}
+  setActiveNav, setDataSubNav, isNewMerchant, setOnboardingData, onboardingData, onboardingStep, setOnboardingStep, setWorkflowTab, messages = [], setMessages = () => {}, activeProjectId
 }) => {
   const [query, setQuery] = useState('');
   const [selectedShortcut, setSelectedShortcut] = useState<any>(null);
@@ -59,6 +62,16 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   const [bottomExpanded, setBottomExpanded] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [filePanelOpen, setFilePanelOpen] = useState(true);
+  const [openedTabs, setOpenedTabs] = useState<any[]>([]);
+  const [activeTabId, setActiveTabId] = useState<string>('workbench');
+  const [references, setReferences] = useState<any[]>([]);
+  const [dragTargetNode, setDragTargetNode] = useState<any>(null);
+
+  const handleDragStartNode = (e: React.DragEvent, node: any) => {
+    setDragTargetNode(node);
+  };
+
 
 
   useEffect(() => {
@@ -92,11 +105,39 @@ export const Workbench: React.FC<WorkbenchProps> = ({
     setIsDragging(false);
   };
 
+  
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+
+    if (activeProjectId === 'project-b') {
+      if (dragTargetNode) {
+        setReferences(prev => {
+          if (prev.find(r => r.id === dragTargetNode.id)) return prev;
+          return [...prev, {
+            id: dragTargetNode.id,
+            name: dragTargetNode.name,
+            type: dragTargetNode.type,
+            status: 'ready',
+            pinned: false
+          }];
+        });
+        setDragTargetNode(null);
+      } else if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        setReferences(prev => [...prev, {
+          id: `ext_${Date.now()}`,
+          name: file.name,
+          type: 'file',
+          status: 'ready',
+          pinned: false,
+          isExternal: true
+        }]);
+      }
+    }
   };
+
 
 const handleExecute = (customQuery?: string) => {
     let finalQuery = customQuery || query;
@@ -211,17 +252,85 @@ const handleExecute = (customQuery?: string) => {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-white overflow-hidden text-neutral-900">
-      {/* Top Header */}
-      <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-6 bg-white shrink-0 z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center text-white">
-            <Cpu size={16} />
+      
+      
+      {/* Top Header with Tabs */}
+      <div className="h-[46px] border-b border-neutral-200 flex items-end px-2 bg-neutral-50/50 shrink-0 z-20 overflow-x-auto custom-scrollbar">
+        {activeProjectId === 'project-b' && (
+          <div className="flex items-center gap-1 mb-1.5 mr-2">
+            <button
+              onClick={() => setFilePanelOpen(!filePanelOpen)}
+              className={`w-7 h-7 flex items-center justify-center rounded transition-colors ${filePanelOpen ? 'bg-neutral-200/50 text-neutral-900' : 'text-neutral-500 hover:bg-neutral-200/50 hover:text-neutral-900'}`}
+              title="切换项目文件"
+            >
+              <PanelLeftOpen size={16} />
+            </button>
           </div>
-          <h2 className="text-[14px] font-semibold tracking-tight">工作台</h2>
+        )}
+        
+        {/* Tabs Container */}
+        <div className="flex items-end h-full gap-1">
+          {/* Workbench Tab */}
+          <div 
+            onClick={() => setActiveTabId('workbench')}
+            className={`group relative h-[36px] flex items-center gap-2 px-4 min-w-[120px] max-w-[200px] rounded-t-lg border-t border-x cursor-pointer transition-all ${activeTabId === 'workbench' ? 'bg-white border-neutral-200/80 text-neutral-900 z-10' : 'bg-transparent border-transparent text-neutral-500 hover:bg-neutral-200/30'}`}
+          >
+            {activeTabId === 'workbench' && <div className="absolute -bottom-[1px] left-0 right-0 h-[1px] bg-white z-20"></div>}
+            <MessageSquare size={14} className={activeTabId === 'workbench' ? 'text-primary-500' : ''} />
+            <span className="text-[13px] font-medium truncate">工作台</span>
+          </div>
+
+          {/* Opened Files Tabs */}
+          {openedTabs.map(tab => (
+            <div 
+              key={tab.id}
+              onClick={() => setActiveTabId(tab.id)}
+              className={`group relative h-[36px] flex items-center justify-between gap-3 px-3 pr-2 min-w-[120px] max-w-[200px] rounded-t-lg border-t border-x cursor-pointer transition-all ${activeTabId === tab.id ? 'bg-white border-neutral-200/80 text-neutral-900 z-10' : 'bg-transparent border-transparent text-neutral-500 hover:bg-neutral-200/30'}`}
+            >
+              {activeTabId === tab.id && <div className="absolute -bottom-[1px] left-0 right-0 h-[1px] bg-white z-20"></div>}
+              <div className="flex items-center gap-2 overflow-hidden">
+                <File size={14} />
+                <span className="text-[13px] font-medium truncate">{tab.name}</span>
+              </div>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newTabs = openedTabs.filter(t => t.id !== tab.id);
+                  setOpenedTabs(newTabs);
+                  if (activeTabId === tab.id) {
+                    setActiveTabId(newTabs.length > 0 ? newTabs[newTabs.length - 1].id : 'workbench');
+                  }
+                }}
+                className={`p-0.5 rounded transition-colors ${activeTabId === tab.id ? 'text-neutral-400 hover:bg-neutral-100 hover:text-neutral-900' : 'text-transparent group-hover:text-neutral-400 hover:bg-neutral-200/50 hover:!text-neutral-900'}`}
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
+
+
+      
       <div className="flex-1 flex overflow-hidden relative bg-neutral-50/30">
+        {activeProjectId === 'project-b' && (
+          <ProjectFilePanel 
+            isOpen={filePanelOpen} 
+            onClose={() => setFilePanelOpen(false)} 
+            onDragStartNode={handleDragStartNode} 
+            onNodeDoubleClick={(node) => {
+              if (node.type !== 'folder' && node.type !== 'system_group') {
+                if (!openedTabs.find(t => t.id === node.id)) {
+                  setOpenedTabs(prev => [...prev, node]);
+                }
+                setActiveTabId(node.id);
+              }
+            }}
+          />
+        )}
+        {activeTabId === 'workbench' ? (
+          <>
         {/* === Left Timeline (Conversation History) === */}
         {messages.length > 0 && (
           <div className="w-12 border-r border-neutral-100 bg-white/50 backdrop-blur-sm flex flex-col items-center py-10 gap-3 shrink-0 overflow-y-auto hide-scrollbar z-10">
@@ -257,7 +366,22 @@ const handleExecute = (customQuery?: string) => {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          {isDragging && (
+          
+          {isDragging && activeProjectId === 'project-b' ? (
+            <div className="absolute inset-0 z-50 bg-[#F03E3E]/[0.04] backdrop-blur-[1px] border-[1.5px] border-dashed border-[#F03E3E] rounded-xl m-4 flex flex-col items-center justify-center pointer-events-none">
+              <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-[#F03E3E] mb-4">
+                <Plus size={32} />
+              </div>
+              <h3 className="text-xl font-semibold text-[#F03E3E] tracking-tight">
+                松开以添加 @ 引用
+              </h3>
+              {dragTargetNode && (
+                <p className="text-[14px] font-medium text-[#F03E3E]/80 mt-2 bg-white/80 px-4 py-1.5 rounded-full shadow-sm">
+                  {dragTargetNode.type === 'folder' ? `文件夹：${dragTargetNode.name}` : `文件：${dragTargetNode.name}`}
+                </p>
+              )}
+            </div>
+          ) : isDragging && (
             <div className="absolute inset-0 z-50 bg-primary-500/10 backdrop-blur-[2px] border-2 border-dashed border-primary-500 rounded-xl m-4 flex flex-col items-center justify-center pointer-events-none">
               <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-primary-500 mb-4 animate-bounce">
                 <Paperclip size={32} />
@@ -271,6 +395,7 @@ const handleExecute = (customQuery?: string) => {
             </div>
           )}
 
+
           <div
             className={`flex-1 overflow-y-auto p-10 pb-6 space-y-10 custom-scrollbar ${isDragging ? "opacity-50" : ""}`}
           >
@@ -278,10 +403,6 @@ const handleExecute = (customQuery?: string) => {
             {(messages.length === 0 ||
               (messages.length === 1 && messages[0].role === "agent")) && (
               <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center max-w-2xl mx-auto px-4 mt-8">
-                <div className="w-16 h-16 bg-neutral-900 rounded-3xl flex items-center justify-center text-white shadow-2xl mb-8 relative">
-                  <Bot size={32} />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-neutral-900 rounded-full border-4 border border-white" />
-                </div>
                 <h2 className="text-[28px] font-semibold text-neutral-900 tracking-tight leading-snug mb-3">
                   {isNewMerchant
                     ? "欢迎入驻，开始构建您的专属品牌诊断"
@@ -291,6 +412,9 @@ const handleExecute = (customQuery?: string) => {
                   {isNewMerchant
                     ? "系统检测到您为新入驻账号，建议先由「策略专家」为您进行深度的品牌诊断与受众画像对焦，建立精准的内容基座。"
                     : "您可以直接下达任务指令，或唤起垂直方向的专业智能体为您处理数据、策略或内容。"}
+                  {activeProjectId === 'project-b' && (
+                    <span className="block mt-2 text-[#F03E3E]/80">直接输入任务，或拖入文件和文件夹作为上下文。</span>
+                  )}
                 </p>
 
                 {isNewMerchant && (
@@ -764,7 +888,33 @@ const handleExecute = (customQuery?: string) => {
                     </AnimatePresence>
                   </div>
 
+                  
                   <div className="flex-1 relative flex flex-col min-h-[48px] justify-center py-2">
+                    {activeProjectId === 'project-b' && references.length > 0 && (
+                      <div className="flex flex-wrap gap-2 px-3 pt-2 pb-1 bg-white max-h-[100px] overflow-y-auto">
+                        {references.slice(0, 3).map(ref => (
+                          <div key={ref.id} className="group relative flex items-center gap-1.5 bg-white border border-[#F03E3E]/30 text-[#F03E3E] pl-2 pr-1 py-1 rounded-md text-[12px] font-medium shadow-sm cursor-pointer hover:bg-[#F03E3E]/5 transition-colors">
+                            {ref.type === 'folder' ? <Folder size={12} /> : <File size={12} />}
+                            <span>@{ref.name}</span>
+                            <button 
+                              onClick={(ev) => {
+                                 ev.stopPropagation();
+                                 setReferences(prev => prev.filter(r => r.id !== ref.id));
+                              }}
+                              className="text-[#F03E3E]/60 hover:text-[#F03E3E] ml-1 p-0.5 hover:bg-[#F03E3E]/10 rounded"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ))}
+                        {references.length > 3 && (
+                          <div className="flex items-center justify-center bg-white border border-neutral-200 text-neutral-500 px-2 py-1 rounded-md text-[12px] font-medium shadow-sm cursor-pointer">
+                            +{references.length - 3}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {selectedShortcut && (
                       <div className="flex mb-1 ml-2">
                         <div className="flex items-center gap-1.5 bg-primary-50 text-primary-600 border border-primary-100 px-2.5 py-1 rounded-lg text-[13px] shadow-sm shrink-0 font-medium">
@@ -796,6 +946,7 @@ const handleExecute = (customQuery?: string) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
                           handleExecute();
+                          if (activeProjectId === 'project-b') { setReferences(prev => prev.filter(r => r.pinned)); }
                           setSelectedShortcut(null);
                           if (textareaRef.current) {
                             textareaRef.current.style.height = "auto";
@@ -814,7 +965,10 @@ const handleExecute = (customQuery?: string) => {
                   </div>
 
                   <button
-                    onClick={() => handleExecute()}
+                    onClick={() => {
+                      handleExecute();
+                      if (activeProjectId === 'project-b') { setReferences(prev => prev.filter(r => r.pinned)); }
+                    }}
                     className="w-12 h-12 bg-neutral-900 text-white rounded-[20px] flex items-center justify-center hover:bg-primary-500 transition-all active:scale-95 shadow-md shrink-0"
                   >
                     <Send size={18} />
@@ -1028,6 +1182,16 @@ const handleExecute = (customQuery?: string) => {
             </div>
           </div>
         ) : null}
+        </>
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center bg-white text-neutral-400">
+            <File size={48} className="mb-4 text-neutral-200" />
+            <p className="text-[14px]">
+              {openedTabs.find(t => t.id === activeTabId)?.name || '未找到文件'}
+            </p>
+            <p className="text-[12px] mt-2">（文件预览区域，可接入外部编辑器或表格组件）</p>
+          </div>
+        )}
       </div>
     </div>
   );
