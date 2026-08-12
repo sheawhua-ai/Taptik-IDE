@@ -42,6 +42,7 @@ export interface Note {
   resultStatus: ResultStatus;
   publishLink?: string;
   publishTime?: string;
+  body?: string;
   contentPackage?: {
     title: string;
     body: string;

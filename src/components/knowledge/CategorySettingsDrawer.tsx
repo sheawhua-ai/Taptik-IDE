@@ -38,9 +38,55 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
   const [categories, setCategories] = useState<KnowledgeCategoryConfig[]>(DEFAULT_CATEGORIES);
   const [activeCategoryId, setActiveCategoryId] = useState<string>(categories[0].id);
 
+  const [newIncludeTag, setNewIncludeTag] = useState('');
+  const [isAddingInclude, setIsAddingInclude] = useState(false);
+
+  const [newAffectTag, setNewAffectTag] = useState('');
+  const [isAddingAffect, setIsAddingAffect] = useState(false);
+
   if (!isOpen) return null;
 
   const activeCategory = categories.find(c => c.id === activeCategoryId);
+
+  const handleRemoveInclude = (tagToRemove: string) => {
+    setCategories(prev => prev.map(c => 
+      c.id === activeCategoryId 
+        ? { ...c, includes: c.includes.filter(t => t !== tagToRemove) }
+        : c
+    ));
+  };
+
+  const handleAddInclude = () => {
+    if (newIncludeTag.trim() && activeCategory && !activeCategory.includes.includes(newIncludeTag.trim())) {
+      setCategories(prev => prev.map(c => 
+        c.id === activeCategoryId 
+          ? { ...c, includes: [...c.includes, newIncludeTag.trim()] }
+          : c
+      ));
+    }
+    setNewIncludeTag('');
+    setIsAddingInclude(false);
+  };
+
+  const handleRemoveAffect = (tagToRemove: string) => {
+    setCategories(prev => prev.map(c => 
+      c.id === activeCategoryId 
+        ? { ...c, affects: c.affects.filter(t => t !== tagToRemove) }
+        : c
+    ));
+  };
+
+  const handleAddAffect = () => {
+    if (newAffectTag.trim() && activeCategory && !activeCategory.affects.includes(newAffectTag.trim())) {
+      setCategories(prev => prev.map(c => 
+        c.id === activeCategoryId 
+          ? { ...c, affects: [...c.affects, newAffectTag.trim()] }
+          : c
+      ));
+    }
+    setNewAffectTag('');
+    setIsAddingAffect(false);
+  };
 
   return (
     <>
@@ -95,8 +141,8 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                   <input 
                     type="text" 
                     value={activeCategory.name}
+                    onChange={(e) => setCategories(prev => prev.map(c => c.id === activeCategoryId ? { ...c, name: e.target.value } : c))}
                     className="w-full px-4 py-2 bg-white border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-neutral-200 outline-none"
-                    readOnly
                   />
                 </div>
 
@@ -107,18 +153,36 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                     </label>
                     <p className="text-xs text-neutral-500 mt-1">描述这个板块应收录哪些知识。</p>
                   </div>
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="flex flex-wrap gap-2 mb-3 items-center">
                     {activeCategory.includes.map((tag, idx) => (
                       <span key={idx} className="px-3 py-1.5 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-700 flex items-center group">
                         {tag}
-                        <button className="ml-2 text-neutral-400 hover:text-red-500">
+                        <button onClick={() => handleRemoveInclude(tag)} className="ml-2 text-neutral-400 hover:text-red-500">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </span>
                     ))}
-                    <button className="px-3 py-1.5 bg-neutral-100 border border-neutral-200 border-dashed rounded-lg text-sm text-neutral-600 hover:bg-neutral-200 transition-colors flex items-center">
-                      <Plus className="w-3.5 h-3.5 mr-1" /> 添加标签
-                    </button>
+                    {isAddingInclude ? (
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="text"
+                          value={newIncludeTag}
+                          onChange={(e) => setNewIncludeTag(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleAddInclude()}
+                          className="w-32 px-2 py-1 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                          placeholder="输入标签..."
+                          autoFocus
+                          onBlur={handleAddInclude}
+                        />
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={() => setIsAddingInclude(true)}
+                        className="px-3 py-1.5 bg-neutral-100 border border-neutral-200 border-dashed rounded-lg text-sm text-neutral-600 hover:bg-neutral-200 transition-colors flex items-center"
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1" /> 添加标签
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -129,23 +193,41 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                     </label>
                     <p className="text-xs text-neutral-500 mt-1">描述 AI 应在什么业务场景使用本板块。</p>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 items-center">
                     {activeCategory.affects.map((tag, idx) => (
                       <span key={idx} className="px-3 py-1.5 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-700 flex items-center group">
                         {tag}
-                        <button className="ml-2 text-neutral-400 hover:text-red-500">
+                        <button onClick={() => handleRemoveAffect(tag)} className="ml-2 text-neutral-400 hover:text-red-500">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </span>
                     ))}
-                    <button className="px-3 py-1.5 bg-neutral-100 border border-neutral-200 border-dashed rounded-lg text-sm text-neutral-600 hover:bg-neutral-200 transition-colors flex items-center">
-                      <Plus className="w-3.5 h-3.5 mr-1" /> 添加标签
-                    </button>
+                    {isAddingAffect ? (
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="text"
+                          value={newAffectTag}
+                          onChange={(e) => setNewAffectTag(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleAddAffect()}
+                          className="w-32 px-2 py-1 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                          placeholder="输入标签..."
+                          autoFocus
+                          onBlur={handleAddAffect}
+                        />
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={() => setIsAddingAffect(true)}
+                        className="px-3 py-1.5 bg-neutral-100 border border-neutral-200 border-dashed rounded-lg text-sm text-neutral-600 hover:bg-neutral-200 transition-colors flex items-center"
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1" /> 添加标签
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 <div className="pt-6 mt-6 border-t border-neutral-200 flex justify-end">
-                  <button className="px-6 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors shadow-sm">
+                  <button onClick={onClose} className="px-6 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors shadow-sm">
                     保存修改
                   </button>
                 </div>

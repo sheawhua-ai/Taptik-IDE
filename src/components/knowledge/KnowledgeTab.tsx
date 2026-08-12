@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search, Filter } from 'lucide-react';
 import { KnowledgeItem, BusinessCategory } from '../../types/knowledge';
 
@@ -15,14 +15,16 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
   const filters = ['全部', '待确认', '商家事实', '规则与禁区', '经验建议', '已失效'];
   const categories: BusinessCategory[] = ['品牌与产品', '账号与人设', '客户与痛点', '内容与图文', '禁区与流转', '话术与承接', '素材偏好', '打法复盘'];
 
-  const filteredList = knowledgeList.filter(item => {
-    if (filterType === '待确认' && item.state !== '待确认') return false;
-    if (filterType === '已失效' && item.state !== '已失效') return false;
-    if (['商家事实', '规则与禁区', '经验建议'].includes(filterType) && item.type !== filterType) return false;
-    if (selectedCategory && item.category !== selectedCategory) return false;
-    if (searchQuery && !item.summary.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
-  });
+  const filteredList = useMemo(() => {
+    return knowledgeList.filter(item => {
+      if (filterType === '待确认' && item.state !== '待确认') return false;
+      if (filterType === '已失效' && item.state !== '已失效') return false;
+      if (['商家事实', '规则与禁区', '经验建议'].includes(filterType) && item.type !== filterType) return false;
+      if (selectedCategory && item.category !== selectedCategory) return false;
+      if (searchQuery && !item.summary.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      return true;
+    });
+  }, [knowledgeList, filterType, selectedCategory, searchQuery]);
 
   return (
     <div className="space-y-4 max-w-7xl mx-auto pb-12">
@@ -89,7 +91,7 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
       )}
 
       {/* List */}
-      <div className="bg-white border border-neutral-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-neutral-100 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50/80 text-xs text-neutral-500 border-b border-neutral-100 uppercase tracking-wider">
             <tr>

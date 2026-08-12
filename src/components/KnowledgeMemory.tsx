@@ -92,7 +92,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
               
               {/* Upload Dropdown */}
               {isUploadDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white border border-neutral-200 rounded-xl shadow-lg py-1 z-50">
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-neutral-200 rounded-xl shadow-lg py-1 z-50 animate-in fade-in zoom-in-95 duration-200">
                   <button 
                     onClick={() => setIsUploadDropdownOpen(false)}
                     className="w-full text-left px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 flex items-center transition-colors"

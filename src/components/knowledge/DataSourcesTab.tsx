@@ -10,7 +10,7 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* List */}
-      <div className="bg-white border border-neutral-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-neutral-100 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-neutral-50/80 text-xs text-neutral-500 border-b border-neutral-100 uppercase tracking-wider">
             <tr>

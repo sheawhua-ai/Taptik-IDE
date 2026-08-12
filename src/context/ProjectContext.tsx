@@ -800,7 +800,42 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Backwards compat wrappers
-  const updateNoteStatus = (projectId: string, noteId: string, updates: Partial<OldNote>) => {};
+  const updateNoteStatus = (projectId: string, noteId: string, updates: Partial<OldNote>) => {
+    setState(prev => {
+      const updatedNoteSlots = prev.noteSlots.map(slot => {
+        if (slot.id === noteId) {
+          return {
+            ...slot,
+            title: updates.title !== undefined ? updates.title : slot.title,
+            accountType: updates.type !== undefined ? (updates.type as any) : slot.accountType,
+            participant: updates.participant !== undefined ? updates.participant : slot.participant,
+            contentStatus: updates.contentStatus !== undefined ? updates.contentStatus : slot.contentStatus,
+            materialStatus: updates.materialStatus !== undefined ? updates.materialStatus : slot.materialStatus,
+            publishStatus: updates.publishStatus !== undefined ? updates.publishStatus : slot.publishStatus,
+            resultStatus: updates.resultStatus !== undefined ? updates.resultStatus : slot.resultStatus,
+          };
+        }
+        return slot;
+      });
+
+      const updatedDrafts = prev.contentDrafts.map(draft => {
+        if (draft.noteSlotId === noteId) {
+          return {
+            ...draft,
+            body: updates.body !== undefined ? updates.body : (updates.contentPackage?.body !== undefined ? updates.contentPackage.body : draft.body),
+            direction: updates.contentDirection !== undefined ? updates.contentDirection : draft.direction,
+          };
+        }
+        return draft;
+      });
+
+      return {
+        ...prev,
+        noteSlots: updatedNoteSlots,
+        contentDrafts: updatedDrafts
+      };
+    });
+  };
   const clearNoteIssue = (projectId: string, noteId: string) => {
     const slot = state.noteSlots.find(s => s.id === noteId);
     if (!slot) return;

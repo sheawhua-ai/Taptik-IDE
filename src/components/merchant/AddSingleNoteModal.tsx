@@ -10,12 +10,13 @@ import { Project } from '../../data/projectStore';
 interface Props {
   project: Project;
   onClose: () => void;
+  initialTab?: "file" | "feishu" | "single";
 }
 
-export function AddSingleNoteModal({ project, onClose }: Props) {
+export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: Props) {
   const { createProjectNote, batchGenerateProjectNotes } = useProjectStore();
 
-  const [activeTab, setActiveTab] = useState<"file" | "feishu" | "single">("file");
+  const [activeTab, setActiveTab] = useState<"file" | "feishu" | "single">(initialTab);
 
   // Single Note Form state
   const [title, setTitle] = useState('');

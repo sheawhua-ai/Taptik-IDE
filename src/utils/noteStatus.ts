@@ -68,10 +68,33 @@ export function getNoteDisplayStatus(note: Note): DisplayStatus {
   return "内容准备";
 }
 
+export function getNoteMainStage(note: Note): "内容准备" | "素材准备" | "发布准备" | "已发布" | "观察中" | "观察完成" {
+  if (note.resultStatus === "已完成") return "观察完成";
+  if (note.resultStatus === "观察中") return "观察中";
+  if (note.publishStatus === "已发布" && note.publishLink && note.resultStatus === "未开始观察") return "观察中";
+  if (note.publishStatus === "已发布" && !note.publishLink) return "已发布";
+  
+  if (note.publishStatus === "待发布" || note.publishStatus === "待领取" || note.publishStatus === "发布异常") return "发布准备";
+  
+  // If content is confirmed but material is not ready
+  if (note.contentStatus === "已确认" && (note.materialStatus === "待收集" || note.materialStatus === "待验收" || note.materialTask?.status === "匹配中" || note.materialTask?.status === "进行中")) {
+    return "素材准备";
+  }
+  
+  // If content is confirmed and material is ready but publishStatus is 未安排
+  if (note.contentStatus === "已确认" && (note.materialStatus === "无需素材" || note.materialStatus === "已齐") && note.publishStatus === "未安排") {
+    return "发布准备";
+  }
+  
+  // Fallback to content preparing if content is not confirmed
+  return "内容准备";
+}
+
 export interface ProjectPipeline {
   totalNotes: number;
   contentPreparing: number;
   contentPendingReview: number;
+  contentReady: number;
   materialPreparing: number;
   materialReady: number;
   readyToPublish: number;
@@ -86,6 +109,7 @@ export function calculateProjectPipeline(notes: Note[]): ProjectPipeline {
     totalNotes: notes.length,
     contentPreparing: 0,
     contentPendingReview: 0,
+    contentReady: 0,
     materialPreparing: 0,
     materialReady: 0,
     readyToPublish: 0,
@@ -96,6 +120,10 @@ export function calculateProjectPipeline(notes: Note[]): ProjectPipeline {
   };
 
   notes.forEach(note => {
+    if (note.contentStatus === "已确认") {
+      pipeline.contentReady++;
+    }
+    
     const status = getNoteDisplayStatus(note);
     switch (status) {
       case "内容准备":
