@@ -179,11 +179,11 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
         <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between shrink-0 bg-white">
           <div>
             <h2 className="text-[17px] font-bold text-neutral-900 flex items-center gap-2">
-              <FileSpreadsheet size={20} className="text-emerald-600" />
-              导入笔记与飞书关联
+              <Plus size={20} className="text-primary-600" />
+              新建笔记
             </h2>
             <p className="text-[12px] text-neutral-500 mt-0.5">
-              支持批量导入 CSV/Excel 笔记文件、实时自动同步飞书多维表格，或手动录入。
+              支持批量解析 CSV/Excel 文件、关联飞书多维表格同步，或手动录入单篇笔记。
             </p>
           </div>
           <button 

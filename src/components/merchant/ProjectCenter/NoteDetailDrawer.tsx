@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Note } from "../../../data/projectStore";
 import { useProjectStore } from "../../../context/ProjectContext";
+import { KOCQuestionnaireModal } from "../KOCQuestionnaireModal";
 
 interface NoteDetailDrawerProps {
   note: Note | null;
@@ -27,6 +28,7 @@ export function NoteDetailDrawer({ note, projectId, onClose, onActionClick, onOp
   const [editBody, setEditBody] = useState(note?.contentPackage?.body || note?.body || "");
   const [editParticipant, setEditParticipant] = useState(note?.participant || "张店长");
   const [showToast, setShowToast] = useState<string | null>(null);
+  const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
 
   // Dispatch task state
   const [shootingTaskDispatched, setShootingTaskDispatched] = useState(false);
@@ -205,6 +207,37 @@ export function NoteDetailDrawer({ note, projectId, onClose, onActionClick, onOp
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {activeTab === "内容" && (
               <div className="space-y-6">
+                {note.isNotePackage && (
+                  <div className="bg-primary-50/70 border border-primary-200 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 bg-primary-600 text-white font-bold text-[11px] rounded-lg">📦 笔记包占位</span>
+                        <span className="text-[13px] font-bold text-primary-900">
+                          问卷状态：{note.packageSpec?.questionnaireStatus === "已填写" ? "已提交回传" : "待KOC/KOS填写问卷"}
+                        </span>
+                      </div>
+                      {note.packageSpec?.questionnaireStatus !== "已填写" && (
+                        <button
+                          onClick={() => setShowQuestionnaireModal(true)}
+                          className="px-3 py-1.5 bg-primary-600 text-white text-[12px] font-bold rounded-xl hover:bg-primary-700 flex items-center gap-1 shadow-xs"
+                        >
+                          <Sparkles size={14} /> 填写问卷即时生成笔记
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="text-[12px] text-primary-900 space-y-1 bg-white/60 p-3 rounded-xl border border-primary-100">
+                      <div className="font-bold flex items-center gap-1"><FileText size={13}/> 规定要怎么写：</div>
+                      <div className="text-[#344054]">{note.packageSpec?.guidelines || "按照写作框架提供真实体验与避坑建议。"}</div>
+                    </div>
+
+                    <div className="text-[12px] text-primary-900 space-y-1 bg-white/60 p-3 rounded-xl border border-primary-100">
+                      <div className="font-bold flex items-center gap-1"><Camera size={13}/> 素材按任务拍摄：</div>
+                      <div className="text-[#344054]">{note.packageSpec?.materialTaskReqs || "按下发拍摄任务拍摄1条视频及2张图片。"}</div>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <div className="text-[13px] text-[#667085] mb-1 font-medium">内容方向</div>
                   {isEditing ? (
@@ -425,16 +458,8 @@ export function NoteDetailDrawer({ note, projectId, onClose, onActionClick, onOp
             {activeTab === "观察" && (
               <div className="space-y-6">
                 <div className="bg-[#F7F8FA] rounded-xl p-4 border border-[#EAECF0]">
-                  <div className="text-[14px] font-bold text-[#111827] mb-3 flex items-center justify-between">
-                    <span>当前状态：{note.publishStatus === '已发布' ? "观察中" : "待发布观察"}</span>
-                    {onOpenInExecutionCenter && (
-                      <button 
-                        onClick={() => onOpenInExecutionCenter(note)}
-                        className="text-[12px] text-primary-600 hover:text-primary-700 font-bold flex items-center gap-1"
-                      >
-                        跳转执行中心查看 <ArrowRight size={12}/>
-                      </button>
-                    )}
+                  <div className="text-[14px] font-bold text-[#111827] mb-3">
+                    当前状态：{note.publishStatus === '已发布' ? "观察中" : "待发布观察"}
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -493,6 +518,13 @@ export function NoteDetailDrawer({ note, projectId, onClose, onActionClick, onOp
           </div>
         </motion.div>
       </div>
+
+      {showQuestionnaireModal && (
+        <KOCQuestionnaireModal
+          note={note}
+          onClose={() => setShowQuestionnaireModal(false)}
+        />
+      )}
     </AnimatePresence>
   );
 }

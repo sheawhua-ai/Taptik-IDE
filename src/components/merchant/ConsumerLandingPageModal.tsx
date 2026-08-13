@@ -170,7 +170,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
             {/* App Header Bar */}
             <div className="bg-white border-b border-neutral-100 px-4 py-2.5 flex items-center justify-between shrink-0 shadow-2xs z-10">
               <span className="text-[13px] font-bold text-neutral-900 truncate max-w-[220px]">
-                {settings.posterTitle || project.name}
+                {project.name}
               </span>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-600 border border-rose-200">
                 品牌官方招募

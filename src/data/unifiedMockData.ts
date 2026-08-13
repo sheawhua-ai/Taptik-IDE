@@ -60,7 +60,37 @@ export const mockNoteSlots: NoteSlot[] = [
   { id: "ns1", projectId: "p1", roundId: "r1", accountType: "店长号/KOS", accountName: "店长号_陆家嘴店", contentDirection: "科学换粮科普", plannedDate: "2024-03-05" },
   { id: "ns2", projectId: "p1", roundId: "r1", accountType: "KOC", accountName: "小红薯_汪汪队", contentDirection: "真实测评分享", plannedDate: "2024-03-06" },
   { id: "ns3", projectId: "p1", roundId: "r1", accountType: "品牌主号", accountName: "品牌官方旗舰店", contentDirection: "品牌权威科普", plannedDate: "2024-03-04" },
-  { id: "ns4", projectId: "p1", roundId: "r1", accountType: "KOC", accountName: "小红薯_咪咪猫", contentDirection: "避坑干货", plannedDate: "2024-03-05" }
+  { id: "ns4", projectId: "p1", roundId: "r1", accountType: "KOC", accountName: "小红薯_咪咪猫", contentDirection: "避坑干货", plannedDate: "2024-03-05" },
+  {
+    id: "ns5",
+    projectId: "p1",
+    roundId: "r1",
+    accountType: "KOC",
+    accountName: "待匹配 KOC (笔记包占位)",
+    contentDirection: "规定的写作框架：幼犬换粮体验、软便缓解心得",
+    plannedDate: "2024-03-12",
+    isNotePackage: true,
+    packageSpec: {
+      guidelines: "【笔记包约束】规定要怎么写：1. 必须说明狗狗品种与月龄；2. 记录从软便到便便成型的7天换粮过程；3. 给出3条换粮避坑建议与真实体验分。",
+      materialTaskReqs: "【按任务拍摄】1. 幼犬进食干饭短视频(>10s) 1条；2. 试用粮与狗狗合影 2张。",
+      questionnaireStatus: "待填写"
+    }
+  },
+  {
+    id: "ns6",
+    projectId: "p1",
+    roundId: "r1",
+    accountType: "店长号/KOS",
+    accountName: "待匹配 门店KOS (笔记包占位)",
+    contentDirection: "规定的写作框架：门店接诊常见换粮误区解答",
+    plannedDate: "2024-03-15",
+    isNotePackage: true,
+    packageSpec: {
+      guidelines: "【笔记包约束】规定要怎么写：1. 店长视角解答3个新手幼犬换粮禁忌；2. 推荐门店试用装与专利益生菌；3. 结合门店实景照片。",
+      materialTaskReqs: "【按任务拍摄】1. 门店货架摆放实拍图 1张；2. 店长工服出镜讲解短视频 1条。",
+      questionnaireStatus: "待填写"
+    }
+  }
 ];
 
 export const mockContentDrafts: ContentDraft[] = [

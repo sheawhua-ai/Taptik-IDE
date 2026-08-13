@@ -95,11 +95,11 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
   };
 
   const getIcon = (node: FileNode) => {
-    if (node.type === 'folder') return <Folder size={14} className="text-[#8492a6]" />;
-    if (node.type === 'system_group') return <Monitor size={14} className="text-[#a0abbd]" />;
-    if (node.name.endsWith('.pdf')) return <FileText size={14} className="text-[#8492a6]" />;
-    if (node.name.endsWith('.png') || node.name.endsWith('.jpg')) return <ImageIcon size={14} className="text-[#8492a6]" />;
-    return <File size={14} className="text-[#8492a6]" />;
+    if (node.type === 'folder') return <Folder size={14} className="text-[#98A2B3]" />;
+    if (node.type === 'system_group') return <Monitor size={14} className="text-[#98A2B3]" />;
+    if (node.name.endsWith('.pdf')) return <FileText size={14} className="text-[#98A2B3]" />;
+    if (node.name.endsWith('.png') || node.name.endsWith('.jpg')) return <ImageIcon size={14} className="text-[#98A2B3]" />;
+    return <File size={14} className="text-[#98A2B3]" />;
   };
 
   const renderTree = (nodes: FileNode[], depth = 0) => {
@@ -126,18 +126,29 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
               }
             }}
             className={`flex items-center gap-2 py-1.5 px-2 cursor-pointer rounded-lg transition-colors
-              ${isSelected ? 'bg-[#F2F5F9]' : 'hover:bg-neutral-100/60'}
+              ${isSelected ? 'bg-neutral-100 text-[#111827]' : 'text-[#667085] hover:bg-neutral-50'}
               ${isSystem ? 'opacity-70' : ''}
+              relative group
             `}
             style={{ paddingLeft: `${depth * 12 + 8}px` }}
+            title={node.name}
           >
+            {isSelected && <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#DF4965] rounded-r-full" />}
+            
             <div className="w-4 h-4 flex items-center justify-center shrink-0" onClick={(e) => isFolder && toggleFolder(node.id, e)}>
               {isFolder ? (
-                isExpanded ? <ChevronDown size={14} className="text-neutral-400" /> : <ChevronRight size={14} className="text-neutral-400" />
+                isExpanded ? <ChevronDown size={14} className="text-[#98A2B3]" /> : <ChevronRight size={14} className="text-[#98A2B3]" />
               ) : null}
             </div>
-            {getIcon(node)}
-            <span className="text-[13px] text-neutral-700 truncate select-none">{node.name}</span>
+            <div className="relative">
+              {getIcon(node)}
+              {/* Optional: Mocking new/updated file dot indicator for demo purposes */}
+              {node.name.includes('企划') && <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#DF4965] rounded-full border border-white" />}
+            </div>
+            <span className="text-[13px] truncate select-none flex-1 group-hover:text-[#111827] transition-colors">{node.name}</span>
+            <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
+              <MoreVertical size={14} className="text-[#98A2B3] hover:text-[#111827] transition-colors" />
+            </div>
           </div>
           {isFolder && isExpanded && node.children && (
             <div className="flex flex-col mt-0.5 space-y-0.5">
@@ -155,12 +166,12 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
     <>
       {isFloating && <div className="absolute inset-0 z-40 bg-black/10 backdrop-blur-[1px]" onClick={onClose} />}
       <div 
-        className={`bg-[#FAFBFD] flex flex-col shrink-0 border-r border-[#E8ECF2] z-50 ${isFloating ? 'absolute h-full left-0 shadow-2xl' : 'relative h-full'}`}
+        className={`bg-white flex flex-col shrink-0 border-r border-[#E5EAF1] z-50 ${isFloating ? 'absolute h-full left-0 shadow-2xl' : 'relative h-full'}`}
         style={{ width: `${width}px` }}
       >
         {/* Header */}
-        <div className="h-14 flex items-center justify-between px-4 border-b border-[#E8ECF2] shrink-0">
-          <h2 className="text-[14px] font-semibold text-neutral-800">项目文件</h2>
+        <div className="h-14 flex items-center justify-between px-4 border-b border-[#E5EAF1] shrink-0">
+          <h2 className="text-[14px] font-semibold text-[#111827]">项目文件</h2>
           <div className="flex items-center gap-1">
             <button className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-neutral-200/60 text-neutral-600 transition-colors">
               <Plus size={15} />

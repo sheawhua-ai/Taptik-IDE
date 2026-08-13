@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Zap, Users, Target, MoreHorizontal, ArrowLeftRight } from "lucide-react";
+import { Zap, Users, Target, ArrowLeftRight } from "lucide-react";
 import { MerchantProfileDrawer } from "./merchant/MerchantProfileDrawer";
 
 interface MerchantMemoryHeaderProps {
@@ -56,12 +56,6 @@ export function MerchantMemoryHeader({
               </span>
             )}
           </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 rounded-lg transition-colors">
-            <MoreHorizontal size={16} />
-          </button>
         </div>
       </div>
       <MerchantProfileDrawer

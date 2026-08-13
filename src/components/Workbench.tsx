@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, Send, Image as ImageIcon, Workflow, FileText, CheckCircle2, ChevronRight, Hash, 
   Target, Sparkles, X, ChevronDown, ListFilter, Play, ArrowRight, Activity, Zap, MessageSquare, Plus, Lock, 
-  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, ArrowUpRight, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, LineChart, Lightbulb, Cpu, PanelLeftOpen, PanelRightClose, Folder, Search, Network
+  Copy, Settings, Palette, HelpCircle, ArrowUpCircle, ArrowUpRight, LogOut, Bell, Link2, Gift, UserCircle, Database, ShieldCheck, Users, ShieldAlert, Paperclip, ArrowDownRight, PieChart, LineChart, Lightbulb, Cpu, PanelLeftOpen, PanelRightClose, Folder, Search, Network, Loader2, Check, FileCode
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AgentSelector, AVAILABLE_AGENTS } from './command-center/AgentSelector';
@@ -18,6 +18,7 @@ export interface ChatMessage {
   content: string;
   time: string;
   isThinking?: boolean;
+  isCancelled?: boolean;
   thoughts?: { id: string; type: string; content: string }[];
   card?: any;
 }
@@ -46,8 +47,13 @@ const QUICK_SHORTCUTS = [
 const SUGGESTIONS = ['生成商品文案', '分析用户数据', '优化运营策略'];
 
 export const Workbench: React.FC<WorkbenchProps> = ({
-  setActiveNav, setDataSubNav, isNewMerchant, setOnboardingData, onboardingData, onboardingStep, setOnboardingStep, setWorkflowTab, messages = [], setMessages = () => {}, activeProjectId
+  setActiveNav, setDataSubNav, isNewMerchant, setOnboardingData, onboardingData, onboardingStep, setOnboardingStep, setWorkflowTab, messages: propMessages, setMessages: propSetMessages, activeProjectId
 }) => {
+  const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
+  
+  const messages = propMessages || localMessages;
+  const setMessages = propSetMessages || setLocalMessages;
+
   const [query, setQuery] = useState('');
   const [selectedShortcut, setSelectedShortcut] = useState<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -139,7 +145,78 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   };
 
 
-const handleExecute = (customQuery?: string) => {
+  const handleAddContext = (sug: any) => {
+    setQuery(sug.action || sug.title);
+    if (textareaRef.current) textareaRef.current.focus();
+  };
+
+  const handleToggleProgress = (id: string) => {
+    setMessages((prev: any) => prev.map((m: any) => {
+      if (m.id === id && m.card && m.card.type === 'progress') {
+        return { ...m, card: { ...m.card, isExpanded: !m.card.isExpanded } };
+      }
+      return m;
+    }));
+  };
+
+  const handleConfirmExecute = (id: string, cmd: string) => {
+    setMessages((prev: any) => prev.map((m: any) => {
+      if (m.id === id) {
+        return {
+          ...m,
+          card: {
+            type: 'progress',
+            currentStep: '正在解析任务参数',
+            completedCount: 0,
+            totalCount: 3,
+            isExpanded: false,
+            steps: [
+              { title: '解析任务参数', status: 'active' },
+              { title: '提取历史爆款数据', status: 'pending' },
+              { title: '生成并写入项目文件', status: 'pending' }
+            ]
+          }
+        };
+      }
+      return m;
+    }));
+
+    setTimeout(() => {
+      setMessages((prev: any) => prev.map((m: any) => {
+        if (m.id === id) {
+          return {
+            ...m,
+            card: {
+              type: 'result',
+              title: '内容任务创建成功',
+              artifacts: [
+                { id: '1', name: '宠粮新客运营小红书笔记_v1.md', path: '项目/宠粮新客运营', size: '2 KB', isNew: true },
+                { id: '2', name: '项目排期.xlsx', path: '项目/宠粮新客运营', size: '15 KB', isUpdated: true }
+              ],
+              suggestions: [
+                { id: '1', title: '分析竞品数据', desc: '根据最新爆款生成竞品对比', action: '帮我分析同类竞品爆款' },
+                { id: '2', title: '调整排期时间', desc: '将首发时间推迟到下周五', action: '把排期时间延后一周' }
+              ]
+            }
+          };
+        }
+        return m;
+      }));
+    }, 2000);
+  };
+
+  const handleOpenFile = (artifact: any) => {
+    // 预留文件预览右侧抽屉回调
+    console.log("Open file preview drawer for:", artifact);
+    if (activeProjectId === 'project-b') {
+        if (!openedTabs.find(t => t.id === artifact.id)) {
+            setOpenedTabs((prev: any) => [...prev, { id: artifact.id, name: artifact.name, type: 'file' }]);
+        }
+        setActiveTabId(artifact.id);
+    }
+  };
+
+  const handleExecute = (customQuery?: string) => {
     let finalQuery = customQuery || query;
     
     if (selectedShortcut && !customQuery) {
@@ -331,25 +408,29 @@ const handleExecute = (customQuery?: string) => {
         )}
         {activeTabId === 'workbench' ? (
           <>
-        {/* === Left Timeline (Conversation History) === */}
+        {/* === Floating Timeline (Conversation History) === */}
         {messages.length > 0 && (
-          <div className="w-12 border-r border-neutral-100 bg-white/50 backdrop-blur-sm flex flex-col items-center py-10 gap-3 shrink-0 overflow-y-auto hide-scrollbar z-10">
+          <div className="absolute left-0 top-0 bottom-0 w-8 z-50 flex flex-col py-10 group/timeline">
+            {/* The vertical line */}
+            <div className="absolute left-3 top-10 bottom-10 w-[2px] bg-neutral-200 group-hover/timeline:bg-neutral-300 transition-colors rounded-full" />
+            
             {messages.map((msg, idx) => {
-              if (msg.role === 'agent') return null; // Only show user queries as rounds
+              if (msg.role === 'agent') return null;
               return (
                 <div 
                   key={msg.id} 
-                  className="relative group cursor-pointer py-1.5 flex items-center justify-center w-full"
+                  className="relative py-1.5 flex items-center w-full cursor-pointer group/item z-10 pl-2"
                   onClick={() => {
                     const el = document.getElementById(`msg-${msg.id}`);
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }}
                 >
-                  <div className="w-4 h-1 bg-neutral-300 rounded-full group-hover:bg-primary-500 group-hover:w-6 transition-all duration-300" />
+                  <div className="w-2.5 h-[2px] bg-neutral-400 group-hover/item:w-4 group-hover/item:bg-[#DF4965] group-hover/item:-translate-x-1 transition-all rounded-full relative z-10" />
                   
                   {/* Tooltip */}
-                  <div className="absolute left-6 top-1/2 -tranneutral-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-neutral-200 shadow-xl rounded-lg p-3 w-48 z-50 pointer-events-none origin-left scale-95 group-hover:scale-100 duration-200">
-                    <p className="text-[12px] text-neutral-600 line-clamp-2 leading-relaxed">
+                  <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-all bg-white border border-[#E5EAF1] shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-xl p-3 w-64 z-[100] pointer-events-none origin-left scale-95 group-hover/item:scale-100 duration-200">
+                    <div className="absolute top-1/2 -translate-y-1/2 -left-1.5 w-3 h-3 bg-white border-l border-b border-[#E5EAF1] rotate-45" />
+                    <p className="text-[12px] text-[#111827] line-clamp-3 leading-relaxed relative z-10">
                       {msg.content || "快捷指令"}
                     </p>
                   </div>
@@ -361,7 +442,7 @@ const handleExecute = (customQuery?: string) => {
 
         {/* === Middle Panel (Console Display) === */}
         <div
-          className="flex-1 flex flex-col relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] min-w-[480px]"
+          className="flex-1 flex flex-col relative min-w-[480px]"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -403,17 +484,17 @@ const handleExecute = (customQuery?: string) => {
             {(messages.length === 0 ||
               (messages.length === 1 && messages[0].role === "agent")) && (
               <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center max-w-2xl mx-auto px-4 mt-8">
-                <h2 className="text-[28px] font-semibold text-neutral-900 tracking-tight leading-snug mb-3">
+                <h2 className="text-[28px] font-semibold text-[#111827] tracking-tight leading-snug mb-3">
                   {isNewMerchant
                     ? "欢迎入驻，开始构建您的专属品牌诊断"
                     : "今天需要我帮您做些什么？"}
                 </h2>
-                <p className="text-[14px] text-neutral-500 leading-relaxed mb-10 max-w-lg">
+                <p className="text-[14px] text-[#667085] leading-relaxed mb-10 max-w-lg">
                   {isNewMerchant
                     ? "系统检测到您为新入驻账号，建议先由「策略专家」为您进行深度的品牌诊断与受众画像对焦，建立精准的内容基座。"
                     : "您可以直接下达任务指令，或唤起垂直方向的专业智能体为您处理数据、策略或内容。"}
                   {activeProjectId === 'project-b' && (
-                    <span className="block mt-2 text-[#F03E3E]/80">直接输入任务，或拖入文件和文件夹作为上下文。</span>
+                    <span className="block mt-2 text-[#DF4965]/80">直接输入任务，或拖入文件和文件夹作为上下文。</span>
                   )}
                 </p>
 
@@ -425,7 +506,7 @@ const handleExecute = (customQuery?: string) => {
                         "你好，我是新入驻的商家，请帮我对焦品牌受众和产品卖点，建立出圈模型。",
                       );
                     }}
-                    className="px-8 py-3.5 bg-neutral-900 text-white rounded-2xl text-[14px] hover:bg-primary-500 hover:shadow-xl hover:shadow-primary-500/20 transition-all flex items-center gap-2 active:scale-95"
+                    className="px-8 py-3.5 bg-[#DF4965] text-white rounded-2xl text-[14px] hover:bg-[#CC1E4A] transition-all flex items-center gap-2 active:scale-95"
                   >
                     <Target size={18} /> 开启品牌深度诊断
                   </button>
@@ -434,29 +515,20 @@ const handleExecute = (customQuery?: string) => {
             )}
 
             <div
-              className={`max-w-3xl mx-auto space-y-6 pt-6 ${!isNewMerchant ? "border-t border-neutral-200/50" : ""}`}
+              className={`max-w-[880px] mx-auto space-y-8 pt-6 ${!isNewMerchant ? "border-t border-[#E5EAF1]" : ""}`}
             >
               <AnimatePresence mode="popLayout">
                 {messages.map((msg, i) => (
                   <motion.div
                     id={`msg-${msg.id}`}
-                    initial={{ opacity: 0, scale: 0.96, y: 10 }}
+                    initial={{ opacity: 0, scale: 0.98, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     layout
                     key={msg.id}
-                    className={`flex gap-4 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+                    className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-xl ${msg.role === "agent" ? "bg-neutral-900 text-white" : "bg-primary-500 text-white"}`}
-                    >
-                      {msg.role === "agent" ? (
-                        <Bot size={20} />
-                      ) : (
-                        <User size={20} />
-                      )}
-                    </div>
-                    <div
-                      className={`max-w-[80%] space-y-1 ${msg.role === "user" ? "text-right" : ""}`}
+                      className={`max-w-[85%] space-y-2 mt-1 ${msg.role === "user" ? "flex flex-col items-end" : ""}`}
                     >
                       {msg.thoughts && msg.thoughts.length > 0 && (
                         <ThoughtsBlock
@@ -466,123 +538,67 @@ const handleExecute = (customQuery?: string) => {
                       )}
                       {msg.content && (
                         <div
-                          className={`text-left px-6 py-4 rounded-3xl text-[14px] leading-relaxed shadow-sm ${msg.role === "agent" ? "bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-neutral-100 text-neutral-800 rounded-tl-lg" : "bg-primary-500 text-white shadow-primary-500/20 rounded-tr-lg"}`}
+                          className={`text-left text-[14px] leading-relaxed inline-block ${msg.isCancelled ? "text-[#98A2B3]" : msg.role === "agent" ? "text-[#111827]" : "bg-[#DF4965] text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-sm"}`}
                         >
-                          {msg.content}
+                          <div className={`prose prose-sm max-w-none ${msg.isCancelled ? "line-through opacity-70 prose-neutral" : msg.role === "agent" ? "prose-neutral" : "text-white prose-p:text-white prose-strong:text-white prose-a:text-white prose-headings:text-white"}`}>
+                            {msg.content}
+                          </div>
                         </div>
                       )}
                       {msg.card && msg.card.type === "confirmation" && (
-                        <div className="mt-3 bg-white border border-neutral-200/60 rounded-2xl p-5 shadow-sm text-left relative overflow-hidden text-neutral-900 w-full min-w-[400px]">
-                          <div className="absolute top-0 left-0 w-1 h-full bg-primary-500" />
+                        <div className="mt-3 bg-white border border-[#E5EAF1] rounded-2xl p-5 shadow-sm text-left relative overflow-hidden text-[#111827] w-full max-w-[880px]">
                           <div className="mb-4">
-                            <h4 className="text-[13px] font-medium text-neutral-500 mb-1">
-                              我理解你的目标是：
+                            <h4 className="text-[14px] font-semibold text-[#111827] mb-1">
+                              需要您确认
                             </h4>
-                            <p className="text-[14px] font-medium text-neutral-900">
+                            <p className="text-[13px] text-[#667085] leading-relaxed">
                               {msg.card.goal}
                             </p>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                              <h4 className="text-[12px] font-medium text-neutral-500 mb-1">
-                                我将调用：
-                              </h4>
-                              <ul className="text-[13px] text-neutral-700 space-y-1">
-                                {msg.card.tools?.map((t, idx) => (
-                                  <li
-                                    key={idx}
-                                    className="flex items-center gap-1.5"
-                                  >
-                                    <div className="w-1 h-1 rounded-full bg-neutral-300" />
-                                    {t}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div>
-                              <h4 className="text-[12px] font-medium text-neutral-500 mb-1">
-                                结果将落到：
-                              </h4>
-                              <ul className="text-[13px] text-neutral-700 space-y-1">
-                                {msg.card.destinations?.map((d, idx) => (
-                                  <li
-                                    key={idx}
-                                    className="flex items-center gap-1.5"
-                                  >
-                                    <div className="w-1 h-1 rounded-full bg-neutral-300" />
-                                    {d}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                          <div className="mb-5 bg-[#F6F8FB] p-3 rounded-xl border border-[#E5EAF1]">
+                            <h4 className="text-[12px] font-medium text-[#667085] mb-1">执行影响</h4>
+                            <p className="text-[13px] text-[#111827]">{msg.card.recommendedDestination}</p>
                           </div>
 
-                          <div className="mb-5">
-                            <h4 className="text-[12px] font-medium text-neutral-500 mb-1">
-                              不会执行：
-                            </h4>
-                            <ul className="text-[13px] text-neutral-700 space-y-1">
-                              {msg.card.wontDo?.map((w, idx) => (
-                                <li
-                                  key={idx}
-                                  className="flex items-center gap-1.5"
-                                >
-                                  <div className="w-1 h-1 rounded-full bg-neutral-300" />
-                                  {w}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <div className="bg-primary-50 rounded-xl p-3 mb-5 border border-primary-100 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Folder size={16} className="text-primary-500" />
-                              <span className="text-[13px] font-medium text-primary-800">
-                                落点推荐
-                              </span>
-                            </div>
-                            <div className="text-[13px] text-primary-600 bg-white px-2 py-1 rounded-md border border-primary-100">
-                              {msg.card.recommendedDestination}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-3 pt-4 border-t border-neutral-100">
+                          <div className="flex items-center gap-3">
                             <button
                               onClick={() =>
                                 handleConfirmExecute(msg.id, msg.card!.cmd)
                               }
-                              className="px-6 py-2 bg-neutral-900 text-white hover:bg-primary-600 rounded-xl text-[13px] font-medium transition-colors flex-1"
+                              className="px-6 py-2 bg-[#DF4965] text-white hover:bg-[#CC1E4A] rounded-xl text-[13px] font-medium transition-colors cursor-pointer"
                             >
                               确认执行
                             </button>
-                            <button className="px-6 py-2 bg-neutral-50 text-neutral-700 hover:bg-neutral-100 rounded-xl text-[13px] font-medium transition-colors border border-neutral-200 flex-1">
-                              调整一下
+                            <button className="px-6 py-2 bg-white text-[#111827] hover:bg-[#F6F8FB] rounded-xl text-[13px] font-medium transition-colors border border-[#E5EAF1] cursor-pointer">
+                              取消
                             </button>
                           </div>
                         </div>
                       )}
 
                       {msg.card && msg.card.type === "progress" && (
-                        <div className="mt-3 bg-white border border-neutral-200/60 rounded-2xl shadow-sm text-left relative overflow-hidden text-neutral-900 w-full min-w-[400px]">
-                          <div className="absolute top-0 left-0 w-1 h-full bg-primary-500" />
+                        <div className="mt-3 bg-white border border-[#E5EAF1] rounded-2xl shadow-sm text-left relative overflow-hidden text-[#111827] w-full max-w-[880px]">
                           <div
-                            className="p-4 flex items-center justify-between cursor-pointer hover:bg-neutral-50"
+                            className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-[#F6F8FB]"
                             onClick={() => handleToggleProgress(msg.id)}
                           >
                             <div className="flex items-center gap-3">
                               <Loader2
                                 size={16}
-                                className="animate-spin text-primary-500"
+                                className="animate-spin text-[#98A2B3]"
                               />
-                              <span className="text-[14px] font-medium">
-                                AI 正在执行: {msg.card.currentStep}
+                              <span className="text-[13px] font-medium text-[#667085]">
+                                正在处理 · {msg.card.currentStep || '执行中'} · {msg.card.completedCount || 0}/{msg.card.totalCount || (msg.card.steps?.length || 1)}
                               </span>
                             </div>
-                            <ChevronDown
-                              size={16}
-                              className={`text-neutral-400 transition-transform ${msg.card.isExpanded ? "rotate-180" : ""}`}
-                            />
+                            <div className="flex items-center gap-1 text-[#98A2B3] hover:text-[#667085]">
+                              <span className="text-[12px]">展开详情</span>
+                              <ChevronDown
+                                size={14}
+                                className={`transition-transform ${msg.card.isExpanded ? "rotate-180" : ""}`}
+                              />
+                            </div>
                           </div>
 
                           <AnimatePresence>
@@ -593,7 +609,7 @@ const handleExecute = (customQuery?: string) => {
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                               >
-                                <div className="p-4 pt-0 border-t border-neutral-100">
+                                <div className="p-4 pt-0 border-t border-[#E5EAF1]">
                                   <div className="space-y-3 mt-4">
                                     {msg.card.steps?.map((step, idx) => (
                                       <div
@@ -601,7 +617,7 @@ const handleExecute = (customQuery?: string) => {
                                         className="flex items-center gap-3"
                                       >
                                         <div
-                                          className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${step.status === "completed" ? "bg-primary-100 text-primary-600" : step.status === "active" ? "bg-primary-500 text-white" : "bg-neutral-100 text-neutral-400"}`}
+                                          className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${step.status === "completed" ? "bg-[#2FA879]/10 text-[#2FA879]" : step.status === "active" ? "bg-[#DF4965] text-white" : "bg-[#F6F8FB] text-[#98A2B3]"}`}
                                         >
                                           {step.status === "completed" ? (
                                             <Check size={12} />
@@ -611,11 +627,11 @@ const handleExecute = (customQuery?: string) => {
                                               className="animate-spin"
                                             />
                                           ) : (
-                                            <div className="w-1.5 h-1.5 rounded-full bg-neutral-300" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-[#98A2B3]" />
                                           )}
                                         </div>
                                         <span
-                                          className={`text-[13px] ${step.status === "completed" ? "text-neutral-800" : step.status === "active" ? "text-primary-600 font-medium" : "text-neutral-400"}`}
+                                          className={`text-[13px] ${step.status === "completed" ? "text-[#111827]" : step.status === "active" ? "text-[#DF4965] font-medium" : "text-[#98A2B3]"}`}
                                         >
                                           {step.title}
                                         </span>
@@ -630,43 +646,63 @@ const handleExecute = (customQuery?: string) => {
                       )}
 
                       {msg.card && msg.card.type === "result" && (
-                        <div className="mt-3 bg-white border border-neutral-200/60 rounded-2xl p-5 shadow-sm text-left relative overflow-hidden text-neutral-900 w-full min-w-[400px]">
-                          <div className="absolute top-0 left-0 w-1 h-full bg-neutral-900" />
-                          <h3 className="text-[16px] font-semibold mb-4 text-neutral-900 flex items-center gap-2">
-                            <CheckCircle2 size={18} />
-                            {msg.card.title}
-                          </h3>
-
-                          <div className="space-y-3 mb-5">
-                            {msg.card.items?.map((item, idx) => (
-                              <div
-                                key={idx}
-                                className="bg-neutral-50 rounded-xl p-3 border border-neutral-100"
-                              >
-                                <h4 className="text-[13px] font-semibold text-neutral-900 mb-1">
-                                  {idx + 1}. {item.title}
+                        <div className="mt-4 space-y-4 max-w-[880px]">
+                          {/* Artifacts Block */}
+                          {msg.card.artifacts && msg.card.artifacts.length > 0 && (
+                            <div className="bg-white border border-[#E5EAF1] rounded-2xl overflow-hidden shadow-sm">
+                              <div className="px-4 py-3 border-b border-[#E5EAF1] bg-[#F6F8FB]/50 flex items-center justify-between">
+                                <h4 className="text-[13px] font-semibold text-[#111827] flex items-center gap-2">
+                                  <FileCode size={16} className="text-[#98A2B3]"/>
+                                  本轮产物 <span className="text-[#667085] font-normal">({msg.card.artifacts.length})</span>
                                 </h4>
-                                <p className="text-[12px] text-neutral-500">
-                                  {item.desc}
-                                </p>
                               </div>
-                            ))}
-                          </div>
+                              <div className="divide-y divide-[#E5EAF1]">
+                                {msg.card.artifacts.map((artifact: any) => (
+                                  <div key={artifact.id} className="p-3 hover:bg-[#F6F8FB] transition-colors flex items-center gap-3 group">
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${artifact.isNew ? 'bg-[#FFF2F5] text-[#DF4965]' : 'bg-[#F2F5F9] text-[#98A2B3]'}`}>
+                                      <File size={16} />
+                                    </div>
+                                    <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handleOpenFile(artifact)}>
+                                      <div className="flex items-center gap-2 mb-0.5">
+                                        <span className="text-[13px] font-medium text-[#111827] truncate">{artifact.name}</span>
+                                        {artifact.isNew && <span className="text-[10px] px-1.5 py-0.5 bg-[#FFF2F5] text-[#DF4965] rounded font-medium border border-[#FFE0E9]">新建</span>}
+                                        {artifact.isUpdated && <span className="text-[10px] px-1.5 py-0.5 bg-[#F6F8FB] text-[#667085] rounded font-medium border border-[#E5EAF1]">更新</span>}
+                                      </div>
+                                      <p className="text-[11px] text-[#98A2B3] truncate">{artifact.path} · {artifact.size}</p>
+                                    </div>
+                                    <button className="w-8 h-8 rounded-lg flex items-center justify-center text-[#98A2B3] hover:text-[#111827] hover:bg-[#E5EAF1] opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+                                      <Search size={14} />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
 
-                          <div className="bg-neutral-100 text-neutral-900 text-[13px] p-3 rounded-xl mb-5 font-medium border border-neutral-200">
-                            {msg.card.recommendation}
-                          </div>
-
-                          <div className="flex flex-wrap gap-2 pt-4 border-t border-neutral-100">
-                            {msg.card.actions?.map((action, idx) => (
-                              <button
-                                key={idx}
-                                className={`px-4 py-1.5 rounded-xl text-[12px] font-medium transition-colors ${idx === 0 ? "bg-neutral-900 text-white hover:bg-neutral-900" : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200"}`}
-                              >
-                                {action}
-                              </button>
-                            ))}
-                          </div>
+                          {/* Suggestions Block */}
+                          {msg.card.suggestions && msg.card.suggestions.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mt-6 px-1">
+                                <h4 className="text-[12px] font-medium text-[#98A2B3]">接下来建议</h4>
+                                {msg.card.suggestions.length > 2 && (
+                                  <button className="text-[12px] text-[#667085] hover:text-[#DF4965] transition-colors flex items-center gap-1 cursor-pointer">
+                                    更多建议 <ChevronRight size={12} />
+                                  </button>
+                                )}
+                              </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                {msg.card.suggestions.slice(0,2).map((sug: any) => (
+                                  <div key={sug.id} onClick={() => handleAddContext(sug)} className="bg-white border border-[#E5EAF1] hover:border-[#DF4965] hover:bg-[#FFF2F5] rounded-xl p-3 cursor-pointer transition-all group relative">
+                                    <h5 className="text-[13px] font-medium text-[#111827] mb-1 group-hover:text-[#DF4965] flex items-center justify-between">
+                                      {sug.title}
+                                      <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 text-[#DF4965] -translate-x-2 group-hover:translate-x-0 transition-all" />
+                                    </h5>
+                                    <p className="text-[12px] text-[#667085] line-clamp-1">{sug.desc}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -752,7 +788,7 @@ const handleExecute = (customQuery?: string) => {
                   </>
                 )}
 
-                <div className="bg-white p-2 rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.06)] flex items-end gap-3 pr-3 border border-neutral-200 focus-within:ring-4 focus-within:ring-primary-500/20 focus-within:border-primary-500/50 transition-all text-neutral-900">
+                <div className="bg-white p-2 rounded-[24px] shadow-sm flex items-end gap-3 pr-3 border border-[#E5EAF1] focus-within:border-[#DF4965] focus-within:ring-1 focus-within:ring-[#DF4965] transition-all text-[#111827]">
                   {/* Universal Add Button */}
                   <div className="relative">
                     <button
@@ -761,7 +797,7 @@ const handleExecute = (customQuery?: string) => {
                         setIsAgentSelectorOpen(false);
                         setIsCommandDirOpen(false);
                       }}
-                      className={`ml-1 w-10 h-10 flex items-center justify-center rounded-full transition-all ${isAttachMenuOpen ? "bg-primary-50 text-primary-500 rotate-45" : "text-neutral-400 hover:text-primary-500 hover:bg-neutral-50"}`}
+                      className={`ml-1 w-10 h-10 flex items-center justify-center rounded-full transition-all ${isAttachMenuOpen ? "bg-[#FFF2F5] text-[#DF4965] rotate-45" : "text-[#98A2B3] hover:text-[#DF4965] hover:bg-[#FFF2F5]"}`}
                       title="添加"
                     >
                       <Plus
@@ -769,6 +805,7 @@ const handleExecute = (customQuery?: string) => {
                         className="transition-transform duration-300"
                       />
                     </button>
+                    {/* Attach Menu logic left intact... */}
                     <AnimatePresence>
                       {isAttachMenuOpen && (
                         <>
@@ -893,22 +930,22 @@ const handleExecute = (customQuery?: string) => {
                     {activeProjectId === 'project-b' && references.length > 0 && (
                       <div className="flex flex-wrap gap-2 px-3 pt-2 pb-1 bg-white max-h-[100px] overflow-y-auto">
                         {references.slice(0, 3).map(ref => (
-                          <div key={ref.id} className="group relative flex items-center gap-1.5 bg-white border border-[#F03E3E]/30 text-[#F03E3E] pl-2 pr-1 py-1 rounded-md text-[12px] font-medium shadow-sm cursor-pointer hover:bg-[#F03E3E]/5 transition-colors">
-                            {ref.type === 'folder' ? <Folder size={12} /> : <File size={12} />}
-                            <span>@{ref.name}</span>
+                          <div key={ref.id} className="group relative flex items-center gap-1.5 bg-transparent border border-[#E5EAF1] text-[#111827] pl-2 pr-1 py-1 rounded-md text-[12px] shadow-sm cursor-pointer hover:bg-[#F6F8FB] transition-colors">
+                            {ref.type === 'folder' ? <Folder size={12} className="text-[#98A2B3]"/> : <File size={12} className="text-[#98A2B3]"/>}
+                            <span>{ref.name}</span>
                             <button 
                               onClick={(ev) => {
                                  ev.stopPropagation();
-                                 setReferences(prev => prev.filter(r => r.id !== ref.id));
+                                 setReferences((prev: any) => prev.filter((r: any) => r.id !== ref.id));
                               }}
-                              className="text-[#F03E3E]/60 hover:text-[#F03E3E] ml-1 p-0.5 hover:bg-[#F03E3E]/10 rounded"
+                              className="text-[#98A2B3] hover:text-[#111827] ml-1 p-0.5 hover:bg-[#E5EAF1] rounded transition-colors"
                             >
                               <X size={12} />
                             </button>
                           </div>
                         ))}
                         {references.length > 3 && (
-                          <div className="flex items-center justify-center bg-white border border-neutral-200 text-neutral-500 px-2 py-1 rounded-md text-[12px] font-medium shadow-sm cursor-pointer">
+                          <div className="flex items-center justify-center bg-transparent border border-[#E5EAF1] text-[#667085] px-2 py-1 rounded-md text-[12px] shadow-sm cursor-pointer">
                             +{references.length - 3}
                           </div>
                         )}
@@ -916,9 +953,9 @@ const handleExecute = (customQuery?: string) => {
                     )}
 
                     {selectedShortcut && (
-                      <div className="flex mb-1 ml-2">
-                        <div className="flex items-center gap-1.5 bg-primary-50 text-primary-600 border border-primary-100 px-2.5 py-1 rounded-lg text-[13px] shadow-sm shrink-0 font-medium">
-                          <PieChart size={14} className="text-primary-500" />
+                      <div className="flex mb-1 ml-2 mt-1">
+                        <div className="flex items-center gap-1.5 bg-transparent text-[#111827] border border-[#E5EAF1] px-2.5 py-1 rounded-md text-[12px] shadow-sm shrink-0">
+                          <PieChart size={14} className="text-[#98A2B3]" />
                           <span>{selectedShortcut.name}</span>
                           <button
                             onClick={() => {
@@ -928,9 +965,9 @@ const handleExecute = (customQuery?: string) => {
                                 textareaRef.current.style.height = "auto";
                               }
                             }}
-                            className="hover:text-primary-800 ml-1 opacity-60 hover:opacity-100 transition-opacity"
+                            className="text-[#98A2B3] hover:text-[#111827] ml-1 opacity-60 hover:opacity-100 transition-opacity"
                           >
-                            <X size={14} />
+                            <X size={12} />
                           </button>
                         </div>
                       </div>
@@ -966,12 +1003,33 @@ const handleExecute = (customQuery?: string) => {
 
                   <button
                     onClick={() => {
-                      handleExecute();
-                      if (activeProjectId === 'project-b') { setReferences(prev => prev.filter(r => r.pinned)); }
+                      if (isProcessing) {
+                        setIsProcessing(false);
+                        // Cancel the active agent message
+                        setMessages((prev: any) => prev.map((m: any) => {
+                          if (m.role === 'agent' && (m.isThinking || (m.card && m.card.type === 'progress'))) {
+                            return {
+                              ...m,
+                              isThinking: false,
+                              content: '任务已取消。',
+                              isCancelled: true,
+                              card: undefined
+                            };
+                          }
+                          return m;
+                        }));
+                      } else {
+                        handleExecute();
+                        if (activeProjectId === 'project-b') { setReferences((prev: any) => prev.filter((r: any) => r.pinned)); }
+                      }
                     }}
-                    className="w-12 h-12 bg-neutral-900 text-white rounded-[20px] flex items-center justify-center hover:bg-primary-500 transition-all active:scale-95 shadow-md shrink-0"
+                    className="w-10 h-10 bg-[#DF4965] text-white rounded-[16px] flex items-center justify-center hover:bg-[#CC1E4A] transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
                   >
-                    <Send size={18} />
+                    {isProcessing ? (
+                      <div className="w-3.5 h-3.5 bg-white rounded-sm" />
+                    ) : (
+                      <Send size={16} />
+                    )}
                   </button>
                 </div>
               </div>

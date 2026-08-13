@@ -26,6 +26,19 @@ export interface NoteIssue {
   targetWorkbench?: "content" | "assets" | "publish" | "interaction" | "detail";
 }
 
+export interface NotePackageSpec {
+  guidelines: string;         // 规定要怎么写
+  materialTaskReqs: string;   // 素材按任务拍摄
+  questionnaireStatus: "待填写" | "已填写" | "生成中";
+  questionnaireFields?: {
+    petBreed?: string;
+    petAge?: string;
+    symptom?: string;
+    experience?: string;
+    storeName?: string;
+  };
+}
+
 export interface Note {
   id: string;
   projectId: string;
@@ -43,6 +56,8 @@ export interface Note {
   publishLink?: string;
   publishTime?: string;
   body?: string;
+  isNotePackage?: boolean;
+  packageSpec?: NotePackageSpec;
   contentPackage?: {
     title: string;
     body: string;

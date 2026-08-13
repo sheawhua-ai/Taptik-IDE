@@ -110,6 +110,7 @@ export interface ProjectContextType {
   addProjectMaterialRequirement: (projectId: string, reqs: string, assignee?: string) => void;
   updateLandingPageSettings: (projectId: string, settings: Partial<import("../data/unifiedStore").LandingPageSettings>) => void;
   addConsumerSubmission: (projectId: string, submission: { nickname: string; contentType: string; title: string; body?: string; images: string[]; contact?: string }) => void;
+  submitKOCQuestionnaire: (noteSlotId: string, questionnaireData: { petBreed: string; petAge: string; symptom: string; experience: string; storeName?: string }) => void;
 
   // New Unified State access
   unifiedState: UnifiedState;
@@ -291,16 +292,19 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           projectId: p.id,
           projectName: p.name,
           batchName: round?.name || "",
-          title: draft?.title || "未命名笔记",
+          title: draft?.title || (slot.isNotePackage ? `【笔记包】${slot.contentDirection}` : "未命名笔记"),
           participant: slot.accountName,
           type: slot.accountType,
           contentDirection: slot.contentDirection,
           plannedDate: slot.plannedDate,
           contentStatus: contentStatus as any,
           materialStatus: materialStatus as any,
-          publishStatus: publishStatus as any,
+          publishStatus: (slot.isNotePackage && slot.packageSpec?.questionnaireStatus === "待填写" && !draft) ? "待领包" as any : (publishStatus as any),
           resultStatus: pubNote ? pubNote.status as any : "未开始观察",
           publishLink: pubTask?.publishUrl,
+          body: draft?.body,
+          isNotePackage: slot.isNotePackage,
+          packageSpec: slot.packageSpec,
           currentIssue
         };
       });
@@ -850,6 +854,102 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       };
     });
   };
+  const submitKOCQuestionnaire = (noteSlotId: string, questionnaireData: { petBreed: string; petAge: string; symptom: string; experience: string; storeName?: string }) => {
+    setState(prev => {
+      const slot = prev.noteSlots.find(s => s.id === noteSlotId);
+      if (!slot) return prev;
+
+      const updatedNoteSlots = prev.noteSlots.map(s => {
+        if (s.id === noteSlotId) {
+          return {
+            ...s,
+            packageSpec: {
+              guidelines: s.packageSpec?.guidelines || "【笔记包规范】按要求提供体验心量与素材",
+              materialTaskReqs: s.packageSpec?.materialTaskReqs || "【按任务拍摄】拍摄进食视频1条及合影2张",
+              questionnaireStatus: "已填写" as const,
+              questionnaireFields: questionnaireData
+            }
+          };
+        }
+        return s;
+      });
+
+      const generatedTitle = `我家${questionnaireData.petBreed || "幼犬"}${questionnaireData.petAge || ""}换粮记录：从${questionnaireData.symptom || "软便"}到消化吸收好！`;
+      const generatedBody = `【体验官问卷回传笔记】\n` +
+        `🐾 宠物品种：${questionnaireData.petBreed || "未填写"} (${questionnaireData.petAge || "幼犬"})\n` +
+        `换粮前困扰：${questionnaireData.symptom || "经常拉软便"}\n` +
+        `试用心得：${questionnaireData.experience || "按七日换粮法顺利过渡，便便形状非常好"}\n` +
+        `体验领样渠道：${questionnaireData.storeName || "品牌合作体验门店"}\n\n` +
+        `记录一下我家宝子的换粮全过程！严格遵守七日换粮法，肠胃消化吸收特别好，强推给大家！`;
+
+      const existingDraft = prev.contentDrafts.find(d => d.noteSlotId === noteSlotId);
+      let updatedDrafts = prev.contentDrafts;
+      if (existingDraft) {
+        updatedDrafts = prev.contentDrafts.map(d => d.noteSlotId === noteSlotId ? {
+          ...d,
+          status: "已确认" as const,
+          title: generatedTitle,
+          body: generatedBody
+        } : d);
+      } else {
+        updatedDrafts = [
+          ...prev.contentDrafts,
+          {
+            id: `cd-${Date.now()}`,
+            noteSlotId,
+            status: "已确认" as const,
+            title: generatedTitle,
+            body: generatedBody,
+            tags: ["幼犬换粮", "真实体验", "换粮不软便"]
+          }
+        ];
+      }
+
+      const matReqId = `mr-${Date.now()}`;
+      const matTaskId = `mt-${Date.now()}`;
+      const reqText = slot.packageSpec?.materialTaskReqs || "【按任务拍摄】1. 幼犬进食视频 1条；2. 试用粮合影 2张";
+
+      const updatedMatReqs = [
+        ...prev.materialRequirements.filter(m => m.noteSlotId !== noteSlotId),
+        { id: matReqId, noteSlotId, reqs: reqText }
+      ];
+
+      const updatedMatTasks = [
+        ...prev.materialTasks.filter(t => t.requirementId !== matReqId),
+        {
+          id: matTaskId,
+          requirementId: matReqId,
+          reqs: reqText,
+          usageScenario: "KOC问卷拍摄任务回传",
+          specs: reqText,
+          assignee: slot.accountName || "体验官KOC",
+          status: "待提交" as const,
+          returnedUrls: [
+            "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&auto=format&fit=crop"
+          ]
+        }
+      ];
+
+      const newEvent: TimelineEvent = {
+        id: `evt-${Date.now()}`,
+        targetId: noteSlotId,
+        actor: "KOC体验官",
+        action: `提交问卷，即时生成笔记《${generatedTitle}》及按任务拍摄素材需求`,
+        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        isAutomatic: true
+      };
+
+      return {
+        ...prev,
+        noteSlots: updatedNoteSlots,
+        contentDrafts: updatedDrafts,
+        materialRequirements: updatedMatReqs,
+        materialTasks: updatedMatTasks,
+        timelineEvents: [newEvent, ...prev.timelineEvents]
+      };
+    });
+  };
+
   const updateProject = () => {};
   const addProject = () => {};
 
@@ -877,6 +977,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         addProjectMaterialRequirement,
         updateLandingPageSettings,
         addConsumerSubmission,
+        submitKOCQuestionnaire,
         unifiedState: state,
         enrichedActionTasks,
         resolveActionTask,

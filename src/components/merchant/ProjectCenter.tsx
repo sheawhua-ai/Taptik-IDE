@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, Search, Calendar, AlertTriangle, CheckCircle2, History, 
   MoreHorizontal, Settings, FileText, Check, ChevronRight, X,
-  ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, PanelLeftClose, PanelLeftOpen, Upload, Sparkles
+  ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, PanelLeftClose, PanelLeftOpen, Upload, Sparkles, Target, ShieldAlert, Layers, Clock
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
 import { Project, Note } from "../../data/projectStore";
@@ -18,7 +18,9 @@ import { LandingPageSettingsModal } from "./LandingPageSettingsModal";
 import { BatchNoteGeneratorModal } from "./BatchNoteGeneratorModal";
 import { AddSingleNoteModal } from "./AddSingleNoteModal";
 import { AddProjectMaterialModal } from "./AddProjectMaterialModal";
+import { ProjectMaterialsTab } from "./ProjectMaterialsTab";
 import { NoteMatchingModal } from "../material-center/NoteMatchingModal";
+import { KOCQuestionnaireModal } from "./KOCQuestionnaireModal";
 
 export function ProjectCenter({ 
   setWorkflowTab, 
@@ -40,7 +42,9 @@ export function ProjectCenter({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("全部");
-  const [activeTab, setActiveTab] = useState<"概览" | "笔记" | "数据">("概览");
+  const [activeTab, setActiveTab] = useState<"概览" | "笔记" | "素材" | "数据">("概览");
+  const [isTasksExpanded, setIsTasksExpanded] = useState(false);
+  const [selectedPackageNoteForQuestionnaire, setSelectedPackageNoteForQuestionnaire] = useState<Note | null>(null);
   const pipeline = currentProject ? calculateProjectPipeline(currentProject.notes) : null;
   
   // Left Panel State
@@ -57,7 +61,7 @@ export function ProjectCenter({
   // Modals & Drawers
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showOperationLogs, setShowOperationLogs] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
   const [showProjectPlan, setShowProjectPlan] = useState(false);
   const [showMaterialReq, setShowMaterialReq] = useState(false);
   const [showLandingPage, setShowLandingPage] = useState(false);
@@ -239,20 +243,11 @@ export function ProjectCenter({
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
                 <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-[#EAECF0] rounded-xl shadow-lg z-50 py-1 text-[13px]">
-                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowProjectPlan(true); }}>
-                    查看完整方案
-                  </button>
                   <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowProjectSettings(true); }}>
                     编辑项目
                   </button>
-                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); }}>
-                    项目素材池
-                  </button>
                   <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowLandingPage(true); }}>
-                    消费者发布设置
-                  </button>
-                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); }}>
-                    默认观察设置
+                    落地页设置
                   </button>
                   <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}>
                     操作记录
@@ -265,10 +260,10 @@ export function ProjectCenter({
                     结束项目
                   </button>
                   <button 
-                    onClick={() => { setShowMoreMenu(false); setShowDeleteConfirm(true); }}
-                    className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2"
+                    onClick={() => { setShowMoreMenu(false); setShowArchiveConfirm(true); }}
+                    className="w-full text-left px-4 py-2 hover:bg-neutral-50 text-neutral-700 flex items-center gap-2"
                   >
-                    删除项目
+                    归档项目
                   </button>
                 </div>
               </>
@@ -278,7 +273,7 @@ export function ProjectCenter({
         {/* Tabs */}
 
         <div className="px-6 bg-white border-b border-[#EAECF0] flex gap-6 text-[14px] font-medium shrink-0">
-          {(["概览", "笔记", "数据"] as const).map(tab => (
+          {(["概览", "笔记", "素材", "数据"] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -307,34 +302,66 @@ export function ProjectCenter({
                   </h3>
                   {primaryProjectTask ? (
                     <div className="space-y-3">
-                      <div className="text-[14px] font-bold text-[#111827]">
-                        {primaryProjectTask.issueMessage || "任务需要处理"}
-                      </div>
-                      <div className="text-[13px] text-[#667085] flex flex-col gap-1">
-                        <div>关联笔记：{primaryProjectTask.noteTitle || "当前项目"}</div>
-                        <div>影响：{primaryProjectTask.impactScope || "当前项目进度"}</div>
-                        <div>等待：{primaryProjectTask.waitOn || primaryProjectTask.assignee || "操盘手确认"}</div>
-                        <div>截止：今天 18:00</div>
-                      </div>
-                      <div>
-                        <button 
-                          onClick={() => handleTaskAction(primaryProjectTask)}
-                          className="px-5 py-1.5 bg-primary-600 text-white text-[13px] font-bold rounded-xl hover:bg-primary-700 transition-colors"
-                        >
-                          {getActionTextForIssue({type: primaryProjectTask.actionType, message: primaryProjectTask.issueMessage || ""})}
-                        </button>
-                      </div>
-                      {secondaryProjectTasksCount > 0 && (
-                        <div className="pt-3 mt-1 border-t border-[#EAECF0]">
-                          <button className="text-[13px] text-[#667085] hover:text-[#111827] flex items-center gap-1">
-                            展开其他 {secondaryProjectTasksCount} 项待跟进 <ChevronDown size={14} />
+                      {/* Primary Task */}
+                      <div className="space-y-2">
+                        <div className="text-[14px] font-bold text-[#111827]">
+                          {primaryProjectTask.issueMessage || "任务需要处理"}
+                        </div>
+                        <div className="text-[13px] text-[#667085] flex flex-wrap gap-x-4 gap-y-1">
+                          <div>关联笔记：<span className="text-[#111827] font-medium">{primaryProjectTask.noteTitle || "当前项目"}</span></div>
+                          <div>影响范围：<span className="text-[#111827] font-medium">{primaryProjectTask.impactScope || "当前项目进度"}</span></div>
+                          <div>等待方：<span className="text-[#111827] font-medium">{primaryProjectTask.waitOn || primaryProjectTask.assignee || "操盘手确认"}</span></div>
+                        </div>
+                        <div className="pt-1">
+                          <button 
+                            onClick={() => handleTaskAction(primaryProjectTask)}
+                            className="px-5 py-1.5 bg-primary-600 text-white text-[13px] font-bold rounded-xl hover:bg-primary-700 transition-colors flex items-center gap-1.5 shadow-xs"
+                          >
+                            处理：{getActionTextForIssue({type: primaryProjectTask.actionType, message: primaryProjectTask.issueMessage || ""})}
                           </button>
+                        </div>
+                      </div>
+
+                      {/* Secondary Tasks (Collapsible) */}
+                      {secondaryProjectTasksCount > 0 && (
+                        <div className="pt-3 border-t border-[#EAECF0]">
+                          <button 
+                            onClick={() => setIsTasksExpanded(!isTasksExpanded)}
+                            className="text-[13px] text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1 transition-colors"
+                          >
+                            {isTasksExpanded ? "收起其他待办事项" : `展开其他 ${secondaryProjectTasksCount} 项待跟进事项`}
+                            {isTasksExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          </button>
+
+                          {isTasksExpanded && (
+                            <div className="mt-3 space-y-3 pl-2 border-l-2 border-primary-100">
+                              {projectPendingTasks.slice(1).map((task) => (
+                                <div key={task.id} className="pt-2.5 first:pt-0 border-t border-[#EAECF0]/60 first:border-0 space-y-1.5">
+                                  <div className="text-[13px] font-bold text-[#111827]">
+                                    {task.issueMessage || "任务需要处理"}
+                                  </div>
+                                  <div className="text-[12px] text-[#667085] flex flex-wrap gap-x-4 gap-y-0.5">
+                                    <div>关联笔记：<span className="text-[#111827]">{task.noteTitle || "当前项目"}</span></div>
+                                    <div>等待：<span className="text-[#111827]">{task.waitOn || task.assignee || "操盘手确认"}</span></div>
+                                  </div>
+                                  <div>
+                                    <button 
+                                      onClick={() => handleTaskAction(task)}
+                                      className="px-3.5 py-1 bg-primary-50 text-primary-700 hover:bg-primary-100 text-[12px] font-bold rounded-lg transition-colors flex items-center gap-1"
+                                    >
+                                      处理：{getActionTextForIssue({type: task.actionType, message: task.issueMessage || ""})}
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
                   ) : (
                     <div className="text-[13px] text-[#667085]">
-                      <div className="mb-1 text-[#111827] font-bold">当前按计划推进</div>
+                      <div className="mb-1 text-[#111827] font-bold">当前无待跟进事项，项目按计划推进中</div>
                       <div>下一节点：今天 18:00 发布首篇店长号笔记</div>
                     </div>
                   )}
@@ -354,44 +381,39 @@ export function ProjectCenter({
                   </div>
                 </div>
 
-                {/* 3. 本轮方案 */}
-                <div className="bg-white rounded-xl p-6 border border-[#EAECF0]">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[14px] font-bold text-[#111827]">本轮方案</h3>
-                    <button onClick={() => setShowProjectPlan(true)} className="text-[13px] text-primary-600 hover:text-primary-700 font-medium">查看完整方案</button>
+                {/* 3. 本轮营销方案摘要 */}
+                <div className="bg-white rounded-xl p-6 border border-[#EAECF0] space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#EAECF0] pb-3">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[15px] font-bold text-[#111827]">本轮营销方案</h3>
+                      <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-lg border border-emerald-200">
+                        ✓ 方案生效中
+                      </span>
+                    </div>
+                    <button 
+                      onClick={() => setShowProjectPlan(true)}
+                      className="px-3.5 py-1.5 border border-[#EAECF0] text-primary-600 hover:bg-primary-50 hover:border-primary-200 text-[13px] font-bold rounded-xl flex items-center gap-1 transition-colors"
+                    >
+                      查看详情 <ChevronRight size={14} />
+                    </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">核心问题</div>
-                      <div className="text-[13px] text-[#111827]">解决用户换粮拉肚子顾虑</div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">核心问题</div>
+                      <div className="text-[13px] text-[#111827] font-bold">解决用户换粮拉肚子/软便顾虑</div>
                     </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">目标人群</div>
-                      <div className="text-[13px] text-[#111827]">新手幼犬养育者</div>
+                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">内容方法</div>
+                      <div className="text-[13px] text-[#111827] font-bold">店长专业科普 + KOC真实测评</div>
                     </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">内容方法</div>
-                      <div className="text-[13px] text-[#111827]">店长专业科普 + KOC真实测评</div>
+                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">发布矩阵</div>
+                      <div className="text-[13px] text-[#111827] font-bold">品牌店长号 (1) + KOC (3) + 问卷笔记包 (2)</div>
                     </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">发布主体组合</div>
-                      <div className="text-[13px] text-[#111827]">品牌店长号 (1) + KOC (3)</div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">计划笔记数量</div>
-                      <div className="text-[13px] text-[#111827]">4篇</div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">默认观察周期</div>
-                      <div className="text-[13px] text-[#111827]">7天 (包含24h, 3天检查点)</div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">成功条件</div>
-                      <div className="text-[13px] text-[#111827]">CPA &lt; 50元 或 有效咨询达标</div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-[12px] text-[#667085] w-24 shrink-0">停止或换打法条件</div>
-                      <div className="text-[13px] text-[#111827]">连续3篇笔记CPA &gt; 100元</div>
+                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">CPA 成本目标</div>
+                      <div className="text-[13px] text-[#111827] font-bold">&lt; 50元 / 微信索样咨询</div>
                     </div>
                   </div>
                 </div>
@@ -428,12 +450,6 @@ export function ProjectCenter({
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => setShowImportSelect(true)} 
-                      className="px-3 py-1.5 border border-[#EAECF0] bg-white hover:bg-neutral-50 text-[#111827] text-[13px] font-medium rounded-xl flex items-center gap-1 transition-colors"
-                    >
-                      <Upload size={14} className="text-[#667085]" /> 导入
-                    </button>
-                    <button 
-                      onClick={() => setShowImportSelect(true)} 
                       className="px-3.5 py-1.5 bg-primary-600 text-white text-[13px] font-bold rounded-xl hover:bg-primary-700 flex items-center gap-1 transition-colors shadow-sm"
                     >
                       <Plus size={14} /> 新建
@@ -451,7 +467,7 @@ export function ProjectCenter({
                         onClick={() => setShowImportSelect(true)} 
                         className="px-4 py-2 bg-primary-600 text-white text-[13px] font-bold rounded-xl hover:bg-primary-700 flex items-center gap-1.5 mx-auto transition-colors shadow-sm"
                       >
-                        <Plus size={14} /> 新建 / 导入笔记
+                        <Plus size={14} /> 新建笔记
                       </button>
                     </div>
                   ) : (
@@ -473,7 +489,9 @@ export function ProjectCenter({
                         
                         buttonText = getActionTextForIssue({type: task.actionType, message: task.issueMessage || ""});
                       } else {
-                        if (mainStage === "观察完成") statusText = "观察结束，可查看复盘数据";
+                        if (note.isNotePackage && note.packageSpec?.questionnaireStatus === "待填写") {
+                          statusText = `写作规定：${note.packageSpec.guidelines}`;
+                        } else if (mainStage === "观察完成") statusText = "观察结束，可查看复盘数据";
                         else if (mainStage === "观察中") statusText = "已发布，正在进行3天数据观察";
                         else if (mainStage === "已发布") statusText = "识别成功，即将开始数据观察";
                         else if (mainStage === "发布准备") statusText = "内容和素材就绪，计划近期发布";
@@ -484,31 +502,61 @@ export function ProjectCenter({
                       return (
                         <div key={note.id} className="p-4 hover:bg-neutral-50/50 transition-colors">
                           <div className="flex items-start justify-between mb-1">
-                            <span className="font-bold text-[14px] text-[#111827]">{note.title || "未命名笔记"}</span>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-[14px] text-[#111827]">{note.title || "未命名笔记"}</span>
+                              {note.isNotePackage && (
+                                note.packageSpec?.questionnaireStatus === "已填写" ? (
+                                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[11px] font-bold rounded-md">
+                                    📦 笔记包 (已填问卷·已即时生成)
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 bg-primary-100 text-primary-700 text-[11px] font-bold rounded-md">
+                                    📦 笔记包 (待KOC填写问卷)
+                                  </span>
+                                )
+                              )}
+                            </div>
                           </div>
                           <div className="text-[12px] text-[#667085] mb-2 font-medium">
-                            {note.type} · {mainStage}
+                            {note.type} · {mainStage} {note.participant ? `· ${note.participant}` : ""}
                           </div>
-                          <div className="flex items-center justify-between">
-                            <div className="text-[13px]">
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="text-[13px] line-clamp-1 flex-1">
                               {isError ? (
                                 <span className="text-red-600 font-medium">{statusText}</span>
                               ) : isWarning ? (
                                 <span className="text-[#111827] font-medium">{statusText}</span>
+                              ) : note.isNotePackage && note.packageSpec?.questionnaireStatus === "待填写" ? (
+                                <span className="text-primary-800 font-medium">{statusText}</span>
                               ) : (
                                 <span className="text-[#667085]">{statusText}</span>
                               )}
                             </div>
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (hasIssue) handleTaskAction(tasks[0]);
-                                else setActiveNoteDetail(note);
-                              }}
-                              className={`px-4 py-1.5 rounded-xl text-[13px] font-bold shrink-0 ${hasIssue ? "bg-primary-50 text-primary-700 hover:bg-primary-100" : "border border-[#EAECF0] text-[#111827] hover:bg-neutral-50"}`}
-                            >
-                              {buttonText}
-                            </button>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                              {note.isNotePackage && note.packageSpec?.questionnaireStatus === "待填写" && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedPackageNoteForQuestionnaire(note);
+                                  }}
+                                  className="px-3.5 py-1.5 bg-primary-600 text-white hover:bg-primary-700 text-[12px] font-bold rounded-xl flex items-center gap-1 shadow-xs transition-colors"
+                                >
+                                  <Sparkles size={13} /> 填写问卷生成笔记
+                                </button>
+                              )}
+
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (hasIssue) handleTaskAction(tasks[0]);
+                                  else setActiveNoteDetail(note);
+                                }}
+                                className={`px-4 py-1.5 rounded-xl text-[13px] font-bold shrink-0 ${hasIssue ? "bg-primary-50 text-primary-700 hover:bg-primary-100" : "border border-[#EAECF0] text-[#111827] hover:bg-neutral-50"}`}
+                              >
+                                {buttonText}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
@@ -516,6 +564,14 @@ export function ProjectCenter({
                   )}
                 </div>
               </div>
+            )}
+
+            {/* MATERIALS */}
+            {activeTab === "素材" && currentProject && (
+              <ProjectMaterialsTab 
+                project={currentProject} 
+                onNavigateToMaterials={() => setWorkflowTab?.("materials")}
+              />
             )}
 
             {/* DATA */}
@@ -666,52 +722,94 @@ export function ProjectCenter({
       <AnimatePresence>
         {showProjectPlan && (
           <>
-            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setShowProjectPlan(false)} className="fixed inset-0 bg-neutral-900/20 z-50" />
-            <motion.div initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring", damping:25, stiffness:200}} className="fixed right-0 top-0 bottom-0 w-[520px] bg-white shadow-2xl z-50 flex flex-col">
-              <div className="p-6 border-b border-[#EAECF0] flex justify-between items-center">
-                <h2 className="text-[16px] font-bold">完整项目方案</h2>
-                <button onClick={() => setShowProjectPlan(false)} className="p-2 text-neutral-400 hover:bg-neutral-100 rounded-xl"><X size={16}/></button>
-                <div className="space-y-4">
-                  <h3 className="text-[14px] font-bold text-[#111827] border-b border-[#EAECF0] pb-2">商业目标</h3>
-                  <div className="grid gap-4">
-                    <div>
-                      <div className="text-[12px] text-[#667085] mb-1">解决问题</div>
-                      <div className="text-[14px] text-[#111827] bg-neutral-50 p-3 rounded-xl border border-[#EAECF0]">用户对幼犬系列产品信任度不足，转化率低于同类竞品。</div>
-                    </div>
-                    <div>
-                      <div className="text-[12px] text-[#667085] mb-1">转化目标</div>
-                      <div className="text-[14px] text-[#111827] bg-neutral-50 p-3 rounded-xl border border-[#EAECF0]">提升单店新客转化率至8%</div>
-                    </div>
-                  </div>
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setShowProjectPlan(false)} className="fixed inset-0 bg-neutral-900/30 backdrop-blur-xs z-50" />
+            <motion.div initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring", damping:25, stiffness:200}} className="fixed right-0 top-0 bottom-0 w-[640px] bg-white shadow-2xl z-50 flex flex-col">
+              <div className="p-6 border-b border-[#EAECF0] flex justify-between items-center bg-[#F7F8FA]">
+                <div>
+                  <h2 className="text-[17px] font-bold text-[#111827]">本轮完整营销与内容方案</h2>
+                  <p className="text-[12px] text-[#667085] mt-0.5">方案已由 AI 操盘手根据商户策略协议与商业目标综合生成并确认</p>
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-[14px] font-bold text-[#111827] border-b border-[#EAECF0] pb-2">过程指标</h3>
-                  <div className="grid gap-4">
-                    <div>
-                      <div className="text-[12px] text-[#667085] mb-1">爆文率目标</div>
-                      <div className="text-[14px] text-[#111827] bg-neutral-50 p-3 rounded-xl border border-[#EAECF0]">大于 15%</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-[14px] font-bold text-[#111827] border-b border-[#EAECF0] pb-2">成本约束与停止条件</h3>
-                  <div className="grid gap-4">
-                    <div>
-                      <div className="text-[12px] text-[#667085] mb-1">CPA (单次行动成本)</div>
-                      <div className="text-[14px] text-[#111827] bg-neutral-50 p-3 rounded-xl border border-[#EAECF0]">目标 &lt; 50元，熔断阈值 &gt; 100元</div>
-                    </div>
-                    <div>
-                      <div className="text-[12px] text-[#667085] mb-1">中止条件</div>
-                      <div className="text-[14px] text-[#111827] bg-neutral-50 p-3 rounded-xl border border-[#EAECF0]">连续两周无有效咨询，或CPA持续超标</div>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[12px] font-bold rounded-lg border border-emerald-200">
+                    ✓ 生效中
+                  </span>
+                  <button onClick={() => setShowProjectPlan(false)} className="p-1.5 text-neutral-400 hover:text-[#111827] hover:bg-neutral-200 rounded-xl transition-colors">
+                    <X size={18}/>
+                  </button>
                 </div>
               </div>
 
+              <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                {/* 1. 商业目标与核心问题 */}
+                <div className="space-y-3">
+                  <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <Target size={15} /> 1. 商业目标与核心问题
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">要解决的核心问题</div>
+                      <div className="text-[13px] text-[#111827] font-bold leading-relaxed">解决用户换粮拉肚子/软便顾虑，破除种草收藏多但购买咨询少问题</div>
+                    </div>
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">转化目标与预期</div>
+                      <div className="text-[13px] text-[#111827] font-bold leading-relaxed">验证“换粮软便”真实测评+店长号专业解释能否提升有效咨询，线索转化率达8%</div>
+                    </div>
+                  </div>
+                </div>
 
+                {/* 2. 成本约束与熔断/停止条件 */}
+                <div className="space-y-3">
+                  <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <ShieldAlert size={15} /> 2. 成本约束与熔断/停止条件
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">CPA (单次行动成本) 目标</div>
+                      <div className="text-[13px] text-[#111827] font-bold">&lt; 50 元 / 微信索样咨询</div>
+                    </div>
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
+                      <div className="text-[12px] text-[#667085] mb-1 font-medium">熔断/切换打法条件</div>
+                      <div className="text-[13px] text-red-600 font-bold leading-relaxed">连续 3 篇笔记 CPA &gt; 100元，或连续两周无有效咨询则自动停止投放并切换打法</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. 内容策略与账号发布矩阵 */}
+                <div className="space-y-3">
+                  <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <Layers size={15} /> 3. 内容策略与账号发布矩阵
+                  </h4>
+                  <div className="border border-[#EAECF0] rounded-xl overflow-hidden divide-y divide-[#EAECF0]">
+                    <div className="p-3.5 bg-white flex gap-4">
+                      <div className="text-[12px] text-[#667085] w-24 shrink-0 font-medium">目标人群</div>
+                      <div className="text-[13px] text-[#111827]">3-6个月幼犬初次换粮腹泻软便的铲屎官、养宠新手</div>
+                    </div>
+                    <div className="p-3.5 bg-white flex gap-4">
+                      <div className="text-[12px] text-[#667085] w-24 shrink-0 font-medium">内容方法论</div>
+                      <div className="text-[13px] text-[#111827]">店长专业科普 + KOC真实体验 + 动态问卷生成笔记包</div>
+                    </div>
+                    <div className="p-3.5 bg-white flex gap-4">
+                      <div className="text-[12px] text-[#667085] w-24 shrink-0 font-medium">发布主体组合</div>
+                      <div className="text-[13px] text-[#111827]">品牌店长号 (1) + KOC真实测评 (3) + 品牌主号 (1) + KOC问卷笔记包 (2)</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. 数据观察 */}
+                <div className="space-y-3">
+                  <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <Clock size={15} /> 4. 数据观察
+                  </h4>
+                  <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
+                    <div className="text-[12px] text-[#667085] mb-1 font-medium">默认观察周期</div>
+                    <div className="text-[13px] text-[#111827] font-bold">7天 (包含24h数据、3天关键检查点)</div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </>
         )}
+
         {showMaterialReq && (
           <>
             <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setShowMaterialReq(false)} className="fixed inset-0 bg-neutral-900/20 z-50" />
@@ -737,8 +835,8 @@ export function ProjectCenter({
           <div className="relative bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-[#EAECF0]">
             <div className="p-5 border-b border-[#EAECF0] flex justify-between items-center bg-[#F7F8FA]">
               <div>
-                <h3 className="font-bold text-[16px] text-[#111827]">新建 / 导入笔记</h3>
-                <p className="text-[12px] text-[#667085] mt-0.5">请选择新增笔记的方式</p>
+                <h3 className="font-bold text-[16px] text-[#111827]">新建笔记</h3>
+                <p className="text-[12px] text-[#667085] mt-0.5">请选择新建笔记的方式</p>
               </div>
               <button onClick={() => setShowImportSelect(false)} className="text-neutral-400 hover:text-[#667085] p-1 rounded-lg hover:bg-neutral-200"><X size={18}/></button>
             </div>
@@ -1022,28 +1120,48 @@ export function ProjectCenter({
         </div>
       )}
 
-      {showLandingPage && (
-        <>
-          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setShowLandingPage(false)} className="fixed inset-0 bg-neutral-900/20 z-50" />
-          <motion.div initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring", damping:25, stiffness:200}} className="fixed right-0 top-0 bottom-0 w-[640px] bg-white shadow-2xl z-50 flex flex-col">
-            <div className="p-6 border-b border-[#EAECF0] flex justify-between items-center">
-              <h2 className="text-[16px] font-bold">落地页设置</h2>
-              <button onClick={() => setShowLandingPage(false)} className="p-2 text-neutral-400 hover:bg-neutral-100 rounded-xl"><X size={16}/></button>
+      {showLandingPage && currentProject && (
+        <LandingPageSettingsModal
+          project={currentProject}
+          onClose={() => setShowLandingPage(false)}
+        />
+      )}
+
+      {/* Archive Project Confirm Modal */}
+      {showArchiveConfirm && currentProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 backdrop-blur-xs p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-2xl shadow-xl border border-[#EAECF0] max-w-md w-full p-6 text-center space-y-4"
+          >
+            <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto border border-amber-100">
+              <AlertTriangle size={24} />
             </div>
-            <div className="p-6 overflow-y-auto flex-1">
-              <div className="bg-neutral-50 rounded-xl p-6 border border-[#EAECF0] text-center space-y-4">
-                  <QrCode size={48} className="mx-auto text-neutral-300" />
-                  <div className="text-[15px] font-bold text-[#111827]">消费者落地页已生成</div>
-                  <div className="text-[13px] text-[#667085]">此项目关联了消费者任务，扫码即可预览落地页效果。</div>
-                  <div className="flex items-center justify-center gap-3 pt-4">
-                    <button className="px-4 py-2 bg-white border border-[#EAECF0] font-medium text-[13px] rounded-xl hover:bg-neutral-50">下载二维码</button>
-                    <button className="px-4 py-2 bg-white border border-[#EAECF0] font-medium text-[13px] rounded-xl hover:bg-neutral-50">复制链接</button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
+            <div>
+              <h3 className="text-[16px] font-bold text-[#111827]">归档项目确认</h3>
+              <p className="text-[13px] text-[#667085] mt-1.5 leading-relaxed">
+                确认归档“<span className="font-bold text-[#111827]">{currentProject.name}</span>”吗？归档后项目将移至历史归档列表中，项目数据及笔记素材将被保留且变为只读状态。
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowArchiveConfirm(false)}
+                className="px-4 py-2 border border-[#EAECF0] text-[#344054] hover:bg-neutral-50 rounded-xl text-[13px] font-medium transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => setShowArchiveConfirm(false)}
+                className="px-5 py-2 bg-[#111827] hover:bg-black text-white rounded-xl text-[13px] font-bold transition-colors shadow-xs"
+              >
+                确认归档
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
 
       {/* Next Round Draft */}
@@ -1117,6 +1235,14 @@ export function ProjectCenter({
           </>
         )}
       </AnimatePresence>
+
+      {/* KOC Questionnaire Modal for Note Package */}
+      {selectedPackageNoteForQuestionnaire && (
+        <KOCQuestionnaireModal
+          note={selectedPackageNoteForQuestionnaire}
+          onClose={() => setSelectedPackageNoteForQuestionnaire(null)}
+        />
+      )}
 
       {/* Note Detail Drawer */}
       {activeNoteDetail && (
