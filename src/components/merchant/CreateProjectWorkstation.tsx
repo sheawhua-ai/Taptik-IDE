@@ -55,6 +55,7 @@ export interface QuestionnaireQuestion {
   title: string;
   type: string;
   isRequired: boolean;
+  options?: string[];
 }
 
 export const DEFAULT_CONTENT_ROLES: ContentRoleItem[] = [
@@ -64,14 +65,10 @@ export const DEFAULT_CONTENT_ROLES: ContentRoleItem[] = [
 ];
 
 export const DEFAULT_QUESTIONNAIRE_QUESTIONS: QuestionnaireQuestion[] = [
-  { id: "q1", title: "1. 使用产品前，你最担心什么？", type: "单选＋补充说明", isRequired: true },
-  { id: "q2", title: "2. 实际使用过程中，哪一点最符合你的感受？", type: "多选＋开放回答", isRequired: true },
-  { id: "q3", title: "3. 参与体验或选择本产品的主要原因是什么？", type: "多选＋开放回答", isRequired: true },
-  { id: "q4", title: "4. 宠物基本情况（包含品种、月龄及健康习惯）", type: "开放回答", isRequired: true },
-  { id: "q5", title: "5. 实际换粮/使用过程与每日喂食习惯安排", type: "开放回答", isRequired: true },
-  { id: "q6", title: "6. 体验过程中的不满意点、吐槽或包装改进建议", type: "开放回答", isRequired: false },
-  { id: "q7", title: "7. 最希望分享给其他同类宠主的真实忠告", type: "开放回答", isRequired: false },
-  { id: "q8", title: "8. 上传使用过程实拍（食碗/宠物近照/便便实拍图）及内容授权", type: "图片/视频上传", isRequired: true },
+  { id: "q1", title: "1. 宠物当前月龄？", type: "单选", isRequired: true, options: ["0-3个月", "3-6个月", "6个月以上"] },
+  { id: "q2", title: "2. 换粮前最主要的困扰？", type: "多选", isRequired: true, options: ["软便/拉稀", "挑食/不爱吃", "泪痕严重", "毛发粗糙", "太瘦不长肉"] },
+  { id: "q3", title: "3. 试用本产品的效果？", type: "多选", isRequired: true, options: ["便便成型", "胃口变好", "毛发变亮", "长肉发腮", "无明显变化"] },
+  { id: "q4", title: "4. 你会向朋友推荐吗？", type: "单选", isRequired: true, options: ["会", "可能会", "不会"] },
 ];
 
 export const MERCHANT_BRAND_ACCOUNTS = [
@@ -2821,11 +2818,47 @@ function KocQuestionnaireQuestionsDrawer({
       ...qList,
       {
         id: `q-${Date.now()}`,
-        title: "例如：您的宠物属于什么品种？平时有软便或挑食现象吗？",
-        type: "开放回答",
-        isRequired: true
+        title: "例如：您的宠物目前处于什么阶段？",
+        type: "单选",
+        isRequired: true,
+        options: ["选项 1", "选项 2", "选项 3"]
       }
     ]);
+  };
+
+  const handleAddOption = (qId: string) => {
+    setQList(qList.map(q => {
+      if (q.id === qId) {
+        const opts = q.options ? [...q.options] : [];
+        opts.push(`新选项 ${opts.length + 1}`);
+        return { ...q, options: opts };
+      }
+      return q;
+    }));
+  };
+
+  const handleUpdateOption = (qId: string, optIdx: number, val: string) => {
+    setQList(qList.map(q => {
+      if (q.id === qId && q.options) {
+        const opts = [...q.options];
+        opts[optIdx] = val;
+        return { ...q, options: opts };
+      }
+      return q;
+    }));
+  };
+
+  const handleRemoveOption = (qId: string, optIdx: number) => {
+    setQList(qList.map(q => {
+      if (q.id === qId && q.options) {
+        if (q.options.length <= 2) {
+          alert("选择题至少保留 2 个选项");
+          return q;
+        }
+        return { ...q, options: q.options.filter((_, i) => i !== optIdx) };
+      }
+      return q;
+    }));
   };
 
   return (
@@ -2847,7 +2880,7 @@ function KocQuestionnaireQuestionsDrawer({
         <div className="flex items-center justify-between border-b border-neutral-200 pb-4 shrink-0">
           <div>
             <h3 className="text-[16px] font-bold text-neutral-900">KOC真实体验采集问卷 ({qList.length}个问题)</h3>
-            <p className="text-[12px] text-neutral-500 mt-0.5">逐题管理问卷内容，AI将提取填报事实定向生成千人千篇笔记</p>
+            <p className="text-[12px] text-neutral-500 mt-0.5">全量采用选择题，便于用户快速决策；AI将提取填报事实定向生成千人千篇笔记</p>
           </div>
           <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg">
             <X size={18} />
@@ -2864,13 +2897,20 @@ function KocQuestionnaireQuestionsDrawer({
                   </span>
                   <select
                     value={q.type}
-                    onChange={(e) => handleUpdate(q.id, "type", e.target.value)}
+                    onChange={(e) => {
+                      const newType = e.target.value;
+                      setQList(qList.map(item => {
+                        if (item.id === q.id) {
+                          const opts = item.options && item.options.length > 0 ? item.options : ["选项 1", "选项 2", "选项 3"];
+                          return { ...item, type: newType, options: opts };
+                        }
+                        return item;
+                      }));
+                    }}
                     className="px-2 py-0.5 bg-neutral-100 border border-neutral-200 rounded-md text-[11.5px] font-bold text-neutral-800 outline-none"
                   >
-                    <option value="单选＋补充说明">单选＋补充说明</option>
-                    <option value="多选＋开放回答">多选＋开放回答</option>
-                    <option value="开放回答">开放回答</option>
-                    <option value="图片/视频上传">图片/视频上传</option>
+                    <option value="单选">单选题 (快速单选)</option>
+                    <option value="多选">多选题 (快速多选)</option>
                   </select>
                 </div>
 
@@ -2916,12 +2956,46 @@ function KocQuestionnaireQuestionsDrawer({
               </div>
 
               <div>
+                <label className="block text-[11px] font-bold text-neutral-500 mb-1">题目标题</label>
                 <textarea
                   rows={2}
                   value={q.title}
                   onChange={(e) => handleUpdate(q.id, "title", e.target.value)}
                   className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[12.5px] font-medium text-neutral-900 focus:bg-white focus:border-neutral-400 outline-none"
                 />
+              </div>
+
+              {/* Options */}
+              <div className="space-y-2 pt-1 border-t border-neutral-100">
+                <label className="block text-[11px] font-bold text-neutral-500">选项列表 (点击修改)</label>
+                <div className="space-y-1.5">
+                  {(q.options || ["选项 1", "选项 2", "选项 3"]).map((opt, oIdx) => (
+                    <div key={oIdx} className="flex items-center gap-2">
+                      <div className={`w-3.5 h-3.5 border border-neutral-300 shrink-0 ${q.type === '单选' ? 'rounded-full' : 'rounded-xs'}`} />
+                      <input
+                        type="text"
+                        className="flex-1 px-2.5 py-1 text-[12px] text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-lg outline-none focus:border-neutral-400"
+                        value={opt}
+                        onChange={(e) => handleUpdateOption(q.id, oIdx, e.target.value)}
+                        placeholder={`选项 ${oIdx + 1}`}
+                      />
+                      <button
+                        onClick={() => handleRemoveOption(q.id, oIdx)}
+                        className="text-neutral-400 hover:text-rose-500 p-1 rounded hover:bg-neutral-100 transition-colors"
+                        title="删除选项"
+                      >
+                        <X size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleAddOption(q.id)}
+                  className="text-[12px] text-neutral-700 hover:text-black font-bold flex items-center gap-1 mt-1 pt-1"
+                >
+                  <Plus size={13} /> 添加选项
+                </button>
               </div>
             </div>
           ))}

@@ -9,6 +9,7 @@ import { useProjectStore } from '../../context/ProjectContext';
 import { Project } from '../../data/projectStore';
 import { ConsumerLandingPageModal } from './ConsumerLandingPageModal';
 import { DEFAULT_QUESTIONNAIRE_QUESTIONS } from './CreateProjectWorkstation';
+import { ProjectQuestionnaireDrawer } from '../rings/ProjectQuestionnaireDrawer';
 
 interface Props {
   project: Project;
@@ -39,10 +40,9 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [showConsumerPreview, setShowConsumerPreview] = useState(false);
   
-  // Questionnaire View / Edit Modal
-  const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
-  const [questionnaireActiveTab, setQuestionnaireActiveTab] = useState<'view' | 'edit'>('view');
-  const [editingQuestions, setEditingQuestions] = useState<any[]>(questions);
+  // Unified Questionnaire Drawer
+  const [showQuestionnaireDrawer, setShowQuestionnaireDrawer] = useState(false);
+  const [questionnaireDrawerTab, setQuestionnaireDrawerTab] = useState<'view' | 'edit'>('edit');
 
   const landingPageUrl = `https://tap.topyuncang.com/land/p/${project.id}`;
 
@@ -83,40 +83,8 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
   };
 
   const openQuestionnaireModal = (tab: 'view' | 'edit') => {
-    setEditingQuestions(JSON.parse(JSON.stringify(questions)));
-    setQuestionnaireActiveTab(tab);
-    setShowQuestionnaireModal(true);
-  };
-
-  const saveQuestionnaireEdits = () => {
-    setQuestions(editingQuestions);
-    setShowQuestionnaireModal(false);
-  };
-
-  const addQuestion = () => {
-    const newId = `q_${Date.now()}`;
-    setEditingQuestions([
-      ...editingQuestions,
-      {
-        id: newId,
-        title: `${editingQuestions.length + 1}. 新增加体验问题`,
-        type: "开放回答",
-        isRequired: true
-      }
-    ]);
-  };
-
-  const removeQuestion = (id: string) => {
-    setEditingQuestions(editingQuestions.filter(q => q.id !== id));
-  };
-
-  const updateQuestionField = (id: string, field: string, value: any) => {
-    setEditingQuestions(editingQuestions.map(q => {
-      if (q.id === id) {
-        return { ...q, [field]: value };
-      }
-      return q;
-    }));
+    setQuestionnaireDrawerTab(tab);
+    setShowQuestionnaireDrawer(true);
   };
 
   return (
@@ -447,202 +415,25 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
         </motion.div>
       </div>
 
-      {/* Questionnaire View / Edit Modal */}
-      {showQuestionnaireModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-neutral-900/60 backdrop-blur-xs p-4 overflow-y-auto">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-2xl shadow-2xl border border-neutral-200 w-full max-w-2xl overflow-hidden flex flex-col my-auto max-h-[88vh]"
-          >
-            {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between shrink-0 bg-white">
-              <div>
-                <h3 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
-                  <FileText size={18} className="text-neutral-700" />
-                  消费者体验问卷 ({editingQuestions.length}题)
-                </h3>
-                <p className="text-[12px] text-neutral-500 mt-0.5">
-                  面向落地页访客的事实采集问卷，AI将提取回答事实定向生成个性化表达
-                </p>
-              </div>
-              <button 
-                onClick={() => setShowQuestionnaireModal(false)}
-                className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Mode Switch Tabs */}
-            <div className="px-6 pt-3 bg-neutral-50/80 border-b border-neutral-200 flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => setQuestionnaireActiveTab('view')}
-                className={`px-4 py-2 text-[13px] font-bold border-b-2 transition-colors flex items-center gap-1.5 ${
-                  questionnaireActiveTab === 'view'
-                    ? "border-neutral-900 text-neutral-900"
-                    : "border-transparent text-neutral-500 hover:text-neutral-800"
-                }`}
-              >
-                <Eye size={15} />
-                <span>查看问卷 (模拟填报视角)</span>
-              </button>
-              <button
-                onClick={() => setQuestionnaireActiveTab('edit')}
-                className={`px-4 py-2 text-[13px] font-bold border-b-2 transition-colors flex items-center gap-1.5 ${
-                  questionnaireActiveTab === 'edit'
-                    ? "border-neutral-900 text-neutral-900"
-                    : "border-transparent text-neutral-500 hover:text-neutral-800"
-                }`}
-              >
-                <Edit3 size={15} />
-                <span>编辑问卷题目</span>
-              </button>
-            </div>
-
-            {/* Tab Content Body */}
-            <div className="p-6 overflow-y-auto flex-1 space-y-4 bg-neutral-50/40">
-              {questionnaireActiveTab === 'view' ? (
-                /* VIEW MODE: Phone fill preview */
-                <div className="space-y-4 max-w-md mx-auto bg-white p-5 rounded-2xl border border-neutral-200 shadow-2xs">
-                  <div className="text-center pb-3 border-b border-neutral-100">
-                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      体验官事实采集表
-                    </span>
-                    <h4 className="text-[14px] font-bold text-neutral-900 mt-2">{project.name}</h4>
-                  </div>
-
-                  {editingQuestions.map((q, idx) => (
-                    <div key={q.id || idx} className="p-3.5 bg-neutral-50/80 rounded-xl border border-neutral-200/70 space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="text-[13px] font-bold text-neutral-900 leading-snug">
-                          {q.title}
-                        </span>
-                        <div className="flex items-center gap-1 shrink-0">
-                          {q.isRequired ? (
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-rose-50 text-rose-600 rounded">
-                              必填
-                            </span>
-                          ) : (
-                            <span className="text-[10px] font-medium px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded">
-                              选填
-                            </span>
-                          )}
-                          <span className="text-[10px] bg-white border border-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded">
-                            {q.type}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Mock Input Placeholder */}
-                      <div className="pt-1">
-                        {q.type.includes("图片") ? (
-                          <div className="h-16 border-2 border-dashed border-neutral-200 rounded-lg flex items-center justify-center text-[11px] text-neutral-400 gap-1 bg-white">
-                            <UploadCloud size={16} />
-                            <span>上传图片/视频凭证</span>
-                          </div>
-                        ) : (
-                          <div className="w-full px-3 py-2 bg-white border border-neutral-200 rounded-lg text-[12px] text-neutral-400">
-                            请填写或勾选你的真实体验...
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                /* EDIT MODE: Add/Edit/Delete Questions */
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
-                    <span className="text-[12px] font-bold text-neutral-600">题目列表及配置</span>
-                    <button
-                      onClick={addQuestion}
-                      className="px-3 py-1.5 bg-neutral-900 hover:bg-black text-white text-[12px] font-bold rounded-xl flex items-center gap-1 transition-colors shadow-2xs"
-                    >
-                      <Plus size={14} />
-                      <span>添加题目</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {editingQuestions.map((q, idx) => (
-                      <div key={q.id || idx} className="p-4 bg-white rounded-xl border border-neutral-200 shadow-2xs space-y-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-[12px] font-bold text-neutral-400">问题 {idx + 1}</span>
-                          <button
-                            onClick={() => removeQuestion(q.id)}
-                            className="p-1 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
-                            title="删除此题"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-
-                        <div>
-                          <input
-                            type="text"
-                            value={q.title}
-                            onChange={(e) => updateQuestionField(q.id, 'title', e.target.value)}
-                            className="w-full px-3 py-1.5 border border-neutral-200 rounded-lg text-[13px] font-bold text-neutral-900 outline-none focus:border-neutral-400"
-                            placeholder="输入问题名称..."
-                          />
-                        </div>
-
-                        <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-neutral-100">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-bold text-neutral-500">题型：</span>
-                            <select
-                              value={q.type}
-                              onChange={(e) => updateQuestionField(q.id, 'type', e.target.value)}
-                              className="px-2.5 py-1 border border-neutral-200 rounded-lg text-[12px] font-medium outline-none bg-neutral-50"
-                            >
-                              <option value="单选＋补充说明">单选＋补充说明</option>
-                              <option value="多选＋开放回答">多选＋开放回答</option>
-                              <option value="开放回答">开放回答</option>
-                              <option value="图片/视频上传">图片/视频上传</option>
-                            </select>
-                          </div>
-
-                          <label className="flex items-center gap-1.5 cursor-pointer text-[12px] font-bold text-neutral-700">
-                            <input
-                              type="checkbox"
-                              checked={q.isRequired}
-                              onChange={(e) => updateQuestionField(q.id, 'isRequired', e.target.checked)}
-                              className="rounded border-neutral-300 text-neutral-900 focus:ring-0"
-                            />
-                            <span>必填项</span>
-                          </label>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between bg-white shrink-0">
-              <span className="text-[12px] text-neutral-500">
-                修改完成后点击“保存问卷”即可生效
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowQuestionnaireModal(false)}
-                  className="px-4 py-2 border border-neutral-200 rounded-xl text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 transition-colors"
-                >
-                  取消
-                </button>
-                <button
-                  onClick={saveQuestionnaireEdits}
-                  className="px-5 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-xs"
-                >
-                  保存问卷
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+      {/* Unified Project Questionnaire Drawer */}
+      {showQuestionnaireDrawer && (
+        <ProjectQuestionnaireDrawer
+          project={{
+            ...project,
+            landingPageSettings: {
+              ...currentSettings,
+              loginMode,
+              bannerUrl,
+              hasQuestionnaire,
+              questionnaireQuestions: questions
+            }
+          }}
+          initialTab={questionnaireDrawerTab}
+          onSaved={(newQuestions) => {
+            setQuestions(newQuestions);
+          }}
+          onClose={() => setShowQuestionnaireDrawer(false)}
+        />
       )}
 
       {/* Consumer Landing Page Mobile Simulator */}

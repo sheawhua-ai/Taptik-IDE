@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, Search, Calendar, AlertTriangle, CheckCircle2, History, 
   MoreHorizontal, Settings, FileText, Check, ChevronRight, X,
-  ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, PanelLeftClose, PanelLeftOpen, Upload, Sparkles, Target, ShieldAlert, Layers, Clock
+  ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, PanelLeftClose, PanelLeftOpen, Upload, Sparkles, Target, ShieldAlert, Layers, Clock, RefreshCw
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
 import { Project, Note } from "../../data/projectStore";
 import { calculateProjectPipeline, getNoteDisplayStatus, getActionTextForIssue, getNoteMainStage } from "../../utils/noteStatus";
 
 import { NoteDetailDrawer } from "./ProjectCenter/NoteDetailDrawer";
+import { ProjectQuestionnaireDrawer } from "../rings/ProjectQuestionnaireDrawer";
 import { ContentReviewWorkbench } from "../rings/ContentReviewWorkbench";
 import { ShootingAndUploadWorkbench } from "../rings/ShootingAndUploadWorkbench";
 import { PublishExceptionWorkbench } from "../rings/PublishExceptionWorkbench";
@@ -74,7 +75,38 @@ export function ProjectCenter({
   const [createProjectStep, setCreateProjectStep] = useState<1 | 2>(1);
   
   const [activeNoteDetail, setActiveNoteDetail] = useState<Note | null>(null);
+  const [showProjectQuestionnaire, setShowProjectQuestionnaire] = useState(false);
   const [activeWorkbench, setActiveWorkbench] = useState<"content" | "assets" | "publish" | "create_project" | null>(null);
+
+  // Progress Refresh state
+  const [isRefreshingProgress, setIsRefreshingProgress] = useState(false);
+  const [lastUpdatedText, setLastUpdatedText] = useState("刚刚");
+  const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<number>(Date.now());
+
+  const handleRefreshProgress = () => {
+    if (isRefreshingProgress) return;
+    setIsRefreshingProgress(true);
+    setTimeout(() => {
+      setIsRefreshingProgress(false);
+      setLastUpdatedTimestamp(Date.now());
+      setLastUpdatedText("刚刚");
+    }, 600);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const elapsedMinutes = Math.floor((Date.now() - lastUpdatedTimestamp) / 60000);
+      if (elapsedMinutes < 1) {
+        setLastUpdatedText("刚刚");
+      } else if (elapsedMinutes < 60) {
+        setLastUpdatedText(`${elapsedMinutes}分钟前`);
+      } else {
+        const elapsedHours = Math.floor(elapsedMinutes / 60);
+        setLastUpdatedText(`${elapsedHours}小时前`);
+      }
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [lastUpdatedTimestamp]);
 
   if (!currentProject) {
     return (
@@ -105,7 +137,7 @@ export function ProjectCenter({
 
   if (activeWorkbench === "content") return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
   if (activeWorkbench === "assets") return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
-  if (activeWorkbench === "publish") return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} />;
+  if (activeWorkbench === "publish") return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} onBack={() => setActiveWorkbench(null)} fromSource="project" />;
   if (activeWorkbench === "create_project") return <CreateProjectWorkstation onClose={() => setActiveWorkbench(null)} onCreate={() => setActiveWorkbench(null)} />;
 
   return (
@@ -231,43 +263,73 @@ export function ProjectCenter({
               </div>
             </div>
           </div>
-          <div className="relative">
-
-            <button 
-              onClick={() => setShowMoreMenu(!showMoreMenu)}
-              className="p-2 text-neutral-400 hover:bg-neutral-100 rounded-xl"
+          <div className="flex items-center gap-2">
+            {/* 高频操作：落地页与问卷推广 */}
+            <button
+              onClick={() => setShowLandingPage(true)}
+              className="px-3.5 py-1.5 bg-white border border-[#EAECF0] hover:bg-neutral-50 hover:border-neutral-300 text-[13px] font-bold text-neutral-800 rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs"
             >
-              <MoreHorizontal size={18} />
+              <QrCode size={14} className="text-neutral-600" />
+              <span>落地页与问卷</span>
             </button>
-            {showMoreMenu && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
-                <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-[#EAECF0] rounded-xl shadow-lg z-50 py-1 text-[13px]">
-                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowProjectSettings(true); }}>
-                    编辑项目
-                  </button>
-                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowLandingPage(true); }}>
-                    落地页设置
-                  </button>
-                  <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827]" onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}>
-                    操作记录
-                  </button>
-                  <div className="my-1 border-t border-[#EAECF0]" />
-                  <button 
-                    onClick={() => { setShowMoreMenu(false); }}
-                    className="w-full text-left px-4 py-2 hover:bg-neutral-50 text-neutral-700 flex items-center gap-2"
-                  >
-                    结束项目
-                  </button>
-                  <button 
-                    onClick={() => { setShowMoreMenu(false); setShowArchiveConfirm(true); }}
-                    className="w-full text-left px-4 py-2 hover:bg-neutral-50 text-neutral-700 flex items-center gap-2"
-                  >
-                    归档项目
-                  </button>
-                </div>
-              </>
-            )}
+
+            {/* 低频操作：合并收纳在更多菜单内 */}
+            <div className="relative">
+              <button 
+                onClick={() => setShowMoreMenu(!showMoreMenu)}
+                title="更多项目操作"
+                className="p-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl border border-transparent hover:border-[#EAECF0] transition-colors"
+              >
+                <MoreHorizontal size={18} />
+              </button>
+              {showMoreMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
+                  <div className="absolute right-0 top-full mt-1.5 w-48 bg-white border border-[#EAECF0] rounded-xl shadow-lg z-50 py-1.5 text-[13px]">
+                    <button 
+                      className="w-full text-left px-3.5 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827] font-medium" 
+                      onClick={() => { setShowMoreMenu(false); setShowProjectSettings(true); }}
+                    >
+                      <Settings size={14} className="text-neutral-500" />
+                      <span>编辑项目信息</span>
+                    </button>
+                    <button 
+                      className="w-full text-left px-3.5 py-2 hover:bg-neutral-50 flex items-center justify-between text-[#111827] font-medium" 
+                      onClick={() => { setShowMoreMenu(false); setShowProjectQuestionnaire(true); }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText size={14} className="text-neutral-500" />
+                        <span>项目问卷配置</span>
+                      </div>
+                      <span className="text-[11px] px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600 font-medium">
+                        {currentProject.landingPageSettings?.questionnaireQuestions?.length || 4}题
+                      </span>
+                    </button>
+                    <button 
+                      className="w-full text-left px-3.5 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[#111827] font-medium" 
+                      onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}
+                    >
+                      <History size={14} className="text-neutral-500" />
+                      <span>操作记录</span>
+                    </button>
+                    <div className="my-1.5 border-t border-[#EAECF0]" />
+                    <button 
+                      onClick={() => { setShowMoreMenu(false); }}
+                      className="w-full text-left px-3.5 py-2 hover:bg-neutral-50 text-neutral-600 flex items-center gap-2"
+                    >
+                      <span>结束项目</span>
+                    </button>
+                    <button 
+                      onClick={() => { setShowMoreMenu(false); setShowArchiveConfirm(true); }}
+                      className="w-full text-left px-3.5 py-2 hover:bg-rose-50 text-rose-600 flex items-center gap-2"
+                    >
+                      <Trash2 size={14} />
+                      <span>归档项目</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
         {/* Tabs */}
@@ -367,53 +429,115 @@ export function ProjectCenter({
                   )}
                 </div>
 
-                {/* 2. 项目推进摘要 */}
+                {/* 2. 项目进展 */}
                 <div className="bg-white rounded-xl p-5 border border-[#EAECF0]">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1.5">
-                      <div className="text-[14px] text-[#111827] font-medium">
-                        方案已确认 · 笔记{pipeline?.totalNotes || 0}篇 · 内容就绪{pipeline?.contentReady || 0}/{pipeline?.totalNotes || 0} · 素材就绪{pipeline?.materialReady || 0}/{pipeline?.totalNotes || 0} · 待发布{pipeline?.readyToPublish || 0}篇 · 观察中{pipeline?.observing || 0}篇 · 已完成{pipeline?.completed || 0}篇
+                  {/* Card Header with Refresh Button & Time */}
+                  <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-[#EAECF0]">
+                    <h3 className="text-[14px] font-bold text-[#111827]">项目进展</h3>
+                    <div className="flex items-center gap-2 text-[12px] text-[#667085]">
+                      <span>最后更新：{lastUpdatedText}</span>
+                      <button 
+                        onClick={handleRefreshProgress}
+                        disabled={isRefreshingProgress}
+                        title="刷新项目数据"
+                        className="p-1 text-neutral-500 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <RefreshCw size={14} className={isRefreshingProgress ? "animate-spin text-primary-600" : ""} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 3 Static Groups Horizontal Layout */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#EAECF0] gap-4 md:gap-0">
+                    {/* Group 1: 内容准备 */}
+                    <div className="space-y-2 md:pr-5">
+                      <div className="text-[13px] font-bold text-[#111827] mb-2.5">内容准备</div>
+                      <div className="space-y-2 text-[12px]">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">计划笔记</span>
+                          <span className="font-bold text-[#111827]">6 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">内容已生成</span>
+                          <span className="font-bold text-[#111827]">3 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">内容待确认</span>
+                          <span className="font-bold text-[#111827]">1 篇</span>
+                        </div>
                       </div>
-                      <div className="text-[13px] text-[#667085]">
-                        下一节点：今天 18:00 发布首篇店长号笔记
+                    </div>
+
+                    {/* Group 2: 素材准备 */}
+                    <div className="space-y-2 md:px-5">
+                      <div className="text-[13px] font-bold text-[#111827] mb-2.5">素材准备</div>
+                      <div className="space-y-2 text-[12px]">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">素材已就绪</span>
+                          <span className="font-bold text-[#111827]">0 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">等待素材</span>
+                          <span className="font-bold text-[#111827]">6 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">素材异常</span>
+                          <span className="font-bold text-[#111827]">0 篇</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Group 3: 发布与观察 */}
+                    <div className="space-y-2 md:pl-5">
+                      <div className="text-[13px] font-bold text-[#111827] mb-2.5">发布与观察</div>
+                      <div className="space-y-2 text-[12px]">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">待发布</span>
+                          <span className="font-bold text-[#111827]">0 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">等待识别</span>
+                          <span className="font-bold text-[#111827]">0 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">观察中</span>
+                          <span className="font-bold text-[#111827]">1 篇</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#667085]">已完成</span>
+                          <span className="font-bold text-[#111827]">0 篇</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 3. 本轮营销方案摘要 */}
+                {/* 3. 本轮营销方案 */}
                 <div className="bg-white rounded-xl p-6 border border-[#EAECF0] space-y-4">
                   <div className="flex items-center justify-between border-b border-[#EAECF0] pb-3">
                     <div className="flex items-center gap-2">
                       <h3 className="text-[15px] font-bold text-[#111827]">本轮营销方案</h3>
-                      <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-lg border border-emerald-200">
-                        ✓ 方案生效中
-                      </span>
                     </div>
                     <button 
                       onClick={() => setShowProjectPlan(true)}
                       className="px-3.5 py-1.5 border border-[#EAECF0] text-primary-600 hover:bg-primary-50 hover:border-primary-200 text-[13px] font-bold rounded-xl flex items-center gap-1 transition-colors"
                     >
-                      查看详情 <ChevronRight size={14} />
+                      查看方案详情 <ChevronRight size={14} />
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
-                      <div className="text-[12px] text-[#667085] mb-1 font-medium">核心问题</div>
-                      <div className="text-[13px] text-[#111827] font-bold">解决用户换粮拉肚子/软便顾虑</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1.5 font-medium">核心问题</div>
+                      <div className="text-[13px] text-[#111827] font-bold leading-relaxed">解决用户换粮拉肚子/软便顾虑，破除种草多转化少</div>
                     </div>
-                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
-                      <div className="text-[12px] text-[#667085] mb-1 font-medium">内容方法</div>
-                      <div className="text-[13px] text-[#111827] font-bold">店长专业科普 + KOC真实测评</div>
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1.5 font-medium">内容方法</div>
+                      <div className="text-[13px] text-[#111827] font-bold leading-relaxed">店长专业科普 + KOC真实体验 + 动态问卷生成</div>
                     </div>
-                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
-                      <div className="text-[12px] text-[#667085] mb-1 font-medium">发布矩阵</div>
-                      <div className="text-[13px] text-[#111827] font-bold">品牌店长号 (1) + KOC (3) + 问卷笔记包 (2)</div>
-                    </div>
-                    <div className="p-3.5 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
-                      <div className="text-[12px] text-[#667085] mb-1 font-medium">CPA 成本目标</div>
-                      <div className="text-[13px] text-[#111827] font-bold">&lt; 50元 / 微信索样咨询</div>
+                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]/80">
+                      <div className="text-[12px] text-[#667085] mb-1.5 font-medium">发布矩阵</div>
+                      <div className="text-[13px] text-[#111827] font-bold leading-relaxed">品牌店长号 (1) + KOC (3) + 问卷笔记包 (2)</div>
                     </div>
                   </div>
                 </div>
@@ -507,11 +631,11 @@ export function ProjectCenter({
                               {note.isNotePackage && (
                                 note.packageSpec?.questionnaireStatus === "已填写" ? (
                                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[11px] font-bold rounded-md">
-                                    📦 笔记包 (已填问卷·已即时生成)
+                                    📦 笔记包 (已填问卷)
                                   </span>
                                 ) : (
                                   <span className="px-2 py-0.5 bg-primary-100 text-primary-700 text-[11px] font-bold rounded-md">
-                                    📦 笔记包 (待KOC填写问卷)
+                                    📦 笔记包
                                   </span>
                                 )
                               )}
@@ -534,17 +658,6 @@ export function ProjectCenter({
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
-                              {note.isNotePackage && note.packageSpec?.questionnaireStatus === "待填写" && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedPackageNoteForQuestionnaire(note);
-                                  }}
-                                  className="px-3.5 py-1.5 bg-primary-600 text-white hover:bg-primary-700 text-[12px] font-bold rounded-xl flex items-center gap-1 shadow-xs transition-colors"
-                                >
-                                  <Sparkles size={13} /> 填写问卷生成笔记
-                                </button>
-                              )}
 
                               <button 
                                 onClick={(e) => {
@@ -729,14 +842,9 @@ export function ProjectCenter({
                   <h2 className="text-[17px] font-bold text-[#111827]">本轮完整营销与内容方案</h2>
                   <p className="text-[12px] text-[#667085] mt-0.5">方案已由 AI 操盘手根据商户策略协议与商业目标综合生成并确认</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[12px] font-bold rounded-lg border border-emerald-200">
-                    ✓ 生效中
-                  </span>
-                  <button onClick={() => setShowProjectPlan(false)} className="p-1.5 text-neutral-400 hover:text-[#111827] hover:bg-neutral-200 rounded-xl transition-colors">
-                    <X size={18}/>
-                  </button>
-                </div>
+                <button onClick={() => setShowProjectPlan(false)} className="p-1.5 text-neutral-400 hover:text-[#111827] hover:bg-neutral-200 rounded-xl transition-colors">
+                  <X size={18}/>
+                </button>
               </div>
 
               <div className="p-6 overflow-y-auto flex-1 space-y-6">
@@ -757,27 +865,10 @@ export function ProjectCenter({
                   </div>
                 </div>
 
-                {/* 2. 成本约束与熔断/停止条件 */}
+                {/* 2. 内容策略与账号发布矩阵 */}
                 <div className="space-y-3">
                   <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
-                    <ShieldAlert size={15} /> 2. 成本约束与熔断/停止条件
-                  </h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
-                      <div className="text-[12px] text-[#667085] mb-1 font-medium">CPA (单次行动成本) 目标</div>
-                      <div className="text-[13px] text-[#111827] font-bold">&lt; 50 元 / 微信索样咨询</div>
-                    </div>
-                    <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
-                      <div className="text-[12px] text-[#667085] mb-1 font-medium">熔断/切换打法条件</div>
-                      <div className="text-[13px] text-red-600 font-bold leading-relaxed">连续 3 篇笔记 CPA &gt; 100元，或连续两周无有效咨询则自动停止投放并切换打法</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. 内容策略与账号发布矩阵 */}
-                <div className="space-y-3">
-                  <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
-                    <Layers size={15} /> 3. 内容策略与账号发布矩阵
+                    <Layers size={15} /> 2. 内容策略与账号发布矩阵
                   </h4>
                   <div className="border border-[#EAECF0] rounded-xl overflow-hidden divide-y divide-[#EAECF0]">
                     <div className="p-3.5 bg-white flex gap-4">
@@ -795,14 +886,40 @@ export function ProjectCenter({
                   </div>
                 </div>
 
+                {/* 3. 事实采集与体验问卷 */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
+                      <FileText size={15} /> 3. 事实采集与体验问卷
+                    </h4>
+                    <button
+                      onClick={() => {
+                        setShowProjectPlan(false);
+                        setShowProjectQuestionnaire(true);
+                      }}
+                      className="text-[12px] font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1"
+                    >
+                      配置问卷题目 <ChevronRight size={13} />
+                    </button>
+                  </div>
+                  <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0] space-y-2">
+                    <div className="text-[13px] text-[#111827] font-bold">
+                      当前已配置 {currentProject.landingPageSettings?.questionnaireQuestions?.length || 4} 道事实采集题目
+                    </div>
+                    <p className="text-[12px] text-[#667085] leading-relaxed">
+                      落地页与活动体验官通过问卷提交真实月龄、困扰症状及喂养反馈后，AI 操盘手将提取核心事实定向生成真实测评笔记。
+                    </p>
+                  </div>
+                </div>
+
                 {/* 4. 数据观察 */}
                 <div className="space-y-3">
                   <h4 className="text-[13px] font-bold text-primary-700 uppercase tracking-wider flex items-center gap-1.5">
-                    <Clock size={15} /> 4. 数据观察
+                    <Clock size={15} /> 4. 数据观察与调优标准
                   </h4>
-                  <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0]">
-                    <div className="text-[12px] text-[#667085] mb-1 font-medium">默认观察周期</div>
-                    <div className="text-[13px] text-[#111827] font-bold">7天 (包含24h数据、3天关键检查点)</div>
+                  <div className="p-4 bg-[#F7F8FA] rounded-xl border border-[#EAECF0] space-y-1">
+                    <div className="text-[12px] text-[#667085] font-medium">默认观察周期</div>
+                    <div className="text-[13px] text-[#111827] font-bold">7天 (包含24h初期数据、3天核心指标检查与7天复盘草案)</div>
                   </div>
                 </div>
               </div>
@@ -1236,13 +1353,7 @@ export function ProjectCenter({
         )}
       </AnimatePresence>
 
-      {/* KOC Questionnaire Modal for Note Package */}
-      {selectedPackageNoteForQuestionnaire && (
-        <KOCQuestionnaireModal
-          note={selectedPackageNoteForQuestionnaire}
-          onClose={() => setSelectedPackageNoteForQuestionnaire(null)}
-        />
-      )}
+      
 
       {/* Note Detail Drawer */}
       {activeNoteDetail && (
@@ -1255,6 +1366,14 @@ export function ProjectCenter({
         />
       )}
 
+      {/* Project Questionnaire Drawer */}
+      {showProjectQuestionnaire && (
+        <ProjectQuestionnaireDrawer 
+          project={currentProject}
+          onClose={() => setShowProjectQuestionnaire(false)} 
+        />
+      )}
+      
       {/* Note Creation / Import Modals */}
       {showAddNoteModal && currentProject && (
         <AddSingleNoteModal 

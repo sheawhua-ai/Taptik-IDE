@@ -15,8 +15,6 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   const [activeArea, setActiveArea] = useState<'title' | 'content' | 'tags' | 'images' | null>(null);
   const [activeImageId, setActiveImageId] = useState<string | null>(null);
   
-  const [listGroupMode, setListGroupMode] = useState<'project' | 'account'>('project');
-  
   const [localEditInput, setLocalEditInput] = useState('');
   const [localEditResult, setLocalEditResult] = useState<{text: string, status: 'resolved' | 'unresolved', message: string} | null>(null);
   const [fullEditResult, setFullEditResult] = useState<string | null>(null);
@@ -25,6 +23,30 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showReviewed, setShowReviewed] = useState(false);
 
+  const [showBasisDrawer, setShowBasisDrawer] = useState(false);
+  const [showHistoryDrawer, setShowHistoryDrawer] = useState(false);
+  const [showMaterialModal, setShowMaterialModal] = useState(false);
+  const [showAIAdjustModal, setShowAIAdjustModal] = useState(false);
+  const [newTagInput, setNewTagInput] = useState('');
+  const [showNewTagInput, setShowNewTagInput] = useState(false);
+  
+  const removeTag = (tagToRemove: string) => {
+    setNotes(notes.map(n => n.id === activeNoteId ? { ...n, tags: n.tags.filter(t => t !== tagToRemove) } : n));
+  };
+  const addTag = (newTag: string) => {
+    const cleanTag = newTag.trim().replace(/^#/, '');
+    if (cleanTag && !activeNote.tags.includes(cleanTag)) {
+      setNotes(notes.map(n => n.id === activeNoteId ? { ...n, tags: [...n.tags, cleanTag] } : n));
+    }
+    setNewTagInput('');
+    setShowNewTagInput(false);
+  };
+  const deleteImage = (imgId: string) => {
+    setNotes(notes.map(n => n.id === activeNoteId ? { ...n, images: n.images.filter(img => img.id !== imgId) } : n));
+    setActiveImageId(null);
+  };
+
+
   const { unifiedState } = useProjectStore();
   
   const [notes, setNotes] = useState(
@@ -32,7 +54,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
       const draft = unifiedState.contentDrafts.find(d => d.noteSlotId === ns.id);
       return {
         id: ns.id,
-        project: unifiedState.projects.find(p => p.id === ns.projectId)?.name || '',
+        project: ns.id.includes('2') || ns.id.includes('4') ? '双十一大促种草计划' : (unifiedState.projects.find(p => p.id === ns.projectId)?.name || '幼犬换粮搜索卡位第三轮'),
         accountType: ns.accountType,
         accountName: ns.accountName,
         title: draft?.title || '未命名',
@@ -164,7 +186,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
   const reviewedNotes = notes.filter(n => n.isReviewed);
   
   const groupedPending = pendingNotes.reduce((acc, note) => {
-    const key = listGroupMode === 'project' ? note.project : note.accountType;
+    const key = note.project || '其他项目';
     if (!acc[key]) acc[key] = [];
     acc[key].push(note);
     return acc;
@@ -197,10 +219,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                 exit={{ opacity: 0, y: 10 }}
                 className="absolute top-12 right-12 w-48 bg-white border border-neutral-200 shadow-xl rounded-xl overflow-hidden z-50 py-1"
               >
-                <button className="w-full text-left px-4 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 flex items-center gap-2">
+                <button onClick={() => { setShowBasisDrawer(true); setShowMoreMenu(false); }} className="w-full text-left px-4 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 flex items-center gap-2">
                   <AlignLeft size={14} /> 写作依据
                 </button>
-                <button className="w-full text-left px-4 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 flex items-center gap-2">
+                <button onClick={() => { setShowHistoryDrawer(true); setShowMoreMenu(false); }} className="w-full text-left px-4 py-2 text-[13px] text-neutral-700 hover:bg-neutral-50 flex items-center gap-2">
                   <History size={14} /> 修改记录
                 </button>
               </motion.div>
@@ -218,18 +240,6 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
         
         {/* Left Column: Note List */}
         <div className="w-[280px] bg-white border-r border-neutral-200 flex flex-col shrink-0 overflow-hidden">
-          <div className="p-3 border-b border-neutral-100">
-             <div className="flex items-center bg-neutral-100 p-1 rounded-lg">
-                <button 
-                  onClick={() => setListGroupMode('project')}
-                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-md transition-colors ${listGroupMode === 'project' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-                >按项目</button>
-                <button 
-                  onClick={() => setListGroupMode('account')}
-                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-md transition-colors ${listGroupMode === 'account' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-                >按账号</button>
-             </div>
-          </div>
           
           <div className="flex-1 overflow-y-auto p-3 space-y-4">
             {Object.entries(groupedPending).map(([groupName, groupNotes]: [string, any]) => (
@@ -242,17 +252,17 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       onClick={() => { setActiveNoteId(n.id); setActiveArea(null); setTextSelection(null); }}
                       className={`p-3 rounded-xl border cursor-pointer transition-colors ${
                         activeNoteId === n.id 
-                          ? 'bg-rose-50 border-rose-200 shadow-sm' 
+                          ? 'bg-primary-50 border-primary-200 shadow-sm' 
                           : 'bg-white border-neutral-100 hover:border-neutral-200'
                       }`}
                     >
-                      <div className={`text-[13px] font-bold mb-1 truncate ${activeNoteId === n.id ? 'text-rose-900' : 'text-neutral-900'}`}>{n.title}</div>
-                      <div className="text-[11px] text-neutral-500 mb-2">{listGroupMode === 'project' ? n.accountName : n.project}</div>
+                      <div className={`text-[13px] font-bold mb-1 truncate ${activeNoteId === n.id ? 'text-primary-900' : 'text-neutral-900'}`}>{n.title}</div>
+                      <div className="text-[11px] text-neutral-500 mb-2">{n.accountName}</div>
                       <div className="flex items-center justify-between">
-                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${n.status === '需处理' ? 'bg-rose-100 text-rose-700' : 'bg-neutral-100 text-neutral-600'}`}>
+                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${n.status === '需处理' ? 'bg-primary-100 text-primary-700' : 'bg-neutral-100 text-neutral-600'}`}>
                            {n.status}
                          </span>
-                         {n.mainIssue !== '无' && <span className="text-[10px] text-rose-500">{n.mainIssue}</span>}
+                         {n.mainIssue !== '无' && <span className="text-[10px] text-primary-600 font-medium">{n.mainIssue}</span>}
                       </div>
                     </div>
                   ))}
@@ -260,43 +270,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
               </div>
             ))}
             
-            {/* Reviewed Notes Group */}
-            {reviewedNotes.length > 0 && (
-              <div className="pt-4 border-t border-neutral-100 mt-4">
-                <div 
-                  onClick={() => setShowReviewed(!showReviewed)} 
-                  className="flex items-center justify-between text-[12px] font-bold text-neutral-500 mb-2 px-1 cursor-pointer hover:text-neutral-700"
-                >
-                  <div className="flex items-center gap-1">
-                    <ChevronRight size={14} className={`transition-transform ${showReviewed ? 'rotate-90' : ''}`} />
-                    已完成
-                  </div>
-                  <span>{reviewedNotes.length}</span>
-                </div>
-                {showReviewed && (
-                  <div className="space-y-1.5">
-                    {reviewedNotes.map(n => (
-                      <div 
-                        key={n.id}
-                        onClick={() => setActiveNoteId(n.id)}
-                        className={`p-3 rounded-xl border cursor-pointer transition-colors ${
-                          activeNoteId === n.id ? 'bg-neutral-50 border-neutral-300' : 'bg-white border-neutral-100'
-                        }`}
-                      >
-                        <div className="text-[13px] font-bold text-neutral-900 mb-1 truncate opacity-70">{n.title}</div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[11px] text-neutral-400">{n.accountName}</span>
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700">
-                            已完成
-                          </span>
-                        </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Middle Column: Editor */}
@@ -312,13 +286,13 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   type="text" 
                   defaultValue={activeNote.title}
                   onFocus={() => setActiveArea('title')}
-                  className={`w-full text-[22px] font-bold text-neutral-900 mb-6 focus:outline-none placeholder-neutral-300 px-3 py-2 -mx-3 rounded-xl transition-colors ${activeArea === 'title' ? 'bg-rose-50/50 ring-1 ring-rose-100' : 'hover:bg-neutral-50'}`}
+                  className={`w-full text-[22px] font-bold text-neutral-900 mb-6 focus:outline-none placeholder-neutral-300 px-3 py-2 -mx-3 rounded-xl transition-colors ${activeArea === 'title' ? 'bg-primary-50/50 ring-1 ring-primary-200' : 'hover:bg-neutral-50'}`}
                   placeholder="输入标题..."
                 />
                 
                 {/* Content */}
                 <div 
-                  className={`text-[15px] leading-relaxed text-neutral-800 min-h-[300px] focus:outline-none px-3 py-4 -mx-3 rounded-xl transition-colors ${activeArea === 'content' ? 'bg-rose-50/50 ring-1 ring-rose-100' : 'hover:bg-neutral-50'}`}
+                  className={`text-[15px] leading-relaxed text-neutral-800 min-h-[300px] focus:outline-none px-3 py-4 -mx-3 rounded-xl transition-colors ${activeArea === 'content' ? 'bg-primary-50/50 ring-1 ring-primary-200' : 'hover:bg-neutral-50'}`}
                   onMouseUp={handleSelection}
                   onKeyUp={handleSelection}
                   onClick={handleContentClick}
@@ -329,20 +303,31 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                 
                 {/* Tags */}
                 <div 
-                  className={`mt-6 p-3 -mx-3 rounded-xl transition-colors cursor-pointer ${activeArea === 'tags' ? 'bg-rose-50/50 ring-1 ring-rose-100' : 'hover:bg-neutral-50'}`}
+                  className={`mt-6 p-3 -mx-3 rounded-xl transition-colors cursor-pointer ${activeArea === 'tags' ? 'bg-primary-50/50 ring-1 ring-primary-200' : 'hover:bg-neutral-50'}`}
                   onClick={() => setActiveArea('tags')}
                 >
                   <div className="flex flex-wrap gap-2">
                     {activeNote.tags.map(t => (
-                      <span key={t} className="px-2 py-1 bg-neutral-100 text-neutral-700 rounded-lg text-[13px]">#{t}</span>
+                      <span key={t} className="px-2 py-1 bg-neutral-100 text-neutral-700 rounded-lg text-[13px] group flex items-center gap-1 transition-colors hover:bg-primary-50 hover:text-primary-700">
+                        #{t}
+                        <button onClick={(e) => { e.stopPropagation(); removeTag(t); }} className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 text-neutral-400 hover:text-primary-600">
+                          <X size={12} />
+                        </button>
+                      </span>
                     ))}
-                    <button className="px-2 py-1 border border-dashed border-neutral-300 text-neutral-400 rounded-lg text-[13px] hover:text-neutral-600 flex items-center gap-1"><Plus size={12}/> 添加</button>
+                    {!showNewTagInput ? (
+                      <button onClick={(e) => { e.stopPropagation(); setShowNewTagInput(true); }} className="px-2 py-1 border border-dashed border-neutral-300 text-neutral-400 rounded-lg text-[13px] hover:text-neutral-600 flex items-center gap-1"><Plus size={12}/> 添加</button>
+                    ) : (
+                      <div className="flex items-center">
+                        <input autoFocus type="text" value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag(newTagInput); } }} onBlur={() => addTag(newTagInput)} onClick={e => e.stopPropagation()} className="px-2 py-1 border border-primary-500 bg-white text-neutral-700 rounded-lg text-[13px] focus:outline-none w-24" placeholder="输入标签" />
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Images */}
                 <div 
-                  className={`mt-6 pt-6 border-t border-neutral-100 p-3 -mx-3 rounded-xl transition-colors cursor-pointer ${activeArea === 'images' ? 'bg-rose-50/50 ring-1 ring-rose-100' : 'hover:bg-neutral-50'}`}
+                  className={`mt-6 pt-6 border-t border-neutral-100 p-3 -mx-3 rounded-xl transition-colors cursor-pointer ${activeArea === 'images' ? 'bg-primary-50/50 ring-1 ring-primary-200' : 'hover:bg-neutral-50'}`}
                   onClick={() => setActiveArea('images')}
                 >
                   <div className="text-[13px] font-bold text-neutral-900 mb-3">笔记图片 (拖拽排序，第1张为首图)</div>
@@ -356,7 +341,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={(e) => handleImageDrop(e, idx)}
                         onClick={(e) => { e.stopPropagation(); setActiveArea('images'); setActiveImageId(img.id); }}
-                        className={`relative w-28 h-36 rounded-xl overflow-hidden shrink-0 border-2 cursor-pointer transition-colors ${activeImageId === img.id ? 'border-rose-500' : 'border-transparent hover:border-neutral-300'}`}
+                        className={`relative w-28 h-36 rounded-xl overflow-hidden shrink-0 border-2 cursor-pointer transition-colors ${activeImageId === img.id ? 'border-primary-500' : 'border-transparent hover:border-neutral-300'}`}
                       >
                         <img src={img.url} alt="" className="w-full h-full object-cover" />
                         {idx === 0 && (
@@ -388,7 +373,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                <button onClick={handleSave} className="px-5 py-2.5 text-neutral-600 border border-neutral-200 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors">
                  保存
                </button>
-               <button onClick={handleApprove} className="px-6 py-2.5 bg-rose-600 text-white rounded-xl text-[13px] font-bold hover:bg-rose-700 transition-colors shadow-sm flex items-center gap-2">
+               <button onClick={handleApprove} className="px-6 py-2.5 bg-primary-600 text-white rounded-xl text-[13px] font-bold hover:bg-primary-700 transition-colors shadow-sm flex items-center gap-2">
                  确认并查看下一篇 <ChevronRight size={16} />
                </button>
              </div>
@@ -400,7 +385,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
           
           {/* Top Info Bar */}
           <div className="px-5 py-4 border-b border-neutral-100 flex items-center gap-2">
-            <Sparkles size={16} className={activeArea ? "text-rose-600" : "text-neutral-400"} />
+            <Sparkles size={16} className={activeArea ? "text-primary-600" : "text-neutral-400"} />
             <h3 className="text-[14px] font-bold text-neutral-900">
               {activeArea === 'title' ? '标题优化' 
                : activeArea === 'content' ? (textSelection ? '局部修改' : '正文优化')
@@ -417,12 +402,12 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   请在左侧编辑区点击任意部分（标题、正文、标签、图片）进行修改与优化。
                 </div>
                 {activeNote.mainIssue !== '无' && (
-                  <div className="bg-rose-50 border border-rose-100 p-3 rounded-xl">
+                  <div className="bg-primary-50 border border-primary-200 p-3 rounded-xl">
                     <div className="flex items-start gap-2">
-                      <AlertOctagon size={14} className="text-rose-600 shrink-0 mt-0.5" />
+                      <AlertOctagon size={14} className="text-primary-600 shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-[13px] font-bold text-rose-900 mb-1">系统提示：{activeNote.mainIssue}</div>
-                        <div className="text-[12px] text-rose-700/80">
+                        <div className="text-[13px] font-bold text-primary-900 mb-1">系统提示：{activeNote.mainIssue}</div>
+                        <div className="text-[12px] text-primary-700">
                           发现可能的问题点，请点击对应区域查看详情并处理。
                         </div>
                       </div>
@@ -436,10 +421,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
               <div className="space-y-4">
                 <div className="text-[12px] text-neutral-500 mb-2">AI 建议标题：</div>
                 <div className="space-y-2">
-                  <div className="p-3 border border-neutral-200 hover:border-rose-400 bg-neutral-50 hover:bg-rose-50 rounded-xl cursor-pointer transition-colors text-[13px] text-neutral-800">
+                  <div className="p-3 border border-neutral-200 hover:border-primary-400 bg-neutral-50 hover:bg-primary-50 rounded-xl cursor-pointer transition-colors text-[13px] text-neutral-800">
                     换粮软便必看！新手养狗不踩坑指南
                   </div>
-                  <div className="p-3 border border-neutral-200 hover:border-rose-400 bg-neutral-50 hover:bg-rose-50 rounded-xl cursor-pointer transition-colors text-[13px] text-neutral-800">
+                  <div className="p-3 border border-neutral-200 hover:border-primary-400 bg-neutral-50 hover:bg-primary-50 rounded-xl cursor-pointer transition-colors text-[13px] text-neutral-800">
                     干货满满，带你了解科学“七日换粮法”
                   </div>
                 </div>
@@ -448,13 +433,13 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
             
             {activeArea === 'content' && !textSelection && (
               <div className="space-y-6">
-                 <div className="bg-rose-50 border border-rose-100 p-4 rounded-xl relative overflow-hidden">
+                 <div className="bg-primary-50 border border-primary-200 p-4 rounded-xl relative overflow-hidden">
                     <div className="flex items-start gap-2 relative z-10">
-                      <AlertOctagon size={16} className="text-rose-600 shrink-0 mt-0.5" />
+                      <AlertOctagon size={16} className="text-primary-600 shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-[14px] font-bold text-rose-900 mb-2">事实没有来源支撑</div>
-                        <div className="text-[13px] text-rose-800/80 mb-3">文中可能存在过度承诺。</div>
-                        <button className="text-[12px] font-bold text-rose-700 bg-white px-3 py-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 transition-colors">
+                        <div className="text-[14px] font-bold text-primary-900 mb-2">事实没有来源支撑</div>
+                        <div className="text-[13px] text-primary-800 mb-3">文中可能存在过度承诺。</div>
+                        <button className="text-[12px] font-bold text-primary-700 bg-white px-3 py-1.5 rounded-lg border border-primary-200 hover:bg-primary-50 transition-colors">
                           查看依据详情
                         </button>
                       </div>
@@ -483,7 +468,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   <textarea 
                     value={localEditInput}
                     onChange={(e) => setLocalEditInput(e.target.value)}
-                    className="w-full h-24 p-3 text-[13px] border border-neutral-200 rounded-xl focus:outline-none focus:border-rose-400 bg-white resize-none"
+                    className="w-full h-24 p-3 text-[13px] border border-neutral-200 rounded-xl focus:outline-none focus:border-primary-500 bg-white resize-none"
                     placeholder="输入修改要求，例如：更口语化一些"
                   />
                   <div className="flex gap-2 mt-2">
@@ -496,10 +481,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                 {localEditResult && (
                   <div className="mt-6 pt-6 border-t border-neutral-100">
                     <div className="text-[12px] font-bold text-neutral-500 mb-2">AI 修改建议：</div>
-                    <div className="bg-white border border-rose-200 p-3 rounded-xl mb-3 shadow-sm">
+                    <div className="bg-white border border-primary-200 p-3 rounded-xl mb-3 shadow-sm">
                       <div className="text-[13px] text-neutral-900">{localEditResult.text}</div>
                     </div>
-                    <button onClick={applyLocalEdit} className="w-full py-2 bg-rose-600 text-white rounded-xl text-[13px] font-bold hover:bg-rose-700 transition-colors shadow-sm">
+                    <button onClick={applyLocalEdit} className="w-full py-2 bg-primary-600 text-white rounded-xl text-[13px] font-bold hover:bg-primary-700 transition-colors shadow-sm">
                       采纳并替换
                     </button>
                   </div>
@@ -511,11 +496,11 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
               <div className="space-y-4">
                 <div className="text-[12px] text-neutral-500 mb-2">AI 推荐话题：</div>
                 <div className="flex flex-col gap-2">
-                  <button className="px-3 py-2 border border-neutral-200 bg-neutral-50 text-neutral-700 rounded-xl text-[13px] hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700 transition-colors text-left flex items-center justify-between">
+                  <button onClick={() => addTag('科学喂养')} className="px-3 py-2 border border-neutral-200 bg-neutral-50 text-neutral-700 rounded-xl text-[13px] hover:bg-primary-50 hover:border-primary-200 hover:text-primary-700 transition-colors text-left flex items-center justify-between">
                     <span>#科学喂养</span>
                     <Plus size={14} className="text-neutral-400" />
                   </button>
-                  <button className="px-3 py-2 border border-neutral-200 bg-neutral-50 text-neutral-700 rounded-xl text-[13px] hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700 transition-colors text-left flex items-center justify-between">
+                  <button onClick={() => addTag('幼犬肠胃')} className="px-3 py-2 border border-neutral-200 bg-neutral-50 text-neutral-700 rounded-xl text-[13px] hover:bg-primary-50 hover:border-primary-200 hover:text-primary-700 transition-colors text-left flex items-center justify-between">
                     <span>#幼犬肠胃</span>
                     <Plus size={14} className="text-neutral-400" />
                   </button>
@@ -533,10 +518,10 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                     <button className="w-full py-2.5 bg-neutral-50 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2">
                       <ArrowRightLeft size={16} /> 替换图片
                     </button>
-                    <button className="w-full py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm flex items-center justify-center gap-2">
+                    <button onClick={() => setShowAIAdjustModal(true)} className="w-full py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-sm flex items-center justify-center gap-2">
                       <Zap size={16} className="text-amber-400" /> AI调整
                     </button>
-                    <button className="w-full py-2.5 bg-neutral-50 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2">
+                    <button onClick={() => setShowMaterialModal(true)} className="w-full py-2.5 bg-neutral-50 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2">
                       <Sparkles size={16} /> 从素材中心选择
                     </button>
                     <button className="w-full py-2.5 bg-neutral-50 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2">
@@ -552,7 +537,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       </button>
                     )}
                     
-                    <button className="w-full py-2.5 border border-rose-100 text-rose-600 rounded-xl text-[13px] font-bold hover:bg-rose-50 transition-colors flex items-center justify-center gap-2 mt-4">
+                    <button onClick={() => deleteImage(activeImageId)} className="w-full py-2.5 border border-rose-100 text-rose-600 rounded-xl text-[13px] font-bold hover:bg-rose-50 transition-colors flex items-center justify-center gap-2 mt-4">
                       <Trash2 size={16} /> 删除图片
                     </button>
                   </>
@@ -581,6 +566,173 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AnimatePresence>
+        {showBasisDrawer && (
+          <div className="fixed inset-0 z-[200] flex">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" onClick={() => setShowBasisDrawer(false)} />
+            <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="absolute right-0 top-0 bottom-0 w-[400px] bg-white shadow-2xl border-l border-neutral-200 flex flex-col">
+              <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+                <h3 className="text-[18px] font-bold text-neutral-900 flex items-center gap-2"><FileText size={20} className="text-neutral-400" /> 写作依据</h3>
+                <button onClick={() => setShowBasisDrawer(false)} className="p-2 hover:bg-neutral-100 rounded-full transition-colors"><X size={20} className="text-neutral-400" /></button>
+              </div>
+              <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-900 mb-2">所属项目/需求</h4>
+                  <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-[13px] text-neutral-700">
+                    <p className="font-bold mb-1">{activeNote.project}</p>
+                    <p className="text-neutral-500">内容方向: {activeNote.fixedRole}</p>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-900 mb-2">人设与账号类型</h4>
+                  <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-[13px] text-neutral-700">
+                    <p>当前账号: <span className="font-bold">{activeNote.accountName}</span> ({activeNote.accountType})</p>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-[13px] font-bold text-neutral-900 mb-2">核心参考素材</h4>
+                  <div className="space-y-2">
+                    <div className="bg-white border border-neutral-200 p-3 rounded-xl flex items-center gap-3">
+                      <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center shrink-0"><FileText size={16} className="text-neutral-400" /></div>
+                      <div>
+                        <div className="text-[13px] font-bold text-neutral-900">产品功能手册_2024.pdf</div>
+                        <div className="text-[11px] text-neutral-500">提供事实支撑</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showHistoryDrawer && (
+          <div className="fixed inset-0 z-[200] flex">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" onClick={() => setShowHistoryDrawer(false)} />
+            <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="absolute right-0 top-0 bottom-0 w-[400px] bg-white shadow-2xl border-l border-neutral-200 flex flex-col">
+              <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+                <h3 className="text-[18px] font-bold text-neutral-900 flex items-center gap-2"><History size={20} className="text-neutral-400" /> 修改记录</h3>
+                <button onClick={() => setShowHistoryDrawer(false)} className="p-2 hover:bg-neutral-100 rounded-full transition-colors"><X size={20} className="text-neutral-400" /></button>
+              </div>
+              <div className="p-6 overflow-y-auto flex-1 relative">
+                <div className="absolute left-[39px] top-6 bottom-6 w-px bg-neutral-200 z-0"></div>
+                <div className="space-y-8 relative z-10">
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center shrink-0 border-2 border-white shadow-sm text-primary-600"><User size={14} /></div>
+                    <div>
+                      <div className="text-[13px] font-bold text-neutral-900 mb-0.5">人类审查员 修改了标题</div>
+                      <div className="text-[11px] text-neutral-500 mb-2">今天 14:30</div>
+                      <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200 text-[13px] text-neutral-600 line-through mb-1">原：太棒了！这款新品超出预期</div>
+                      <div className="bg-primary-50 p-3 rounded-xl border border-primary-200 text-[13px] text-primary-900 font-medium">新：绝了！这款新品真的超出预期</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-neutral-900 flex items-center justify-center shrink-0 border-2 border-white shadow-sm text-white"><Zap size={14} /></div>
+                    <div>
+                      <div className="text-[13px] font-bold text-neutral-900 mb-0.5">AI 助手 (GPT) 调整了配图排版</div>
+                      <div className="text-[11px] text-neutral-500 mb-2">今天 14:15</div>
+                      <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200 text-[13px] text-neutral-700">
+                        应用了 "首图加文字" 模板
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center shrink-0 border-2 border-white shadow-sm text-neutral-600"><Check size={14} /></div>
+                    <div>
+                      <div className="text-[13px] font-bold text-neutral-900 mb-0.5">笔记初稿生成</div>
+                      <div className="text-[11px] text-neutral-500 mb-2">今天 14:00</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showMaterialModal && (
+          <div className="fixed inset-0 z-[250] flex items-center justify-center">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" onClick={() => setShowMaterialModal(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} className="bg-white w-[600px] max-h-[80vh] rounded-3xl shadow-2xl relative z-10 flex flex-col overflow-hidden">
+              <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+                <h3 className="text-[18px] font-bold text-neutral-900">从素材中心选择</h3>
+                <button onClick={() => setShowMaterialModal(false)} className="p-2 hover:bg-neutral-100 rounded-full transition-colors"><X size={20} className="text-neutral-400" /></button>
+              </div>
+              <div className="p-6 overflow-y-auto grid grid-cols-3 gap-4">
+                {[
+                  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400',
+                  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+                  'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=400',
+                  'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&q=80&w=400',
+                  'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400'
+                ].map((url, i) => (
+                  <div key={i} onClick={() => {
+                      if (activeImageId) {
+                        setNotes(notes.map(n => n.id === activeNoteId ? { ...n, images: n.images.map(img => img.id === activeImageId ? { ...img, url } : img) } : n));
+                      }
+                      setShowMaterialModal(false);
+                      setToastMessage("图片已替换");
+                      setTimeout(() => setToastMessage(null), 2000);
+                    }} 
+                    className="aspect-square bg-neutral-100 rounded-xl overflow-hidden cursor-pointer group relative border-2 border-transparent hover:border-primary-500 transition-all"
+                  >
+                    <img src={url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-[13px] font-bold bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md">选择此图</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showAIAdjustModal && (
+          <div className="fixed inset-0 z-[250] flex items-center justify-center">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" onClick={() => setShowAIAdjustModal(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} className="bg-white w-[500px] rounded-3xl shadow-2xl relative z-10 flex flex-col overflow-hidden">
+              <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-white">
+                <h3 className="text-[18px] font-bold text-neutral-900 flex items-center gap-2"><Zap size={20} className="text-primary-600" /> AI 智能调整 (GPT / orshot)</h3>
+                <button onClick={() => setShowAIAdjustModal(false)} className="p-2 hover:bg-neutral-100 rounded-full transition-colors"><X size={20} className="text-neutral-400 hover:text-neutral-600" /></button>
+              </div>
+              <div className="p-6 space-y-6">
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-3">选择文字编排模板</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button className="p-4 border-2 border-primary-500 bg-primary-50/60 rounded-xl text-left">
+                      <div className="text-[14px] font-bold text-primary-900 mb-1">封面大字</div>
+                      <div className="text-[11px] text-primary-700">提取标题自动排版，适合首图</div>
+                    </button>
+                    <button className="p-4 border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 rounded-xl text-left transition-colors">
+                      <div className="text-[14px] font-bold text-neutral-900 mb-1">拍立得边框</div>
+                      <div className="text-[11px] text-neutral-500">添加复古边框和手写体说明</div>
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[13px] font-bold text-neutral-900 mb-3">或输入自定义调整指令</div>
+                  <textarea 
+                    className="w-full h-24 p-3 border border-neutral-200 rounded-xl focus:border-primary-500 focus:outline-none resize-none text-[13px]"
+                    placeholder="例如：使用 orshot 接口提取图片主体，并把背景替换为干净的纯色..."
+                  />
+                </div>
+                <button 
+                  onClick={() => {
+                    setShowAIAdjustModal(false);
+                    setToastMessage("AI 处理中，请稍候...");
+                    setTimeout(() => setToastMessage("图片处理完成！"), 3000);
+                    setTimeout(() => setToastMessage(null), 5000);
+                  }}
+                  className="w-full py-3 bg-primary-600 text-white rounded-xl text-[14px] font-bold hover:bg-primary-700 transition-colors shadow-sm"
+                >
+                  开始生成
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

@@ -84,7 +84,7 @@ export function ExecutionCenter() {
     return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
   }
   if (activeWorkbench === "publish") {
-    return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} />;
+    return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} onBack={() => setActiveWorkbench(null)} fromSource="execution" />;
   }
   if (activeWorkbench === "interaction") {
     return <InteractionWorkbench onClose={() => setActiveWorkbench(null)} />;

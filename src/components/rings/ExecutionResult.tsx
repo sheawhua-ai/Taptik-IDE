@@ -296,7 +296,7 @@ export function ExecutionResult() {
         )}
       
         {selectedTask && (selectedTask.moduleName === '发布调度' || selectedTask.moduleName === '发布异常') && (
-          <PublishExceptionWorkbench onClose={() => setSelectedTask(null)} />
+          <PublishExceptionWorkbench onClose={() => setSelectedTask(null)} onBack={() => setSelectedTask(null)} />
         )}
         </AnimatePresence>
       

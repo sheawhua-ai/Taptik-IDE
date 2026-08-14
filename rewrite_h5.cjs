@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+const fs = require('fs');
+
+const content = `import React, { useState } from 'react';
 import { 
   X, Smartphone, CheckCircle2, Upload, 
   Sparkles, Send, Copy, Check, ChevronRight, FileText, Image as ImageIcon, ExternalLink, RefreshCw
@@ -13,15 +15,21 @@ interface Props {
 }
 
 export function ConsumerLandingPageModal({ project, onClose }: Props) {
+  // Steps: 'claim' -> 'questionnaire' -> 'generating' -> 'note_confirm' -> 'photo_tasks' -> 'checking' -> 'publish' -> 'done'
   const [step, setStep] = useState<'claim' | 'questionnaire' | 'generating' | 'note_confirm' | 'photo_tasks' | 'checking' | 'publish' | 'done'>('claim');
+  
+  // Questionnaire answers
   const [answers, setAnswers] = useState<Record<string, any>>({});
   
+  // Note Generation
   const [title, setTitle] = useState('我家金毛幼犬换粮体验，记录七天变化');
   const [body, setBody] = useState('今天给各位家长分享幼犬换粮的避坑经验！我家3个月大的金毛最近软便，按规定换粮法加专利益生菌，真的有改善。');
   
+  // Photos
   const [photos, setPhotos] = useState<string[]>([]);
   const [photoError, setPhotoError] = useState('');
   
+  // Copy state
   const [copiedTitle, setCopiedTitle] = useState(false);
   const [copiedBody, setCopiedBody] = useState(false);
 
@@ -68,6 +76,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
         exit={{ y: 20, opacity: 0 }}
         className="relative flex bg-transparent max-h-[90vh] w-full max-w-[800px] z-10"
       >
+        {/* Left Side: Context Info for PC User */}
         <div className="hidden md:flex flex-col w-[400px] bg-white rounded-l-3xl p-8 border-r border-neutral-200">
           <div className="flex items-center gap-2 mb-6">
             <Smartphone size={24} className="text-neutral-900" />
@@ -75,7 +84,9 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
           </div>
           
           <div className="space-y-4 text-[13px] text-neutral-600 leading-relaxed">
-            <p>本页面模拟消费者扫描二维码后，在手机端看到的完整提交流程。</p>
+            <p>
+              本页面模拟消费者扫描二维码后，在手机端看到的完整提交流程。
+            </p>
             <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 space-y-2">
               <div className="font-bold text-neutral-900">核心流程验证：</div>
               <ul className="list-disc pl-4 space-y-1">
@@ -98,9 +109,11 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
           </div>
         </div>
 
+        {/* Right Side: The "Phone" container */}
         <div className="flex-1 flex flex-col items-center bg-neutral-50/50 p-4 md:rounded-r-3xl rounded-3xl relative overflow-hidden backdrop-blur-sm shadow-2xl">
           <div className="w-[375px] h-[750px] max-h-full bg-white rounded-[40px] shadow-2xl border-[12px] border-neutral-900 overflow-hidden relative flex flex-col">
             
+            {/* Phone Status Bar (Mock) */}
             <div className="h-6 w-full bg-white flex justify-between items-center px-6 text-[10px] font-medium text-neutral-900 shrink-0 relative z-50">
               <span>9:41</span>
               <div className="flex items-center gap-1">
@@ -111,6 +124,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
 
             <div className="flex-1 overflow-y-auto bg-neutral-50 relative scrollbar-none">
               
+              {/* Step 1: Claim */}
               {step === 'claim' && (
                 <div className="pb-24">
                   <div className="h-48 bg-neutral-200 w-full relative">
@@ -146,6 +160,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 2: Questionnaire */}
               {step === 'questionnaire' && (
                 <div className="pb-24">
                   <div className="p-5 bg-white border-b border-neutral-200 sticky top-0 z-10">
@@ -153,6 +168,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                     <div className="text-[12px] text-neutral-500 mt-1">我们将根据您的真实回答生成专属笔记</div>
                   </div>
                   <div className="p-5 space-y-6">
+                    {/* Q1 */}
                     <div className="space-y-3">
                       <label className="block text-[14px] font-bold text-neutral-900">
                         1. 您的狗狗目前处于什么阶段？
@@ -162,13 +178,14 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                           <button
                             key={opt}
                             onClick={() => setAnswers({...answers, q1: opt})}
-                            className={`w-full text-left px-4 py-3 rounded-xl border ${answers.q1 === opt ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 bg-white text-neutral-700'}`}
+                            className={\`w-full text-left px-4 py-3 rounded-xl border \${answers.q1 === opt ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 bg-white text-neutral-700'}\`}
                           >
                             <div className="font-medium text-[14px]">{opt}</div>
                           </button>
                         ))}
                       </div>
                     </div>
+                    {/* Q2 */}
                     <div className="space-y-3">
                       <label className="block text-[14px] font-bold text-neutral-900">
                         2. 狗狗近期是否有以下症状？（可多选）
@@ -187,7 +204,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                                   setAnswers({...answers, q2: [...current, opt]});
                                 }
                               }}
-                              className={`px-4 py-2 rounded-xl border text-[13px] font-medium ${isSelected ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 bg-white text-neutral-700'}`}
+                              className={\`px-4 py-2 rounded-xl border text-[13px] font-medium \${isSelected ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 bg-white text-neutral-700'}\`}
                             >
                               {opt}
                             </button>
@@ -208,6 +225,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 3: Generating */}
               {step === 'generating' && (
                 <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
                   <Sparkles size={32} className="text-amber-500 animate-pulse" />
@@ -216,13 +234,14 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 4: Note Confirmation */}
               {step === 'note_confirm' && (
                 <div className="pb-24">
                   <div className="p-5 bg-white border-b border-neutral-200 sticky top-0 z-10 flex justify-between items-center">
                     <div>
                       <h3 className="font-bold text-[16px] text-neutral-900">确认您的专属笔记</h3>
                     </div>
-                    <button className="text-[13px] text-neutral-500 flex items-center gap-1 font-bold hover:text-neutral-900">
+                    <button className="text-[13px] text-neutral-500 flex items-center gap-1 font-bold">
                       <RefreshCw size={14} /> 换一种表达
                     </button>
                   </div>
@@ -231,8 +250,8 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                       <div className="font-extrabold text-[16px] text-neutral-900 mb-3">{title}</div>
                       <div className="text-[14px] text-neutral-700 leading-relaxed whitespace-pre-wrap">{body}</div>
                       <div className="mt-4 pt-3 border-t border-neutral-100 flex gap-2">
-                        <span className="text-[12px] text-neutral-600 font-bold bg-neutral-100 px-2 py-0.5 rounded">#幼犬换粮</span>
-                        <span className="text-[12px] text-neutral-600 font-bold bg-neutral-100 px-2 py-0.5 rounded">#狗狗软便</span>
+                        <span className="text-[12px] text-primary-600 font-bold">#幼犬换粮</span>
+                        <span className="text-[12px] text-primary-600 font-bold">#狗狗软便</span>
                       </div>
                     </div>
                     <div className="text-[12px] text-neutral-500 px-2 text-center">
@@ -251,6 +270,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 5: Photo Tasks */}
               {step === 'photo_tasks' && (
                 <div className="pb-24">
                   <div className="p-5 bg-white border-b border-neutral-200 sticky top-0 z-10">
@@ -304,6 +324,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 6: Checking */}
               {step === 'checking' && (
                 <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
                   <div className="relative">
@@ -315,6 +336,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 7: Publish */}
               {step === 'publish' && (
                 <div className="pb-24">
                   <div className="p-5 bg-emerald-50 border-b border-emerald-100 sticky top-0 z-10">
@@ -368,6 +390,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
               )}
 
+              {/* Step 8: Done */}
               {step === 'done' && (
                 <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
                   <CheckCircle2 size={48} className="text-emerald-500" />
