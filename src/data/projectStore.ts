@@ -29,7 +29,7 @@ export interface NoteIssue {
 export interface NotePackageSpec {
   guidelines: string;         // 规定要怎么写
   materialTaskReqs: string;   // 素材按任务拍摄
-  questionnaireStatus: "待填写" | "已填写" | "生成中";
+  questionnaireStatus: "未启用" | "待填写" | "已填写" | "生成中";
   questionnaireFields?: {
     petBreed?: string;
     petAge?: string;
@@ -39,6 +39,20 @@ export interface NotePackageSpec {
   };
 }
 
+export interface ConsumerQuestionnaireAnswer {
+  submittedAt?: string;
+  sourcePackageName?: string;
+  petBreed?: string;
+  petAge?: string;
+  symptom?: string;
+  experience?: string;
+  willingnessToRecommend?: string;
+  answers?: {
+    question: string;
+    answer: string;
+  }[];
+}
+
 export interface Note {
   id: string;
   projectId: string;
@@ -46,6 +60,9 @@ export interface Note {
   batchName: string;
   title: string;
   participant: string;
+  account?: string;
+  claimedCount?: number;
+  totalSlotsCount?: number;
   type: NoteType;
   contentDirection: string;
   plannedDate: string;
@@ -58,6 +75,7 @@ export interface Note {
   body?: string;
   isNotePackage?: boolean;
   packageSpec?: NotePackageSpec;
+  consumerQuestionnaire?: ConsumerQuestionnaireAnswer;
   contentPackage?: {
     title: string;
     body: string;
@@ -174,7 +192,8 @@ export const INITIAL_PROJECTS: Project[] = [
         projectName: "幼犬换粮搜索卡位第三轮",
         batchName: "第一批爆发",
         title: "我家金毛幼犬换粮体验，记录七天变化",
-        participant: "小红薯_汪汪队",
+        participant: "消费者_金毛豆豆麻麻",
+        account: "小红薯_汪汪队",
         type: "KOC",
         contentDirection: "真实测评分享",
         plannedDate: "2024-03-06",
@@ -182,6 +201,16 @@ export const INITIAL_PROJECTS: Project[] = [
         materialStatus: "待验收",
         publishStatus: "未安排",
         resultStatus: "未开始观察",
+        body: "我家4个月的金毛幼犬刚接回家换粮老是软便拉稀，肠胃特别脆弱。\n\n在宠物店长推荐下试了这款特唯普益生菌幼犬粮，按照7日渐进换粮法喂到第4天，便便就完全成型了，也没有泪痕！\n\n适口性很好，每次倒出来秒光，真心推荐给有同样软便困扰的毛孩子家长！",
+        consumerQuestionnaire: {
+          submittedAt: "2024-03-06 08:30",
+          sourcePackageName: "换粮体验事实问卷 (标准版)",
+          petBreed: "金毛寻回犬",
+          petAge: "4个月 (幼犬期)",
+          symptom: "初次换粮软便拉稀、食欲挑食",
+          experience: "按照7日换粮法第4天便便完全成型，精神活泼，胃口大开",
+          willingnessToRecommend: "一定会推荐给同月龄金毛宠友"
+        },
         materialTask: {
           id: "mt-1",
           reqs: "需提供2张幼犬进食场景图及1张换粮过渡期照片",
@@ -193,13 +222,14 @@ export const INITIAL_PROJECTS: Project[] = [
         currentIssue: {
           id: "iss-2",
           type: "warning",
-          message: "KOC已上传1张进食回传图，等待操盘手验收",
-          impactScope: "影响 1 篇KOC笔记进度",
+          message: "消费者已提交真实问卷并回传1张进食图，等待操盘手验收",
+          impactScope: "影响 1 篇消费者笔记进度",
           nextStepActionText: "查看回传",
           targetWorkbench: "assets"
         },
         logs: [
-          { time: "2024-03-06 09:00", action: "提交回传", operator: "小红薯_汪汪队" }
+          { time: "2024-03-06 08:30", action: "提交体验问卷", operator: "消费者_金毛豆豆麻麻" },
+          { time: "2024-03-06 09:00", action: "提交回传照片", operator: "消费者_金毛豆豆麻麻" }
         ]
       },
       {
@@ -207,15 +237,23 @@ export const INITIAL_PROJECTS: Project[] = [
         projectId: "p1",
         projectName: "幼犬换粮搜索卡位第三轮",
         batchName: "第二批招募",
-        title: "幼犬换粮避坑干货（待领取）",
-        participant: "待领取名额 (12个)",
+        title: "消费者换粮测评招募内容包",
+        participant: "消费者招募池 (12人)",
         type: "KOC",
         contentDirection: "铲屎官体验",
         plannedDate: "2024-03-10",
         contentStatus: "待生成",
         materialStatus: "待收集",
         publishStatus: "待领取",
-        resultStatus: "未开始观察"
+        resultStatus: "未开始观察",
+        isNotePackage: true,
+        claimedCount: 4,
+        totalSlotsCount: 12,
+        packageSpec: {
+          guidelines: "说明狗狗具体品种与月龄，记录从软便到便便成型的真实换粮过程；突出专利益生菌在幼犬换粮期的护肠吸收保护效果。",
+          materialTaskReqs: "按任务拍摄进食场景照与精神面貌照",
+          questionnaireStatus: "已填写"
+        }
       },
       {
         id: "n4",

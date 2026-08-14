@@ -1,52 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, Smartphone, CheckCircle2, Upload, 
-  Sparkles, Send, Copy, Check, ChevronRight, FileText, Image as ImageIcon, ExternalLink, RefreshCw
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useProjectStore } from '../../context/ProjectContext';
-import { Project } from '../../data/projectStore';
+  Sparkles, Send, Copy, Check, ChevronRight, 
+  FileText, Image as ImageIcon, ExternalLink, RefreshCw, AlertCircle, Award, Gift
+} from "lucide-react";
+import { Project } from "../../data/projectStore";
 
 interface Props {
-  project: Project;
+  project?: Project;
   onClose: () => void;
 }
 
 export function ConsumerLandingPageModal({ project, onClose }: Props) {
-  const [step, setStep] = useState<'claim' | 'questionnaire' | 'generating' | 'note_confirm' | 'photo_tasks' | 'checking' | 'publish' | 'done'>('claim');
-  const [answers, setAnswers] = useState<Record<string, any>>({});
-  
-  const [title, setTitle] = useState('我家金毛幼犬换粮体验，记录七天变化');
-  const [body, setBody] = useState('今天给各位家长分享幼犬换粮的避坑经验！我家3个月大的金毛最近软便，按规定换粮法加专利益生菌，真的有改善。');
-  
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [photoError, setPhotoError] = useState('');
-  
+  const [step, setStep] = useState<
+    "claim" | "questionnaire" | "generating" | "note_confirm" | "photos" | "checking" | "photo_retry" | "publish" | "recognized"
+  >("claim");
+
+  // Questionnaire state
+  const [answers, setAnswers] = useState({
+    petAge: "3-6个月",
+    problem: "软便/拉稀",
+    effect: "便便成型正常",
+    recommend: "一定会推荐"
+  });
+
+  // Generated note state
+  const [title, setTitle] = useState("我家3个月金毛幼犬换粮体验，记录7天软便改善！");
+  const [body, setBody] = useState(
+    `今天给各位新手铲屎官分享真实的幼犬换粮经验！\n\n我家金毛刚满3个月，之前换粮老拉稀软便，愁死人了。\n\n后来按照【7天渐进过渡法】，搭配这款特唯普专利益生菌粮，第5天便便就完全成型了！适口性也很赞，颗粒大小刚好适合幼犬咀嚼。\n\n有同款换粮焦虑的家长可以放心冲！\n\n#幼犬换粮 #狗狗软便 #新手养狗避坑 #特唯普宠粮`
+  );
+
+  // Photo state
+  const [photos, setPhotos] = useState<string[]>([
+    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop"
+  ]);
+  const [photoError, setPhotoError] = useState("");
+
   const [copiedTitle, setCopiedTitle] = useState(false);
   const [copiedBody, setCopiedBody] = useState(false);
 
-  const simulateGeneration = () => {
-    setStep('generating');
-    setTimeout(() => {
-      setStep('note_confirm');
-    }, 2000);
+  const handleStartQuestionnaire = () => {
+    setStep("questionnaire");
   };
 
-  const simulatePhotoCheck = () => {
-    setStep('checking');
+  const handleSubmitQuestionnaire = () => {
+    setStep("generating");
     setTimeout(() => {
-      if (photos.length === 0) {
-        setPhotoError('请上传至少一张照片');
-        setStep('photo_tasks');
+      // Synthesize note based on user's answers
+      if (answers.problem.includes("挑食")) {
+        setTitle("挑食狗狂喜！我家幼犬换粮成功，大口炫粮记录");
+        setBody(
+          `我家挑食小怪兽终于肯好好吃饭了！\n\n之前换了好几款粮都不爱吃，这次换特唯普幼犬粮，微温水泡一下肉香好浓，秒光盘！\n\n而且益生菌配方肠胃适应得很好，一点没软便，太省心了！\n\n#幼犬换粮 #狗狗挑食 #新手养狗 #特唯普`
+        );
       } else {
-        setStep('publish');
+        setTitle(`我家${answers.petAge}金毛换粮测评，终于告别${answers.problem}！`);
+        setBody(
+          `真心分享换粮经验！之前因为${answers.problem}天天提心吊胆。\n\n按方法过渡到特唯普幼犬益生菌粮后，${answers.effect}，精神和毛发状态肉眼可见变好！\n\n${answers.recommend}给各位新手铲屎官！\n\n#幼犬换粮 #宠物益生菌 #狗狗软便改善 #养宠日常`
+        );
+      }
+      setStep("note_confirm");
+    }, 1800);
+  };
+
+  const handleCheckPhotos = (simulateFail = false) => {
+    setStep("checking");
+    setTimeout(() => {
+      if (simulateFail || photos.length === 0) {
+        setPhotoError("未识别到产品包装袋或清晰吃食场景，请补拍 1 张产品合影");
+        setStep("photo_retry");
+      } else {
+        setStep("publish");
       }
     }, 1500);
   };
 
-  const handleCopy = (text: string, type: 'title' | 'body') => {
+  const handleCopy = (text: string, type: "title" | "body") => {
     navigator.clipboard.writeText(text);
-    if (type === 'title') {
+    if (type === "title") {
       setCopiedTitle(true);
       setTimeout(() => setCopiedTitle(false), 2000);
     } else {
@@ -55,326 +86,401 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
     }
   };
 
+  const handleOpenApp = () => {
+    setTimeout(() => {
+      setStep("recognized");
+    }, 2500);
+  };
+
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
       <div 
         className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm"
         onClick={onClose}
       />
       
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 20, opacity: 0 }}
-        className="relative flex bg-transparent max-h-[90vh] w-full max-w-[800px] z-10"
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="relative flex bg-transparent max-h-[92vh] w-full max-w-[840px] z-10"
       >
-        <div className="hidden md:flex flex-col w-[400px] bg-white rounded-l-3xl p-8 border-r border-neutral-200">
-          <div className="flex items-center gap-2 mb-6">
-            <Smartphone size={24} className="text-neutral-900" />
-            <h2 className="text-[20px] font-extrabold text-neutral-900">消费者移动端 H5 演示</h2>
-          </div>
-          
-          <div className="space-y-4 text-[13px] text-neutral-600 leading-relaxed">
-            <p>本页面模拟消费者扫描二维码后，在手机端看到的完整提交流程。</p>
-            <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 space-y-2">
-              <div className="font-bold text-neutral-900">核心流程验证：</div>
-              <ul className="list-disc pl-4 space-y-1">
-                <li>消费者不看到复杂的创作规则</li>
-                <li>只需做简单的问卷选择</li>
-                <li>AI 基于问卷秒级生成专属笔记</li>
-                <li>根据场景完成极简照片上传</li>
-                <li>发布后一键确认，无需粘贴链接</li>
-              </ul>
+        {/* Left Side: Desktop Guidance */}
+        <div className="hidden md:flex flex-col w-[390px] bg-white rounded-l-3xl p-7 border-r border-neutral-200 justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Smartphone size={22} className="text-neutral-900" />
+              <h3 className="text-[18px] font-extrabold text-neutral-900">
+                消费者 KOC 移动端 H5
+              </h3>
+            </div>
+            
+            <p className="text-[13px] text-neutral-600 leading-relaxed">
+              消费者扫描二维码后进入轻量招募落地页。无需理解复杂创作规则，仅通过问卷选择即由 AI 秒级生成个性化笔记。
+            </p>
+
+            <div className="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-200 space-y-2.5 text-[12.5px]">
+              <div className="font-bold text-neutral-900">全流程自动化闭环：</div>
+              <div className="space-y-2 text-neutral-600">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                  <span>极简事实问卷 (仅需3-4题)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                  <span>AI 根据真实回答即时生成专属笔记</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                  <span>上传照片自动场景质检与智能补拍</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                  <span>发布后系统自动识别，奖励秒级到账</span>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <div className="mt-auto pt-6">
-            <button 
-              onClick={onClose}
-              className="w-full py-3 bg-neutral-100 text-neutral-700 font-bold rounded-xl hover:bg-neutral-200 transition-colors"
-            >
-              关闭模拟器
-            </button>
-          </div>
+
+          <button 
+            onClick={onClose}
+            className="w-full py-2.5 bg-neutral-100 text-neutral-700 font-bold rounded-xl hover:bg-neutral-200 transition-colors text-[13px]"
+          >
+            关闭模拟器
+          </button>
         </div>
 
-        <div className="flex-1 flex flex-col items-center bg-neutral-50/50 p-4 md:rounded-r-3xl rounded-3xl relative overflow-hidden backdrop-blur-sm shadow-2xl">
-          <div className="w-[375px] h-[750px] max-h-full bg-white rounded-[40px] shadow-2xl border-[12px] border-neutral-900 overflow-hidden relative flex flex-col">
+        {/* Right Side: Mobile Phone Frame */}
+        <div className="flex-1 flex flex-col items-center bg-neutral-100/90 p-4 md:rounded-r-3xl rounded-3xl relative overflow-hidden backdrop-blur-sm shadow-2xl">
+          <div className="w-[360px] h-[680px] bg-white rounded-[38px] shadow-2xl border-[10px] border-neutral-900 overflow-hidden relative flex flex-col">
             
-            <div className="h-6 w-full bg-white flex justify-between items-center px-6 text-[10px] font-medium text-neutral-900 shrink-0 relative z-50">
-              <span>9:41</span>
-              <div className="flex items-center gap-1">
-                <span>5G</span>
-                <div className="w-5 h-2.5 bg-neutral-900 rounded-[3px] relative before:absolute before:right-[-2px] before:top-1 before:w-[2px] before:h-1 before:bg-neutral-900 before:rounded-r-sm" />
+            {/* Status bar */}
+            <div className="h-6 w-full bg-white flex justify-between items-center px-6 text-[11px] font-bold text-neutral-900 shrink-0">
+              <span>09:41</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px]">5G</span>
+                <div className="w-4 h-2.5 bg-neutral-900 rounded-[2px]" />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-neutral-50 relative scrollbar-none">
+            {/* Mobile Scrollable Viewport */}
+            <div className="flex-1 overflow-y-auto bg-neutral-50 relative">
               
-              {step === 'claim' && (
-                <div className="pb-24">
-                  <div className="h-48 bg-neutral-200 w-full relative">
-                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop" className="w-full h-full object-cover" alt="banner" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="text-white font-extrabold text-[20px] leading-tight">幼犬换粮体验招募活动</div>
+              {/* STEP 1: 扫码领取落地页 */}
+              {step === "claim" && (
+                <div className="space-y-4 pb-20">
+                  <div className="h-44 bg-neutral-900 relative">
+                    <img 
+                      src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop" 
+                      className="w-full h-full object-cover opacity-80" 
+                      alt="banner" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="absolute bottom-3 left-4 right-4 text-white">
+                      <span className="text-[10px] bg-white/20 backdrop-blur-xs px-2 py-0.5 rounded-full font-medium">
+                        特唯普官方招募
+                      </span>
+                      <h2 className="text-[17px] font-extrabold mt-1">幼犬换粮体验官招募计划</h2>
                     </div>
                   </div>
-                  <div className="p-5 space-y-5">
-                    <div className="bg-white rounded-2xl p-5 shadow-2xs border border-neutral-200">
-                      <h3 className="font-bold text-[15px] text-neutral-900 mb-3">本次任务说明</h3>
-                      <div className="space-y-3 text-[13px] text-neutral-600">
-                        <div className="flex items-center gap-2"><FileText size={16} className="text-neutral-400" /> 填写体验问卷 (共 3 题)</div>
-                        <div className="flex items-center gap-2"><ImageIcon size={16} className="text-neutral-400" /> 拍摄体验照片 (1 - 2 张)</div>
-                        <div className="flex items-center gap-2"><Send size={16} className="text-neutral-400" /> 发布至小红书</div>
+
+                  <div className="px-4 space-y-3">
+                    <div className="bg-white rounded-2xl p-4 border border-neutral-200 shadow-2xs space-y-2.5">
+                      <div className="flex items-center gap-2 font-bold text-[13.5px] text-neutral-900">
+                        <Gift size={16} className="text-red-500" />
+                        参与专属奖励
                       </div>
-                      <div className="mt-4 pt-4 border-t border-neutral-100 flex items-center justify-between">
-                        <div className="text-[12px] text-neutral-500">预计完成时间</div>
-                        <div className="text-[14px] font-bold text-neutral-900">3-5 分钟</div>
+                      <div className="text-[12.5px] text-neutral-600 leading-relaxed bg-amber-50/70 p-3 rounded-xl border border-amber-100 font-medium">
+                        🎁 完成小红书真实体验分享，立得 <strong>50元宠粮无门槛券</strong> + 幼犬益生菌试用礼包！
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-4 border border-neutral-200 shadow-2xs space-y-2">
+                      <div className="font-bold text-[13px] text-neutral-900">参与三步走：</div>
+                      <div className="space-y-1.5 text-[12px] text-neutral-600">
+                        <div className="flex items-center gap-2"><FileText size={14} className="text-neutral-400" /> 1. 填写4道换粮问卷 (1分钟)</div>
+                        <div className="flex items-center gap-2"><ImageIcon size={14} className="text-neutral-400" /> 2. 拍1-2张狗狗吃粮照片</div>
+                        <div className="flex items-center gap-2"><Send size={14} className="text-neutral-400" /> 3. 复制AI生成的专属文案发布</div>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-neutral-100 pb-8">
-                    <button 
-                      onClick={() => setStep('questionnaire')}
-                      className="w-full py-3.5 bg-neutral-900 text-white font-bold text-[15px] rounded-xl active:scale-95 transition-transform"
+
+                  <div className="fixed bottom-3 left-3 right-3 max-w-[336px] mx-auto z-20">
+                    <button
+                      onClick={handleStartQuestionnaire}
+                      className="w-full py-3 bg-neutral-900 text-white font-bold text-[14px] rounded-2xl shadow-lg active:scale-95 transition-transform"
                     >
-                      开始填写
+                      立即免费领取内容包
                     </button>
                   </div>
                 </div>
               )}
 
-              {step === 'questionnaire' && (
-                <div className="pb-24">
-                  <div className="p-5 bg-white border-b border-neutral-200 sticky top-0 z-10">
-                    <h3 className="font-bold text-[16px] text-neutral-900">体验问卷调查</h3>
-                    <div className="text-[12px] text-neutral-500 mt-1">我们将根据您的真实回答生成专属笔记</div>
+              {/* STEP 2: 体验问卷 */}
+              {step === "questionnaire" && (
+                <div className="p-4 space-y-4 pb-20">
+                  <div className="bg-white rounded-2xl p-4 border border-neutral-200 shadow-2xs space-y-1">
+                    <h3 className="font-extrabold text-[15px] text-neutral-900">真实喂养体验问卷</h3>
+                    <p className="text-[11.5px] text-neutral-500">AI将根据你的真实情况定制笔记，无需费心构思</p>
                   </div>
-                  <div className="p-5 space-y-6">
-                    <div className="space-y-3">
-                      <label className="block text-[14px] font-bold text-neutral-900">
-                        1. 您的狗狗目前处于什么阶段？
-                      </label>
-                      <div className="space-y-2.5">
-                        {["3-6个月幼犬", "6-12个月幼犬", "1-3岁成犬", "3岁以上"].map(opt => (
-                          <button
-                            key={opt}
-                            onClick={() => setAnswers({...answers, q1: opt})}
-                            className={`w-full text-left px-4 py-3 rounded-xl border ${answers.q1 === opt ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 bg-white text-neutral-700'}`}
-                          >
-                            <div className="font-medium text-[14px]">{opt}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="block text-[14px] font-bold text-neutral-900">
-                        2. 狗狗近期是否有以下症状？（可多选）
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {["软便/腹泻", "挑食不爱吃", "泪痕严重", "毛发干枯", "没有明显症状"].map(opt => {
-                          const isSelected = (answers.q2 || []).includes(opt);
-                          return (
-                            <button
-                              key={opt}
-                              onClick={() => {
-                                const current = answers.q2 || [];
-                                if (isSelected) {
-                                  setAnswers({...answers, q2: current.filter((i:string) => i !== opt)});
-                                } else {
-                                  setAnswers({...answers, q2: [...current, opt]});
-                                }
-                              }}
-                              className={`px-4 py-2 rounded-xl border text-[13px] font-medium ${isSelected ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 bg-white text-neutral-700'}`}
-                            >
-                              {opt}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-neutral-100 pb-8">
-                    <button 
-                      onClick={simulateGeneration}
-                      className="w-full py-3.5 bg-neutral-900 text-white font-bold text-[15px] rounded-xl active:scale-95 transition-transform"
-                    >
-                      生成我的体验笔记
-                    </button>
-                  </div>
-                </div>
-              )}
 
-              {step === 'generating' && (
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
-                  <Sparkles size={32} className="text-amber-500 animate-pulse" />
-                  <div className="text-[16px] font-bold text-neutral-900">正在根据您的回答<br/>生成专属笔记...</div>
-                  <div className="text-[13px] text-neutral-500">融合您的真实体验与产品亮点</div>
-                </div>
-              )}
-
-              {step === 'note_confirm' && (
-                <div className="pb-24">
-                  <div className="p-5 bg-white border-b border-neutral-200 sticky top-0 z-10 flex justify-between items-center">
-                    <div>
-                      <h3 className="font-bold text-[16px] text-neutral-900">确认您的专属笔记</h3>
-                    </div>
-                    <button className="text-[13px] text-neutral-500 flex items-center gap-1 font-bold hover:text-neutral-900">
-                      <RefreshCw size={14} /> 换一种表达
-                    </button>
-                  </div>
-                  <div className="p-5 space-y-4">
-                    <div className="bg-white rounded-2xl p-4 shadow-2xs border border-neutral-200">
-                      <div className="font-extrabold text-[16px] text-neutral-900 mb-3">{title}</div>
-                      <div className="text-[14px] text-neutral-700 leading-relaxed whitespace-pre-wrap">{body}</div>
-                      <div className="mt-4 pt-3 border-t border-neutral-100 flex gap-2">
-                        <span className="text-[12px] text-neutral-600 font-bold bg-neutral-100 px-2 py-0.5 rounded">#幼犬换粮</span>
-                        <span className="text-[12px] text-neutral-600 font-bold bg-neutral-100 px-2 py-0.5 rounded">#狗狗软便</span>
-                      </div>
-                    </div>
-                    <div className="text-[12px] text-neutral-500 px-2 text-center">
-                      您可以点击文案进行轻量编辑，或点击右上角切换风格。确认无误后进入拍照环节。
-                    </div>
-                  </div>
-                  
-                  <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-neutral-100 pb-8">
-                    <button 
-                      onClick={() => setStep('photo_tasks')}
-                      className="w-full py-3.5 bg-neutral-900 text-white font-bold text-[15px] rounded-xl active:scale-95 transition-transform"
-                    >
-                      确认并继续拍照
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {step === 'photo_tasks' && (
-                <div className="pb-24">
-                  <div className="p-5 bg-white border-b border-neutral-200 sticky top-0 z-10">
-                    <h3 className="font-bold text-[16px] text-neutral-900">完成拍摄任务</h3>
-                    <div className="text-[12px] text-neutral-500 mt-1">需上传 1 组照片，通过AI检查后即可发布</div>
-                  </div>
-                  <div className="p-5 space-y-4">
-                    {photoError && (
-                      <div className="bg-rose-50 text-rose-600 text-[12px] font-bold p-3 rounded-xl border border-rose-200">
-                        {photoError}
-                      </div>
-                    )}
-                    <div className="bg-white rounded-2xl p-4 shadow-2xs border border-neutral-200 space-y-4">
-                      <div className="flex justify-between items-center">
-                        <div className="font-bold text-[14px] text-neutral-900">任务一：狗狗进食中</div>
-                        <div className="text-[12px] text-neutral-500 font-medium">{photos.length}/1 张</div>
-                      </div>
-                      <div className="text-[12px] text-neutral-600">要求：自然光线，狗狗吃粮的特写或半身照，需露出包装袋一角。</div>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                        {photos.map((p, i) => (
-                          <div key={i} className="aspect-square bg-neutral-100 rounded-xl overflow-hidden relative">
-                            <img src={p} className="w-full h-full object-cover" alt="user photo" />
-                            <div className="absolute inset-0 ring-1 ring-inset ring-neutral-900/10 rounded-xl" />
-                          </div>
-                        ))}
-                        {photos.length === 0 && (
-                          <button 
-                            onClick={() => {
-                              setPhotoError('');
-                              setPhotos(["https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop"]);
-                            }}
-                            className="aspect-square rounded-xl border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center text-neutral-500 hover:bg-neutral-50 active:bg-neutral-100"
-                          >
-                            <Upload size={24} className="mb-2" />
-                            <span className="text-[12px] font-bold">上传照片</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-neutral-100 pb-8">
-                    <button 
-                      onClick={simulatePhotoCheck}
-                      className="w-full py-3.5 bg-neutral-900 text-white font-bold text-[15px] rounded-xl active:scale-95 transition-transform"
-                    >
-                      提交并检查照片
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {step === 'checking' && (
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
-                  <div className="relative">
-                    <ImageIcon size={40} className="text-neutral-400" />
-                    <Sparkles size={20} className="text-amber-500 absolute -top-2 -right-2 animate-pulse" />
-                  </div>
-                  <div className="text-[16px] font-bold text-neutral-900">正在进行 AI 图像检查...</div>
-                  <div className="text-[13px] text-neutral-500">检查是否符合任务要求</div>
-                </div>
-              )}
-
-              {step === 'publish' && (
-                <div className="pb-24">
-                  <div className="p-5 bg-emerald-50 border-b border-emerald-100 sticky top-0 z-10">
-                    <h3 className="font-bold text-[16px] text-emerald-800 flex items-center gap-1.5"><CheckCircle2 size={18}/> 准备就绪</h3>
-                    <div className="text-[12px] text-emerald-600 mt-1">照片检查通过，请分步复制并前往小红书发布</div>
-                  </div>
-                  <div className="p-5 space-y-5">
-                    
-                    <div className="space-y-2">
-                      <div className="text-[13px] font-bold text-neutral-900">第一步：复制标题</div>
-                      <div className="bg-white border border-neutral-200 rounded-xl p-3 flex gap-3 shadow-2xs items-center justify-between">
-                        <div className="text-[13px] text-neutral-700 line-clamp-1">{title}</div>
-                        <button 
-                          onClick={() => handleCopy(title, 'title')}
-                          className="px-3 py-1.5 bg-neutral-100 text-neutral-700 font-bold text-[12px] rounded-lg shrink-0 flex items-center gap-1"
+                  {/* Q1 */}
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 space-y-2">
+                    <div className="text-[12.5px] font-bold text-neutral-900">1. 狗狗当前月龄？</div>
+                    <div className="grid grid-cols-3 gap-2 text-[12px]">
+                      {["0-3个月", "3-6个月", "6个月以上"].map((item) => (
+                        <button
+                          key={item}
+                          onClick={() => setAnswers({ ...answers, petAge: item })}
+                          className={`py-2 rounded-xl border text-center font-bold transition-all ${
+                            answers.petAge === item
+                              ? "bg-neutral-900 text-white border-neutral-900"
+                              : "bg-neutral-50 text-neutral-700 border-neutral-200"
+                          }`}
                         >
-                          {copiedTitle ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                          {copiedTitle ? "已复制" : "复制"}
+                          {item}
                         </button>
-                      </div>
+                      ))}
                     </div>
-
-                    <div className="space-y-2">
-                      <div className="text-[13px] font-bold text-neutral-900">第二步：复制正文</div>
-                      <div className="bg-white border border-neutral-200 rounded-xl p-3 shadow-2xs">
-                        <div className="text-[13px] text-neutral-700 line-clamp-2 mb-3">{body}</div>
-                        <button 
-                          onClick={() => handleCopy(body, 'body')}
-                          className="w-full py-2 bg-neutral-100 text-neutral-700 font-bold text-[12px] rounded-lg shrink-0 flex items-center justify-center gap-1"
-                        >
-                          {copiedBody ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                          {copiedBody ? "已复制" : "复制全文"}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="bg-neutral-50 rounded-xl p-4 text-[12px] text-neutral-500 border border-neutral-200">
-                      发布完成后，系统将自动识别您的笔记，无需手动回传链接。
-                    </div>
-
                   </div>
-                  
-                  <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-neutral-100 pb-8">
-                    <button 
-                      onClick={() => setStep('done')}
-                      className="w-full py-3.5 bg-rose-500 text-white font-bold text-[15px] rounded-xl active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-md shadow-rose-500/20"
+
+                  {/* Q2 */}
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 space-y-2">
+                    <div className="text-[12.5px] font-bold text-neutral-900">2. 换粮前最主要的困扰？</div>
+                    <div className="grid grid-cols-2 gap-2 text-[12px]">
+                      {["软便/拉稀", "挑食不爱吃", "泪痕严重", "太瘦不长肉"].map((item) => (
+                        <button
+                          key={item}
+                          onClick={() => setAnswers({ ...answers, problem: item })}
+                          className={`py-2 rounded-xl border text-center font-bold transition-all ${
+                            answers.problem === item
+                              ? "bg-neutral-900 text-white border-neutral-900"
+                              : "bg-neutral-50 text-neutral-700 border-neutral-200"
+                          }`}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Q3 */}
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 space-y-2">
+                    <div className="text-[12.5px] font-bold text-neutral-900">3. 试用本品后的改善效果？</div>
+                    <div className="grid grid-cols-2 gap-2 text-[12px]">
+                      {["便便成型正常", "胃口大开", "毛发更亮", "长肉发腮"].map((item) => (
+                        <button
+                          key={item}
+                          onClick={() => setAnswers({ ...answers, effect: item })}
+                          className={`py-2 rounded-xl border text-center font-bold transition-all ${
+                            answers.effect === item
+                              ? "bg-neutral-900 text-white border-neutral-900"
+                              : "bg-neutral-50 text-neutral-700 border-neutral-200"
+                          }`}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="fixed bottom-3 left-3 right-3 max-w-[336px] mx-auto z-20">
+                    <button
+                      onClick={handleSubmitQuestionnaire}
+                      className="w-full py-3 bg-neutral-900 text-white font-bold text-[14px] rounded-2xl shadow-lg active:scale-95 transition-transform"
                     >
-                      打开小红书客户端 <ExternalLink size={16} />
+                      提交并即时生成笔记
                     </button>
                   </div>
                 </div>
               )}
 
-              {step === 'done' && (
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
-                  <CheckCircle2 size={48} className="text-emerald-500" />
-                  <div className="text-[18px] font-bold text-neutral-900">您已进入小红书</div>
-                  <div className="text-[13px] text-neutral-500 leading-relaxed">
-                    发布成功后，平台将自动为您统计数据并结算奖励。您现在可以关闭此页面。
+              {/* STEP 3: 生成中 */}
+              {step === "generating" && (
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-3">
+                  <Sparkles size={36} className="text-primary-600 animate-spin" />
+                  <h3 className="font-extrabold text-[16px] text-neutral-900">
+                    AI 正在结合您的问卷生成专属笔记...
+                  </h3>
+                  <p className="text-[12px] text-neutral-500 max-w-[260px]">
+                    已提炼：{answers.petAge}幼犬 · 解决{answers.problem}痛点 · 采用真实亲测口吻
+                  </p>
+                </div>
+              )}
+
+              {/* STEP 4: 笔记确认与微调 */}
+              {step === "note_confirm" && (
+                <div className="p-4 space-y-3.5 pb-20 text-[13px]">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2 text-emerald-800 text-[12px] font-bold">
+                    <CheckCircle2 size={16} className="shrink-0" />
+                    已为您生成专属换粮测评笔记！
                   </div>
+
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-2">
+                    <label className="text-[12px] font-bold text-neutral-700">推荐标题</label>
+                    <div className="p-2.5 bg-neutral-50 rounded-xl text-[12.5px] font-bold text-neutral-900 border border-neutral-100">
+                      {title}
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-2">
+                    <label className="text-[12px] font-bold text-neutral-700">笔记正文</label>
+                    <div className="p-2.5 bg-neutral-50 rounded-xl text-[11.5px] text-neutral-800 leading-relaxed border border-neutral-100 whitespace-pre-line max-h-48 overflow-y-auto">
+                      {body}
+                    </div>
+                  </div>
+
+                  <div className="fixed bottom-3 left-3 right-3 max-w-[336px] mx-auto z-20">
+                    <button
+                      onClick={() => setStep("photos")}
+                      className="w-full py-3 bg-neutral-900 text-white font-bold text-[14px] rounded-2xl shadow-lg active:scale-95 transition-transform"
+                    >
+                      下一步：上传体验照片
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 5: 上传照片 */}
+              {(step === "photos" || step === "photo_retry") && (
+                <div className="p-4 space-y-3.5 pb-20 text-[13px]">
+                  {step === "photo_retry" && (
+                    <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-[12px] font-medium space-y-1">
+                      <div className="font-bold flex items-center gap-1.5">
+                        <AlertCircle size={14} className="text-rose-600" />
+                        AI 场景质检未通过
+                      </div>
+                      <div>{photoError}</div>
+                    </div>
+                  )}
+
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-2">
+                    <div className="font-bold text-neutral-900 text-[13.5px]">拍摄要求</div>
+                    <div className="text-[12px] text-neutral-600 space-y-1 bg-neutral-50 p-2.5 rounded-xl border border-neutral-100">
+                      <div>📸 <strong>场景 1 (必拍):</strong> 狗狗进食特写或与粮袋合影 (1-2张)</div>
+                      <div>🐶 <strong>场景 2 (选拍):</strong> 狗狗精神饱满生活照 (1张)</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between text-[12px] font-bold text-neutral-700">
+                      <span>已选照片 ({photos.length})</span>
+                      <button
+                        onClick={() => setPhotos([...photos, "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop"])}
+                        className="text-primary-600 font-bold hover:underline"
+                      >
+                        + 模拟加一张合影
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {photos.map((url, i) => (
+                        <div key={i} className="aspect-square rounded-xl overflow-hidden border border-neutral-200 relative">
+                          <img src={url} alt="pet" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="fixed bottom-3 left-3 right-3 max-w-[336px] mx-auto z-20 space-y-2">
+                    <button
+                      onClick={() => handleCheckPhotos(false)}
+                      className="w-full py-3 bg-neutral-900 text-white font-bold text-[14px] rounded-2xl shadow-lg active:scale-95 transition-transform"
+                    >
+                      提交照片并进行 AI 质检
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 6: 照片检查中 */}
+              {step === "checking" && (
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-3">
+                  <RefreshCw size={32} className="text-primary-600 animate-spin" />
+                  <h3 className="font-extrabold text-[15px] text-neutral-900">
+                    AI 正在质检照片合规性...
+                  </h3>
+                  <p className="text-[12px] text-neutral-500">
+                    检测产品包装、吃食场景与光线清晰度
+                  </p>
+                </div>
+              )}
+
+              {/* STEP 7: 复制与发布 */}
+              {step === "publish" && (
+                <div className="p-4 space-y-3.5 pb-20 text-[13px]">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-[12px] font-bold flex items-center gap-2">
+                    <CheckCircle2 size={16} />
+                    照片质检通过！请复制内容前往小红书发布
+                  </div>
+
+                  {/* Copy Title */}
+                  <div className="bg-white rounded-2xl p-3 border border-neutral-200 space-y-2">
+                    <div className="flex justify-between items-center text-[12px]">
+                      <span className="font-bold text-neutral-700">1. 复制标题</span>
+                      <button
+                        onClick={() => handleCopy(title, "title")}
+                        className={`px-3 py-1 rounded-lg text-[11.5px] font-bold ${
+                          copiedTitle ? "bg-emerald-600 text-white" : "bg-neutral-900 text-white"
+                        }`}
+                      >
+                        {copiedTitle ? "已复制" : "复制标题"}
+                      </button>
+                    </div>
+                    <div className="text-[12px] text-neutral-800 font-bold bg-neutral-50 p-2 rounded-lg truncate">
+                      {title}
+                    </div>
+                  </div>
+
+                  {/* Copy Body */}
+                  <div className="bg-white rounded-2xl p-3 border border-neutral-200 space-y-2">
+                    <div className="flex justify-between items-center text-[12px]">
+                      <span className="font-bold text-neutral-700">2. 复制正文</span>
+                      <button
+                        onClick={() => handleCopy(body, "body")}
+                        className={`px-3 py-1 rounded-lg text-[11.5px] font-bold ${
+                          copiedBody ? "bg-emerald-600 text-white" : "bg-neutral-900 text-white"
+                        }`}
+                      >
+                        {copiedBody ? "已复制" : "复制正文"}
+                      </button>
+                    </div>
+                    <div className="text-[11.5px] text-neutral-700 bg-neutral-50 p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-line">
+                      {body}
+                    </div>
+                  </div>
+
+                  <div className="fixed bottom-3 left-3 right-3 max-w-[336px] mx-auto z-20">
+                    <button
+                      onClick={handleOpenApp}
+                      className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-[14px] rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2"
+                    >
+                      <ExternalLink size={16} /> 打开小红书 App 发布
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 8: 发布成功自动识别 */}
+              {step === "recognized" && (
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-4">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <Award size={32} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-extrabold text-[17px] text-neutral-900">
+                      发布成功并自动识别！
+                    </h3>
+                    <p className="text-[12px] text-neutral-500 max-w-[260px]">
+                      系统已绑定小红书笔记并生成观察任务，专属 50 元优惠券与礼包已发放至您的账户！
+                    </p>
+                  </div>
+                  <button
+                    onClick={onClose}
+                    className="px-6 py-2.5 bg-neutral-900 text-white font-bold text-[13px] rounded-xl"
+                  >
+                    完成体验
+                  </button>
                 </div>
               )}
 
