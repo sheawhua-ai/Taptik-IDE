@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProjectStore } from "../../context/ProjectContext";
+import { DistributionDrawer, DistributionConfig } from "./CreateProject/DistributionDrawer";
+import { ConsumerModeDrawer, ConsumerKocConfig } from "./CreateProject/ConsumerModeDrawer";
 
 interface Attachment {
   id: string;
@@ -130,19 +132,37 @@ export function CreateProjectWorkstation({
 
   // Active drawer for editing/viewing
   const [activeEditDrawer, setActiveEditDrawer] = useState<
-    "contentRoles" | "kocQuestionnaireConfig" | "kocQuestionnaireQuestions" | null
+    "contentRoles" | "kocQuestionnaireConfig" | "kocQuestionnaireQuestions" | "distribution" | "consumerMode" | null
   >(null);
+
+  // Validation Error State for Pre-confirmation check
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   // AI Generated Plan State
   const [planData, setPlanData] = useState({
     projectName: "幼犬换粮体验优化及搜索卡位运营项目",
+    projectGoal: "验证真实换粮过程与店长专业解答能否增加有效问题评论与搜索咨询，建立幼犬换粮搜索卡位",
+    coreStrategy: "KOC真实体验测评 + 店长号专业科普指导 + 评论区私信引导与领样转化",
+    successCriteria: "幼犬换粮搜索词前3占位率>20%，笔记互动率>8%",
     goalAndStrategy: "【项目目标】验证真实换粮过程与店长专业解答能否增加有效问题评论与搜索咨询，建立幼犬换粮搜索卡位。\n【核心策略】KOC真实体验测评 + 店长号专业科普指导 + 评论区私信引导与领样转化",
     targetAudience: "3-6个月幼犬初次换粮且对软便、挑食焦虑的精致宠主与宠物新手",
     selectedBrandAccountIds: ["brand_1", "brand_2"],
     brandNotesPerAccount: 2,
+    brandFrequency: "每周2篇",
+    brandTimeWindow: "18:00—21:00",
     selectedKosAccountIds: ["kos_1", "kos_2", "kos_3", "kos_4", "kos_5"],
     kosNotesPerAccount: 1,
+    kosFrequency: "每周1篇",
+    kosTimeWindow: "18:00—21:00",
     kocCount: 10,
+    recruitmentCount: 10,
+    packagesPerPerson: 1,
+    hasQuestionnaire: true,
+    needPhotos: true,
+    photoCountRange: "2—4张现场照片",
+    claimValidityDays: 7,
+    observationDays: 7,
+    enableWechatNotice: true,
     kocMode: "内容包" as "内容包" | "预设笔记",
     contentRoles: DEFAULT_CONTENT_ROLES,
     startDate: "2026-08-10",
@@ -307,65 +327,160 @@ export function CreateProjectWorkstation({
     }, 800);
   };
 
+  // Scheme validation helper (方案确认前的数据校验)
+  const validateScheme = () => {
+    const errors: string[] = [];
+    const brandIds = planData.selectedBrandAccountIds || [];
+    const kosIds = planData.selectedKosAccountIds || [];
+    const brandNotes = Number(planData.brandNotesPerAccount) || 0;
+    const kosNotes = Number(planData.kosNotesPerAccount) || 0;
+    const kocCount = Number(planData.recruitmentCount ?? planData.kocCount) || 0;
+
+    const totalOwnAccounts = brandIds.length + kosIds.length;
+    if (totalOwnAccounts === 0 && kocCount === 0) {
+      errors.push("请至少选择 1 个分发账号或设置至少 1 名消费者招募人数");
+    }
+
+    if (brandIds.length > 0 && brandNotes < 1) {
+      errors.push("已选品牌主号的计划篇数必须 ≥ 1 篇");
+    }
+
+    if (kosIds.length > 0 && kosNotes < 1) {
+      errors.push("已选KOS店长号的计划篇数必须 ≥ 1 篇");
+    }
+
+    if (planData.startDate && planData.endDate) {
+      if (new Date(planData.endDate) < new Date(planData.startDate)) {
+        errors.push("项目结束日期不能早于开始日期");
+      }
+    }
+
+    if (kocCount > 0 && planData.needPhotos && !planData.photoCountRange?.trim()) {
+      errors.push("开启现场拍照要求时，请指定照片数量要求（如：2—4张现场照片）");
+    }
+
+    if (kocCount > 0 && (planData.claimValidityDays ?? 7) < 1) {
+      errors.push("消费者领取有效期必须 ≥ 1 天");
+    }
+
+    if (kocCount > 0 && (planData.observationDays ?? 7) < 1) {
+      errors.push("消费者观察周期必须 ≥ 1 天");
+    }
+
+    return errors;
+  };
+
   // Handle Final Confirmation & System Execution
   const handleConfirmAndProcess = () => {
+    const errors = validateScheme();
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    setValidationErrors([]);
     setPhase("processing");
+
+    const brandIds = planData.selectedBrandAccountIds || ["brand_1", "brand_2"];
+    const kosIds = planData.selectedKosAccountIds || ["kos_1", "kos_2", "kos_3", "kos_4", "kos_5"];
+    const brandNotesPerAcc = Number(planData.brandNotesPerAccount) || 2;
+    const kosNotesPerAcc = Number(planData.kosNotesPerAccount) || 1;
+    const kocCount = Number(planData.recruitmentCount ?? planData.kocCount) || 10;
 
     const dummyNotes: any[] = [];
 
-    // Generate dummy notes dynamically based on contentRoles
-    (planData.contentRoles || DEFAULT_CONTENT_ROLES).forEach((item) => {
-      const count = Number(item.count) || 0;
-      if (item.role.includes("品牌")) {
-        for (let i = 0; i < count; i++) {
-          const brandAcc = MERCHANT_BRAND_ACCOUNTS[i % MERCHANT_BRAND_ACCOUNTS.length];
-          dummyNotes.push({
-            title: `【品牌官方】${brandAcc.name}：幼犬科学进食指南第${i + 1}期`,
-            accountType: "品牌主号" as const,
-            accountName: brandAcc.name,
-            contentDirection: item.purpose || "品牌权威科普/产品实力解析",
-            plannedDate: new Date(Date.now() + (dummyNotes.length % 7) * 86400000).toISOString().split('T')[0],
-            targetAudience: planData.targetAudience,
-            searchIntent: "品牌正品保障 / 幼犬换粮指南",
-            coreExpression: "品牌官方深度科普，无谷高蛋白真鲜肉配方",
-            requiredMaterials: ["品牌检测报告特写", "产品包装展示", "高清成分图"],
-            materialMatched: true
-          });
-        }
-      } else if (item.role.includes("店长") || item.role.includes("KOS")) {
-        for (let i = 0; i < count; i++) {
-          const kosAcc = MERCHANT_KOS_ACCOUNTS[i % MERCHANT_KOS_ACCOUNTS.length];
-          dummyNotes.push({
-            title: `【店长科普】${kosAcc.storeName}答疑：幼犬换粮软便挑食怎么办？`,
-            accountType: "店长号/KOS" as const,
-            accountName: kosAcc.name,
-            contentDirection: item.purpose || "店长权威科普/门店顾问专业答疑",
-            plannedDate: new Date(Date.now() + (dummyNotes.length % 7) * 86400000).toISOString().split('T')[0],
-            targetAudience: planData.targetAudience,
-            searchIntent: "幼犬换粮软便排查 / 店长推荐粮",
-            coreExpression: "3步科学换粮法，线下门店顾客真实反馈分享",
-            requiredMaterials: ["门店环境/白大褂出镜", "倒粮展示", "换粮周期表表单"],
-            materialMatched: true
-          });
-        }
-      } else {
-        // KOC or other experience roles
-        for (let i = 0; i < count; i++) {
-          dummyNotes.push({
-            title: `【KOC真实体验】体验官#${i + 1}：幼犬换粮实测日志`,
-            accountType: "KOC" as const,
-            accountName: `招募中KOC体验官_${i + 1}`,
-            contentDirection: item.purpose || "真实体验与场景种草",
-            plannedDate: new Date(Date.now() + (dummyNotes.length % 7) * 86400000).toISOString().split('T')[0],
-            targetAudience: planData.targetAudience,
-            searchIntent: "真实体验测评 / 幼犬无谷粮便便对比",
-            coreExpression: "真实换粮打卡，支持附带包装槽点与客观反馈",
-            requiredMaterials: ["食碗与宠物吃粮近景", "真实粪便成型图片", "购买记录或包装照片"],
-            materialMatched: false
-          });
-        }
+    // 1. Generate Own Brand Account Notes
+    brandIds.forEach((bId, bIndex) => {
+      const brandAcc = MERCHANT_BRAND_ACCOUNTS.find(a => a.id === bId) || MERCHANT_BRAND_ACCOUNTS[bIndex % MERCHANT_BRAND_ACCOUNTS.length];
+      for (let i = 0; i < brandNotesPerAcc; i++) {
+        dummyNotes.push({
+          title: `【品牌官方】${brandAcc.name}：幼犬科学进食指南第${i + 1}期`,
+          accountType: "品牌主号" as const,
+          accountName: brandAcc.name,
+          contentDirection: "品牌权威科普/产品实力解析",
+          plannedDate: new Date(Date.now() + (dummyNotes.length % 7) * 86400000).toISOString().split('T')[0],
+          targetAudience: planData.targetAudience,
+          searchIntent: "品牌正品保障 / 幼犬换粮指南",
+          coreExpression: "品牌官方深度科普，无谷高蛋白真鲜肉配方",
+          requiredMaterials: ["品牌检测报告特写", "产品包装展示", "高清成分图"],
+          materialMatched: true,
+          isNotePackage: false
+        });
       }
     });
+
+    // 2. Generate Own KOS Account Notes
+    kosIds.forEach((kId, kIndex) => {
+      const kosAcc = MERCHANT_KOS_ACCOUNTS.find(a => a.id === kId) || MERCHANT_KOS_ACCOUNTS[kIndex % MERCHANT_KOS_ACCOUNTS.length];
+      for (let i = 0; i < kosNotesPerAcc; i++) {
+        dummyNotes.push({
+          title: `【店长科普】${kosAcc.storeName}答疑：幼犬换粮软便挑食怎么办？`,
+          accountType: "店长号/KOS" as const,
+          accountName: kosAcc.name,
+          contentDirection: "店长权威科普/门店顾问专业答疑",
+          plannedDate: new Date(Date.now() + (dummyNotes.length % 7) * 86400000).toISOString().split('T')[0],
+          targetAudience: planData.targetAudience,
+          searchIntent: "幼犬换粮软便排查 / 店长推荐粮",
+          coreExpression: "3步科学换粮法，线下门店顾客真实反馈分享",
+          requiredMaterials: ["门店环境/白大褂出镜", "倒粮展示", "换粮周期表表单"],
+          materialMatched: true,
+          isNotePackage: false
+        });
+      }
+    });
+
+    // 3. Generate Consumer KOC Note Packages
+    for (let i = 0; i < kocCount; i++) {
+      dummyNotes.push({
+        title: `【消费者体验】KOC内容包 #${i + 1}：幼犬换粮实测`,
+        accountType: "KOC" as const,
+        accountName: `待领取 (体验官_${i + 1})`,
+        contentDirection: "真实体验与场景种草",
+        plannedDate: new Date(Date.now() + (dummyNotes.length % 7) * 86400000).toISOString().split('T')[0],
+        targetAudience: planData.targetAudience,
+        searchIntent: "真实体验测评 / 幼犬无谷粮便便对比",
+        coreExpression: "真实换粮打卡，支持附带包装槽点与客观反馈",
+        requiredMaterials: ["食碗与宠物吃粮近景", "真实粪便成型图片", "购买记录或包装照片"],
+        materialMatched: false,
+        isNotePackage: true,
+        packageSpec: {
+          needPhotos: planData.needPhotos ?? true,
+          photoCountRange: planData.photoCountRange || "2—4张现场照片",
+          hasQuestionnaire: planData.hasQuestionnaire ?? true,
+          claimValidityDays: planData.claimValidityDays || 7,
+          observationDays: planData.observationDays || 7,
+          enableWechatNotice: planData.enableWechatNotice ?? true
+        }
+      });
+    }
+
+    // Build complete DistributionScheme payload
+    const distributionScheme = {
+      ownAccounts: {
+        brandAccounts: {
+          selectedAccountIds: brandIds,
+          notesPerAccount: brandNotesPerAcc,
+          publishFrequency: planData.brandFrequency || "每周2篇",
+          suggestedTimeWindow: planData.brandTimeWindow || "18:00—21:00"
+        },
+        kosAccounts: {
+          selectedAccountIds: kosIds,
+          notesPerAccount: kosNotesPerAcc,
+          publishFrequency: planData.kosFrequency || "每周1篇",
+          suggestedTimeWindow: planData.kosTimeWindow || "18:00—21:00"
+        }
+      },
+      consumerKoc: {
+        recruitmentCount: kocCount,
+        packagesPerPerson: planData.packagesPerPerson || 1,
+        hasQuestionnaire: planData.hasQuestionnaire ?? true,
+        needPhotos: planData.needPhotos ?? true,
+        photoCountRange: planData.photoCountRange || "2—4张现场照片",
+        claimValidityDays: planData.claimValidityDays || 7,
+        observationDays: planData.observationDays || 7,
+        enableWechatNotice: planData.enableWechatNotice ?? true
+      },
+      aiSuggestion: "品牌主号负责权威解释，KOS账号负责门店真实体验，消费者KOC负责个体反馈与搜索内容覆盖。"
+    };
 
     // Prepare Asset Tasks (Pending Review - 待发布)
     const dummyMaterialTasks = [
@@ -402,11 +517,12 @@ export function CreateProjectWorkstation({
       // Save project into context store
       const newId = createFullOperationsProject({
         name: planData.projectName,
-        goal: planData.projectGoal,
+        goal: planData.projectGoal || "幼犬换粮体验优化与搜索卡位",
         status: "进行中",
-        startDate: "2026-08-10",
-        endDate: "2026-08-24",
+        startDate: planData.startDate || "2026-08-10",
+        endDate: planData.endDate || "2026-08-24",
         budget: "8,000元",
+        distributionScheme: distributionScheme,
         strategyProtocol: {
           targetAudience: planData.targetAudience,
           coreProblem: planData.projectGoal,
@@ -463,7 +579,7 @@ export function CreateProjectWorkstation({
 
       {/* Main Single Column Container */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-[880px] mx-auto py-8 px-6">
+        <div className={`${phase === "plan" ? "max-w-[1240px]" : "max-w-[880px]"} mx-auto py-8 px-6 transition-all duration-300`}>
 
           {/* ==================================================== */}
           {/* PHASE 1: DEMAND INPUT AREA (需求输入区)              */}
@@ -732,6 +848,21 @@ export function CreateProjectWorkstation({
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
+              {/* Validation Error Banner */}
+              {validationErrors.length > 0 && (
+                <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-1.5 animate-shake">
+                  <div className="text-[13px] font-bold text-rose-900 flex items-center gap-2">
+                    <AlertCircle size={16} className="text-rose-600 shrink-0" />
+                    请修正以下配置问题后再确认方案：
+                  </div>
+                  <ul className="list-disc list-inside text-[12.5px] text-rose-800 space-y-0.5 pl-1 font-medium">
+                    {validationErrors.map((err, idx) => (
+                      <li key={idx}>{err}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Header Description */}
               <div className="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-4 flex items-start gap-3">
                 <Sparkles size={18} className="text-amber-600 shrink-0 mt-0.5" />
@@ -840,13 +971,24 @@ export function CreateProjectWorkstation({
                     value={
                       (() => {
                         const brandAccountIds = planData.selectedBrandAccountIds || ["brand_1", "brand_2"];
-                        const brandNotes = planData.brandNotesPerAccount ?? 2;
                         const kosAccountIds = planData.selectedKosAccountIds || ["kos_1", "kos_2", "kos_3", "kos_4", "kos_5"];
-                        const kosNotes = planData.kosNotesPerAccount ?? 1;
                         const kocCount = planData.kocCount ?? 10;
                         const kocMode = planData.kocMode || "内容包";
+                        const accountConfigs = planData.accountConfigs || {};
 
-                        const totalNotes = (brandAccountIds.length * brandNotes) + (kosAccountIds.length * kosNotes) + kocCount;
+                        // 计算品牌号总篇数
+                        const totalBrandNotesCalculated = brandAccountIds.reduce(
+                          (sum: number, id: string) => sum + (accountConfigs[id]?.notesCount ?? (planData.brandNotesPerAccount ?? 2)),
+                          0
+                        );
+
+                        // 计算KOS员工号总篇数
+                        const totalKosNotesCalculated = kosAccountIds.reduce(
+                          (sum: number, id: string) => sum + (accountConfigs[id]?.notesCount ?? (planData.kosNotesPerAccount ?? 1)),
+                          0
+                        );
+
+                        const totalNotes = totalBrandNotesCalculated + totalKosNotesCalculated + kocCount;
 
                         return (
                           <div className="space-y-3">
@@ -854,68 +996,88 @@ export function CreateProjectWorkstation({
                               <span className="font-bold text-neutral-900 text-[13px]">
                                 内容安排　共{totalNotes}篇/包
                               </span>
-                              <span className="text-[11px] font-medium text-neutral-500">
-                                点击“查看详情”可编辑分配账号与产出模式
+                              <span className="text-[11.5px] font-medium text-neutral-500">
+                                调整账号篇数与频次请点击右侧“分发与招募配置”
                               </span>
                             </div>
 
                             {/* Clean Table: Available accounts and assigned counts */}
-                            <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white text-[12px]">
-                              <table className="w-full text-left border-collapse">
+                            <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white text-[13px]">
+                              <table className="w-full border-collapse table-fixed">
                                 <thead>
-                                  <tr className="bg-neutral-50 text-neutral-600 font-bold border-b border-neutral-200">
-                                    <th className="py-2.5 px-3 w-1/4">账号类型</th>
-                                    <th className="py-2.5 px-3 w-1/2">分配/可用账号</th>
-                                    <th className="py-2.5 px-3 text-right w-1/4">产出形式与数量</th>
+                                  <tr className="bg-neutral-50 text-neutral-600 font-bold border-b border-neutral-200 text-[12.5px]">
+                                    <th className="py-3 px-5 text-left w-[160px]">账号类型</th>
+                                    <th className="py-3 px-5 text-left">分配 / 可用账号明细</th>
+                                    <th className="py-3 px-5 text-right w-[240px]">产出形式与数量</th>
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-100 text-neutral-800">
-                                  <tr className="hover:bg-neutral-50/50">
-                                    <td className="py-2.5 px-3 font-bold text-neutral-900">
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
-                                        品牌主号
+                                  {/* Row 1: 品牌主号 */}
+                                  <tr className="hover:bg-neutral-50/50 transition-colors">
+                                    <td className="py-3.5 px-5 font-bold text-neutral-900 align-top">
+                                      <div className="flex items-center gap-2">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-neutral-900 inline-block shrink-0" />
+                                        <span>品牌主号</span>
                                       </div>
                                     </td>
-                                    <td className="py-2.5 px-3 text-neutral-600">
-                                      已选 {brandAccountIds.length}/{MERCHANT_BRAND_ACCOUNTS.length} 个品牌账号
-                                      <span className="text-neutral-400 text-[11px] block mt-0.5">
+                                    <td className="py-3.5 px-5 text-neutral-600 align-top">
+                                      <div className="font-semibold text-neutral-800">
+                                        已选 {brandAccountIds.length}/{MERCHANT_BRAND_ACCOUNTS.length} 个品牌账号
+                                      </div>
+                                      <div className="text-neutral-500 text-[12px] mt-1 leading-snug">
                                         ({MERCHANT_BRAND_ACCOUNTS.filter(a => brandAccountIds.includes(a.id)).map(a => a.name).join('、') || '未选择'})
-                                      </span>
-                                    </td>
-                                    <td className="py-2.5 px-3 text-right font-bold text-neutral-900">
-                                      {brandAccountIds.length * brandNotes} 篇笔记 ({brandNotes}篇/账号)
-                                    </td>
-                                  </tr>
-                                  <tr className="hover:bg-neutral-50/50">
-                                    <td className="py-2.5 px-3 font-bold text-neutral-900">
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                                        KOS店长号
                                       </div>
                                     </td>
-                                    <td className="py-2.5 px-3 text-neutral-600">
-                                      已选 {kosAccountIds.length}/{MERCHANT_KOS_ACCOUNTS.length} 个门店店长号
-                                      <span className="text-neutral-400 text-[11px] block mt-0.5">
+                                    <td className="py-3.5 px-5 text-right font-bold text-neutral-900 align-top">
+                                      {totalBrandNotesCalculated} 篇笔记
+                                      <span className="text-[12px] text-neutral-500 font-normal block mt-0.5">
+                                        (按账号人设分布)
+                                      </span>
+                                    </td>
+                                  </tr>
+
+                                  {/* Row 2: KOS员工号 */}
+                                  <tr className="hover:bg-neutral-50/50 transition-colors">
+                                    <td className="py-3.5 px-5 font-bold text-neutral-900 align-top">
+                                      <div className="flex items-center gap-2">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-neutral-700 inline-block shrink-0" />
+                                        <span>KOS员工号</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3.5 px-5 text-neutral-600 align-top">
+                                      <div className="font-semibold text-neutral-800">
+                                        已选 {kosAccountIds.length}/{MERCHANT_KOS_ACCOUNTS.length} 个KOS员工号
+                                      </div>
+                                      <div className="text-neutral-500 text-[12px] mt-1 leading-snug">
                                         ({MERCHANT_KOS_ACCOUNTS.filter(a => kosAccountIds.includes(a.id)).map(a => a.name).join('、') || '未选择'})
-                                      </span>
-                                    </td>
-                                    <td className="py-2.5 px-3 text-right font-bold text-neutral-900">
-                                      {kosAccountIds.length * kosNotes} 篇笔记 ({kosNotes}篇/账号)
-                                    </td>
-                                  </tr>
-                                  <tr className="hover:bg-neutral-50/50">
-                                    <td className="py-2.5 px-3 font-bold text-neutral-900">
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-                                        消费者KOC
                                       </div>
                                     </td>
-                                    <td className="py-2.5 px-3 text-neutral-600">
-                                      拟招募 {kocCount} 名体验官/KOC
+                                    <td className="py-3.5 px-5 text-right font-bold text-neutral-900 align-top">
+                                      {totalKosNotesCalculated} 篇笔记
+                                      <span className="text-[12px] text-neutral-500 font-normal block mt-0.5">
+                                        (按门店岗位分布)
+                                      </span>
                                     </td>
-                                    <td className="py-2.5 px-3 text-right font-bold text-neutral-900">
-                                      {kocCount} 组 ({kocMode === "预设笔记" ? "预设笔记" : "试用体验内容包"})
+                                  </tr>
+
+                                  {/* Row 3: 消费者KOC */}
+                                  <tr className="hover:bg-neutral-50/50 transition-colors">
+                                    <td className="py-3.5 px-5 font-bold text-neutral-900 align-top">
+                                      <div className="flex items-center gap-2">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-neutral-500 inline-block shrink-0" />
+                                        <span>消费者KOC</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3.5 px-5 text-neutral-600 align-top">
+                                      <div className="font-semibold text-neutral-800">
+                                        拟招募 {kocCount} 名体验官 / KOC
+                                      </div>
+                                    </td>
+                                    <td className="py-3.5 px-5 text-right font-bold text-neutral-900 align-top">
+                                      {kocCount} 组
+                                      <span className="text-[12px] text-neutral-500 font-normal block mt-0.5">
+                                        ({kocMode === "预设笔记" ? "预设笔记" : "试用体验内容包"})
+                                      </span>
                                     </td>
                                   </tr>
                                 </tbody>
@@ -925,19 +1087,27 @@ export function CreateProjectWorkstation({
                             {/* Bottom AI Suggestion */}
                             <div className="p-2.5 bg-amber-50/70 border border-amber-200/70 rounded-xl text-[12px] text-amber-900 font-medium flex items-center gap-2">
                               <Sparkles size={14} className="text-amber-600 shrink-0" />
-                              <span>AI建议：以KOC真实体验内容包为主，配合店长号专业解读与品牌号信任承接。</span>
+                              <span>AI建议：以KOC真实体验内容包为主，配合KOS员工号专业解读与品牌号信任承接。</span>
                             </div>
                           </div>
                         );
                       })()
                     }
                     customActions={
-                      <button
-                        onClick={() => setActiveDetailKey("contentAndAccounts")}
-                        className="text-[12px] font-medium text-blue-600 hover:text-blue-800 hover:underline px-2 py-1"
-                      >
-                        查看详情
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setActiveEditDrawer("distribution")}
+                          className="text-[12px] font-bold text-white bg-neutral-900 hover:bg-neutral-800 px-3 py-1.5 rounded-xl transition-colors shadow-2xs"
+                        >
+                          自有账号分发配置
+                        </button>
+                        <button
+                          onClick={() => setActiveEditDrawer("consumerMode")}
+                          className="text-[12px] font-bold text-white bg-neutral-900 hover:bg-neutral-800 px-3 py-1.5 rounded-xl transition-colors shadow-2xs"
+                        >
+                          消费者招募配置
+                        </button>
+                      </div>
                     }
                   />
 
@@ -1524,6 +1694,111 @@ export function CreateProjectWorkstation({
                   ...prev.kocQuestionnaire,
                   questions: newQuestions
                 }
+              }));
+              setActiveEditDrawer(null);
+            }}
+            onClose={() => setActiveEditDrawer(null)}
+          />
+        )}
+
+        {/* Distribution Config Drawer */}
+        {activeEditDrawer === "distribution" && (
+          <DistributionDrawer
+            initialConfig={{
+              matrixAccountIds: [
+                ...(planData.selectedBrandAccountIds || ["brand_1", "brand_2"]),
+                ...(planData.selectedKosAccountIds || ["kos_1", "kos_2", "kos_3", "kos_4", "kos_5"])
+              ],
+              notesPerAccountRequirement: planData.notesPerAccountRequirement || "单账号 2 篇",
+              publishFrequencyRequirement: planData.publishFrequencyRequirement || planData.brandFrequency || "每周 2 篇",
+              publishTimeWindowRequirement: planData.publishTimeWindowRequirement || planData.brandTimeWindow || "18:00—21:00",
+              additionalRequirements: planData.additionalRequirements || "各矩阵账号统一配图视觉基调",
+              brandAccountIds: planData.selectedBrandAccountIds || ["brand_1", "brand_2"],
+              brandNotesPerAccount: planData.brandNotesPerAccount ?? 2,
+              brandFrequency: planData.brandFrequency || "每周 2 篇",
+              brandTimeWindow: planData.brandTimeWindow || "18:00—21:00",
+              kosAccountIds: planData.selectedKosAccountIds || ["kos_1", "kos_2", "kos_3", "kos_4", "kos_5"],
+              kosNotesPerAccount: planData.kosNotesPerAccount ?? 1,
+              kosFrequency: planData.kosFrequency || "每周 1 篇",
+              kosTimeWindow: planData.kosTimeWindow || "18:00—21:00",
+              kocCount: planData.kocCount ?? 10
+            }}
+            onSave={(newConfig: DistributionConfig) => {
+              setPlanData((prev: any) => ({
+                ...prev,
+                matrixAccountIds: newConfig.matrixAccountIds,
+                notesPerAccountRequirement: newConfig.notesPerAccountRequirement,
+                publishFrequencyRequirement: newConfig.publishFrequencyRequirement,
+                publishTimeWindowRequirement: newConfig.publishTimeWindowRequirement,
+                additionalRequirements: newConfig.additionalRequirements,
+                selectedBrandAccountIds: newConfig.brandAccountIds,
+                brandNotesPerAccount: newConfig.brandNotesPerAccount,
+                brandFrequency: newConfig.brandFrequency,
+                brandTimeWindow: newConfig.brandTimeWindow,
+                selectedKosAccountIds: newConfig.kosAccountIds,
+                kosNotesPerAccount: newConfig.kosNotesPerAccount,
+                kosFrequency: newConfig.kosFrequency,
+                kosTimeWindow: newConfig.kosTimeWindow,
+              }));
+              setEditablePlanData((prev: any) => ({
+                ...prev,
+                matrixAccountIds: newConfig.matrixAccountIds,
+                notesPerAccountRequirement: newConfig.notesPerAccountRequirement,
+                publishFrequencyRequirement: newConfig.publishFrequencyRequirement,
+                publishTimeWindowRequirement: newConfig.publishTimeWindowRequirement,
+                additionalRequirements: newConfig.additionalRequirements,
+                selectedBrandAccountIds: newConfig.brandAccountIds,
+                brandNotesPerAccount: newConfig.brandNotesPerAccount,
+                brandFrequency: newConfig.brandFrequency,
+                brandTimeWindow: newConfig.brandTimeWindow,
+                selectedKosAccountIds: newConfig.kosAccountIds,
+                kosNotesPerAccount: newConfig.kosNotesPerAccount,
+                kosFrequency: newConfig.kosFrequency,
+                kosTimeWindow: newConfig.kosTimeWindow,
+              }));
+              setActiveEditDrawer(null);
+            }}
+            onClose={() => setActiveEditDrawer(null)}
+          />
+        )}
+
+        {/* Consumer Mode / KOC Recruitment Drawer */}
+        {activeEditDrawer === "consumerMode" && (
+          <ConsumerModeDrawer
+            initialConfig={{
+              recruitmentCount: planData.recruitmentCount ?? planData.kocCount ?? 10,
+              packagesPerPerson: planData.packagesPerPerson ?? 1,
+              hasQuestionnaire: planData.hasQuestionnaire ?? true,
+              needPhotos: planData.needPhotos ?? true,
+              photoCountRange: planData.photoCountRange || "2—4张现场照片",
+              claimValidityDays: planData.claimValidityDays ?? 7,
+              observationDays: planData.observationDays ?? 7,
+              enableWechatNotice: planData.enableWechatNotice ?? true,
+            }}
+            onSave={(newConfig: ConsumerKocConfig) => {
+              setPlanData((prev: any) => ({
+                ...prev,
+                kocCount: newConfig.recruitmentCount,
+                recruitmentCount: newConfig.recruitmentCount,
+                packagesPerPerson: newConfig.packagesPerPerson,
+                hasQuestionnaire: newConfig.hasQuestionnaire,
+                needPhotos: newConfig.needPhotos,
+                photoCountRange: newConfig.photoCountRange,
+                claimValidityDays: newConfig.claimValidityDays,
+                observationDays: newConfig.observationDays,
+                enableWechatNotice: newConfig.enableWechatNotice,
+              }));
+              setEditablePlanData((prev: any) => ({
+                ...prev,
+                kocCount: newConfig.recruitmentCount,
+                recruitmentCount: newConfig.recruitmentCount,
+                packagesPerPerson: newConfig.packagesPerPerson,
+                hasQuestionnaire: newConfig.hasQuestionnaire,
+                needPhotos: newConfig.needPhotos,
+                photoCountRange: newConfig.photoCountRange,
+                claimValidityDays: newConfig.claimValidityDays,
+                observationDays: newConfig.observationDays,
+                enableWechatNotice: newConfig.enableWechatNotice,
               }));
               setActiveEditDrawer(null);
             }}

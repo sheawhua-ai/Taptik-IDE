@@ -100,6 +100,31 @@ export interface Note {
 
 import { LandingPageSettings } from './unifiedStore';
 
+export interface DistributionScheme {
+  ownAccounts: {
+    brandAccountIds: string[];
+    brandNotesPerAccount: number;
+    brandFrequency: string;
+    brandTimeWindow: string;
+    kosAccountIds: string[];
+    kosNotesPerAccount: number;
+    kosFrequency: string;
+    kosTimeWindow: string;
+  };
+  consumerKoc: {
+    recruitmentCount: number;
+    packagesPerPerson: number;
+    hasQuestionnaire: boolean;
+    needPhotos: boolean;
+    photoCountRange?: string;
+    claimValidityDays: number;
+    observationDays: number;
+    enableWechatNotice: boolean;
+  };
+  totalPlannedNotes: number;
+  aiExplanation?: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -110,6 +135,7 @@ export interface Project {
   budget: string;
   notes: Note[];
   landingPageSettings?: LandingPageSettings;
+  distributionScheme?: DistributionScheme;
   strategyProtocol: {
     targetAudience: string;
     coreProblem: string;

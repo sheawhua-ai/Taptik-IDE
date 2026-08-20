@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useMemo } from "react";
 import { Project as OldProject, Note as OldNote, NoteIssue as OldNoteIssue } from "../data/projectStore";
 import { 
   Merchant, Project, Round, NoteSlot, ContentDraft, MaterialRequirement, MaterialTask,
-  MaterialAsset, PublishTask, PublishedNote, EvidenceSnapshot, Issue, ActionTask, TimelineEvent 
+  MaterialAsset, PublishTask, PublishedNote, EvidenceSnapshot, Issue, ActionTask, TimelineEvent,
+  DistributionScheme
 } from "../data/unifiedStore";
 import { 
   mockMerchants, mockProjects, mockRounds, mockNoteSlots, mockContentDrafts,
@@ -83,6 +84,7 @@ export interface ProjectContextType {
     startDate?: string;
     endDate?: string;
     budget?: string;
+    distributionScheme?: any;
     strategyProtocol?: any;
     notes: Array<{
       title: string;
@@ -96,6 +98,8 @@ export interface ProjectContextType {
       requiredMaterials?: string[];
       body?: string;
       materialMatched?: boolean;
+      isNotePackage?: boolean;
+      packageSpec?: any;
     }>;
     materialTasks: Array<{
       reqs: string;
@@ -608,6 +612,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     endDate?: string;
     budget?: string;
     strategyProtocol?: any;
+    distributionScheme?: DistributionScheme;
     notes: Array<{
       title: string;
       accountType: "KOC" | "店长号/KOS" | "品牌主号";
@@ -620,6 +625,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       requiredMaterials?: string[];
       body?: string;
       materialMatched?: boolean;
+      isNotePackage?: boolean;
+      packageSpec?: any;
     }>;
     materialTasks: Array<{
       reqs: string;
@@ -653,7 +660,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         loginMode: "无需登录",
         posterTitle: `${data.name} - 体验官招募与内容投稿`,
         bannerUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop"
-      }
+      },
+      distributionScheme: data.distributionScheme
     };
 
     const newSlots: NoteSlot[] = [];
@@ -672,7 +680,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         accountType: note.accountType,
         accountName: note.accountName || `${note.accountType}_${idx + 1}`,
         contentDirection: note.contentDirection,
-        plannedDate: note.plannedDate || new Date().toISOString().split('T')[0]
+        plannedDate: note.plannedDate || new Date().toISOString().split('T')[0],
+        isNotePackage: note.isNotePackage,
+        packageSpec: note.packageSpec
       });
 
       newDrafts.push({

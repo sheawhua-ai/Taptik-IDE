@@ -456,19 +456,34 @@ export function ProjectCenter({
         </div>
 
         {/* Level-2 Primary Tabs */}
-        <div className="px-6 bg-white border-b border-[#EAECF0] flex gap-6 text-[14px] font-medium shrink-0">
-          {(["概览", "内容与发布", "素材", "数据"] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`py-3 relative font-bold ${activeTab === tab ? "text-neutral-900" : "text-[#667085] hover:text-[#111827]"}`}
+        <div className="px-6 bg-white border-b border-[#EAECF0] flex items-center justify-between text-[14px] font-medium shrink-0">
+          <div className="flex gap-6">
+            {(["概览", "内容与发布", "素材", "数据"] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`py-3 relative font-bold ${activeTab === tab ? "text-neutral-900" : "text-[#667085] hover:text-[#111827]"}`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <motion.div layoutId="projectCenterTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-neutral-900" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Refresh status right aligned in Tab Row */}
+          <div className="flex items-center gap-2 text-[12px] text-[#667085]">
+            <span>更新时间：{lastUpdatedText}</span>
+            <button 
+              onClick={handleRefreshProgress}
+              disabled={isRefreshingProgress}
+              title="刷新项目数据"
+              className="p-1 text-neutral-500 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors"
             >
-              {tab}
-              {activeTab === tab && (
-                <motion.div layoutId="projectCenterTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-neutral-900" />
-              )}
+              <RefreshCw size={13} className={isRefreshingProgress ? "animate-spin text-neutral-900" : ""} />
             </button>
-          ))}
+          </div>
         </div>
 
         {/* Main View Area */}
@@ -559,59 +574,7 @@ export function ProjectCenter({
                   )}
                 </div>
 
-                {/* 5.2 内容与发布概览 (Compact Pipeline Summary Bar) */}
-                <div className="bg-white rounded-2xl p-5 border border-[#EAECF0] shadow-2xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-[14px] font-bold text-[#111827]">内容与发布概览</h3>
-                    <div className="flex items-center gap-2 text-[12px] text-[#667085]">
-                      <span>更新时间：{lastUpdatedText}</span>
-                      <button 
-                        onClick={handleRefreshProgress}
-                        disabled={isRefreshingProgress}
-                        title="刷新项目数据"
-                        className="p-1 text-neutral-500 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors"
-                      >
-                        <RefreshCw size={13} className={isRefreshingProgress ? "animate-spin text-neutral-900" : ""} />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* 1-Line Clean Clickable Status Capsules */}
-                  <div className="flex flex-wrap items-center gap-2 pt-1">
-                    {[
-                      { label: "全部", count: counts.all, filter: "全部" },
-                      { label: "内容准备中", count: counts.preparing, filter: "待准备" },
-                      { label: "待发布", count: counts.pendingPublish, filter: "待发布" },
-                      { label: "发布识别中", count: counts.detecting, filter: "发布识别中" },
-                      { label: "观察中", count: counts.observing, filter: "观察中" },
-                      { label: "已完成", count: counts.completed, filter: "已完成" },
-                      { label: "异常", count: counts.exception, filter: "异常", isAlert: counts.exception > 0 },
-                    ].map((item) => (
-                      <button
-                        key={item.label}
-                        onClick={() => {
-                          setStatusFilter(item.filter);
-                          setActiveTab("内容与发布");
-                          setContentSubView("by_note");
-                        }}
-                        className={`px-3 py-1.5 rounded-xl border text-[12.5px] font-bold transition-all flex items-center gap-2 ${
-                          item.isAlert
-                            ? "bg-rose-50 border-rose-200 text-rose-700 hover:bg-rose-100"
-                            : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-white hover:border-neutral-300 shadow-2xs"
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                        <span className={`px-1.5 py-0.2 rounded-md text-[11px] ${
-                          item.isAlert ? "bg-rose-600 text-white" : "bg-neutral-200/70 text-neutral-800"
-                        }`}>
-                          {item.count}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 5.3 本轮方案 (Current Round Strategy Summary) */}
+                {/* 5.2 本轮方案 (Current Round Strategy Summary) */}
                 <div className="bg-white rounded-2xl p-5 border border-[#EAECF0] shadow-2xs space-y-4">
                   <div className="flex items-center justify-between border-b border-[#EAECF0] pb-3">
                     <h3 className="text-[14px] font-bold text-[#111827] flex items-center gap-2">

@@ -14,6 +14,34 @@ export interface LandingPageSettings {
   questionnaireQuestions?: any[];
 }
 
+export interface DistributionScheme {
+  ownAccounts?: {
+    brandAccounts?: {
+      selectedAccountIds: string[];
+      notesPerAccount: number;
+      publishFrequency?: string;
+      suggestedTimeWindow?: string;
+    };
+    kosAccounts?: {
+      selectedAccountIds: string[];
+      notesPerAccount: number;
+      publishFrequency?: string;
+      suggestedTimeWindow?: string;
+    };
+  };
+  consumerKoc?: {
+    recruitmentCount: number;
+    packagesPerPerson: number;
+    hasQuestionnaire: boolean;
+    needPhotos: boolean;
+    photoCountRange?: string;
+    claimValidityDays?: number;
+    observationDays?: number;
+    enableWechatNotice?: boolean;
+  };
+  aiSuggestion?: string;
+}
+
 export interface Project {
   id: string;
   merchantId: string;
@@ -25,6 +53,7 @@ export interface Project {
   budget: string;
   strategyProtocol: any;
   landingPageSettings?: LandingPageSettings;
+  distributionScheme?: DistributionScheme;
 }
 
 export interface Round {
