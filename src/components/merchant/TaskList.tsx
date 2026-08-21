@@ -21,42 +21,42 @@ const MOCK_TASKS: Task[] = [
 
 export const TaskList: React.FC = () => {
  return (
- <div className="flex flex-col h-full bg-neutral-50 p-8">
+ <div className="flex flex-col h-full bg-page-bg p-8">
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-[20px] font-semibold text-neutral-900 tracking-tight">素材任务队列</h2>
- <p className="text-[12px] text-neutral-400 uppercase tracking-wider mt-1">Batch Processing & Asset Tasks</p>
+ <h2 className="text-[20px] font-semibold text-text-main tracking-tight">素材任务队列</h2>
+ <p className="text-[12px] text-text-tertiary uppercase tracking-wider mt-1">Batch Processing & Asset Tasks</p>
  </div>
- <button className="px-6 py-2.5 bg-primary-500 text-white rounded-xl text-[13px] shadow-lg shadow-primary-500/20 hover:bg-primary-600 transition-all flex items-center gap-2">
+ <button className="px-6 py-2.5 bg-btn-main text-white rounded-xl text-[13px] shadow-lg shadow-primary-500/20 hover:bg-btn-main-hover transition-all flex items-center gap-2">
  <Plus size={18}/> 新建任务
  </button>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
  {MOCK_TASKS.map((task) => (
- <div key={task.id} className="bg-white rounded-[32px] border border-neutral-200 p-6 shadow-sm hover:shadow-xl transition-all group">
+ <div key={task.id} className="bg-surface-1 rounded-[32px] border border-border-default p-6 shadow-sm hover:shadow-xl transition-all group">
  <div className="flex items-center justify-between mb-6">
- <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
- task.status === 'done' ? 'bg-neutral-100 text-neutral-900' : 
- task.status === 'running' ? 'bg-primary-50 text-primary-500' : 'bg-neutral-50 text-neutral-400'
+ <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+ task.status === 'done' ? 'bg-hover-bg text-text-main' : 
+ task.status === 'running' ? 'bg-brand-light text-brand-logo' : 'bg-page-bg text-text-tertiary'
  }`}>
  <Layout size={24} />
  </div>
- <button className="p-2 text-neutral-300 hover:text-neutral-900"><MoreVertical size={18}/></button>
+ <button className="p-2 text-neutral-300 hover:text-text-main"><MoreVertical size={18}/></button>
  </div>
  
- <h3 className="text-[16px] font-semibold text-neutral-900 mb-2">{task.name}</h3>
- <p className="text-[11px] text-neutral-400 uppercase tracking-widest mb-6">Task ID: {task.id}</p>
+ <h3 className="text-[16px] font-semibold text-text-main mb-2">{task.name}</h3>
+ <p className="text-[11px] text-text-tertiary uppercase tracking-widest mb-6">Task ID: {task.id}</p>
 
  <div className="space-y-4">
  <div>
  <div className="flex justify-between items-center text-[12px] mb-2">
- <span className="text-neutral-500">执行进度</span>
- <span className="text-neutral-900">{task.progress}%</span>
+ <span className="text-text-tertiary">执行进度</span>
+ <span className="text-text-main">{task.progress}%</span>
  </div>
- <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+ <div className="h-1.5 bg-hover-bg rounded-full overflow-hidden">
  <div 
- className={`h-full transition-all duration-1000 ${task.status === 'done' ? 'bg-neutral-900' : 'bg-primary-500'}`} 
+ className={`h-full transition-all duration-1000 ${task.status === 'done' ? 'bg-btn-main' : 'bg-btn-main'}`} 
  style={{ width: `${task.progress}%` }} 
  />
  </div>
@@ -65,15 +65,15 @@ export const TaskList: React.FC = () => {
  <div className="flex items-center justify-between pt-4 border-t border-neutral-50">
  <div className="flex items-center gap-2">
  <Clock size={14} className="text-neutral-300"/>
- <span className="text-[11px] text-neutral-400">{task.createdAt}</span>
+ <span className="text-[11px] text-text-tertiary">{task.createdAt}</span>
  </div>
  <div className="flex items-center gap-2">
  {task.status === 'running' ? (
- <button className="p-2 bg-neutral-900 text-white rounded-lg hover:scale-110 transition-transform"><Pause size={14}/></button>
+ <button className="p-2 bg-btn-main text-white rounded-lg hover:scale-110 transition-transform"><Pause size={14}/></button>
  ) : task.status === 'paused' ? (
- <button className="p-2 bg-primary-500 text-white rounded-lg hover:scale-110 transition-transform"><Play size={14}/></button>
+ <button className="p-2 bg-btn-main text-white rounded-lg hover:scale-110 transition-transform"><Play size={14}/></button>
  ) : (
- <div className="flex items-center gap-1 text-neutral-900 text-[12px] "><CheckCircle2 size={14}/> 已完成</div>
+ <div className="flex items-center gap-1 text-text-main text-[12px] "><CheckCircle2 size={14}/> 已完成</div>
  )}
  </div>
  </div>

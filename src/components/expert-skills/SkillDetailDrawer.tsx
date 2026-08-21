@@ -33,18 +33,18 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-neutral-900/30 backdrop-blur-2xs transition-opacity" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/30 backdrop-blur-2xs transition-opacity" onClick={onClose} />
 
       {/* Drawer */}
-      <div className="relative w-full max-w-xl bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-200">
+      <div className="relative w-full max-w-xl bg-surface-1 h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-200">
         {/* Header */}
-        <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+        <div className="p-6 border-b border-border-default flex items-center justify-between bg-page-bg">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-[18px] font-black text-neutral-900">{skill.name}</h2>
+              <h2 className="text-[18px] font-black text-text-main">{skill.name}</h2>
               <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${
                 skill.source === 'official'
-                  ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                  ? 'bg-hover-bg text-text-secondary border-border-default'
                   : 'bg-blue-50 text-blue-700 border-blue-200'
               }`}>
                 {skill.source === 'official' ? '官方技能' : '自定义技能'}
@@ -55,14 +55,14 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-[12.5px] font-bold text-neutral-500 mt-1">
+            <p className="text-[12.5px] font-bold text-text-tertiary mt-1">
               为当前商家添加AI可自动调用的运营能力
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-xl transition-all"
+            className="p-2 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-xl transition-all"
           >
             <X size={20} />
           </button>
@@ -71,17 +71,17 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
         {/* Content Body: Simple business view */}
         <div className="flex-1 overflow-y-auto p-6 space-y-5 text-[13px]">
           {/* 1. 这个技能能做什么 */}
-          <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-1.5">
-            <span className="text-neutral-900 font-extrabold block text-[13px]">
+          <div className="p-4 bg-page-bg rounded-xl border border-border-default/80 space-y-1.5">
+            <span className="text-text-main font-extrabold block text-[13px]">
               这个技能能做什么
             </span>
-            <p className="text-neutral-700 font-bold leading-relaxed">
+            <p className="text-text-secondary font-bold leading-relaxed">
               {skill.goal || skill.oneSentenceDesc}
             </p>
           </div>
 
           {/* 2. AI什么时候会使用 */}
-          <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100/90 space-y-2">
+          <div className="p-4 bg-emerald-50/60 rounded-xl border border-emerald-100/90 space-y-2">
             <span className="text-emerald-900 font-extrabold block text-[13px]">
               AI什么时候会使用
             </span>
@@ -104,28 +104,28 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
           {/* 3. 会读取哪些资料 & 4. 会产生什么结果 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-2">
-              <span className="text-neutral-900 font-extrabold block text-[12.5px]">
+            <div className="p-4 bg-page-bg rounded-xl border border-border-default/80 space-y-2">
+              <span className="text-text-main font-extrabold block text-[12.5px]">
                 会读取哪些资料
               </span>
-              <ul className="space-y-1 text-neutral-700 font-medium text-[12px]">
+              <ul className="space-y-1 text-text-secondary font-medium text-[12px]">
                 {skill.inputFormat?.map((inp, idx) => (
                   <li key={idx} className="flex items-start gap-1.5">
-                    <span className="text-neutral-400 shrink-0">•</span>
+                    <span className="text-text-tertiary shrink-0">•</span>
                     <span>{inp}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200/80 space-y-2">
-              <span className="text-neutral-900 font-extrabold block text-[12.5px]">
+            <div className="p-4 bg-page-bg rounded-xl border border-border-default/80 space-y-2">
+              <span className="text-text-main font-extrabold block text-[12.5px]">
                 会产生什么结果
               </span>
-              <ul className="space-y-1 text-neutral-700 font-medium text-[12px]">
+              <ul className="space-y-1 text-text-secondary font-medium text-[12px]">
                 {skill.outputFormat?.map((out, idx) => (
                   <li key={idx} className="flex items-start gap-1.5">
-                    <span className="text-neutral-400 shrink-0">•</span>
+                    <span className="text-text-tertiary shrink-0">•</span>
                     <span>{out}</span>
                   </li>
                 ))}
@@ -135,7 +135,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
 
           {/* Configuration Warning Notice if needs config */}
           {needsConfig && (
-            <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex items-start gap-2 text-amber-900 text-[12px] font-bold">
+            <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2 text-amber-900 text-[12px] font-bold">
               <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
               <div>
                 <span className="font-extrabold block text-[12.5px] text-amber-950">需配置数据接口</span>
@@ -145,24 +145,24 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
           )}
 
           {/* Bottom Collapsible: 高级信息 */}
-          <div className="border-t border-neutral-200/80 pt-4">
+          <div className="border-t border-border-default/80 pt-4">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="w-full flex items-center justify-between p-3.5 bg-neutral-50 hover:bg-neutral-100 rounded-2xl text-neutral-700 font-extrabold text-[12.5px] transition-all"
+              className="w-full flex items-center justify-between p-3.5 bg-page-bg hover:bg-hover-bg rounded-xl text-text-secondary font-extrabold text-[12.5px] transition-all"
             >
               <div className="flex items-center gap-2">
-                <Code size={15} className="text-neutral-500" />
+                <Code size={15} className="text-text-tertiary" />
                 <span>高级信息</span>
               </div>
-              <div className="flex items-center gap-1 text-[11.5px] text-neutral-400 font-bold">
+              <div className="flex items-center gap-1 text-[11.5px] text-text-tertiary font-bold">
                 <span>{showAdvanced ? '收起' : '展开'}</span>
                 {showAdvanced ? <EyeOff size={14} /> : <Eye size={14} />}
               </div>
             </button>
 
             {showAdvanced && (
-              <div className="mt-3 p-4 bg-neutral-900 text-neutral-200 rounded-2xl text-[12px] space-y-2.5 font-mono shadow-inner">
-                <div className="flex justify-between border-b border-neutral-800 pb-2 font-sans font-extrabold text-neutral-400 text-[11px]">
+              <div className="mt-3 p-4 bg-btn-main text-neutral-200 rounded-xl text-[12px] space-y-2.5 font-mono shadow-inner">
+                <div className="flex justify-between border-b border-neutral-800 pb-2 font-sans font-extrabold text-text-tertiary text-[11px]">
                   <span>高级底层字段 & 系统配置</span>
                   <span>仅开发维护可见</span>
                 </div>
@@ -191,8 +191,8 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 border-t border-neutral-100 bg-white flex items-center justify-between gap-3">
-          <div className="text-[12px] font-bold text-neutral-500">
+        <div className="p-4 border-t border-border-default bg-surface-1 flex items-center justify-between gap-3">
+          <div className="text-[12px] font-bold text-text-tertiary">
             状态：
             <span className={`font-black ${
               isBuiltIn
@@ -201,7 +201,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 ? 'text-amber-600'
                 : isAdded
                 ? 'text-emerald-600'
-                : 'text-neutral-800'
+                : 'text-text-main'
             }`}>
               {isBuiltIn ? '系统内置' : needsConfig ? '需配置' : isAdded ? '已启用' : '未添加'}
             </span>
@@ -228,7 +228,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                 }}
                 className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-[12.5px] font-extrabold flex items-center gap-1.5 transition-all"
               >
-                <Check size={14} /> ✓ 已启用 (点击可卸载)
+                <Check size={14} /> 已启用 (点击可卸载)
               </button>
             ) : (
               <button
@@ -236,7 +236,7 @@ export const SkillDetailDrawer: React.FC<SkillDetailDrawerProps> = ({
                   onInstallSkill?.(skill);
                   onClose();
                 }}
-                className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[12.5px] font-extrabold flex items-center gap-1.5 shadow-2xs transition-all active:scale-95"
+                className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12.5px] font-extrabold flex items-center gap-1.5 shadow-2xs transition-all active:scale-95"
               >
                 <Plus size={15} /> ＋ 添加到当前商家
               </button>

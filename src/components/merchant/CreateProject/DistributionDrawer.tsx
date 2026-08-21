@@ -344,7 +344,7 @@ export function DistributionDrawer({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-neutral-900/50 backdrop-blur-xs z-50"
+        className="fixed inset-0 bg-btn-main/50 backdrop-blur-xs z-50"
       />
 
       {/* Main Full-Width Drawer Container */}
@@ -353,35 +353,35 @@ export function DistributionDrawer({
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 26, stiffness: 220 }}
-        className="fixed right-0 top-0 bottom-0 w-full max-w-[1380px] bg-[#f8f9fa] shadow-2xl z-50 flex flex-col border-l border-neutral-200"
+        className="fixed right-0 top-0 bottom-0 w-full max-w-[1380px] bg-[#f8f9fa] shadow-2xl z-50 flex flex-col border-l border-border-default"
       >
         {/* Header Bar */}
-        <div className="px-6 py-4 border-b border-neutral-200 bg-white flex justify-between items-center shrink-0">
+        <div className="px-6 py-4 border-b border-border-default bg-surface-1 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-extrabold text-[15px] shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-btn-main text-white flex items-center justify-center font-extrabold text-[15px] shadow-xs">
               <Brain size={20} className="text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <h2 className="text-[17px] font-extrabold text-neutral-900 tracking-tight">
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                   自有账号矩阵方案审阅与调整
                 </h2>
-                <span className="px-2.5 py-0.5 bg-neutral-100 border border-neutral-200 text-neutral-800 text-[11.5px] font-bold rounded-lg flex items-center gap-1.5">
+                <span className="px-2.5 py-0.5 bg-hover-bg border border-border-default text-text-main text-[11.5px] font-bold rounded-lg flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                   {currentVersion} · 方案已确认
                 </span>
               </div>
-              <p className="text-[12px] text-neutral-500 mt-0.5">
+              <p className="text-[12px] text-text-tertiary mt-0.5">
                 直接选择账号或节点，使用自然语言下发指令；确认提案后将同步增量更新工作任务
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[12px] text-neutral-400">最近更新：{lastUpdated}</span>
+            <span className="text-[12px] text-text-tertiary">最近更新：{lastUpdated}</span>
             <button
               onClick={onClose}
-              className="p-2 text-neutral-400 hover:text-neutral-900 rounded-xl hover:bg-neutral-100 transition-colors"
+              className="p-2 text-text-tertiary hover:text-text-main rounded-xl hover:bg-hover-bg transition-colors"
             >
               <X size={20} />
             </button>
@@ -392,45 +392,45 @@ export function DistributionDrawer({
         <div className="flex-1 overflow-y-auto p-6 space-y-6 pb-40 bg-[#f8f9fa]">
           
           {/* SECTION 1: 方案总览 1 行摘要 */}
-          <div className="bg-white rounded-2xl px-5 py-3.5 border border-neutral-200/90 shadow-2xs flex items-center justify-between">
-            <div className="flex items-center gap-3 text-[13.5px] font-extrabold text-neutral-900 divide-x divide-neutral-200">
+          <div className="bg-surface-1 rounded-xl px-5 py-3.5 border border-border-default/90 shadow-2xs flex items-center justify-between">
+            <div className="flex items-center gap-3 text-[13.5px] font-extrabold text-text-main divide-x divide-neutral-200">
               <div className="flex items-center gap-2 pr-1">
-                <Sliders size={15} className="text-neutral-700" />
+                <Sliders size={15} className="text-text-secondary" />
                 <span>8月19日 — 9月1日 (14天)</span>
               </div>
-              <div className="px-3 text-neutral-800">5 个账号</div>
-              <div className="px-3 text-neutral-800">{scheduleNotes.length} 篇笔记</div>
-              <div className="px-3 text-neutral-800">6 个词簇</div>
-              <div className="px-3 text-neutral-800">22 个工作任务</div>
+              <div className="px-3 text-text-main">5 个账号</div>
+              <div className="px-3 text-text-main">{scheduleNotes.length} 篇笔记</div>
+              <div className="px-3 text-text-main">6 个词簇</div>
+              <div className="px-3 text-text-main">22 个工作任务</div>
               <div className="pl-3 text-emerald-700 font-bold flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
                 {currentVersion} 实施中
               </div>
             </div>
 
-            <div className="text-[12px] text-neutral-500 font-medium">
+            <div className="text-[12px] text-text-tertiary font-medium">
               点击下方账号卡片或排期可直接指定调整对象
             </div>
           </div>
 
           {/* SECTION 2: 矩阵协同逻辑摘要 */}
-          <div className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-2xs space-y-3">
+          <div className="bg-surface-1 rounded-xl p-5 border border-border-default/90 shadow-2xs space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-neutral-800" />
-                <span className="text-[14px] font-extrabold text-neutral-900">AI 矩阵协同逻辑摘要</span>
+                <Sparkles size={16} className="text-text-main" />
+                <span className="text-[14px] font-extrabold text-text-main">AI 矩阵协同逻辑摘要</span>
               </div>
               <button
                 type="button"
                 onClick={() => setShowBasisDetail(!showBasisDetail)}
-                className="text-[12px] font-bold text-neutral-600 hover:text-black flex items-center gap-1 bg-neutral-100 px-3 py-1.5 rounded-lg transition-colors border border-neutral-200/80"
+                className="text-[12px] font-bold text-text-secondary hover:text-black flex items-center gap-1 bg-hover-bg px-3 py-1.5 rounded-lg transition-colors border border-border-default/80"
               >
                 <span>基于账号定位、历史表现和任务负载生成</span>
                 {showBasisDetail ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
             </div>
 
-            <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-800 leading-relaxed font-medium">
+            <div className="p-4 bg-page-bg border border-border-default rounded-xl text-[13px] text-text-main leading-relaxed font-medium">
               品牌主号负责产品原理和核心品类词；上海门店号负责本地场景和到店问题；KOS负责真实使用过程和细分痛点。18篇内容在14天内错峰发布。
             </div>
 
@@ -443,35 +443,35 @@ export function DistributionDrawer({
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden pt-1"
                 >
-                  <div className="p-4 bg-neutral-100/80 border border-neutral-200 rounded-xl space-y-3 text-[12px] text-neutral-700">
-                    <div className="font-bold text-neutral-900 text-[12.5px] border-b border-neutral-200 pb-2 flex items-center gap-2">
+                  <div className="p-4 bg-hover-bg/80 border border-border-default rounded-xl space-y-3 text-[12px] text-text-secondary">
+                    <div className="font-bold text-text-main text-[12.5px] border-b border-border-default pb-2 flex items-center gap-2">
                       <BookOpen size={15} />
                       完整 AI 方案生成依据与规则设定：
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="space-y-1">
-                        <div className="font-bold text-neutral-900">🎯 项目运营目标</div>
-                        <p className="text-neutral-600">小红书自然流抢占“宠物除臭”与“猫砂除味”高意图搜索卡位。</p>
+                        <div className="font-bold text-text-main">🎯 项目运营目标</div>
+                        <p className="text-text-secondary">小红书自然流抢占“宠物除臭”与“猫砂除味”高意图搜索卡位。</p>
                       </div>
                       <div className="space-y-1">
-                        <div className="font-bold text-neutral-900">📈 账号历史表现</div>
-                        <p className="text-neutral-600">品牌主号硬核科普 CTR 4.1%，陆家嘴门店号线下到店转化率全网最高。</p>
+                        <div className="font-bold text-text-main">📈 账号历史表现</div>
+                        <p className="text-text-secondary">品牌主号硬核科普 CTR 4.1%，陆家嘴门店号线下到店转化率全网最高。</p>
                       </div>
                       <div className="space-y-1">
-                        <div className="font-bold text-neutral-900">🔍 关键词内容缺口</div>
-                        <p className="text-neutral-600">搜索词“猫砂除味”缺乏真实多猫家庭的体验侧长尾笔记覆盖。</p>
+                        <div className="font-bold text-text-main">🔍 关键词内容缺口</div>
+                        <p className="text-text-secondary">搜索词“猫砂除味”缺乏真实多猫家庭的体验侧长尾笔记覆盖。</p>
                       </div>
                       <div className="space-y-1">
-                        <div className="font-bold text-neutral-900">⚡ 当前任务负载</div>
-                        <p className="text-neutral-600">已有 4 项工作任务处于素材制作/文案编写阶段，避免冲突修改。</p>
+                        <div className="font-bold text-text-main">⚡ 当前任务负载</div>
+                        <p className="text-text-secondary">已有 4 项工作任务处于素材制作/文案编写阶段，避免冲突修改。</p>
                       </div>
                       <div className="space-y-1">
-                        <div className="font-bold text-neutral-900">🧠 已确认操盘手偏好</div>
-                        <p className="text-neutral-600">KOS账号同一意图发布间隔≥48h；品牌主号每周发布≤3篇。</p>
+                        <div className="font-bold text-text-main">🧠 已确认操盘手偏好</div>
+                        <p className="text-text-secondary">KOS账号同一意图发布间隔≥48h；品牌主号每周发布≤3篇。</p>
                       </div>
                       <div className="space-y-1">
-                        <div className="font-bold text-neutral-900">🔄 上周期复盘结论</div>
-                        <p className="text-neutral-600">周一上午避免集中分发大词；本地场景词与门店地理位置强绑定。</p>
+                        <div className="font-bold text-text-main">🔄 上周期复盘结论</div>
+                        <p className="text-text-secondary">周一上午避免集中分发大词；本地场景词与门店地理位置强绑定。</p>
                       </div>
                     </div>
                   </div>
@@ -481,13 +481,13 @@ export function DistributionDrawer({
           </div>
 
           {/* SECTION 3: 账号角色与内容分工卡片 */}
-          <div className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-2xs space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div className="bg-surface-1 rounded-xl p-5 border border-border-default/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between border-b border-border-default pb-3">
               <div className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-neutral-800" />
-                <span className="text-[14px] font-extrabold text-neutral-900">账号角色与分工入口</span>
+                <ShieldCheck size={16} className="text-text-main" />
+                <span className="text-[14px] font-extrabold text-text-main">账号角色与分工入口</span>
               </div>
-              <span className="text-[11.5px] text-neutral-500 font-medium">
+              <span className="text-[11.5px] text-text-tertiary font-medium">
                 点击任意卡片选中为修改对象，底栏指令区将自动携带上下文
               </span>
             </div>
@@ -498,31 +498,31 @@ export function DistributionDrawer({
               {/* Account 1 */}
               <div
                 onClick={() => handleSelectAccount("brand_1", "特唯普品牌官方号", 6, 8)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2.5 relative ${
+                className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "brand_1"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
-                    : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
+                    : "bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-2xs"
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
-                      selectedContext.id === "brand_1" ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-700"
+                      selectedContext.id === "brand_1" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       品牌主号
                     </span>
-                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "brand_1" ? "text-white" : "text-neutral-900"}`}>
+                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "brand_1" ? "text-white" : "text-text-main"}`}>
                       特唯普品牌官方号
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
-                    selectedContext.id === "brand_1" ? "bg-white text-neutral-900" : "bg-neutral-900 text-white"
+                    selectedContext.id === "brand_1" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     6 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "brand_1" ? "text-neutral-300" : "text-neutral-600"}`}>
+                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "brand_1" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 原理解释 / 产品标准</div>
                   <div><strong>词簇：</strong> #宠物除臭 #宠物环境清洁</div>
                   <div><strong>节奏：</strong> 每 2~3 天发布 1 篇</div>
@@ -535,31 +535,31 @@ export function DistributionDrawer({
               {/* Account 2 */}
               <div
                 onClick={() => handleSelectAccount("brand_2", "特唯普健康宠物馆", 2, 3)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2.5 relative ${
+                className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "brand_2"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
-                    : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
+                    : "bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-2xs"
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
-                      selectedContext.id === "brand_2" ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-700"
+                      selectedContext.id === "brand_2" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       品牌主号
                     </span>
-                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "brand_2" ? "text-white" : "text-neutral-900"}`}>
+                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "brand_2" ? "text-white" : "text-text-main"}`}>
                       特唯普健康宠物馆
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
-                    selectedContext.id === "brand_2" ? "bg-white text-neutral-900" : "bg-neutral-900 text-white"
+                    selectedContext.id === "brand_2" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     2 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "brand_2" ? "text-neutral-300" : "text-neutral-600"}`}>
+                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "brand_2" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 养宠指南 / 权威问答</div>
                   <div><strong>词簇：</strong> #幼犬除味技巧 #宠物环境清洁</div>
                   <div><strong>节奏：</strong> 每周 1 篇</div>
@@ -572,31 +572,31 @@ export function DistributionDrawer({
               {/* Account 3 */}
               <div
                 onClick={() => handleSelectAccount("store_1", "店长号_陆家嘴旗舰店", 4, 5)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2.5 relative ${
+                className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "store_1"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
-                    : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
+                    : "bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-2xs"
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
-                      selectedContext.id === "store_1" ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-700"
+                      selectedContext.id === "store_1" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       门店号
                     </span>
-                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "store_1" ? "text-white" : "text-neutral-900"}`}>
+                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "store_1" ? "text-white" : "text-text-main"}`}>
                       店长号_陆家嘴旗舰店
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
-                    selectedContext.id === "store_1" ? "bg-white text-neutral-900" : "bg-neutral-900 text-white"
+                    selectedContext.id === "store_1" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     4 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "store_1" ? "text-neutral-300" : "text-neutral-600"}`}>
+                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "store_1" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 到店攻略 / 线下活动</div>
                   <div><strong>词簇：</strong> #猫砂除味 #上海宠物用品店</div>
                   <div><strong>节奏：</strong> 每周 2 篇</div>
@@ -609,31 +609,31 @@ export function DistributionDrawer({
               {/* Account 4 */}
               <div
                 onClick={() => handleSelectAccount("store_2", "店长号_徐家汇概念店", 2, 3)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2.5 relative ${
+                className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "store_2"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
-                    : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
+                    : "bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-2xs"
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
-                      selectedContext.id === "store_2" ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-700"
+                      selectedContext.id === "store_2" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       门店号
                     </span>
-                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "store_2" ? "text-white" : "text-neutral-900"}`}>
+                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "store_2" ? "text-white" : "text-text-main"}`}>
                       店长号_徐家汇概念店
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
-                    selectedContext.id === "store_2" ? "bg-white text-neutral-900" : "bg-neutral-900 text-white"
+                    selectedContext.id === "store_2" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     2 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "store_2" ? "text-neutral-300" : "text-neutral-600"}`}>
+                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "store_2" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 顾客解答 / 本地服务</div>
                   <div><strong>词簇：</strong> #宠物除臭 #猫砂除味</div>
                   <div><strong>节奏：</strong> 每周 1 篇</div>
@@ -646,31 +646,31 @@ export function DistributionDrawer({
               {/* Account 5 */}
               <div
                 onClick={() => handleSelectAccount("kos_1", "KOS_小张(徐家汇店)", 4, 5)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2.5 relative ${
+                className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "kos_1"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
-                    : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
+                    : "bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-2xs"
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
-                      selectedContext.id === "kos_1" ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-700"
+                      selectedContext.id === "kos_1" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       KOS员工号
                     </span>
-                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "kos_1" ? "text-white" : "text-neutral-900"}`}>
+                    <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "kos_1" ? "text-white" : "text-text-main"}`}>
                       KOS_小张 (徐家汇店)
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
-                    selectedContext.id === "kos_1" ? "bg-white text-neutral-900" : "bg-neutral-900 text-white"
+                    selectedContext.id === "kos_1" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     4 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "kos_1" ? "text-neutral-300" : "text-neutral-600"}`}>
+                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "kos_1" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 真实使用 / 痛点避坑</div>
                   <div><strong>词簇：</strong> #猫砂除味 #宠物除臭</div>
                   <div><strong>节奏：</strong> 每周 2 篇</div>
@@ -684,11 +684,11 @@ export function DistributionDrawer({
           </div>
 
           {/* SECTION 4: 关键词覆盖矩阵 */}
-          <div className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-2xs space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div className="bg-surface-1 rounded-xl p-5 border border-border-default/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between border-b border-border-default pb-3">
               <div className="flex items-center gap-2">
-                <Layers size={16} className="text-neutral-800" />
-                <span className="text-[14px] font-extrabold text-neutral-900">关键词簇覆盖</span>
+                <Layers size={16} className="text-text-main" />
+                <span className="text-[14px] font-extrabold text-text-main">关键词簇覆盖</span>
               </div>
             </div>
 
@@ -697,22 +697,22 @@ export function DistributionDrawer({
                 onClick={() => handleSelectKeyword("宠物除臭", 6)}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer space-y-1.5 ${
                   selectedContext.id === "宠物除臭"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                    : "bg-neutral-50 hover:bg-neutral-100/80 border-neutral-200"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-sm"
+                    : "bg-page-bg hover:bg-hover-bg/80 border-border-default"
                 }`}
               >
                 <div className="font-extrabold flex justify-between items-center text-[13px]">
                   <span>#宠物除臭</span>
                   <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
-                    selectedContext.id === "宠物除臭" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-neutral-800"
+                    selectedContext.id === "宠物除臭" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-text-main"
                   }`}>
                     6 篇覆盖
                   </span>
                 </div>
-                <div className={selectedContext.id === "宠物除臭" ? "text-neutral-300" : "text-neutral-700"}>
+                <div className={selectedContext.id === "宠物除臭" ? "text-neutral-300" : "text-text-secondary"}>
                   <strong>内容角度：</strong> 原理解释、使用教程、真实痛点
                 </div>
-                <div className={selectedContext.id === "宠物除臭" ? "text-neutral-400" : "text-neutral-500"}>
+                <div className={selectedContext.id === "宠物除臭" ? "text-text-tertiary" : "text-text-tertiary"}>
                   <strong>负责账号：</strong> 品牌官方号、徐家汇店、KOS小张
                 </div>
               </div>
@@ -721,22 +721,22 @@ export function DistributionDrawer({
                 onClick={() => handleSelectKeyword("猫砂除味", 5)}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer space-y-1.5 ${
                   selectedContext.id === "猫砂除味"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                    : "bg-neutral-50 hover:bg-neutral-100/80 border-neutral-200"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-sm"
+                    : "bg-page-bg hover:bg-hover-bg/80 border-border-default"
                 }`}
               >
                 <div className="font-extrabold flex justify-between items-center text-[13px]">
                   <span>#猫砂除味</span>
                   <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
-                    selectedContext.id === "猫砂除味" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-neutral-800"
+                    selectedContext.id === "猫砂除味" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-text-main"
                   }`}>
                     5 篇覆盖
                   </span>
                 </div>
-                <div className={selectedContext.id === "猫砂除味" ? "text-neutral-300" : "text-neutral-700"}>
+                <div className={selectedContext.id === "猫砂除味" ? "text-neutral-300" : "text-text-secondary"}>
                   <strong>内容角度：</strong> 养猫场景、门店实测、避坑指南
                 </div>
-                <div className={selectedContext.id === "猫砂除味" ? "text-neutral-400" : "text-neutral-500"}>
+                <div className={selectedContext.id === "猫砂除味" ? "text-text-tertiary" : "text-text-tertiary"}>
                   <strong>负责账号：</strong> 陆家嘴旗舰店、徐家汇店、KOS小张
                 </div>
               </div>
@@ -745,22 +745,22 @@ export function DistributionDrawer({
                 onClick={() => handleSelectKeyword("上海宠物用品店", 3)}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer space-y-1.5 ${
                   selectedContext.id === "上海宠物用品店"
-                    ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                    : "bg-neutral-50 hover:bg-neutral-100/80 border-neutral-200"
+                    ? "bg-btn-main text-white border-neutral-900 shadow-sm"
+                    : "bg-page-bg hover:bg-hover-bg/80 border-border-default"
                 }`}
               >
                 <div className="font-extrabold flex justify-between items-center text-[13px]">
                   <span>#上海宠物用品店</span>
                   <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
-                    selectedContext.id === "上海宠物用品店" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-neutral-800"
+                    selectedContext.id === "上海宠物用品店" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-text-main"
                   }`}>
                     3 篇覆盖
                   </span>
                 </div>
-                <div className={selectedContext.id === "上海宠物用品店" ? "text-neutral-300" : "text-neutral-700"}>
+                <div className={selectedContext.id === "上海宠物用品店" ? "text-neutral-300" : "text-text-secondary"}>
                   <strong>内容角度：</strong> 探店攻略、本地服务、线下体验
                 </div>
-                <div className={selectedContext.id === "上海宠物用品店" ? "text-neutral-400" : "text-neutral-500"}>
+                <div className={selectedContext.id === "上海宠物用品店" ? "text-text-tertiary" : "text-text-tertiary"}>
                   <strong>负责账号：</strong> 陆家嘴旗舰店、徐家汇概念店
                 </div>
               </div>
@@ -768,13 +768,13 @@ export function DistributionDrawer({
           </div>
 
           {/* SECTION 5: 14天发布节奏 Timeline */}
-          <div className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-2xs space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div className="bg-surface-1 rounded-xl p-5 border border-border-default/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between border-b border-border-default pb-3">
               <div className="flex items-center gap-2">
-                <Calendar size={16} className="text-neutral-800" />
-                <span className="text-[14px] font-extrabold text-neutral-900">14天矩阵错峰发布节奏 (Timeline)</span>
+                <Calendar size={16} className="text-text-main" />
+                <span className="text-[14px] font-extrabold text-text-main">14天矩阵错峰发布节奏 (Timeline)</span>
               </div>
-              <span className="text-[11.5px] text-neutral-400">点击任意排期笔记带入底栏上下文</span>
+              <span className="text-[11.5px] text-text-tertiary">点击任意排期笔记带入底栏上下文</span>
             </div>
 
             <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
@@ -786,26 +786,26 @@ export function DistributionDrawer({
                     onClick={() => handleSelectNote(note)}
                     className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       isSelected
-                        ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                        : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs"
+                        ? "bg-btn-main text-white border-neutral-900 shadow-sm"
+                        : "bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-2xs"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className={`w-16 text-center font-bold text-[12px] py-1 rounded-md shrink-0 ${
-                        isSelected ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-700"
+                        isSelected ? "bg-neutral-800 text-white" : "bg-hover-bg text-text-secondary"
                       }`}>
                         Day {note.day}
                       </span>
                       <div>
-                        <div className={`text-[12.5px] font-bold flex items-center gap-2 ${isSelected ? "text-white" : "text-neutral-900"}`}>
+                        <div className={`text-[12.5px] font-bold flex items-center gap-2 ${isSelected ? "text-white" : "text-text-main"}`}>
                           <span>{note.title}</span>
                           <span className={`px-2 py-0.2 text-[10.5px] font-semibold rounded ${
-                            isSelected ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-600"
+                            isSelected ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                           }`}>
                             #{note.keywordCluster}
                           </span>
                         </div>
-                        <div className={`text-[11px] mt-0.5 ${isSelected ? "text-neutral-300" : "text-neutral-400"}`}>
+                        <div className={`text-[11px] mt-0.5 ${isSelected ? "text-neutral-300" : "text-text-tertiary"}`}>
                           {note.accountName} · {note.dateStr} · 角色：{note.assignedRole}
                         </div>
                       </div>
@@ -816,13 +816,13 @@ export function DistributionDrawer({
                         <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg border flex items-center gap-1 ${
                           isSelected
                             ? "bg-neutral-800 text-emerald-400 border-neutral-700"
-                            : "bg-neutral-100 text-neutral-800 border-neutral-200"
+                            : "bg-hover-bg text-text-main border-border-default"
                         }`}>
                           <Clock size={12} /> 执行中
                         </span>
                       ) : (
                         <span className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${
-                          isSelected ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-600"
+                          isSelected ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                         }`}>
                           未开始
                         </span>
@@ -839,7 +839,7 @@ export function DistributionDrawer({
         {/* ========================================================= */}
         {/* BOTTOM AI INSTRUCTION BAR & PROPOSAL DISPLAY (吸底组件)     */}
         {/* ========================================================= */}
-        <div className="fixed bottom-0 left-0 right-0 max-w-[1380px] ml-auto bg-white border-t border-neutral-200 shadow-2xl z-50 p-4 space-y-3">
+        <div className="fixed bottom-0 left-0 right-0 max-w-[1380px] ml-auto bg-surface-1 border-t border-border-default shadow-2xl z-50 p-4 space-y-3">
           
           {/* TEMPORARY PROPOSAL VIEW (If Proposal Exists) */}
           <AnimatePresence>
@@ -848,14 +848,14 @@ export function DistributionDrawer({
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 15 }}
-                className="p-4 bg-neutral-900 text-white rounded-2xl border border-neutral-800 space-y-3.5 shadow-xl max-h-[320px] overflow-y-auto"
+                className="p-4 bg-btn-main text-white rounded-xl border border-neutral-800 space-y-3.5 shadow-xl max-h-[320px] overflow-y-auto"
               >
                 <div className="flex items-center justify-between border-b border-neutral-800 pb-2.5">
                   <div className="flex items-center gap-2 text-[13.5px] font-black text-white">
                     <Sparkles size={16} className="text-amber-300 animate-pulse" />
                     <span>AI 变更计算提案 ({proposal.versionLabel})</span>
                   </div>
-                  <span className="text-[11.5px] text-neutral-400 font-medium">
+                  <span className="text-[11.5px] text-text-tertiary font-medium">
                     {proposal.overallImpact}
                   </span>
                 </div>
@@ -877,8 +877,8 @@ export function DistributionDrawer({
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-[11.5px] pt-1">
-                        <div className="text-neutral-400">
-                          <strong className="text-neutral-500">修改前：</strong>{diff.before}
+                        <div className="text-text-tertiary">
+                          <strong className="text-text-tertiary">修改前：</strong>{diff.before}
                         </div>
                         <div className="text-emerald-300 font-semibold">
                           <strong className="text-emerald-500">修改后：</strong>{diff.after}
@@ -912,14 +912,14 @@ export function DistributionDrawer({
 
                 {/* Proposal Action Buttons */}
                 <div className="flex items-center justify-between pt-1 border-t border-neutral-800">
-                  <div className="text-[11.5px] text-neutral-400">
+                  <div className="text-[11.5px] text-text-tertiary">
                     确认后将更新方案版本，并以增量补丁方式更新关联工作任务
                   </div>
                   <div className="flex items-center gap-2.5">
                     <button
                       type="button"
                       onClick={handleRejectProposal}
-                      className="px-3 py-2 text-neutral-400 hover:text-white text-[12px] font-medium transition-colors"
+                      className="px-3 py-2 text-text-tertiary hover:text-white text-[12px] font-medium transition-colors"
                     >
                       放弃本次提案
                     </button>
@@ -936,7 +936,7 @@ export function DistributionDrawer({
                     <button
                       type="button"
                       onClick={handleApplyProposal}
-                      className="px-4 py-2 bg-white hover:bg-neutral-100 text-neutral-900 font-extrabold text-[12px] rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
+                      className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-main font-extrabold text-[12px] rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
                     >
                       <Check size={15} /> 确认应用提案
                     </button>
@@ -949,8 +949,8 @@ export function DistributionDrawer({
           {/* Context Tag Header */}
           <div className="flex items-center justify-between text-[12px]">
             <div className="flex items-center gap-2">
-              <span className="text-neutral-400 font-medium">本次携带上下文:</span>
-              <span className="px-3 py-1 bg-neutral-900 text-white font-bold rounded-lg flex items-center gap-2 shadow-2xs">
+              <span className="text-text-tertiary font-medium">本次携带上下文:</span>
+              <span className="px-3 py-1 bg-btn-main text-white font-bold rounded-lg flex items-center gap-2 shadow-2xs">
                 <span>{selectedContext.name}</span>
                 <span className="text-[11px] text-neutral-300 font-normal">
                   (关联 {selectedContext.notesCount} 篇笔记 · {selectedContext.tasksCount} 个任务 · {currentVersion})
@@ -958,7 +958,7 @@ export function DistributionDrawer({
                 {selectedContext.type !== "global" && (
                   <button
                     onClick={handleClearContext}
-                    className="hover:text-amber-300 ml-1 text-neutral-400 transition-colors"
+                    className="hover:text-amber-300 ml-1 text-text-tertiary transition-colors"
                     title="清除上下文（切回全局方案）"
                   >
                     <X size={14} />
@@ -967,7 +967,7 @@ export function DistributionDrawer({
               </span>
             </div>
 
-            <span className="text-neutral-400 text-[11.5px]">
+            <span className="text-text-tertiary text-[11.5px]">
               服务端自动组装账号定位、搜索趋势与关联任务状态
             </span>
           </div>
@@ -984,9 +984,9 @@ export function DistributionDrawer({
                   if (e.key === "Enter") handleGenerateProposal();
                 }}
                 placeholder='告诉AI你希望如何调整，例如：“品牌号减少2篇，把体验内容分给KOS，核心品类词仍由品牌号负责。”'
-                className="w-full h-11 px-4 pr-12 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:bg-white transition-all placeholder:text-neutral-400"
+                className="w-full h-11 px-4 pr-12 bg-page-bg border border-border-default rounded-xl text-[13px] text-text-main focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:bg-surface-1 transition-all placeholder:text-text-tertiary"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-neutral-400 bg-neutral-200/60 px-1.5 py-0.5 rounded">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-text-tertiary bg-neutral-200/60 px-1.5 py-0.5 rounded">
                 ↵ Enter
               </span>
             </div>
@@ -995,7 +995,7 @@ export function DistributionDrawer({
               type="button"
               onClick={handleGenerateProposal}
               disabled={isGenerating || (!userInput.trim() && !proposal)}
-              className="h-11 px-5 bg-neutral-900 hover:bg-black disabled:bg-neutral-300 text-white font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-2 shrink-0 shadow-xs"
+              className="h-11 px-5 bg-btn-main hover:bg-black disabled:bg-neutral-300 text-white font-extrabold text-[13px] rounded-xl transition-all flex items-center gap-2 shrink-0 shadow-xs"
             >
               {isGenerating ? (
                 <>
@@ -1021,7 +1021,7 @@ export function DistributionDrawer({
             </button>
           </div>
 
-          <div className="text-[11px] text-neutral-400 pl-1">
+          <div className="text-[11px] text-text-tertiary pl-1">
             AI会读取关联账号、笔记、关键词、排期和任务状态；确认提案前不会修改当前方案。
           </div>
         </div>
@@ -1035,37 +1035,37 @@ export function DistributionDrawer({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-neutral-200"
+              className="bg-surface-1 rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-border-default"
             >
-              <div className="flex justify-between items-start border-b border-neutral-100 pb-3">
-                <div className="flex items-center gap-2 text-rose-600 font-black text-[15px]">
+              <div className="flex justify-between items-start border-b border-border-default pb-3">
+                <div className="flex items-center gap-2 text-danger font-black text-[15px]">
                   <AlertCircle size={20} />
                   <span>已执行工作任务冲突说明</span>
                 </div>
-                <button onClick={() => setShowConflictModal(false)} className="text-neutral-400 hover:text-black">
+                <button onClick={() => setShowConflictModal(false)} className="text-text-tertiary hover:text-black">
                   <X size={18} />
                 </button>
               </div>
 
-              <div className="space-y-3 text-[12.5px] text-neutral-700 leading-relaxed">
-                <p className="font-semibold text-neutral-900">
+              <div className="space-y-3 text-[12.5px] text-text-secondary leading-relaxed">
+                <p className="font-semibold text-text-main">
                   发现 1 项关联工作任务已进入执行流程，不可静默覆盖：
                 </p>
-                <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 space-y-1 font-mono text-[11.5px]">
+                <div className="p-3 bg-page-bg rounded-xl border border-border-default space-y-1 font-mono text-[11.5px]">
                   <div><strong>任务编号：</strong> TASK-20260819-011</div>
                   <div><strong>绑定账号：</strong> 店长号_徐家汇概念店</div>
                   <div><strong>当前状态：</strong> 素材拍摄与文案撰写中</div>
                   <div><strong>内容主题：</strong> 徐家汇店客诉解密：养宠家庭异味来源</div>
                 </div>
-                <p className="text-neutral-500">
+                <p className="text-text-tertiary">
                   建议方案：保留当前已拍摄素材，仅将发布时间推迟 24 小时，或将拟修改的【顾客问答】作为新增任务。
                 </p>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-neutral-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-border-default">
                 <button
                   onClick={() => setShowConflictModal(false)}
-                  className="px-4 py-2 bg-neutral-900 text-white font-bold text-[12px] rounded-xl"
+                  className="px-4 py-2 bg-btn-main text-white font-bold text-[12px] rounded-xl"
                 >
                   知道并返回
                 </button>

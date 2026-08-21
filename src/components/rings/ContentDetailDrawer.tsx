@@ -7,10 +7,10 @@ import {
 } from 'lucide-react';
 
 const GROUPS = [
-  { id: 'official', name: '专业号', countStr: '3 篇待确认', action1: '一键确认并通知账号', action2: '获取分发链接', color: 'bg-primary-500' },
-  { id: 'kos', name: '员工号', countStr: '4 篇待确认', action1: '一键确认并通知员工', action2: '获取分发链接', color: 'bg-primary-500' },
-  { id: 'koc_general', name: 'KOC矩阵', countStr: '8 篇待确认', action1: '一键确认并上架任务', action2: '生成任务码', color: 'bg-neutral-900' },
-  { id: 'koc_real', name: '客户号', countStr: '30 个快发额度', action1: '生成门店快发入口', action2: '', color: 'bg-primary-500' },
+  { id: 'official', name: '专业号', countStr: '3 篇待确认', action1: '一键确认并通知账号', action2: '获取分发链接', color: 'bg-btn-main' },
+  { id: 'kos', name: '员工号', countStr: '4 篇待确认', action1: '一键确认并通知员工', action2: '获取分发链接', color: 'bg-btn-main' },
+  { id: 'koc_general', name: 'KOC矩阵', countStr: '8 篇待确认', action1: '一键确认并上架任务', action2: '生成任务码', color: 'bg-btn-main' },
+  { id: 'koc_real', name: '客户号', countStr: '30 个快发额度', action1: '生成门店快发入口', action2: '', color: 'bg-btn-main' },
 ];
 
 const MOCK_CONTENT = [
@@ -145,34 +145,34 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-btn-main/20 backdrop-blur-sm" />
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
-        className={`${isFullScreen ? 'w-full' : 'w-[1000px]'} transition-all duration-300 bg-neutral-50 h-full shadow-2xl flex flex-col relative z-10`}
+        className={`${isFullScreen ? 'w-full' : 'w-[1000px]'} transition-all duration-300 bg-page-bg h-full shadow-2xl flex flex-col relative z-10`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="h-16 border-b border-neutral-200 flex items-center justify-between px-6 shrink-0 bg-white">
+        <div className="h-16 border-b border-border-default flex items-center justify-between px-6 shrink-0 bg-surface-1">
           <div className="flex items-center gap-3">
-            <h3 className="font-bold text-[18px] text-neutral-900">批量快审与分发控制台</h3>
+            <h3 className="font-bold text-[18px] text-text-main">批量快审与分发控制台</h3>
             {showLearningToast && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="flex items-center gap-1.5 text-[12px] font-bold text-primary-700 bg-primary-50 border border-primary-200 px-3 py-1 rounded-full shadow-sm"
+                className="flex items-center gap-1.5 text-[12px] font-bold text-primary-700 bg-brand-light border border-primary-200 px-3 py-1 rounded-full shadow-sm"
               >
                 <Bot size={14} /> 智能 已记录您的修改偏好，将用于迭代后续人设引擎
               </motion.div>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setIsFullScreen(!isFullScreen)} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
+            <button onClick={() => setIsFullScreen(!isFullScreen)} className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors">
               {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
             </button>
-            <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 rounded-lg transition-colors">
+            <button onClick={onClose} className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors">
               <X size={18} />
             </button>
           </div>
@@ -180,15 +180,15 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
         
         <div className="flex-1 flex overflow-hidden">
           {/* 左侧列表 */}
-          <div className="w-[360px] bg-white border-r border-neutral-200 flex flex-col h-full overflow-hidden shrink-0">
+          <div className="w-[360px] bg-surface-1 border-r border-border-default flex flex-col h-full overflow-hidden shrink-0">
             {/* Top Tabs */}
-            <div className="flex border-b border-neutral-200 bg-neutral-50/50">
+            <div className="flex border-b border-border-default bg-page-bg">
               {GROUPS.map(g => (
                 <button
                   key={g.id}
                   onClick={() => setActiveTab(g.id)}
                   className={`flex-1 py-3 text-[13px] font-bold relative transition-colors ${
-                    activeTab === g.id ? 'text-primary-600 bg-white' : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100/50'
+                    activeTab === g.id ? 'text-brand-logo bg-surface-1' : 'text-text-tertiary hover:text-text-secondary hover:bg-hover-bg/50'
                   }`}
                 >
                   {g.name}
@@ -201,20 +201,20 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
 
             {/* Batch Controls for active tab */}
             {activeGroupDef && (
-              <div className="p-4 border-b border-neutral-100">
-                <div className="flex flex-col gap-2 bg-white border border-neutral-200 p-3 rounded-lg shadow-sm">
+              <div className="p-4 border-b border-border-default">
+                <div className="flex flex-col gap-2 bg-surface-1 border border-border-default p-3 rounded-lg shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-[13px] font-bold text-neutral-900 flex items-center gap-1.5">
+                      <div className="text-[13px] font-bold text-text-main flex items-center gap-1.5">
                         <div className={`w-2 h-2 rounded-full ${activeGroupDef.color}`} />
                         {activeGroupDef.name} 队列
                       </div>
-                      <div className="text-[11px] text-neutral-500 mt-0.5">
+                      <div className="text-[11px] text-text-tertiary mt-0.5">
                         {activeGroupDef.id === 'koc_real' ? activeGroupDef.countStr : (allDone ? '已全部分发' : activeGroupDef.countStr)}
                       </div>
                     </div>
                     {activeGroupDef.id === 'koc_real' ? (
-                      <button className="text-[11px] font-bold text-primary-600 bg-primary-50 hover:bg-primary-100 px-2 py-1.5 rounded flex items-center gap-1 transition-colors">
+                      <button className="text-[11px] font-bold text-brand-logo bg-brand-light hover:bg-primary-100 px-2 py-1.5 rounded flex items-center gap-1 transition-colors">
                         <Smartphone size={12} />
                         {activeGroupDef.action1}
                       </button>
@@ -223,7 +223,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                         onClick={() => handleBatchConfirm(activeGroupDef.id)}
                         disabled={allDone || batchLoadingGroup === activeGroupDef.id}
                         className={`text-[11px] font-bold px-2 py-1.5 rounded flex items-center gap-1 transition-colors ${
-                          allDone ? 'bg-neutral-100 text-neutral-900' : 'text-white bg-neutral-900 hover:bg-neutral-800 disabled:opacity-50'
+                          allDone ? 'bg-hover-bg text-text-main' : 'text-white bg-btn-main hover:bg-btn-main-hover disabled:opacity-50'
                         }`}
                       >
                         {batchLoadingGroup === activeGroupDef.id ? (
@@ -238,7 +238,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                   </div>
                   {activeGroupDef.action2 && !allDone && (
                     <div className="flex justify-end mt-1">
-                      <button className="text-[11px] font-medium text-neutral-500 hover:text-neutral-700 flex items-center gap-1">
+                      <button className="text-[11px] font-medium text-text-tertiary hover:text-text-secondary flex items-center gap-1">
                         <Link size={12} /> {activeGroupDef.action2}
                       </button>
                     </div>
@@ -248,8 +248,8 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
             )}
 
             {/* Content List */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-neutral-50/30">
-              <div className="text-[12px] font-bold text-neutral-400 px-1 pt-2">详情预览</div>
+            <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-page-bg/30">
+              <div className="text-[12px] font-bold text-text-tertiary px-1 pt-2">详情预览</div>
               {groupItems.map(item => (
                 <div 
                   key={item.id}
@@ -260,29 +260,29 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                   }}
                   className={`p-3 rounded-xl border transition-all cursor-pointer ${
                     selectedContent?.id === item.id 
-                      ? 'bg-primary-50 border-primary-200 shadow-sm' 
-                      : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm'
+                      ? 'bg-brand-light border-primary-200 shadow-sm' 
+                      : 'bg-surface-1 border-border-default hover:border-neutral-300 hover:shadow-sm'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className={`text-[11px] font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
-                      item.channel === 'official' ? 'bg-primary-50 text-primary-700' :
-                      item.channel === 'kos' ? 'bg-primary-50 text-primary-700' :
-                      item.channel === 'koc_real' ? 'bg-primary-50 text-primary-700' :
-                      'bg-neutral-100 text-neutral-900'
+                      item.channel === 'official' ? 'bg-brand-light text-primary-700' :
+                      item.channel === 'kos' ? 'bg-brand-light text-primary-700' :
+                      item.channel === 'koc_real' ? 'bg-brand-light text-primary-700' :
+                      'bg-hover-bg text-text-main'
                     }`}>
                       {item.channel === 'koc_real' || item.channel === 'koc_general' ? <Users size={12} /> : <User size={12} />}
                       {item.channelName}
                     </span>
-                    <span className={`text-[11px] font-medium ${item.status === '已下发' ? 'text-neutral-900' : 'text-primary-600'}`}>
+                    <span className={`text-[11px] font-medium ${item.status === '已下发' ? 'text-text-main' : 'text-brand-logo'}`}>
                       {item.status}
                     </span>
                   </div>
-                  <h4 className="text-[13px] font-bold text-neutral-900 leading-tight mb-2 line-clamp-2">{item.title}</h4>
+                  <h4 className="text-[13px] font-bold text-text-main leading-tight mb-2 line-clamp-2">{item.title}</h4>
                 </div>
               ))}
               {groupItems.length === 0 && (
-                <div className="text-center p-6 text-neutral-400 text-[13px]">
+                <div className="text-center p-6 text-text-tertiary text-[13px]">
                   无待处理内容
                 </div>
               )}
@@ -290,35 +290,35 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
           </div>
 
           {/* 右侧详情 */}
-          <div className="flex-1 bg-neutral-50 overflow-y-auto relative p-6">
+          <div className="flex-1 bg-page-bg overflow-y-auto relative p-6">
             {selectedContent ? (
               <div className="max-w-2xl mx-auto space-y-6">
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200/60">
+                <div className="bg-surface-1 rounded-xl p-6 shadow-sm border border-border-default/60">
                   <div className="flex items-start justify-between mb-6">
                     <div>
-                      {isEditing ? null : <h2 className="text-[18px] font-bold text-neutral-900 mb-2">{selectedContent.title}</h2>}
+                      {isEditing ? null : <h2 className="text-[18px] font-bold text-text-main mb-2">{selectedContent.title}</h2>}
                       <div className="flex items-center gap-3">
-                        <span className="text-[12px] text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md">{selectedContent.strategy}</span>
+                        <span className="text-[12px] text-text-tertiary bg-hover-bg px-2 py-1 rounded-md">{selectedContent.strategy}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                      <div className="flex items-center gap-1.5 text-neutral-500 mb-2">
+                    <div className="bg-page-bg rounded-xl p-4 border border-border-default">
+                      <div className="flex items-center gap-1.5 text-text-tertiary mb-2">
                         <Wand2 size={14} />
                         <span className="text-[12px] font-bold">关联条件记忆</span>
                       </div>
-                      <p className="text-[13px] text-neutral-800 leading-relaxed font-medium">
+                      <p className="text-[13px] text-text-main leading-relaxed font-medium">
                         {selectedContent.memory}
                       </p>
                     </div>
-                    <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                      <div className="flex items-center gap-1.5 text-neutral-500 mb-2">
+                    <div className="bg-page-bg rounded-xl p-4 border border-border-default">
+                      <div className="flex items-center gap-1.5 text-text-tertiary mb-2">
                         <ImageIcon size={14} />
                         <span className="text-[12px] font-bold">匹配素材库</span>
                       </div>
-                      <p className="text-[13px] text-neutral-800 leading-relaxed font-medium">
+                      <p className="text-[13px] text-text-main leading-relaxed font-medium">
                         {selectedContent.materials}
                       </p>
                     </div>
@@ -332,11 +332,11 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       </div>
                       <p className="text-[13px] text-primary-800/80 leading-relaxed mb-4">{selectedContent.briefDesc}</p>
                       
-                      <div className="space-y-2 bg-white rounded-lg p-3 border border-primary-100/50">
-                        <div className="text-[12px] font-bold text-neutral-700 mb-2">分发与执行路径：</div>
+                      <div className="space-y-2 bg-surface-1 rounded-lg p-3 border border-primary-100/50">
+                        <div className="text-[12px] font-bold text-text-secondary mb-2">分发与执行路径：</div>
                         {selectedContent.briefTasks?.map((task, i) => (
-                          <div key={i} className="flex items-start gap-2 text-[13px] text-neutral-600">
-                            <span className="w-4 h-4 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
+                          <div key={i} className="flex items-start gap-2 text-[13px] text-text-secondary">
+                            <span className="w-4 h-4 rounded-full bg-primary-100 text-brand-logo flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
                             {task}
                           </div>
                         ))}
@@ -345,10 +345,10 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                   ) : (
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <div className="text-[14px] font-bold text-neutral-900">正文预览</div>
+                        <div className="text-[14px] font-bold text-text-main">正文预览</div>
                         {selectedContent.readyForPublish && !isEditing && (
                           <button 
-                            className="text-[12px] font-bold text-primary-600 hover:text-primary-700 bg-primary-50 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                            className="text-[12px] font-bold text-brand-logo hover:text-primary-700 bg-brand-light px-3 py-1.5 rounded-lg flex items-center gap-1.5"
                             onClick={() => {
                               setIsEditing(true);
                               setEditTitle(selectedContent.title);
@@ -380,18 +380,18 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       {isEditing ? (
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-[12px] font-bold text-neutral-500 mb-1">标题</label>
+                            <label className="block text-[12px] font-bold text-text-tertiary mb-1">标题</label>
                             <input
                               type="text"
                               value={editTitle}
                               onChange={(e) => setEditTitle(e.target.value)}
-                              className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-2.5 text-[14px] font-bold text-neutral-900 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 shadow-inner"
+                              className="w-full bg-surface-1 border border-border-default rounded-xl px-4 py-2.5 text-[14px] font-bold text-text-main focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 shadow-inner"
                             />
                           </div>
                           <div>
                             <div className="flex items-center justify-between mb-1">
-                              <label className="block text-[12px] font-bold text-neutral-500">正文</label>
-                              <span className="text-[11px] text-neutral-400">可选中文字进行局部 智能 修改</span>
+                              <label className="block text-[12px] font-bold text-text-tertiary">正文</label>
+                              <span className="text-[11px] text-text-tertiary">可选中文字进行局部 智能 修改</span>
                             </div>
                             <textarea
                               ref={textareaRef}
@@ -400,25 +400,25 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                               onMouseUp={handleTextSelect}
                               onKeyUp={handleTextSelect}
                               onChange={(e) => setEditContent(e.target.value)}
-                              className="w-full h-40 bg-white border border-neutral-200 rounded-xl p-4 text-[13px] text-neutral-700 leading-relaxed focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 resize-none shadow-inner"
+                              className="w-full h-40 bg-surface-1 border border-border-default rounded-xl p-4 text-[13px] text-text-secondary leading-relaxed focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 resize-none shadow-inner"
                             />
                           </div>
                           <div>
-                            <label className="block text-[12px] font-bold text-neutral-500 mb-1">话题标签</label>
+                            <label className="block text-[12px] font-bold text-text-tertiary mb-1">话题标签</label>
                             <input
                               type="text"
                               value={editTags}
                               onChange={(e) => setEditTags(e.target.value)}
-                              className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-2.5 text-[13px] text-primary-600 font-medium focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 shadow-inner"
+                              className="w-full bg-surface-1 border border-border-default rounded-xl px-4 py-2.5 text-[13px] text-brand-logo font-medium focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 shadow-inner"
                             />
                           </div>
-                          <div className="bg-primary-50/50 border border-primary-100 rounded-xl p-4 flex flex-col gap-3 transition-all">
+                          <div className="bg-brand-light/50 border border-primary-100 rounded-xl p-4 flex flex-col gap-3 transition-all">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <Bot size={16} className="text-primary-600" />
+                                <Bot size={16} className="text-brand-logo" />
                                 <span className="text-[13px] font-bold text-primary-900">智能 辅助修改与自学习</span>
                               </div>
-                              <span className="text-[11px] text-primary-600/70 bg-primary-100/50 px-2 py-0.5 rounded">您的修改将自动被 智能 记录并迭代人设模型</span>
+                              <span className="text-[11px] text-brand-logo/70 bg-primary-100/50 px-2 py-0.5 rounded">您的修改将自动被 智能 记录并迭代人设模型</span>
                             </div>
                             
                             <div className="relative">
@@ -453,14 +453,14 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                                   }
                                 }}
                                 placeholder={selectedTextContext && selectedTextContext.text.trim().length > 0 ? "输入指令修改选中内容..." : "输入改写指令，例如：'语气更口语化一些'"}
-                                className={`w-full bg-white border border-primary-200 rounded-lg pr-10 py-2.5 text-[13px] focus:outline-none focus:border-primary-400 transition-all ${
+                                className={`w-full bg-surface-1 border border-primary-200 rounded-lg pr-10 py-2.5 text-[13px] focus:outline-none focus:border-primary-400 transition-all ${
                                   selectedTextContext && selectedTextContext.text.trim().length > 0 ? 'pl-[220px]' : 'pl-3'
                                 }`}
                               />
                               <button 
                                 onClick={executeAiRewrite}
                                 disabled={isAiRewriting || !aiPrompt}
-                                className="absolute right-2 top-1/2 -tranneutral-y-1/2 text-primary-600 hover:text-primary-700 disabled:text-primary-300 bg-primary-50 p-1.5 rounded-md transition-colors z-10"
+                                className="absolute right-2 top-1/2 -tranneutral-y-1/2 text-brand-logo hover:text-primary-700 disabled:text-primary-300 bg-brand-light p-1.5 rounded-md transition-colors z-10"
                               >
                                 {isAiRewriting ? <div className="w-4 h-4 rounded-full border-2 border-primary-600 border-t-transparent animate-spin" /> : <Send size={14} />}
                               </button>
@@ -468,15 +468,15 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-white border border-neutral-200 rounded-xl p-5 shadow-sm space-y-3 relative group">
+                        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm space-y-3 relative group">
                           {selectedContent.content.split('\n').map((p, i) => (
-                            <p key={i} className="text-[13px] text-neutral-700 leading-relaxed min-h-[1em]">{p}</p>
+                            <p key={i} className="text-[13px] text-text-secondary leading-relaxed min-h-[1em]">{p}</p>
                           ))}
                           {selectedContent.tags && (
-                            <p className="text-[13px] text-primary-600 font-medium mt-4">{selectedContent.tags}</p>
+                            <p className="text-[13px] text-brand-logo font-medium mt-4">{selectedContent.tags}</p>
                           )}
-                          <div className="absolute inset-0 bg-neutral-900/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center pointer-events-none">
-                             <span className="bg-white text-neutral-900 px-3 py-1.5 rounded-lg text-[12px] font-bold shadow-sm flex items-center gap-1">
+                          <div className="absolute inset-0 bg-btn-main/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center pointer-events-none">
+                             <span className="bg-surface-1 text-text-main px-3 py-1.5 rounded-lg text-[12px] font-bold shadow-sm flex items-center gap-1">
                                <Edit3 size={14} /> 点击右上角进行编辑
                              </span>
                           </div>
@@ -487,9 +487,9 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                 </div>
               </div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-neutral-400 p-6 text-center h-full">
+              <div className="flex-1 flex flex-col items-center justify-center text-text-tertiary p-6 text-center h-full">
                 <FileText size={48} className="mb-4 text-neutral-200" />
-                <p className="text-[14px] font-medium text-neutral-600 mb-1">请在左侧选择一篇内容进行审阅</p>
+                <p className="text-[14px] font-medium text-text-secondary mb-1">请在左侧选择一篇内容进行审阅</p>
                 <p className="text-[12px]">运营确认修改后，智能将自动学习并优化后续生成的文案人设</p>
               </div>
             )}

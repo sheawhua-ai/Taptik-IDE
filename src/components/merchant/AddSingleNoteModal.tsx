@@ -168,40 +168,40 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 backdrop-blur-xs p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-btn-main/50 backdrop-blur-xs p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
-        className="bg-white rounded-2xl shadow-2xl border border-neutral-200 w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[90vh]"
+        className="bg-surface-1 rounded-xl shadow-2xl border border-border-default w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[90vh]"
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between shrink-0 bg-white">
+        <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-1">
           <div>
-            <h2 className="text-[17px] font-bold text-neutral-900 flex items-center gap-2">
-              <Plus size={20} className="text-primary-600" />
+            <h2 className="text-[17px] font-bold text-text-main flex items-center gap-2">
+              <Plus size={20} className="text-brand-logo" />
               新建笔记
             </h2>
-            <p className="text-[12px] text-neutral-500 mt-0.5">
+            <p className="text-[12px] text-text-tertiary mt-0.5">
               支持批量解析 CSV/Excel 文件、关联飞书多维表格同步，或手动录入单篇笔记。
             </p>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+            className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="px-6 border-b border-neutral-200 bg-neutral-50/70 flex items-center gap-2 pt-3 shrink-0">
+        <div className="px-6 border-b border-border-default bg-page-bg/70 flex items-center gap-2 pt-3 shrink-0">
           <button
             onClick={() => setActiveTab("file")}
             className={`px-4 py-2.5 rounded-t-xl text-[13px] font-bold flex items-center gap-2 transition-all border-t border-x ${
               activeTab === "file"
-                ? "bg-white border-neutral-200 text-neutral-900 shadow-2xs -mb-px"
-                : "border-transparent text-neutral-500 hover:text-neutral-800"
+                ? "bg-surface-1 border-border-default text-text-main shadow-2xs -mb-px"
+                : "border-transparent text-text-tertiary hover:text-text-main"
             }`}
           >
             <Upload size={15} className={activeTab === "file" ? "text-emerald-600" : ""} />
@@ -212,8 +212,8 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
             onClick={() => setActiveTab("feishu")}
             className={`px-4 py-2.5 rounded-t-xl text-[13px] font-bold flex items-center gap-2 transition-all border-t border-x ${
               activeTab === "feishu"
-                ? "bg-white border-neutral-200 text-neutral-900 shadow-2xs -mb-px"
-                : "border-transparent text-neutral-500 hover:text-neutral-800"
+                ? "bg-surface-1 border-border-default text-text-main shadow-2xs -mb-px"
+                : "border-transparent text-text-tertiary hover:text-text-main"
             }`}
           >
             <Link2 size={15} className={activeTab === "feishu" ? "text-blue-600" : ""} />
@@ -225,8 +225,8 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
             onClick={() => setActiveTab("single")}
             className={`px-4 py-2.5 rounded-t-xl text-[13px] font-bold flex items-center gap-2 transition-all border-t border-x ${
               activeTab === "single"
-                ? "bg-white border-neutral-200 text-neutral-900 shadow-2xs -mb-px"
-                : "border-transparent text-neutral-500 hover:text-neutral-800"
+                ? "bg-surface-1 border-border-default text-text-main shadow-2xs -mb-px"
+                : "border-transparent text-text-tertiary hover:text-text-main"
             }`}
           >
             <Plus size={15} />
@@ -235,16 +235,16 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
         </div>
 
         {/* Tab Content */}
-        <div className="p-6 overflow-y-auto flex-1 bg-neutral-50/30">
+        <div className="p-6 overflow-y-auto flex-1 bg-page-bg/30">
 
           {/* TAB 1: 批量导入笔记文件 */}
           {activeTab === "file" && (
             <div className="space-y-4">
-              <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-2xs space-y-4">
+              <div className="bg-surface-1 p-5 rounded-xl border border-border-default shadow-2xs space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-[14px] font-bold text-neutral-900">上传 Excel / CSV 笔记清单</h3>
-                    <p className="text-[12px] text-neutral-500 mt-0.5">
+                    <h3 className="text-[14px] font-bold text-text-main">上传 Excel / CSV 笔记清单</h3>
+                    <p className="text-[12px] text-text-tertiary mt-0.5">
                       表头自动识别“笔记标题”、“账号类型”、“执行账号”、“内容方向”、“计划日期”。
                     </p>
                   </div>
@@ -265,23 +265,23 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                   onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                   onDragLeave={() => setDragActive(false)}
                   onDrop={handleFileDrop}
-                  className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all flex flex-col items-center justify-center cursor-pointer ${
+                  className={`border-2 border-dashed rounded-xl p-6 text-center transition-all flex flex-col items-center justify-center cursor-pointer ${
                     dragActive 
                       ? "border-emerald-500 bg-emerald-50/50 scale-[0.99]" 
-                      : "border-neutral-200 hover:border-neutral-400 bg-neutral-50/40"
+                      : "border-border-default hover:border-neutral-400 bg-surface-2"
                   }`}
                   onClick={() => {
                     const sampleFile = new File(["mock"], "婚宴试菜与种草笔记导入清单_2026.xlsx");
                     processFile(sampleFile);
                   }}
                 >
-                  <div className="w-12 h-12 bg-white rounded-2xl shadow-2xs flex items-center justify-center text-emerald-600 mb-2 border border-neutral-200/80">
+                  <div className="w-12 h-12 bg-surface-1 rounded-xl shadow-2xs flex items-center justify-center text-emerald-600 mb-2 border border-border-default/80">
                     <FileSpreadsheet size={24} />
                   </div>
-                  <p className="text-[13px] font-bold text-neutral-800">
+                  <p className="text-[13px] font-bold text-text-main">
                     {importedFile ? `已选择文件：${importedFile.name}` : "点击选择或拖拽 Excel/CSV/JSON 笔记表格文件至此处"}
                   </p>
-                  <p className="text-[11px] text-neutral-400 mt-1">
+                  <p className="text-[11px] text-text-tertiary mt-1">
                     支持 .xlsx, .xls, .csv, .json 格式（最大支持 10MB，自动去重）
                   </p>
                 </div>
@@ -289,19 +289,19 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
 
               {/* Parsing Output Preview Table */}
               {isParsing ? (
-                <div className="p-8 text-center bg-white rounded-2xl border border-neutral-200 text-neutral-500 space-y-2">
+                <div className="p-8 text-center bg-surface-1 rounded-xl border border-border-default text-text-tertiary space-y-2">
                   <Sparkles size={24} className="animate-spin text-emerald-600 mx-auto" />
-                  <p className="text-[13px] font-bold text-neutral-800">正在解析文件表格列数据...</p>
+                  <p className="text-[13px] font-bold text-text-main">正在解析文件表格列数据...</p>
                 </div>
               ) : parsedNotes.length > 0 ? (
-                <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden shadow-2xs">
-                  <div className="p-3.5 border-b border-neutral-100 bg-neutral-50/70 flex items-center justify-between">
-                    <span className="text-[12px] font-bold text-neutral-900">
+                <div className="bg-surface-1 rounded-xl border border-border-default overflow-hidden shadow-2xs">
+                  <div className="p-3.5 border-b border-border-default bg-page-bg/70 flex items-center justify-between">
+                    <span className="text-[12px] font-bold text-text-main">
                       解析成功！预览待导入笔记 ({parsedNotes.filter(n => n.selected).length} 篇选中)
                     </span>
                     <button
                       onClick={() => handleConfirmBatch(parsedNotes)}
-                      className="px-4 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl text-[12px] transition-colors flex items-center gap-1.5"
+                      className="px-4 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold rounded-xl text-[12px] transition-colors flex items-center gap-1.5"
                     >
                       <span>导入选中的 {parsedNotes.filter(n => n.selected).length} 篇笔记</span>
                       <ArrowRight size={14} />
@@ -319,17 +319,17 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                             updated[idx].selected = e.target.checked;
                             setParsedNotes(updated);
                           }}
-                          className="w-4 h-4 rounded text-neutral-900 focus:ring-neutral-900 shrink-0"
+                          className="w-4 h-4 rounded text-text-main focus:ring-neutral-900 shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <div className="font-bold text-neutral-900 truncate">{note.title}</div>
-                          <div className="text-[11px] text-neutral-500 mt-0.5 flex gap-2">
+                          <div className="font-bold text-text-main truncate">{note.title}</div>
+                          <div className="text-[11px] text-text-tertiary mt-0.5 flex gap-2">
                             <span>{note.accountType}</span>
                             <span>• {note.accountName}</span>
                             <span>• {note.contentDirection}</span>
                           </div>
                         </div>
-                        <div className="text-[11px] font-mono text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded shrink-0">
+                        <div className="text-[11px] font-mono text-text-tertiary bg-hover-bg px-2 py-0.5 rounded shrink-0">
                           {note.plannedDate}
                         </div>
                       </div>
@@ -343,20 +343,20 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
           {/* TAB 2: 自动关联飞书表格 */}
           {activeTab === "feishu" && (
             <div className="space-y-4">
-              <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-2xs space-y-4">
+              <div className="bg-surface-1 p-5 rounded-xl border border-border-default shadow-2xs space-y-4">
                 <div>
-                  <h3 className="text-[14px] font-bold text-neutral-900 flex items-center gap-2">
+                  <h3 className="text-[14px] font-bold text-text-main flex items-center gap-2">
                     <Table size={16} className="text-blue-600" />
                     绑定飞书多维表格 (Feishu / Lark Bitable)
                   </h3>
-                  <p className="text-[12px] text-neutral-500 mt-0.5">
+                  <p className="text-[12px] text-text-tertiary mt-0.5">
                     复制飞书多维表格或普通 Sheet 链接，系统将建立双向 Webhook 实时同步笔记与发布状态。
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold text-neutral-700 mb-1">
-                    飞书表格 App 链接 / 多维表格 URL <span className="text-rose-500">*</span>
+                  <label className="block text-[12px] font-bold text-text-secondary mb-1">
+                    飞书表格 App 链接 / 多维表格 URL <span className="text-brand-logo">*</span>
                   </label>
                   <div className="flex gap-2">
                     <input 
@@ -364,7 +364,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                       value={feishuUrl}
                       onChange={(e) => setFeishuUrl(e.target.value)}
                       placeholder="https://feishu.cn/base/bascn..."
-                      className="flex-1 px-3.5 py-2 border border-neutral-200 rounded-xl text-[12px] outline-none focus:border-blue-500 font-mono bg-neutral-50/50"
+                      className="flex-1 px-3.5 py-2 border border-border-default rounded-xl text-[12px] outline-none focus:border-blue-500 font-mono bg-page-bg"
                     />
                     <button
                       onClick={handleConnectFeishu}
@@ -392,7 +392,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                 </div>
 
                 {/* Auto Sync Settings */}
-                <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center justify-between">
+                <div className="p-3.5 bg-page-bg rounded-xl border border-border-default/80 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <input 
                       type="checkbox" 
@@ -401,7 +401,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                       onChange={(e) => setAutoSync(e.target.checked)}
                       className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500"
                     />
-                    <label htmlFor="autoSync" className="text-[12px] font-bold text-neutral-800 cursor-pointer">
+                    <label htmlFor="autoSync" className="text-[12px] font-bold text-text-main cursor-pointer">
                       开启飞书表格定时自动全量增量同步
                     </label>
                   </div>
@@ -409,7 +409,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                     <select
                       value={syncInterval}
                       onChange={(e) => setSyncInterval(e.target.value)}
-                      className="px-2.5 py-1 border border-neutral-200 rounded-lg text-[11px] bg-white font-medium text-neutral-700"
+                      className="px-2.5 py-1 border border-border-default rounded-lg text-[11px] bg-surface-1 font-medium text-text-secondary"
                     >
                       <option value="5分钟">每 5 分钟同步</option>
                       <option value="15分钟">每 15 分钟同步</option>
@@ -421,7 +421,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
 
               {/* Feishu Synced Preview */}
               {feishuStatus === "connected" && (
-                <div className="bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-2xs">
+                <div className="bg-surface-1 rounded-xl border border-blue-200 overflow-hidden shadow-2xs">
                   <div className="p-3.5 border-b border-blue-100 bg-blue-50/50 flex items-center justify-between">
                     <span className="text-[12px] font-bold text-blue-900 flex items-center gap-1.5">
                       <CheckCircle2 size={15} className="text-emerald-600" />
@@ -450,14 +450,14 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                           className="w-4 h-4 rounded text-blue-600 focus:ring-blue-600 shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <div className="font-bold text-neutral-900 truncate">{note.title}</div>
-                          <div className="text-[11px] text-neutral-500 mt-0.5 flex gap-2">
+                          <div className="font-bold text-text-main truncate">{note.title}</div>
+                          <div className="text-[11px] text-text-tertiary mt-0.5 flex gap-2">
                             <span>飞书列: {note.accountType}</span>
                             <span>• {note.accountName}</span>
                             <span>• {note.contentDirection}</span>
                           </div>
                         </div>
-                        <div className="text-[11px] font-mono text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded shrink-0">
+                        <div className="text-[11px] font-mono text-text-tertiary bg-hover-bg px-2 py-0.5 rounded shrink-0">
                           {note.plannedDate}
                         </div>
                       </div>
@@ -470,10 +470,10 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
 
           {/* TAB 3: 手动新增单篇 */}
           {activeTab === "single" && (
-            <form onSubmit={handleSingleSubmit} className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-2xs space-y-4">
+            <form onSubmit={handleSingleSubmit} className="bg-surface-1 p-5 rounded-xl border border-border-default shadow-2xs space-y-4">
               <div>
-                <label className="block text-[12px] font-bold text-neutral-700 mb-1">
-                  笔记标题 / 核心主题 <span className="text-rose-500">*</span>
+                <label className="block text-[12px] font-bold text-text-secondary mb-1">
+                  笔记标题 / 核心主题 <span className="text-brand-logo">*</span>
                 </label>
                 <input 
                   type="text" 
@@ -481,19 +481,19 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="例如：青岛超梦幻婚宴宴会厅试菜与现场实拍"
-                  className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50"
+                  className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-bold text-neutral-700 mb-1">
+                  <label className="block text-[12px] font-bold text-text-secondary mb-1">
                     账号类型
                   </label>
                   <select
                     value={accountType}
                     onChange={(e) => setAccountType(e.target.value as any)}
-                    className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50"
+                    className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg"
                   >
                     <option value="KOC">KOC 消费者共创</option>
                     <option value="店长号/KOS">店长号 / KOS</option>
@@ -502,7 +502,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold text-neutral-700 mb-1">
+                  <label className="block text-[12px] font-bold text-text-secondary mb-1">
                     执行账号名称
                   </label>
                   <input 
@@ -510,14 +510,14 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                     value={accountName}
                     onChange={(e) => setAccountName(e.target.value)}
                     placeholder="例如：小红薯_婚礼控"
-                    className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50"
+                    className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-bold text-neutral-700 mb-1">
+                  <label className="block text-[12px] font-bold text-text-secondary mb-1">
                     内容方向 / 脚本标签
                   </label>
                   <input 
@@ -525,25 +525,25 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                     value={contentDirection}
                     onChange={(e) => setContentDirection(e.target.value)}
                     placeholder="例如：试菜体验 / 专业答疑"
-                    className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50"
+                    className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold text-neutral-700 mb-1">
+                  <label className="block text-[12px] font-bold text-text-secondary mb-1">
                     计划发布日期
                   </label>
                   <input 
                     type="date" 
                     value={plannedDate}
                     onChange={(e) => setPlannedDate(e.target.value)}
-                    className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50"
+                    className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[12px] font-bold text-neutral-700 mb-1">
+                <label className="block text-[12px] font-bold text-text-secondary mb-1">
                   稿件大纲 / 补充说明 (可选)
                 </label>
                 <textarea
@@ -551,14 +551,14 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   placeholder="写下本篇笔记的重点展现要点、话题标签等..."
-                  className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50 resize-none"
+                  className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg resize-none"
                 />
               </div>
 
               <div className="pt-2 flex items-center justify-end">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-xs"
+                  className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors shadow-xs"
                 >
                   确认手动添加本篇笔记
                 </button>
@@ -569,8 +569,8 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between bg-white shrink-0">
-          <span className="text-[12px] text-neutral-500">
+        <div className="px-6 py-4 border-t border-border-default flex items-center justify-between bg-surface-1 shrink-0">
+          <span className="text-[12px] text-text-tertiary">
             {activeTab === "file" 
               ? "支持上传文件后进行列匹配确认并批量入库" 
               : activeTab === "feishu"
@@ -580,7 +580,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border border-neutral-200 rounded-xl text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 transition-colors"
+            className="px-4 py-2 border border-border-default rounded-xl text-[13px] font-bold text-text-secondary hover:bg-hover-bg transition-colors"
           >
             关闭
           </button>

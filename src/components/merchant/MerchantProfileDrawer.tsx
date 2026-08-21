@@ -33,24 +33,24 @@ export function MerchantProfileDrawer({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-neutral-900/40 backdrop-blur-[2px] z-[100]"
+            className="fixed inset-0 bg-btn-main/40 backdrop-blur-[2px] z-[100]"
           />
           <motion.div
             initial={{ x: "100%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
             transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
-            className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-[420px]'} bg-white shadow-2xl z-[101] flex flex-col border-l border-neutral-200 transition-all duration-300`}
+            className={`absolute top-0 right-0 bottom-0 ${isFullScreen ? 'w-full' : 'w-[420px]'} bg-surface-1 shadow-2xl z-[101] flex flex-col border-l border-border-default transition-all duration-300`}
           >
             {/* Header */}
-            <div className="shrink-0 px-6 py-5 border-b border-neutral-100 flex items-center justify-between bg-white relative z-10">
+            <div className="shrink-0 px-6 py-5 border-b border-border-default flex items-center justify-between bg-surface-1 relative z-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-neutral-900 text-white rounded-xl flex items-center justify-center shadow-md">
+                <div className="w-10 h-10 bg-btn-main text-white rounded-xl flex items-center justify-center shadow-md">
                   <Target size={20} />
                 </div>
                 <div>
-                  <h2 className="text-[16px] font-bold text-neutral-900">商家画像与资产</h2>
-                  <div className="text-[12px] text-neutral-500 font-medium flex items-center gap-1.5 mt-0.5">
+                  <h2 className="text-[16px] font-bold text-text-main">商家画像与资产</h2>
+                  <div className="text-[12px] text-text-tertiary font-medium flex items-center gap-1.5 mt-0.5">
                     <Store size={12} /> {projectName}
                   </div>
                 </div>
@@ -58,13 +58,13 @@ export function MerchantProfileDrawer({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsFullScreen(!isFullScreen)}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-hover-bg text-text-tertiary hover:text-text-secondary transition-colors"
                 >
                   {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
                 </button>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-hover-bg text-text-tertiary hover:text-text-secondary transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -72,40 +72,40 @@ export function MerchantProfileDrawer({
             </div>
 
             {/* Profile Overview */}
-            <div className="p-6 border-b border-neutral-100 bg-neutral-50/50">
+            <div className="p-6 border-b border-border-default bg-page-bg">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[13px] font-bold text-neutral-900">画像完整度</span>
-                <span className="text-[16px] font-bold text-neutral-900">92%</span>
+                <span className="text-[13px] font-bold text-text-main">画像完整度</span>
+                <span className="text-[16px] font-bold text-text-main">92%</span>
               </div>
               <div className="w-full h-2 bg-neutral-200 rounded-full overflow-hidden mb-4">
-                <div className="h-full bg-neutral-900 w-[92%] rounded-full relative">
-                  <div className="absolute inset-0 bg-white/20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent)' }}></div>
+                <div className="h-full bg-btn-main w-[92%] rounded-full relative">
+                  <div className="absolute inset-0 bg-surface-1/20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent)' }}></div>
                 </div>
               </div>
-              <p className="text-[12px] text-neutral-500 leading-relaxed mb-4">
+              <p className="text-[12px] text-text-tertiary leading-relaxed mb-4">
                 商家画像由知识库自动抽取生成。当前仍有部分信息未对齐，补充后将进一步提升策略生成的准确性。
               </p>
               
               <div className="space-y-3">
                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-neutral-400">品牌心智</span>
+                    <span className="text-[11px] font-bold text-text-tertiary">品牌心智</span>
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">专业严谨</span>
-                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">配方透明</span>
-                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">新手友好</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">专业严谨</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">配方透明</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">新手友好</span>
                     </div>
                  </div>
                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-neutral-400">核心受众</span>
+                    <span className="text-[11px] font-bold text-text-tertiary">核心受众</span>
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">精致养宠女性</span>
-                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">成分党</span>
-                      <span className="px-2 py-1 bg-white border border-neutral-200 rounded-md text-[12px] text-neutral-700 font-medium">高客单价</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">精致养宠女性</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">成分党</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">高客单价</span>
                     </div>
                  </div>
                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-neutral-400">主推品优势</span>
-                    <p className="text-[12px] text-neutral-800 font-medium bg-white p-2.5 rounded-lg border border-neutral-200">
+                    <span className="text-[11px] font-bold text-text-tertiary">主推品优势</span>
+                    <p className="text-[12px] text-text-main font-medium bg-surface-1 p-2.5 rounded-lg border border-border-default">
                       80%鲜肉含量，0谷物添加，特别添加益生菌呵护幼犬玻璃胃。
                     </p>
                  </div>
@@ -115,37 +115,37 @@ export function MerchantProfileDrawer({
             {/* Missing Gaps List */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-[14px] font-bold text-neutral-900 flex items-center gap-2">
-                  <AlertCircle size={16} className="text-primary-600" />
+                <h3 className="text-[14px] font-bold text-text-main flex items-center gap-2">
+                  <AlertCircle size={16} className="text-brand-logo" />
                   关键资产待补齐
                 </h3>
-                <span className="text-[11px] font-medium bg-neutral-100 text-neutral-500 px-2 py-0.5 rounded-md">
+                <span className="text-[11px] font-medium bg-hover-bg text-text-tertiary px-2 py-0.5 rounded-md">
                   4 项建议
                 </span>
               </div>
               
               <div className="space-y-4">
                 {missingItems.map((item, idx) => (
-                  <div key={item.id} className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm hover:border-neutral-300 transition-colors">
+                  <div key={item.id} className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-sm hover:border-neutral-300 transition-colors">
                     <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center text-[12px] font-bold text-neutral-500 shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[12px] font-bold text-text-tertiary shrink-0 mt-0.5">
                         {idx + 1}
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-[14px] font-bold text-neutral-900 mb-1">{item.text}</h4>
-                        <p className="text-[12px] text-neutral-500 mb-3">{item.desc}</p>
+                        <h4 className="text-[14px] font-bold text-text-main mb-1">{item.text}</h4>
+                        <p className="text-[12px] text-text-tertiary mb-3">{item.desc}</p>
                         
-                        <div className="bg-neutral-50 p-2.5 rounded-lg border border-neutral-100 mb-3">
-                          <div className="text-[11px] font-bold text-neutral-400 mb-1 flex items-center gap-1">
+                        <div className="bg-page-bg p-2.5 rounded-lg border border-border-default mb-3">
+                          <div className="text-[11px] font-bold text-text-tertiary mb-1 flex items-center gap-1">
                             <Search size={12} /> 知识库状态索引
                           </div>
-                          <div className="text-[12px] text-neutral-700 font-medium">
+                          <div className="text-[12px] text-text-secondary font-medium">
                             {item.sourceDoc}
                           </div>
                         </div>
                         
                         <button 
-                          className="w-full text-[12px] font-bold text-neutral-700 bg-neutral-100 hover:bg-neutral-200 px-3 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
+                          className="w-full text-[12px] font-bold text-text-secondary bg-hover-bg hover:bg-selected-bg px-3 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
                           onClick={() => {
                             window.dispatchEvent(new CustomEvent('switch-to-knowledge'));
                             onClose();

@@ -43,10 +43,10 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  initial={{ opacity: 0, y: 10, scale: 0.98 }}
  animate={{ opacity: 1, y: 0, scale: 1 }}
  exit={{ opacity: 0, y: 10, scale: 0.98 }}
- className="absolute bottom-full right-0 mb-4 w-[400px] bg-neutral-900 rounded-3xl shadow-2xl border border-white/10 flex flex-col z-50 overflow-hidden"
+ className="absolute bottom-full right-0 mb-4 w-[400px] bg-btn-main rounded-2xl shadow-2xl border border-white/10 flex flex-col z-50 overflow-hidden"
  >
  <div className="p-4 border-b border-white/10 flex items-center justify-between">
- <div className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-xl flex-1 border border-white/5 focus-within:border-primary-500/50 transition-colors">
+ <div className="flex items-center gap-2 bg-surface-1/5 px-3 py-2 rounded-xl flex-1 border border-white/5 focus-within:border-primary-500/50 transition-colors">
  <Search size={14} className="text-white/40" />
  <input 
  autoFocus
@@ -54,7 +54,7 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  className="bg-transparent border-none outline-none text-[13px] text-white w-full placeholder:text-white/30"
  />
  </div>
- <button onClick={onClose} className="p-2 ml-2 hover:bg-white/10 rounded-xl text-white/50 transition-colors">
+ <button onClick={onClose} className="p-2 ml-2 hover:bg-surface-1/10 rounded-xl text-white/50 transition-colors">
  <X size={16} />
  </button>
  </div>
@@ -69,12 +69,12 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  <button 
  key={idx}
  onClick={() => onSelectCommand(item.template)}
- className="w-full text-left px-4 py-3 rounded-2xl hover:bg-white/5 flex flex-col gap-1 transition-colors group"
+ className="w-full text-left px-4 py-3 rounded-xl hover:bg-surface-1/5 flex flex-col gap-1 transition-colors group"
  >
  <div className="text-[13px] text-white group-hover:text-primary-400 transition-colors">
  {item.template.split(/(\[.*?\])/).map((part, i) => 
  part.startsWith('[') && part.endsWith(']') ? 
- <span key={i} className="text-primary-500 bg-primary-500/10 px-1 rounded mx-0.5">{part}</span> : 
+ <span key={i} className="text-brand-logo bg-btn-main/10 px-1 rounded mx-0.5">{part}</span> : 
  part
  )}
  </div>
@@ -85,7 +85,7 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  </div>
  ))}
  </div>
- <div className="p-4 bg-white/5 border-t border-white/10 text-center">
+ <div className="p-4 bg-surface-1/5 border-t border-white/10 text-center">
  <span className="text-[11px] text-white/40 italic">也可以在输入框自由用自然语言描述，我会尽力理解</span>
  </div>
  </motion.div>

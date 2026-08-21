@@ -123,18 +123,18 @@ export const SmartInput = forwardRef<HTMLTextAreaElement, SmartInputProps>(({
               left: 0,
               marginBottom: '10px'
             }}
-            className="absolute z-[999] w-64 bg-white border border-neutral-200 rounded-xl shadow-2xl overflow-hidden"
+            className="absolute z-[999] w-64 bg-surface-1 border border-border-default rounded-xl shadow-2xl overflow-hidden"
           >
-            <div className="px-3 py-2 bg-neutral-50/50 border-b border-neutral-100 text-[11px] font-bold text-neutral-500 uppercase tracking-wider flex items-center justify-between">
+            <div className="px-3 py-2 bg-page-bg border-b border-border-default text-[11px] font-bold text-text-tertiary uppercase tracking-wider flex items-center justify-between">
               <span>{menuType === '@' ? '插入变量' : '快捷指令'}</span>
-              <span className="text-[10px] text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded">Enter 确认</span>
+              <span className="text-[10px] text-text-tertiary bg-hover-bg px-1.5 py-0.5 rounded">Enter 确认</span>
             </div>
             <div className="p-1 max-h-[200px] overflow-y-auto">
               {menuItems[menuType].map((item, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleInsert(item.insert)}
-                  className="w-full text-left px-3 py-2 hover:bg-primary-50 hover:text-primary-700 rounded-lg flex items-center gap-2 text-[13px] text-neutral-700 transition-colors focus:bg-primary-50 focus:outline-none"
+                  className="w-full text-left px-3 py-2 hover:bg-brand-light hover:text-primary-700 rounded-lg flex items-center gap-2 text-[13px] text-text-secondary transition-colors focus:bg-brand-light focus:outline-none"
                 >
                   <span className="opacity-70">{item.icon}</span>
                   {item.label}

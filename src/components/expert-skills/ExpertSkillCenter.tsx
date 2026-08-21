@@ -87,16 +87,16 @@ export const ExpertSkillCenter: React.FC = () => {
   const enabledCount = Object.values(enabledSkillIds).filter(Boolean).length;
 
   return (
-    <div className="w-full min-h-full bg-neutral-50/60 p-6 md:p-8 space-y-5 max-w-7xl mx-auto pb-16">
+    <div className="w-full min-h-full bg-page-bg p-6 md:p-8 space-y-5 max-w-7xl mx-auto pb-16">
       {/* Primary Top Area (Header & Main Search & Quick Nav) */}
-      <div className="bg-white p-5 rounded-2xl border border-neutral-200/90 shadow-2xs space-y-4">
+      <div className="space-y-4">
         {/* Title & Subtitle */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border-default pb-4">
           <div className="space-y-0.5">
-            <h1 className="text-[20px] font-black text-neutral-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-[20px] font-black text-text-main tracking-tight flex items-center gap-2">
               技能中心
             </h1>
-            <p className="text-[12.5px] font-bold text-neutral-500">
+            <p className="text-[12.5px] font-bold text-text-tertiary">
               为当前商家添加AI可以自动调用的运营能力。
             </p>
           </div>
@@ -107,14 +107,14 @@ export const ExpertSkillCenter: React.FC = () => {
               onClick={() => setActiveView(activeView === 'my' ? 'browse' : 'my')}
               className={`px-4 py-2 rounded-xl text-[12.5px] font-extrabold flex items-center gap-2 transition-all ${
                 activeView === 'my'
-                  ? 'bg-neutral-900 text-white shadow-2xs'
-                  : 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200/80'
+                  ? 'bg-btn-main text-white shadow-2xs'
+                  : 'bg-hover-bg text-text-main hover:bg-selected-bg/80'
               }`}
             >
               <ShieldCheck size={16} />
               <span>我的技能</span>
               <span className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                activeView === 'my' ? 'bg-neutral-800 text-neutral-200' : 'bg-white text-neutral-900 border border-neutral-200'
+                activeView === 'my' ? 'bg-neutral-800 text-neutral-200' : 'bg-surface-1 text-text-main border border-border-default'
               }`}>
                 {enabledCount}
               </span>
@@ -122,7 +122,7 @@ export const ExpertSkillCenter: React.FC = () => {
 
             <button
               onClick={() => setShowAddSkillModal(true)}
-              className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-95"
+              className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-95"
             >
               <Plus size={16} /> 添加技能
             </button>
@@ -131,13 +131,13 @@ export const ExpertSkillCenter: React.FC = () => {
 
         {/* Top Search Bar (occupying main space) */}
         <div className="relative">
-          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
           <input
             type="text"
             placeholder="搜索技能名称或用途"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200/90 rounded-xl text-[13px] font-bold text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 focus:bg-white transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-page-bg border border-border-default/90 rounded-xl text-[13px] font-bold text-text-main placeholder:text-text-tertiary focus:outline-none focus:border-neutral-900 focus:bg-surface-1 transition-all"
           />
         </div>
       </div>
@@ -157,7 +157,7 @@ export const ExpertSkillCenter: React.FC = () => {
           <div className="flex items-center justify-between">
             <button
               onClick={() => setActiveView('browse')}
-              className="text-[12.5px] font-extrabold text-neutral-600 hover:text-neutral-900 flex items-center gap-1 transition-colors"
+              className="text-[12.5px] font-extrabold text-text-secondary hover:text-text-main flex items-center gap-1 transition-colors"
             >
               <ArrowLeft size={16} /> 返回技能中心
             </button>
@@ -187,14 +187,14 @@ export const ExpertSkillCenter: React.FC = () => {
       {/* "添加技能" Management Modal */}
       {showAddSkillModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-2xs" onClick={() => setShowAddSkillModal(false)} />
-          <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 z-10 space-y-5 animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div className="absolute inset-0 bg-btn-main/40 backdrop-blur-2xs" onClick={() => setShowAddSkillModal(false)} />
+          <div className="relative w-full max-w-lg bg-surface-1 rounded-xl shadow-2xl p-6 z-10 space-y-5 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-border-default pb-3">
               <div>
-                <h3 className="text-[16px] font-black text-neutral-900">技能管理与添加</h3>
-                <p className="text-[12px] font-bold text-neutral-500 mt-0.5">选择技能添加方式或高级开发管理</p>
+                <h3 className="text-[16px] font-black text-text-main">技能管理与添加</h3>
+                <p className="text-[12px] font-bold text-text-tertiary mt-0.5">选择技能添加方式或高级开发管理</p>
               </div>
-              <button onClick={() => setShowAddSkillModal(false)} className="p-1 text-neutral-400 hover:text-neutral-800">
+              <button onClick={() => setShowAddSkillModal(false)} className="p-1 text-text-tertiary hover:text-text-main">
                 <X size={18} />
               </button>
             </div>
@@ -205,13 +205,13 @@ export const ExpertSkillCenter: React.FC = () => {
                   setShowAddSkillModal(false);
                   setActiveView('browse');
                 }}
-                className="w-full p-4 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-2xl text-left flex items-center justify-between transition-all group"
+                className="w-full p-4 bg-page-bg hover:bg-hover-bg border border-border-default/90 rounded-xl text-left flex items-center justify-between transition-all group"
               >
                 <div>
-                  <span className="font-black text-neutral-900 text-[14px] block group-hover:text-black">从技能市场添加</span>
-                  <span className="text-[12px] text-neutral-500 font-bold block mt-0.5">浏览已构建的爆款创作、评论筛选及关键词技能</span>
+                  <span className="font-black text-text-main text-[14px] block group-hover:text-black">从技能市场添加</span>
+                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">浏览已构建的爆款创作、评论筛选及关键词技能</span>
                 </div>
-                <Wrench size={18} className="text-neutral-400 group-hover:text-neutral-800 shrink-0" />
+                <Wrench size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>
 
               <button
@@ -219,13 +219,13 @@ export const ExpertSkillCenter: React.FC = () => {
                   setShowAddSkillModal(false);
                   setShowImportModal(true);
                 }}
-                className="w-full p-4 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-2xl text-left flex items-center justify-between transition-all group"
+                className="w-full p-4 bg-page-bg hover:bg-hover-bg border border-border-default/90 rounded-xl text-left flex items-center justify-between transition-all group"
               >
                 <div>
-                  <span className="font-black text-neutral-900 text-[14px] block group-hover:text-black">导入技能规范包</span>
-                  <span className="text-[12px] text-neutral-500 font-bold block mt-0.5">上传外部 ZIP 压缩包或 JSON 配置文件</span>
+                  <span className="font-black text-text-main text-[14px] block group-hover:text-black">导入技能规范包</span>
+                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">上传外部 ZIP 压缩包或 JSON 配置文件</span>
                 </div>
-                <Upload size={18} className="text-neutral-400 group-hover:text-neutral-800 shrink-0" />
+                <Upload size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>
 
               <button
@@ -233,13 +233,13 @@ export const ExpertSkillCenter: React.FC = () => {
                   setShowAddSkillModal(false);
                   setShowCreateSkill(true);
                 }}
-                className="w-full p-4 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-2xl text-left flex items-center justify-between transition-all group"
+                className="w-full p-4 bg-page-bg hover:bg-hover-bg border border-border-default/90 rounded-xl text-left flex items-center justify-between transition-all group"
               >
                 <div>
-                  <span className="font-black text-neutral-900 text-[14px] block group-hover:text-black">创建自定义技能</span>
-                  <span className="text-[12px] text-neutral-500 font-bold block mt-0.5">自定义 AI Agent 执行动作、提示词与脚本逻辑</span>
+                  <span className="font-black text-text-main text-[14px] block group-hover:text-black">创建自定义技能</span>
+                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">自定义 AI Agent 执行动作、提示词与脚本逻辑</span>
                 </div>
-                <Plus size={18} className="text-neutral-400 group-hover:text-neutral-800 shrink-0" />
+                <Plus size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>
 
               <button
@@ -247,13 +247,13 @@ export const ExpertSkillCenter: React.FC = () => {
                   setShowAddSkillModal(false);
                   setShowEvalModal(true);
                 }}
-                className="w-full p-4 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-2xl text-left flex items-center justify-between transition-all group"
+                className="w-full p-4 bg-page-bg hover:bg-hover-bg border border-border-default/90 rounded-xl text-left flex items-center justify-between transition-all group"
               >
                 <div>
-                  <span className="font-black text-neutral-900 text-[14px] block group-hover:text-black">技能运行与评测</span>
-                  <span className="text-[12px] text-neutral-500 font-bold block mt-0.5">用于开发者高级测试与沙盒演练（管理员）</span>
+                  <span className="font-black text-text-main text-[14px] block group-hover:text-black">技能运行与评测</span>
+                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">用于开发者高级测试与沙盒演练（管理员）</span>
                 </div>
-                <Award size={18} className="text-neutral-400 group-hover:text-neutral-800 shrink-0" />
+                <Award size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>
             </div>
           </div>
@@ -277,11 +277,11 @@ export const ExpertSkillCenter: React.FC = () => {
 
       {showEvalModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-2xs" onClick={() => setShowEvalModal(false)} />
-          <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-6 z-10 max-h-[85vh] overflow-y-auto animate-in zoom-in-95 duration-150 space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-              <h3 className="text-[16px] font-black text-neutral-900">技能基准测试与运行评估</h3>
-              <button onClick={() => setShowEvalModal(false)} className="p-1 text-neutral-400 hover:text-neutral-800">
+          <div className="absolute inset-0 bg-btn-main/40 backdrop-blur-2xs" onClick={() => setShowEvalModal(false)} />
+          <div className="relative w-full max-w-4xl bg-surface-1 rounded-xl shadow-2xl p-6 z-10 max-h-[85vh] overflow-y-auto animate-in zoom-in-95 duration-150 space-y-4">
+            <div className="flex items-center justify-between border-b border-border-default pb-3">
+              <h3 className="text-[16px] font-black text-text-main">技能基准测试与运行评估</h3>
+              <button onClick={() => setShowEvalModal(false)} className="p-1 text-text-tertiary hover:text-text-main">
                 <X size={18} />
               </button>
             </div>

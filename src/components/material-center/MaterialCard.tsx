@@ -22,19 +22,19 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
     switch (asset.status) {
       case 'available':
         return (
-          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-neutral-100 text-neutral-800 border border-neutral-200">
+          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-hover-bg text-text-main border border-border-default">
             可用
           </span>
         );
       case 'reserved':
         return (
-          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-neutral-900 text-white">
+          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-btn-main text-white">
             已预占
           </span>
         );
       case 'used':
         return (
-          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-neutral-100 text-neutral-500 border border-neutral-200">
+          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-hover-bg text-text-tertiary border border-border-default">
             已使用
           </span>
         );
@@ -46,7 +46,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
         );
       default:
         return (
-          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-neutral-100 text-neutral-500 border border-neutral-200">
+          <span className="px-2.5 py-0.5 rounded-md text-[11.5px] font-bold bg-hover-bg text-text-tertiary border border-border-default">
             {asset.status}
           </span>
         );
@@ -56,14 +56,14 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
   return (
     <div
       onClick={() => onView(asset)}
-      className={`group relative bg-white rounded-2xl border transition-all cursor-pointer overflow-hidden shadow-2xs hover:shadow-md ${
+      className={`group relative bg-surface-1 rounded-xl border transition-all cursor-pointer overflow-hidden shadow-2xs hover:shadow-md ${
         isSelected
           ? 'border-neutral-900 ring-2 ring-neutral-900'
-          : 'border-neutral-200/80 hover:border-neutral-300'
+          : 'border-border-default/80 hover:border-neutral-300'
       }`}
     >
       {/* 1. 图片或视频封面 */}
-      <div className="relative w-full aspect-4/3 bg-neutral-100 overflow-hidden">
+      <div className="relative w-full aspect-4/3 bg-hover-bg overflow-hidden">
         <img
           src={asset.url}
           alt={asset.aiOneLineUnderstanding}
@@ -73,7 +73,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
         
         {/* Cover Suitability Badge */}
         {(asset.suitableForCover === 'suitable' || asset.suitableForCover === 'optimized_suitable') && (
-          <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold text-neutral-800 shadow-sm">
+          <div className="absolute top-2 left-2 bg-surface-1/90 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold text-text-main shadow-sm">
             适合封面
           </div>
         )}
@@ -81,13 +81,13 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
 
       {/* 2 & 3. 一句话画面理解(最多显示两行) + 状态标签 */}
       <div className="p-4 space-y-2.5">
-        <p className="text-[13px] font-medium text-neutral-800 line-clamp-2 leading-relaxed">
+        <p className="text-[13px] font-medium text-text-main line-clamp-2 leading-relaxed">
           {asset.aiOneLineUnderstanding || '无描述'}
         </p>
 
-        <div className="flex items-center justify-between pt-1 border-t border-neutral-100">
+        <div className="flex items-center justify-between pt-1 border-t border-border-default">
           {getStatusBadge()}
-          <span className="text-[11px] font-medium text-neutral-400">
+          <span className="text-[11px] font-medium text-text-tertiary">
              {asset.sourceProject || '其他来源'}
           </span>
         </div>

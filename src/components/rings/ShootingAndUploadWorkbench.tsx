@@ -19,7 +19,7 @@ export function ShootingAndUploadWorkbench({ onClose }: Props) {
   // If a task detail is open
   if (selectedTask) {
     return (
-      <div className="fixed inset-0 z-50 bg-neutral-900/60 backdrop-blur-xs overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+      <div className="fixed inset-0 z-50 bg-btn-main/60 backdrop-blur-xs overflow-y-auto p-4 md:p-8 flex flex-col items-center">
         <div className="w-full max-w-[960px]">
           <ShootingTaskDetail
             task={selectedTask}
@@ -36,23 +36,23 @@ export function ShootingAndUploadWorkbench({ onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-neutral-100 flex flex-col h-screen overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-hover-bg flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-neutral-200 flex justify-between items-center bg-white shrink-0">
+      <div className="px-6 py-4 border-b border-border-default flex justify-between items-center bg-surface-1 shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-neutral-100 text-neutral-600 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-hover-bg text-text-secondary transition-colors"
           >
             <ArrowLeft size={18} />
           </button>
-          <h2 className="text-[18px] font-black text-neutral-900">
+          <h2 className="text-[18px] font-black text-text-main">
             待处理拍摄任务 (执行中心待办)
           </h2>
         </div>
         <button
           onClick={onClose}
-          className="p-2 hover:bg-neutral-100 rounded-full text-neutral-500 transition-colors"
+          className="p-2 hover:bg-hover-bg rounded-full text-text-tertiary transition-colors"
         >
           <X size={20} />
         </button>
@@ -61,7 +61,7 @@ export function ShootingAndUploadWorkbench({ onClose }: Props) {
       {/* Main Single Column List */}
       <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#f8f9fa]">
         <div className="max-w-[960px] mx-auto space-y-4">
-          <p className="text-[13px] font-bold text-neutral-500">
+          <p className="text-[13px] font-bold text-text-tertiary">
             仅展示需要操盘手确认、派发、补拍或处理异常的拍摄任务。
           </p>
 
@@ -84,18 +84,18 @@ export function ShootingAndUploadWorkbench({ onClose }: Props) {
                 <div
                   key={task.id}
                   onClick={() => setSelectedTask(task)}
-                  className="bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-neutral-400 hover:shadow-2xs transition-all cursor-pointer group"
+                  className="bg-surface-1 rounded-xl border border-border-default/90 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-neutral-400 hover:shadow-2xs transition-all cursor-pointer group"
                 >
                   <div className="space-y-1.5 flex-1">
-                    <h3 className="text-[16px] font-black text-neutral-900 group-hover:text-neutral-800 transition-colors">
+                    <h3 className="text-[16px] font-black text-text-main group-hover:text-text-main transition-colors">
                       {task.taskName}
                     </h3>
-                    <p className="text-[12.5px] font-medium text-neutral-500">
+                    <p className="text-[12.5px] font-medium text-text-tertiary">
                       {task.projectName} · {task.store} · {task.executor}
                     </p>
                     <p
                       className={`text-[13px] font-bold ${
-                        hasIssue ? 'text-rose-600' : 'text-neutral-700'
+                        hasIssue ? 'text-danger' : 'text-text-secondary'
                       }`}
                     >
                       {getSummaryText()}
@@ -112,7 +112,7 @@ export function ShootingAndUploadWorkbench({ onClose }: Props) {
                       className={`px-4 py-2 rounded-xl text-[13px] font-black transition-all shadow-2xs ${
                         hasIssue
                           ? 'bg-rose-600 hover:bg-rose-700 text-white'
-                          : 'bg-neutral-900 hover:bg-neutral-800 text-white'
+                          : 'bg-btn-main hover:bg-btn-main-hover text-white'
                       }`}
                     >
                       查看任务

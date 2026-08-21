@@ -91,20 +91,20 @@ export function ExecutionCenter() {
   }
 
   return (
-    <div className="h-full w-full bg-[#f8f9fa] p-6 md:p-8 overflow-y-auto text-neutral-900">
+    <div className="h-full w-full bg-page-bg p-6 md:p-8 overflow-y-auto text-text-main">
       <div className="max-w-4xl mx-auto space-y-5">
         {/* Header Bar */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <h1 className="text-[22px] font-extrabold text-neutral-900">待办事项</h1>
-            <span className="px-3 py-0.5 rounded-full text-[12px] font-bold bg-neutral-900 text-white">
+            <h1 className="text-[22px] font-extrabold text-text-main">待办事项</h1>
+            <span className="px-3 py-0.5 rounded-full text-[12px] font-bold bg-btn-main text-white">
               共 {pendingTasks.length} 项待处理
             </span>
           </div>
         </div>
 
         {/* Lightweight Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-neutral-200 shadow-2xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-surface-1 px-4 py-2 rounded-xl border border-border-default ">
           {/* Type tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
             {STAGE_TABS.map((tab) => {
@@ -117,20 +117,23 @@ export function ExecutionCenter() {
                 <button
                   key={tab.id}
                   onClick={() => setSelectedStageTab(tab.id)}
-                  className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`relative py-2 text-[13px] font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                     isActive
-                      ? "bg-neutral-900 text-white shadow-2xs"
-                      : "bg-neutral-50 hover:bg-neutral-100 text-neutral-600"
+                      ? "text-text-main"
+                      : "text-text-secondary hover:text-text-main"
                   }`}
                 >
                   <span>{tab.label}</span>
                   <span
-                    className={`text-[11px] px-1.5 py-0.2 rounded-md ${
-                      isActive ? "bg-white/20 text-white" : "bg-neutral-200/60 text-neutral-600"
+                    className={`text-[11px] px-1.5 py-0.5 rounded-md font-medium ${
+                      isActive ? "bg-surface-2 text-text-main" : "bg-surface-2 text-text-tertiary"
                     }`}
                   >
                     {count}
                   </span>
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-logo" />
+                  )}
                 </button>
               );
             })}
@@ -138,13 +141,13 @@ export function ExecutionCenter() {
 
           {/* Search Box */}
           <div className="relative min-w-[200px] flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={14} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
             <input
               type="text"
               placeholder="搜索待办..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] outline-none focus:bg-white focus:border-neutral-400 transition-all"
+              className="w-full pl-8 pr-3 py-1.5 bg-page-bg border border-border-default rounded-xl text-[13px] outline-none focus:bg-surface-1 focus:border-neutral-400 transition-all"
             />
           </div>
         </div>
@@ -162,52 +165,52 @@ export function ExecutionCenter() {
                 <div
                   key={task.id}
                   onClick={() => setActiveWorkbench(task.impactedStage)}
-                  className="bg-white rounded-2xl p-4 border border-neutral-200 hover:border-neutral-400 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-4 group"
+                  className="bg-surface-1 rounded-xl p-4 border border-border-default hover:border-neutral-400 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-4 group"
                 >
                   <div className="space-y-1.5 flex-1 min-w-0">
                     {/* Line 1: Title + Badges */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-[15px] font-bold text-neutral-900 group-hover:text-blue-600 transition-colors truncate">
+                      <h3 className="text-[15px] font-bold text-text-main group-hover:text-info transition-colors truncate">
                         {task.issueMessage}
                       </h3>
 
                       {isTopPriority && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shrink-0">
-                          <Sparkles size={11} className="text-amber-600" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-warning-light text-warning border-warning-light shrink-0">
+                          <Sparkles size={11} className="text-warning" />
                           建议优先
                         </span>
                       )}
 
                       {task.severity === "blocker" && (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 shrink-0">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-danger-light text-danger border-danger-light shrink-0">
                           阻断
                         </span>
                       )}
 
                       {isOverdue && (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-red-50 text-red-700 border border-red-200 shrink-0">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-danger-light text-danger border-danger-light shrink-0">
                           已逾期
                         </span>
                       )}
 
                       {isExpiringSoon && !isOverdue && (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-warning-light text-warning border border-warning-light shrink-0">
                           即将到期
                         </span>
                       )}
                     </div>
 
                     {/* Line 2: Stage Type · Project Name */}
-                    <div className="text-[12.5px] font-medium text-neutral-500 flex items-center gap-2">
-                      <span className="font-bold text-neutral-700">{getStageLabel(task.impactedStage)}</span>
+                    <div className="text-[12.5px] font-medium text-text-tertiary flex items-center gap-2">
+                      <span className="font-bold text-text-secondary">{getStageLabel(task.impactedStage)}</span>
                       <span>·</span>
-                      <span className="text-neutral-600 truncate">{task.projectName}</span>
+                      <span className="text-text-secondary truncate">{task.projectName}</span>
                     </div>
 
                     {/* Line 3: Detail / Waiting status / Deadline */}
-                    <div className="text-[12px] text-neutral-500 flex items-center gap-3 flex-wrap">
+                    <div className="text-[12px] text-text-tertiary flex items-center gap-3 flex-wrap">
                       {task.waitOn && (
-                        <span className="text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                        <span className="text-warning font-medium bg-warning-light px-2 py-0.5 rounded border border-warning-light">
                           等待 {task.waitOn}
                         </span>
                       )}
@@ -225,7 +228,7 @@ export function ExecutionCenter() {
                         e.stopPropagation();
                         setActiveWorkbench(task.impactedStage);
                       }}
-                      className="px-5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-[13px] font-bold transition-all shadow-2xs flex items-center gap-1"
+                      className="px-5 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-bold transition-all  flex items-center gap-1"
                     >
                       处理
                       <ChevronRight size={14} />
@@ -237,10 +240,10 @@ export function ExecutionCenter() {
           </div>
         ) : (
           /* Empty State */
-          <div className="bg-white rounded-2xl p-12 border border-neutral-200 text-center flex flex-col items-center justify-center space-y-2">
-            <CheckCircle2 size={40} className="text-emerald-500 mb-1" />
-            <h3 className="text-[16px] font-bold text-neutral-900">当前没有待处理事项</h3>
-            <p className="text-[13px] text-neutral-500 max-w-sm leading-relaxed">
+          <div className="bg-surface-1 rounded-xl p-12 border border-border-default text-center flex flex-col items-center justify-center space-y-2">
+            <CheckCircle2 size={40} className="text-success mb-1" />
+            <h3 className="text-[16px] font-bold text-text-main">当前没有待处理事项</h3>
+            <p className="text-[13px] text-text-tertiary max-w-sm leading-relaxed">
               新的内容确认、素材审核、发布异常或互动任务会出现在这里。
             </p>
           </div>

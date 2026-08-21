@@ -10,26 +10,26 @@ export const HelpSettings = () => {
  return (
  <div className="flex flex-col h-full space-y-6">
  <div className="space-y-2">
- <button className="w-full flex items-center justify-between px-4 py-4 rounded-xl hover:bg-neutral-50 transition-colors group">
- <div className="flex items-center gap-3 text-[14px] text-neutral-800">
- <div className="w-8 h-8 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-500">
+ <button className="w-full flex items-center justify-between px-4 py-4 rounded-xl hover:bg-page-bg transition-colors group">
+ <div className="flex items-center gap-3 text-[14px] text-text-main">
+ <div className="w-8 h-8 bg-hover-bg rounded-lg flex items-center justify-center text-text-tertiary">
  <ExternalLink size={16} />
  </div>
  帮助文档
  </div>
- <ExternalLink size={16} className="text-neutral-300 group-hover:text-neutral-400" />
+ <ExternalLink size={16} className="text-neutral-300 group-hover:text-text-tertiary" />
  </button>
  <button 
  onClick={() => setIsFeedbackOpen(true)}
- className="w-full flex items-center justify-between px-4 py-4 rounded-xl hover:bg-neutral-50 transition-colors group"
+ className="w-full flex items-center justify-between px-4 py-4 rounded-xl hover:bg-page-bg transition-colors group"
  >
- <div className="flex items-center gap-3 text-[14px] text-neutral-800">
- <div className="w-8 h-8 bg-neutral-100 rounded-lg flex items-center justify-center text-neutral-500">
+ <div className="flex items-center gap-3 text-[14px] text-text-main">
+ <div className="w-8 h-8 bg-hover-bg rounded-lg flex items-center justify-center text-text-tertiary">
  <Send size={16} />
  </div>
  意见反馈
  </div>
- <ExternalLink size={16} className="text-neutral-300 group-hover:text-neutral-400" />
+ <ExternalLink size={16} className="text-neutral-300 group-hover:text-text-tertiary" />
  </button>
  </div>
 
@@ -40,38 +40,38 @@ export const HelpSettings = () => {
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
  exit={{ opacity: 0 }}
- className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm"
+ className="absolute inset-0 bg-btn-main/40 backdrop-blur-sm"
  onClick={() => setIsFeedbackOpen(false)}
  />
  <motion.div 
  initial={{ opacity: 0, scale: 0.95, y: 10 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}
  exit={{ opacity: 0, scale: 0.95, y: 10 }}
- className="relative w-full max-w-lg bg-white rounded-3xl shadow-xl overflow-hidden border border-neutral-100 flex flex-col"
+ className="relative w-full max-w-lg bg-surface-1 rounded-2xl shadow-xl overflow-hidden border border-border-default flex flex-col"
  >
- <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-neutral-100">
- <h2 className="text-[18px] font-semibold text-neutral-900 tracking-tight">意见反馈</h2>
+ <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border-default">
+ <h2 className="text-[18px] font-semibold text-text-main tracking-tight">意见反馈</h2>
  <button 
  onClick={() => setIsFeedbackOpen(false)}
- className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 transition-colors"
+ className="w-8 h-8 flex items-center justify-center rounded-full text-text-tertiary hover:bg-hover-bg hover:text-text-secondary transition-colors"
  >
  <X size={16} />
  </button>
  </div>
 
  <div className="p-6 space-y-4">
- <div className="relative border border-neutral-200 rounded-2xl focus-within:border-primary-500 focus-within:ring-4 focus-within:ring-primary-500/10 transition-all bg-white min-h-[160px] flex flex-col">
+ <div className="relative border border-border-default rounded-xl focus-within:border-primary-500 focus-within:ring-4 focus-within:ring-primary-500/10 transition-all bg-surface-1 min-h-[160px] flex flex-col">
  <textarea
  value={feedbackText}
  onChange={e => setFeedbackText(e.target.value)}
  placeholder="你可以描述你遇到的问题"
- className="w-full flex-1 bg-transparent p-4 outline-none text-[14px] text-neutral-700 resize-none placeholder:text-neutral-400"
+ className="w-full flex-1 bg-transparent p-4 outline-none text-[14px] text-text-secondary resize-none placeholder:text-text-tertiary"
  />
- <div className="p-3 flex items-center justify-between border-t border-neutral-100 bg-neutral-50/50">
- <button className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-200 rounded-lg text-[12px] text-neutral-600 hover:bg-neutral-50 transition-colors hover:border-neutral-300">
+ <div className="p-3 flex items-center justify-between border-t border-border-default bg-page-bg">
+ <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-[12px] text-text-secondary hover:bg-page-bg transition-colors hover:border-neutral-300">
  <ImageIcon size={14} /> 上传图片 (0/4)
  </button>
- <span className="text-[12px] text-neutral-400 ">{feedbackText.length}/300</span>
+ <span className="text-[12px] text-text-tertiary ">{feedbackText.length}/300</span>
  </div>
  </div>
 
@@ -90,7 +90,7 @@ export const HelpSettings = () => {
  </svg>
  </div>
  </div>
- <span className="text-[12px] text-neutral-500 leading-snug">
+ <span className="text-[12px] text-text-tertiary leading-snug">
  上传日志，仅用于排查问题，可能包含对话记录、设备信息等数据。详情请查阅 <a href="#" className="text-[#a3dbcd] hover:underline underline-offset-2">隐私保护声明</a> 
  </span>
  </label>

@@ -8,24 +8,24 @@ export default function IntentNetwork() {
  <div className="flex flex-col overflow-hidden h-full">
  <div className="flex items-center justify-between mb-3">
  <h2 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
- <span className="material-symbols-outlined text-red-500">warning</span>
+ <span className="material-symbols-outlined text-danger">warning</span>
  高意向线索预警
  </h2>
  <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] rounded-full">12 条待处理</span>
  </div>
  <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1">
- <div className="p-4 bg-white border border-red-100 rounded-xl shadow-sm group hover:border-red-300 transition-colors">
+ <div className="p-4 bg-surface-1 border border-red-100 rounded-xl shadow-sm group hover:border-red-300 transition-colors">
  <div className="flex justify-between items-start mb-2">
- <span className="text-[10px] text-red-600 px-2 py-0.5 bg-red-50 rounded">高意向流失风险</span>
+ <span className="text-[10px] text-danger px-2 py-0.5 bg-red-50 rounded">高意向流失风险</span>
  <span className="text-[10px] text-zinc-400 italic">2 分钟前</span>
  </div>
  <p className="text-xs text-zinc-700 leading-relaxed mb-3">
  用户 @DesignMaster 咨询“价格与企业版区别”，智能 识别为核心购买意图，导购未能在 5 分钟内响应。
  </p>
- <button className="w-full text-[11px] py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-all">人工快速截流</button>
+ <button className="w-full text-[11px] py-1.5 bg-red-50 text-danger rounded hover:bg-red-100 transition-all">人工快速截流</button>
  </div>
  
- <div className="p-4 bg-white border border-zinc-200 rounded-xl shadow-sm group hover:border-zinc-300 transition-colors">
+ <div className="p-4 bg-surface-1 border border-zinc-200 rounded-xl shadow-sm group hover:border-zinc-300 transition-colors">
  <div className="flex justify-between items-start mb-2">
  <span className="text-[10px] text-amber-600 px-2 py-0.5 bg-amber-50 rounded">竞品拦截</span>
  <span className="text-[10px] text-zinc-400 italic">15 分钟前</span>
@@ -47,12 +47,12 @@ export default function IntentNetwork() {
  高意向线索挖掘
  </h2>
  <div className="flex bg-zinc-100 p-1 rounded-lg gap-1">
- <button className="px-3 py-1 bg-white text-[11px] rounded-md shadow-sm text-[#5157a7]">实时处理</button>
+ <button className="px-3 py-1 bg-surface-1 text-[11px] rounded-md shadow-sm text-[#5157a7]">实时处理</button>
  <button className="px-3 py-1 text-[11px] text-zinc-500 font-medium">历史回溯</button>
  </div>
  </div>
 
- <div className="flex-1 bg-white rounded-2xl border border-zinc-100 shadow-sm overflow-hidden flex flex-col">
+ <div className="flex-1 bg-surface-1 rounded-xl border border-zinc-100 shadow-sm overflow-hidden flex flex-col">
  <div className="p-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
  <div className="flex items-center gap-4">
  <div className="flex items-center gap-1 text-[12px] text-zinc-800">
@@ -93,7 +93,7 @@ export default function IntentNetwork() {
  </div>
  </div>
 
- <div className="bg-zinc-900 rounded-2xl p-5 flex flex-col gap-4 shadow-lg shrink-0">
+ <div className="bg-zinc-900 rounded-xl p-5 flex flex-col gap-4 shadow-lg shrink-0">
  <div className="flex items-center justify-between">
  <h2 className="text-sm font-semibold text-white flex items-center gap-2">
  <span className="material-symbols-outlined text-[#e0e0ff]">route</span>
@@ -131,12 +131,12 @@ export default function IntentNetwork() {
  </div>
 
  <div className="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-1">
- <div className="p-4 border border-orange-200 bg-orange-50/50 rounded-2xl shadow-sm">
+ <div className="p-4 border border-orange-200 bg-orange-50/50 rounded-xl shadow-sm">
  <div className="flex justify-between items-start mb-3">
  <span className="text-xs text-zinc-900">客户：这款包包有黑色现货吗？</span>
- <span className="text-[10px] text-orange-600 border border-orange-200 px-2 py-0.5 rounded bg-white">偏离商业意图</span>
+ <span className="text-[10px] text-orange-600 border border-orange-200 px-2 py-0.5 rounded bg-surface-1">偏离商业意图</span>
  </div>
- <div className="text-xs text-zinc-600 mb-3 bg-white p-3 rounded-xl border border-zinc-100">
+ <div className="text-xs text-zinc-600 mb-3 bg-surface-1 p-3 rounded-xl border border-zinc-100">
  <span className=" text-zinc-800">智能 回复：</span>目前黑色没有现货了哦，建议您看看其他颜色。
  </div>
  <div className="text-[11px] text-orange-700 flex items-start gap-1.5 bg-orange-100/50 p-3 rounded-xl">
@@ -145,11 +145,11 @@ export default function IntentNetwork() {
  </div>
  <div className="mt-3 flex gap-2">
  <button className="flex-1 py-2 bg-orange-500 text-white text-xs rounded-lg shadow-md shadow-orange-500/20 active:scale-95 transition-transform">人工接管</button>
- <button className="flex-1 py-2 bg-white border border-zinc-200 text-zinc-700 text-xs rounded-lg hover:bg-zinc-50 active:scale-95 transition-transform">标记为负面案例</button>
+ <button className="flex-1 py-2 bg-surface-1 border border-zinc-200 text-zinc-700 text-xs rounded-lg hover:bg-zinc-50 active:scale-95 transition-transform">标记为负面案例</button>
  </div>
  </div>
 
- <div className="p-4 border border-zinc-100 bg-white rounded-2xl shadow-sm">
+ <div className="p-4 border border-zinc-100 bg-surface-1 rounded-xl shadow-sm">
  <div className="flex justify-between items-start mb-3">
  <span className="text-xs text-zinc-900">客户：周末去店里人多吗？</span>
  <span className="text-[10px] text-green-600 border border-green-200 px-2 py-0.5 rounded bg-green-50">意图符合</span>

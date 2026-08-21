@@ -14,32 +14,32 @@ export function RunLogDrawer({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/20 backdrop-blur-sm" onClick={onClose} />
       <motion.div 
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         className="w-[450px] bg-[#fcfcfc] h-full shadow-2xl flex flex-col relative z-10"
       >
-        <div className="p-6 border-b border-neutral-200 flex justify-between items-center bg-white">
+        <div className="p-6 border-b border-border-default flex justify-between items-center bg-surface-1">
           <h2 className="text-[18px] font-bold flex items-center gap-2"><History size={20} /> 运行记录</h2>
-          <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100">
+          <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-main rounded-lg hover:bg-hover-bg">
             <X size={20} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-6">
-           <div className="relative border-l-2 border-neutral-200 ml-4 space-y-8 pb-8">
+           <div className="relative border-l-2 border-border-default ml-4 space-y-8 pb-8">
              {logs.map((log) => (
                <div key={log.id} className="relative pl-6">
                  <div className={`absolute -left-[9px] top-1 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center ${
-                   log.type === 'ai' ? 'bg-primary-500' : log.type === 'user' ? 'bg-neutral-900' : 'bg-neutral-400'
+                   log.type === 'ai' ? 'bg-btn-main' : log.type === 'user' ? 'bg-btn-main' : 'bg-neutral-400'
                  }`}>
                    {log.type === 'ai' && <Bot size={10} className="text-white" />}
                    {log.type === 'user' && <User size={10} className="text-white" />}
                    {log.type === 'system' && <GitBranch size={10} className="text-white" />}
                  </div>
-                 <div className="text-[12px] text-neutral-500 mb-1">{log.time}</div>
-                 <div className="text-[13px] text-neutral-800 leading-relaxed bg-white p-3 rounded-lg border border-neutral-200 shadow-sm">
+                 <div className="text-[12px] text-text-tertiary mb-1">{log.time}</div>
+                 <div className="text-[13px] text-text-main leading-relaxed bg-surface-1 p-3 rounded-lg border border-border-default ">
                    {log.text}
                  </div>
                </div>

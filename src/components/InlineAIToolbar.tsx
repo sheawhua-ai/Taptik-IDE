@@ -89,7 +89,7 @@ export const InlineAIToolbar: React.FC = () => {
           transform: 'translateX(-50%)',
           zIndex: 9999,
         }}
-        className="bg-neutral-900 shadow-2xl rounded-xl border border-neutral-700 p-1.5 flex items-center gap-1"
+        className="bg-btn-main shadow-2xl rounded-xl border border-neutral-700 p-1.5 flex items-center gap-1"
       >
         {isProcessing ? (
           <div className="flex items-center gap-2 px-3 py-1 text-white text-[12px]">
@@ -98,21 +98,21 @@ export const InlineAIToolbar: React.FC = () => {
           </div>
         ) : (
           <>
-            <button onClick={() => handleAction('rewrite')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
+            <button onClick={() => handleAction('rewrite')} className="px-3 py-1.5 hover:bg-btn-main-hover rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
               <Sparkles size={14} className="text-primary-400" />
               润色
             </button>
             <div className="w-[1px] h-4 bg-neutral-700 mx-1"></div>
-            <button onClick={() => handleAction('tone')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
-              <ThumbsUp size={14} className="text-neutral-400" />
+            <button onClick={() => handleAction('tone')} className="px-3 py-1.5 hover:bg-btn-main-hover rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
+              <ThumbsUp size={14} className="text-text-tertiary" />
               更像真实素人
             </button>
-            <button onClick={() => handleAction('shorter')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
+            <button onClick={() => handleAction('shorter')} className="px-3 py-1.5 hover:bg-btn-main-hover rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
               <Scissors size={14} className="text-primary-400" />
               精简
             </button>
             <div className="w-[1px] h-4 bg-neutral-700 mx-1"></div>
-            <button onClick={() => handleAction('analyze')} className="px-3 py-1.5 hover:bg-neutral-800 rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
+            <button onClick={() => handleAction('analyze')} className="px-3 py-1.5 hover:bg-btn-main-hover rounded-lg flex items-center gap-1.5 text-white text-[12px] font-medium transition-colors">
               <Sparkles size={14} className="text-primary-400" />
               分析这段原因
             </button>

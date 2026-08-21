@@ -43,11 +43,11 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
   const getStatusBadge = () => {
     switch (asset.status) {
       case 'available':
-        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-neutral-100 text-neutral-800 border border-neutral-200">可用</span>;
+        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-hover-bg text-text-main border border-border-default">可用</span>;
       case 'reserved':
-        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-neutral-900 text-white">已预占</span>;
+        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-btn-main text-white">已预占</span>;
       case 'used':
-        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-neutral-100 text-neutral-500 border border-neutral-200">已使用</span>;
+        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-hover-bg text-text-tertiary border border-border-default">已使用</span>;
       case 'pending':
         return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-amber-50 text-amber-700 border border-amber-200">待审核</span>;
       case 'optimizing':
@@ -55,7 +55,7 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
       case 'unavailable':
         return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-red-50 text-red-700 border border-red-200">不可用</span>;
       default:
-        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-neutral-100 text-neutral-500 border border-neutral-200">{asset.status}</span>;
+        return <span className="px-2.5 py-1 rounded-lg text-[12px] font-bold bg-hover-bg text-text-tertiary border border-border-default">{asset.status}</span>;
     }
   };
 
@@ -69,25 +69,25 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden flex justify-end bg-neutral-900/40 backdrop-blur-xs">
-      <div className="w-full max-w-[560px] bg-white h-full shadow-2xl flex flex-col border-l border-neutral-200 animate-in slide-in-from-right duration-300">
+    <div className="fixed inset-0 z-50 overflow-hidden flex justify-end bg-btn-main/40 backdrop-blur-xs">
+      <div className="w-full max-w-[560px] bg-surface-1 h-full shadow-2xl flex flex-col border-l border-border-default animate-in slide-in-from-right duration-300">
         {/* Header */}
-        <div className="p-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+        <div className="p-5 border-b border-border-default flex items-center justify-between bg-page-bg">
           <div className="flex items-center gap-2.5">
-            <h2 className="text-[17px] font-black text-neutral-900">素材详情</h2>
+            <h2 className="text-[17px] font-black text-text-main">素材详情</h2>
             {getStatusBadge()}
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-hover-bg hover:bg-selected-bg text-text-secondary flex items-center justify-center transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-7 text-[13px] text-neutral-700">
+        <div className="flex-1 overflow-y-auto p-6 space-y-7 text-[13px] text-text-secondary">
           {/* 1. 媒体预览 */}
-          <div className="rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/80 relative">
+          <div className="rounded-xl overflow-hidden bg-hover-bg border border-border-default/80 relative">
             <img
               src={asset.url}
               alt="Asset preview"
@@ -103,10 +103,10 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
           </div>
 
           {/* 2. AI理解与封面建议 */}
-          <div className="space-y-4 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80">
+          <div className="space-y-4 bg-page-bg p-4 rounded-xl border border-border-default/80">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 font-black text-neutral-900 text-[14px]">
-                <Sparkles size={16} className="text-primary-600" />
+              <div className="flex items-center gap-1.5 font-black text-text-main text-[14px]">
+                <Sparkles size={16} className="text-brand-logo" />
                 <span>AI 画面理解</span>
               </div>
               {!isEditingUnderstanding && (
@@ -115,7 +115,7 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
                     setEditedText(asset.aiOneLineUnderstanding || '');
                     setIsEditingUnderstanding(true);
                   }}
-                  className="text-[12px] font-extrabold text-primary-600 hover:text-primary-700 flex items-center gap-1 transition-colors"
+                  className="text-[12px] font-extrabold text-brand-logo hover:text-primary-700 flex items-center gap-1 transition-colors"
                 >
                   <Edit3 size={13} />
                   <span>修改</span>
@@ -131,43 +131,43 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
             )}
 
             {isEditingUnderstanding ? (
-              <div className="space-y-3 bg-white p-3.5 rounded-xl border border-neutral-300 shadow-2xs">
+              <div className="space-y-3 bg-surface-1 p-3.5 rounded-xl border border-neutral-300 shadow-2xs">
                 <textarea
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
                   rows={4}
-                  className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] font-medium text-neutral-800 focus:outline-hidden focus:border-neutral-800 transition-all"
+                  className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl text-[13px] font-medium text-text-main focus:outline-hidden focus:border-neutral-800 transition-all"
                   placeholder="描述当前画面的核心特点..."
                 />
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => setIsEditingUnderstanding(false)}
                     disabled={isUpdating}
-                    className="px-3 py-1.5 rounded-lg text-neutral-600 hover:bg-neutral-100 font-bold text-[12px]"
+                    className="px-3 py-1.5 rounded-lg text-text-secondary hover:bg-hover-bg font-bold text-[12px]"
                   >
                     取消
                   </button>
                   <button
                     onClick={handleSaveUnderstanding}
                     disabled={isUpdating}
-                    className="px-3.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[12px] flex items-center gap-1.5 shadow-2xs active:scale-95"
+                    className="px-3.5 py-1.5 rounded-lg bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[12px] flex items-center gap-1.5 shadow-2xs active:scale-95"
                   >
                     {isUpdating ? '正在保存...' : '保存修改'}
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="text-[13.5px] font-bold text-neutral-800 leading-relaxed bg-white p-3.5 rounded-xl border border-neutral-200/80">
+              <p className="text-[13.5px] font-bold text-text-main leading-relaxed bg-surface-1 p-3.5 rounded-xl border border-border-default/80">
                 {asset.aiOneLineUnderstanding || '无描述'}
               </p>
             )}
 
             <div className="pt-2 flex items-center gap-2">
-              <span className="font-extrabold text-neutral-900 shrink-0 text-[12.5px]">封面适用性：</span>
+              <span className="font-extrabold text-text-main shrink-0 text-[12.5px]">封面适用性：</span>
               <span className={`text-[12.5px] font-bold px-2 py-0.5 rounded-md ${
                 asset.suitableForCover === 'suitable' ? 'bg-emerald-50 text-emerald-700' :
                 asset.suitableForCover === 'optimized_suitable' ? 'bg-amber-50 text-amber-700' :
-                'bg-neutral-200 text-neutral-700'
+                'bg-neutral-200 text-text-secondary'
               }`}>
                 {getCoverSuitabilityLabel()}
               </span>
@@ -176,16 +176,16 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
 
           {/* 3. 基础来源信息 */}
           <div className="space-y-3">
-            <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-1.5">
-              <ShieldCheck size={16} className="text-neutral-600" />
+            <h3 className="text-[14px] font-black text-text-main flex items-center gap-1.5">
+              <ShieldCheck size={16} className="text-text-secondary" />
               <span>来源信息</span>
             </h3>
 
-            <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80">
+            <div className="bg-page-bg p-4 rounded-xl border border-border-default/80">
               <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-[12.5px]">
                 <div>
-                  <span className="text-neutral-400 text-[11px] block">来源类型</span>
-                  <span className="font-extrabold text-neutral-900">
+                  <span className="text-text-tertiary text-[11px] block">来源类型</span>
+                  <span className="font-extrabold text-text-main">
                     {asset.sourceType === 'operator' ? '操盘手上传' :
                      asset.sourceType === 'clerk' ? '店员上传' :
                      asset.sourceType === 'consumer' ? '消费者上传' :
@@ -193,18 +193,18 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
                   </span>
                 </div>
                 <div>
-                  <span className="text-neutral-400 text-[11px] block">上传者</span>
-                  <span className="font-bold text-neutral-800">{asset.uploader || '未知'}</span>
+                  <span className="text-text-tertiary text-[11px] block">上传者</span>
+                  <span className="font-bold text-text-main">{asset.uploader || '未知'}</span>
                 </div>
                 {asset.sourceProject && (
                   <div className="col-span-2">
-                    <span className="text-neutral-400 text-[11px] block">来源项目</span>
-                    <span className="font-bold text-neutral-800">{asset.sourceProject}</span>
+                    <span className="text-text-tertiary text-[11px] block">来源项目</span>
+                    <span className="font-bold text-text-main">{asset.sourceProject}</span>
                   </div>
                 )}
                 <div className="col-span-2">
-                  <span className="text-neutral-400 text-[11px] block">上传时间</span>
-                  <span className="font-medium text-neutral-600">{asset.uploadTime}</span>
+                  <span className="text-text-tertiary text-[11px] block">上传时间</span>
+                  <span className="font-medium text-text-secondary">{asset.uploadTime}</span>
                 </div>
               </div>
             </div>
@@ -212,32 +212,32 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
 
           {/* 4. 使用记录 (关联笔记) */}
           <div className="space-y-3">
-            <h3 className="text-[14px] font-black text-neutral-900 flex items-center gap-1.5">
-              <FileText size={16} className="text-neutral-600" />
+            <h3 className="text-[14px] font-black text-text-main flex items-center gap-1.5">
+              <FileText size={16} className="text-text-secondary" />
               <span>使用记录</span>
             </h3>
 
             {(!asset.linkedNoteTitle && asset.usageRecords.length === 0) ? (
-              <div className="text-neutral-500 text-[13px] font-medium py-1">
+              <div className="text-text-tertiary text-[13px] font-medium py-1">
                 尚未绑定任何笔记。
               </div>
             ) : (
               <div className="space-y-3">
                 {asset.linkedNoteTitle && (
-                  <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 space-y-2">
+                  <div className="p-4 rounded-xl bg-page-bg border border-border-default space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-extrabold text-neutral-900">{asset.linkedNoteTitle}</span>
-                      <span className="px-2 py-0.5 bg-neutral-900 text-white rounded text-[10px] font-bold">当前绑定</span>
+                      <span className="font-extrabold text-text-main">{asset.linkedNoteTitle}</span>
+                      <span className="px-2 py-0.5 bg-btn-main text-white rounded text-[10px] font-bold">当前绑定</span>
                     </div>
                   </div>
                 )}
                 {asset.usageRecords.map((record) => (
-                  <div key={record.id} className="p-4 rounded-2xl bg-white border border-neutral-200 space-y-2 opacity-80">
+                  <div key={record.id} className="p-4 rounded-xl bg-surface-1 border border-border-default space-y-2 opacity-80">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-extrabold text-neutral-700">{record.noteTitle}</span>
-                      <span className="text-[11px] font-bold text-neutral-500">{record.publishTime || '已锁定/未发布'}</span>
+                      <span className="font-extrabold text-text-secondary">{record.noteTitle}</span>
+                      <span className="text-[11px] font-bold text-text-tertiary">{record.publishTime || '已锁定/未发布'}</span>
                     </div>
-                    <div className="text-[11px] text-neutral-400">
+                    <div className="text-[11px] text-text-tertiary">
                       项目：{record.project}
                     </div>
                   </div>

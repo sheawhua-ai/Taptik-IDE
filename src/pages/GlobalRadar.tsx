@@ -129,7 +129,7 @@ export default function GlobalRadar() {
  </div>
 
  {/* 底部数据日志 */}
- <div className="col-span-12 bg-white rounded-[2rem] p-8 shadow-sm border border-zinc-100">
+ <div className="col-span-12 bg-surface-1 rounded-[2rem] p-8 shadow-sm border border-zinc-100">
  <div className="flex justify-between items-center mb-8">
  <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-400">实时事件日志</h3>
  <div className="flex gap-4">

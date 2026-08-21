@@ -138,41 +138,41 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-xs" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/50 backdrop-blur-xs" onClick={onClose} />
 
       {/* Main Modal */}
-      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-3xl bg-surface-1 rounded-xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 bg-neutral-900 text-white flex items-center justify-between">
+        <div className="p-5 bg-btn-main text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-purple-600/30 text-purple-300 rounded-xl border border-purple-500/30">
               <Bot size={20} />
             </div>
             <div>
               <h2 className="text-[17px] font-extrabold">新建专家工作台 (3 阶段流程)</h2>
-              <p className="text-[11.5px] text-neutral-400">描述需求 → 生成专家契约 → 本地演练并启用</p>
+              <p className="text-[11.5px] text-text-tertiary">描述需求 → 生成专家契约 → 本地演练并启用</p>
             </div>
           </div>
 
-          <button onClick={onClose} className="text-neutral-400 hover:text-white p-1">
+          <button onClick={onClose} className="text-text-tertiary hover:text-white p-1">
             <X size={20} />
           </button>
         </div>
 
         {/* Step Indicator */}
-        <div className="bg-neutral-100 border-b border-neutral-200 p-3 px-6 flex items-center justify-between text-[12.5px] font-extrabold">
-          <div className={`flex items-center gap-2 ${currentStage >= 1 ? 'text-purple-700' : 'text-neutral-400'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 1 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-neutral-600'}`}>1</span>
+        <div className="bg-hover-bg border-b border-border-default p-3 px-6 flex items-center justify-between text-[12.5px] font-extrabold">
+          <div className={`flex items-center gap-2 ${currentStage >= 1 ? 'text-purple-700' : 'text-text-tertiary'}`}>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 1 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>1</span>
             <span>描述专家需求</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
-          <div className={`flex items-center gap-2 ${currentStage >= 2 ? 'text-purple-700' : 'text-neutral-400'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 2 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-neutral-600'}`}>2</span>
+          <div className={`flex items-center gap-2 ${currentStage >= 2 ? 'text-purple-700' : 'text-text-tertiary'}`}>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 2 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>2</span>
             <span>确认专家契约</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
-          <div className={`flex items-center gap-2 ${currentStage >= 3 ? 'text-purple-700' : 'text-neutral-400'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 3 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-neutral-600'}`}>3</span>
+          <div className={`flex items-center gap-2 ${currentStage >= 3 ? 'text-purple-700' : 'text-text-tertiary'}`}>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 3 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>3</span>
             <span>本地演练与启用</span>
           </div>
         </div>
@@ -183,22 +183,22 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
           {currentStage === 1 && (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="font-extrabold text-neutral-900 block">自然语言描述想要的专家能力：</label>
+                <label className="font-extrabold text-text-main block">自然语言描述想要的专家能力：</label>
                 <textarea
                   rows={4}
                   value={naturalDescription}
                   onChange={e => setNaturalDescription(e.target.value)}
-                  className="w-full p-3.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] text-neutral-900 focus:outline-none focus:border-purple-600 font-medium"
+                  className="w-full p-3.5 bg-page-bg border border-border-default rounded-xl text-[13px] text-text-main focus:outline-none focus:border-purple-600 font-medium"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="font-extrabold text-neutral-900 block">导入参考资料 / 知识库 (可选)：</label>
+                <label className="font-extrabold text-text-main block">导入参考资料 / 知识库 (可选)：</label>
                 <div className="space-y-1.5">
                   {selectedDocs.map((doc, i) => (
-                    <div key={i} className="p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl flex items-center justify-between text-[12px] font-bold text-neutral-700">
+                    <div key={i} className="p-2.5 bg-page-bg border border-border-default rounded-xl flex items-center justify-between text-[12px] font-bold text-text-secondary">
                       <span>📄 {doc}</span>
-                      <button onClick={() => setSelectedDocs(selectedDocs.filter((_, idx) => idx !== i))} className="text-neutral-400 hover:text-rose-600">
+                      <button onClick={() => setSelectedDocs(selectedDocs.filter((_, idx) => idx !== i))} className="text-text-tertiary hover:text-danger">
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -213,20 +213,20 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="font-extrabold text-neutral-800 block mb-1">专家名称：</label>
+                  <label className="font-extrabold text-text-main block mb-1">专家名称：</label>
                   <input
                     type="text"
                     value={expertName}
                     onChange={e => setExpertName(e.target.value)}
-                    className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                    className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                   />
                 </div>
                 <div>
-                  <label className="font-extrabold text-neutral-800 block mb-1">所属流程阶段：</label>
+                  <label className="font-extrabold text-text-main block mb-1">所属流程阶段：</label>
                   <select
                     value={scenarioStage}
                     onChange={e => setScenarioStage(e.target.value as ProcessCategory)}
-                    className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                    className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                   >
                     <option value="audit">审核与合规</option>
                     <option value="content">选题与内容</option>
@@ -236,12 +236,12 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
               </div>
 
               <div>
-                <label className="font-extrabold text-neutral-800 block mb-1">专家使命：</label>
+                <label className="font-extrabold text-text-main block mb-1">专家使命：</label>
                 <textarea
                   rows={2}
                   value={expertMission}
                   onChange={e => setExpertMission(e.target.value)}
-                  className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                  className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                 />
               </div>
 
@@ -253,7 +253,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
                   ))}
                 </div>
 
-                <div className="p-3.5 bg-rose-50 rounded-xl border border-rose-200 space-y-1.5">
+                <div className="p-3.5 bg-rose-50 rounded-xl border border-danger-light space-y-1.5">
                   <span className="font-extrabold text-rose-900 block text-[12px]">不会自动做什么：</span>
                   {whatItWontDoAuto.map((item, i) => (
                     <div key={i} className="text-[12px] text-rose-950 font-medium">• {item}</div>
@@ -266,27 +266,27 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
           {/* STAGE 3 */}
           {currentStage === 3 && (
             <div className="space-y-4">
-              <div className="p-4 bg-purple-50 rounded-2xl border border-purple-200 space-y-2">
+              <div className="p-4 bg-purple-50 rounded-xl border border-purple-200 space-y-2">
                 <span className="font-extrabold text-purple-900 block text-[13px]">演练输入样本：</span>
                 <textarea
                   rows={3}
                   value={drillInput}
                   onChange={e => setDrillInput(e.target.value)}
-                  className="w-full p-3 bg-white border border-purple-200 rounded-xl text-[12.5px] font-medium"
+                  className="w-full p-3 bg-surface-1 border border-purple-200 rounded-xl text-[12.5px] font-medium"
                 />
               </div>
 
               <button
                 onClick={handleRunDrill}
                 disabled={isDrilling}
-                className="w-full py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[13px] rounded-xl flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[13px] rounded-xl flex items-center justify-center gap-2"
               >
                 {isDrilling ? <RefreshCw size={15} className="animate-spin" /> : <Terminal size={15} />}
                 <span>{isDrilling ? '演练执行中...' : '运行本地演练'}</span>
               </button>
 
               {drillPassed && (
-                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2 text-[12.5px] animate-in fade-in duration-150">
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-[12.5px] animate-in fade-in duration-150">
                   <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-[14px]">
                     <CheckCircle2 size={18} className="text-emerald-600" />
                     <span>本地演练通过！专家理解一致且触发了设置的人工确认点。</span>
@@ -301,13 +301,13 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-neutral-50 border-t border-neutral-200 flex items-center justify-between">
+        <div className="p-4 bg-page-bg border-t border-border-default flex items-center justify-between">
           <button
             onClick={() => {
               if (currentStage > 1) setCurrentStage((currentStage - 1) as any);
               else onClose();
             }}
-            className="px-4 py-2 border border-neutral-300 text-neutral-700 text-[12.5px] font-bold rounded-xl"
+            className="px-4 py-2 border border-neutral-300 text-text-secondary text-[12.5px] font-bold rounded-xl"
           >
             {currentStage === 1 ? '取消' : '上一步'}
           </button>
@@ -326,7 +326,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
           {currentStage === 2 && (
             <button
               onClick={handleStartDrillStage}
-              className="px-6 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
+              className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
             >
               进入本地演练
             </button>

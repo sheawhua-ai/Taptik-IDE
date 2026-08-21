@@ -85,46 +85,46 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-xs" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/50 backdrop-blur-xs" onClick={onClose} />
 
-      <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl p-6 z-10 space-y-5 animate-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+      <div className="relative w-full max-w-xl bg-surface-1 rounded-xl shadow-2xl p-6 z-10 space-y-5 animate-in zoom-in-95 duration-150">
+        <div className="flex items-center justify-between border-b border-border-default pb-3">
           <div className="flex items-center gap-2">
             <Upload size={20} className="text-blue-600" />
-            <h3 className="text-[16px] font-extrabold text-neutral-900">导入外部能力包</h3>
+            <h3 className="text-[16px] font-extrabold text-text-main">导入外部能力包</h3>
           </div>
-          <button onClick={onClose} className="p-1 text-neutral-400 hover:text-neutral-700">
+          <button onClick={onClose} className="p-1 text-text-tertiary hover:text-text-secondary">
             <X size={18} />
           </button>
         </div>
 
         {/* Source selector */}
         <div className="space-y-2">
-          <label className="text-[12px] font-extrabold text-neutral-500 uppercase tracking-wider block">
+          <label className="text-[12px] font-extrabold text-text-tertiary uppercase tracking-wider block">
             选择导入来源类型：
           </label>
           <div className="grid grid-cols-4 gap-2 text-[12px] font-extrabold">
             <button
               onClick={() => setImportSource('zip')}
-              className={`p-2.5 rounded-xl border text-center ${importSource === 'zip' ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+              className={`p-2.5 rounded-xl border text-center ${importSource === 'zip' ? 'border-neutral-900 bg-btn-main text-white' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
             >
               ZIP 压缩包
             </button>
             <button
               onClick={() => setImportSource('folder')}
-              className={`p-2.5 rounded-xl border text-center ${importSource === 'folder' ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+              className={`p-2.5 rounded-xl border text-center ${importSource === 'folder' ? 'border-neutral-900 bg-btn-main text-white' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
             >
               本地文件夹
             </button>
             <button
               onClick={() => setImportSource('md')}
-              className={`p-2.5 rounded-xl border text-center ${importSource === 'md' ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+              className={`p-2.5 rounded-xl border text-center ${importSource === 'md' ? 'border-neutral-900 bg-btn-main text-white' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
             >
               SOP / Markdown
             </button>
             <button
               onClick={() => setImportSource('git')}
-              className={`p-2.5 rounded-xl border text-center ${importSource === 'git' ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+              className={`p-2.5 rounded-xl border text-center ${importSource === 'git' ? 'border-neutral-900 bg-btn-main text-white' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
             >
               Git 仓库 URL
             </button>
@@ -134,19 +134,19 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
         {/* Input area */}
         {importSource === 'git' ? (
           <div className="space-y-1">
-            <label className="text-[12px] font-bold text-neutral-600 block">仓库地址：</label>
+            <label className="text-[12px] font-bold text-text-secondary block">仓库地址：</label>
             <input
               type="text"
               value={gitUrl}
               onChange={e => setGitUrl(e.target.value)}
-              className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12.5px] font-bold"
+              className="w-full p-3 bg-page-bg border border-border-default rounded-xl text-[12.5px] font-bold"
             />
           </div>
         ) : (
-          <div className="border-2 border-dashed border-neutral-300 rounded-2xl p-6 text-center space-y-2 bg-neutral-50/50">
-            <FolderArchive size={28} className="mx-auto text-neutral-400" />
-            <span className="text-[13px] font-extrabold text-neutral-800 block">点击或拖拽文件到此处上传</span>
-            <span className="text-[11.5px] text-neutral-400 block">支持 .zip, .md, .json 格式的能力描述包</span>
+          <div className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center space-y-2 bg-page-bg">
+            <FolderArchive size={28} className="mx-auto text-text-tertiary" />
+            <span className="text-[13px] font-extrabold text-text-main block">点击或拖拽文件到此处上传</span>
+            <span className="text-[11.5px] text-text-tertiary block">支持 .zip, .md, .json 格式的能力描述包</span>
           </div>
         )}
 
@@ -155,7 +155,7 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
           <button
             onClick={handleRunSafetyCheck}
             disabled={isChecking}
-            className="w-full py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-btn-main hover:bg-btn-main-hover text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-2"
           >
             {isChecking ? <RefreshCw size={15} className="animate-spin" /> : <ShieldAlert size={15} />}
             <span>{isChecking ? '正在解析并做安全与依赖检查...' : '检查能力包'}</span>
@@ -180,11 +180,11 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
 
             {/* Installation Scope selector */}
             <div className="space-y-1">
-              <label className="text-[12px] font-extrabold text-neutral-600 block">选择安装作用域：</label>
+              <label className="text-[12px] font-extrabold text-text-secondary block">选择安装作用域：</label>
               <select
                 value={selectedScope}
                 onChange={e => setSelectedScope(e.target.value as AppScope)}
-                className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold text-[12.5px]"
+                className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold text-[12.5px]"
               >
                 <option value="merchant">当前商家 (皇家宠物食品)</option>
                 <option value="task">仅本次任务</option>
@@ -196,10 +196,10 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
         )}
 
         {/* Modal Actions */}
-        <div className="pt-2 flex items-center justify-end gap-2 border-t border-neutral-100">
+        <div className="pt-2 flex items-center justify-end gap-2 border-t border-border-default">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-neutral-200 text-neutral-700 text-[12.5px] font-bold rounded-xl"
+            className="px-4 py-2 border border-border-default text-text-secondary text-[12.5px] font-bold rounded-xl"
           >
             取消
           </button>

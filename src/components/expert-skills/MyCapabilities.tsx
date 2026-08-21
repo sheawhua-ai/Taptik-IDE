@@ -21,16 +21,16 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
   return (
     <div className="space-y-5">
       {/* Overview stats header */}
-      <div className="p-4 bg-white rounded-2xl border border-neutral-200/90 shadow-2xs flex items-center justify-between">
+      <div className="p-4 bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-neutral-900 text-white rounded-xl">
+          <div className="p-2.5 bg-btn-main text-white rounded-xl">
             <ShieldCheck size={20} />
           </div>
           <div>
-            <h2 className="text-[15px] font-black text-neutral-900">
+            <h2 className="text-[15px] font-black text-text-main">
               当前商家已启用的技能 ({capabilities.length})
             </h2>
-            <p className="text-[12px] font-bold text-neutral-500 mt-0.5">
+            <p className="text-[12px] font-bold text-text-tertiary mt-0.5">
               已启用的技能将在小红书运营与发布流程中由 AI 自动调用。
             </p>
           </div>
@@ -49,8 +49,17 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
       </div>
 
       {/* Grid of enabled skills */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {capabilities.map(item => {
+      {capabilities.length === 0 ? (
+        <div className="py-20 text-center flex flex-col items-center justify-center">
+          <div className="w-12 h-12 bg-surface-2 rounded-xl flex items-center justify-center text-text-tertiary mb-3">
+            <ShieldCheck size={24} />
+          </div>
+          <h3 className="text-[14px] font-bold text-text-main">暂无已启用的技能</h3>
+          <p className="text-[13px] text-text-tertiary mt-1">请在技能库中添加所需的AI能力</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {capabilities.map(item => {
           const skill: SkillItem = item.refData || {
             id: item.id,
             name: item.name,
@@ -88,11 +97,11 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between space-y-4 shadow-2xs hover:shadow-md transition-all"
+              className="bg-surface-1 rounded-xl border border-border-default/90 p-5 flex flex-col justify-between space-y-4 shadow-2xs hover:shadow-md transition-all"
             >
               <div className="space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-[15px] font-black text-neutral-900">
+                  <h3 className="text-[15px] font-black text-text-main">
                     {item.name}
                   </h3>
 
@@ -106,12 +115,12 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                     </span>
                   ) : (
                     <span className="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      ✓ 已启用
+                      已启用
                     </span>
                   )}
                 </div>
 
-                <p className="text-[12.5px] font-bold text-neutral-600 line-clamp-2 leading-relaxed">
+                <p className="text-[12.5px] font-bold text-text-secondary line-clamp-2 leading-relaxed">
                   {skill.oneSentenceDesc || skill.goal || item.lastResult}
                 </p>
 
@@ -124,10 +133,10 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
               </div>
 
               {/* Action buttons */}
-              <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+              <div className="pt-3 border-t border-border-default flex items-center justify-between gap-2">
                 <button
                   onClick={() => onOpenSkillDetail(skill)}
-                  className="px-3 py-1.5 text-[12px] font-extrabold text-neutral-700 hover:text-neutral-900 bg-neutral-50 hover:bg-neutral-100 rounded-xl transition-colors flex items-center gap-1 border border-neutral-200/80"
+                  className="px-3 py-1.5 text-[12px] font-extrabold text-text-secondary hover:text-text-main bg-page-bg hover:bg-hover-bg rounded-xl transition-colors flex items-center gap-1 border border-border-default/80"
                 >
                   <Eye size={14} /> 查看详情
                 </button>
@@ -145,7 +154,7 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                   {!isBuiltIn && (
                     <button
                       onClick={() => onToggleDisable?.(item)}
-                      className="px-2.5 py-1.5 text-[12px] font-extrabold text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                      className="px-2.5 py-1.5 text-[12px] font-extrabold text-text-tertiary hover:text-danger hover:bg-danger-light rounded-xl transition-colors"
                       title="从当前商家移除"
                     >
                       <Trash2 size={14} />
@@ -153,7 +162,7 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                   )}
 
                   {isBuiltIn && (
-                    <span className="text-[11px] font-bold text-neutral-400 flex items-center gap-1 px-2 py-1 bg-neutral-50 rounded-lg">
+                    <span className="text-[11px] font-bold text-text-tertiary flex items-center gap-1 px-2 py-1 bg-page-bg rounded-lg">
                       <Lock size={12} /> 不可移除
                     </span>
                   )}
@@ -162,7 +171,8 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

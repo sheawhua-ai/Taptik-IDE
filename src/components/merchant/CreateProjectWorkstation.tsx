@@ -542,20 +542,20 @@ export function CreateProjectWorkstation({
   };
 
   return (
-    <div className="h-full w-full bg-[#f8f9fa] flex flex-col relative text-neutral-900 font-sans overflow-hidden">
+    <div className="h-full w-full bg-[#f8f9fa] flex flex-col relative text-text-main font-sans overflow-hidden">
       
       {/* Top Header Navigation Bar */}
-      <div className="h-14 bg-white border-b border-neutral-200/80 flex items-center justify-between px-6 shrink-0 z-20">
+      <div className="h-14 bg-surface-1 border-b border-border-default/80 flex items-center justify-between px-6 shrink-0 z-20">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors"
+            className="p-1.5 rounded-lg text-text-tertiary hover:text-text-main hover:bg-hover-bg transition-colors"
           >
             <X size={18} />
           </button>
           <div className="h-4 w-px bg-neutral-200" />
           <div>
-            <h1 className="text-[15px] font-bold text-neutral-900 flex items-center gap-2">
+            <h1 className="text-[15px] font-bold text-text-main flex items-center gap-2">
               新建运营项目
               {phase === "plan" && (
                 <span className="text-[11px] font-normal px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200/80 rounded-full">
@@ -570,7 +570,7 @@ export function CreateProjectWorkstation({
         {phase === "plan" && (
           <button
             onClick={() => setPhase("input")}
-            className="text-[13px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-1"
+            className="text-[13px] font-medium text-text-tertiary hover:text-text-main transition-colors flex items-center gap-1"
           >
             返回修改需求
           </button>
@@ -592,46 +592,46 @@ export function CreateProjectWorkstation({
             >
               {/* Page Subtitle Header */}
               <div className="space-y-1">
-                <h2 className="text-[20px] font-bold text-neutral-900 tracking-tight">
+                <h2 className="text-[20px] font-bold text-text-main tracking-tight">
                   描述本轮运营需求
                 </h2>
-                <p className="text-[13px] text-neutral-500">
+                <p className="text-[13px] text-text-tertiary">
                   描述本轮想解决的问题，AI 将结合当前商家资料生成推荐方案。
                 </p>
               </div>
 
               {/* Natural Language Textarea Box */}
-              <div className="bg-white rounded-2xl border border-neutral-200 shadow-2xs overflow-hidden focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-100 transition-all">
+              <div className="bg-surface-1 rounded-xl border border-border-default shadow-2xs overflow-hidden focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-100 transition-all">
                 <textarea
                   value={intent}
                   onChange={(e) => setIntent(e.target.value)}
                   rows={4}
                   placeholder="例如：计划用两周时间为新品做一轮小红书种草，重点验证真实体验内容能否带来收藏、评论和搜索咨询。"
-                  className="w-full p-5 text-[14px] leading-relaxed text-neutral-900 placeholder:text-neutral-400 outline-none resize-none"
+                  className="w-full p-5 text-[14px] leading-relaxed text-text-main placeholder:text-text-tertiary outline-none resize-none"
                 />
 
                 {/* Displayed Selected Shortcut Tags Pill Area inside/below textarea */}
-                <div className="px-5 py-3 bg-neutral-50/80 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-3">
+                <div className="px-5 py-3 bg-page-bg/80 border-t border-border-default flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[12px] text-neutral-400 font-medium">已带入快捷条件:</span>
+                    <span className="text-[12px] text-text-tertiary font-medium">已带入快捷条件:</span>
                     {selectedGoals.map((goal) => (
-                      <span key={goal} className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-neutral-200 rounded-lg text-[12px] font-medium text-neutral-800 shadow-2xs">
+                      <span key={goal} className="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-1 border border-border-default rounded-lg text-[12px] font-medium text-text-main shadow-2xs">
                         目标：{goal}
                         <button
                           onClick={() => setSelectedGoals(prev => prev.filter(g => g !== goal))}
-                          className="hover:text-neutral-900 text-neutral-400 ml-0.5"
+                          className="hover:text-text-main text-text-tertiary ml-0.5"
                         >
                           <X size={12} />
                         </button>
                       </span>
                     ))}
                     {selectedCycle && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-neutral-200 rounded-lg text-[12px] font-medium text-neutral-800 shadow-2xs">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-1 border border-border-default rounded-lg text-[12px] font-medium text-text-main shadow-2xs">
                         周期：{selectedCycle}
                       </span>
                     )}
                     {selectedOutput && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-neutral-200 rounded-lg text-[12px] font-medium text-neutral-800 shadow-2xs">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-1 border border-border-default rounded-lg text-[12px] font-medium text-text-main shadow-2xs">
                         产出：{selectedOutput}
                       </span>
                     )}
@@ -648,7 +648,7 @@ export function CreateProjectWorkstation({
                   {/* Add Material Entrance */}
                   <button
                     onClick={() => setShowAddMaterial(true)}
-                    className="text-[12px] font-medium text-neutral-600 hover:text-neutral-900 flex items-center gap-1 hover:underline shrink-0"
+                    className="text-[12px] font-medium text-text-secondary hover:text-text-main flex items-center gap-1 hover:underline shrink-0"
                   >
                     <Plus size={14} /> 添加资料
                   </button>
@@ -656,17 +656,17 @@ export function CreateProjectWorkstation({
               </div>
 
               {/* Quick Shortcut Selections (常用快捷选择) */}
-              <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 space-y-4 shadow-2xs">
-                <div className="text-[13px] font-bold text-neutral-800 flex items-center gap-1.5">
-                  <ListFilter size={15} className="text-neutral-500" />
+              <div className="bg-surface-1 rounded-xl border border-border-default/80 p-5 space-y-4 shadow-2xs">
+                <div className="text-[13px] font-bold text-text-main flex items-center gap-1.5">
+                  <ListFilter size={15} className="text-text-tertiary" />
                   常用快捷选择 (点击快速补充)
                 </div>
 
                 {/* 1. 主要目标 (支持多选) */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[12px] font-medium text-neutral-500">主要目标 (可多选)</span>
-                    <span className="text-[11px] text-neutral-400">已选 {selectedGoals.length} 项</span>
+                    <span className="text-[12px] font-medium text-text-tertiary">主要目标 (可多选)</span>
+                    <span className="text-[11px] text-text-tertiary">已选 {selectedGoals.length} 项</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {GOAL_OPTIONS.map((goal) => {
@@ -689,8 +689,8 @@ export function CreateProjectWorkstation({
                           }}
                           className={`px-3 py-1.5 rounded-xl text-[12px] font-medium transition-all ${
                             isSelected
-                              ? "bg-neutral-900 text-white shadow-2xs"
-                              : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200/80"
+                              ? "bg-btn-main text-white shadow-2xs"
+                              : "bg-hover-bg text-text-secondary hover:bg-selected-bg/80"
                           }`}
                         >
                           {isSelected ? `✓ ${goal}` : goal}
@@ -702,7 +702,7 @@ export function CreateProjectWorkstation({
 
                 {/* 2. 项目周期 */}
                 <div>
-                  <div className="text-[12px] font-medium text-neutral-500 mb-2">项目周期</div>
+                  <div className="text-[12px] font-medium text-text-tertiary mb-2">项目周期</div>
                   <div className="flex flex-wrap gap-2">
                     {CYCLE_OPTIONS.map((cycle) => {
                       const isCustomActive = cycle === "自定义" && !["7天", "14天", "30天"].includes(selectedCycle);
@@ -720,8 +720,8 @@ export function CreateProjectWorkstation({
                           }}
                           className={`px-3 py-1.5 rounded-xl text-[12px] font-medium transition-all flex items-center gap-1 ${
                             isSelected
-                              ? "bg-neutral-900 text-white shadow-2xs"
-                              : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200/80"
+                              ? "bg-btn-main text-white shadow-2xs"
+                              : "bg-hover-bg text-text-secondary hover:bg-selected-bg/80"
                           }`}
                         >
                           {cycle === "自定义" && isCustomActive ? `自定义 (${selectedCycle})` : cycle}
@@ -733,8 +733,8 @@ export function CreateProjectWorkstation({
                 </div>
 
                 {/* 3. 需求关联判断：素人账号问卷 (仅开启时才生成内容包，无需手动选笔记/内容包) */}
-                <div className="pt-2 border-t border-neutral-100">
-                  <div className="flex items-center justify-between p-3 bg-neutral-50 border border-neutral-200/80 rounded-xl">
+                <div className="pt-2 border-t border-border-default">
+                  <div className="flex items-center justify-between p-3 bg-page-bg border border-border-default/80 rounded-xl">
                     <div className="flex items-center gap-2.5">
                       <input
                         type="checkbox"
@@ -745,11 +745,11 @@ export function CreateProjectWorkstation({
                           setHasKocQuestionnaire(checked);
                           setSelectedOutput(checked ? "生成内容包" : "生成笔记");
                         }}
-                        className="w-4 h-4 text-neutral-900 rounded focus:ring-neutral-400 border-neutral-300 accent-neutral-900 cursor-pointer"
+                        className="w-4 h-4 text-text-main rounded focus:ring-neutral-400 border-neutral-300 accent-neutral-900 cursor-pointer"
                       />
-                      <label htmlFor="koc-questionnaire-toggle" className="text-[12.5px] font-medium text-neutral-800 cursor-pointer select-none">
+                      <label htmlFor="koc-questionnaire-toggle" className="text-[12.5px] font-medium text-text-main cursor-pointer select-none">
                         需判断/收集素人账号与KOC体验问卷
-                        <span className="ml-1 text-[11px] text-neutral-500 font-normal">
+                        <span className="ml-1 text-[11px] text-text-tertiary font-normal">
                           (勾选后将自动判定产出为<span className="font-bold text-amber-700">生成内容包</span>)
                         </span>
                       </label>
@@ -758,7 +758,7 @@ export function CreateProjectWorkstation({
                     <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-md ${
                       hasKocQuestionnaire || selectedGoals.includes("用户共创")
                         ? "bg-amber-100 text-amber-800 border border-amber-200/80"
-                        : "bg-neutral-200/80 text-neutral-600"
+                        : "bg-neutral-200/80 text-text-secondary"
                     }`}>
                       {hasKocQuestionnaire || selectedGoals.includes("用户共创") ? "产出：生成内容包" : "产出：生成笔记"}
                     </span>
@@ -767,14 +767,14 @@ export function CreateProjectWorkstation({
               </div>
 
               {/* Automatically Used System Information Notice */}
-              <div className="flex items-center justify-between px-4 py-2.5 bg-neutral-100/70 border border-neutral-200/60 rounded-xl text-[12px] text-neutral-600">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-hover-bg/70 border border-border-default/60 rounded-xl text-[12px] text-text-secondary">
                 <div className="flex items-center gap-2">
-                  <Info size={14} className="text-neutral-400 shrink-0" />
+                  <Info size={14} className="text-text-tertiary shrink-0" />
                   <span>AI 将自动使用当前商家、品牌产品、账号资源和知识资料。</span>
                 </div>
                 <button
                   onClick={() => setShowSystemInfo(!showSystemInfo)}
-                  className="text-neutral-700 font-medium hover:underline hover:text-neutral-900 shrink-0"
+                  className="text-text-secondary font-medium hover:underline hover:text-text-main shrink-0"
                 >
                   查看
                 </button>
@@ -785,14 +785,14 @@ export function CreateProjectWorkstation({
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="p-4 bg-white border border-neutral-200 rounded-xl space-y-3 text-[12px]"
+                  className="p-4 bg-surface-1 border border-border-default rounded-xl space-y-3 text-[12px]"
                 >
-                  <div className="font-bold text-neutral-800">当前系统自动读取的背景画像：</div>
-                  <div className="grid grid-cols-2 gap-3 text-neutral-600">
-                    <div>• <span className="font-medium text-neutral-800">商家品牌：</span>萌宠乐园官方主营店</div>
-                    <div>• <span className="font-medium text-neutral-800">核心产品：</span>幼犬无谷高蛋白鲜肉粮</div>
-                    <div>• <span className="font-medium text-neutral-800">可用账号：</span>1个品牌号、2个店长号、20个合作KOC</div>
-                    <div>• <span className="font-medium text-neutral-800">知识资料：</span>《幼犬换粮指南》《产品质检报告》</div>
+                  <div className="font-bold text-text-main">当前系统自动读取的背景画像：</div>
+                  <div className="grid grid-cols-2 gap-3 text-text-secondary">
+                    <div>• <span className="font-medium text-text-main">商家品牌：</span>萌宠乐园官方主营店</div>
+                    <div>• <span className="font-medium text-text-main">核心产品：</span>幼犬无谷高蛋白鲜肉粮</div>
+                    <div>• <span className="font-medium text-text-main">可用账号：</span>1个品牌号、2个店长号、20个合作KOC</div>
+                    <div>• <span className="font-medium text-text-main">知识资料：</span>《幼犬换粮指南》《产品质检报告》</div>
                   </div>
                 </motion.div>
               )}
@@ -801,7 +801,7 @@ export function CreateProjectWorkstation({
               <div className="pt-2">
                 <button
                   onClick={() => handleGeneratePlan()}
-                  className="w-full py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[14px] rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[14px] rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
                 >
                   <Sparkles size={16} className="text-amber-300" />
                   AI生成方案
@@ -817,23 +817,23 @@ export function CreateProjectWorkstation({
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl border border-neutral-200/80 p-12 text-center space-y-5 my-12 shadow-2xs"
+              className="bg-surface-1 rounded-xl border border-border-default/80 p-12 text-center space-y-5 my-12 shadow-2xs"
             >
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200/60 animate-pulse">
+              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200/60 animate-pulse">
                 <Sparkles size={24} />
               </div>
               <div className="space-y-1">
-                <h3 className="text-[16px] font-bold text-neutral-900">AI正在结合商家资料生成推荐方案...</h3>
-                <p className="text-[13px] text-neutral-500">
+                <h3 className="text-[16px] font-bold text-text-main">AI正在结合商家资料生成推荐方案...</h3>
+                <p className="text-[13px] text-text-tertiary">
                   正在读取商品知识库、匹配账号资源与过往表现数据
                 </p>
               </div>
-              <div className="w-48 h-1.5 bg-neutral-100 rounded-full mx-auto overflow-hidden">
+              <div className="w-48 h-1.5 bg-hover-bg rounded-full mx-auto overflow-hidden">
                 <motion.div
                   initial={{ x: "-100%" }}
                   animate={{ x: "100%" }}
                   transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-                  className="w-full h-full bg-neutral-900 rounded-full"
+                  className="w-full h-full bg-btn-main rounded-full"
                 />
               </div>
             </motion.div>
@@ -850,12 +850,12 @@ export function CreateProjectWorkstation({
             >
               {/* Validation Error Banner */}
               {validationErrors.length > 0 && (
-                <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-1.5 animate-shake">
+                <div className="bg-rose-50 border border-danger-light rounded-xl p-4 space-y-1.5 animate-shake">
                   <div className="text-[13px] font-bold text-rose-900 flex items-center gap-2">
-                    <AlertCircle size={16} className="text-rose-600 shrink-0" />
+                    <AlertCircle size={16} className="text-danger shrink-0" />
                     请修正以下配置问题后再确认方案：
                   </div>
-                  <ul className="list-disc list-inside text-[12.5px] text-rose-800 space-y-0.5 pl-1 font-medium">
+                  <ul className="list-disc list-inside text-[12.5px] text-danger space-y-0.5 pl-1 font-medium">
                     {validationErrors.map((err, idx) => (
                       <li key={idx}>{err}</li>
                     ))}
@@ -864,7 +864,7 @@ export function CreateProjectWorkstation({
               )}
 
               {/* Header Description */}
-              <div className="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-4 flex items-start gap-3">
+              <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 flex items-start gap-3">
                 <Sparkles size={18} className="text-amber-600 shrink-0 mt-0.5" />
                 <div className="text-[13px] text-amber-900 leading-relaxed">
                   <span className="font-bold">推荐方案已生成：</span>
@@ -873,11 +873,11 @@ export function CreateProjectWorkstation({
               </div>
 
               {/* 8 Structured Result Items Table/List */}
-              <div className="bg-white rounded-2xl border border-neutral-200 shadow-2xs overflow-hidden">
+              <div className="bg-surface-1 rounded-xl border border-border-default shadow-2xs overflow-hidden">
                 {/* Table Header with Single "编辑修改" Toggle Button */}
-                <div className="px-5 py-3.5 bg-neutral-50/80 border-b border-neutral-200 flex items-center justify-between">
-                  <div className="text-[13px] font-bold text-neutral-900 flex items-center gap-2">
-                    <Layers size={15} className="text-neutral-500" />
+                <div className="px-5 py-3.5 bg-page-bg/80 border-b border-border-default flex items-center justify-between">
+                  <div className="text-[13px] font-bold text-text-main flex items-center gap-2">
+                    <Layers size={15} className="text-text-tertiary" />
                     AI 推荐方案配置明细
                     {isTableEditMode && (
                       <span className="text-[11px] font-medium px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-full">
@@ -903,7 +903,7 @@ export function CreateProjectWorkstation({
                         setEditablePlanData({ ...planData });
                         setIsTableEditMode(true);
                       }}
-                      className="px-4 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[12px] rounded-xl shadow-2xs transition-colors flex items-center gap-1.5"
+                      className="px-4 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[12px] rounded-xl shadow-2xs transition-colors flex items-center gap-1.5"
                     >
                       <Edit2 size={13} /> 编辑修改
                     </button>
@@ -920,10 +920,10 @@ export function CreateProjectWorkstation({
                           type="text"
                           value={editablePlanData.projectName}
                           onChange={(e) => setEditablePlanData({ ...editablePlanData, projectName: e.target.value })}
-                          className="w-full px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-xl text-[13px] text-neutral-900 focus:bg-white focus:border-neutral-500 font-sans font-bold outline-none"
+                          className="w-full px-3 py-2 bg-page-bg border border-neutral-300 rounded-xl text-[13px] text-text-main focus:bg-surface-1 focus:border-neutral-500 font-sans font-bold outline-none"
                         />
                       ) : (
-                        <span className="font-bold text-neutral-900">{planData.projectName}</span>
+                        <span className="font-bold text-text-main">{planData.projectName}</span>
                       )
                     }
                     onOpenDetail={() => setActiveDetailKey("name")}
@@ -938,7 +938,7 @@ export function CreateProjectWorkstation({
                           rows={3}
                           value={editablePlanData.goalAndStrategy}
                           onChange={(e) => setEditablePlanData({ ...editablePlanData, goalAndStrategy: e.target.value })}
-                          className="w-full p-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-[13px] text-neutral-900 focus:bg-white focus:border-neutral-500 font-sans outline-none"
+                          className="w-full p-2.5 bg-page-bg border border-neutral-300 rounded-xl text-[13px] text-text-main focus:bg-surface-1 focus:border-neutral-500 font-sans outline-none"
                         />
                       ) : (
                         <span className="whitespace-pre-wrap">{planData.goalAndStrategy}</span>
@@ -956,7 +956,7 @@ export function CreateProjectWorkstation({
                           rows={2}
                           value={editablePlanData.targetAudience}
                           onChange={(e) => setEditablePlanData({ ...editablePlanData, targetAudience: e.target.value })}
-                          className="w-full p-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-[13px] text-neutral-900 focus:bg-white focus:border-neutral-500 font-sans outline-none"
+                          className="w-full p-2.5 bg-page-bg border border-neutral-300 rounded-xl text-[13px] text-text-main focus:bg-surface-1 focus:border-neutral-500 font-sans outline-none"
                         />
                       ) : (
                         <span>{planData.targetAudience}</span>
@@ -992,90 +992,90 @@ export function CreateProjectWorkstation({
 
                         return (
                           <div className="space-y-3">
-                            <div className="flex items-center justify-between pb-1 border-b border-neutral-100">
-                              <span className="font-bold text-neutral-900 text-[13px]">
+                            <div className="flex items-center justify-between pb-1 border-b border-border-default">
+                              <span className="font-bold text-text-main text-[13px]">
                                 内容安排　共{totalNotes}篇/包
                               </span>
-                              <span className="text-[11.5px] font-medium text-neutral-500">
+                              <span className="text-[11.5px] font-medium text-text-tertiary">
                                 调整账号篇数与频次请点击右侧“分发与招募配置”
                               </span>
                             </div>
 
                             {/* Clean Table: Available accounts and assigned counts */}
-                            <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white text-[13px]">
+                            <div className="border border-border-default rounded-xl overflow-hidden bg-surface-1 text-[13px]">
                               <table className="w-full border-collapse table-fixed">
                                 <thead>
-                                  <tr className="bg-neutral-50 text-neutral-600 font-bold border-b border-neutral-200 text-[12.5px]">
+                                  <tr className="bg-page-bg text-text-secondary font-bold border-b border-border-default text-[12.5px]">
                                     <th className="py-3 px-5 text-left w-[160px]">账号类型</th>
                                     <th className="py-3 px-5 text-left">分配 / 可用账号明细</th>
                                     <th className="py-3 px-5 text-right w-[240px]">产出形式与数量</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y divide-neutral-100 text-neutral-800">
+                                <tbody className="divide-y divide-neutral-100 text-text-main">
                                   {/* Row 1: 品牌主号 */}
-                                  <tr className="hover:bg-neutral-50/50 transition-colors">
-                                    <td className="py-3.5 px-5 font-bold text-neutral-900 align-top">
+                                  <tr className="hover:bg-page-bg transition-colors">
+                                    <td className="py-3.5 px-5 font-bold text-text-main align-top">
                                       <div className="flex items-center gap-2">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-neutral-900 inline-block shrink-0" />
+                                        <span className="w-2.5 h-2.5 rounded-full bg-btn-main inline-block shrink-0" />
                                         <span>品牌主号</span>
                                       </div>
                                     </td>
-                                    <td className="py-3.5 px-5 text-neutral-600 align-top">
-                                      <div className="font-semibold text-neutral-800">
+                                    <td className="py-3.5 px-5 text-text-secondary align-top">
+                                      <div className="font-semibold text-text-main">
                                         已选 {brandAccountIds.length}/{MERCHANT_BRAND_ACCOUNTS.length} 个品牌账号
                                       </div>
-                                      <div className="text-neutral-500 text-[12px] mt-1 leading-snug">
+                                      <div className="text-text-tertiary text-[12px] mt-1 leading-snug">
                                         ({MERCHANT_BRAND_ACCOUNTS.filter(a => brandAccountIds.includes(a.id)).map(a => a.name).join('、') || '未选择'})
                                       </div>
                                     </td>
-                                    <td className="py-3.5 px-5 text-right font-bold text-neutral-900 align-top">
+                                    <td className="py-3.5 px-5 text-right font-bold text-text-main align-top">
                                       {totalBrandNotesCalculated} 篇笔记
-                                      <span className="text-[12px] text-neutral-500 font-normal block mt-0.5">
+                                      <span className="text-[12px] text-text-tertiary font-normal block mt-0.5">
                                         (按账号人设分布)
                                       </span>
                                     </td>
                                   </tr>
 
                                   {/* Row 2: KOS员工号 */}
-                                  <tr className="hover:bg-neutral-50/50 transition-colors">
-                                    <td className="py-3.5 px-5 font-bold text-neutral-900 align-top">
+                                  <tr className="hover:bg-page-bg transition-colors">
+                                    <td className="py-3.5 px-5 font-bold text-text-main align-top">
                                       <div className="flex items-center gap-2">
                                         <span className="w-2.5 h-2.5 rounded-full bg-neutral-700 inline-block shrink-0" />
                                         <span>KOS员工号</span>
                                       </div>
                                     </td>
-                                    <td className="py-3.5 px-5 text-neutral-600 align-top">
-                                      <div className="font-semibold text-neutral-800">
+                                    <td className="py-3.5 px-5 text-text-secondary align-top">
+                                      <div className="font-semibold text-text-main">
                                         已选 {kosAccountIds.length}/{MERCHANT_KOS_ACCOUNTS.length} 个KOS员工号
                                       </div>
-                                      <div className="text-neutral-500 text-[12px] mt-1 leading-snug">
+                                      <div className="text-text-tertiary text-[12px] mt-1 leading-snug">
                                         ({MERCHANT_KOS_ACCOUNTS.filter(a => kosAccountIds.includes(a.id)).map(a => a.name).join('、') || '未选择'})
                                       </div>
                                     </td>
-                                    <td className="py-3.5 px-5 text-right font-bold text-neutral-900 align-top">
+                                    <td className="py-3.5 px-5 text-right font-bold text-text-main align-top">
                                       {totalKosNotesCalculated} 篇笔记
-                                      <span className="text-[12px] text-neutral-500 font-normal block mt-0.5">
+                                      <span className="text-[12px] text-text-tertiary font-normal block mt-0.5">
                                         (按门店岗位分布)
                                       </span>
                                     </td>
                                   </tr>
 
                                   {/* Row 3: 消费者KOC */}
-                                  <tr className="hover:bg-neutral-50/50 transition-colors">
-                                    <td className="py-3.5 px-5 font-bold text-neutral-900 align-top">
+                                  <tr className="hover:bg-page-bg transition-colors">
+                                    <td className="py-3.5 px-5 font-bold text-text-main align-top">
                                       <div className="flex items-center gap-2">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-neutral-500 inline-block shrink-0" />
+                                        <span className="w-2.5 h-2.5 rounded-full bg-page-bg0 inline-block shrink-0" />
                                         <span>消费者KOC</span>
                                       </div>
                                     </td>
-                                    <td className="py-3.5 px-5 text-neutral-600 align-top">
-                                      <div className="font-semibold text-neutral-800">
+                                    <td className="py-3.5 px-5 text-text-secondary align-top">
+                                      <div className="font-semibold text-text-main">
                                         拟招募 {kocCount} 名体验官 / KOC
                                       </div>
                                     </td>
-                                    <td className="py-3.5 px-5 text-right font-bold text-neutral-900 align-top">
+                                    <td className="py-3.5 px-5 text-right font-bold text-text-main align-top">
                                       {kocCount} 组
-                                      <span className="text-[12px] text-neutral-500 font-normal block mt-0.5">
+                                      <span className="text-[12px] text-text-tertiary font-normal block mt-0.5">
                                         ({kocMode === "预设笔记" ? "预设笔记" : "试用体验内容包"})
                                       </span>
                                     </td>
@@ -1097,13 +1097,13 @@ export function CreateProjectWorkstation({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setActiveEditDrawer("distribution")}
-                          className="text-[12px] font-bold text-white bg-neutral-900 hover:bg-neutral-800 px-3 py-1.5 rounded-xl transition-colors shadow-2xs"
+                          className="text-[12px] font-bold text-white bg-btn-main hover:bg-btn-main-hover px-3 py-1.5 rounded-xl transition-colors shadow-2xs"
                         >
                           自有账号分发配置
                         </button>
                         <button
                           onClick={() => setActiveEditDrawer("consumerMode")}
-                          className="text-[12px] font-bold text-white bg-neutral-900 hover:bg-neutral-800 px-3 py-1.5 rounded-xl transition-colors shadow-2xs"
+                          className="text-[12px] font-bold text-white bg-btn-main hover:bg-btn-main-hover px-3 py-1.5 rounded-xl transition-colors shadow-2xs"
                         >
                           消费者招募配置
                         </button>
@@ -1118,22 +1118,22 @@ export function CreateProjectWorkstation({
                       isTableEditMode ? (
                         <div className="flex flex-wrap items-center gap-3 py-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[12px] text-neutral-500 font-medium">开始日期:</span>
+                            <span className="text-[12px] text-text-tertiary font-medium">开始日期:</span>
                             <input
                               type="date"
                               value={editablePlanData.startDate}
                               onChange={(e) => setEditablePlanData({ ...editablePlanData, startDate: e.target.value })}
-                              className="px-2.5 py-1.5 bg-neutral-50 border border-neutral-300 rounded-xl text-[12.5px] font-bold text-neutral-900 outline-none focus:bg-white focus:border-neutral-500"
+                              className="px-2.5 py-1.5 bg-page-bg border border-neutral-300 rounded-xl text-[12.5px] font-bold text-text-main outline-none focus:bg-surface-1 focus:border-neutral-500"
                             />
                           </div>
-                          <span className="text-neutral-400 font-bold">至</span>
+                          <span className="text-text-tertiary font-bold">至</span>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[12px] text-neutral-500 font-medium">结束日期:</span>
+                            <span className="text-[12px] text-text-tertiary font-medium">结束日期:</span>
                             <input
                               type="date"
                               value={editablePlanData.endDate}
                               onChange={(e) => setEditablePlanData({ ...editablePlanData, endDate: e.target.value })}
-                              className="px-2.5 py-1.5 bg-neutral-50 border border-neutral-300 rounded-xl text-[12.5px] font-bold text-neutral-900 outline-none focus:bg-white focus:border-neutral-500"
+                              className="px-2.5 py-1.5 bg-page-bg border border-neutral-300 rounded-xl text-[12.5px] font-bold text-text-main outline-none focus:bg-surface-1 focus:border-neutral-500"
                             />
                           </div>
                           <span className="text-[12px] font-bold px-2.5 py-1 bg-amber-50 text-amber-800 rounded-lg border border-amber-200">
@@ -1143,7 +1143,7 @@ export function CreateProjectWorkstation({
                       ) : (
                         <span className="flex items-center gap-2">
                           <span>{planData.startDate} 至 {planData.endDate}</span>
-                          <span className="text-[12px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-md border border-neutral-200">
+                          <span className="text-[12px] font-bold text-text-secondary bg-hover-bg px-2 py-0.5 rounded-md border border-border-default">
                             (共 {calculateDays(planData.startDate, planData.endDate)} 天)
                           </span>
                         </span>
@@ -1167,21 +1167,21 @@ export function CreateProjectWorkstation({
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-200 text-[11px] font-bold rounded-md">
                                 <Check size={12} /> KOC真实体验采集　已开启
                               </span>
-                              <span className="text-[12px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-md border border-neutral-200">
+                              <span className="text-[12px] font-bold text-text-secondary bg-hover-bg px-2 py-0.5 rounded-md border border-border-default">
                                 预计{kocCount}人参与 · {qList.length}个问题 · {planData.kocQuestionnaire?.timing || "发布内容前完成"}
                               </span>
                             </div>
-                            <p className="text-[12px] text-neutral-600 leading-relaxed">
+                            <p className="text-[12px] text-text-secondary leading-relaxed">
                               收集参与者的真实背景、选择原因、使用过程和实际感受，为KOC内容提供差异化事实依据。
                             </p>
                           </div>
                         ) : (
                           <div className="flex items-center justify-between">
                             <div className="space-y-0.5">
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-neutral-100 text-neutral-600 border border-neutral-200 text-[11px] font-bold rounded-md">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-hover-bg text-text-secondary border border-border-default text-[11px] font-bold rounded-md">
                                 KOC真实体验采集　暂不需要
                               </span>
-                              <p className="text-[12px] text-neutral-400">当前方案未包含KOC体验内容</p>
+                              <p className="text-[12px] text-text-tertiary">当前方案未包含KOC体验内容</p>
                             </div>
                           </div>
                         );
@@ -1211,7 +1211,7 @@ export function CreateProjectWorkstation({
                               }));
                               setActiveDetailKey("kocQuestionnaireDetail");
                             }}
-                            className="px-3.5 py-1 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[12px] rounded-lg transition-colors"
+                            className="px-3.5 py-1 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[12px] rounded-lg transition-colors"
                           >
                             开启
                           </button>
@@ -1223,10 +1223,10 @@ export function CreateProjectWorkstation({
               </div>
 
               {/* Bottom Actions Bar (确认方案) */}
-              <div className="pt-2 flex items-center justify-end border-t border-neutral-200/80">
+              <div className="pt-2 flex items-center justify-end border-t border-border-default/80">
                 <button
                   onClick={handleConfirmAndProcess}
-                  className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[13px] rounded-xl shadow-2xs transition-all flex items-center gap-1.5"
+                  className="px-6 py-2.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[13px] rounded-xl shadow-2xs transition-all flex items-center gap-1.5"
                 >
                   确认方案并{selectedOutput === "生成内容包" ? "生成内容包" : "生成笔记"}
                   <ArrowRight size={15} />
@@ -1242,11 +1242,11 @@ export function CreateProjectWorkstation({
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl border border-neutral-200 p-10 my-10 shadow-2xs space-y-6 max-w-lg mx-auto"
+              className="bg-surface-1 rounded-xl border border-border-default p-10 my-10 shadow-2xs space-y-6 max-w-lg mx-auto"
             >
               <div className="text-center space-y-1">
-                <h3 className="text-[17px] font-bold text-neutral-900">系统正在创建运营项目</h3>
-                <p className="text-[13px] text-neutral-500">正在初始化方案、排期笔记与匹配素材库...</p>
+                <h3 className="text-[17px] font-bold text-text-main">系统正在创建运营项目</h3>
+                <p className="text-[13px] text-text-tertiary">正在初始化方案、排期笔记与匹配素材库...</p>
               </div>
 
               <div className="space-y-3 pt-2 text-[13px]">
@@ -1270,8 +1270,8 @@ export function CreateProjectWorkstation({
               className="space-y-6 max-w-2xl mx-auto my-4"
             >
               {/* Success Banner */}
-              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center space-y-3">
-                <div className="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center space-y-3">
+                <div className="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center mx-auto shadow-sm">
                   <CheckCircle2 size={28} />
                 </div>
                 <div>
@@ -1284,25 +1284,25 @@ export function CreateProjectWorkstation({
 
               {/* 3 Metric Cards Grid */}
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white border border-neutral-200 rounded-2xl p-5 text-center shadow-2xs">
-                  <div className="text-[28px] font-bold text-neutral-900">{generatedNotesList.length}</div>
-                  <div className="text-[12px] font-medium text-neutral-500 mt-0.5">已生成笔记/内容包</div>
+                <div className="bg-surface-1 border border-border-default rounded-xl p-5 text-center shadow-2xs">
+                  <div className="text-[28px] font-bold text-text-main">{generatedNotesList.length}</div>
+                  <div className="text-[12px] font-medium text-text-tertiary mt-0.5">已生成笔记/内容包</div>
                 </div>
 
-                <div className="bg-white border border-neutral-200 rounded-2xl p-5 text-center shadow-2xs">
+                <div className="bg-surface-1 border border-border-default rounded-xl p-5 text-center shadow-2xs">
                   <div className="text-[28px] font-bold text-emerald-600">{matchedAssetsCount}</div>
-                  <div className="text-[12px] font-medium text-neutral-500 mt-0.5">已自动匹配素材</div>
+                  <div className="text-[12px] font-medium text-text-tertiary mt-0.5">已自动匹配素材</div>
                 </div>
 
-                <div className="bg-white border border-neutral-200 rounded-2xl p-5 text-center shadow-2xs">
+                <div className="bg-surface-1 border border-border-default rounded-xl p-5 text-center shadow-2xs">
                   <div className="text-[28px] font-bold text-amber-600">{generatedMaterialTasksList.length}</div>
-                  <div className="text-[12px] font-medium text-neutral-500 mt-0.5">待审核素材任务 (待发布)</div>
+                  <div className="text-[12px] font-medium text-text-tertiary mt-0.5">待审核素材任务 (待发布)</div>
                 </div>
               </div>
 
               {/* Next Step Recommendation */}
-              <div className="bg-neutral-100/80 border border-neutral-200/80 rounded-2xl p-4 text-[13px] text-neutral-700 flex items-start gap-2.5">
-                <Info size={16} className="text-neutral-500 shrink-0 mt-0.5" />
+              <div className="bg-hover-bg/80 border border-border-default/80 rounded-xl p-4 text-[13px] text-text-secondary flex items-start gap-2.5">
+                <Info size={16} className="text-text-tertiary shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold">下一步推荐：</span>
                   建议下一步先审核待发布的素材任务。确认拍摄要求和执行人员后，即可正式派发。
@@ -1313,7 +1313,7 @@ export function CreateProjectWorkstation({
               <div className="flex items-center gap-3 pt-2">
                 <button
                   onClick={() => setShowAssetTaskReviewModal(true)}
-                  className="flex-1 py-3 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-900 font-bold text-[14px] rounded-2xl shadow-2xs transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-surface-1 border border-border-default hover:bg-page-bg text-text-main font-bold text-[14px] rounded-xl shadow-2xs transition-colors flex items-center justify-center gap-2"
                 >
                   <FileText size={16} /> 审核素材任务
                 </button>
@@ -1323,7 +1323,7 @@ export function CreateProjectWorkstation({
                     onCreate({ id: createdProjectId, name: planData.projectName });
                     onClose();
                   }}
-                  className="flex-1 py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[14px] rounded-2xl shadow-2xs transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[14px] rounded-xl shadow-2xs transition-colors flex items-center justify-center gap-2"
                 >
                   进入项目 <ArrowRight size={16} />
                 </button>
@@ -1341,25 +1341,25 @@ export function CreateProjectWorkstation({
 
         {/* Custom Cycle Days Modal */}
         {showCustomCycleModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/30">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-btn-main/30">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4"
+              className="bg-surface-1 rounded-xl max-w-sm w-full p-6 shadow-xl space-y-4"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-[15px] font-bold text-neutral-900 flex items-center gap-2">
-                  <Calendar size={16} className="text-neutral-500" />
+                <h3 className="text-[15px] font-bold text-text-main flex items-center gap-2">
+                  <Calendar size={16} className="text-text-tertiary" />
                   设置自定义项目周期
                 </h3>
-                <button onClick={() => setShowCustomCycleModal(false)} className="text-neutral-400 hover:text-neutral-600">
+                <button onClick={() => setShowCustomCycleModal(false)} className="text-text-tertiary hover:text-text-secondary">
                   <X size={18} />
                 </button>
               </div>
 
               <div className="space-y-3">
-                <label className="block text-[12px] font-medium text-neutral-600">
+                <label className="block text-[12px] font-medium text-text-secondary">
                   请输入推进天数（如 7-90 天）：
                 </label>
                 <div className="flex items-center gap-2">
@@ -1370,9 +1370,9 @@ export function CreateProjectWorkstation({
                     value={customDaysInput}
                     onChange={(e) => setCustomDaysInput(e.target.value)}
                     placeholder="例如：21"
-                    className="flex-1 px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[14px] font-bold text-neutral-900 outline-none focus:border-neutral-400 focus:bg-white transition-all"
+                    className="flex-1 px-3.5 py-2.5 bg-page-bg border border-border-default rounded-xl text-[14px] font-bold text-text-main outline-none focus:border-neutral-400 focus:bg-surface-1 transition-all"
                   />
-                  <span className="text-[13px] font-bold text-neutral-600">天</span>
+                  <span className="text-[13px] font-bold text-text-secondary">天</span>
                 </div>
 
                 {/* Quick preset chips */}
@@ -1381,7 +1381,7 @@ export function CreateProjectWorkstation({
                     <button
                       key={preset}
                       onClick={() => setCustomDaysInput(preset)}
-                      className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[12px] font-medium rounded-lg transition-colors"
+                      className="px-2.5 py-1 bg-hover-bg hover:bg-selected-bg text-text-secondary text-[12px] font-medium rounded-lg transition-colors"
                     >
                       {preset}天
                     </button>
@@ -1392,7 +1392,7 @@ export function CreateProjectWorkstation({
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setShowCustomCycleModal(false)}
-                  className="px-4 py-2 text-[13px] text-neutral-600 font-medium hover:bg-neutral-100 rounded-xl"
+                  className="px-4 py-2 text-[13px] text-text-secondary font-medium hover:bg-hover-bg rounded-xl"
                 >
                   取消
                 </button>
@@ -1404,7 +1404,7 @@ export function CreateProjectWorkstation({
                     }
                     setShowCustomCycleModal(false);
                   }}
-                  className="px-5 py-2 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 shadow-2xs"
+                  className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover shadow-2xs"
                 >
                   确认设置
                 </button>
@@ -1415,49 +1415,49 @@ export function CreateProjectWorkstation({
 
         {/* 1. Missing Info 3-Question Dialog */}
         {showMissingInfoDialog && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/30">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-btn-main/30">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-5"
+              className="bg-surface-1 rounded-xl max-w-md w-full p-6 shadow-xl space-y-5"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-[16px] font-bold text-neutral-900">请快速补充关键信息</h3>
-                <button onClick={() => setShowMissingInfoDialog(false)} className="text-neutral-400 hover:text-neutral-600">
+                <h3 className="text-[16px] font-bold text-text-main">请快速补充关键信息</h3>
+                <button onClick={() => setShowMissingInfoDialog(false)} className="text-text-tertiary hover:text-text-secondary">
                   <X size={18} />
                 </button>
               </div>
 
               <div className="space-y-4 text-[13px]">
                 <div>
-                  <label className="block font-medium text-neutral-700 mb-1">1. 本轮主要推广的产品或服务是什么？</label>
+                  <label className="block font-medium text-text-secondary mb-1">1. 本轮主要推广的产品或服务是什么？</label>
                   <input
                     type="text"
                     value={missingQuestions.product}
                     onChange={(e) => setMissingQuestions({ ...missingQuestions, product: e.target.value })}
                     placeholder="例如：幼犬无谷高蛋白鲜肉粮"
-                    className="w-full px-3 py-2 border border-neutral-200 rounded-xl outline-none focus:border-neutral-400"
+                    className="w-full px-3 py-2 border border-border-default rounded-xl outline-none focus:border-neutral-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-neutral-700 mb-1">2. 本轮最希望解决的核心目标是什么？</label>
+                  <label className="block font-medium text-text-secondary mb-1">2. 本轮最希望解决的核心目标是什么？</label>
                   <input
                     type="text"
                     value={missingQuestions.targetGoal}
                     onChange={(e) => setMissingQuestions({ ...missingQuestions, targetGoal: e.target.value })}
                     placeholder="例如：解决软便疑虑与搜索卡位"
-                    className="w-full px-3 py-2 border border-neutral-200 rounded-xl outline-none focus:border-neutral-400"
+                    className="w-full px-3 py-2 border border-border-default rounded-xl outline-none focus:border-neutral-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-neutral-700 mb-1">3. 预计推进的周期是多久？</label>
+                  <label className="block font-medium text-text-secondary mb-1">3. 预计推进的周期是多久？</label>
                   <select
                     value={missingQuestions.cycle}
                     onChange={(e) => setMissingQuestions({ ...missingQuestions, cycle: e.target.value })}
-                    className="w-full px-3 py-2 border border-neutral-200 rounded-xl bg-white outline-none"
+                    className="w-full px-3 py-2 border border-border-default rounded-xl bg-surface-1 outline-none"
                   >
                     <option value="7天">7天</option>
                     <option value="14天">14天</option>
@@ -1469,13 +1469,13 @@ export function CreateProjectWorkstation({
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setShowMissingInfoDialog(false)}
-                  className="px-4 py-2 text-[13px] text-neutral-600 font-medium hover:bg-neutral-100 rounded-xl"
+                  className="px-4 py-2 text-[13px] text-text-secondary font-medium hover:bg-hover-bg rounded-xl"
                 >
                   取消
                 </button>
                 <button
                   onClick={handleMissingInfoSubmit}
-                  className="px-5 py-2 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800"
+                  className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover"
                 >
                   确认生成
                 </button>
@@ -1486,26 +1486,26 @@ export function CreateProjectWorkstation({
 
         {/* 2. Add Supplementary Material Modal */}
         {showAddMaterial && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/30">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-btn-main/30">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4"
+              className="bg-surface-1 rounded-xl max-w-md w-full p-6 shadow-xl space-y-4"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-[16px] font-bold text-neutral-900">添加补充资料</h3>
-                <button onClick={() => setShowAddMaterial(false)} className="text-neutral-400 hover:text-neutral-600">
+                <h3 className="text-[16px] font-bold text-text-main">添加补充资料</h3>
+                <button onClick={() => setShowAddMaterial(false)} className="text-text-tertiary hover:text-text-secondary">
                   <X size={18} />
                 </button>
               </div>
 
               <div className="space-y-3 text-[13px]">
-                <p className="text-neutral-500">上传临时产品资料、活动要求或限制说明：</p>
-                <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-neutral-400 transition-colors cursor-pointer bg-neutral-50/50">
-                  <UploadCloud size={32} className="mx-auto text-neutral-400 mb-2" />
-                  <div className="font-medium text-neutral-700">点击上传文件或拖拽放置</div>
-                  <div className="text-[11px] text-neutral-400 mt-1">支持 PDF, DOCX, TXT, PNG</div>
+                <p className="text-text-tertiary">上传临时产品资料、活动要求或限制说明：</p>
+                <div className="border-2 border-dashed border-border-default rounded-xl p-6 text-center hover:border-neutral-400 transition-colors cursor-pointer bg-page-bg">
+                  <UploadCloud size={32} className="mx-auto text-text-tertiary mb-2" />
+                  <div className="font-medium text-text-secondary">点击上传文件或拖拽放置</div>
+                  <div className="text-[11px] text-text-tertiary mt-1">支持 PDF, DOCX, TXT, PNG</div>
                 </div>
               </div>
 
@@ -1515,7 +1515,7 @@ export function CreateProjectWorkstation({
                     setAttachments(prev => [...prev, { id: `att-${Date.now()}`, type: "file", name: "活动规则与限制说明.pdf" }]);
                     setShowAddMaterial(false);
                   }}
-                  className="px-5 py-2 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800"
+                  className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover"
                 >
                   模拟上传完成
                 </button>
@@ -1532,18 +1532,18 @@ export function CreateProjectWorkstation({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveDetailKey(null)}
-              className="fixed inset-0 bg-neutral-900/20 z-50"
+              className="fixed inset-0 bg-btn-main/20 z-50"
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 w-[520px] bg-white shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 w-[520px] bg-surface-1 shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
             >
-              <div className="flex items-center justify-between border-b border-neutral-200 pb-4 shrink-0">
-                <h3 className="text-[16px] font-bold text-neutral-900">AI推荐依据与实时配置修改</h3>
-                <button onClick={() => setActiveDetailKey(null)} className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100">
+              <div className="flex items-center justify-between border-b border-border-default pb-4 shrink-0">
+                <h3 className="text-[16px] font-bold text-text-main">AI推荐依据与实时配置修改</h3>
+                <button onClick={() => setActiveDetailKey(null)} className="p-1 rounded-lg text-text-tertiary hover:text-text-secondary hover:bg-hover-bg">
                   <X size={18} />
                 </button>
               </div>
@@ -1563,50 +1563,50 @@ export function CreateProjectWorkstation({
 
         {/* 5. Asset Task Review Modal (素材任务审核) */}
         {showAssetTaskReviewModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-btn-main/40">
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
+              className="bg-surface-1 rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
             >
-              <div className="p-6 border-b border-neutral-200 flex items-center justify-between shrink-0">
+              <div className="p-6 border-b border-border-default flex items-center justify-between shrink-0">
                 <div>
-                  <h3 className="text-[16px] font-bold text-neutral-900">待发布素材任务审核</h3>
-                  <p className="text-[12px] text-neutral-500 mt-0.5">自动生成的素材任务需人工确认后才会正式派发给执行人员</p>
+                  <h3 className="text-[16px] font-bold text-text-main">待发布素材任务审核</h3>
+                  <p className="text-[12px] text-text-tertiary mt-0.5">自动生成的素材任务需人工确认后才会正式派发给执行人员</p>
                 </div>
-                <button onClick={() => setShowAssetTaskReviewModal(false)} className="p-1.5 text-neutral-400 hover:bg-neutral-100 rounded-lg">
+                <button onClick={() => setShowAssetTaskReviewModal(false)} className="p-1.5 text-text-tertiary hover:bg-hover-bg rounded-lg">
                   <X size={18} />
                 </button>
               </div>
 
               <div className="p-6 overflow-y-auto flex-1 space-y-4">
                 {generatedMaterialTasksList.map((task, idx) => (
-                  <div key={idx} className="p-5 border border-neutral-200 rounded-2xl space-y-3 bg-neutral-50/50">
+                  <div key={idx} className="p-5 border border-border-default rounded-xl space-y-3 bg-page-bg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="px-2.5 py-0.5 bg-amber-100 text-amber-800 rounded-md text-[11px] font-bold">待发布</span>
-                        <h4 className="font-bold text-[14px] text-neutral-900">{task.reqs}</h4>
+                        <h4 className="font-bold text-[14px] text-text-main">{task.reqs}</h4>
                       </div>
-                      <span className="text-[12px] text-neutral-500">服务于 {task.associatedNoteIndices.length} 篇笔记</span>
+                      <span className="text-[12px] text-text-tertiary">服务于 {task.associatedNoteIndices.length} 篇笔记</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 text-[12px] text-neutral-600 bg-white p-3 rounded-xl border border-neutral-200/80">
-                      <div><span className="font-bold text-neutral-800">使用场景：</span>{task.usageScenario}</div>
-                      <div><span className="font-bold text-neutral-800">规格要求：</span>{task.specs}</div>
-                      <div><span className="font-bold text-neutral-800">拟派发人员：</span>{task.assignee}</div>
-                      <div><span className="font-bold text-neutral-800">可复用范围：</span>跨笔记自动关联共享</div>
+                    <div className="grid grid-cols-2 gap-3 text-[12px] text-text-secondary bg-surface-1 p-3 rounded-xl border border-border-default/80">
+                      <div><span className="font-bold text-text-main">使用场景：</span>{task.usageScenario}</div>
+                      <div><span className="font-bold text-text-main">规格要求：</span>{task.specs}</div>
+                      <div><span className="font-bold text-text-main">拟派发人员：</span>{task.assignee}</div>
+                      <div><span className="font-bold text-text-main">可复用范围：</span>跨笔记自动关联共享</div>
                     </div>
 
                     <div className="flex items-center justify-end gap-2 pt-1">
-                      <button className="px-3 py-1.5 border border-neutral-200 bg-white text-neutral-700 text-[12px] font-medium rounded-lg hover:bg-neutral-100">
+                      <button className="px-3 py-1.5 border border-border-default bg-surface-1 text-text-secondary text-[12px] font-medium rounded-lg hover:bg-hover-bg">
                         修改要求
                       </button>
                       <button
                         onClick={() => {
                           alert(`素材任务“${task.reqs}”已审核发布！`);
                         }}
-                        className="px-4 py-1.5 bg-neutral-900 text-white text-[12px] font-bold rounded-lg hover:bg-neutral-800"
+                        className="px-4 py-1.5 bg-btn-main text-white text-[12px] font-bold rounded-lg hover:bg-btn-main-hover"
                       >
                         确认发布任务
                       </button>
@@ -1615,11 +1615,11 @@ export function CreateProjectWorkstation({
                 ))}
               </div>
 
-              <div className="p-4 border-t border-neutral-200 flex justify-between items-center bg-neutral-50 shrink-0">
-                <span className="text-[12px] text-neutral-500">已发布任务可在素材中心随时调整执行状态</span>
+              <div className="p-4 border-t border-border-default flex justify-between items-center bg-page-bg shrink-0">
+                <span className="text-[12px] text-text-tertiary">已发布任务可在素材中心随时调整执行状态</span>
                 <button
                   onClick={() => setShowAssetTaskReviewModal(false)}
-                  className="px-5 py-2 bg-neutral-900 text-white text-[13px] font-bold rounded-xl"
+                  className="px-5 py-2 bg-btn-main text-white text-[13px] font-bold rounded-xl"
                 >
                   完成审核
                 </button>
@@ -1808,24 +1808,24 @@ export function CreateProjectWorkstation({
 
         {/* 9. Prompt Modal for Disabling Questionnaire when KOC content cleared */}
         {showDisableQuestionnairePrompt && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-btn-main/40">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4"
+              className="bg-surface-1 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4"
             >
               <div className="flex items-center gap-3 text-amber-600">
                 <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0 font-bold text-lg">
                   !
                 </div>
                 <div>
-                  <h3 className="font-bold text-[15px] text-neutral-900">同步关闭 KOC 试用问卷？</h3>
-                  <p className="text-[12px] text-neutral-500 mt-0.5">检测到您已清空 KOC 内容包</p>
+                  <h3 className="font-bold text-[15px] text-text-main">同步关闭 KOC 试用问卷？</h3>
+                  <p className="text-[12px] text-text-tertiary mt-0.5">检测到您已清空 KOC 内容包</p>
                 </div>
               </div>
 
-              <p className="text-[13px] text-neutral-700 leading-relaxed bg-neutral-50 p-3 rounded-xl border border-neutral-200">
+              <p className="text-[13px] text-text-secondary leading-relaxed bg-page-bg p-3 rounded-xl border border-border-default">
                 由于当前方案中不再产出 KOC 体验笔记，建议同步关闭 KOC 真实体验采集问卷，避免产生不必要的任务流程。
               </p>
 
@@ -1834,7 +1834,7 @@ export function CreateProjectWorkstation({
                   onClick={() => {
                     setShowDisableQuestionnairePrompt(false);
                   }}
-                  className="px-4 py-2 bg-white border border-neutral-300 text-neutral-700 font-bold text-[12.5px] rounded-xl hover:bg-neutral-50"
+                  className="px-4 py-2 bg-surface-1 border border-neutral-300 text-text-secondary font-bold text-[12.5px] rounded-xl hover:bg-page-bg"
                 >
                   保留问卷
                 </button>
@@ -1856,7 +1856,7 @@ export function CreateProjectWorkstation({
                     }));
                     setShowDisableQuestionnairePrompt(false);
                   }}
-                  className="px-4 py-2 bg-neutral-900 text-white font-bold text-[12.5px] rounded-xl hover:bg-neutral-800"
+                  className="px-4 py-2 bg-btn-main text-white font-bold text-[12.5px] rounded-xl hover:bg-btn-main-hover"
                 >
                   同步关闭问卷
                 </button>
@@ -1883,11 +1883,11 @@ function PlanResultRow({
   customActions?: React.ReactNode;
 }) {
   return (
-    <div className="p-4 flex items-start justify-between gap-4 hover:bg-neutral-50/50 transition-colors">
-      <div className="w-36 shrink-0 text-[13px] font-bold text-neutral-900 pt-0.5">
+    <div className="p-4 flex items-start justify-between gap-4 hover:bg-page-bg transition-colors">
+      <div className="w-36 shrink-0 text-[13px] font-bold text-text-main pt-0.5">
         {title}
       </div>
-      <div className="flex-1 text-[13px] text-neutral-800 leading-relaxed font-normal">
+      <div className="flex-1 text-[13px] text-text-main leading-relaxed font-normal">
         {value}
       </div>
       <div className="flex items-center gap-2 shrink-0 pt-0.5">
@@ -1909,7 +1909,7 @@ function PlanResultRow({
 // Helper execution checklist step
 function ExecutionCheckStep({ text, done }: { text: string; done?: boolean }) {
   return (
-    <div className="flex items-center gap-2.5 text-neutral-800 font-medium">
+    <div className="flex items-center gap-2.5 text-text-main font-medium">
       <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
         <Check size={12} />
       </div>
@@ -1954,10 +1954,10 @@ function AccountQuantityAdjuster({
   const totalAll = (brandCount * brandNotesPerAccount) + (kosCount * kosNotesPerAccount) + (kocCount * 1);
 
   return (
-    <div className="p-3.5 bg-neutral-50 border border-neutral-200 rounded-2xl space-y-3 font-sans">
-      <div className="text-[12px] font-bold text-neutral-800 flex items-center justify-between">
+    <div className="p-3.5 bg-page-bg border border-border-default rounded-xl space-y-3 font-sans">
+      <div className="text-[12px] font-bold text-text-main flex items-center justify-between">
         <span className="flex items-center gap-1.5">
-          <Users size={14} className="text-neutral-500" />
+          <Users size={14} className="text-text-tertiary" />
           账号资产关联与发文频次配置
         </span>
         <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200/60">
@@ -1967,8 +1967,8 @@ function AccountQuantityAdjuster({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[12px]">
         {/* 1. 品牌主号 */}
-        <div className="p-3 bg-white border border-neutral-200 rounded-xl space-y-2 shadow-2xs">
-          <div className="font-bold text-neutral-800 flex items-center justify-between text-[12px]">
+        <div className="p-3 bg-surface-1 border border-border-default rounded-xl space-y-2 shadow-2xs">
+          <div className="font-bold text-text-main flex items-center justify-between text-[12px]">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
               品牌主号
@@ -1980,48 +1980,48 @@ function AccountQuantityAdjuster({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-neutral-500 text-[11.5px]">选择账号数:</span>
-              <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+              <span className="text-text-tertiary text-[11.5px]">选择账号数:</span>
+              <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount - 1, brandNotesPerAccount, kosCount, kosNotesPerAccount, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >-</button>
-                <span className="w-8 text-center font-bold text-neutral-900 text-[12px]">{brandCount}</span>
+                <span className="w-8 text-center font-bold text-text-main text-[12px]">{brandCount}</span>
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount + 1, brandNotesPerAccount, kosCount, kosNotesPerAccount, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >+</button>
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-2">
-              <span className="text-neutral-500 text-[11.5px]">单账号发文数:</span>
-              <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+              <span className="text-text-tertiary text-[11.5px]">单账号发文数:</span>
+              <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount - 1, kosCount, kosNotesPerAccount, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >-</button>
-                <span className="w-8 text-center font-bold text-neutral-900 text-[12px]">{brandNotesPerAccount}</span>
+                <span className="w-8 text-center font-bold text-text-main text-[12px]">{brandNotesPerAccount}</span>
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount + 1, kosCount, kosNotesPerAccount, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >+</button>
               </div>
             </div>
           </div>
 
-          <div className="pt-1.5 border-t border-neutral-100 text-[10.5px] text-neutral-500 leading-tight">
+          <div className="pt-1.5 border-t border-border-default text-[10.5px] text-text-tertiary leading-tight">
             资产库共{MERCHANT_BRAND_ACCOUNTS.length}个品牌号，已自动关联{brandCount}个
           </div>
         </div>
 
         {/* 2. KOS店长号 */}
-        <div className="p-3 bg-white border border-neutral-200 rounded-xl space-y-2 shadow-2xs">
-          <div className="font-bold text-neutral-800 flex items-center justify-between text-[12px]">
+        <div className="p-3 bg-surface-1 border border-border-default rounded-xl space-y-2 shadow-2xs">
+          <div className="font-bold text-text-main flex items-center justify-between text-[12px]">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
               KOS店长号
@@ -2033,48 +2033,48 @@ function AccountQuantityAdjuster({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-neutral-500 text-[11.5px]">选择账号数:</span>
-              <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+              <span className="text-text-tertiary text-[11.5px]">选择账号数:</span>
+              <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount, kosCount - 1, kosNotesPerAccount, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >-</button>
-                <span className="w-8 text-center font-bold text-neutral-900 text-[12px]">{kosCount}</span>
+                <span className="w-8 text-center font-bold text-text-main text-[12px]">{kosCount}</span>
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount, kosCount + 1, kosNotesPerAccount, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >+</button>
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-2">
-              <span className="text-neutral-500 text-[11.5px]">单账号发文数:</span>
-              <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+              <span className="text-text-tertiary text-[11.5px]">单账号发文数:</span>
+              <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount, kosCount, kosNotesPerAccount - 1, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >-</button>
-                <span className="w-8 text-center font-bold text-neutral-900 text-[12px]">{kosNotesPerAccount}</span>
+                <span className="w-8 text-center font-bold text-text-main text-[12px]">{kosNotesPerAccount}</span>
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount, kosCount, kosNotesPerAccount + 1, kocCount)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >+</button>
               </div>
             </div>
           </div>
 
-          <div className="pt-1.5 border-t border-neutral-100 text-[10.5px] text-neutral-500 leading-tight">
+          <div className="pt-1.5 border-t border-border-default text-[10.5px] text-text-tertiary leading-tight">
             资产库共{MERCHANT_KOS_ACCOUNTS.length}个店长号，已自动关联{kosCount}个
           </div>
         </div>
 
         {/* 3. 消费者KOC */}
-        <div className="p-3 bg-white border border-neutral-200 rounded-xl space-y-2 shadow-2xs">
-          <div className="font-bold text-neutral-800 flex items-center justify-between text-[12px]">
+        <div className="p-3 bg-surface-1 border border-border-default rounded-xl space-y-2 shadow-2xs">
+          <div className="font-bold text-text-main flex items-center justify-between text-[12px]">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
               消费者/KOC
@@ -2086,31 +2086,31 @@ function AccountQuantityAdjuster({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-neutral-500 text-[11.5px]">预计招募人数:</span>
-              <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+              <span className="text-text-tertiary text-[11.5px]">预计招募人数:</span>
+              <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount, kosCount, kosNotesPerAccount, kocCount - 1)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >-</button>
-                <span className="w-8 text-center font-bold text-neutral-900 text-[12px]">{kocCount}</span>
+                <span className="w-8 text-center font-bold text-text-main text-[12px]">{kocCount}</span>
                 <button
                   type="button"
                   onClick={() => updateCounts(brandCount, brandNotesPerAccount, kosCount, kosNotesPerAccount, kocCount + 1)}
-                  className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                 >+</button>
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-2 opacity-80">
-              <span className="text-neutral-500 text-[11.5px]">单账号体验包:</span>
-              <span className="text-[11px] font-bold text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
+              <span className="text-text-tertiary text-[11.5px]">单账号体验包:</span>
+              <span className="text-[11px] font-bold text-text-secondary bg-hover-bg px-2 py-0.5 rounded border border-border-default">
                 固定 1 篇/包
               </span>
             </div>
           </div>
 
-          <div className="pt-1.5 border-t border-neutral-100 text-[10.5px] text-emerald-700 leading-tight">
+          <div className="pt-1.5 border-t border-border-default text-[10.5px] text-emerald-700 leading-tight">
             依托【体验问卷】收集人设/优点/吐槽，实现千人千篇
           </div>
         </div>
@@ -2178,10 +2178,10 @@ function ContentAndAccountsDetailEditor({
   return (
     <div className="space-y-5 text-[13px] leading-relaxed">
       {/* Top Summary Banner */}
-      <div className="flex items-center justify-between p-3.5 bg-neutral-50 rounded-2xl border border-neutral-200">
+      <div className="flex items-center justify-between p-3.5 bg-page-bg rounded-xl border border-border-default">
         <div>
-          <div className="font-bold text-neutral-900 text-[14px]">预设账号分配与产出计划</div>
-          <div className="text-[11.5px] text-neutral-500">勾选预设账号库，配置各账号发文频次与KOC发布模式</div>
+          <div className="font-bold text-text-main text-[14px]">预设账号分配与产出计划</div>
+          <div className="text-[11.5px] text-text-tertiary">勾选预设账号库，配置各账号发文频次与KOC发布模式</div>
         </div>
         <span className="text-[13px] font-extrabold text-amber-800 bg-amber-100 px-3 py-1 rounded-xl border border-amber-200">
           共 {totalNotes} 篇/包
@@ -2189,33 +2189,33 @@ function ContentAndAccountsDetailEditor({
       </div>
 
       {/* 1. 品牌主号 */}
-      <div className="p-4 bg-white border border-neutral-200 rounded-2xl space-y-3 shadow-2xs">
+      <div className="p-4 bg-surface-1 border border-border-default rounded-xl space-y-3 shadow-2xs">
         <div className="flex items-center justify-between">
-          <div className="font-bold text-neutral-900 flex items-center gap-2">
+          <div className="font-bold text-text-main flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
             品牌主号 (预设可用账号)
           </div>
           <div className="flex items-center gap-2 text-[12px]">
-            <span className="text-neutral-500 font-medium">单账号发文:</span>
-            <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+            <span className="text-text-tertiary font-medium">单账号发文:</span>
+            <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
               <button
                 type="button"
                 onClick={() => setBrandNotes(Math.max(1, brandNotes - 1))}
-                className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
               >-</button>
-              <span className="w-8 text-center font-bold text-neutral-900">{brandNotes}</span>
+              <span className="w-8 text-center font-bold text-text-main">{brandNotes}</span>
               <button
                 type="button"
                 onClick={() => setBrandNotes(brandNotes + 1)}
-                className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
               >+</button>
             </div>
-            <span className="text-neutral-500">篇</span>
+            <span className="text-text-tertiary">篇</span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <div className="text-[11.5px] font-bold text-neutral-500">可分配账号列表（已勾选 {selectedBrandIds.length} 个）：</div>
+          <div className="text-[11.5px] font-bold text-text-tertiary">可分配账号列表（已勾选 {selectedBrandIds.length} 个）：</div>
           <div className="space-y-1.5">
             {MERCHANT_BRAND_ACCOUNTS.map(acc => {
               const isChecked = selectedBrandIds.includes(acc.id);
@@ -2223,7 +2223,7 @@ function ContentAndAccountsDetailEditor({
                 <label
                   key={acc.id}
                   className={`flex items-center justify-between p-2.5 rounded-xl border transition-colors cursor-pointer ${
-                    isChecked ? "bg-blue-50/50 border-blue-200" : "bg-neutral-50/50 border-neutral-200 hover:border-neutral-300"
+                    isChecked ? "bg-blue-50/50 border-blue-200" : "bg-page-bg border-border-default hover:border-neutral-300"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -2234,8 +2234,8 @@ function ContentAndAccountsDetailEditor({
                       className="w-4 h-4 accent-blue-600 rounded cursor-pointer"
                     />
                     <div>
-                      <span className="font-bold text-neutral-900 text-[12.5px]">{acc.name}</span>
-                      <span className="text-[11px] text-neutral-400 ml-2">{acc.fans} 粉丝 · {acc.status}</span>
+                      <span className="font-bold text-text-main text-[12.5px]">{acc.name}</span>
+                      <span className="text-[11px] text-text-tertiary ml-2">{acc.fans} 粉丝 · {acc.status}</span>
                     </div>
                   </div>
                   {isChecked && (
@@ -2251,33 +2251,33 @@ function ContentAndAccountsDetailEditor({
       </div>
 
       {/* 2. KOS店长号 */}
-      <div className="p-4 bg-white border border-neutral-200 rounded-2xl space-y-3 shadow-2xs">
+      <div className="p-4 bg-surface-1 border border-border-default rounded-xl space-y-3 shadow-2xs">
         <div className="flex items-center justify-between">
-          <div className="font-bold text-neutral-900 flex items-center gap-2">
+          <div className="font-bold text-text-main flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
             KOS店长号 (预设可用账号)
           </div>
           <div className="flex items-center gap-2 text-[12px]">
-            <span className="text-neutral-500 font-medium">单账号发文:</span>
-            <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+            <span className="text-text-tertiary font-medium">单账号发文:</span>
+            <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
               <button
                 type="button"
                 onClick={() => setKosNotes(Math.max(1, kosNotes - 1))}
-                className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
               >-</button>
-              <span className="w-8 text-center font-bold text-neutral-900">{kosNotes}</span>
+              <span className="w-8 text-center font-bold text-text-main">{kosNotes}</span>
               <button
                 type="button"
                 onClick={() => setKosNotes(kosNotes + 1)}
-                className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
               >+</button>
             </div>
-            <span className="text-neutral-500">篇</span>
+            <span className="text-text-tertiary">篇</span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <div className="text-[11.5px] font-bold text-neutral-500">可分配门店账号（已勾选 {selectedKosIds.length}/{MERCHANT_KOS_ACCOUNTS.length} 个）：</div>
+          <div className="text-[11.5px] font-bold text-text-tertiary">可分配门店账号（已勾选 {selectedKosIds.length}/{MERCHANT_KOS_ACCOUNTS.length} 个）：</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto pr-1">
             {MERCHANT_KOS_ACCOUNTS.map(acc => {
               const isChecked = selectedKosIds.includes(acc.id);
@@ -2285,7 +2285,7 @@ function ContentAndAccountsDetailEditor({
                 <label
                   key={acc.id}
                   className={`flex items-center justify-between p-2 rounded-xl border transition-colors cursor-pointer text-[12px] ${
-                    isChecked ? "bg-amber-50/50 border-amber-200" : "bg-neutral-50/50 border-neutral-200 hover:border-neutral-300"
+                    isChecked ? "bg-amber-50/50 border-amber-200" : "bg-page-bg border-border-default hover:border-neutral-300"
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
@@ -2295,9 +2295,9 @@ function ContentAndAccountsDetailEditor({
                       onChange={() => toggleKosAccount(acc.id)}
                       className="w-3.5 h-3.5 accent-amber-600 rounded cursor-pointer shrink-0"
                     />
-                    <span className="font-bold text-neutral-800 truncate">{acc.name}</span>
+                    <span className="font-bold text-text-main truncate">{acc.name}</span>
                   </div>
-                  <span className="text-[10px] text-neutral-400 shrink-0 ml-1">{acc.storeName}</span>
+                  <span className="text-[10px] text-text-tertiary shrink-0 ml-1">{acc.storeName}</span>
                 </label>
               );
             })}
@@ -2306,37 +2306,37 @@ function ContentAndAccountsDetailEditor({
       </div>
 
       {/* 3. 消费者KOC */}
-      <div className="p-4 bg-white border border-neutral-200 rounded-2xl space-y-3 shadow-2xs">
+      <div className="p-4 bg-surface-1 border border-border-default rounded-xl space-y-3 shadow-2xs">
         <div className="flex items-center justify-between">
-          <div className="font-bold text-neutral-900 flex items-center gap-2">
+          <div className="font-bold text-text-main flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
             消费者KOC 招募与内容模式
           </div>
           <div className="flex items-center gap-2 text-[12px]">
-            <span className="text-neutral-500 font-medium">拟招募人数:</span>
-            <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+            <span className="text-text-tertiary font-medium">拟招募人数:</span>
+            <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
               <button
                 type="button"
                 onClick={() => setKocCount(Math.max(0, kocCount - 1))}
-                className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
               >-</button>
-              <span className="w-8 text-center font-bold text-neutral-900">{kocCount}</span>
+              <span className="w-8 text-center font-bold text-text-main">{kocCount}</span>
               <button
                 type="button"
                 onClick={() => setKocCount(kocCount + 1)}
-                className="w-6 h-6 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                className="w-6 h-6 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
               >+</button>
             </div>
-            <span className="text-neutral-500">人</span>
+            <span className="text-text-tertiary">人</span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <div className="text-[11.5px] font-bold text-neutral-500">KOC 内容策略与模式选择：</div>
+          <div className="text-[11.5px] font-bold text-text-tertiary">KOC 内容策略与模式选择：</div>
           <div className="space-y-2">
             <label
               className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
-                kocMode === "内容包" ? "bg-emerald-50/50 border-emerald-200" : "bg-neutral-50/50 border-neutral-200 hover:border-neutral-300"
+                kocMode === "内容包" ? "bg-emerald-50/50 border-emerald-200" : "bg-page-bg border-border-default hover:border-neutral-300"
               }`}
             >
               <input
@@ -2348,11 +2348,11 @@ function ContentAndAccountsDetailEditor({
                 className="mt-0.5 accent-emerald-600 cursor-pointer"
               />
               <div>
-                <div className="font-bold text-neutral-900 text-[12.5px] flex items-center gap-1.5">
+                <div className="font-bold text-text-main text-[12.5px] flex items-center gap-1.5">
                   采用试用体验内容包
                   <span className="px-2 py-0.2 bg-emerald-100 text-emerald-800 text-[10.5px] font-bold rounded">推荐 (千人千篇)</span>
                 </div>
-                <div className="text-[11.5px] text-neutral-500 mt-0.5">
+                <div className="text-[11.5px] text-text-tertiary mt-0.5">
                   通过KOC真实体验采集问卷收集人设、表达习惯与反馈事实，由AI自动定制属于各创作者的差异化体验内容包。
                 </div>
               </div>
@@ -2360,7 +2360,7 @@ function ContentAndAccountsDetailEditor({
 
             <label
               className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
-                kocMode === "预设笔记" ? "bg-emerald-50/50 border-emerald-200" : "bg-neutral-50/50 border-neutral-200 hover:border-neutral-300"
+                kocMode === "预设笔记" ? "bg-emerald-50/50 border-emerald-200" : "bg-page-bg border-border-default hover:border-neutral-300"
               }`}
             >
               <input
@@ -2372,10 +2372,10 @@ function ContentAndAccountsDetailEditor({
                 className="mt-0.5 accent-emerald-600 cursor-pointer"
               />
               <div>
-                <div className="font-bold text-neutral-900 text-[12.5px]">
+                <div className="font-bold text-text-main text-[12.5px]">
                   采用预设笔记
                 </div>
-                <div className="text-[11.5px] text-neutral-500 mt-0.5">
+                <div className="text-[11.5px] text-text-tertiary mt-0.5">
                   不使用体验问卷采集，统一派发标准预设笔记模板供KOC发布。
                 </div>
               </div>
@@ -2389,18 +2389,18 @@ function ContentAndAccountsDetailEditor({
         <span>确认配置后，系统将自动关联对应账号并在方案通过后开启任务调度。</span>
       </div>
 
-      <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-200">
+      <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-default">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-neutral-600 font-medium text-[12.5px] hover:bg-neutral-100 rounded-xl"
+          className="px-4 py-2 text-text-secondary font-medium text-[12.5px] hover:bg-hover-bg rounded-xl"
         >
           取消
         </button>
         <button
           type="button"
           onClick={handleConfirm}
-          className="px-5 py-2 bg-neutral-900 text-white font-bold text-[12.5px] rounded-xl hover:bg-neutral-800 transition-colors shadow-2xs"
+          className="px-5 py-2 bg-btn-main text-white font-bold text-[12.5px] rounded-xl hover:bg-btn-main-hover transition-colors shadow-2xs"
         >
           保存并更新
         </button>
@@ -2442,10 +2442,10 @@ function KocQuestionnaireDetailEditor({
   return (
     <div className="space-y-5 text-[13px] leading-relaxed">
       {/* Top switch status */}
-      <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200 flex items-center justify-between">
+      <div className="p-4 bg-page-bg rounded-xl border border-border-default flex items-center justify-between">
         <div>
-          <div className="font-bold text-[14px] text-neutral-900">开启 KOC 真实体验采集</div>
-          <div className="text-[12px] text-neutral-500">分发真实体验问卷，提取事实数据用于定向生成个性化笔记</div>
+          <div className="font-bold text-[14px] text-text-main">开启 KOC 真实体验采集</div>
+          <div className="text-[12px] text-text-tertiary">分发真实体验问卷，提取事实数据用于定向生成个性化笔记</div>
         </div>
         <input
           type="checkbox"
@@ -2457,22 +2457,22 @@ function KocQuestionnaireDetailEditor({
 
       {enabled ? (
         <div className="space-y-4">
-          <div className="p-3.5 border border-neutral-200 rounded-2xl bg-white flex items-center justify-between">
-            <span className="text-[12.5px] font-bold text-neutral-700">预计参与账号数</span>
-            <span className="text-[14px] font-extrabold text-neutral-900 bg-neutral-100 px-3 py-1 rounded-xl">
+          <div className="p-3.5 border border-border-default rounded-xl bg-surface-1 flex items-center justify-between">
+            <span className="text-[12.5px] font-bold text-text-secondary">预计参与账号数</span>
+            <span className="text-[14px] font-extrabold text-text-main bg-hover-bg px-3 py-1 rounded-xl">
               {kocCount} 人 (已与 KOC 招募数同步)
             </span>
           </div>
 
-          <div className="p-4 border border-neutral-200 rounded-2xl bg-white space-y-2">
-            <div className="font-bold text-neutral-900 text-[13px]">问卷收集时机设置</div>
+          <div className="p-4 border border-border-default rounded-xl bg-surface-1 space-y-2">
+            <div className="font-bold text-text-main text-[13px]">问卷收集时机设置</div>
             <div className="space-y-2 text-[12px]">
               {[
                 { label: "发布内容前完成（推荐：获取真实产品反馈，定向生成个性化笔记）", value: "发布内容前完成" },
                 { label: "入群报名时同步收集", value: "入群报名时同步收集" },
                 { label: "活动结束后统一收集", value: "活动结束后统一收集" }
               ].map(opt => (
-                <label key={opt.value} className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-neutral-50 cursor-pointer">
+                <label key={opt.value} className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-page-bg cursor-pointer">
                   <input
                     type="radio"
                     name="q-timing"
@@ -2481,22 +2481,22 @@ function KocQuestionnaireDetailEditor({
                     onChange={(e) => setTiming(e.target.value)}
                     className="mt-0.5 accent-neutral-900 cursor-pointer"
                   />
-                  <span className="text-neutral-800 font-medium">{opt.label}</span>
+                  <span className="text-text-main font-medium">{opt.label}</span>
                 </label>
               ))}
             </div>
           </div>
 
-          <div className="p-4 border border-neutral-200 rounded-2xl bg-white space-y-3">
+          <div className="p-4 border border-border-default rounded-xl bg-surface-1 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <div className="font-bold text-neutral-900 text-[13px]">包含问卷题目 ({questions.length}个问题)</div>
-                <div className="text-[11.5px] text-neutral-500">结构化采集背景、习惯、体验与图片视频</div>
+                <div className="font-bold text-text-main text-[13px]">包含问卷题目 ({questions.length}个问题)</div>
+                <div className="text-[11.5px] text-text-tertiary">结构化采集背景、习惯、体验与图片视频</div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowQuestionsEditor(!showQuestionsEditor)}
-                className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-[12px] rounded-xl transition-colors flex items-center gap-1"
+                className="px-3 py-1.5 bg-hover-bg hover:bg-selected-bg text-text-main font-bold text-[12px] rounded-xl transition-colors flex items-center gap-1"
               >
                 <BookOpen size={13} />
                 {showQuestionsEditor ? "收起题目列表" : "查看/编辑题目"}
@@ -2504,12 +2504,12 @@ function KocQuestionnaireDetailEditor({
             </div>
 
             {showQuestionsEditor && (
-              <div className="space-y-2 pt-2 border-t border-neutral-100">
+              <div className="space-y-2 pt-2 border-t border-border-default">
                 {questions.map((q, idx) => (
-                  <div key={q.id} className="p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl space-y-1.5 text-[12px]">
+                  <div key={q.id} className="p-2.5 bg-page-bg border border-border-default rounded-xl space-y-1.5 text-[12px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-neutral-700">问题 {idx + 1} ({q.type})</span>
-                      <span className={`text-[10.5px] font-bold px-1.5 py-0.2 rounded ${q.isRequired ? 'bg-red-50 text-red-700' : 'bg-neutral-200 text-neutral-600'}`}>
+                      <span className="font-bold text-text-secondary">问题 {idx + 1} ({q.type})</span>
+                      <span className={`text-[10.5px] font-bold px-1.5 py-0.2 rounded ${q.isRequired ? 'bg-red-50 text-red-700' : 'bg-neutral-200 text-text-secondary'}`}>
                         {q.isRequired ? "必填" : "选填"}
                       </span>
                     </div>
@@ -2521,7 +2521,7 @@ function KocQuestionnaireDetailEditor({
                         newQ[idx] = { ...newQ[idx], title: e.target.value };
                         setQuestions(newQ);
                       }}
-                      className="w-full px-2.5 py-1 bg-white border border-neutral-200 rounded-lg text-neutral-900 outline-none font-medium text-[12px]"
+                      className="w-full px-2.5 py-1 bg-surface-1 border border-border-default rounded-lg text-text-main outline-none font-medium text-[12px]"
                     />
                   </div>
                 ))}
@@ -2530,23 +2530,23 @@ function KocQuestionnaireDetailEditor({
           </div>
         </div>
       ) : (
-        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200 text-neutral-500 text-[12.5px]">
+        <div className="p-4 bg-page-bg rounded-xl border border-border-default text-text-tertiary text-[12.5px]">
           已关闭体验采集问卷，KOC发文将采用预设笔记模式。
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-200">
+      <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-default">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-neutral-600 font-medium text-[12.5px] hover:bg-neutral-100 rounded-xl"
+          className="px-4 py-2 text-text-secondary font-medium text-[12.5px] hover:bg-hover-bg rounded-xl"
         >
           取消
         </button>
         <button
           type="button"
           onClick={handleConfirm}
-          className="px-5 py-2 bg-neutral-900 text-white font-bold text-[12.5px] rounded-xl hover:bg-neutral-800 transition-colors shadow-2xs"
+          className="px-5 py-2 bg-btn-main text-white font-bold text-[12.5px] rounded-xl hover:bg-btn-main-hover transition-colors shadow-2xs"
         >
           保存配置
         </button>
@@ -2634,33 +2634,33 @@ function DetailDrawerContent({
   return (
     <div className="space-y-6 text-[13px] leading-relaxed">
       {/* 1. Quick Inline Edit Block inside Drawer */}
-      <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-2xl space-y-3">
+      <div className="p-4 bg-page-bg border border-border-default rounded-xl space-y-3">
         <div className="flex items-center justify-between">
-          <div className="font-bold text-neutral-900 text-[14px] flex items-center gap-1.5">
-            <Edit2 size={15} className="text-neutral-500" />
+          <div className="font-bold text-text-main text-[14px] flex items-center gap-1.5">
+            <Edit2 size={15} className="text-text-tertiary" />
             配置修改：{getTitle()}
           </div>
-          <span className="text-[11px] text-neutral-400">可在下方直接保存修改</span>
+          <span className="text-[11px] text-text-tertiary">可在下方直接保存修改</span>
         </div>
 
         {itemKey === "cycle" ? (
           <div className="space-y-3 pt-1">
             <div className="flex items-center gap-2">
-              <span className="text-neutral-600 font-medium">开始日期:</span>
+              <span className="text-text-secondary font-medium">开始日期:</span>
               <input
                 type="date"
                 value={draftStartDate}
                 onChange={(e) => setDraftStartDate(e.target.value)}
-                className="px-3 py-1.5 bg-white border border-neutral-300 rounded-xl font-bold text-neutral-900 outline-none"
+                className="px-3 py-1.5 bg-surface-1 border border-neutral-300 rounded-xl font-bold text-text-main outline-none"
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-neutral-600 font-medium">结束日期:</span>
+              <span className="text-text-secondary font-medium">结束日期:</span>
               <input
                 type="date"
                 value={draftEndDate}
                 onChange={(e) => setDraftEndDate(e.target.value)}
-                className="px-3 py-1.5 bg-white border border-neutral-300 rounded-xl font-bold text-neutral-900 outline-none"
+                className="px-3 py-1.5 bg-surface-1 border border-neutral-300 rounded-xl font-bold text-text-main outline-none"
               />
             </div>
             <div className="text-[12px] font-bold text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200/90">
@@ -2672,21 +2672,21 @@ function DetailDrawerContent({
             type="text"
             value={draftValue}
             onChange={(e) => setDraftValue(e.target.value)}
-            className="w-full p-2.5 bg-white border border-neutral-300 rounded-xl text-[13px] font-bold text-neutral-900 outline-none focus:border-neutral-500 font-sans"
+            className="w-full p-2.5 bg-surface-1 border border-neutral-300 rounded-xl text-[13px] font-bold text-text-main outline-none focus:border-neutral-500 font-sans"
           />
         ) : (
           <textarea
             value={draftValue}
             onChange={(e) => setDraftValue(e.target.value)}
             rows={4}
-            className="w-full p-3 bg-white border border-neutral-300 rounded-xl text-[13px] text-neutral-900 outline-none focus:border-neutral-500 font-sans"
+            className="w-full p-3 bg-surface-1 border border-neutral-300 rounded-xl text-[13px] text-text-main outline-none focus:border-neutral-500 font-sans"
           />
         )}
 
         <div className="flex justify-end pt-1">
           <button
             onClick={handleSaveDetailEdit}
-            className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-[12.5px] rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
+            className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[12.5px] rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
           >
             <Check size={14} /> 保存此项修改
           </button>
@@ -2703,8 +2703,8 @@ function DetailDrawerContent({
 
       {/* 3. Reference Data */}
       <div className="space-y-2">
-        <div className="font-bold text-neutral-900">引用的系统资料：</div>
-        <ul className="list-disc list-inside text-neutral-600 space-y-1 pl-1">
+        <div className="font-bold text-text-main">引用的系统资料：</div>
+        <ul className="list-disc list-inside text-text-secondary space-y-1 pl-1">
           <li>商家画像：萌宠乐园品牌主营幼犬粮系列</li>
           <li>知识资料：《幼犬换粮指南》及成分检测报告</li>
           <li>账号资源：已关联 3 个品牌官方号及 10 个店长号资产</li>
@@ -2713,8 +2713,8 @@ function DetailDrawerContent({
 
       {/* 4. Assumptions & Impacts */}
       <div className="space-y-2">
-        <div className="font-bold text-neutral-900">关联影响与系统联动：</div>
-        <p className="text-neutral-600">
+        <div className="font-bold text-text-main">关联影响与系统联动：</div>
+        <p className="text-text-secondary">
           修改该项配置将自动同步至后期生成的笔记排期与体验内容包，确保数据与执行中心一致。
         </p>
       </div>
@@ -2780,80 +2780,80 @@ function ContentRolesDrawer({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-neutral-900/20 z-50"
+        className="fixed inset-0 bg-btn-main/20 z-50"
       />
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed right-0 top-0 bottom-0 w-[580px] bg-white shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
+        className="fixed right-0 top-0 bottom-0 w-[580px] bg-surface-1 shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
       >
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 shrink-0">
+        <div className="flex items-center justify-between border-b border-border-default pb-4 shrink-0">
           <div>
-            <h3 className="text-[16px] font-bold text-neutral-900">内容安排</h3>
-            <p className="text-[12px] text-neutral-500 mt-0.5">确认各内容角色与产出量，AI将在确认方案后自动匹配账号与排期</p>
+            <h3 className="text-[16px] font-bold text-text-main">内容安排</h3>
+            <p className="text-[12px] text-text-tertiary mt-0.5">确认各内容角色与产出量，AI将在确认方案后自动匹配账号与排期</p>
           </div>
-          <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg">
+          <button onClick={onClose} className="p-1.5 text-text-tertiary hover:text-text-secondary hover:bg-hover-bg rounded-lg">
             <X size={18} />
           </button>
         </div>
 
-        <div className="flex items-center justify-between px-4 py-3 bg-neutral-50 rounded-2xl border border-neutral-200">
-          <span className="text-[13px] font-bold text-neutral-800">当前计划产出总量</span>
+        <div className="flex items-center justify-between px-4 py-3 bg-page-bg rounded-xl border border-border-default">
+          <span className="text-[13px] font-bold text-text-main">当前计划产出总量</span>
           <span className="text-[14px] font-extrabold text-amber-800 bg-amber-100 px-3 py-1 rounded-xl border border-amber-200">
             共 {totalNotes} 篇/包
           </span>
         </div>
 
         <div className="space-y-4 flex-1">
-          <div className="text-[13px] font-bold text-neutral-800 flex items-center justify-between">
+          <div className="text-[13px] font-bold text-text-main flex items-center justify-between">
             <span>内容角色与作用列表</span>
-            <span className="text-[11px] text-neutral-400 font-normal">点击单元格可直接修改</span>
+            <span className="text-[11px] text-text-tertiary font-normal">点击单元格可直接修改</span>
           </div>
 
           <div className="space-y-3">
             {roles.map((item) => (
-              <div key={item.id} className="p-4 bg-white border border-neutral-200 rounded-2xl space-y-3 shadow-2xs hover:border-neutral-300 transition-colors">
+              <div key={item.id} className="p-4 bg-surface-1 border border-border-default rounded-xl space-y-3 shadow-2xs hover:border-neutral-300 transition-colors">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 flex-1">
-                    <span className="text-[11px] font-bold text-neutral-400 shrink-0">角色名称:</span>
+                    <span className="text-[11px] font-bold text-text-tertiary shrink-0">角色名称:</span>
                     <input
                       type="text"
                       value={item.role}
                       onChange={(e) => handleUpdateRole(item.id, "role", e.target.value)}
-                      className="px-2.5 py-1 bg-neutral-50 border border-neutral-200 rounded-lg text-[13px] font-bold text-neutral-900 focus:bg-white focus:border-neutral-400 outline-none flex-1"
+                      className="px-2.5 py-1 bg-page-bg border border-border-default rounded-lg text-[13px] font-bold text-text-main focus:bg-surface-1 focus:border-neutral-400 outline-none flex-1"
                     />
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[11px] font-bold text-neutral-400">产出量:</span>
-                    <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+                    <span className="text-[11px] font-bold text-text-tertiary">产出量:</span>
+                    <div className="flex items-center border border-border-default rounded-lg overflow-hidden bg-page-bg">
                       <button
                         type="button"
                         onClick={() => handleUpdateRole(item.id, "count", Math.max(0, item.count - 1))}
-                        className="w-7 h-7 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                        className="w-7 h-7 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                       >-</button>
                       <input
                         type="number"
                         min={0}
                         value={item.count}
                         onChange={(e) => handleUpdateRole(item.id, "count", Math.max(0, parseInt(e.target.value) || 0))}
-                        className="w-10 text-center font-bold text-neutral-900 text-[13px] bg-transparent outline-none"
+                        className="w-10 text-center font-bold text-text-main text-[13px] bg-transparent outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => handleUpdateRole(item.id, "count", item.count + 1)}
-                        className="w-7 h-7 flex items-center justify-center hover:bg-neutral-200 font-bold text-neutral-600 transition-colors"
+                        className="w-7 h-7 flex items-center justify-center hover:bg-selected-bg font-bold text-text-secondary transition-colors"
                       >+</button>
                     </div>
-                    <span className="text-[12px] text-neutral-500 font-medium">篇/包</span>
+                    <span className="text-[12px] text-text-tertiary font-medium">篇/包</span>
                   </div>
 
                   {roles.length > 1 && (
                     <button
                       onClick={() => handleRemoveRole(item.id)}
-                      className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+                      className="p-1.5 text-text-tertiary hover:text-danger hover:bg-red-50 rounded-lg transition-colors shrink-0"
                       title="删除此角色"
                     >
                       <Trash2 size={15} />
@@ -2862,12 +2862,12 @@ function ContentRolesDrawer({
                 </div>
 
                 <div>
-                  <span className="text-[11px] font-bold text-neutral-400 mb-1 block">核心作用与定位:</span>
+                  <span className="text-[11px] font-bold text-text-tertiary mb-1 block">核心作用与定位:</span>
                   <input
                     type="text"
                     value={item.purpose}
                     onChange={(e) => handleUpdateRole(item.id, "purpose", e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg text-[12.5px] text-neutral-800 focus:bg-white focus:border-neutral-400 outline-none"
+                    className="w-full px-2.5 py-1.5 bg-page-bg border border-border-default rounded-lg text-[12.5px] text-text-main focus:bg-surface-1 focus:border-neutral-400 outline-none"
                   />
                 </div>
               </div>
@@ -2876,28 +2876,28 @@ function ContentRolesDrawer({
 
           <button
             onClick={handleAddRole}
-            className="w-full py-2.5 bg-white border border-dashed border-neutral-300 text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 text-[13px] font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-colors"
+            className="w-full py-2.5 bg-surface-1 border border-dashed border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-page-bg text-[13px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
           >
             <Plus size={15} />
             添加内容角色
           </button>
         </div>
 
-        <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-2xl text-[12px] text-amber-900 flex items-center gap-2 shrink-0">
+        <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-[12px] text-amber-900 flex items-center gap-2 shrink-0">
           <Sparkles size={15} className="text-amber-600 shrink-0" />
           <span>确认方案后，AI将根据内容角色自动匹配可用的账号并完成排期发布。</span>
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-200 shrink-0">
+        <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-default shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[13px] text-neutral-600 font-medium hover:bg-neutral-100 rounded-xl"
+            className="px-4 py-2 text-[13px] text-text-secondary font-medium hover:bg-hover-bg rounded-xl"
           >
             取消
           </button>
           <button
             onClick={handleConfirmSave}
-            className="px-5 py-2 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-2xs"
+            className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover transition-colors shadow-2xs"
           >
             保存并更新
           </button>
@@ -2935,29 +2935,29 @@ function KocQuestionnaireConfigDrawer({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-neutral-900/20 z-50"
+        className="fixed inset-0 bg-btn-main/20 z-50"
       />
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed right-0 top-0 bottom-0 w-[520px] bg-white shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
+        className="fixed right-0 top-0 bottom-0 w-[520px] bg-surface-1 shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
       >
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 shrink-0">
+        <div className="flex items-center justify-between border-b border-border-default pb-4 shrink-0">
           <div>
-            <h3 className="text-[16px] font-bold text-neutral-900">KOC真实体验采集配置</h3>
-            <p className="text-[12px] text-neutral-500 mt-0.5">面向消费者与KOC试用者的事实采集问卷设置</p>
+            <h3 className="text-[16px] font-bold text-text-main">KOC真实体验采集配置</h3>
+            <p className="text-[12px] text-text-tertiary mt-0.5">面向消费者与KOC试用者的事实采集问卷设置</p>
           </div>
-          <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg">
+          <button onClick={onClose} className="p-1.5 text-text-tertiary hover:text-text-secondary hover:bg-hover-bg rounded-lg">
             <X size={18} />
           </button>
         </div>
 
-        <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200 flex items-center justify-between shrink-0">
+        <div className="p-4 bg-page-bg rounded-xl border border-border-default flex items-center justify-between shrink-0">
           <div className="space-y-0.5">
-            <div className="font-bold text-[14px] text-neutral-900">开启 KOC 真实体验采集</div>
-            <div className="text-[12px] text-neutral-500">将问卷分发给参与KOC，收集人设与真实体验</div>
+            <div className="font-bold text-[14px] text-text-main">开启 KOC 真实体验采集</div>
+            <div className="text-[12px] text-text-tertiary">将问卷分发给参与KOC，收集人设与真实体验</div>
           </div>
           <input
             type="checkbox"
@@ -2970,26 +2970,26 @@ function KocQuestionnaireConfigDrawer({
         {enabled && (
           <div className="space-y-5 flex-1">
             {/* Participating Accounts */}
-            <div className="p-4 border border-neutral-200 rounded-2xl space-y-2 bg-white">
-              <div className="text-[12px] font-bold text-neutral-500">预计参与账号数</div>
+            <div className="p-4 border border-border-default rounded-xl space-y-2 bg-surface-1">
+              <div className="text-[12px] font-bold text-text-tertiary">预计参与账号数</div>
               <div className="flex items-center justify-between">
-                <span className="text-[20px] font-extrabold text-neutral-900">{kocCount} 人</span>
-                <span className="text-[11px] font-bold text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-lg">
+                <span className="text-[20px] font-extrabold text-text-main">{kocCount} 人</span>
+                <span className="text-[11px] font-bold text-text-tertiary bg-hover-bg px-2.5 py-1 rounded-lg">
                   根据内容安排中的KOC数量自动同步
                 </span>
               </div>
             </div>
 
             {/* Questions Config */}
-            <div className="p-4 border border-neutral-200 rounded-2xl space-y-3 bg-white">
+            <div className="p-4 border border-border-default rounded-xl space-y-3 bg-surface-1">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[13px] font-bold text-neutral-900">问卷题目设置</div>
-                  <div className="text-[11.5px] text-neutral-500">当前已包含 {qCount} 个结构化问题</div>
+                  <div className="text-[13px] font-bold text-text-main">问卷题目设置</div>
+                  <div className="text-[11.5px] text-text-tertiary">当前已包含 {qCount} 个结构化问题</div>
                 </div>
                 <button
                   onClick={onOpenQuestions}
-                  className="px-3 py-1.5 bg-white border border-neutral-300 hover:bg-neutral-50 text-neutral-800 font-bold text-[12px] rounded-xl transition-colors flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-surface-1 border border-neutral-300 hover:bg-page-bg text-text-main font-bold text-[12px] rounded-xl transition-colors flex items-center gap-1.5"
                 >
                   <BookOpen size={13} />
                   查看/编辑问卷题目
@@ -2998,15 +2998,15 @@ function KocQuestionnaireConfigDrawer({
             </div>
 
             {/* Timing Config */}
-            <div className="p-4 border border-neutral-200 rounded-2xl space-y-3 bg-white">
-              <div className="text-[13px] font-bold text-neutral-900">问卷收集时机</div>
+            <div className="p-4 border border-border-default rounded-xl space-y-3 bg-surface-1">
+              <div className="text-[13px] font-bold text-text-main">问卷收集时机</div>
               <div className="space-y-2 text-[12.5px]">
                 {[
                   { label: "发布内容前完成（推荐：获取真实产品反馈，定向生成个性化笔记）", value: "发布内容前完成" },
                   { label: "入群报名时同步收集", value: "入群报名时同步收集" },
                   { label: "试用活动结束后统一收集", value: "活动结束后统一收集" }
                 ].map((opt) => (
-                  <label key={opt.value} className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-neutral-50 cursor-pointer border border-transparent hover:border-neutral-200 transition-colors">
+                  <label key={opt.value} className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-page-bg cursor-pointer border border-transparent hover:border-border-default transition-colors">
                     <input
                       type="radio"
                       name="timing"
@@ -3015,14 +3015,14 @@ function KocQuestionnaireConfigDrawer({
                       onChange={(e) => setTiming(e.target.value)}
                       className="mt-0.5 accent-neutral-900 cursor-pointer"
                     />
-                    <span className="text-neutral-800 font-medium">{opt.label}</span>
+                    <span className="text-text-main font-medium">{opt.label}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* AI Notice */}
-            <div className="p-3.5 bg-amber-50 border border-amber-200/90 rounded-2xl text-[12px] text-amber-900 space-y-1">
+            <div className="p-3.5 bg-amber-50 border border-amber-200/90 rounded-xl text-[12px] text-amber-900 space-y-1">
               <div className="font-bold flex items-center gap-1.5">
                 <Sparkles size={14} className="text-amber-600" />
                 问卷的作用：收集事实，定向生成
@@ -3034,10 +3034,10 @@ function KocQuestionnaireConfigDrawer({
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-200 shrink-0">
+        <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-default shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[13px] text-neutral-600 font-medium hover:bg-neutral-100 rounded-xl"
+            className="px-4 py-2 text-[13px] text-text-secondary font-medium hover:bg-hover-bg rounded-xl"
           >
             取消
           </button>
@@ -3045,7 +3045,7 @@ function KocQuestionnaireConfigDrawer({
             onClick={() => {
               onSave({ enabled, timing });
             }}
-            className="px-5 py-2 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-2xs"
+            className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover transition-colors shadow-2xs"
           >
             保存配置
           </button>
@@ -3143,31 +3143,31 @@ function KocQuestionnaireQuestionsDrawer({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-neutral-900/20 z-50"
+        className="fixed inset-0 bg-btn-main/20 z-50"
       />
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed right-0 top-0 bottom-0 w-[620px] bg-white shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
+        className="fixed right-0 top-0 bottom-0 w-[620px] bg-surface-1 shadow-2xl z-50 flex flex-col p-6 space-y-6 overflow-y-auto"
       >
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 shrink-0">
+        <div className="flex items-center justify-between border-b border-border-default pb-4 shrink-0">
           <div>
-            <h3 className="text-[16px] font-bold text-neutral-900">KOC真实体验采集问卷 ({qList.length}个问题)</h3>
-            <p className="text-[12px] text-neutral-500 mt-0.5">全量采用选择题，便于用户快速决策；AI将提取填报事实定向生成千人千篇笔记</p>
+            <h3 className="text-[16px] font-bold text-text-main">KOC真实体验采集问卷 ({qList.length}个问题)</h3>
+            <p className="text-[12px] text-text-tertiary mt-0.5">全量采用选择题，便于用户快速决策；AI将提取填报事实定向生成千人千篇笔记</p>
           </div>
-          <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg">
+          <button onClick={onClose} className="p-1.5 text-text-tertiary hover:text-text-secondary hover:bg-hover-bg rounded-lg">
             <X size={18} />
           </button>
         </div>
 
         <div className="space-y-3 flex-1 overflow-y-auto pr-1">
           {qList.map((q, idx) => (
-            <div key={q.id} className="p-4 bg-white border border-neutral-200 rounded-2xl space-y-3 shadow-2xs hover:border-neutral-300 transition-colors">
+            <div key={q.id} className="p-4 bg-surface-1 border border-border-default rounded-xl space-y-3 shadow-2xs hover:border-neutral-300 transition-colors">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-neutral-900 text-white font-bold text-[11px] flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-btn-main text-white font-bold text-[11px] flex items-center justify-center">
                     {idx + 1}
                   </span>
                   <select
@@ -3182,7 +3182,7 @@ function KocQuestionnaireQuestionsDrawer({
                         return item;
                       }));
                     }}
-                    className="px-2 py-0.5 bg-neutral-100 border border-neutral-200 rounded-md text-[11.5px] font-bold text-neutral-800 outline-none"
+                    className="px-2 py-0.5 bg-hover-bg border border-border-default rounded-md text-[11.5px] font-bold text-text-main outline-none"
                   >
                     <option value="单选">单选题 (快速单选)</option>
                     <option value="多选">多选题 (快速多选)</option>
@@ -3194,7 +3194,7 @@ function KocQuestionnaireQuestionsDrawer({
                   <button
                     disabled={idx === 0}
                     onClick={() => handleMove(idx, 'up')}
-                    className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 disabled:opacity-30 rounded"
+                    className="p-1 text-text-tertiary hover:text-text-secondary hover:bg-hover-bg disabled:opacity-30 rounded"
                     title="上移"
                   >
                     <ArrowUp size={14} />
@@ -3202,13 +3202,13 @@ function KocQuestionnaireQuestionsDrawer({
                   <button
                     disabled={idx === qList.length - 1}
                     onClick={() => handleMove(idx, 'down')}
-                    className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 disabled:opacity-30 rounded"
+                    className="p-1 text-text-tertiary hover:text-text-secondary hover:bg-hover-bg disabled:opacity-30 rounded"
                     title="下移"
                   >
                     <ArrowDown size={14} />
                   </button>
 
-                  <label className="flex items-center gap-1 text-[11.5px] text-neutral-600 font-medium ml-2 cursor-pointer select-none">
+                  <label className="flex items-center gap-1 text-[11.5px] text-text-secondary font-medium ml-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={q.isRequired}
@@ -3221,7 +3221,7 @@ function KocQuestionnaireQuestionsDrawer({
                   {qList.length > 1 && (
                     <button
                       onClick={() => handleDelete(q.id)}
-                      className="p-1 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-1"
+                      className="p-1 text-text-tertiary hover:text-danger hover:bg-red-50 rounded transition-colors ml-1"
                       title="删除题目"
                     >
                       <Trash2 size={14} />
@@ -3231,32 +3231,32 @@ function KocQuestionnaireQuestionsDrawer({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-neutral-500 mb-1">题目标题</label>
+                <label className="block text-[11px] font-bold text-text-tertiary mb-1">题目标题</label>
                 <textarea
                   rows={2}
                   value={q.title}
                   onChange={(e) => handleUpdate(q.id, "title", e.target.value)}
-                  className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[12.5px] font-medium text-neutral-900 focus:bg-white focus:border-neutral-400 outline-none"
+                  className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl text-[12.5px] font-medium text-text-main focus:bg-surface-1 focus:border-neutral-400 outline-none"
                 />
               </div>
 
               {/* Options */}
-              <div className="space-y-2 pt-1 border-t border-neutral-100">
-                <label className="block text-[11px] font-bold text-neutral-500">选项列表 (点击修改)</label>
+              <div className="space-y-2 pt-1 border-t border-border-default">
+                <label className="block text-[11px] font-bold text-text-tertiary">选项列表 (点击修改)</label>
                 <div className="space-y-1.5">
                   {(q.options || ["选项 1", "选项 2", "选项 3"]).map((opt, oIdx) => (
                     <div key={oIdx} className="flex items-center gap-2">
                       <div className={`w-3.5 h-3.5 border border-neutral-300 shrink-0 ${q.type === '单选' ? 'rounded-full' : 'rounded-xs'}`} />
                       <input
                         type="text"
-                        className="flex-1 px-2.5 py-1 text-[12px] text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-lg outline-none focus:border-neutral-400"
+                        className="flex-1 px-2.5 py-1 text-[12px] text-text-secondary bg-page-bg border border-border-default rounded-lg outline-none focus:border-neutral-400"
                         value={opt}
                         onChange={(e) => handleUpdateOption(q.id, oIdx, e.target.value)}
                         placeholder={`选项 ${oIdx + 1}`}
                       />
                       <button
                         onClick={() => handleRemoveOption(q.id, oIdx)}
-                        className="text-neutral-400 hover:text-rose-500 p-1 rounded hover:bg-neutral-100 transition-colors"
+                        className="text-text-tertiary hover:text-brand-logo p-1 rounded hover:bg-hover-bg transition-colors"
                         title="删除选项"
                       >
                         <X size={13} />
@@ -3267,7 +3267,7 @@ function KocQuestionnaireQuestionsDrawer({
                 <button
                   type="button"
                   onClick={() => handleAddOption(q.id)}
-                  className="text-[12px] text-neutral-700 hover:text-black font-bold flex items-center gap-1 mt-1 pt-1"
+                  className="text-[12px] text-text-secondary hover:text-black font-bold flex items-center gap-1 mt-1 pt-1"
                 >
                   <Plus size={13} /> 添加选项
                 </button>
@@ -3277,23 +3277,23 @@ function KocQuestionnaireQuestionsDrawer({
 
           <button
             onClick={handleAddQuestion}
-            className="w-full py-2.5 bg-white border border-dashed border-neutral-300 text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50 text-[13px] font-bold rounded-2xl flex items-center justify-center gap-1.5 transition-colors"
+            className="w-full py-2.5 bg-surface-1 border border-dashed border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-page-bg text-[13px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
           >
             <Plus size={15} />
             添加自定义问题
           </button>
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-200 shrink-0">
+        <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-default shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[13px] text-neutral-600 font-medium hover:bg-neutral-100 rounded-xl"
+            className="px-4 py-2 text-[13px] text-text-secondary font-medium hover:bg-hover-bg rounded-xl"
           >
             取消
           </button>
           <button
             onClick={() => onSave(qList)}
-            className="px-5 py-2 bg-neutral-900 text-white font-bold text-[13px] rounded-xl hover:bg-neutral-800 transition-colors shadow-2xs"
+            className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover transition-colors shadow-2xs"
           >
             保存问卷
           </button>

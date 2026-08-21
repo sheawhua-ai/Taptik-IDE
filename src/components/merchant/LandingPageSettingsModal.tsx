@@ -89,43 +89,43 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 backdrop-blur-xs p-4 overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-btn-main/50 backdrop-blur-xs p-4 overflow-y-auto">
         <motion.div 
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.96 }}
-          className="bg-white rounded-2xl shadow-2xl border border-neutral-200 w-full max-w-4xl overflow-hidden my-auto flex flex-col max-h-[92vh]"
+          className="bg-surface-1 rounded-xl shadow-2xl border border-border-default w-full max-w-4xl overflow-hidden my-auto flex flex-col max-h-[92vh]"
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between shrink-0 bg-white">
+          <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-1">
             <div>
-              <h2 className="text-[17px] font-bold text-neutral-900 flex items-center gap-2">
-                <QrCode size={20} className="text-neutral-700" />
+              <h2 className="text-[17px] font-bold text-text-main flex items-center gap-2">
+                <QrCode size={20} className="text-text-secondary" />
                 落地页设置
               </h2>
-              <p className="text-[12px] text-neutral-500 mt-0.5">
+              <p className="text-[12px] text-text-tertiary mt-0.5">
                 管理源分发平台的访客登录方式、海报与体验问卷；客户端不承载或修改公开落地页内容。
               </p>
             </div>
             <button 
               onClick={onClose}
-              className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+              className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors"
             >
               <X size={18} />
             </button>
           </div>
 
           {/* Body Content */}
-          <div className="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 bg-neutral-50/40">
+          <div className="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 bg-surface-2">
             
             {/* Left 2 Columns: Settings Controls */}
             <div className="md:col-span-2 space-y-6">
 
               {/* Card 0: Consumer Questionnaire */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-2xs p-5">
+              <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs p-5">
                 <div className="mb-3">
-                  <h3 className="text-[14px] font-bold text-neutral-900">消费者问卷设置</h3>
-                  <p className="text-[12px] text-neutral-500 mt-0.5">
+                  <h3 className="text-[14px] font-bold text-text-main">消费者问卷设置</h3>
+                  <p className="text-[12px] text-text-tertiary mt-0.5">
                     设置访客在落地页投稿前是否需要填写体验调研问卷（用于提取事实定向生成个性化笔记）。
                   </p>
                 </div>
@@ -136,17 +136,17 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     onClick={() => setHasQuestionnaire(true)}
                     className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                       hasQuestionnaire
-                        ? "border-neutral-900 bg-neutral-900/5 shadow-2xs"
-                        : "border-neutral-200 bg-white hover:border-neutral-300"
+                        ? "border-neutral-900 bg-btn-main/5 shadow-2xs"
+                        : "border-border-default bg-surface-1 hover:border-neutral-300"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[13px] font-bold text-neutral-900">包含消费者问卷</span>
+                      <span className="text-[13px] font-bold text-text-main">包含消费者问卷</span>
                       {hasQuestionnaire && (
-                        <CheckCircle2 size={16} className="text-neutral-900" />
+                        <CheckCircle2 size={16} className="text-text-main" />
                       )}
                     </div>
-                    <p className="text-[12px] text-neutral-500 leading-relaxed">
+                    <p className="text-[12px] text-text-tertiary leading-relaxed">
                       访客投稿前需先回答几道简易体验问卷，AI提取事实后自动即时生成笔记。
                     </p>
                   </div>
@@ -156,17 +156,17 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     onClick={() => setHasQuestionnaire(false)}
                     className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                       !hasQuestionnaire
-                        ? "border-neutral-900 bg-neutral-900/5 shadow-2xs"
-                        : "border-neutral-200 bg-white hover:border-neutral-300"
+                        ? "border-neutral-900 bg-btn-main/5 shadow-2xs"
+                        : "border-border-default bg-surface-1 hover:border-neutral-300"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[13px] font-bold text-neutral-900">不使用问卷（直接投稿）</span>
+                      <span className="text-[13px] font-bold text-text-main">不使用问卷（直接投稿）</span>
                       {!hasQuestionnaire && (
-                        <CheckCircle2 size={16} className="text-neutral-900" />
+                        <CheckCircle2 size={16} className="text-text-main" />
                       )}
                     </div>
-                    <p className="text-[12px] text-neutral-500 leading-relaxed">
+                    <p className="text-[12px] text-text-tertiary leading-relaxed">
                       访客跳过问卷环节，直接填写标题、心得并上传照片与视频素材。
                     </p>
                   </div>
@@ -174,10 +174,10 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
                 {/* View & Edit Questionnaire Actions if enabled */}
                 {hasQuestionnaire && (
-                  <div className="mt-4 pt-4 border-t border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-neutral-50/80 p-3.5 rounded-xl border border-neutral-200/80">
+                  <div className="mt-4 pt-4 border-t border-border-default flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-page-bg/80 p-3.5 rounded-xl border border-border-default/80">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[12px] font-bold text-neutral-800">
+                      <span className="text-[12px] font-bold text-text-main">
                         已开启问卷模式（共 {questions.length} 个问卷问题）
                       </span>
                     </div>
@@ -185,15 +185,15 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                       <button
                         type="button"
                         onClick={() => openQuestionnaireModal('view')}
-                        className="px-3.5 py-1.5 bg-white border border-neutral-200 hover:bg-neutral-100 text-neutral-800 text-[12px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs"
+                        className="px-3.5 py-1.5 bg-surface-1 border border-border-default hover:bg-hover-bg text-text-main text-[12px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs"
                       >
-                        <Eye size={14} className="text-neutral-600" />
+                        <Eye size={14} className="text-text-secondary" />
                         <span>查看问卷</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => openQuestionnaireModal('edit')}
-                        className="px-3.5 py-1.5 bg-neutral-900 hover:bg-black text-white text-[12px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs"
+                        className="px-3.5 py-1.5 bg-btn-main hover:bg-black text-white text-[12px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs"
                       >
                         <Edit3 size={14} />
                         <span>编辑问卷</span>
@@ -204,10 +204,10 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               </div>
               
               {/* Card 1: Guest Login Mode */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-2xs p-5">
+              <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs p-5">
                 <div className="mb-3">
-                  <h3 className="text-[14px] font-bold text-neutral-900">访客登录方式</h3>
-                  <p className="text-[12px] text-neutral-500 mt-0.5">
+                  <h3 className="text-[14px] font-bold text-text-main">访客登录方式</h3>
+                  <p className="text-[12px] text-text-tertiary mt-0.5">
                     设置访客进入源平台落地页后的身份验证方式。
                   </p>
                 </div>
@@ -218,17 +218,17 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     onClick={() => setLoginMode("无需登录")}
                     className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                       loginMode === "无需登录"
-                        ? "border-neutral-900 bg-neutral-900/5 shadow-2xs"
-                        : "border-neutral-200 bg-white hover:border-neutral-300"
+                        ? "border-neutral-900 bg-btn-main/5 shadow-2xs"
+                        : "border-border-default bg-surface-1 hover:border-neutral-300"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[13px] font-bold text-neutral-900">无需登录</span>
+                      <span className="text-[13px] font-bold text-text-main">无需登录</span>
                       {loginMode === "无需登录" && (
-                        <CheckCircle2 size={16} className="text-neutral-900" />
+                        <CheckCircle2 size={16} className="text-text-main" />
                       )}
                     </div>
-                    <p className="text-[12px] text-neutral-500 leading-relaxed">
+                    <p className="text-[12px] text-text-tertiary leading-relaxed">
                       访客可直接进入投稿流程，无需执行登录。
                     </p>
                   </div>
@@ -238,17 +238,17 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     onClick={() => setLoginMode("微信登录")}
                     className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                       loginMode === "微信登录"
-                        ? "border-neutral-900 bg-neutral-900/5 shadow-2xs"
-                        : "border-neutral-200 bg-white hover:border-neutral-300"
+                        ? "border-neutral-900 bg-btn-main/5 shadow-2xs"
+                        : "border-border-default bg-surface-1 hover:border-neutral-300"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[13px] font-bold text-neutral-900">微信登录</span>
+                      <span className="text-[13px] font-bold text-text-main">微信登录</span>
                       {loginMode === "微信登录" && (
-                        <CheckCircle2 size={16} className="text-neutral-900" />
+                        <CheckCircle2 size={16} className="text-text-main" />
                       )}
                     </div>
-                    <p className="text-[12px] text-neutral-500 leading-relaxed">
+                    <p className="text-[12px] text-text-tertiary leading-relaxed">
                       访客需先完成微信授权，发布后记录对应微信信息。
                     </p>
                   </div>
@@ -256,11 +256,11 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               </div>
 
               {/* Card 2: Landing Page Poster */}
-              <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-2xs p-5">
+              <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs p-5">
                 <div className="mb-4 flex items-center justify-between gap-2">
                   <div>
-                    <h3 className="text-[14px] font-bold text-neutral-900">落地页海报</h3>
-                    <p className="text-[12px] text-neutral-500 mt-0.5">
+                    <h3 className="text-[14px] font-bold text-text-main">落地页海报</h3>
+                    <p className="text-[12px] text-text-tertiary mt-0.5">
                       展示在落地页，建议采用手机一屏尺寸（750 × 1334 px 或 9:16比例）。
                     </p>
                   </div>
@@ -275,7 +275,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-1.5 bg-neutral-900 hover:bg-black text-white text-[12px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs shrink-0"
+                    className="px-3.5 py-1.5 bg-btn-main hover:bg-black text-white text-[12px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs shrink-0"
                   >
                     <UploadCloud size={15} />
                     <span>上传图片</span>
@@ -283,14 +283,14 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                 </div>
 
                 {/* Mobile Screen Ratio Preview Box */}
-                <div className="relative aspect-[9/16] max-w-[200px] mx-auto bg-neutral-100 rounded-2xl overflow-hidden border border-neutral-200 group mb-4 shadow-sm">
+                <div className="relative aspect-[9/16] max-w-[200px] mx-auto bg-hover-bg rounded-xl overflow-hidden border border-border-default group mb-4 shadow-sm">
                   <img src={bannerUrl} alt="Poster" className="w-full h-full object-cover" />
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 bg-neutral-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 cursor-pointer p-4 text-center"
+                    className="absolute inset-0 bg-btn-main/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 cursor-pointer p-4 text-center"
                   >
                     <UploadCloud size={24} className="text-white" />
-                    <span className="px-3 py-1 bg-white text-neutral-900 rounded-lg text-[11px] font-bold shadow-xs">
+                    <span className="px-3 py-1 bg-surface-1 text-text-main rounded-lg text-[11px] font-bold shadow-xs">
                       点击更换海报 (9:16)
                     </span>
                   </div>
@@ -298,7 +298,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
                 {/* Preset Banner Selector */}
                 <div>
-                  <label className="block text-[11px] font-bold text-neutral-500 mb-2">
+                  <label className="block text-[11px] font-bold text-text-tertiary mb-2">
                     或选择预设海报模板
                   </label>
                   <div className="grid grid-cols-4 gap-2">
@@ -307,11 +307,11 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                         key={idx}
                         onClick={() => setBannerUrl(p.url)}
                         className={`relative aspect-[9/16] rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${
-                          bannerUrl === p.url ? "border-neutral-900 ring-2 ring-neutral-900/10" : "border-neutral-200 opacity-70 hover:opacity-100"
+                          bannerUrl === p.url ? "border-neutral-900 ring-2 ring-neutral-900/10" : "border-border-default opacity-70 hover:opacity-100"
                         }`}
                       >
                         <img src={p.url} alt={p.name} className="w-full h-full object-cover" />
-                        <span className="absolute bottom-0 inset-x-0 bg-neutral-900/70 text-white text-[9px] text-center py-0.5 font-medium">
+                        <span className="absolute bottom-0 inset-x-0 bg-btn-main/70 text-white text-[9px] text-center py-0.5 font-medium">
                           {p.name}
                         </span>
                       </div>
@@ -323,23 +323,23 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
             </div>
 
             {/* Right Column: Landing Page QR Code & Link Card */}
-            <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-2xs p-5 flex flex-col justify-between space-y-4">
+            <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs p-5 flex flex-col justify-between space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-[14px] font-bold text-neutral-900">源平台落地页</h3>
+                  <h3 className="text-[14px] font-bold text-text-main">源平台落地页</h3>
                   <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10px] font-bold">
                     已生成
                   </span>
                 </div>
 
-                <div className="text-[12px] font-bold text-neutral-800 line-clamp-2 mb-4">
+                <div className="text-[12px] font-bold text-text-main line-clamp-2 mb-4">
                   {project.name}
                 </div>
 
                 {/* QR Code Container */}
-                <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200/80 text-center flex flex-col items-center">
-                  <div className="w-36 h-36 bg-white rounded-xl p-2.5 border border-neutral-200 shadow-2xs mb-3 flex items-center justify-center">
-                    <svg className="w-full h-full text-neutral-900" viewBox="0 0 100 100" fill="currentColor">
+                <div className="bg-page-bg rounded-xl p-4 border border-border-default/80 text-center flex flex-col items-center">
+                  <div className="w-36 h-36 bg-surface-1 rounded-xl p-2.5 border border-border-default shadow-2xs mb-3 flex items-center justify-center">
+                    <svg className="w-full h-full text-text-main" viewBox="0 0 100 100" fill="currentColor">
                       <path d="M0,0 H35 V35 H0 Z M5,5 V30 H30 V5 Z M10,10 H25 V25 H10 Z" />
                       <path d="M65,0 H100 V35 H65 Z M70,5 V30 H95 V5 Z M75,10 H90 V25 H75 Z" />
                       <path d="M0,65 H35 V100 H0 Z M5,70 V95 H30 V70 Z M10,75 H25 V90 H10 Z" />
@@ -358,11 +358,11 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     </svg>
                   </div>
 
-                  <div className="w-full flex items-center justify-between gap-1.5 bg-white border border-neutral-200 rounded-xl px-2.5 py-1.5 mb-2 text-[11px] font-mono text-neutral-600">
+                  <div className="w-full flex items-center justify-between gap-1.5 bg-surface-1 border border-border-default rounded-xl px-2.5 py-1.5 mb-2 text-[11px] font-mono text-text-secondary">
                     <span className="truncate">{landingPageUrl}</span>
                     <button 
                       onClick={handleCopy}
-                      className="text-neutral-500 hover:text-neutral-900 shrink-0"
+                      className="text-text-tertiary hover:text-text-main shrink-0"
                     >
                       {copiedUrl ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
                     </button>
@@ -370,7 +370,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
                   <button
                     onClick={handleCopy}
-                    className="w-full py-2 bg-neutral-900 text-white rounded-xl text-[12px] font-bold hover:bg-neutral-800 transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
+                    className="w-full py-2 bg-btn-main text-white rounded-xl text-[12px] font-bold hover:bg-btn-main-hover transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                   >
                     <Download size={14} />
                     <span>下载二维码</span>
@@ -379,7 +379,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               </div>
 
               {/* Preview Consumer Landing Page Button */}
-              <div className="pt-4 border-t border-neutral-100 space-y-2">
+              <div className="pt-4 border-t border-border-default space-y-2">
                 <button
                   onClick={() => setShowConsumerPreview(true)}
                   className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-[12px] transition-colors flex items-center justify-center gap-2 shadow-xs"
@@ -393,20 +393,20 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
           </div>
 
           {/* Footer Bar */}
-          <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between bg-white shrink-0">
-            <span className="text-[12px] text-neutral-500">
+          <div className="px-6 py-4 border-t border-border-default flex items-center justify-between bg-surface-1 shrink-0">
+            <span className="text-[12px] text-text-tertiary">
               设置完成后，扫描二维码即可实时预览并体验消费者视角投稿。
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={onClose}
-                className="px-4 py-2 border border-neutral-200 rounded-xl text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 transition-colors"
+                className="px-4 py-2 border border-border-default rounded-xl text-[13px] font-bold text-text-secondary hover:bg-hover-bg transition-colors"
               >
                 取消
               </button>
               <button
                 onClick={handleSave}
-                className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-xs"
+                className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors shadow-xs"
               >
                 保存设置
               </button>

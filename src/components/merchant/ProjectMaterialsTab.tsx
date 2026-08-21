@@ -127,12 +127,12 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
   return (
     <div className="space-y-6">
       {/* 1. 全局下发素材入口 Banner */}
-      <div className="bg-white rounded-2xl p-6 border border-[#EAECF0] shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-surface-1 rounded-xl p-6 border border-border-default shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-[16px] font-bold text-[#111827]">素材与场景任务管理</h2>
+            <h2 className="text-[16px] font-bold text-text-main">素材与场景任务管理</h2>
           </div>
-          <p className="text-[13px] text-[#667085] mt-1">
+          <p className="text-[13px] text-text-secondary mt-1">
             支持提前下发素材收集任务安排拍摄（无需预先创建笔记），后续可随时将收集素材应用至项目笔记与场景中
           </p>
         </div>
@@ -149,24 +149,24 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
       </div>
 
       {/* 2. 板块一：场景素材任务 (基于多个笔记合并) */}
-      <div className="bg-white rounded-2xl p-6 border border-[#EAECF0] space-y-5">
-        <div className="flex items-center justify-between border-b border-[#EAECF0] pb-4">
+      <div className="bg-surface-1 rounded-xl p-6 border border-border-default space-y-5">
+        <div className="flex items-center justify-between border-b border-border-default pb-4">
           <div>
-            <h3 className="text-[15px] font-bold text-[#111827]">场景素材任务列表</h3>
-            <p className="text-[12px] text-[#667085] mt-0.5">多篇笔记拍摄要求合并下发，指定员工负责跟进归集</p>
+            <h3 className="text-[15px] font-bold text-text-main">场景素材任务列表</h3>
+            <p className="text-[12px] text-text-secondary mt-0.5">多篇笔记拍摄要求合并下发，指定员工负责跟进归集</p>
           </div>
-          <span className="text-[12px] text-[#667085]">共 {defaultScenarios.length} 个任务场景</span>
+          <span className="text-[12px] text-text-secondary">共 {defaultScenarios.length} 个任务场景</span>
         </div>
 
         <div className="space-y-4">
           {defaultScenarios.map((scenario) => (
             <div 
               key={scenario.id} 
-              className="p-5 bg-[#F7F8FA] rounded-2xl border border-[#EAECF0] hover:border-neutral-300 transition-all space-y-3"
+              className="p-5 bg-[#F7F8FA] rounded-xl border border-border-default hover:border-neutral-300 transition-all space-y-3"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[14px] text-[#111827]">{scenario.title}</span>
+                  <span className="font-bold text-[14px] text-text-main">{scenario.title}</span>
                   <span className={`px-2.5 py-0.5 text-[11px] font-bold rounded-md ${
                     scenario.status === '已验收' 
                       ? 'bg-emerald-100 text-emerald-800' 
@@ -181,7 +181,7 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
                 <div className="flex items-center gap-2 shrink-0">
                   <button 
                     onClick={() => setShowDispatchModal(true)}
-                    className="px-3 py-1.5 bg-white border border-[#EAECF0] hover:bg-neutral-50 text-[12px] font-bold text-[#344054] rounded-xl transition-colors"
+                    className="px-3 py-1.5 bg-surface-1 border border-border-default hover:bg-page-bg text-[12px] font-bold text-[#344054] rounded-xl transition-colors"
                   >
                     调整要求 / 重新派发
                   </button>
@@ -189,34 +189,34 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
               </div>
 
               {/* Requirements & Assignee */}
-              <div className="text-[13px] text-[#344054] bg-white p-3 rounded-xl border border-[#EAECF0]">
-                <div className="font-bold text-[#111827] mb-1">要求说明：</div>
+              <div className="text-[13px] text-[#344054] bg-surface-1 p-3 rounded-xl border border-border-default">
+                <div className="font-bold text-text-main mb-1">要求说明：</div>
                 <div>{scenario.reqs}</div>
               </div>
 
               {/* Associated Notes Tags */}
               <div className="flex flex-wrap items-center gap-2 text-[12px]">
-                <span className="text-[#667085] font-medium">关联笔记:</span>
+                <span className="text-text-secondary font-medium">关联笔记:</span>
                 {scenario.associatedNotes.map((noteTitle, idx) => (
-                  <span key={idx} className="px-2.5 py-1 bg-white border border-[#EAECF0] text-[#111827] rounded-lg font-medium">
+                  <span key={idx} className="px-2.5 py-1 bg-surface-1 border border-border-default text-text-main rounded-lg font-medium">
                     📄 {noteTitle}
                   </span>
                 ))}
-                <span className="text-[#667085] ml-auto font-medium">
-                  执行人: <span className="text-[#111827] font-bold">{scenario.assignedTo}</span>
+                <span className="text-text-secondary ml-auto font-medium">
+                  执行人: <span className="text-text-main font-bold">{scenario.assignedTo}</span>
                 </span>
               </div>
 
               {/* Uploaded assets preview thumbnails */}
               {scenario.assets.length > 0 && (
                 <div className="pt-2 flex items-center gap-3">
-                  <span className="text-[12px] text-[#667085]">已提交素材:</span>
+                  <span className="text-[12px] text-text-secondary">已提交素材:</span>
                   <div className="flex items-center gap-2">
                     {scenario.assets.map((asset) => (
                       <div 
                         key={asset.id} 
                         onClick={() => setPreviewAssetUrl(asset.url)}
-                        className="group relative w-12 h-12 rounded-lg overflow-hidden border border-[#EAECF0] cursor-pointer hover:border-rose-400"
+                        className="group relative w-12 h-12 rounded-lg overflow-hidden border border-border-default cursor-pointer hover:border-rose-400"
                       >
                         <img src={asset.url} alt={asset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -233,20 +233,20 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
       </div>
 
       {/* 3. 板块二：项目素材库 */}
-      <div className="bg-white rounded-2xl p-6 border border-[#EAECF0] space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#EAECF0] pb-4">
+      <div className="bg-surface-1 rounded-xl p-6 border border-border-default space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-default pb-4">
           <div>
-            <h3 className="text-[15px] font-bold text-[#111827]">项目素材库</h3>
-            <p className="text-[12px] text-[#667085] mt-0.5">收录并展示本项目已采集回传的高清图像与视频文件（上传、审核及分类编排请前往素材中心）</p>
+            <h3 className="text-[15px] font-bold text-text-main">项目素材库</h3>
+            <p className="text-[12px] text-text-secondary mt-0.5">收录并展示本项目已采集回传的高清图像与视频文件（上传、审核及分类编排请前往素材中心）</p>
           </div>
 
           {/* Jump to Material Center Action */}
           <button
             onClick={onNavigateToMaterials}
-            className="px-4 py-2 bg-[#F7F8FA] hover:bg-neutral-100 border border-[#EAECF0] text-[#344054] rounded-xl text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-2xs shrink-0"
+            className="px-4 py-2 bg-[#F7F8FA] hover:bg-hover-bg border border-border-default text-[#344054] rounded-xl text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-2xs shrink-0"
           >
             <span>前往素材中心处理</span>
-            <ExternalLink size={13} className="text-[#667085]" />
+            <ExternalLink size={13} className="text-text-secondary" />
           </button>
         </div>
 
@@ -255,11 +255,11 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
           {defaultAssetLibrary.map((asset) => (
             <div 
               key={asset.id} 
-              className="bg-[#F7F8FA] rounded-xl border border-[#EAECF0] overflow-hidden group hover:shadow-md transition-all flex flex-col"
+              className="bg-[#F7F8FA] rounded-xl border border-border-default overflow-hidden group hover:shadow-md transition-all flex flex-col"
             >
               <div 
                 onClick={() => setPreviewAssetUrl(asset.url)}
-                className="relative h-40 bg-neutral-100 overflow-hidden cursor-pointer"
+                className="relative h-40 bg-hover-bg overflow-hidden cursor-pointer"
               >
                 <img 
                   src={asset.url} 
@@ -276,7 +276,7 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
                 </span>
 
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <span className="p-2 bg-white rounded-full text-neutral-800 shadow-md">
+                  <span className="p-2 bg-surface-1 rounded-full text-text-main shadow-md">
                     <Eye size={16} />
                   </span>
                 </div>
@@ -284,15 +284,15 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
 
               <div className="p-3.5 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="text-[13px] font-bold text-[#111827] truncate mb-1">
+                  <div className="text-[13px] font-bold text-text-main truncate mb-1">
                     {asset.title}
                   </div>
-                  <div className="text-[11px] text-[#667085] truncate">
+                  <div className="text-[11px] text-text-secondary truncate">
                     关联: {asset.noteRef}
                   </div>
                 </div>
 
-                <div className="pt-3 mt-2 border-t border-[#EAECF0]/80 flex items-center justify-between text-[11px] text-[#667085]">
+                <div className="pt-3 mt-2 border-t border-border-default/80 flex items-center justify-between text-[11px] text-text-secondary">
                   <span>上传人: {asset.uploader}</span>
                   <span>{asset.time}</span>
                 </div>
@@ -318,7 +318,7 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="relative max-w-3xl max-h-[85vh] bg-neutral-900 rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              className="relative max-w-3xl max-h-[85vh] bg-btn-main rounded-xl overflow-hidden shadow-2xl flex flex-col"
             >
               <button 
                 onClick={() => setPreviewAssetUrl(null)}

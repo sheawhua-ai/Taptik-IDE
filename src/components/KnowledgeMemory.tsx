@@ -179,7 +179,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white relative">
+    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-surface-1 relative">
       {/* Hidden File / Folder inputs */}
       <input 
         type="file" 
@@ -199,50 +199,50 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[100] bg-neutral-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
-          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+        <div className="absolute bottom-6 right-6 z-[100] bg-surface-1 text-text-main text-[13px] font-medium px-4 py-2 rounded-xl shadow-lg border border-border-default flex items-center gap-2 h-10 max-h-[48px] animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <CheckCircle2 size={16} className="text-success shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Header */}
-      <header className="shrink-0 bg-white border-b border-neutral-100 flex flex-col z-10">
+      <header className="shrink-0 bg-surface-1 border-b border-border-default flex flex-col z-10">
         <div className="flex justify-between items-center px-6 py-4">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">知识与记忆</h1>
-            <p className="text-xs text-neutral-400 mt-1 flex items-center space-x-2">
+            <h1 className="text-2xl font-bold text-text-main">知识与记忆</h1>
+            <p className="text-xs text-text-tertiary mt-1 flex items-center space-x-2">
               <span>调用优先级：</span>
-              <span className="font-medium text-neutral-500">商家已确认事实</span>
+              <span className="font-medium text-text-tertiary">商家已确认事实</span>
               <span>&gt;</span>
-              <span className="font-medium text-neutral-500">规则与禁区</span>
+              <span className="font-medium text-text-tertiary">规则与禁区</span>
               <span>&gt;</span>
-              <span className="font-medium text-neutral-500">项目要求</span>
+              <span className="font-medium text-text-tertiary">项目要求</span>
               <span>&gt;</span>
-              <span className="font-medium text-neutral-500">经验建议</span>
+              <span className="font-medium text-text-tertiary">经验建议</span>
             </p>
           </div>
           <div className="flex items-center space-x-2.5">
             <button 
               onClick={() => setIsCategorySettingsOpen(true)}
-              className="flex items-center px-3.5 py-2 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-sm font-medium hover:bg-neutral-50 transition-colors shadow-2xs"
+              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default text-text-secondary rounded-xl text-sm font-medium hover:bg-page-bg transition-colors shadow-2xs"
             >
-              <Settings2 className="w-4 h-4 mr-1.5 text-neutral-500" /> 分类设置
+              <Settings2 className="w-4 h-4 mr-1.5 text-text-tertiary" /> 分类设置
             </button>
 
             {/* 添加文件 - 直接弹出电脑选择文件 */}
             <button 
               onClick={handlePickFiles}
-              className="flex items-center px-3.5 py-2 bg-white border border-neutral-200 hover:border-neutral-300 text-neutral-800 rounded-xl text-sm font-bold hover:bg-neutral-50 transition-colors shadow-2xs cursor-pointer"
+              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default hover:border-neutral-300 text-text-main rounded-xl text-sm font-bold hover:bg-page-bg transition-colors shadow-2xs cursor-pointer"
               title="直接选择本地文件"
             >
-              <FilePlus className="w-4 h-4 mr-1.5 text-neutral-700" />
+              <FilePlus className="w-4 h-4 mr-1.5 text-text-secondary" />
               <span>添加文件</span>
             </button>
 
             {/* 添加文件夹 - 直接弹出电脑选择文件夹 */}
             <button 
               onClick={handlePickFolder}
-              className="flex items-center px-3.5 py-2 bg-neutral-900 text-white rounded-xl text-sm font-bold hover:bg-neutral-800 transition-colors shadow-2xs cursor-pointer"
+              className="flex items-center px-3.5 py-2 bg-btn-main text-white rounded-xl text-sm font-bold hover:bg-btn-main-hover transition-colors shadow-2xs cursor-pointer"
               title="直接选择本地文件夹"
             >
               <FolderPlus className="w-4 h-4 mr-1.5 text-white" />
@@ -254,19 +254,19 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         {/* Tabs */}
         <div className="px-6 flex space-x-8 text-sm">
           <button 
-            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'overview' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-500 hover:text-neutral-700'}`}
+            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'overview' ? 'border-neutral-900 text-text-main' : 'border-transparent text-text-tertiary hover:text-text-secondary'}`}
             onClick={() => setActiveTab('overview')}
           >
             总览
           </button>
           <button 
-            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'knowledge' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-500 hover:text-neutral-700'}`}
+            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'knowledge' ? 'border-neutral-900 text-text-main' : 'border-transparent text-text-tertiary hover:text-text-secondary'}`}
             onClick={() => setActiveTab('knowledge')}
           >
             知识
           </button>
           <button 
-            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'sources' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-500 hover:text-neutral-700'}`}
+            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'sources' ? 'border-neutral-900 text-text-main' : 'border-transparent text-text-tertiary hover:text-text-secondary'}`}
             onClick={() => setActiveTab('sources')}
           >
             资料来源
@@ -275,7 +275,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-neutral-50/30 p-6">
+      <main className="flex-1 overflow-y-auto bg-page-bg/30 p-6">
         {activeTab === 'overview' && (
           <OverviewTab 
             pendingTasks={mockPendingTasks}

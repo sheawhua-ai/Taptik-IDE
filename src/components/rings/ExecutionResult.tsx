@@ -124,18 +124,18 @@ export function ExecutionResult() {
   const categories = ["内容审核", "互动承接", "发布异常", "素材匹配"];
 
   return (
-    <div className="h-full flex flex-col bg-[#fcfcfc] overflow-hidden text-neutral-900 rounded-2xl border border-neutral-100 shadow-sm relative">
+    <div className="h-full flex flex-col bg-[#fcfcfc] overflow-hidden text-text-main rounded-xl border border-border-default shadow-sm relative">
       {/* Top Header */}
-      <div className="px-8 py-5 border-b border-neutral-100 bg-white shrink-0">
+      <div className="px-8 py-5 border-b border-border-default bg-surface-1 shrink-0">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-[20px] font-bold text-neutral-900">
+          <h2 className="text-[20px] font-bold text-text-main">
             执行中心
           </h2>
           <div className="flex items-center gap-3">
             <div className="relative">
               <button 
                 onClick={() => setIsAutoRefreshMenuOpen(!isAutoRefreshMenuOpen)}
-                className="p-2 rounded-lg border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 cursor-pointer flex items-center justify-center transition-colors"
+                className="p-2 rounded-lg border border-border-default bg-surface-1 text-text-secondary hover:bg-page-bg cursor-pointer flex items-center justify-center transition-colors"
                 title="设置自动刷新"
               >
                 <Settings2 size={16} />
@@ -153,22 +153,22 @@ export function ExecutionResult() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 top-full mt-2 w-[320px] bg-white rounded-xl shadow-xl border border-neutral-200 z-50 overflow-hidden"
+                      className="absolute right-0 top-full mt-2 w-[320px] bg-surface-1 rounded-xl shadow-xl border border-border-default z-50 overflow-hidden"
                     >
-                      <div className="p-4 border-b border-neutral-100 bg-neutral-50">
-                        <h3 className="text-[14px] font-bold text-neutral-900 mb-1">自动任务队列</h3>
-                        <p className="text-[12px] text-neutral-500 leading-relaxed">
+                      <div className="p-4 border-b border-border-default bg-page-bg">
+                        <h3 className="text-[14px] font-bold text-text-main mb-1">自动任务队列</h3>
+                        <p className="text-[12px] text-text-tertiary leading-relaxed">
                           配置各模块的自动刷新频率。自动任务需要在系统登录状态时启用，且会消耗 Token。
                         </p>
                       </div>
                       <div className="p-2">
                         {['内容审核', '素材与回传', '发布调度', '互动承接'].map((module) => (
-                          <div key={module} className="flex items-center justify-between p-3 hover:bg-neutral-50 rounded-lg transition-colors">
-                            <span className="text-[13px] font-medium text-neutral-700">{module}</span>
+                          <div key={module} className="flex items-center justify-between p-3 hover:bg-page-bg rounded-lg transition-colors">
+                            <span className="text-[13px] font-medium text-text-secondary">{module}</span>
                             <select
                               value={autoRefreshConfig[module]}
                               onChange={(e) => setAutoRefreshConfig(prev => ({ ...prev, [module]: e.target.value }))}
-                              className="text-[12px] border-neutral-200 rounded-md py-1 px-2 bg-white text-neutral-700 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                              className="text-[12px] border-border-default rounded-md py-1 px-2 bg-surface-1 text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary-500"
                             >
                               <option value="never">不自动刷新</option>
                               <option value="15m">每 15 分钟</option>
@@ -189,12 +189,12 @@ export function ExecutionResult() {
               <button 
                 onClick={handleGlobalRefresh}
                 className={`p-2 rounded-lg border transition-colors flex items-center justify-center ${
-                  isOnCooldown || isGlobalRefreshing ? 'border-neutral-200 bg-neutral-50 text-neutral-400 cursor-not-allowed' : 'border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 cursor-pointer'
+                  isOnCooldown || isGlobalRefreshing ? 'border-border-default bg-page-bg text-text-tertiary cursor-not-allowed' : 'border-border-default bg-surface-1 text-text-secondary hover:bg-page-bg cursor-pointer'
                 }`}
               >
                 <RefreshCw size={16} className={isGlobalRefreshing ? "animate-spin" : ""} />
               </button>
-              <div className={`absolute top-full right-0 mt-2 whitespace-nowrap bg-neutral-900 text-white text-[12px] px-3 py-1.5 rounded-lg pointer-events-none transition-opacity z-50 ${isGlobalRefreshing || globalRefreshMessage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+              <div className={`absolute top-full right-0 mt-2 whitespace-nowrap bg-btn-main text-white text-[12px] px-3 py-1.5 rounded-lg pointer-events-none transition-opacity z-50 ${isGlobalRefreshing || globalRefreshMessage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                 {isGlobalRefreshing ? '事项智能体巡查中...' :
                  globalRefreshMessage ? globalRefreshMessage :
                  isOnCooldown ? '冷却中' : '刷新执行事项'}
@@ -202,7 +202,7 @@ export function ExecutionResult() {
             </div>
           </div>
         </div>
-        <p className="text-[14px] text-neutral-500 font-medium">
+        <p className="text-[14px] text-text-tertiary font-medium">
           当前有 6 件事项需要处理，其中 3 件会影响今天推进。
         </p>
       </div>
@@ -214,19 +214,19 @@ export function ExecutionResult() {
             <div 
               key={task.id}
               onClick={() => setSelectedTask(task)}
-              className="group bg-white border border-neutral-200 hover:border-primary-400 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col min-h-[320px]"
+              className="group bg-surface-1 border border-border-default hover:border-primary-400 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col min-h-[320px]"
             >
                {/* Card Header: Type & Refresh */}
-               <div className="flex items-center justify-between mb-4 pb-4 border-b border-neutral-100 shrink-0">
+               <div className="flex items-center justify-between mb-4 pb-4 border-b border-border-default shrink-0">
                   <div className="flex items-center gap-2">
-                    {task.moduleName === '内容审核' && <FileText size={16} className="text-primary-500" />}
+                    {task.moduleName === '内容审核' && <FileText size={16} className="text-brand-logo" />}
                     {task.moduleName === '互动承接' && <MessageCircle size={16} className="text-blue-500" />}
-                    {task.moduleName === '发布调度' && <Send size={16} className="text-primary-600" />}
+                    {task.moduleName === '发布调度' && <Send size={16} className="text-brand-logo" />}
                     {task.moduleName === '素材与回传' && <Camera size={16} className="text-emerald-500" />}
                     {task.moduleName === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
-                    <span className="text-[14px] font-bold text-neutral-900">{task.moduleName}</span>
+                    <span className="text-[14px] font-bold text-text-main">{task.moduleName}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] text-neutral-400">
+                  <div className="flex items-center gap-1 text-[11px] text-text-tertiary">
                     <Clock size={12} />
                     <span>刚刚更新</span>
                   </div>
@@ -234,14 +234,14 @@ export function ExecutionResult() {
                
                {/* Card Body */}
                <div className="flex-1 flex flex-col">
-                  <h3 className="text-[18px] font-bold text-neutral-900 mb-4">{task.importantResult}</h3>
+                  <h3 className="text-[18px] font-bold text-text-main mb-4">{task.importantResult}</h3>
                   
                   <div className="flex items-center gap-2 text-[12px] mb-4 flex-wrap">
                     {task.moduleName === '发布调度' ? (
                       <>
                         <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">待发布 12</span>
                         <span className="text-blue-600 bg-blue-50 px-2 py-1 rounded">等待手机发布 3</span>
-                        <span className="text-rose-600 bg-rose-50 px-2 py-1 rounded">发布失败 2</span>
+                        <span className="text-danger bg-rose-50 px-2 py-1 rounded">发布失败 2</span>
                         <span className="text-amber-600 bg-amber-50 px-2 py-1 rounded">账号需关注 1</span>
                       </>
                     ) : (
@@ -249,30 +249,30 @@ export function ExecutionResult() {
                         <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
                           {task.moduleName === '互动承接' ? '待处理' : '快速确认'} {task.statusQuick}
                         </span>
-                        <span className="text-rose-600 bg-rose-50 px-2 py-1 rounded">
+                        <span className="text-danger bg-rose-50 px-2 py-1 rounded">
                           {task.moduleName === '互动承接' ? '待核实' : '需要处理'} {task.statusAction}
                         </span>
-                        <span className="text-neutral-500 bg-neutral-50 px-2 py-1 rounded border border-neutral-100">
+                        <span className="text-text-tertiary bg-page-bg px-2 py-1 rounded border border-border-default">
                           {task.moduleName === '互动承接' ? '24h待跟进' : '等待推进'} {task.statusWait}
                         </span>
                       </>
                     )}
                   </div>
                   
-                  <div className="text-[13px] text-neutral-500 mb-4 flex items-start gap-1.5">
+                  <div className="text-[13px] text-text-tertiary mb-4 flex items-start gap-1.5">
                     <FolderOpen size={14} className="mt-0.5 shrink-0" />
                     <span>涉及项目：{task.projectsDesc}</span>
                   </div>
                   
                   <div className="mt-auto pt-4 border-t border-neutral-50">
-                    <div className="flex items-start gap-2 text-[12px] text-primary-700 bg-primary-50 p-3 rounded-lg">
+                    <div className="flex items-start gap-2 text-[12px] text-primary-700 bg-brand-light p-3 rounded-lg">
                       <Sparkles size={14} className="shrink-0 mt-0.5" />
                       <span>{task.aiWork}</span>
                     </div>
                   </div>
                </div>
                
-               <button className="w-full mt-4 py-2.5 bg-neutral-900 text-white rounded-xl text-[13px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+               <button className="w-full mt-4 py-2.5 bg-btn-main text-white rounded-xl text-[13px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
                  {task.mainAction}
                </button>
             </div>
@@ -308,7 +308,7 @@ export function ExecutionResult() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-btn-main/20 backdrop-blur-sm"
               onClick={() => setSelectedTask(null)}
             />
             
@@ -317,7 +317,7 @@ export function ExecutionResult() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0.5 }}
               transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
-              className={`${isFullScreen ? 'w-full' : 'w-[900px]'} bg-[#fcfcfc] shadow-2xl relative z-10 flex flex-col border-l border-neutral-200 h-full`}
+              className={`${isFullScreen ? 'w-full' : 'w-[900px]'} bg-[#fcfcfc] shadow-2xl relative z-10 flex flex-col border-l border-border-default h-full`}
             >
               <AnimatePresence>
                 {completedFlow && completedFlow.isClosing && (
@@ -325,18 +325,18 @@ export function ExecutionResult() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center"
+                    className="absolute inset-0 bg-surface-1/90 backdrop-blur-sm z-50 flex items-center justify-center"
                   >
                     <motion.div 
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center bg-white border border-neutral-200 shadow-xl p-8 rounded-2xl"
+                      className="flex flex-col items-center bg-surface-1 border border-border-default shadow-xl p-8 rounded-xl"
                     >
                       <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
                         <CheckCircle2 size={32} />
                       </div>
-                      <h3 className="text-[18px] font-bold text-neutral-900 mb-1">已执行操作</h3>
-                      <p className="text-[14px] text-neutral-500 font-medium">{completedFlow.message}</p>
+                      <h3 className="text-[18px] font-bold text-text-main mb-1">已执行操作</h3>
+                      <p className="text-[14px] text-text-tertiary font-medium">{completedFlow.message}</p>
                     </motion.div>
                   </motion.div>
                 )}
@@ -346,7 +346,7 @@ export function ExecutionResult() {
                     initial={{ opacity: 0, y: 50, x: '-50%' }}
                     animate={{ opacity: 1, y: 0, x: '-50%' }}
                     exit={{ opacity: 0, y: 50, x: '-50%' }}
-                    className="absolute bottom-24 left-1/2 z-50 bg-neutral-900 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-bold text-[13px]"
+                    className="absolute bottom-24 left-1/2 z-50 bg-btn-main text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-bold text-[13px]"
                   >
                     <Sparkles size={16} className="text-emerald-400" />
                     {completedFlow.message}
@@ -355,22 +355,22 @@ export function ExecutionResult() {
               </AnimatePresence>
 
               {/* Header */}
-              <div className="shrink-0 border-b border-neutral-100 px-8 py-6 relative bg-white">
+              <div className="shrink-0 border-b border-border-default px-8 py-6 relative bg-surface-1">
                 <div className="absolute top-6 right-6 flex items-center gap-2">
-                  <button onClick={() => setIsFullScreen(!isFullScreen)} className="p-2 hover:bg-neutral-100 rounded-lg text-neutral-400 transition-colors">
+                  <button onClick={() => setIsFullScreen(!isFullScreen)} className="p-2 hover:bg-hover-bg rounded-lg text-text-tertiary transition-colors">
                     {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                   </button>
-                  <button onClick={() => setSelectedTask(null)} className="p-2 hover:bg-neutral-100 rounded-lg text-neutral-400 transition-colors">
+                  <button onClick={() => setSelectedTask(null)} className="p-2 hover:bg-hover-bg rounded-lg text-text-tertiary transition-colors">
                     <X size={20} />
                   </button>
                 </div>
 
                 <div className="pr-20">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[12px] font-bold text-neutral-700 px-2 py-0.5 bg-neutral-100 rounded border border-neutral-200">
+                    <span className="text-[12px] font-bold text-text-secondary px-2 py-0.5 bg-hover-bg rounded border border-border-default">
                       {selectedTask.moduleName}
                     </span>
-                    <span className="text-[12px] text-neutral-400 font-medium flex items-center gap-1 mr-4">
+                    <span className="text-[12px] text-text-tertiary font-medium flex items-center gap-1 mr-4">
                       <FolderOpen size={14} /> 涉及项目：{selectedTask.projectsDesc}
                     </span>
                     <div className="flex items-center gap-2">
@@ -378,7 +378,7 @@ export function ExecutionResult() {
                         <>
                           <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">待发布 (12)</span>
                           <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg text-[12px] font-bold border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors">等待手机发布 (3)</span>
-                          <span className="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-[12px] font-bold border border-rose-200 cursor-pointer hover:bg-rose-100 transition-colors">发布失败 (2)</span>
+                          <span className="px-2 py-1 bg-rose-50 text-danger rounded-lg text-[12px] font-bold border border-danger-light cursor-pointer hover:bg-danger-light transition-colors">发布失败 (2)</span>
                           <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">账号需关注 (1)</span>
                         </>
                       ) : (
@@ -386,7 +386,7 @@ export function ExecutionResult() {
                           <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">
                             {selectedTask.moduleName === '互动承接' ? '待处理' : '快速确认'} ({selectedTask.statusQuick})
                           </span>
-                          <span className="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-[12px] font-bold border border-rose-200 cursor-pointer hover:bg-rose-100 transition-colors">
+                          <span className="px-2 py-1 bg-rose-50 text-danger rounded-lg text-[12px] font-bold border border-danger-light cursor-pointer hover:bg-danger-light transition-colors">
                             {selectedTask.moduleName === '互动承接' ? '待核实' : '需要处理'} ({selectedTask.statusAction})
                           </span>
                           <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">
@@ -396,14 +396,14 @@ export function ExecutionResult() {
                       )}
                     </div>
                   </div>
-                  <h2 className="text-[22px] font-bold text-neutral-900">{selectedTask.importantResult}</h2>
+                  <h2 className="text-[22px] font-bold text-text-main">{selectedTask.importantResult}</h2>
                 </div>
               </div>
 
               {/* Content Area */}
               <div className="flex-1 overflow-y-auto flex">
                  {/* Left: Preview/Content */}
-                 <div className="flex-1 p-8 border-r border-neutral-100 bg-[#fcfcfc] overflow-y-auto">
+                 <div className="flex-1 p-8 border-r border-border-default bg-[#fcfcfc] overflow-y-auto">
                     {/* Placeholder for content preview based on task type */}
                     {selectedTask.moduleName === '内容审核' && (
                        <NoteEditor onSelectionChange={setTextSelection} replacementCommand={replacementCommand} />
@@ -411,17 +411,17 @@ export function ExecutionResult() {
                     
                     {selectedTask.moduleName === '互动承接' && (
                        <div className="space-y-4">
-                          <h4 className="text-[14px] font-bold text-neutral-900 mb-4">高意向私信列表</h4>
+                          <h4 className="text-[14px] font-bold text-text-main mb-4">高意向私信列表</h4>
                           {[1, 2, 3].map(i => (
-                             <div key={i} className="p-4 bg-white border border-neutral-200 rounded-xl flex gap-3 shadow-sm">
-                                <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center shrink-0">
-                                  <User size={20} className="text-neutral-400" />
+                             <div key={i} className="p-4 bg-surface-1 border border-border-default rounded-xl flex gap-3 shadow-sm">
+                                <div className="w-10 h-10 rounded-full bg-hover-bg flex items-center justify-center shrink-0">
+                                  <User size={20} className="text-text-tertiary" />
                                 </div>
                                 <div>
-                                   <div className="text-[13px] font-bold text-neutral-900 mb-1">@养基大户</div>
-                                   <p className="text-[13px] text-neutral-600 mb-2">请问幼犬那款现在拍有送试吃装吗？链接在哪？</p>
-                                   <div className="bg-primary-50/50 border border-primary-100 p-3 rounded-lg text-[13px] text-neutral-800 font-medium">
-                                      <span className="text-primary-600 font-bold mr-1">拟定回复:</span>
+                                   <div className="text-[13px] font-bold text-text-main mb-1">@养基大户</div>
+                                   <p className="text-[13px] text-text-secondary mb-2">请问幼犬那款现在拍有送试吃装吗？链接在哪？</p>
+                                   <div className="bg-brand-light/50 border border-primary-100 p-3 rounded-lg text-[13px] text-text-main font-medium">
+                                      <span className="text-brand-logo font-bold mr-1">拟定回复:</span>
                                       亲亲，幼犬款现在下单送 3 包试吃装哦！链接在这边：[商品卡片]，有任何不清楚随时问我~
                                    </div>
                                 </div>
@@ -431,19 +431,19 @@ export function ExecutionResult() {
                     )}
 
                     {selectedTask.moduleName === '发布异常' && (
-                       <div className="p-5 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                          <h4 className="text-[14px] font-bold text-neutral-900 mb-4">异常详情</h4>
-                          <div className="p-4 bg-rose-50 border border-rose-100 rounded-lg text-[13px] text-rose-800 font-medium flex gap-3">
+                       <div className="p-5 bg-surface-1 border border-border-default rounded-xl shadow-sm">
+                          <h4 className="text-[14px] font-bold text-text-main mb-4">异常详情</h4>
+                          <div className="p-4 bg-rose-50 border border-danger-light rounded-lg text-[13px] text-danger font-medium flex gap-3">
                              <AlertOctagon size={18} className="shrink-0 mt-0.5" />
                              <div>
                                 <p className="mb-1 font-bold">小红书发布失败</p>
-                                <p className="text-rose-600 opacity-80">接口返回：疑似包含过度营销词汇，请修改后重试。</p>
+                                <p className="text-danger opacity-80">接口返回：疑似包含过度营销词汇，请修改后重试。</p>
                              </div>
                           </div>
-                          <div className="mt-4 p-4 border border-neutral-200 rounded-lg">
-                             <p className="text-[13px] text-neutral-600">原内容段落：</p>
-                             <p className="text-[13px] text-neutral-800 font-medium mt-2 bg-neutral-50 p-3 rounded">
-                                "这款<span className="text-rose-500 font-bold bg-rose-100 px-1 mx-0.5 rounded">绝对是全网最低价</span>，<span className="text-rose-500 font-bold bg-rose-100 px-1 mx-0.5 rounded">买到就是赚到</span>，赶紧冲！"
+                          <div className="mt-4 p-4 border border-border-default rounded-lg">
+                             <p className="text-[13px] text-text-secondary">原内容段落：</p>
+                             <p className="text-[13px] text-text-main font-medium mt-2 bg-page-bg p-3 rounded">
+                                "这款<span className="text-brand-logo font-bold bg-rose-100 px-1 mx-0.5 rounded">绝对是全网最低价</span>，<span className="text-brand-logo font-bold bg-rose-100 px-1 mx-0.5 rounded">买到就是赚到</span>，赶紧冲！"
                              </p>
                           </div>
                        </div>
@@ -451,12 +451,12 @@ export function ExecutionResult() {
 
                     {selectedTask.moduleName === '素材匹配' && (
                        <div className="space-y-4">
-                          <h4 className="text-[14px] font-bold text-neutral-900 mb-4">匹配结果预览</h4>
+                          <h4 className="text-[14px] font-bold text-text-main mb-4">匹配结果预览</h4>
                           <div className="grid grid-cols-3 gap-4">
                              {[1, 2].map(i => (
-                                <div key={i} className="aspect-square bg-neutral-100 rounded-xl border border-neutral-200 flex items-center justify-center relative overflow-hidden group">
+                                <div key={i} className="aspect-square bg-hover-bg rounded-xl border border-border-default flex items-center justify-center relative overflow-hidden group">
                                    <ImageIcon className="text-neutral-300" size={32} />
-                                   <div className="absolute top-2 left-2 px-2 py-1 bg-white/90 backdrop-blur rounded text-[10px] font-bold shadow-sm">图库提取</div>
+                                   <div className="absolute top-2 left-2 px-2 py-1 bg-surface-1/90 backdrop-blur rounded text-[10px] font-bold shadow-sm">图库提取</div>
                                 </div>
                              ))}
                           </div>
@@ -465,10 +465,10 @@ export function ExecutionResult() {
 
                     {selectedTask.moduleName === '回传验收' && (
                        <div className="space-y-4">
-                          <h4 className="text-[14px] font-bold text-neutral-900 mb-4">回传素材 (5)</h4>
+                          <h4 className="text-[14px] font-bold text-text-main mb-4">回传素材 (5)</h4>
                           <div className="grid grid-cols-3 gap-4">
                              {[1, 2, 3, 4, 5].map(i => (
-                                <div key={i} className="aspect-square bg-neutral-100 rounded-xl border border-neutral-200 flex items-center justify-center relative group">
+                                <div key={i} className="aspect-square bg-hover-bg rounded-xl border border-border-default flex items-center justify-center relative group">
                                    <ImageIcon className="text-neutral-300" size={32} />
                                    {i > 3 && (
                                      <div className="absolute top-2 right-2 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-md">
@@ -489,22 +489,22 @@ export function ExecutionResult() {
                  </div>
 
                  {/* Right: AI Suggestion Card or Agent Panel */}
-                 <div className="w-[380px] shrink-0 p-8 bg-neutral-50 flex flex-col relative z-20">
+                 <div className="w-[380px] shrink-0 p-8 bg-page-bg flex flex-col relative z-20">
                     {textSelection ? (
-                      <div className="bg-white border border-primary-200 shadow-xl rounded-2xl p-6 h-full flex flex-col relative overflow-hidden">
+                      <div className="bg-surface-1 border border-primary-200 shadow-xl rounded-xl p-6 h-full flex flex-col relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-600"></div>
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600">
+                          <div className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-logo">
                             <Sparkles size={16} />
                           </div>
-                          <h3 className="text-[16px] font-bold text-neutral-900">内容优化 Agent</h3>
-                          <button onClick={() => setTextSelection(null)} className="ml-auto text-neutral-400 hover:text-neutral-600 p-1">
+                          <h3 className="text-[16px] font-bold text-text-main">内容优化 Agent</h3>
+                          <button onClick={() => setTextSelection(null)} className="ml-auto text-text-tertiary hover:text-text-secondary p-1">
                             <X size={16} />
                           </button>
                         </div>
                         
                         <div className="flex-1 overflow-y-auto mb-4 space-y-4">
-                          <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100 text-[13px] text-neutral-600 leading-relaxed italic relative">
+                          <div className="bg-page-bg p-4 rounded-xl border border-border-default text-[13px] text-text-secondary leading-relaxed italic relative">
                             <div className="absolute -left-2 top-4 w-1 h-8 bg-neutral-300 rounded-full"></div>
                             "{textSelection.text}"
                           </div>
@@ -514,7 +514,7 @@ export function ExecutionResult() {
                               <button 
                                 key={tag} 
                                 onClick={() => setAgentInput(tag)}
-                                className="px-3 py-1.5 bg-white border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 text-neutral-600 rounded-lg text-[12px] transition-colors"
+                                className="px-3 py-1.5 bg-surface-1 border border-border-default hover:border-primary-300 hover:bg-brand-light text-text-secondary rounded-lg text-[12px] transition-colors"
                               >
                                 {tag}
                               </button>
@@ -522,13 +522,13 @@ export function ExecutionResult() {
                           </div>
                         </div>
 
-                        <div className="mt-auto pt-4 border-t border-neutral-100">
+                        <div className="mt-auto pt-4 border-t border-border-default">
                           <div className="flex gap-2">
                             <textarea 
                               value={agentInput}
                               onChange={(e) => setAgentInput(e.target.value)}
                               placeholder="告诉 Agent 如何修改这段话..."
-                              className="flex-1 border border-neutral-200 rounded-lg p-2.5 text-[13px] text-neutral-700 resize-none h-[80px] focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
+                              className="flex-1 border border-border-default rounded-lg p-2.5 text-[13px] text-text-secondary resize-none h-[80px] focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-surface-1"
                             />
                           </div>
                           <button 
@@ -549,34 +549,34 @@ export function ExecutionResult() {
                               }
                             }}
                             disabled={isAgentModifying || !agentInput.trim()}
-                            className="mt-3 w-full bg-neutral-900 text-white py-2.5 rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors disabled:opacity-50 flex items-center justify-center shadow-sm"
+                            className="mt-3 w-full bg-btn-main text-white py-2.5 rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors disabled:opacity-50 flex items-center justify-center shadow-sm"
                           >
                             {isAgentModifying ? <RefreshCw size={16} className="animate-spin" /> : '发送指令'}
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <div className="bg-white border border-primary-200 shadow-xl rounded-2xl p-6 relative overflow-hidden">
-                         <div className="absolute top-0 left-0 w-1 h-full bg-primary-500"></div>
+                      <div className="bg-surface-1 border border-primary-200 shadow-xl rounded-xl p-6 relative overflow-hidden">
+                         <div className="absolute top-0 left-0 w-1 h-full bg-btn-main"></div>
                          <div className="absolute top-4 right-4 opacity-10">
-                            <Sparkles size={64} className="text-primary-500" />
+                            <Sparkles size={64} className="text-brand-logo" />
                          </div>
                          
                          <div className="relative z-10">
                            <div className="flex items-center gap-2 mb-4">
-                             <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600">
+                             <div className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-logo">
                                <Sparkles size={16} />
                              </div>
-                             <h3 className="text-[16px] font-bold text-neutral-900">建议处理方案</h3>
+                             <h3 className="text-[16px] font-bold text-text-main">建议处理方案</h3>
                            </div>
                            
-                           <div className="text-[18px] font-bold text-neutral-900 mb-3">
+                           <div className="text-[18px] font-bold text-text-main mb-3">
                              {selectedTask.mainAction}
                            </div>
                            
-                           <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-                             <p className="text-[13px] font-bold text-neutral-700 mb-1">处理理由：</p>
-                             <p className="text-[13px] text-neutral-600 leading-relaxed">
+                           <div className="bg-page-bg p-4 rounded-xl border border-border-default">
+                             <p className="text-[13px] font-bold text-text-secondary mb-1">处理理由：</p>
+                             <p className="text-[13px] text-text-secondary leading-relaxed">
                                {selectedTask.aiWork}
                              </p>
                            </div>
@@ -586,12 +586,12 @@ export function ExecutionResult() {
                  </div>
               </div>
               {/* Actions Footer */}
-              <div className="p-6 border-t border-neutral-100 bg-white flex items-center justify-between shrink-0 relative z-30">
+              <div className="p-6 border-t border-border-default bg-surface-1 flex items-center justify-between shrink-0 relative z-30">
                 <div className="flex items-center gap-3 relative">
                    {/* "More" dropdown placeholder */}
                    <button 
                      onClick={() => setShowMoreActions(!showMoreActions)}
-                     className="px-5 py-3 text-neutral-500 border border-neutral-200 text-[13px] font-bold hover:bg-neutral-50 rounded-xl transition-colors flex items-center gap-2"
+                     className="px-5 py-3 text-text-tertiary border border-border-default text-[13px] font-bold hover:bg-page-bg rounded-xl transition-colors flex items-center gap-2"
                    >
                      <MoreHorizontal size={16} /> 更多
                    </button>
@@ -602,47 +602,47 @@ export function ExecutionResult() {
                          initial={{ opacity: 0, y: 10 }}
                          animate={{ opacity: 1, y: 0 }}
                          exit={{ opacity: 0, y: 10 }}
-                         className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-neutral-200 shadow-2xl rounded-xl py-2 z-50 flex flex-col"
+                         className="absolute bottom-full left-0 mb-2 w-48 bg-surface-1 border border-border-default shadow-2xl rounded-xl py-2 z-50 flex flex-col"
                        >
                          {selectedTask.moduleName === '内容审核' && (
                            <>
-                             <button onClick={() => handleComplete('已进入编辑模式，请在左侧编辑', false)} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">手动编辑</button>
-                             <button onClick={() => handleComplete('查看生成依据', false)} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">查看生成依据</button>
+                             <button onClick={() => handleComplete('已进入编辑模式，请在左侧编辑', false)} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">手动编辑</button>
+                             <button onClick={() => handleComplete('查看生成依据', false)} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">查看生成依据</button>
                            </>
                          )}
                          {selectedTask.moduleName === '素材匹配' && (
                            <>
-                             <button onClick={() => handleComplete('查看原图', false)} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">查看原图</button>
-                             <button onClick={() => handleComplete('标记不可用')} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">标记不可用</button>
-                             <button onClick={() => handleComplete('进入素材库', false)} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">进入素材库</button>
+                             <button onClick={() => handleComplete('查看原图', false)} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">查看原图</button>
+                             <button onClick={() => handleComplete('标记不可用')} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">标记不可用</button>
+                             <button onClick={() => handleComplete('进入素材库', false)} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">进入素材库</button>
                            </>
                          )}
                          {selectedTask.moduleName === '发布异常' && (
                            <>
-                             <button onClick={() => handleComplete('重新发布')} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">重新发布</button>
-                             <button onClick={() => handleComplete('标记人工处理')} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">标记人工处理</button>
+                             <button onClick={() => handleComplete('重新发布')} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">重新发布</button>
+                             <button onClick={() => handleComplete('标记人工处理')} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">标记人工处理</button>
                            </>
                          )}
-                         <div className="h-px bg-neutral-100 my-1 w-full" />
-                         <button onClick={() => handleComplete('进入项目档案', false)} className="text-left px-4 py-2 text-[13px] font-medium text-neutral-700 hover:bg-neutral-50">进入项目档案</button>
+                         <div className="h-px bg-hover-bg my-1 w-full" />
+                         <button onClick={() => handleComplete('进入项目档案', false)} className="text-left px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-page-bg">进入项目档案</button>
                        </motion.div>
                      )}
                    </AnimatePresence>
 
-                   <button onClick={() => handleComplete('跳过当前事项')} className="px-5 py-3 text-neutral-500 text-[13px] font-bold hover:bg-neutral-50 rounded-xl transition-colors">
+                   <button onClick={() => handleComplete('跳过当前事项')} className="px-5 py-3 text-text-tertiary text-[13px] font-bold hover:bg-page-bg rounded-xl transition-colors">
                      跳过
                    </button>
                 </div>
 
                 <div className="flex items-center gap-3">
-                   {selectedTask.moduleName === '内容审核' && <button onClick={() => handleComplete('请在左侧直接编辑内容', false)} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">调整一下</button>}
-                   {selectedTask.moduleName === '素材匹配' && <button onClick={() => handleComplete('已为您重新匹配素材', false)} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">换一组</button>}
-                   {selectedTask.moduleName === '发布异常' && <button onClick={() => handleComplete('已进入修改流程', false)} className="px-6 py-3 border border-neutral-200 text-neutral-700 rounded-xl text-[13px] font-bold hover:bg-neutral-50 transition-colors shadow-sm">调整处理方式</button>}
+                   {selectedTask.moduleName === '内容审核' && <button onClick={() => handleComplete('请在左侧直接编辑内容', false)} className="px-6 py-3 border border-border-default text-text-secondary rounded-xl text-[13px] font-bold hover:bg-page-bg transition-colors shadow-sm">调整一下</button>}
+                   {selectedTask.moduleName === '素材匹配' && <button onClick={() => handleComplete('已为您重新匹配素材', false)} className="px-6 py-3 border border-border-default text-text-secondary rounded-xl text-[13px] font-bold hover:bg-page-bg transition-colors shadow-sm">换一组</button>}
+                   {selectedTask.moduleName === '发布异常' && <button onClick={() => handleComplete('已进入修改流程', false)} className="px-6 py-3 border border-border-default text-text-secondary rounded-xl text-[13px] font-bold hover:bg-page-bg transition-colors shadow-sm">调整处理方式</button>}
                    
                    
                    <button 
                      onClick={() => handleComplete('采纳建议，处理成功')} 
-                     className="px-8 py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-md flex items-center gap-2"
+                     className="px-8 py-3 bg-btn-main text-white rounded-xl text-[14px] font-bold hover:bg-btn-main-hover transition-colors shadow-md flex items-center gap-2"
                    >
                      {'采纳建议'}
                      <Check size={16} />

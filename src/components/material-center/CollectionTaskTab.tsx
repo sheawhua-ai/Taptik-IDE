@@ -38,8 +38,8 @@ export const CollectionTaskTab: React.FC<CollectionTaskTabProps> = ({
     <div className="space-y-4 max-w-4xl mx-auto py-2">
       {/* 拍摄任务列表 Header */}
       <div className="flex items-center justify-between px-1">
-        <h2 className="text-[16px] font-black text-neutral-900">拍摄任务总览</h2>
-        <span className="text-[12.5px] font-bold text-neutral-400">
+        <h2 className="text-[16px] font-black text-text-main">拍摄任务总览</h2>
+        <span className="text-[12.5px] font-bold text-text-tertiary">
           共 {tasks.length} 个拍摄任务
         </span>
       </div>
@@ -68,21 +68,21 @@ export const CollectionTaskTab: React.FC<CollectionTaskTabProps> = ({
             <div
               key={task.id}
               onClick={() => setSelectedTask(task)}
-              className="bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-neutral-400 hover:shadow-2xs transition-all cursor-pointer group"
+              className="bg-surface-1 rounded-xl border border-border-default/90 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-neutral-400 hover:shadow-2xs transition-all cursor-pointer group"
             >
               <div className="space-y-1.5 flex-1">
                 {/* 任务名称 */}
-                <h3 className="text-[16px] font-black text-neutral-900 group-hover:text-neutral-800 transition-colors">
+                <h3 className="text-[16px] font-black text-text-main group-hover:text-text-main transition-colors">
                   {task.taskName}
                 </h3>
 
                 {/* 所属项目 · 门店 · 执行人 */}
-                <p className="text-[12.5px] font-medium text-neutral-500">
+                <p className="text-[12.5px] font-medium text-text-tertiary">
                   {task.projectName} · {task.store} · {task.executor}
                 </p>
 
                 {/* 已收集镜头数 · 当前需要处理的问题 */}
-                <p className={`text-[13px] font-bold ${hasIssue ? 'text-rose-600' : 'text-neutral-700'}`}>
+                <p className={`text-[13px] font-bold ${hasIssue ? 'text-danger' : 'text-text-secondary'}`}>
                   {getSummaryText()}
                 </p>
               </div>
@@ -97,10 +97,10 @@ export const CollectionTaskTab: React.FC<CollectionTaskTabProps> = ({
                   }}
                   className={`px-4 py-2 rounded-xl text-[13px] font-black transition-all shadow-2xs ${
                     isCompleted
-                      ? 'bg-neutral-100 hover:bg-neutral-200 text-neutral-800'
+                      ? 'bg-hover-bg hover:bg-selected-bg text-text-main'
                       : hasIssue
                       ? 'bg-rose-600 hover:bg-rose-700 text-white'
-                      : 'bg-neutral-900 hover:bg-neutral-800 text-white'
+                      : 'bg-btn-main hover:bg-btn-main-hover text-white'
                   }`}
                 >
                   {isCompleted ? '查看素材' : '查看任务'}

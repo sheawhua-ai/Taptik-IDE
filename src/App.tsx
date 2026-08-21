@@ -696,7 +696,7 @@ export default function App() {
         return (
           <span
             key={index}
-            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded text-[12px] ${role === "user" ? "bg-primary-500 text-white border border-primary-700" : "bg-primary-50 text-primary-500"}`}
+            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded text-[12px] ${role === "user" ? "bg-btn-main text-white border border-primary-700" : "bg-brand-light text-brand-logo"}`}
           >
             <Component size={12} /> {part.substring(1)}
           </span>
@@ -709,7 +709,7 @@ export default function App() {
         return (
           <span
             key={index}
-            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-[4px] text-[12px] border ${role === "user" ? "bg-neutral-800 text-neutral-200 border-neutral-700" : "bg-neutral-100 text-neutral-700 border-neutral-200"}`}
+            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-[4px] text-[12px] border ${role === "user" ? "bg-neutral-800 text-neutral-200 border-neutral-700" : "bg-hover-bg text-text-secondary border-border-default"}`}
           >
             {icon} {part.slice(3, -1)}
           </span>
@@ -724,50 +724,50 @@ export default function App() {
             className="mt-5 mb-2 p-8 bg-neutral-0 border-2 border-primary-500/10 rounded-[32px] shadow-xl shadow-primary-500/5 relative overflow-hidden group"
           >
             <div className="absolute -top-6 -right-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
-              <Orbit size={160} className="text-primary-500" />
+              <Orbit size={160} className="text-brand-logo" />
             </div>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary-50 rounded-[20px] flex items-center justify-center text-primary-500">
+                  <div className="w-12 h-12 bg-brand-light rounded-[20px] flex items-center justify-center text-brand-logo">
                     <Layers size={24} />
                   </div>
                   <div>
-                    <h4 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
+                    <h4 className="text-[16px] font-semibold text-text-main tracking-tight">
                       🔔 助手决策建议
                     </h4>
-                    <p className="text-[10px] text-neutral-400 font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
+                    <p className="text-[10px] text-text-tertiary font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
                       关键优化动作
                     </p>
                   </div>
                 </div>
-                <div className="px-3 py-1.5 bg-primary-500 text-white text-[10px] rounded-xl uppercase tracking-widest shadow-sm">
+                <div className="px-3 py-1.5 bg-btn-main text-white text-[10px] rounded-xl uppercase tracking-widest shadow-sm">
                   付费技能
                 </div>
               </div>
 
               <div className="space-y-4 mb-8">
-                <p className="text-[14px] text-neutral-600 leading-relaxed px-1">
+                <p className="text-[14px] text-text-secondary leading-relaxed px-1">
                   当前笔记原创度偏低，建议安装{" "}
-                  <span className="text-primary-500 underline decoration-2 underline-offset-4">
+                  <span className="text-brand-logo underline decoration-2 underline-offset-4">
                     「{name}」
                   </span>
                   。
                 </p>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1 p-4 bg-neutral-50 rounded-2xl border border-neutral-100/50 shadow-inner">
-                    <span className="text-neutral-400 text-[10px] uppercase tracking-tighter">
+                  <div className="flex flex-col gap-1 p-4 bg-page-bg rounded-xl border border-border-default/50 shadow-inner">
+                    <span className="text-text-tertiary text-[10px] uppercase tracking-tighter">
                       💰 费用详情
                     </span>
-                    <span className="text-neutral-900 font-mono text-[13px]">
+                    <span className="text-text-main font-mono text-[13px]">
                       {price}
                     </span>
                   </div>
-                  <div className="flex flex-col gap-1 p-4 bg-primary-50 rounded-2xl border border-primary-100 shadow-inner">
-                    <span className="text-neutral-400 text-[10px] uppercase tracking-tighter">
+                  <div className="flex flex-col gap-1 p-4 bg-brand-light rounded-xl border border-primary-100 shadow-inner">
+                    <span className="text-text-tertiary text-[10px] uppercase tracking-tighter">
                       📈 预计提升
                     </span>
-                    <span className="text-primary-500 font-mono text-[13px]">
+                    <span className="text-brand-logo font-mono text-[13px]">
                       {benefit}
                     </span>
                   </div>
@@ -784,17 +784,17 @@ export default function App() {
                     setTimeout(() => {
                       target.parentElement?.parentElement?.parentElement?.classList.add(
                         "opacity-70",
-                        "bg-neutral-50/50",
+                        "bg-page-bg",
                       );
                       target.outerHTML =
-                        '<div class="flex items-center gap-2 text-success-600 text-[13px] bg-success-50 px-6 py-3 rounded-2xl border border-success-200 shadow-sm"><Check size={18}/> 技能已挂载并应用</div>';
+                        '<div class="flex items-center gap-2 text-success-600 text-[13px] bg-success-50 px-6 py-3 rounded-xl border border-success-200 shadow-sm"><Check size={18}/> 技能已挂载并应用</div>';
                     }, 800);
                   }}
-                  className="flex-1 px-8 py-4 bg-neutral-900 text-white rounded-2xl text-[14px] shadow-lg shadow-neutral-200 hover:bg-primary-500 hover:translate-y-[-2px] active:scale-95 transition-all text-center"
+                  className="flex-1 px-8 py-4 bg-btn-main text-white rounded-xl text-[14px] shadow-lg shadow-neutral-200 hover:bg-btn-main hover:translate-y-[-2px] active:scale-95 transition-all text-center"
                 >
                   安装并应用
                 </button>
-                <button className="px-6 py-4 bg-neutral-0 border border-neutral-200 text-neutral-400 rounded-2xl text-[14px] hover:text-neutral-900 hover:border-neutral-300 transition-all">
+                <button className="px-6 py-4 bg-neutral-0 border border-border-default text-text-tertiary rounded-xl text-[14px] hover:text-text-main hover:border-neutral-300 transition-all">
                   忽略
                 </button>
               </div>
@@ -808,22 +808,22 @@ export default function App() {
         return (
           <div
             key={index}
-            className="mt-5 mb-2 p-8 bg-neutral-0 border-2 border-dashed border-neutral-200 rounded-[32px] relative overflow-hidden group hover:border-primary-500/20 transition-all"
+            className="mt-5 mb-2 p-8 bg-neutral-0 border-2 border-dashed border-border-default rounded-[32px] relative overflow-hidden group hover:border-primary-500/20 transition-all"
           >
             <div className="absolute -top-10 -right-10 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
-              <Dna size={200} className="text-neutral-900" />
+              <Dna size={200} className="text-text-main" />
             </div>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-neutral-50 rounded-[20px] flex items-center justify-center text-neutral-400 border border-neutral-100 group-hover:text-primary-500 group-hover:bg-primary-50 transition-all">
+                  <div className="w-12 h-12 bg-page-bg rounded-[20px] flex items-center justify-center text-text-tertiary border border-border-default group-hover:text-brand-logo group-hover:bg-brand-light transition-all">
                     <Filter size={24} />
                   </div>
                   <div>
-                    <h4 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
+                    <h4 className="text-[16px] font-semibold text-text-main tracking-tight">
                       🔔 助手执行建议
                     </h4>
-                    <p className="text-[10px] text-neutral-400 font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
+                    <p className="text-[10px] text-text-tertiary font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
                       社区资源推荐
                     </p>
                   </div>
@@ -834,18 +834,18 @@ export default function App() {
               </div>
 
               <div className="space-y-4 mb-8 px-1">
-                <p className="text-[14px] text-neutral-600 leading-relaxed">
+                <p className="text-[14px] text-text-secondary leading-relaxed">
                   当前笔记原创度偏低，建议安装{" "}
-                  <span className="text-neutral-900 ">「{category}」</span>{" "}
+                  <span className="text-text-main ">「{category}」</span>{" "}
                   类工具。
                   <br />
                   市场上已有{" "}
-                  <span className="text-primary-500 underline underline-offset-2">
+                  <span className="text-brand-logo underline underline-offset-2">
                     {count} 款
                   </span>{" "}
                   成熟可选资产。
                 </p>
-                <div className="flex items-center gap-3 text-neutral-500 text-[12px] bg-neutral-50/50 w-fit px-3 py-1.5 rounded-lg border border-neutral-100">
+                <div className="flex items-center gap-3 text-text-tertiary text-[12px] bg-page-bg w-fit px-3 py-1.5 rounded-lg border border-border-default">
                   <Zap size={14} className="text-warning-500 fill-current" />
                   <span>📈 预期原创度提升 {benefit}</span>
                 </div>
@@ -854,7 +854,7 @@ export default function App() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setActiveNav("skills")}
-                  className="flex-1 px-8 py-4 bg-neutral-0 border-2 border-neutral-900 text-neutral-900 rounded-2xl text-[14px] shadow-md hover:bg-neutral-900 hover:text-white transition-all text-center active:scale-95"
+                  className="flex-1 px-8 py-4 bg-neutral-0 border-2 border-neutral-900 text-text-main rounded-xl text-[14px] shadow-md hover:bg-btn-main hover:text-white transition-all text-center active:scale-95"
                 >
                   去市场中查看
                 </button>
@@ -869,10 +869,10 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-[100dvh] w-full bg-[#f8f9fa] text-neutral-900 font-sans overflow-hidden relative">
+    <div className="flex h-[100dvh] w-full bg-[#f8f9fa] text-text-main font-sans overflow-hidden relative">
       <InlineAIToolbar />
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-500 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-btn-main rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-500 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
       </div>
       {/* Global Command Bar Overlay */}
@@ -882,17 +882,17 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-[1000] bg-neutral-900/40 backdrop-blur-sm flex items-start justify-center pt-[15vh]"
+            className="absolute inset-0 z-[1000] bg-btn-main/40 backdrop-blur-sm flex items-start justify-center pt-[15vh]"
             onClick={() => setIsCommandBarOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden"
+              className="w-full max-w-2xl bg-surface-1 rounded-xl shadow-2xl border border-border-default overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-5 border-b border-neutral-100 flex items-center gap-4">
-                <Search className="text-neutral-400" size={24} />
+              <div className="p-5 border-b border-border-default flex items-center gap-4">
+                <Search className="text-text-tertiary" size={24} />
                 <input
                   autoFocus
                   placeholder="输入指令召唤助手 (例如: '给奈雪生成今日笔记', '分析 ROI')"
@@ -900,7 +900,7 @@ export default function App() {
                 />
               </div>
               <div className="p-3 max-h-[400px] overflow-y-auto custom-scrollbar">
-                <div className="px-3 py-2 text-[10px] text-neutral-400 uppercase tracking-widest">
+                <div className="px-3 py-2 text-[10px] text-text-tertiary uppercase tracking-widest">
                   快捷任务
                 </div>
                 <div className="space-y-1">
@@ -923,16 +923,16 @@ export default function App() {
                   ].map((item, i) => (
                     <button
                       key={i}
-                      className="w-full flex items-center gap-4 p-3.5 hover:bg-neutral-50 rounded-2xl transition-all group group-hover:translate-x-1"
+                      className="w-full flex items-center gap-4 p-3.5 hover:bg-page-bg relative overflow-hidden rounded-xl transition-all group group-hover:translate-x-1"
                     >
-                      <div className="w-10 h-10 bg-neutral-50 rounded-xl flex items-center justify-center text-neutral-400 group-hover:bg-primary-50 group-hover:text-primary-500 transition-all">
+                      <div className="w-10 h-10 bg-page-bg rounded-xl flex items-center justify-center text-text-tertiary group-hover:bg-brand-light group-hover:text-brand-logo transition-all">
                         <item.icon size={20} />
                       </div>
                       <div className="text-left">
-                        <div className="text-[14px] text-neutral-800">
+                        <div className="text-[14px] text-text-main">
                           {item.label}
                         </div>
-                        <div className="text-[11px] text-neutral-400 font-medium">
+                        <div className="text-[11px] text-text-tertiary font-medium">
                           {item.sub}
                         </div>
                       </div>
@@ -977,18 +977,18 @@ export default function App() {
 
       {/* SaaS Nav Sidebar */}
       <div
-        className={`${isSidebarCollapsed ? "w-[68px]" : "w-[240px]"} transition-all duration-300 bg-[#f7f8fa] border-r border-[#e9eaec] flex flex-col shrink-0 h-full relative z-20 overflow-hidden`}
+        className={`${isSidebarCollapsed ? "w-[68px]" : "w-[240px]"} transition-all duration-300 bg-sidebar-bg border-r border-border-default flex flex-col shrink-0 h-full relative z-20 overflow-hidden`}
       >
         <div
-          className={`h-14 flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-4"} tracking-tight text-neutral-900 border-b border-transparent shrink-0`}
+          className={`h-14 flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-4"} tracking-tight text-text-main border-b border-transparent shrink-0`}
         >
           {!isSidebarCollapsed && (
             <div className="flex items-center gap-2">
               <Logo className="w-6 h-6 shadow-sm rounded-[6px]" />
-              <h1 className="text-[17px] font-semibold tracking-tight text-slate-800 uppercase mt-0.5">
+              <h1 className="text-[17px] font-semibold tracking-tight text-text-main uppercase mt-0.5">
                 TapTik
               </h1>
-              <span className="text-[11px] text-slate-400 font-mono tracking-tight mt-1 ml-0.5">
+              <span className="text-[11px] text-text-tertiary font-mono tracking-tight mt-1 ml-0.5">
                 v1.5.7
               </span>
             </div>
@@ -997,11 +997,11 @@ export default function App() {
             <Logo className="w-7 h-7 shadow-sm rounded-[6px] mx-auto mt-2" />
           )}
           <div
-            className={`flex items-center text-slate-400 ${isSidebarCollapsed ? "flex-col gap-2 mt-2" : "gap-1.5"}`}
+            className={`flex items-center text-text-tertiary ${isSidebarCollapsed ? "flex-col gap-2 mt-2" : "gap-1.5"}`}
           >
             <button
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all"
+              className="p-1 hover:bg-surface-1 hover:shadow-sm rounded hover:text-text-main transition-all"
               title={isSidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
             >
               {isSidebarCollapsed ? (
@@ -1013,7 +1013,7 @@ export default function App() {
             {!isSidebarCollapsed && (
               <>
                 <button
-                  className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all"
+                  className="p-1 hover:bg-surface-1 hover:shadow-sm rounded hover:text-text-main transition-all"
                   title="搜索 (Cmd+K)"
                   onClick={() => setIsSearchTasksModalOpen(true)}
                 >
@@ -1021,7 +1021,7 @@ export default function App() {
                 </button>
                 <div className="relative">
                   <button
-                    className="p-1 hover:bg-white hover:shadow-sm rounded hover:text-slate-700 transition-all"
+                    className="p-1 hover:bg-surface-1 hover:shadow-sm rounded hover:text-text-main transition-all"
                     title="过滤器"
                     onClick={() =>
                       setIsTasksFilterDropdownOpen(!isTasksFilterDropdownOpen)
@@ -1035,8 +1035,8 @@ export default function App() {
                         className="fixed inset-0 z-[100]"
                         onClick={() => setIsTasksFilterDropdownOpen(false)}
                       />
-                      <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-neutral-100 z-[101] py-2">
-                        <div className="px-3 py-1.5 text-[12px] text-slate-400 ">
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-surface-1 rounded-xl shadow-xl border border-border-default z-[101] py-2">
+                        <div className="px-3 py-1.5 text-[12px] text-text-tertiary ">
                           筛选状态
                         </div>
                         {[
@@ -1053,7 +1053,7 @@ export default function App() {
                               setActiveTaskFilterStatus(status);
                               setIsTasksFilterDropdownOpen(false);
                             }}
-                            className={`w-full text-left px-4 py-2 text-[14px] flex items-center justify-between hover:bg-slate-50 transition-colors ${activeTaskFilterStatus === status ? "text-primary-500 bg-primary-50/50" : "text-slate-700"}`}
+                            className={`w-full text-left px-4 py-2 text-[14px] flex items-center justify-between hover:bg-hover-bg transition-colors ${activeTaskFilterStatus === status ? "text-brand-logo bg-brand-light/50" : "text-text-main"}`}
                           >
                             {status}
                             {activeTaskFilterStatus === status && (
@@ -1061,8 +1061,8 @@ export default function App() {
                             )}
                           </button>
                         ))}
-                        <div className="w-full h-px bg-slate-100 my-2" />
-                        <div className="px-3 py-1.5 text-[12px] text-slate-400 ">
+                        <div className="w-full h-px bg-border-default my-2" />
+                        <div className="px-3 py-1.5 text-[12px] text-text-tertiary ">
                           筛选时间
                         </div>
                         {["全部时间", "今天", "最近 7 天", "最近 30 天"].map(
@@ -1073,7 +1073,7 @@ export default function App() {
                                 setActiveTaskFilterTime(time);
                                 setIsTasksFilterDropdownOpen(false);
                               }}
-                              className={`w-full text-left px-4 py-2 text-[14px] flex items-center justify-between hover:bg-slate-50 transition-colors ${activeTaskFilterTime === time ? "text-primary-500 bg-primary-50/50" : "text-slate-700"}`}
+                              className={`w-full text-left px-4 py-2 text-[14px] flex items-center justify-between hover:bg-hover-bg transition-colors ${activeTaskFilterTime === time ? "text-brand-logo bg-brand-light/50" : "text-text-main"}`}
                             >
                               {time}
                               {activeTaskFilterTime === time && (
@@ -1082,14 +1082,14 @@ export default function App() {
                             </button>
                           ),
                         )}
-                        <div className="w-full h-px bg-slate-100 my-2" />
+                        <div className="w-full h-px bg-border-default my-2" />
                         <button
                           onClick={() => {
                             setActiveTaskFilterStatus("全部状态");
                             setActiveTaskFilterTime("全部时间");
                             setIsTasksFilterDropdownOpen(false);
                           }}
-                          className="w-full text-left px-4 py-2 text-[14px] text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+                          className="w-full text-left px-4 py-2 text-[14px] text-text-secondary hover:text-text-main hover:bg-hover-bg transition-colors"
                         >
                           重置筛选条件
                         </button>
@@ -1106,7 +1106,7 @@ export default function App() {
           <button
             onClick={() => setIsProjectSelectorOpen(true)}
             title={isSidebarCollapsed ? activeProject.name : undefined}
-            className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-2.5"} py-2 hover:bg-white hover:shadow-sm rounded-xl text-sm text-slate-700 transition-all border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.02)] bg-white`}
+            className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-2.5"} py-2 hover:bg-surface-1 hover:shadow-sm rounded-xl text-sm text-text-main transition-all border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.02)] bg-surface-1`}
           >
             <div
               className={`flex items-center gap-3 w-full justify-center ${isSidebarCollapsed ? "" : "xl:justify-start"}`}
@@ -1121,17 +1121,17 @@ export default function App() {
                 {activeProject.initial}
               </div>
               {!isSidebarCollapsed && (
-                <span className="truncate max-w-[120px] text-[13px] text-slate-800">
+                <span className="truncate max-w-[120px] text-[13px] text-text-main">
                   {activeProject.name}
                 </span>
               )}
             </div>
             {!isSidebarCollapsed && (
               <div className="flex items-center gap-1.5 min-w-[32px] shrink-0">
-                <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] text-text-tertiary bg-border-default px-1.5 py-0.5 rounded">
                   ⌘K
                 </span>
-                <ChevronDown size={14} className="text-slate-400 shrink-0" />
+                <ChevronDown size={14} className="text-text-tertiary shrink-0" />
               </div>
             )}
           </button>
@@ -1143,7 +1143,7 @@ export default function App() {
           <button
             onClick={() => setActiveNav("workbench")}
             title={isSidebarCollapsed ? "新对话" : undefined}
-            className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} rounded-xl transition-all group border border-transparent ${activeNav === "workbench" ? "bg-white text-slate-900 shadow-sm" : "hover:bg-white hover:shadow-sm text-slate-700"} mb-2`}
+            className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} relative overflow-hidden rounded-xl transition-all group border border-transparent ${activeNav === "workbench" ? "bg-selected-bg text-text-main" : "hover:bg-hover-bg text-text-secondary"} mb-2`}
           >
             <div
               className={`w-5 h-5 flex items-center justify-center bg-slate-800 text-white rounded-[6px] shrink-0 shadow-sm border border-slate-700 ${isSidebarCollapsed ? "mx-auto" : ""}`}
@@ -1160,12 +1160,13 @@ export default function App() {
               key={item.id}
               onClick={() => setActiveNav(item.id)}
               title={isSidebarCollapsed ? item.name : undefined}
-              className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0 mx-auto" : "px-3 py-2"} rounded-xl transition-all group border border-transparent ${activeNav === item.id ? "bg-white text-slate-900 shadow-sm " : "text-slate-600 hover:bg-white/60 hover:text-slate-900 "}`}
+              className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0 mx-auto" : "px-3 py-2"} relative overflow-hidden rounded-xl transition-all group border border-transparent ${activeNav === item.id ? "bg-selected-bg text-text-main " : "text-text-secondary hover:bg-hover-bg hover:text-text-main "}`}
             >
+              {activeNav === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-brand-logo rounded-r-full" />}
               <item.icon
                 size={16}
                 strokeWidth={activeNav === item.id ? 2.5 : 2}
-                className={`shrink-0 ${activeNav === item.id ? "text-slate-800" : "text-slate-400 group-hover:text-slate-600"}`}
+                className={`shrink-0 ${activeNav === item.id ? "text-text-main" : "text-text-tertiary group-hover:text-text-secondary"}`}
               />
               {!isSidebarCollapsed && (
                 <span className="text-[13px]">{item.name}</span>
@@ -1179,13 +1180,13 @@ export default function App() {
             {!isSidebarCollapsed && (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between group cursor-pointer hover:bg-slate-100 rounded-md py-1" onClick={() => setIsChatSpaceExpanded(!isChatSpaceExpanded)}>
-                    <span className="text-[12px] text-slate-500 font-medium px-2 flex items-center gap-1">
+                  <div className="flex items-center justify-between group cursor-pointer hover:bg-border-default rounded-md py-1" onClick={() => setIsChatSpaceExpanded(!isChatSpaceExpanded)}>
+                    <span className="text-[12px] text-text-secondary font-medium px-2 flex items-center gap-1">
                       {isChatSpaceExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />} 对话空间
                     </span>
                     <button
                       onClick={(e) => { e.stopPropagation(); setIsCreateProjectModalOpen(true); }}
-                      className="hover:text-slate-700 text-slate-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="hover:text-text-main text-text-tertiary p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       title="新建对话空间"
                     >
                       <Plus size={14} />
@@ -1195,20 +1196,20 @@ export default function App() {
                   {/* Project Item */}
                   {isChatSpaceExpanded && (
                   <div className="flex flex-col gap-0.5">
-                    <div className="relative flex items-center justify-between px-2 py-2 rounded-lg bg-slate-100/50 hover:bg-slate-100 cursor-pointer group/project text-slate-800 transition-colors">
+                    <div className="relative flex items-center justify-between px-2 py-2 rounded-lg bg-border-default/50 hover:bg-border-default cursor-pointer group/project text-text-main transition-colors">
                       <div className="flex items-center gap-2 overflow-hidden flex-1">
                         <ChevronDown
                           size={14}
-                          className="text-slate-400 shrink-0"
+                          className="text-text-tertiary shrink-0"
                         />
-                        <Folder size={15} className="text-slate-400 shrink-0" />
+                        <Folder size={15} className="text-text-tertiary shrink-0" />
                         <span className="text-[13px] font-medium truncate">
                           New project
                         </span>
                       </div>
                       <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover/project:opacity-100 transition-opacity relative">
                         <button
-                          className="text-slate-400 hover:text-slate-700 p-1 project-menu-trigger"
+                          className="text-text-tertiary hover:text-text-main p-1 project-menu-trigger"
                           title="更多"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1223,7 +1224,7 @@ export default function App() {
                           <MoreHorizontal size={14} />
                         </button>
                         <button
-                          className="text-slate-400 hover:text-slate-700 p-1"
+                          className="text-text-tertiary hover:text-text-main p-1"
                           title="编辑"
                         >
                           <Edit2 size={14} />
@@ -1231,37 +1232,37 @@ export default function App() {
 
                         {/* Project Menu Dropdown */}
                         {activeProjectMenuId === "new-project" && (
-                          <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 text-slate-700 project-menu-container">
-                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                          <div className="absolute right-0 top-full mt-1 w-48 bg-surface-1 rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 text-text-main project-menu-container">
+                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-hover-bg transition-colors text-left w-full">
                               <Pin
                                 size={14}
-                                className="shrink-0 text-slate-400"
+                                className="shrink-0 text-text-tertiary"
                               />{" "}
                               置顶项目
                             </button>
-                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-hover-bg transition-colors text-left w-full">
                               <FolderOpen
                                 size={14}
-                                className="shrink-0 text-slate-400"
+                                className="shrink-0 text-text-tertiary"
                               />{" "}
                               在资源管理器中打开
                             </button>
-                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-hover-bg transition-colors text-left w-full">
                               <Edit2
                                 size={14}
-                                className="shrink-0 text-slate-400"
+                                className="shrink-0 text-text-tertiary"
                               />{" "}
                               重命名项目
                             </button>
-                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-slate-50 transition-colors text-left w-full">
+                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] hover:bg-hover-bg transition-colors text-left w-full">
                               <Archive
                                 size={14}
-                                className="shrink-0 text-slate-400"
+                                className="shrink-0 text-text-tertiary"
                               />{" "}
                               归档项目
                             </button>
-                            <div className="h-px bg-slate-100 my-1 w-full" />
-                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors text-left w-full">
+                            <div className="h-px bg-border-default my-1 w-full" />
+                            <button className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-danger hover:bg-red-50 transition-colors text-left w-full">
                               <X size={14} className="shrink-0" /> 移除
                             </button>
                           </div>
@@ -1279,7 +1280,7 @@ export default function App() {
                       ].map((session, i) => (
                         <div
                           key={session.id}
-                          className={`relative flex items-center justify-between px-2 py-1.5 rounded-md cursor-pointer group/session transition-colors ${i === 0 ? "bg-slate-100 text-slate-800" : "hover:bg-slate-50 text-slate-500 hover:text-slate-700"}`}
+                          className={`relative flex items-center justify-between px-2 py-1.5 rounded-md cursor-pointer group/session transition-colors ${i === 0 ? "bg-border-default text-text-main" : "hover:bg-hover-bg text-text-secondary hover:text-text-main"}`}
                         >
                           <div className="flex items-center gap-2 overflow-hidden flex-1">
                             <div
@@ -1291,7 +1292,7 @@ export default function App() {
                           </div>
                           <div className="shrink-0 opacity-0 group-hover/session:opacity-100 transition-opacity relative">
                             <button
-                              className="text-slate-400 hover:text-slate-600 p-1 session-menu-trigger"
+                              className="text-text-tertiary hover:text-text-secondary p-1 session-menu-trigger"
                               title="更多"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1308,35 +1309,35 @@ export default function App() {
 
                             {/* Session Menu Dropdown */}
                             {activeSessionMenuId === session.id && (
-                              <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 session-menu-container">
-                                <div className="px-4 py-1.5 text-[11px] font-bold text-slate-400 tracking-wider">沉淀为...</div>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <Database size={14} className="text-slate-400" /> 商家记忆
+                              <div className="absolute right-0 top-full mt-1 w-48 bg-surface-1 rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 session-menu-container">
+                                <div className="px-4 py-1.5 text-[11px] font-bold text-text-tertiary tracking-wider">沉淀为...</div>
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <Database size={14} className="text-text-tertiary" /> 商家记忆
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <User size={14} className="text-slate-400" /> 我的记忆
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <User size={14} className="text-text-tertiary" /> 我的记忆
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <FileText size={14} className="text-slate-400" /> 打法草稿
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <FileText size={14} className="text-text-tertiary" /> 打法草稿
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <Lightbulb size={14} className="text-slate-400" /> 新项目方案
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <Lightbulb size={14} className="text-text-tertiary" /> 新项目方案
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <CheckSquare size={14} className="text-slate-400" /> 执行任务
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <CheckSquare size={14} className="text-text-tertiary" /> 执行任务
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <BarChart2 size={14} className="text-slate-400" /> 数据看板
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <BarChart2 size={14} className="text-text-tertiary" /> 数据看板
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <ImageIcon size={14} className="text-slate-400" /> 素材需求
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <ImageIcon size={14} className="text-text-tertiary" /> 素材需求
                                 </button>
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <Compass size={14} className="text-slate-400" /> 内容方向
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <Compass size={14} className="text-text-tertiary" /> 内容方向
                                 </button>
-                                <div className="h-px bg-slate-100 my-1 w-full" />
-                                <button className="px-4 py-2 text-[13px] text-slate-700 hover:bg-slate-50 transition-colors text-left w-full flex items-center gap-2">
-                                  <Archive size={14} className="text-slate-400" /> 归档
+                                <div className="h-px bg-border-default my-1 w-full" />
+                                <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
+                                  <Archive size={14} className="text-text-tertiary" /> 归档
                                 </button>
                               </div>
                             )}
@@ -1353,35 +1354,35 @@ export default function App() {
         </div>
 
         <div
-          className={`p-3 ${isSidebarCollapsed ? "px-1" : "xl:p-4"} border-t border-neutral-100 flex flex-col gap-1 bg-white relative z-[60] shrink-0`}
+          className={`p-3 ${isSidebarCollapsed ? "px-1" : "xl:p-4"} border-t border-border-default flex flex-col gap-1 bg-surface-1 relative z-[60] shrink-0`}
         >
           <div
             title={isSidebarCollapsed ? "18616306063" : undefined}
-            className={`flex items-center gap-3 p-1 ${isSidebarCollapsed ? "justify-center" : "xl:px-3"} py-2 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors`}
+            className={`flex items-center gap-3 p-1 ${isSidebarCollapsed ? "justify-center" : "xl:px-3"} py-2 cursor-pointer hover:bg-page-bg rounded-xl transition-colors`}
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
           >
-            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-neutral-100">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-border-default">
               <Logo className="w-full h-full" />
             </div>
             {!isSidebarCollapsed && (
               <>
                 <div className="hidden xl:flex flex-1 min-w-0 flex-col">
-                  <p className="text-[14px] text-neutral-900 truncate tracking-tight">
+                  <p className="text-[14px] text-text-main truncate tracking-tight">
                     18616306063
                   </p>
                 </div>
                 <div className="hidden xl:flex items-center gap-1 shrink-0">
                   <button
-                    className="text-neutral-500 hover:text-neutral-900 p-1.5 rounded-md relative"
+                    className="text-text-tertiary hover:text-text-main p-1.5 rounded-md relative"
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                   >
-                    <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary-500 rounded-full border border-white" />
+                    <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-btn-main rounded-full border border-white" />
                     <Bell size={16} />
                   </button>
                   <button
-                    className="text-neutral-500 hover:text-neutral-900 p-1.5 rounded-md"
+                    className="text-text-tertiary hover:text-text-main p-1.5 rounded-md"
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -1404,54 +1405,54 @@ export default function App() {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="fixed bottom-[76px] left-[12px] xl:left-[16px] w-[236px] xl:w-[248px] bg-white rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] border border-neutral-200 z-[100] flex flex-col py-2"
+                  className="fixed bottom-[76px] left-[12px] xl:left-[16px] w-[236px] xl:w-[248px] bg-surface-1 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] border border-border-default z-[100] flex flex-col py-2"
                 >
-                  <div className="px-4 py-3 border-b border-neutral-100 flex items-center gap-2">
-                    <span className="text-[15px] text-neutral-900">
+                  <div className="px-4 py-3 border-b border-border-default flex items-center gap-2">
+                    <span className="text-[15px] text-text-main">
                       18616306063
                     </span>
                     <Copy
                       size={14}
-                      className="text-neutral-400 cursor-pointer hover:text-neutral-600"
+                      className="text-text-tertiary cursor-pointer hover:text-text-secondary"
                     />
                   </div>
 
                   <div className="px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[13px] text-neutral-700">
+                    <div className="flex items-center gap-2 text-[13px] text-text-secondary">
                       <User size={16} />
                       体验版
                     </div>
-                    <span className="px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 transition-colors text-[11px] rounded-lg cursor-pointer">
+                    <span className="px-3 py-1 bg-btn-main text-white hover:bg-btn-main-hover transition-colors text-[11px] rounded-lg cursor-pointer">
                       升级
                     </span>
                   </div>
 
                   <div className="px-4 pb-3">
-                    <div className="rounded-xl border border-neutral-200 overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-                      <div className="bg-primary-500 text-white px-3 py-2 flex items-center gap-2">
+                    <div className="rounded-xl border border-border-default overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
+                      <div className="bg-btn-main text-white px-3 py-2 flex items-center gap-2">
                         <div className="w-4 h-4 flex items-center justify-center shrink-0">
                           <Logo className="w-full h-full rounded-sm" />
                         </div>
                         <span className="text-[12px] tracking-tight">
                           Taptik 探索站
                         </span>
-                        <span className="ml-auto text-[10px] bg-white/20 px-1.5 py-0.5 rounded-md text-white">
+                        <span className="ml-auto text-[10px] bg-surface-1/20 px-1.5 py-0.5 rounded-md text-white">
                           2期·今日结束
                         </span>
                       </div>
-                      <div className="p-3 bg-white">
-                        <div className="text-[13px] mb-2 text-neutral-900">
+                      <div className="p-3 bg-surface-1">
+                        <div className="text-[13px] mb-2 text-text-main">
                           本期: 资料库 乐享知识库
                         </div>
-                        <div className="text-[11px] text-neutral-500 space-y-0.5 mb-3">
+                        <div className="text-[11px] text-text-tertiary space-y-0.5 mb-3">
                           <p>每日可领 150 通用积分</p>
                           <p>本期已领 4 天 · 累计 600 通用积分</p>
                         </div>
                         <div className="flex gap-2">
-                          <button className="flex-1 bg-neutral-100 text-neutral-400 text-[12px] py-1.5 rounded-lg border border-transparent cursor-not-allowed">
+                          <button className="flex-1 bg-hover-bg text-text-tertiary text-[12px] py-1.5 rounded-lg border border-transparent cursor-not-allowed">
                             今日已领
                           </button>
-                          <button className="flex-1 bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:border-red-300 text-[12px] py-1.5 rounded-lg transition-colors">
+                          <button className="flex-1 bg-red-50 text-danger border border-red-200 hover:bg-red-100 hover:border-red-300 text-[12px] py-1.5 rounded-lg transition-colors">
                             体验乐享 →
                           </button>
                         </div>
@@ -1461,7 +1462,7 @@ export default function App() {
 
                   <div className="px-2 py-1 space-y-0.5">
                     <button
-                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 group transition-colors"
+                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary group transition-colors"
                       onClick={() => {
                         setIsUserMenuOpen(false);
                         setIsFinanceModalOpen(true);
@@ -1470,19 +1471,19 @@ export default function App() {
                       <div className="flex items-center gap-3 text-[13px] ">
                         <Sparkles
                           size={16}
-                          className="text-neutral-500 group-hover:text-red-500"
+                          className="text-text-tertiary group-hover:text-danger"
                         />
                         {userRole === "merchant" ? "积分余额" : "收益中心"}
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="text-[12px] text-neutral-500">
+                        <span className="text-[12px] text-text-tertiary">
                           {userRole === "merchant" ? "3,056.44" : "¥ 12,500.00"}
                         </span>
-                        <ChevronRight size={14} className="text-neutral-400" />
+                        <ChevronRight size={14} className="text-text-tertiary" />
                       </div>
                     </button>
                     <button
-                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 group transition-colors"
+                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary group transition-colors"
                       onClick={() => {
                         setIsUserMenuOpen(false);
                         setIsGrowthPlanModalOpen(true);
@@ -1491,71 +1492,71 @@ export default function App() {
                       <div className="flex items-center gap-3 text-[13px] ">
                         <CheckCircle2
                           size={16}
-                          className="text-neutral-500 group-hover:text-red-500"
+                          className="text-text-tertiary group-hover:text-danger"
                         />
                         成长计划
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="text-[12px] text-neutral-500"></span>
-                        <ChevronRight size={14} className="text-neutral-400" />
+                        <span className="text-[12px] text-text-tertiary"></span>
+                        <ChevronRight size={14} className="text-text-tertiary" />
                       </div>
                     </button>
                   </div>
 
-                  <div className="h-[1px] bg-neutral-100 my-1 mx-4" />
+                  <div className="h-[1px] bg-hover-bg my-1 mx-4" />
 
                   <div className="px-2 py-1 space-y-0.5">
                     <button
-                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 transition-colors"
+                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary transition-colors"
                       onClick={() => {
                         setIsUserMenuOpen(false);
                         setIsSettingsModalOpen(true);
                       }}
                     >
                       <div className="flex items-center gap-3 text-[13px] ">
-                        <Settings size={16} className="text-neutral-500" />
+                        <Settings size={16} className="text-text-tertiary" />
                         设置
                       </div>
                     </button>
-                    <div className="w-full flex items-center justify-between px-3 py-2 text-neutral-700">
+                    <div className="w-full flex items-center justify-between px-3 py-2 text-text-secondary">
                       <div className="flex items-center gap-3 text-[13px] ">
-                        <Palette size={16} className="text-neutral-500" />
+                        <Palette size={16} className="text-text-tertiary" />
                         外观
                       </div>
-                      <div className="flex items-center bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
-                        <button className="px-3 py-1 text-[11px] bg-white shadow-sm rounded-md text-neutral-900">
+                      <div className="flex items-center bg-hover-bg p-0.5 rounded-lg border border-border-default">
+                        <button className="px-3 py-1 text-[11px] bg-surface-1 shadow-sm rounded-md text-text-main">
                           浅色
                         </button>
-                        <button className="px-3 py-1 text-[11px] text-neutral-500 hover:text-neutral-700">
+                        <button className="px-3 py-1 text-[11px] text-text-tertiary hover:text-text-secondary">
                           深色
                         </button>
                       </div>
                     </div>
-                    <button className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 transition-colors">
+                    <button className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary transition-colors">
                       <div className="flex items-center gap-3 text-[13px] ">
-                        <HelpCircle size={16} className="text-neutral-500" />
+                        <HelpCircle size={16} className="text-text-tertiary" />
                         帮助与反馈
                       </div>
                     </button>
-                    <button className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 transition-colors">
+                    <button className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary transition-colors">
                       <div className="flex items-center gap-3 text-[13px] ">
-                        <ArrowUpCircle size={16} className="text-neutral-500" />
+                        <ArrowUpCircle size={16} className="text-text-tertiary" />
                         检查更新
                       </div>
                     </button>
                   </div>
 
-                  <div className="h-[1px] bg-neutral-100 my-1 mx-4" />
+                  <div className="h-[1px] bg-hover-bg my-1 mx-4" />
 
                   <div className="px-2 py-1 flex-1">
                     <button
-                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-neutral-50 rounded-lg text-neutral-700 transition-colors text-[13px] "
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary transition-colors text-[13px] "
                       onClick={() => {
                         setIsUserMenuOpen(false);
                         setIsSwitchAccountModalOpen(true);
                       }}
                     >
-                      <LogOut size={16} className="text-neutral-500" />
+                      <LogOut size={16} className="text-text-tertiary" />
                       切换账号
                     </button>
                   </div>
@@ -1567,7 +1568,7 @@ export default function App() {
       </div>
 
       {/* Main View Switcher */}
-      <div className="flex-1 min-w-0 h-full bg-white relative flex flex-col">
+      <div className="flex-1 min-w-0 h-full bg-surface-1 relative flex flex-col">
         {activeNav === "workbench" && (
           <div className="flex-1 flex flex-col h-full overflow-hidden">
             <Workbench
@@ -1584,7 +1585,7 @@ export default function App() {
 
         {/* 专注模式切换器 (仅在工作流模式显示) */}
         {activeNav === "workflow" && (
-          <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-white">
+          <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-surface-1">
             {/* 商家记忆固定区域 */}
             <MerchantMemoryHeader
               hasData={hasData}
@@ -1595,7 +1596,7 @@ export default function App() {
             />
 
             {/* 顶部导航与专注模式 */}
-            <div className="h-14 border-b border-neutral-100 flex items-center justify-between px-8 bg-white shrink-0 shadow-sm z-20">
+            <div className="h-14 border-b border-border-default flex items-center justify-between px-8 bg-surface-1 shrink-0 shadow-sm z-20">
               <div className="flex items-center gap-10">
                 {PROJECT_TABS.map((tab) => {
                   const isLocked = !hasData;
@@ -1608,7 +1609,7 @@ export default function App() {
                         }
                         setWorkflowTab(tab.id as any);
                       }}
-                      className={`flex items-center gap-2 px-1 py-4 text-[13px] transition-all relative group ${isLocked ? "opacity-50 cursor-not-allowed" : workflowTab === tab.id ? "text-neutral-900" : "text-neutral-400 hover:text-neutral-600"}`}
+                      className={`flex items-center gap-2 px-1 py-4 text-[13px] transition-all relative group ${isLocked ? "opacity-50 cursor-not-allowed" : workflowTab === tab.id ? "text-text-main" : "text-text-tertiary hover:text-text-secondary"}`}
                     >
                       {isLocked ? (
                         <Lock size={14} className="text-neutral-300" />
@@ -1617,7 +1618,7 @@ export default function App() {
                           size={16}
                           className={
                             workflowTab === tab.id
-                              ? "text-primary-500"
+                              ? "text-brand-logo"
                               : "text-neutral-300"
                           }
                         />
@@ -1626,7 +1627,7 @@ export default function App() {
                       {workflowTab === tab.id && !isLocked && (
                         <motion.div
                           layoutId="wfTab"
-                          className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-neutral-900 rounded-full"
+                          className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-btn-main rounded-full"
                         />
                       )}
                     </button>
@@ -1637,22 +1638,22 @@ export default function App() {
             </div>
 
             <div className="flex-1 flex w-full overflow-hidden bg-[#fafafa] relative">
-              <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative bg-white">
+              <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative bg-surface-1">
                 {!hasData ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center bg-neutral-50/50">
-                    <div className="w-20 h-20 bg-neutral-100 rounded-3xl flex items-center justify-center text-neutral-300 mb-6 shadow-sm">
+                  <div className="flex flex-col items-center justify-center h-full text-center bg-page-bg">
+                    <div className="w-20 h-20 bg-hover-bg rounded-xl flex items-center justify-center text-neutral-300 mb-6 shadow-sm">
                       <Lock size={32} />
                     </div>
-                    <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+                    <h3 className="text-xl font-semibold text-text-main mb-2">
                       项目中心暂未解锁
                     </h3>
-                    <p className="text-neutral-500 text-sm max-w-sm leading-relaxed mb-6">
+                    <p className="text-text-tertiary text-sm max-w-sm leading-relaxed mb-6">
                       该商家还在冷启动配置阶段。请先前往工作台，与智能搭档
                       完成基于对话的「商家画像基座建设」，以解锁后续的运营流水线。
                     </p>
                     <button
                       onClick={() => setActiveNav("workbench")}
-                      className="px-8 py-3 bg-neutral-900 text-white rounded-xl text-[14px] hover:bg-primary-500 shadow-xl shadow-neutral-200 transition-all active:scale-95"
+                      className="px-8 py-3 bg-btn-main text-white rounded-xl text-[14px] hover:bg-btn-main shadow-xl shadow-neutral-200 transition-all active:scale-95"
                     >
                       去完善商家基座
                     </button>
@@ -1686,7 +1687,7 @@ export default function App() {
                       initial={{ width: 0, opacity: 0 }}
                       animate={{ width: 400, opacity: 1 }}
                       exit={{ width: 0, opacity: 0 }}
-                      className="border-l border-neutral-100 bg-white shadow-xl z-20 flex flex-col shrink-0"
+                      className="border-l border-border-default bg-surface-1 shadow-xl z-20 flex flex-col shrink-0"
                     >
                       {activeSidebarMode === "chat" ? (
                         <SubagentChat
@@ -1713,40 +1714,27 @@ export default function App() {
                   )}
               </AnimatePresence>
 
-              {!showSubagentChat &&
-                focusMode !== "review" &&
-                workflowTab !== "matrix" && (
-                  <button
-                    onClick={() => {
-                      setActiveSidebarMode("chat");
-                      setShowSubagentChat(true);
-                    }}
-                    className="absolute right-6 bottom-6 w-12 h-12 bg-neutral-900 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:bg-primary-500 transition-all z-30 active:scale-95"
-                  >
-                    <Bot size={20} />
-                  </button>
-                )}
             </div>
           </div>
         )}
 
         {activeNav === "materials" && (
-          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
             <MaterialStation activeProject={activeProject} />
           </div>
         )}
         {activeNav === "search_explorer" && (
-          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
             <SearchKeywordsExplorer activeProject={activeProject} />
           </div>
         )}
         {activeNav === "knowledge" && (
-          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
             <KnowledgeMemory activeProject={activeProject} />
           </div>
         )}
         {activeNav === "skills" && (
-          <div className="flex-1 h-full overflow-y-auto bg-neutral-50/60">
+          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
             <SkillMarket
               creatingSkill={creatingSkill}
               setCreatingSkill={setCreatingSkill}
@@ -1758,9 +1746,9 @@ export default function App() {
           </div>
         )}
         {activeNav === "billing" && (
-          <div className="flex-1 flex flex-col h-full overflow-hidden bg-neutral-50">
-            <div className="h-14 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white">
-              <h2 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
+          <div className="flex-1 flex flex-col h-full overflow-hidden bg-page-bg">
+            <div className="h-14 border-b border-border-default px-8 flex items-center justify-between shrink-0 bg-surface-1">
+              <h2 className="text-[16px] font-semibold text-text-main tracking-tight">
                 用量与计费
               </h2>
             </div>
@@ -1770,9 +1758,9 @@ export default function App() {
           </div>
         )}
         {activeNav === "settings" && (
-          <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
-            <div className="h-14 border-b border-neutral-100 px-8 flex items-center justify-between shrink-0 bg-white">
-              <h2 className="text-[16px] font-semibold text-neutral-900 tracking-tight">
+          <div className="flex-1 flex flex-col h-full overflow-hidden bg-surface-1">
+            <div className="h-14 border-b border-border-default px-8 flex items-center justify-between shrink-0 bg-surface-1">
+              <h2 className="text-[16px] font-semibold text-text-main tracking-tight">
                 系统设置
               </h2>
             </div>
@@ -1793,16 +1781,16 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-[900px] h-[650px] bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-neutral-100 relative"
+              className="w-[900px] h-[650px] bg-surface-1 rounded-xl shadow-2xl flex overflow-hidden border border-border-default relative"
             >
               <button
                 onClick={() => setIsSettingsModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 text-neutral-400 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200 rounded-full transition-colors z-10"
+                className="absolute top-4 right-4 p-1.5 text-text-tertiary hover:text-text-main bg-hover-bg hover:bg-selected-bg rounded-full transition-colors z-10"
               >
                 <X size={16} />
               </button>
 
-              <div className="w-[200px] bg-neutral-50/50 border-r border-neutral-100 flex flex-col py-6">
+              <div className="w-[200px] bg-page-bg border-r border-border-default flex flex-col py-6">
                 <div className="px-4 space-y-1 mt-4">
                   {[
                     { id: "account", name: "账户管理", icon: User },
@@ -1820,14 +1808,14 @@ export default function App() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveSettingsTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13px] transition-colors ${activeSettingsTab === tab.id ? "bg-white text-neutral-900 shadow-sm border border-neutral-200" : "text-neutral-600 hover:bg-neutral-100"}`}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13px] transition-colors ${activeSettingsTab === tab.id ? "bg-surface-1 text-text-main shadow-sm border border-border-default" : "text-text-secondary hover:bg-hover-bg"}`}
                     >
                       <tab.icon
                         size={16}
                         className={
                           activeSettingsTab === tab.id
-                            ? "text-neutral-900"
-                            : "text-neutral-500"
+                            ? "text-text-main"
+                            : "text-text-tertiary"
                         }
                       />
                       {tab.name}
@@ -1836,8 +1824,8 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex-1 bg-white p-8 overflow-y-auto">
-                <h2 className="text-[20px] font-semibold text-neutral-900 mb-8">
+              <div className="flex-1 bg-surface-1 p-8 overflow-y-auto">
+                <h2 className="text-[20px] font-semibold text-text-main mb-8">
                   {[
                     "account",
                     "merchants",
@@ -1883,7 +1871,7 @@ export default function App() {
 
                 {activeSettingsTab === "merchants" && (
                   <div className="h-full">
-                    <p className="text-[13px] text-neutral-500 mb-6 -mt-6">
+                    <p className="text-[13px] text-text-tertiary mb-6 -mt-6">
                       作为服务商，管理下属所有商家账号及其系统权限
                     </p>
                     <MerchantManagement />
@@ -1916,29 +1904,29 @@ export default function App() {
 
                 {activeSettingsTab === "system" && (
                   <div className="space-y-6 max-w-2xl">
-                    <div className="flex items-center justify-between pb-6 border-b border-neutral-100">
+                    <div className="flex items-center justify-between pb-6 border-b border-border-default">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           显示语言
                         </h4>
-                        <p className="text-[12px] text-neutral-500">
+                        <p className="text-[12px] text-text-tertiary">
                           设置应用程序界面的显示语言。
                         </p>
                       </div>
-                      <select className="bg-white border border-neutral-200 rounded-lg px-3 py-1.5 text-[13px] text-neutral-700 outline-none">
+                      <select className="bg-surface-1 border border-border-default rounded-lg px-3 py-1.5 text-[13px] text-text-secondary outline-none">
                         <option>中文(简体)</option>
                         <option>English</option>
                       </select>
                     </div>
 
-                    <div className="flex flex-col gap-4 pb-6 border-b border-neutral-100">
+                    <div className="flex flex-col gap-4 pb-6 border-b border-border-default">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           字体大小
                         </h4>
                       </div>
                       <div className="flex items-center gap-4 px-2">
-                        <span className="text-[12px] text-neutral-500">小</span>
+                        <span className="text-[12px] text-text-tertiary">小</span>
                         <input
                           type="range"
                           min="0"
@@ -1946,86 +1934,86 @@ export default function App() {
                           defaultValue="40"
                           className="flex-1 h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer"
                         />
-                        <span className="text-[14px] text-neutral-500">大</span>
+                        <span className="text-[14px] text-text-tertiary">大</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pb-6 border-b border-neutral-100">
+                    <div className="flex items-center justify-between pb-6 border-b border-border-default">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           简洁模式
                         </h4>
-                        <p className="text-[12px] text-neutral-500 mt-1">
+                        <p className="text-[12px] text-text-tertiary mt-1">
                           开启后将简化对话界面显示，隐藏部分装饰元素。
                         </p>
                       </div>
                       <div className="w-10 h-6 bg-neutral-200 rounded-full cursor-pointer relative transition-colors shadow-inner">
-                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform" />
+                        <div className="absolute left-1 top-1 w-4 h-4 bg-surface-1 rounded-full shadow-sm transition-transform" />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pb-6 border-b border-neutral-100">
+                    <div className="flex items-center justify-between pb-6 border-b border-border-default">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           发送消息
                         </h4>
-                        <p className="text-[12px] text-neutral-500 mt-1">
+                        <p className="text-[12px] text-text-tertiary mt-1">
                           设置聊天输入框中发送消息的快捷键。
                         </p>
                       </div>
-                      <select className="bg-white border border-neutral-200 rounded-lg px-3 py-1.5 text-[13px] text-neutral-700 outline-none">
+                      <select className="bg-surface-1 border border-border-default rounded-lg px-3 py-1.5 text-[13px] text-text-secondary outline-none">
                         <option>Enter</option>
                         <option>Ctrl + Enter</option>
                       </select>
                     </div>
 
-                    <div className="flex items-center justify-between pb-6 border-b border-neutral-100">
+                    <div className="flex items-center justify-between pb-6 border-b border-border-default">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           技能自动更新
                         </h4>
-                        <p className="text-[12px] text-neutral-500 mt-1">
+                        <p className="text-[12px] text-text-tertiary mt-1">
                           开启后将自动更新已安装的技能为最新版本，不会更新你在
                           TapTik 中编辑过的技能。
                         </p>
                       </div>
-                      <div className="w-10 h-6 bg-primary-500 rounded-full cursor-pointer relative transition-colors shadow-inner">
-                        <div className="absolute left-5 top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform" />
+                      <div className="w-10 h-6 bg-btn-main rounded-full cursor-pointer relative transition-colors shadow-inner">
+                        <div className="absolute left-5 top-1 w-4 h-4 bg-surface-1 rounded-full shadow-sm transition-transform" />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pb-6 border-b border-neutral-100">
+                    <div className="flex items-center justify-between pb-6 border-b border-border-default">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           非高风险技能自动安装
                         </h4>
-                        <p className="text-[12px] text-neutral-500 mt-1 max-w-[400px]">
+                        <p className="text-[12px] text-text-tertiary mt-1 max-w-[400px]">
                           上传技能后仍会显示安全检测过程；检测结果为非高风险时自动继续安装，高风险始终需要手动确认。
                         </p>
                       </div>
-                      <div className="w-10 h-6 bg-primary-500 rounded-full cursor-pointer relative transition-colors shadow-inner">
-                        <div className="absolute left-5 top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform" />
+                      <div className="w-10 h-6 bg-btn-main rounded-full cursor-pointer relative transition-colors shadow-inner">
+                        <div className="absolute left-5 top-1 w-4 h-4 bg-surface-1 rounded-full shadow-sm transition-transform" />
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between pb-2 border-b border-transparent">
                       <div>
-                        <h4 className="text-[14px] font-semibold text-neutral-900 mb-1">
+                        <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           锁屏远程
                         </h4>
-                        <p className="text-[12px] text-neutral-500 mt-1">
+                        <p className="text-[12px] text-text-tertiary mt-1">
                           开启后即使在锁屏状态下，电脑也不会进入休眠，屏幕也不会自动关闭，方便通过手机远程操控和保持自动化任务持续运行。
                         </p>
                       </div>
                       <div className="w-10 h-6 bg-neutral-200 rounded-full cursor-pointer relative transition-colors shadow-inner shrink-0">
-                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform" />
+                        <div className="absolute left-1 top-1 w-4 h-4 bg-surface-1 rounded-full shadow-sm transition-transform" />
                       </div>
                     </div>
                   </div>
                 )}
 
                 {activeSettingsTab !== "system" && (
-                  <div className="text-neutral-500 text-[13px] py-10">
+                  <div className="text-text-tertiary text-[13px] py-10">
                     此功能正在开发中...
                   </div>
                 )}

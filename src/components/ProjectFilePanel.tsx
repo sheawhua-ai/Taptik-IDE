@@ -126,7 +126,7 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
               }
             }}
             className={`flex items-center gap-2 py-1.5 px-2 cursor-pointer rounded-lg transition-colors
-              ${isSelected ? 'bg-neutral-100 text-[#111827]' : 'text-[#667085] hover:bg-neutral-50'}
+              ${isSelected ? 'bg-hover-bg text-text-main' : 'text-text-secondary hover:bg-page-bg'}
               ${isSystem ? 'opacity-70' : ''}
               relative group
             `}
@@ -145,9 +145,9 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
               {/* Optional: Mocking new/updated file dot indicator for demo purposes */}
               {node.name.includes('企划') && <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#DF4965] rounded-full border border-white" />}
             </div>
-            <span className="text-[13px] truncate select-none flex-1 group-hover:text-[#111827] transition-colors">{node.name}</span>
+            <span className="text-[13px] truncate select-none flex-1 group-hover:text-text-main transition-colors">{node.name}</span>
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
-              <MoreVertical size={14} className="text-[#98A2B3] hover:text-[#111827] transition-colors" />
+              <MoreVertical size={14} className="text-[#98A2B3] hover:text-text-main transition-colors" />
             </div>
           </div>
           {isFolder && isExpanded && node.children && (
@@ -166,39 +166,39 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
     <>
       {isFloating && <div className="absolute inset-0 z-40 bg-black/10 backdrop-blur-[1px]" onClick={onClose} />}
       <div 
-        className={`bg-white flex flex-col shrink-0 border-r border-[#E5EAF1] z-50 ${isFloating ? 'absolute h-full left-0 shadow-2xl' : 'relative h-full'}`}
+        className={`bg-surface-1 flex flex-col shrink-0 border-r border-[#E5EAF1] z-50 ${isFloating ? 'absolute h-full left-0 shadow-2xl' : 'relative h-full'}`}
         style={{ width: `${width}px` }}
       >
         {/* Header */}
         <div className="h-14 flex items-center justify-between px-4 border-b border-[#E5EAF1] shrink-0">
-          <h2 className="text-[14px] font-semibold text-[#111827]">项目文件</h2>
+          <h2 className="text-[14px] font-semibold text-text-main">项目文件</h2>
           <div className="flex items-center gap-1">
-            <button className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-neutral-200/60 text-neutral-600 transition-colors">
+            <button className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-selected-bg/60 text-text-secondary transition-colors">
               <Plus size={15} />
             </button>
             <div className="relative">
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-neutral-200/60 text-neutral-600 transition-colors"
+                className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-selected-bg/60 text-text-secondary transition-colors"
               >
                 <MoreVertical size={15} />
               </button>
               {isMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
-                  <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-xl border border-neutral-200 py-1.5 z-50">
-                    <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[13px] text-neutral-700"><Folder size={14} className="text-neutral-400"/> 新建文件夹</button>
-                    <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[13px] text-neutral-700"><RefreshCw size={14} className="text-neutral-400"/> 刷新</button>
-                    <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[13px] text-neutral-700"><ExternalLink size={14} className="text-neutral-400"/> 在系统文件管理器中打开</button>
-                    <div className="h-px bg-neutral-100 my-1"></div>
-                    <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[13px] text-neutral-700"><Monitor size={14} className="text-neutral-400"/> 显示系统文件</button>
-                    <button className="w-full text-left px-4 py-2 hover:bg-neutral-50 flex items-center gap-2 text-[13px] text-neutral-700"><HardDrive size={14} className="text-neutral-400"/> 更换本地项目</button>
+                  <div className="absolute right-0 top-full mt-1 w-44 bg-surface-1 rounded-xl shadow-xl border border-border-default py-1.5 z-50">
+                    <button className="w-full text-left px-4 py-2 hover:bg-page-bg flex items-center gap-2 text-[13px] text-text-secondary"><Folder size={14} className="text-text-tertiary"/> 新建文件夹</button>
+                    <button className="w-full text-left px-4 py-2 hover:bg-page-bg flex items-center gap-2 text-[13px] text-text-secondary"><RefreshCw size={14} className="text-text-tertiary"/> 刷新</button>
+                    <button className="w-full text-left px-4 py-2 hover:bg-page-bg flex items-center gap-2 text-[13px] text-text-secondary"><ExternalLink size={14} className="text-text-tertiary"/> 在系统文件管理器中打开</button>
+                    <div className="h-px bg-hover-bg my-1"></div>
+                    <button className="w-full text-left px-4 py-2 hover:bg-page-bg flex items-center gap-2 text-[13px] text-text-secondary"><Monitor size={14} className="text-text-tertiary"/> 显示系统文件</button>
+                    <button className="w-full text-left px-4 py-2 hover:bg-page-bg flex items-center gap-2 text-[13px] text-text-secondary"><HardDrive size={14} className="text-text-tertiary"/> 更换本地项目</button>
                   </div>
                 </>
               )}
             </div>
             {isFloating && (
-              <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-neutral-200/60 text-neutral-600 transition-colors ml-1">
+              <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-selected-bg/60 text-text-secondary transition-colors ml-1">
                 <X size={15} />
               </button>
             )}
@@ -212,10 +212,10 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
 
         {/* Drag handle */}
         <div 
-          className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-primary-500/20 active:bg-primary-500/40 transition-colors flex items-center justify-center group"
+          className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-btn-main/20 active:bg-btn-main/40 transition-colors flex items-center justify-center group"
           onMouseDown={handleMouseDown}
         >
-          {isResizing && <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-primary-500 -tranneutral-x-1/2 z-50"></div>}
+          {isResizing && <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-btn-main -tranneutral-x-1/2 z-50"></div>}
         </div>
       </div>
     </>

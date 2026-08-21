@@ -58,9 +58,9 @@ export default function DataCompass() {
       desc: '有 12 条高意向询单评论（含“多少钱”、“求链接”）滞留超过 2 小时未回复。',
       action: '一键 智能 批量回复',
       icon: Bell,
-      color: 'text-rose-500',
+      color: 'text-brand-logo',
       bgColor: 'bg-rose-50',
-      borderColor: 'border-rose-200'
+      borderColor: 'border-danger-light'
     }
   ];
 
@@ -68,14 +68,14 @@ export default function DataCompass() {
     <div className="p-8 space-y-8 max-w-[1400px] mx-auto">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900 flex items-center gap-3">
+          <h2 className="text-3xl font-extrabold tracking-tight text-text-main flex items-center gap-3">
             <Activity className="text-indigo-600" size={28} />
             智能 运营驾驶舱
           </h2>
-          <p className="text-neutral-500 mt-2 font-medium">从数据监控到主动洞察，智能 接管您的业务异常与增长机会</p>
+          <p className="text-text-tertiary mt-2 font-medium">从数据监控到主动洞察，智能 接管您的业务异常与增长机会</p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white rounded-lg text-sm font-bold shadow-md hover:bg-neutral-800 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-btn-main text-white rounded-lg text-sm font-bold shadow-md hover:bg-btn-main-hover transition-colors">
             <Download size={16} />
             生成月度客户 ROI 报告
           </button>
@@ -86,11 +86,11 @@ export default function DataCompass() {
         
         {/* Left: 智能 Active Push Panel (Direction 1) */}
         <div className="col-span-12 lg:col-span-4 flex flex-col space-y-6">
-          <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex flex-col h-full relative overflow-hidden">
+          <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm flex flex-col h-full relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-rose-500 to-amber-500"></div>
             
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-[16px] font-bold flex items-center gap-2 text-neutral-900">
+              <h3 className="text-[16px] font-bold flex items-center gap-2 text-text-main">
                 <Bell size={18} className="text-indigo-500" />
                 智能 巡检预警与建议
               </h3>
@@ -108,7 +108,7 @@ export default function DataCompass() {
                   className={`p-4 rounded-xl border transition-all cursor-pointer ${
                     activeAlert === alert.id 
                       ? `${alert.bgColor} ${alert.borderColor} shadow-md scale-[1.02]` 
-                      : 'bg-white border-neutral-100 hover:border-neutral-200'
+                      : 'bg-surface-1 border-border-default hover:border-border-default'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -116,8 +116,8 @@ export default function DataCompass() {
                       <alert.icon size={16} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-[14px] font-bold text-neutral-900 mb-1">{alert.title}</h4>
-                      <p className="text-[12px] text-neutral-500 leading-relaxed mb-3">{alert.desc}</p>
+                      <h4 className="text-[14px] font-bold text-text-main mb-1">{alert.title}</h4>
+                      <p className="text-[12px] text-text-tertiary leading-relaxed mb-3">{alert.desc}</p>
                       
                       <button className={`text-[12px] font-bold flex items-center gap-1 transition-colors ${alert.color} hover:opacity-80`}>
                         {alert.action} <ArrowRight size={14} />
@@ -128,9 +128,9 @@ export default function DataCompass() {
               ))}
             </div>
             
-            <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-[12px] text-neutral-400">
+            <div className="mt-6 pt-4 border-t border-border-default flex items-center justify-between text-[12px] text-text-tertiary">
               <span>今日已自动处理 14 个异常</span>
-              <a href="#" className="hover:text-neutral-900 transition-colors">查看巡检日志</a>
+              <a href="#" className="hover:text-text-main transition-colors">查看巡检日志</a>
             </div>
           </div>
         </div>
@@ -140,28 +140,28 @@ export default function DataCompass() {
           
           {/* Top Key Metrics */}
           <div className="grid grid-cols-3 gap-6">
-            <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
-              <div className="text-[13px] text-neutral-500 font-medium mb-2">本月累计曝光 (小红书)</div>
-              <div className="text-[32px] font-black text-neutral-900 mb-2">2.4M</div>
+            <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm">
+              <div className="text-[13px] text-text-tertiary font-medium mb-2">本月累计曝光 (小红书)</div>
+              <div className="text-[32px] font-black text-text-main mb-2">2.4M</div>
               <div className="flex items-center gap-2 text-[12px]">
                 <span className="flex items-center text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">
                   <TrendingUp size={12} className="mr-1" /> +12.5%
                 </span>
-                <span className="text-neutral-400">较上月同期</span>
+                <span className="text-text-tertiary">较上月同期</span>
               </div>
             </div>
-            <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-              <div className="text-[13px] text-neutral-500 font-medium mb-2">整体 CPA (客资成本)</div>
-              <div className="text-[32px] font-black text-neutral-900 mb-2">¥42.5</div>
+            <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm relative overflow-hidden">
+              <div className="text-[13px] text-text-tertiary font-medium mb-2">整体 CPA (客资成本)</div>
+              <div className="text-[32px] font-black text-text-main mb-2">¥42.5</div>
               <div className="flex items-center gap-2 text-[12px]">
                 <span className="flex items-center text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">
                   <TrendingUp size={12} className="mr-1 rotate-180" /> -8.2%
                 </span>
-                <span className="text-neutral-400">达到客户 KPI 预期</span>
+                <span className="text-text-tertiary">达到客户 KPI 预期</span>
               </div>
               <CheckCircle2 size={100} className="absolute -right-6 -bottom-6 text-emerald-50 opacity-50" />
             </div>
-            <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm bg-indigo-900 text-white relative overflow-hidden">
+            <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm bg-indigo-900 text-white relative overflow-hidden">
               <div className="relative z-10">
                 <div className="text-[13px] text-indigo-200 font-medium mb-2">预估最终 ROI</div>
                 <div className="text-[32px] font-black text-white mb-2">1:3.2</div>
@@ -176,48 +176,48 @@ export default function DataCompass() {
           </div>
 
           {/* 智能 Action Dashboard */}
-          <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm flex-1 flex flex-col">
-            <h3 className="text-[16px] font-bold flex items-center gap-2 text-neutral-900 mb-6">
+          <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm flex-1 flex flex-col">
+            <h3 className="text-[16px] font-bold flex items-center gap-2 text-text-main mb-6">
               <Sparkles size={18} className="text-indigo-500" />
               数据到行动 (Data to Action)
             </h3>
             
             <div className="grid grid-cols-2 gap-6 flex-1">
               {/* Insight 1 */}
-              <div className="border border-neutral-100 rounded-xl p-5 bg-neutral-50 flex flex-col justify-between">
+              <div className="border border-border-default rounded-xl p-5 bg-page-bg flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="w-8 h-8 rounded bg-white shadow-sm flex items-center justify-center text-neutral-900 font-bold text-[14px]">01</span>
-                    <h4 className="font-bold text-neutral-900">图文与视频转化差扩大</h4>
+                    <span className="w-8 h-8 rounded bg-surface-1 shadow-sm flex items-center justify-center text-text-main font-bold text-[14px]">01</span>
+                    <h4 className="font-bold text-text-main">图文与视频转化差扩大</h4>
                   </div>
-                  <p className="text-[13px] text-neutral-500 leading-relaxed mb-4">
+                  <p className="text-[13px] text-text-tertiary leading-relaxed mb-4">
                     本周数据显示，视频内容的平均获客成本 (CPA ¥35) 已显著低于图文 (CPA ¥52)。然而当前排期中，图文仍占 70%。
                   </p>
                 </div>
-                <div className="bg-white border border-neutral-200 p-4 rounded-lg">
+                <div className="bg-surface-1 border border-border-default p-4 rounded-lg">
                   <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
-                  <p className="text-[12px] text-neutral-700 mb-3">一键将本周五待发布的 5 篇图文转为混剪视频，并调整下周内容矩阵比例。</p>
-                  <button className="w-full bg-neutral-900 text-white text-[12px] font-bold py-2 rounded-md hover:bg-neutral-800 transition-colors">
+                  <p className="text-[12px] text-text-secondary mb-3">一键将本周五待发布的 5 篇图文转为混剪视频，并调整下周内容矩阵比例。</p>
+                  <button className="w-full bg-btn-main text-white text-[12px] font-bold py-2 rounded-md hover:bg-btn-main-hover transition-colors">
                     应用比例调整
                   </button>
                 </div>
               </div>
 
               {/* Insight 2 */}
-              <div className="border border-neutral-100 rounded-xl p-5 bg-neutral-50 flex flex-col justify-between">
+              <div className="border border-border-default rounded-xl p-5 bg-page-bg flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="w-8 h-8 rounded bg-white shadow-sm flex items-center justify-center text-neutral-900 font-bold text-[14px]">02</span>
-                    <h4 className="font-bold text-neutral-900">痛点引流词「泛红敏感」效率降低</h4>
+                    <span className="w-8 h-8 rounded bg-surface-1 shadow-sm flex items-center justify-center text-text-main font-bold text-[14px]">02</span>
+                    <h4 className="font-bold text-text-main">痛点引流词「泛红敏感」效率降低</h4>
                   </div>
-                  <p className="text-[13px] text-neutral-500 leading-relaxed mb-4">
+                  <p className="text-[13px] text-text-tertiary leading-relaxed mb-4">
                     该词的搜索点击率下降 40%。同期，RAG 知识库抓取到小红书平台「换季干痒」的话题热度正在快速上升。
                   </p>
                 </div>
-                <div className="bg-white border border-neutral-200 p-4 rounded-lg">
+                <div className="bg-surface-1 border border-border-default p-4 rounded-lg">
                   <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
-                  <p className="text-[12px] text-neutral-700 mb-3">调用知识库一键替换草稿箱中 12 篇相关笔记的核心痛点词与 SEO 标签。</p>
-                  <button className="w-full bg-white border border-neutral-200 text-neutral-700 text-[12px] font-bold py-2 rounded-md hover:bg-neutral-50 transition-colors flex justify-center items-center gap-1">
+                  <p className="text-[12px] text-text-secondary mb-3">调用知识库一键替换草稿箱中 12 篇相关笔记的核心痛点词与 SEO 标签。</p>
+                  <button className="w-full bg-surface-1 border border-border-default text-text-secondary text-[12px] font-bold py-2 rounded-md hover:bg-page-bg transition-colors flex justify-center items-center gap-1">
                     批量修改标签 <ChevronRight size={14} />
                   </button>
                 </div>
@@ -229,71 +229,71 @@ export default function DataCompass() {
       </div>
 
       {/* Competitor Benchmarking Section */}
-      <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
+      <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-[18px] font-bold flex items-center gap-2 text-neutral-900">
+            <h3 className="text-[18px] font-bold flex items-center gap-2 text-text-main">
               <Users size={20} className="text-indigo-600" />
               竞品情报与对标
             </h3>
-            <p className="text-[13px] text-neutral-500 mt-1">添加并监控对标账号，自动梳理爆款笔记与高意向评论</p>
+            <p className="text-[13px] text-text-tertiary mt-1">添加并监控对标账号，自动梳理爆款笔记与高意向评论</p>
           </div>
-          <button className="text-[13px] font-bold flex items-center gap-1.5 bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-colors">
+          <button className="text-[13px] font-bold flex items-center gap-1.5 bg-btn-main text-white px-4 py-2 rounded-lg hover:bg-btn-main-hover transition-colors">
             <Plus size={16} /> 添加对标账号
           </button>
         </div>
 
         <div className="flex gap-6 h-[400px]">
           {/* Competitor List */}
-          <div className="w-1/4 border border-neutral-200 rounded-xl overflow-y-auto custom-scrollbar flex flex-col bg-neutral-50 p-2 space-y-2">
+          <div className="w-1/4 border border-border-default rounded-xl overflow-y-auto custom-scrollbar flex flex-col bg-page-bg p-2 space-y-2">
             {COMPETITORS.map((comp) => (
               <div 
                 key={comp.id}
                 onClick={() => setActiveCompetitor(comp.id)}
                 className={`p-3 rounded-lg cursor-pointer transition-colors border flex items-center gap-3 ${
                   activeCompetitor === comp.id 
-                    ? 'bg-white border-indigo-200 shadow-sm ring-1 ring-indigo-500/10' 
-                    : 'bg-white border-transparent hover:border-neutral-200'
+                    ? 'bg-surface-1 border-indigo-200 shadow-sm ring-1 ring-indigo-500/10' 
+                    : 'bg-surface-1 border-transparent hover:border-border-default'
                 }`}
               >
-                <img src={comp.avatar} alt={comp.name} className="w-10 h-10 rounded-full object-cover border border-neutral-100" />
+                <img src={comp.avatar} alt={comp.name} className="w-10 h-10 rounded-full object-cover border border-border-default" />
                 <div>
-                  <h4 className="text-[13px] font-bold text-neutral-900">{comp.name}</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">粉丝 {comp.fans} · 笔记 {comp.notes}</p>
+                  <h4 className="text-[13px] font-bold text-text-main">{comp.name}</h4>
+                  <p className="text-[11px] text-text-tertiary mt-0.5">粉丝 {comp.fans} · 笔记 {comp.notes}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {/* 智能 Comments Summarization & Dispatch */}
-          <div className="flex-1 border border-neutral-200 rounded-xl flex flex-col overflow-hidden bg-white">
-            <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
-              <h4 className="text-[14px] font-bold text-neutral-900 flex items-center gap-2">
+          <div className="flex-1 border border-border-default rounded-xl flex flex-col overflow-hidden bg-surface-1">
+            <div className="p-4 border-b border-border-default flex justify-between items-center bg-page-bg">
+              <h4 className="text-[14px] font-bold text-text-main flex items-center gap-2">
                 <Sparkles size={16} className="text-indigo-500" /> 智能 重点评论梳理 (近 24 小时)
               </h4>
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
-                <input type="text" placeholder="搜索评论关键词..." className="pl-8 pr-3 py-1.5 text-[12px] rounded-lg border border-neutral-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 w-48" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" />
+                <input type="text" placeholder="搜索评论关键词..." className="pl-8 pr-3 py-1.5 text-[12px] rounded-lg border border-border-default focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 w-48" />
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-neutral-50/30">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-page-bg/30">
               {COMPETITOR_COMMENTS.map((comment) => (
-                <div key={comment.id} className="bg-white border border-neutral-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div key={comment.id} className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-[10px]">
                         {comment.user.charAt(0)}
                       </div>
-                      <span className="text-[13px] font-bold text-neutral-900">{comment.user}</span>
-                      <span className="text-[11px] text-neutral-400">{comment.time}</span>
+                      <span className="text-[13px] font-bold text-text-main">{comment.user}</span>
+                      <span className="text-[11px] text-text-tertiary">{comment.time}</span>
                     </div>
-                    <span className="text-[10px] font-bold bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full border border-rose-100">
+                    <span className="text-[10px] font-bold bg-rose-50 text-danger px-2 py-0.5 rounded-full border border-danger-light">
                       {comment.intent}
                     </span>
                   </div>
                   
-                  <p className="text-[13px] text-neutral-700 mb-3 bg-neutral-50 p-3 rounded-lg border border-neutral-100">
+                  <p className="text-[13px] text-text-secondary mb-3 bg-page-bg p-3 rounded-lg border border-border-default">
                     "{comment.content}"
                   </p>
                   
@@ -304,7 +304,7 @@ export default function DataCompass() {
                     </p>
                   </div>
                   
-                  <div className="flex justify-end pt-3 border-t border-neutral-100">
+                  <div className="flex justify-end pt-3 border-t border-border-default">
                     <button 
                       onClick={() => setShowReplyModal(true)}
                       className="text-[12px] font-bold flex items-center gap-1.5 text-white bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors shadow-sm"
@@ -322,36 +322,36 @@ export default function DataCompass() {
       {/* Reply Modal */}
       <AnimatePresence>
         {showReplyModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-btn-main/40 backdrop-blur-sm">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-neutral-200 overflow-hidden flex flex-col"
+              className="bg-surface-1 rounded-xl w-full max-w-lg shadow-2xl border border-border-default overflow-hidden flex flex-col"
             >
-              <div className="p-5 flex justify-between items-center border-b border-neutral-100 bg-neutral-50/50">
-                <h3 className="font-bold text-[16px] text-neutral-900 flex items-center gap-2">
+              <div className="p-5 flex justify-between items-center border-b border-border-default bg-page-bg">
+                <h3 className="font-bold text-[16px] text-text-main flex items-center gap-2">
                   <MessageSquare size={18} className="text-indigo-600" /> 智能 截流回复生成与指派
                 </h3>
-                <button onClick={() => setShowReplyModal(false)} className="text-neutral-400 hover:text-neutral-900 transition-colors">
+                <button onClick={() => setShowReplyModal(false)} className="text-text-tertiary hover:text-text-main transition-colors">
                   <X size={18} />
                 </button>
               </div>
 
               <div className="p-6 space-y-5">
                 <div>
-                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2">待截流用户评论</h4>
-                  <div className="bg-neutral-50 p-3 rounded-lg border border-neutral-200 text-[13px] text-neutral-600">
+                  <h4 className="text-[13px] font-bold text-text-secondary mb-2">待截流用户评论</h4>
+                  <div className="bg-page-bg p-3 rounded-lg border border-border-default text-[13px] text-text-secondary">
                     "这个早C晚A的精华会搓泥吗？我是干皮，之前用过另外一款一直搓泥。"
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2 flex items-center gap-1">
+                  <h4 className="text-[13px] font-bold text-text-secondary mb-2 flex items-center gap-1">
                     <Sparkles size={14} className="text-indigo-500" /> 智能 建议回复文案 (可修改)
                   </h4>
                   <textarea 
-                    className="w-full h-24 p-3 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-[13px] text-neutral-800 resize-none"
+                    className="w-full h-24 p-3 rounded-lg border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-[13px] text-text-main resize-none"
                     defaultValue="集美，干皮最怕搓泥啦！推荐你试试我们家的次抛精华，特别添加了玻尿酸成分，质地像水一样，吸收超级快，后续上妆也完全不会搓泥哦～ 现在双十一还有试用装，可以先拍下试试呢！"
                   />
                   <div className="flex justify-end mt-2 gap-2">
@@ -360,8 +360,8 @@ export default function DataCompass() {
                 </div>
 
                 <div>
-                  <h4 className="text-[13px] font-bold text-neutral-700 mb-2">指派到对应企微账号执行跟进</h4>
-                  <select className="w-full p-2.5 rounded-lg border border-neutral-200 text-[13px] text-neutral-900 focus:outline-none focus:border-indigo-500">
+                  <h4 className="text-[13px] font-bold text-text-secondary mb-2">指派到对应企微账号执行跟进</h4>
+                  <select className="w-full p-2.5 rounded-lg border border-border-default text-[13px] text-text-main focus:outline-none focus:border-indigo-500">
                     <option value="kefu1">企微客服 - 小雅 (当前在线)</option>
                     <option value="kefu2">企微客服 - 大潘 (已接待 12 人)</option>
                     <option value="kefu3">私域运营 - 李明</option>
@@ -369,10 +369,10 @@ export default function DataCompass() {
                 </div>
               </div>
 
-              <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-end gap-3">
+              <div className="p-5 border-t border-border-default bg-page-bg flex justify-end gap-3">
                 <button 
                   onClick={() => setShowReplyModal(false)}
-                  className="px-4 py-2 text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-[13px] font-bold text-text-secondary hover:bg-hover-bg rounded-lg transition-colors"
                 >
                   取消
                 </button>

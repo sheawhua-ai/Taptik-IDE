@@ -45,16 +45,16 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 backdrop-blur-xs p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-btn-main/40 backdrop-blur-xs p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="bg-white rounded-3xl shadow-2xl border border-[#EAECF0] w-full max-w-lg overflow-hidden my-auto p-7 relative"
+        className="bg-surface-1 rounded-2xl shadow-2xl border border-border-default w-full max-w-lg overflow-hidden my-auto p-7 relative"
       >
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-colors"
+          className="absolute top-6 right-6 p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-xl transition-colors"
         >
           <X size={18} />
         </button>
@@ -62,11 +62,11 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Header */}
           <div>
-            <h2 className="text-[18px] font-bold text-[#111827]">
+            <h2 className="text-[18px] font-bold text-text-main">
               下发计划素材收集任务
             </h2>
-            <p className="text-[13px] text-[#667085] mt-1">
-              任务将关联“<span className="font-medium text-[#111827]">{project.name}</span>”，重复下发会按源平台规则更新现有任务。
+            <p className="text-[13px] text-text-secondary mt-1">
+              任务将关联“<span className="font-medium text-text-main">{project.name}</span>”，重复下发会按源平台规则更新现有任务。
             </p>
           </div>
 
@@ -78,13 +78,13 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
               value={reqs}
               onChange={(e) => setReqs(e.target.value)}
               placeholder="请输入清晰、可执行的素材要求"
-              className="w-full px-4 py-3 border border-[#EAECF0] rounded-2xl text-[14px] outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-100 bg-[#FAFAFB] resize-none transition-all"
+              className="w-full px-4 py-3 border border-border-default rounded-xl text-[14px] outline-none focus:border-brand-logo focus:ring-2 focus:ring-rose-100 bg-[#FAFAFB] resize-none transition-all"
             />
           </div>
 
           {/* Assignee selection (exact match with user image) */}
           <div>
-            <label className="block text-[12px] font-medium text-[#667085] mb-2.5">
+            <label className="block text-[12px] font-medium text-text-secondary mb-2.5">
               下发对象（不选则下发全部员工）
             </label>
             <div className="flex flex-wrap items-center gap-3">
@@ -95,15 +95,15 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
                     key={staff.id}
                     className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-[13px] cursor-pointer transition-all ${
                       isChecked 
-                        ? 'bg-rose-50 border-rose-300 text-rose-800 font-medium' 
-                        : 'bg-white border-[#EAECF0] text-[#344054] hover:bg-neutral-50'
+                        ? 'bg-rose-50 border-brand-logo text-danger font-medium' 
+                        : 'bg-surface-1 border-border-default text-[#344054] hover:bg-page-bg'
                     }`}
                   >
                     <input 
                       type="checkbox"
                       checked={isChecked}
                       onChange={() => toggleStaff(staff.id)}
-                      className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-neutral-300 accent-rose-600"
+                      className="w-4 h-4 rounded text-danger focus:ring-rose-500 border-neutral-300 accent-rose-600"
                     />
                     <span>{staff.name}</span>
                   </label>
@@ -117,7 +117,7 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 border border-[#EAECF0] text-[#344054] hover:bg-neutral-50 rounded-xl text-[14px] font-bold transition-colors"
+              className="px-5 py-2.5 border border-border-default text-[#344054] hover:bg-page-bg rounded-xl text-[14px] font-bold transition-colors"
             >
               取消
             </button>

@@ -40,10 +40,10 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-60 bg-neutral-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-neutral-200 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-60 bg-btn-main/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-surface-1 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-border-default animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-900 text-white">
+        <div className="p-6 border-b border-border-default flex items-center justify-between bg-btn-main text-white">
           <div className="flex items-center gap-2.5">
             <div className="p-2 bg-amber-500/20 text-amber-400 rounded-xl">
               <Sparkles size={20} />
@@ -58,7 +58,7 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
           <button
             onClick={onClose}
             disabled={isProcessing}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-surface-1/10 hover:bg-surface-1/20 text-white flex items-center justify-center transition-colors"
           >
             <X size={18} />
           </button>
@@ -67,10 +67,10 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
         {/* Content */}
         <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
           {/* 原素材与真实发布反馈卡片 (Section 11.1) */}
-          <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-3">
+          <div className="p-4 rounded-xl bg-page-bg border border-border-default/80 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11.5px] font-extrabold text-neutral-500">原“已使用”素材基础档案</span>
-              <span className="px-2 py-0.5 rounded bg-neutral-200 text-neutral-600 text-[11px] font-bold">
+              <span className="text-[11.5px] font-extrabold text-text-tertiary">原“已使用”素材基础档案</span>
+              <span className="px-2 py-0.5 rounded bg-neutral-200 text-text-secondary text-[11px] font-bold">
                 原发布不能重复占用
               </span>
             </div>
@@ -80,13 +80,13 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
                 src={parentAsset.url}
                 alt={parentAsset.oneSentenceUnderstanding}
                 referrerPolicy="no-referrer"
-                className="w-24 h-24 rounded-xl object-cover border border-neutral-200 shrink-0"
+                className="w-24 h-24 rounded-xl object-cover border border-border-default shrink-0"
               />
               <div className="space-y-1.5 flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-neutral-900 line-clamp-2">
+                <p className="text-[13px] font-bold text-text-main line-clamp-2">
                   {parentAsset.oneSentenceUnderstanding}
                 </p>
-                <div className="text-[11.5px] text-neutral-500 font-medium">
+                <div className="text-[11.5px] text-text-tertiary font-medium">
                   来源项目：{parentAsset.sourceProject}
                 </div>
                 {/* 数据依据展示 */}
@@ -107,7 +107,7 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
 
           {/* 选择修改方向 (Section 11.2) */}
           <div className="space-y-3">
-            <h4 className="text-[14px] font-black text-neutral-900">
+            <h4 className="text-[14px] font-black text-text-main">
               请选择微调修改方向（自动保持父级和血缘关联）
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
@@ -118,14 +118,14 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
                   onClick={() => setSelectedMod(opt)}
                   className={`p-3 rounded-xl border text-left text-[12.5px] font-bold transition-all flex items-start gap-2 ${
                     selectedMod === opt
-                      ? 'bg-neutral-900 text-white border-neutral-900 shadow-2xs'
-                      : 'bg-white hover:bg-neutral-50 text-neutral-800 border-neutral-200'
+                      ? 'bg-btn-main text-white border-neutral-900 shadow-2xs'
+                      : 'bg-surface-1 hover:bg-page-bg text-text-main border-border-default'
                   }`}
                 >
                   <div className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
-                    selectedMod === opt ? 'border-white bg-white/20' : 'border-neutral-300'
+                    selectedMod === opt ? 'border-white bg-surface-1/20' : 'border-neutral-300'
                   }`}>
-                    {selectedMod === opt && <div className="w-2 h-2 rounded-full bg-white" />}
+                    {selectedMod === opt && <div className="w-2 h-2 rounded-full bg-surface-1" />}
                   </div>
                   <span>{opt}</span>
                 </button>
@@ -134,8 +134,8 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
           </div>
 
           {/* 规则声明 (Section 11.3) */}
-          <div className="p-3.5 bg-neutral-100/80 rounded-xl text-neutral-600 text-[12px] space-y-1">
-            <div className="font-extrabold text-neutral-900">微调后衍生资产规则</div>
+          <div className="p-3.5 bg-hover-bg/80 rounded-xl text-text-secondary text-[12px] space-y-1">
+            <div className="font-extrabold text-text-main">微调后衍生资产规则</div>
             <p>
               1. 原素材保持“已使用”状态；微调生成的衍生版会进入完整AI上传分析流水线，生成全自动【一句话理解】及视觉/文本语义向量。
             </p>
@@ -146,12 +146,12 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-neutral-100 bg-neutral-50 flex items-center justify-between">
+        <div className="p-5 border-t border-border-default bg-page-bg flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="px-4 py-2.5 rounded-xl bg-neutral-200/80 hover:bg-neutral-200 text-neutral-700 font-extrabold text-[13px] transition-colors"
+            className="px-4 py-2.5 rounded-xl bg-neutral-200/80 hover:bg-selected-bg text-text-secondary font-extrabold text-[13px] transition-colors"
           >
             取消
           </button>
@@ -159,7 +159,7 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
             type="button"
             onClick={handleStartDerive}
             disabled={isProcessing}
-            className="px-6 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-black text-[13px] flex items-center gap-2 shadow-2xs active:scale-95 transition-all"
+            className="px-6 py-2.5 rounded-xl bg-btn-main hover:bg-btn-main-hover text-white font-black text-[13px] flex items-center gap-2 shadow-2xs active:scale-95 transition-all"
           >
             {isProcessing ? (
               <>

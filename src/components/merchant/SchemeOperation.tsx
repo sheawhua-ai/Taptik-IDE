@@ -75,22 +75,22 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  };
 
  return (
- <div className="flex flex-col h-full bg-neutral-50 relative overflow-hidden">
+ <div className="flex flex-col h-full bg-page-bg relative overflow-hidden">
  {/* Header Context */}
- <div className="bg-white border-b border-neutral-200 px-8 py-4 flex items-center justify-between z-20">
+ <div className="bg-surface-1 border-b border-border-default px-8 py-4 flex items-center justify-between z-20">
  <div className="flex items-center gap-4">
- <button onClick={onBack} className="p-2 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl transition-all">
+ <button onClick={onBack} className="p-2 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-xl transition-all">
  <ChevronLeft size={20}/>
  </button>
  <div>
  <div className="flex items-center gap-2">
- <h2 className="text-[16px] font-semibold text-neutral-900">{schemeName}</h2>
- <span className="px-1.5 py-0.5 bg-primary-50 text-primary-500 text-[10px] rounded">作业流水线</span>
+ <h2 className="text-[16px] font-semibold text-text-main">{schemeName}</h2>
+ <span className="px-1.5 py-0.5 bg-brand-light text-brand-logo text-[10px] rounded">作业流水线</span>
  </div>
  </div>
  </div>
  <div className="flex items-center gap-3">
- <button className="p-2 text-neutral-400 hover:text-neutral-900"><MoreHorizontal size={20}/></button>
+ <button className="p-2 text-text-tertiary hover:text-text-main"><MoreHorizontal size={20}/></button>
  </div>
  </div>
 
@@ -100,7 +100,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  {/* Command Entry */}
  <div className="mb-10 relative group">
  <div className={`absolute -inset-1 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-[30px] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity ${isRunning ? 'opacity-100 animate-pulse' : ''}`} />
- <div className="relative flex items-center bg-white border border-neutral-200 rounded-[28px] shadow-2xl overflow-hidden focus-within:border-primary-500/30 transition-all">
+ <div className="relative flex items-center bg-surface-1 border border-border-default rounded-[28px] shadow-2xl overflow-hidden focus-within:border-primary-500/30 transition-all">
  <div className="pl-6 text-neutral-300">
  <Bot size={22}/>
  </div>
@@ -109,12 +109,12 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  onChange={(e) => setCommand(e.target.value)}
  onKeyDown={(e) => e.key === 'Enter' && handleCommand()}
  placeholder="发送指令以驱动流水线（例如：优化文案、扩展示范素材）..."
- className="flex-1 px-5 py-6 bg-transparent text-[16px] text-neutral-800 placeholder:text-neutral-200 focus:outline-none"
+ className="flex-1 px-5 py-6 bg-transparent text-[16px] text-text-main placeholder:text-neutral-200 focus:outline-none"
  />
  <button 
  onClick={handleCommand}
  disabled={isRunning}
- className="mr-3 px-8 py-4 bg-neutral-900 text-white rounded-[22px] text-[13px] flex items-center gap-2 hover:bg-neutral-800 active:scale-95 transition-all disabled:bg-neutral-100"
+ className="mr-3 px-8 py-4 bg-btn-main text-white rounded-[22px] text-[13px] flex items-center gap-2 hover:bg-btn-main-hover active:scale-95 transition-all disabled:bg-hover-bg"
  >
  {isRunning ? <RefreshCw size={18} className="animate-spin"/> : <Sparkles size={18}/>}
  派遣 AI
@@ -130,22 +130,22 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  key={unit.id}
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
- className="bg-white rounded-[40px] border border-neutral-200 p-8 shadow-sm relative group overflow-hidden"
+ className="bg-surface-1 rounded-[40px] border border-border-default p-8 shadow-sm relative group overflow-hidden"
  >
  <div className="flex gap-8">
  <div className="flex-1">
  <div className="flex items-center gap-4 mb-6">
- <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${unit.status === 'running' ? 'bg-primary-50 text-primary-500' : 'bg-neutral-50 text-neutral-400'}`}>
+ <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${unit.status === 'running' ? 'bg-brand-light text-brand-logo' : 'bg-page-bg text-text-tertiary'}`}>
  {unit.status === 'running' ? <RefreshCw size={20} className="animate-spin"/> : <Zap size={20}/>}
  </div>
  <div>
- <h4 className="text-[17px] font-semibold text-neutral-900">{unit.title}</h4>
- <p className="text-[11px] text-neutral-400 uppercase tracking-tight">{unit.sub}</p>
+ <h4 className="text-[17px] font-semibold text-text-main">{unit.title}</h4>
+ <p className="text-[11px] text-text-tertiary uppercase tracking-tight">{unit.sub}</p>
  </div>
  </div>
 
- <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-100 mb-6 italic text-[12px] text-neutral-500 flex items-start gap-3">
- <Target size={14} className="text-primary-500 mt-0.5 shrink-0"/>
+ <div className="bg-page-bg rounded-xl p-4 border border-border-default mb-6 italic text-[12px] text-text-tertiary flex items-start gap-3">
+ <Target size={14} className="text-brand-logo mt-0.5 shrink-0"/>
  {unit.thought}
  </div>
 
@@ -154,7 +154,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  <textarea 
  data-inline-ai="true"
  value={unit.output.text}
- className="w-full bg-neutral-0 border border-neutral-100 rounded-2xl p-5 text-[14px] text-neutral-700 resize-none min-h-[100px] focus:outline-none"
+ className="w-full bg-neutral-0 border border-border-default rounded-xl p-5 text-[14px] text-text-secondary resize-none min-h-[100px] focus:outline-none"
  readOnly
  />
  <div className="absolute top-4 right-4 text-neutral-200">
@@ -165,7 +165,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  </div>
  
  <div className="w-[180px] shrink-0 pt-2 flex flex-col justify-end">
- <button className="w-full py-3.5 bg-neutral-900 text-white rounded-2xl text-[12px] hover:scale-[1.02] transition-transform active:scale-95 shadow-xl">
+ <button className="w-full py-3.5 bg-btn-main text-white rounded-xl text-[12px] hover:scale-[1.02] transition-transform active:scale-95 shadow-xl">
  确认入库同步
  </button>
  </div>
@@ -178,23 +178,23 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  </div>
 
  {/* Floating Status Indicator */}
- <div className="absolute bottom-6 right-8 left-8 flex items-center justify-between p-4 bg-white/80 backdrop-blur-xl border border-white/40 shadow-2xl rounded-3xl z-30">
+ <div className="absolute bottom-6 right-8 left-8 flex items-center justify-between p-4 bg-surface-1/80 backdrop-blur-xl border border-white/40 shadow-2xl rounded-2xl z-30">
  <div className="flex items-center gap-6">
  <div>
  <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-neutral-900 animate-pulse"/>
- <span className="text-[11px] text-neutral-900">流水线就绪</span>
+ <div className="w-2 h-2 rounded-full bg-btn-main animate-pulse"/>
+ <span className="text-[11px] text-text-main">流水线就绪</span>
  </div>
  </div>
  <div className="w-px h-4 bg-neutral-200"/>
  <div className="flex items-center gap-3">
- <span className="text-[11px] text-neutral-400 uppercase tracking-wider">执行效率</span>
- <div className="w-24 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
- <div className="w-[88%] h-full bg-primary-500"/>
+ <span className="text-[11px] text-text-tertiary uppercase tracking-wider">执行效率</span>
+ <div className="w-24 h-1.5 bg-hover-bg rounded-full overflow-hidden">
+ <div className="w-[88%] h-full bg-btn-main"/>
  </div>
  </div>
  </div>
- <button className="p-2 hover:bg-neutral-100 rounded-xl transition-all text-neutral-400 hover:text-neutral-900">
+ <button className="p-2 hover:bg-hover-bg rounded-xl transition-all text-text-tertiary hover:text-text-main">
  <ArrowUpRight size={18}/>
  </button>
  </div>

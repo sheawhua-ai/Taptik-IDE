@@ -42,18 +42,18 @@ export function AIReview() {
     <div className="h-full w-full bg-[#fcfcfc] p-8 overflow-y-auto">
       <div className="max-w-6xl mx-auto pb-12 relative">
         <div className="mb-8">
-          <h1 className="text-[24px] font-extrabold text-neutral-900 mb-2 flex items-center gap-2">
-            <Sparkles size={24} className="text-primary-500" /> AI 复盘决策
+          <h1 className="text-[24px] font-extrabold text-text-main mb-2 flex items-center gap-2">
+            <Sparkles size={24} className="text-brand-logo" /> AI 复盘决策
           </h1>
-          <p className="text-[14px] text-neutral-500">
+          <p className="text-[14px] text-text-tertiary">
             基于运行中和历史项目数据，提供策略调整建议。所有调整均需你确认后才会生效。
           </p>
         </div>
 
         <div className="grid grid-cols-3 gap-6">
           {decisions.map(d => (
-            <div key={d.id} className="bg-white rounded-2xl border border-neutral-200 shadow-sm flex flex-col h-full hover:shadow-md transition-all">
-              <div className="p-6 border-b border-neutral-100 flex-1">
+            <div key={d.id} className="bg-surface-1 rounded-xl border border-border-default shadow-sm flex flex-col h-full hover:shadow-md transition-all">
+              <div className="p-6 border-b border-border-default flex-1">
                  <div className="flex items-center gap-2 mb-4">
                    <span className={`text-[12px] px-2.5 py-1 rounded-full font-bold ${
                      d.type === 'continue' ? 'bg-emerald-100 text-emerald-700' :
@@ -63,34 +63,34 @@ export function AIReview() {
                      {d.title}
                    </span>
                  </div>
-                 <div className="text-[16px] font-bold text-neutral-900 mb-4">{d.discovery}</div>
+                 <div className="text-[16px] font-bold text-text-main mb-4">{d.discovery}</div>
                  
                  <div className="space-y-4 text-[13px]">
                    <div>
-                     <div className="text-neutral-500 mb-1 font-medium">依据摘要</div>
-                     <div className="text-neutral-700">{d.basis}</div>
+                     <div className="text-text-tertiary mb-1 font-medium">依据摘要</div>
+                     <div className="text-text-secondary">{d.basis}</div>
                    </div>
                    <div>
-                     <div className="text-neutral-500 mb-1 font-medium">其他可能性</div>
-                     <div className="text-neutral-700">{d.other}</div>
+                     <div className="text-text-tertiary mb-1 font-medium">其他可能性</div>
+                     <div className="text-text-secondary">{d.other}</div>
                    </div>
                    <div>
-                     <div className="text-neutral-500 mb-1 font-medium">建议动作</div>
-                     <div className="font-bold text-neutral-900">{d.action}</div>
+                     <div className="text-text-tertiary mb-1 font-medium">建议动作</div>
+                     <div className="font-bold text-text-main">{d.action}</div>
                    </div>
-                   <div className="p-3 bg-neutral-50 rounded-lg text-neutral-600">
+                   <div className="p-3 bg-page-bg rounded-lg text-text-secondary">
                      影响范围：{d.impact}
                    </div>
                  </div>
               </div>
-              <div className="p-4 bg-neutral-50/50 rounded-b-2xl flex flex-col gap-2 shrink-0">
-                 <button onClick={() => setDrawerType("basis")} className="w-full py-2 bg-white border border-neutral-200 rounded-lg text-[13px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors">
+              <div className="p-4 bg-page-bg rounded-b-2xl flex flex-col gap-2 shrink-0">
+                 <button onClick={() => setDrawerType("basis")} className="w-full py-2 bg-surface-1 border border-border-default rounded-lg text-[13px] font-bold text-text-secondary hover:bg-page-bg transition-colors">
                    查看完整依据
                  </button>
-                 <button onClick={() => setDrawerType("adjust_draft")} className="w-full py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold hover:bg-neutral-800 transition-colors">
+                 <button onClick={() => setDrawerType("adjust_draft")} className="w-full py-2 bg-btn-main text-white rounded-lg text-[13px] font-bold hover:bg-btn-main-hover transition-colors">
                    生成调整草案
                  </button>
-                 <button onClick={() => setDrawerType("deposit")} className="w-full py-2 bg-white border border-primary-200 text-primary-700 rounded-lg text-[13px] font-bold hover:bg-primary-50 transition-colors">
+                 <button onClick={() => setDrawerType("deposit")} className="w-full py-2 bg-surface-1 border border-primary-200 text-primary-700 rounded-lg text-[13px] font-bold hover:bg-brand-light transition-colors">
                    沉淀为经验/知识
                  </button>
               </div>
@@ -112,41 +112,41 @@ export function AIReview() {
 function BasisDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/20 backdrop-blur-sm" onClick={onClose} />
       <motion.div 
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         className="w-[500px] bg-[#fcfcfc] h-full shadow-2xl flex flex-col relative z-10"
       >
-        <div className="p-6 border-b border-neutral-200 flex justify-between items-center bg-white">
+        <div className="p-6 border-b border-border-default flex justify-between items-center bg-surface-1">
           <h2 className="text-[18px] font-bold">决策依据</h2>
-          <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100">
+          <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-main rounded-lg hover:bg-hover-bg">
             <X size={20} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-           <div className="bg-white p-4 rounded-xl border border-neutral-200">
-             <div className="text-[14px] font-bold text-neutral-900 mb-4 border-b pb-2">数据覆盖范围</div>
+           <div className="bg-surface-1 p-4 rounded-xl border border-border-default">
+             <div className="text-[14px] font-bold text-text-main mb-4 border-b pb-2">数据覆盖范围</div>
              <div className="grid grid-cols-2 gap-4">
                <div>
-                 <div className="text-[12px] text-neutral-500 mb-1">使用笔记数</div>
+                 <div className="text-[12px] text-text-tertiary mb-1">使用笔记数</div>
                  <div className="text-[14px] font-bold">20 篇</div>
                </div>
                <div>
-                 <div className="text-[12px] text-neutral-500 mb-1">时间范围</div>
+                 <div className="text-[12px] text-text-tertiary mb-1">时间范围</div>
                  <div className="text-[14px] font-bold">近 15 天</div>
                </div>
                <div className="col-span-2">
-                 <div className="text-[12px] text-neutral-500 mb-1">包含数据源</div>
-                 <div className="text-[13px] font-medium text-neutral-700">公开互动数据 (赞藏评)、公开评论区文本抽样。</div>
+                 <div className="text-[12px] text-text-tertiary mb-1">包含数据源</div>
+                 <div className="text-[13px] font-medium text-text-secondary">公开互动数据 (赞藏评)、公开评论区文本抽样。</div>
                </div>
              </div>
            </div>
 
-           <div className="bg-white p-4 rounded-xl border border-neutral-200">
-             <div className="text-[14px] font-bold text-neutral-900 mb-4 border-b pb-2">不能确定的部分</div>
-             <div className="text-[13px] text-neutral-600 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100">
+           <div className="bg-surface-1 p-4 rounded-xl border border-border-default">
+             <div className="text-[14px] font-bold text-text-main mb-4 border-b pb-2">不能确定的部分</div>
+             <div className="text-[13px] text-text-secondary leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100">
                <AlertTriangle size={14} className="inline mr-1 text-amber-500 mb-0.5" />
                由于未接入曝光量和点击率数据，无法确定转化率的绝对提升，当前结论仅基于“有效互动量/发布量”的相对对比。
              </div>
@@ -160,54 +160,54 @@ function BasisDrawer({ onClose }: { onClose: () => void }) {
 function AdjustDraftDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/20 backdrop-blur-sm" onClick={onClose} />
       <motion.div 
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         className="w-[600px] bg-[#fcfcfc] h-full shadow-2xl flex flex-col relative z-10"
       >
-        <div className="p-6 border-b border-neutral-200 flex justify-between items-center bg-white">
+        <div className="p-6 border-b border-border-default flex justify-between items-center bg-surface-1">
           <h2 className="text-[18px] font-bold">项目调整差异草案</h2>
-          <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100">
+          <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-main rounded-lg hover:bg-hover-bg">
             <X size={20} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
            
-           <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm">
-             <div className="text-[15px] font-bold text-neutral-900 mb-4">内容包模板更新</div>
+           <div className="bg-surface-1 p-6 rounded-xl border border-border-default shadow-sm">
+             <div className="text-[15px] font-bold text-text-main mb-4">内容包模板更新</div>
              <div className="grid grid-cols-2 gap-4">
                <div className="p-4 bg-red-50 rounded-xl border border-red-100">
-                 <div className="text-[12px] text-red-600 font-bold mb-2 flex items-center gap-1"><X size={14}/> 修改前</div>
-                 <div className="text-[13px] text-neutral-700 line-through">要求拍摄宠物与产品合照。</div>
+                 <div className="text-[12px] text-danger font-bold mb-2 flex items-center gap-1"><X size={14}/> 修改前</div>
+                 <div className="text-[13px] text-text-secondary line-through">要求拍摄宠物与产品合照。</div>
                </div>
                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
                  <div className="text-[12px] text-emerald-600 font-bold mb-2 flex items-center gap-1"><CheckCircle2 size={14}/> 修改后</div>
-                 <div className="text-[13px] text-neutral-700">要求拍摄产品细节图，宠物出镜即可，无需强求合影。附反面示例图。</div>
+                 <div className="text-[13px] text-text-secondary">要求拍摄产品细节图，宠物出镜即可，无需强求合影。附反面示例图。</div>
                </div>
              </div>
            </div>
 
-           <div className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm space-y-4">
-             <div className="text-[15px] font-bold text-neutral-900 border-b pb-2">影响范围评估</div>
-             <div className="flex justify-between items-center text-[13px] border-b border-neutral-100 py-2">
-               <span className="text-neutral-500">影响的批次</span>
+           <div className="bg-surface-1 p-6 rounded-xl border border-border-default shadow-sm space-y-4">
+             <div className="text-[15px] font-bold text-text-main border-b pb-2">影响范围评估</div>
+             <div className="flex justify-between items-center text-[13px] border-b border-border-default py-2">
+               <span className="text-text-tertiary">影响的批次</span>
                <span className="font-bold">幼犬换粮搜索卡位第三轮 - 批次B</span>
              </div>
-             <div className="flex justify-between items-center text-[13px] border-b border-neutral-100 py-2">
-               <span className="text-neutral-500">影响已领任务的KOC?</span>
-               <span className="font-bold text-red-500">是 (有3人需重新通知)</span>
+             <div className="flex justify-between items-center text-[13px] border-b border-border-default py-2">
+               <span className="text-text-tertiary">影响已领任务的KOC?</span>
+               <span className="font-bold text-danger">是 (有3人需重新通知)</span>
              </div>
              <div className="flex justify-between items-center text-[13px] py-2">
-               <span className="text-neutral-500">是否需要重新生成内容?</span>
+               <span className="text-text-tertiary">是否需要重新生成内容?</span>
                <span className="font-bold">否</span>
              </div>
            </div>
 
         </div>
-        <div className="p-6 bg-white border-t border-neutral-200 shrink-0">
-          <button className="w-full py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors">
+        <div className="p-6 bg-surface-1 border-t border-border-default shrink-0">
+          <button className="w-full py-3 bg-btn-main text-white rounded-xl text-[14px] font-bold hover:bg-btn-main-hover transition-colors">
             确认并写入项目版本
           </button>
         </div>
@@ -219,32 +219,32 @@ function AdjustDraftDrawer({ onClose }: { onClose: () => void }) {
 function DepositDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/20 backdrop-blur-sm" onClick={onClose} />
       <motion.div 
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         className="w-[400px] bg-[#fcfcfc] h-full shadow-2xl flex flex-col relative z-10"
       >
-        <div className="p-6 border-b border-neutral-200 flex justify-between items-center bg-white">
+        <div className="p-6 border-b border-border-default flex justify-between items-center bg-surface-1">
           <h2 className="text-[18px] font-bold">沉淀知识与经验</h2>
-          <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100">
+          <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-main rounded-lg hover:bg-hover-bg">
             <X size={20} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-           <div className="p-4 bg-white rounded-xl border border-neutral-200 cursor-pointer hover:border-primary-500 transition-colors">
-             <div className="font-bold text-[14px] text-neutral-900 mb-1">沉淀为商家知识</div>
-             <div className="text-[12px] text-neutral-500 mb-3">将经过验证的商家事实补充到品牌库中。</div>
-             <textarea className="w-full h-20 p-2 text-[13px] border border-neutral-200 rounded resize-none" defaultValue="KOC对于宠物与产品强行合照的执行难度较高，建议后续项目降低合影要求。" />
-             <button className="mt-3 w-full py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold">确认沉淀</button>
+           <div className="p-4 bg-surface-1 rounded-xl border border-border-default cursor-pointer hover:border-primary-500 transition-colors">
+             <div className="font-bold text-[14px] text-text-main mb-1">沉淀为商家知识</div>
+             <div className="text-[12px] text-text-tertiary mb-3">将经过验证的商家事实补充到品牌库中。</div>
+             <textarea className="w-full h-20 p-2 text-[13px] border border-border-default rounded resize-none" defaultValue="KOC对于宠物与产品强行合照的执行难度较高，建议后续项目降低合影要求。" />
+             <button className="mt-3 w-full py-2 bg-btn-main text-white rounded-lg text-[13px] font-bold">确认沉淀</button>
            </div>
            
-           <div className="p-4 bg-white rounded-xl border border-neutral-200 cursor-pointer hover:border-primary-500 transition-colors">
-             <div className="font-bold text-[14px] text-neutral-900 mb-1">沉淀为我的经验</div>
-             <div className="text-[12px] text-neutral-500 mb-3">更新操盘手的个人项目偏好。</div>
-             <textarea className="w-full h-20 p-2 text-[13px] border border-neutral-200 rounded resize-none" defaultValue="此类低单价宠粮铺量项目，素材模板需要提供2个以上的错误示范图。" />
-             <button className="mt-3 w-full py-2 bg-neutral-900 text-white rounded-lg text-[13px] font-bold">确认沉淀</button>
+           <div className="p-4 bg-surface-1 rounded-xl border border-border-default cursor-pointer hover:border-primary-500 transition-colors">
+             <div className="font-bold text-[14px] text-text-main mb-1">沉淀为我的经验</div>
+             <div className="text-[12px] text-text-tertiary mb-3">更新操盘手的个人项目偏好。</div>
+             <textarea className="w-full h-20 p-2 text-[13px] border border-border-default rounded resize-none" defaultValue="此类低单价宠粮铺量项目，素材模板需要提供2个以上的错误示范图。" />
+             <button className="mt-3 w-full py-2 bg-btn-main text-white rounded-lg text-[13px] font-bold">确认沉淀</button>
            </div>
         </div>
       </motion.div>

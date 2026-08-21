@@ -102,13 +102,13 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/20 backdrop-blur-sm">
-      <div className="w-[500px] bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-        <div className="p-5 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
+      <div className="w-[500px] bg-surface-1 h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+        <div className="p-5 border-b border-border-default flex justify-between items-center bg-page-bg">
           <div>
-            <h3 className="text-[16px] font-bold text-neutral-900">核心诊断详情</h3>
-            <p className="text-[12px] text-neutral-500 mt-1">基于以下事实维度生成操盘策略，可作为审计依据</p>
+            <h3 className="text-[16px] font-bold text-text-main">核心诊断详情</h3>
+            <p className="text-[12px] text-text-tertiary mt-1">基于以下事实维度生成操盘策略，可作为审计依据</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-neutral-200 rounded-xl text-neutral-500 transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-selected-bg rounded-xl text-text-tertiary transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -119,17 +119,17 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
             const isExpanded = expandedCategories.includes(cat);
 
             return (
-              <div key={cat} className="border border-neutral-200 rounded-xl overflow-hidden bg-white">
+              <div key={cat} className="border border-border-default rounded-xl overflow-hidden bg-surface-1">
                 <div 
-                  className={`flex items-center justify-between p-3 cursor-pointer select-none transition-colors ${hasIssue ? 'bg-orange-50/30' : 'hover:bg-neutral-50'}`}
+                  className={`flex items-center justify-between p-3 cursor-pointer select-none transition-colors ${hasIssue ? 'bg-orange-50/30' : 'hover:bg-page-bg'}`}
                   onClick={() => toggleCategory(cat)}
                 >
                   <div className="flex items-center gap-2">
-                    <ChevronRight size={16} className={`text-neutral-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                    <span className="text-[14px] font-bold text-neutral-900">{cat}</span>
+                    <ChevronRight size={16} className={`text-text-tertiary transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                    <span className="text-[14px] font-bold text-text-main">{cat}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-[12px] ${hasIssue ? 'text-orange-600 font-bold' : 'text-neutral-500'}`}>
+                    <span className={`text-[12px] ${hasIssue ? 'text-orange-600 font-bold' : 'text-text-tertiary'}`}>
                       {confirmedCount}/{catItems.length} 已确认
                     </span>
                     {hasIssue && <AlertCircle size={14} className="text-orange-500" />}
@@ -137,7 +137,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                 </div>
                 
                 {isExpanded && (
-                  <div className="p-3 pt-0 border-t border-neutral-100 bg-neutral-50/50">
+                  <div className="p-3 pt-0 border-t border-border-default bg-page-bg">
                     <div className="space-y-3 mt-3">
                       {catItems.map(item => (
                         <div key={item.id} className="text-[13px]">
@@ -145,16 +145,16 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                             {item.status === 'confirmed' ? (
                               <CheckCircle2 size={14} className="text-emerald-500 mt-0.5 shrink-0" />
                             ) : item.status === 'conflict' ? (
-                              <AlertTriangle size={14} className="text-rose-500 mt-0.5 shrink-0" />
+                              <AlertTriangle size={14} className="text-brand-logo mt-0.5 shrink-0" />
                             ) : (
                               <AlertCircle size={14} className="text-orange-500 mt-0.5 shrink-0" />
                             )}
                             <div className="flex-1">
                               <div className="flex justify-between items-start">
-                                <span className="font-bold text-neutral-800">{item.fact?.key}:</span>
-                                <span className="text-neutral-700 max-w-[200px] text-right">{item.fact?.value}</span>
+                                <span className="font-bold text-text-main">{item.fact?.key}:</span>
+                                <span className="text-text-secondary max-w-[200px] text-right">{item.fact?.value}</span>
                               </div>
-                              <div className="flex justify-between items-center mt-1 text-[11px] text-neutral-400">
+                              <div className="flex justify-between items-center mt-1 text-[11px] text-text-tertiary">
                                 <span>来源: {item.fact?.source}</span>
                                 <span>{item.fact?.time}</span>
                               </div>
@@ -172,7 +172,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                                                      item.id === 'conversion' ? 'reply' :
                                                      item.id === 'accounts' ? 'account' : item.id;
                                     window.dispatchEvent(new CustomEvent("switch-to-knowledge", { detail: { targetModule: mappedId, action: 'ai_interview' } }));
-                                  }} className="px-2.5 py-1.5 bg-neutral-900 text-white text-[11px] font-bold rounded-lg hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-1">
+                                  }} className="px-2.5 py-1.5 bg-btn-main text-white text-[11px] font-bold rounded-lg hover:bg-btn-main-hover transition-colors shadow-sm flex items-center gap-1">
                                     <Sparkles size={12} /> 开启 AI 访谈
                                   </button>
                                   <button onClick={() => {
@@ -182,7 +182,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                                                      item.id === 'conversion' ? 'reply' :
                                                      item.id === 'accounts' ? 'account' : item.id;
                                     window.dispatchEvent(new CustomEvent("switch-to-knowledge", { detail: { targetModule: mappedId, action: 'file_mapping' } }));
-                                  }} className="px-2.5 py-1.5 bg-white border border-neutral-200 text-neutral-700 text-[11px] font-bold rounded-lg hover:bg-neutral-50 transition-colors shadow-sm flex items-center gap-1">
+                                  }} className="px-2.5 py-1.5 bg-surface-1 border border-border-default text-text-secondary text-[11px] font-bold rounded-lg hover:bg-page-bg transition-colors shadow-sm flex items-center gap-1">
                                     <FolderOpen size={12} /> 配置本地文件映射
                                   </button>
                                 </div>
@@ -206,15 +206,15 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
 const ExecutionCheckModal = ({ onClose, onProceed }: { onClose: () => void, onProceed: () => void }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="w-[500px] bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        <div className="p-5 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
-          <h3 className="text-[18px] font-bold text-neutral-900">执行条件前置检查</h3>
-          <button onClick={onClose} className="p-2 hover:bg-neutral-200 rounded-xl text-neutral-500 transition-colors">
+      <div className="w-[500px] bg-surface-1 rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="p-5 border-b border-border-default flex justify-between items-center bg-page-bg">
+          <h3 className="text-[18px] font-bold text-text-main">执行条件前置检查</h3>
+          <button onClick={onClose} className="p-2 hover:bg-selected-bg rounded-xl text-text-tertiary transition-colors">
             <X size={20} />
           </button>
         </div>
         <div className="p-6 space-y-4">
-          <p className="text-[13px] text-neutral-600 mb-2">应用策略前，系统正核对执行该策略所需的硬性条件是否满足：</p>
+          <p className="text-[13px] text-text-secondary mb-2">应用策略前，系统正核对执行该策略所需的硬性条件是否满足：</p>
           
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl">
@@ -225,19 +225,19 @@ const ExecutionCheckModal = ({ onClose, onProceed }: { onClose: () => void, onPr
                <div className="flex items-center gap-2 text-[14px] text-emerald-900"><CheckCircle size={16} className="text-emerald-500" /> 内容生产能力</div>
                <span className="text-[12px] font-bold text-emerald-700">已满足 (周期14天)</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-neutral-50 border border-neutral-200 rounded-xl">
-               <div className="flex items-center gap-2 text-[14px] text-neutral-700"><Circle size={16} className="text-neutral-400" /> 私域承接人员配置</div>
-               <span className="text-[12px] font-bold text-neutral-500">待确认</span>
+            <div className="flex items-center justify-between p-3 bg-page-bg border border-border-default rounded-xl">
+               <div className="flex items-center gap-2 text-[14px] text-text-secondary"><Circle size={16} className="text-text-tertiary" /> 私域承接人员配置</div>
+               <span className="text-[12px] font-bold text-text-tertiary">待确认</span>
             </div>
           </div>
         </div>
-        <div className="p-5 bg-neutral-50 border-t border-neutral-100 flex justify-between items-center">
-          <button className="text-[13px] font-bold text-primary-600 hover:underline">一键生成补足任务</button>
+        <div className="p-5 bg-page-bg border-t border-border-default flex justify-between items-center">
+          <button className="text-[13px] font-bold text-brand-logo hover:underline">一键生成补足任务</button>
           <div className="flex gap-3">
-            <button onClick={onClose} className="px-5 py-2.5 rounded-xl text-[14px] font-bold text-neutral-700 hover:bg-neutral-200 transition-colors">
+            <button onClick={onClose} className="px-5 py-2.5 rounded-xl text-[14px] font-bold text-text-secondary hover:bg-selected-bg transition-colors">
               取消
             </button>
-            <button onClick={onProceed} className="px-5 py-2.5 rounded-xl text-[14px] font-bold bg-neutral-900 text-white hover:bg-neutral-800 transition-colors shadow-sm">
+            <button onClick={onProceed} className="px-5 py-2.5 rounded-xl text-[14px] font-bold bg-btn-main text-white hover:bg-btn-main-hover transition-colors shadow-sm">
               强制忽略并创建
             </button>
           </div>
@@ -307,74 +307,74 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
     <div className="max-w-[1000px] mx-auto py-8 animate-in fade-in zoom-in-95 duration-200">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-2 hover:bg-neutral-200 rounded-xl text-neutral-500 transition-colors">
+          <button onClick={onBack} className="p-2 hover:bg-selected-bg rounded-xl text-text-tertiary transition-colors">
             <ChevronLeft size={20} />
           </button>
           <div>
-            <h2 className="text-[24px] font-bold text-neutral-900">调整策略执行参数</h2>
-            <p className="text-[14px] text-neutral-600 mt-1">您可以覆盖系统推算的数值，系统将实时评估调整对策略的影响</p>
+            <h2 className="text-[24px] font-bold text-text-main">调整策略执行参数</h2>
+            <p className="text-[14px] text-text-secondary mt-1">您可以覆盖系统推算的数值，系统将实时评估调整对策略的影响</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-8 space-y-6">
-          <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden">
             <div className="p-6">
-              <label className="text-[15px] font-bold text-neutral-900 block mb-4">账号矩阵与资源分配</label>
+              <label className="text-[15px] font-bold text-text-main block mb-4">账号矩阵与资源分配</label>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-neutral-200">
-                      <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[120px]">渠道</th>
-                      <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[100px]">内容量</th>
-                      <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[100px]">可用账号</th>
-                      <th className="pb-3 text-[12px] font-bold text-neutral-500 w-[120px]">单篇预估成本(元)</th>
-                      <th className="pb-3 text-[12px] font-bold text-neutral-500">策略用途</th>
+                    <tr className="border-b border-border-default">
+                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[120px]">渠道</th>
+                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[100px]">内容量</th>
+                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[100px]">可用账号</th>
+                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[120px]">单篇预估成本(元)</th>
+                      <th className="pb-3 text-[12px] font-bold text-text-tertiary">策略用途</th>
                     </tr>
                   </thead>
                   <tbody className="text-[13px]">
-                    <tr className="border-b border-neutral-100">
-                      <td className="py-4 font-bold text-neutral-800">品牌官号</td>
+                    <tr className="border-b border-border-default">
+                      <td className="py-4 font-bold text-text-main">品牌官号</td>
                       <td className="py-4">
-                        <input type="number" value={brandCount} onChange={e => setBrandCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                        <input type="number" value={brandCount} onChange={e => setBrandCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-neutral-600">1个</td>
-                      <td className="py-4 text-neutral-600">
-                        <input type="number" value={brandCost} onChange={e => setBrandCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <td className="py-4 text-text-secondary">1个</td>
+                      <td className="py-4 text-text-secondary">
+                        <input type="number" value={brandCost} onChange={e => setBrandCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-neutral-500 text-[12px]">官方背书定调</td>
+                      <td className="py-4 text-text-tertiary text-[12px]">官方背书定调</td>
                     </tr>
-                    <tr className="border-b border-neutral-100 bg-primary-50/30">
-                      <td className="py-4 font-bold text-primary-900 flex items-center gap-1">KOS/员工号 <Sparkles size={12} className="text-primary-500"/></td>
+                    <tr className="border-b border-border-default bg-brand-light/30">
+                      <td className="py-4 font-bold text-primary-900 flex items-center gap-1">KOS/员工号 <Sparkles size={12} className="text-brand-logo"/></td>
                       <td className="py-4">
-                        <input type="number" value={kosCount} onChange={e => setKosCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-white border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                        <input type="number" value={kosCount} onChange={e => setKosCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-surface-1 border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-neutral-600">6个</td>
-                      <td className="py-4 text-neutral-600">
-                        <input type="number" value={kosCost} onChange={e => setKosCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-white border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <td className="py-4 text-text-secondary">6个</td>
+                      <td className="py-4 text-text-secondary">
+                        <input type="number" value={kosCost} onChange={e => setKosCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-surface-1 border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
                       <td className="py-4 text-primary-700/80 text-[12px] font-medium">搜索长尾截流与私信承接</td>
                     </tr>
-                    <tr className="border-b border-neutral-100">
-                      <td className="py-4 font-bold text-neutral-800">KOC/素人</td>
+                    <tr className="border-b border-border-default">
+                      <td className="py-4 font-bold text-text-main">KOC/素人</td>
                       <td className="py-4">
-                        <input type="number" value={kocCount} onChange={e => setKocCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                        <input type="number" value={kocCount} onChange={e => setKocCount(Number(e.target.value))} className="w-16 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-neutral-600">招募池充足</td>
-                      <td className="py-4 text-neutral-600">
-                        <input type="number" value={kocCost} onChange={e => setKocCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <td className="py-4 text-text-secondary">招募池充足</td>
+                      <td className="py-4 text-text-secondary">
+                        <input type="number" value={kocCost} onChange={e => setKocCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-neutral-500 text-[12px]">外围真实口碑铺设</td>
+                      <td className="py-4 text-text-tertiary text-[12px]">外围真实口碑铺设</td>
                     </tr>
                     <tr>
-                      <td className="py-4 font-bold text-neutral-800">信息流追投</td>
-                      <td className="py-4 text-neutral-400">—</td>
-                      <td className="py-4 text-neutral-400">—</td>
-                      <td className="py-4 font-bold text-neutral-900">
-                        <input type="number" value={infoFlowBudget} onChange={e => setInfoFlowBudget(Number(e.target.value))} className="w-20 px-2 py-1 bg-neutral-50 border border-neutral-200 rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <td className="py-4 font-bold text-text-main">信息流追投</td>
+                      <td className="py-4 text-text-tertiary">—</td>
+                      <td className="py-4 text-text-tertiary">—</td>
+                      <td className="py-4 font-bold text-text-main">
+                        <input type="number" value={infoFlowBudget} onChange={e => setInfoFlowBudget(Number(e.target.value))} className="w-20 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-neutral-500 text-[12px]">放大自然流优质笔记</td>
+                      <td className="py-4 text-text-tertiary text-[12px]">放大自然流优质笔记</td>
                     </tr>
                   </tbody>
                 </table>
@@ -382,33 +382,33 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
             </div>
           </div>
           
-          <div className="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden p-6">
-            <label className="text-[15px] font-bold text-neutral-900 block mb-4">全局参数设置</label>
+          <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden p-6">
+            <label className="text-[15px] font-bold text-text-main block mb-4">全局参数设置</label>
             <div className="flex items-start gap-12">
                <div className="flex-1">
-                 <div className="text-[13px] text-neutral-500 mb-1">当前项目总预算 (元)</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">当前项目总预算 (元)</div>
                  <div className="flex items-center gap-3">
-                   <input type="number" value={budget} onChange={e => {setBudget(Number(e.target.value)); setIsBudgetManual(true);}} className="w-32 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-[16px] font-bold text-neutral-900 focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                   {isBudgetManual && <button onClick={handleCalculate} className="text-[12px] font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded">依内容量重算</button>}
+                   <input type="number" value={budget} onChange={e => {setBudget(Number(e.target.value)); setIsBudgetManual(true);}} className="w-32 px-3 py-2 bg-page-bg border border-border-default rounded-lg text-[16px] font-bold text-text-main focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                   {isBudgetManual && <button onClick={handleCalculate} className="text-[12px] font-bold text-brand-logo bg-brand-light px-2 py-1 rounded">依内容量重算</button>}
                  </div>
                </div>
                
                <div className="flex-1">
-                 <div className="text-[13px] text-neutral-500 mb-1">执行周期 (天)</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">执行周期 (天)</div>
                  <div className="flex items-center gap-3">
-                   <input type="number" value={executionDays} onChange={e => setExecutionDays(Number(e.target.value))} className="w-32 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-[16px] font-bold text-neutral-900 focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                   <input type="number" value={executionDays} onChange={e => setExecutionDays(Number(e.target.value))} className="w-32 px-3 py-2 bg-page-bg border border-border-default rounded-lg text-[16px] font-bold text-text-main focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                  </div>
                </div>
                
                <div className="w-px h-12 bg-neutral-200 hidden"></div>
                <div className="flex-1 hidden">
-                 <div className="text-[13px] text-neutral-500 mb-1">原策略建议预算</div>
-                 <div className="text-[16px] font-bold text-neutral-800">{strategy.metrics.budget} <span className="text-[12px] font-normal text-neutral-400 ml-1">元</span></div>
+                 <div className="text-[13px] text-text-tertiary mb-1">原策略建议预算</div>
+                 <div className="text-[16px] font-bold text-text-main">{strategy.metrics.budget} <span className="text-[12px] font-normal text-text-tertiary ml-1">元</span></div>
                </div>
                <div className="w-px h-12 bg-neutral-200 hidden"></div>
                <div className="flex-1 hidden">
-                 <div className="text-[13px] text-neutral-500 mb-1">差值</div>
-                 <div className={`text-[16px] font-bold ${diffBudget < 0 ? 'text-orange-600' : diffBudget > 0 ? 'text-emerald-600' : 'text-neutral-500'}`}>
+                 <div className="text-[13px] text-text-tertiary mb-1">差值</div>
+                 <div className={`text-[16px] font-bold ${diffBudget < 0 ? 'text-orange-600' : diffBudget > 0 ? 'text-emerald-600' : 'text-text-tertiary'}`}>
                    {diffBudget > 0 ? '+' : ''}{diffBudget} <span className="text-[12px] font-normal ml-1">元</span>
                  </div>
                </div>
@@ -417,7 +417,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
         </div>
 
         <div className="col-span-4">
-          <div className="bg-neutral-900 rounded-2xl p-6 text-white h-full flex flex-col">
+          <div className="bg-btn-main rounded-xl p-6 text-white h-full flex flex-col">
             <h3 className="text-[16px] font-bold mb-6 flex items-center gap-2"><Settings2 size={18} /> 当前调整影响</h3>
             
             <div className="space-y-4 flex-1">
@@ -439,10 +439,10 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
 
             <div className="pt-6 mt-6 border-t border-neutral-700">
                <div className="flex flex-col gap-3">
-                 <button onClick={() => { setBrandCount(defaultBrand); setKosCount(defaultKos); setKocCount(defaultKoc); setBudget(strategy.metrics.budget); setIsBudgetManual(false); }} className="w-full py-2.5 text-[13px] font-bold text-neutral-400 hover:text-white transition-colors">
+                 <button onClick={() => { setBrandCount(defaultBrand); setKosCount(defaultKos); setKocCount(defaultKoc); setBudget(strategy.metrics.budget); setIsBudgetManual(false); }} className="w-full py-2.5 text-[13px] font-bold text-text-tertiary hover:text-white transition-colors">
                    恢复策略原始建议
                  </button>
-                 <button onClick={onCreate} disabled={impacts.some(i => i.type === 'error')} className="w-full py-3 bg-primary-600 text-white rounded-xl text-[14px] font-bold hover:bg-primary-500 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                 <button onClick={onCreate} disabled={impacts.some(i => i.type === 'error')} className="w-full py-3 bg-primary-600 text-white rounded-xl text-[14px] font-bold hover:bg-btn-main transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                    保存调整并继续
                  </button>
                </div>
@@ -484,13 +484,13 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
     return (
       <div className="max-w-[1000px] mx-auto py-12 animate-in fade-in duration-300">
         <div className="text-center mb-12">
-          <h2 className="text-[28px] font-bold text-neutral-900 mb-3">AI 操盘策略推演</h2>
-          <p className="text-[15px] text-neutral-500 max-w-[600px] mx-auto mb-8">
+          <h2 className="text-[28px] font-bold text-text-main mb-3">AI 操盘策略推演</h2>
+          <p className="text-[15px] text-text-tertiary max-w-[600px] mx-auto mb-8">
             系统将基于知识与记忆中的商家事实数据，自动推演最适合当期的营销打法、资源分配比例以及预估成果。
           </p>
           
-          <div className="bg-primary-50 border border-primary-100 rounded-2xl p-5 mb-8 text-left flex items-start gap-3 max-w-[600px] mx-auto">
-            <Sparkles size={18} className="text-primary-600 mt-0.5 shrink-0" />
+          <div className="bg-brand-light border border-primary-100 rounded-xl p-5 mb-8 text-left flex items-start gap-3 max-w-[600px] mx-auto">
+            <Sparkles size={18} className="text-brand-logo mt-0.5 shrink-0" />
             <div>
               <h4 className="text-[14px] font-bold text-primary-900 mb-1">发现最新事实更新</h4>
               <p className="text-[13px] text-primary-800/80 leading-relaxed">
@@ -502,7 +502,7 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
           <button 
             onClick={handleGenerate}
             disabled={isGenerating}
-            className={`px-8 py-3.5 bg-neutral-900 text-white rounded-xl text-[15px] font-bold hover:bg-neutral-800 transition-all shadow-lg flex items-center gap-2 mx-auto ${isGenerating ? 'opacity-80' : ''}`}
+            className={`px-8 py-3.5 bg-btn-main text-white rounded-xl text-[15px] font-bold hover:bg-btn-main-hover transition-all shadow-lg flex items-center gap-2 mx-auto ${isGenerating ? 'opacity-80' : ''}`}
           >
             {isGenerating ? (
               <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> 正在诊断推演中...</>
@@ -513,34 +513,34 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
         </div>
 
         <div className="mt-16">
-          <div className="flex items-center justify-between mb-6 border-b border-neutral-100 pb-4">
-            <h3 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
-              <FolderOpen size={18} className="text-neutral-400" /> 历史策略存档
+          <div className="flex items-center justify-between mb-6 border-b border-border-default pb-4">
+            <h3 className="text-[16px] font-bold text-text-main flex items-center gap-2">
+              <FolderOpen size={18} className="text-text-tertiary" /> 历史策略存档
             </h3>
           </div>
           
           <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white border border-neutral-200 p-6 rounded-2xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer group" onClick={() => setIsGenerated(true)}>
+            <div className="bg-surface-1 border border-border-default p-6 rounded-xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer group" onClick={() => setIsGenerated(true)}>
               <div className="flex justify-between items-start mb-4">
-                <span className="px-2.5 py-1 bg-neutral-100 text-neutral-600 text-[12px] font-bold rounded">2026-06-15</span>
+                <span className="px-2.5 py-1 bg-hover-bg text-text-secondary text-[12px] font-bold rounded">2026-06-15</span>
                 <span className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">已结案</span>
               </div>
-              <h4 className="text-[16px] font-bold text-neutral-900 mb-2 group-hover:text-primary-600 transition-colors">618 大促蓄水与转化</h4>
-              <p className="text-[13px] text-neutral-500 mb-4 line-clamp-2">针对 618 节点，采用 KOC 达人铺量蓄水结合信息流强转化模型，达成 3.2 的总体 ROI。</p>
-              <div className="flex items-center gap-4 text-[12px] text-neutral-400">
+              <h4 className="text-[16px] font-bold text-text-main mb-2 group-hover:text-brand-logo transition-colors">618 大促蓄水与转化</h4>
+              <p className="text-[13px] text-text-tertiary mb-4 line-clamp-2">针对 618 节点，采用 KOC 达人铺量蓄水结合信息流强转化模型，达成 3.2 的总体 ROI。</p>
+              <div className="flex items-center gap-4 text-[12px] text-text-tertiary">
                 <span className="flex items-center gap-1"><FileText size={14}/> 86篇内容</span>
                 <span className="flex items-center gap-1"><Database size={14}/> 20,000元</span>
               </div>
             </div>
 
-            <div className="bg-white border border-neutral-200 p-6 rounded-2xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer group" onClick={() => setIsGenerated(true)}>
+            <div className="bg-surface-1 border border-border-default p-6 rounded-xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer group" onClick={() => setIsGenerated(true)}>
               <div className="flex justify-between items-start mb-4">
-                <span className="px-2.5 py-1 bg-neutral-100 text-neutral-600 text-[12px] font-bold rounded">2026-05-01</span>
+                <span className="px-2.5 py-1 bg-hover-bg text-text-secondary text-[12px] font-bold rounded">2026-05-01</span>
                 <span className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">已结案</span>
               </div>
-              <h4 className="text-[16px] font-bold text-neutral-900 mb-2 group-hover:text-primary-600 transition-colors">新品上市长尾截流</h4>
-              <p className="text-[13px] text-neutral-500 mb-4 line-clamp-2">针对幼犬主粮新品，以长尾词搜索卡位为主，强力控制单次拍摄成本，引导私域转化。</p>
-              <div className="flex items-center gap-4 text-[12px] text-neutral-400">
+              <h4 className="text-[16px] font-bold text-text-main mb-2 group-hover:text-brand-logo transition-colors">新品上市长尾截流</h4>
+              <p className="text-[13px] text-text-tertiary mb-4 line-clamp-2">针对幼犬主粮新品，以长尾词搜索卡位为主，强力控制单次拍摄成本，引导私域转化。</p>
+              <div className="flex items-center gap-4 text-[12px] text-text-tertiary">
                 <span className="flex items-center gap-1"><FileText size={14}/> 42篇内容</span>
                 <span className="flex items-center gap-1"><Database size={14}/> 8,000元</span>
               </div>
@@ -575,65 +575,65 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
       <div className="space-y-6">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h2 className="text-[20px] font-bold text-neutral-900 mb-2">
+            <h2 className="text-[20px] font-bold text-text-main mb-2">
                操盘策略已生成
             </h2>
-            <p className="text-[14px] text-neutral-500">基于完整的商家事实诊断，为您推荐以下运营打法。</p>
+            <p className="text-[14px] text-text-tertiary">基于完整的商家事实诊断，为您推荐以下运营打法。</p>
           </div>
           <div className="flex gap-3">
             <button 
               onClick={() => {
                 window.dispatchEvent(new CustomEvent("open-subagent", { detail: { action: 'discuss_strategy' } }));
               }}
-              className="px-4 py-2.5 bg-neutral-100 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-200 transition-colors flex items-center gap-2"
+              className="px-4 py-2.5 bg-hover-bg text-text-secondary rounded-xl text-[14px] font-bold hover:bg-selected-bg transition-colors flex items-center gap-2"
             >
               <MessageSquare size={16} /> 重新探讨策略
             </button>
             <button 
               onClick={() => setShowDiagnosisDetail(true)}
-              className="px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors shadow-sm flex items-center gap-2"
+              className="px-4 py-2.5 bg-surface-1 border border-border-default text-text-secondary rounded-xl text-[14px] font-bold hover:bg-page-bg transition-colors shadow-sm flex items-center gap-2"
             >
               <Info size={16} /> 查看诊断详情
             </button>
           </div>
         </div>
 
-        <div className="bg-white border-2 border-primary-500 p-8 rounded-3xl shadow-lg relative overflow-hidden transition-all duration-500">
-          <div className="absolute top-0 right-0 bg-primary-500 text-white text-[13px] font-bold px-4 py-1.5 rounded-bl-2xl">最匹配首选</div>
-          <h4 className="text-[28px] font-bold text-neutral-900 mb-8">{primaryStrategy.title}</h4>
+        <div className="bg-surface-1 border-2 border-primary-500 p-8 rounded-2xl shadow-lg relative overflow-hidden transition-all duration-500">
+          <div className="absolute top-0 right-0 bg-btn-main text-white text-[13px] font-bold px-4 py-1.5 rounded-bl-2xl">最匹配首选</div>
+          <h4 className="text-[28px] font-bold text-text-main mb-8">{primaryStrategy.title}</h4>
           
           <div className="grid grid-cols-12 gap-8 mb-8">
              <div className="col-span-5 flex flex-col justify-between">
                 <div>
-                  <div className="text-[14px] font-bold text-neutral-900 mb-4">策略依据与事实：</div>
+                  <div className="text-[14px] font-bold text-text-main mb-4">策略依据与事实：</div>
                   <div className="space-y-3">
                     {primaryStrategy.rationaleDetails.map((item, i) => (
                       <div key={i} className="flex items-start gap-2 group">
-                        <CheckCircle2 size={16} className="text-primary-500 shrink-0 mt-0.5" />
+                        <CheckCircle2 size={16} className="text-brand-logo shrink-0 mt-0.5" />
                         <div>
-                          <span className="text-[14px] text-neutral-700 leading-relaxed border-b border-dashed border-neutral-300 group-hover:border-primary-400 cursor-help transition-colors" title={item.fact}>{item.text}</span>
+                          <span className="text-[14px] text-text-secondary leading-relaxed border-b border-dashed border-neutral-300 group-hover:border-primary-400 cursor-help transition-colors" title={item.fact}>{item.text}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
                 
-                <div className="mt-8 bg-neutral-50 p-5 rounded-2xl">
-                  <div className="text-[13px] text-neutral-500 mb-2">资源分配概览</div>
-                  <div className="text-[14px] font-bold text-neutral-900 leading-relaxed">{primaryStrategy.allocation}</div>
+                <div className="mt-8 bg-page-bg p-5 rounded-xl">
+                  <div className="text-[13px] text-text-tertiary mb-2">资源分配概览</div>
+                  <div className="text-[14px] font-bold text-text-main leading-relaxed">{primaryStrategy.allocation}</div>
                 </div>
              </div>
              
              <div className="col-span-7 grid grid-cols-2 gap-4">
-                <div className="bg-neutral-50 p-5 rounded-2xl">
-                  <div className="text-[13px] text-neutral-500 mb-2">预期解决的核心痛点</div>
-                  <div className="text-[14px] font-bold text-neutral-900 leading-relaxed">{primaryStrategy.solution}</div>
+                <div className="bg-page-bg p-5 rounded-xl">
+                  <div className="text-[13px] text-text-tertiary mb-2">预期解决的核心痛点</div>
+                  <div className="text-[14px] font-bold text-text-main leading-relaxed">{primaryStrategy.solution}</div>
                 </div>
-                <div className="bg-neutral-50 p-5 rounded-2xl">
-                  <div className="text-[13px] text-neutral-500 mb-2">执行重点要求</div>
-                  <div className="text-[14px] font-bold text-neutral-900 leading-relaxed">{primaryStrategy.focus}</div>
+                <div className="bg-page-bg p-5 rounded-xl">
+                  <div className="text-[13px] text-text-tertiary mb-2">执行重点要求</div>
+                  <div className="text-[14px] font-bold text-text-main leading-relaxed">{primaryStrategy.focus}</div>
                 </div>
-                <div className="bg-primary-50/50 border border-primary-100 p-5 rounded-2xl col-span-2 flex items-center justify-between">
+                <div className="bg-brand-light/50 border border-primary-100 p-5 rounded-xl col-span-2 flex items-center justify-between">
                   <div>
                     <div className="text-[13px] font-bold text-primary-900 mb-2">建议执行规模：</div>
                     <div className="flex items-center gap-6 text-[14px]">
@@ -646,16 +646,16 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
              </div>
           </div>
 
-          <div className="flex justify-between items-center pt-6 border-t border-neutral-100">
+          <div className="flex justify-between items-center pt-6 border-t border-border-default">
             <button 
                 onClick={() => setAdjustingParams(true)}
-                className="px-5 py-3 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-[14px] font-bold hover:bg-neutral-50 transition-colors shadow-sm flex items-center gap-2"
+                className="px-5 py-3 bg-surface-1 border border-border-default text-text-secondary rounded-xl text-[14px] font-bold hover:bg-page-bg transition-colors shadow-sm flex items-center gap-2"
               >
                 <Settings2 size={16} /> 调整策略执行参数
             </button>
             <button 
               onClick={() => setShowExecutionCheck(true)}
-              className="px-8 py-3 bg-neutral-900 text-white rounded-xl text-[14px] font-bold hover:bg-neutral-800 transition-colors shadow-sm flex items-center gap-2"
+              className="px-8 py-3 bg-btn-main text-white rounded-xl text-[14px] font-bold hover:bg-btn-main-hover transition-colors shadow-sm flex items-center gap-2"
             >
               检查执行条件并应用 <ArrowRight size={16} />
             </button>
@@ -665,7 +665,7 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
         <div>
           <button 
             onClick={() => setShowAltStrategies(!showAltStrategies)}
-            className="flex items-center gap-2 text-[14px] font-bold text-neutral-600 hover:text-neutral-900 transition-colors py-2"
+            className="flex items-center gap-2 text-[14px] font-bold text-text-secondary hover:text-text-main transition-colors py-2"
           >
             <ChevronDown size={16} className={`transition-transform ${showAltStrategies ? 'rotate-180' : ''}`} />
             其他可行策略 ({alternateStrategies.length})
@@ -674,20 +674,20 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
           {showAltStrategies && (
             <div className="grid grid-cols-2 gap-6 mt-4 animate-in fade-in slide-in-from-top-4 duration-300">
               {alternateStrategies.map(strategy => (
-                <div key={strategy.id} onClick={() => { setActiveStrategyId(strategy.id); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="bg-white border border-neutral-200 p-6 rounded-3xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer">
-                  <h4 className="text-[18px] font-bold text-neutral-900 mb-4">{strategy.title}</h4>
+                <div key={strategy.id} onClick={() => { setActiveStrategyId(strategy.id); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="bg-surface-1 border border-border-default p-6 rounded-2xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer">
+                  <h4 className="text-[18px] font-bold text-text-main mb-4">{strategy.title}</h4>
                   <div className="space-y-4">
                     <div>
-                      <span className="text-[12px] font-bold text-neutral-500 block mb-1">适用条件：</span>
-                      <p className="text-[13px] text-neutral-800">{strategy.condition}</p>
+                      <span className="text-[12px] font-bold text-text-tertiary block mb-1">适用条件：</span>
+                      <p className="text-[13px] text-text-main">{strategy.condition}</p>
                     </div>
                     <div>
-                      <span className="text-[12px] font-bold text-neutral-500 block mb-1">为什么不是首选：</span>
-                      <p className="text-[13px] text-neutral-600">{strategy.whyNot}</p>
+                      <span className="text-[12px] font-bold text-text-tertiary block mb-1">为什么不是首选：</span>
+                      <p className="text-[13px] text-text-secondary">{strategy.whyNot}</p>
                     </div>
-                    <div className="p-3 bg-neutral-50 rounded-xl">
-                      <span className="text-[12px] font-bold text-neutral-700 block mb-1 flex items-center gap-1"><Info size={14}/> 切换建议：</span>
-                      <p className="text-[12px] text-neutral-600">{strategy.switchCondition}</p>
+                    <div className="p-3 bg-page-bg rounded-xl">
+                      <span className="text-[12px] font-bold text-text-secondary block mb-1 flex items-center gap-1"><Info size={14}/> 切换建议：</span>
+                      <p className="text-[12px] text-text-secondary">{strategy.switchCondition}</p>
                     </div>
                   </div>
                 </div>
@@ -716,7 +716,7 @@ export const Strategy: React.FC<{
 }> = ({ hasData, merchantId }) => {
   // Demo routing logic unchanged, assume project-a hits the happy path StrategyView
   return (
-    <div className="h-full overflow-y-auto bg-neutral-50/40 px-6">
+    <div className="h-full overflow-y-auto bg-surface-2 px-6">
       <StrategyView hasData={hasData} />
     </div>
   );

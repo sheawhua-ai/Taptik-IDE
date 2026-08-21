@@ -20,16 +20,16 @@ interface DigitalEmployeeProgressProps {
 
 export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = ({ tasks, moduleName }) => {
  return (
- <div className="bg-white rounded-[40px] border border-neutral-100 p-8 shadow-sm h-full flex flex-col">
+ <div className="bg-surface-1 rounded-[40px] border border-border-default p-8 shadow-sm h-full flex flex-col">
  <div className="flex items-center justify-between mb-8">
  <div>
- <h3 className="text-lg font-semibold text-neutral-900 tracking-tight flex items-center gap-2">
- <Activity size={20} className="text-primary-500" />
+ <h3 className="text-lg font-semibold text-text-main tracking-tight flex items-center gap-2">
+ <Activity size={20} className="text-brand-logo" />
  数字员工执行进展 (Execution)
  </h3>
- <p className="text-[11px] text-neutral-400 mt-1 uppercase tracking-widest">当前 {moduleName} 队列中的自动化任务</p>
+ <p className="text-[11px] text-text-tertiary mt-1 uppercase tracking-widest">当前 {moduleName} 队列中的自动化任务</p>
  </div>
- <div className="w-10 h-10 bg-neutral-50 rounded-xl flex items-center justify-center text-neutral-400">
+ <div className="w-10 h-10 bg-page-bg rounded-xl flex items-center justify-center text-text-tertiary">
  <Workflow size={20} />
  </div>
  </div>
@@ -41,24 +41,24 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
  initial={{ opacity: 0, x: 10 }}
  animate={{ opacity: 1, x: 0 }}
  transition={{ delay: i * 0.1 }}
- className={`p-5 rounded-3xl border transition-all ${
+ className={`p-5 rounded-2xl border transition-all ${
  task.status === 'running' 
- ? 'bg-neutral-900 text-white border-neutral-800 shadow-xl' 
- : 'bg-neutral-50 border-neutral-100'
+ ? 'bg-btn-main text-white border-neutral-800 shadow-xl' 
+ : 'bg-page-bg border-border-default'
  }`}
  >
  <div className="flex items-start justify-between mb-3">
  <div className="flex items-center gap-3">
  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
- task.status === 'running' ? 'bg-primary-500 text-white' : 'bg-white border border-neutral-200 text-neutral-400'
+ task.status === 'running' ? 'bg-btn-main text-white' : 'bg-surface-1 border border-border-default text-text-tertiary'
  }`}>
  {task.status === 'completed' ? <CheckCircle2 size={18} /> : 
  task.status === 'running' ? <RefreshCw size={18} className="animate-spin" /> : 
  task.status === 'error' ? <AlertCircle size={18} /> : <Clock size={18} />}
  </div>
  <div>
- <div className={`text-[13px] tracking-tight ${task.status === 'running' ? 'text-white' : 'text-neutral-900'}`}>{task.name}</div>
- <div className={`text-[9px] uppercase tracking-widest flex items-center gap-1.5 mt-1 ${task.status === 'running' ? 'text-neutral-400' : 'text-neutral-400'}`}>
+ <div className={`text-[13px] tracking-tight ${task.status === 'running' ? 'text-white' : 'text-text-main'}`}>{task.name}</div>
+ <div className={`text-[9px] uppercase tracking-widest flex items-center gap-1.5 mt-1 ${task.status === 'running' ? 'text-text-tertiary' : 'text-text-tertiary'}`}>
  <UsersIcon size={10} /> {task.agent}
  </div>
  </div>
@@ -68,9 +68,9 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
  
  {task.status === 'running' && (
  <div className="mt-4">
- <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+ <div className="h-1 w-full bg-surface-1/10 rounded-full overflow-hidden">
  <motion.div 
- className="h-full bg-primary-500"
+ className="h-full bg-btn-main"
  initial={{ width: '0%' }}
  animate={{ width: '65%' }}
  transition={{ duration: 2, repeat: Infinity }}
@@ -86,14 +86,14 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
  ))}
  </div>
 
- <div className="mt-8 pt-8 border-t border-neutral-100">
+ <div className="mt-8 pt-8 border-t border-border-default">
  <div className="flex flex-col gap-4">
- <div className="flex items-center justify-between text-[11px] text-neutral-400 tracking-tighter uppercase px-1">
+ <div className="flex items-center justify-between text-[11px] text-text-tertiary tracking-tighter uppercase px-1">
  <span>系统负载</span>
- <span className="text-neutral-900">Normal</span>
+ <span className="text-text-main">Normal</span>
  </div>
- <div className="h-12 bg-neutral-900 rounded-2xl flex items-center justify-center gap-3 cursor-pointer hover:bg-neutral-800 transition-all shadow-lg active:scale-95 group">
- <Target size={16} className="text-primary-500 group-hover:scale-110 transition-transform" />
+ <div className="h-12 bg-btn-main rounded-xl flex items-center justify-center gap-3 cursor-pointer hover:bg-btn-main-hover transition-all shadow-lg active:scale-95 group">
+ <Target size={16} className="text-brand-logo group-hover:scale-110 transition-transform" />
  <span className="text-white text-[12px] tracking-widest uppercase">部署新任务到生产线</span>
  </div>
  </div>

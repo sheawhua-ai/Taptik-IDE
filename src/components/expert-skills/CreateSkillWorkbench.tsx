@@ -109,40 +109,40 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-xs" onClick={onClose} />
+      <div className="absolute inset-0 bg-btn-main/50 backdrop-blur-xs" onClick={onClose} />
 
-      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-3xl bg-surface-1 rounded-xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 bg-neutral-900 text-white flex items-center justify-between">
+        <div className="p-5 bg-btn-main text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-blue-600/30 text-blue-300 rounded-xl border border-blue-500/30">
               <Wrench size={20} />
             </div>
             <div>
               <h2 className="text-[17px] font-extrabold">新建技能工作台 (契约 & 本地测试)</h2>
-              <p className="text-[11.5px] text-neutral-400">导入/描述 → 生成技能契约 → 本地测试验证 → 启用</p>
+              <p className="text-[11.5px] text-text-tertiary">导入/描述 → 生成技能契约 → 本地测试验证 → 启用</p>
             </div>
           </div>
 
-          <button onClick={onClose} className="text-neutral-400 hover:text-white p-1">
+          <button onClick={onClose} className="text-text-tertiary hover:text-white p-1">
             <X size={20} />
           </button>
         </div>
 
         {/* Step Indicator */}
-        <div className="bg-neutral-100 border-b border-neutral-200 p-3 px-6 flex items-center justify-between text-[12.5px] font-extrabold">
-          <div className={`flex items-center gap-2 ${activeStep >= 1 ? 'text-blue-700' : 'text-neutral-400'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 1 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-neutral-600'}`}>1</span>
+        <div className="bg-hover-bg border-b border-border-default p-3 px-6 flex items-center justify-between text-[12.5px] font-extrabold">
+          <div className={`flex items-center gap-2 ${activeStep >= 1 ? 'text-blue-700' : 'text-text-tertiary'}`}>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 1 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>1</span>
             <span>选择来源与要求</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
-          <div className={`flex items-center gap-2 ${activeStep >= 2 ? 'text-blue-700' : 'text-neutral-400'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 2 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-neutral-600'}`}>2</span>
+          <div className={`flex items-center gap-2 ${activeStep >= 2 ? 'text-blue-700' : 'text-text-tertiary'}`}>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 2 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>2</span>
             <span>编辑技能契约</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
-          <div className={`flex items-center gap-2 ${activeStep >= 3 ? 'text-blue-700' : 'text-neutral-400'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 3 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-neutral-600'}`}>3</span>
+          <div className={`flex items-center gap-2 ${activeStep >= 3 ? 'text-blue-700' : 'text-text-tertiary'}`}>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 3 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>3</span>
             <span>运行本地测试并启用</span>
           </div>
         </div>
@@ -153,29 +153,29 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
           {activeStep === 1 && (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="font-extrabold text-neutral-900 block">选择技能构建与来源方式：</label>
+                <label className="font-extrabold text-text-main block">选择技能构建与来源方式：</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <button
                     onClick={() => setSelectedSourceType('mine')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'mine' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'mine' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     自然语言描述 / 自建
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('external')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'external' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'external' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     导入外部能力包 (SOP/JSON)
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('from_exp')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_exp' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_exp' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     从操盘手经验升级
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('from_project')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_project' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50'}`}
+                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_project' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     从项目流程沉淀
                   </button>
@@ -183,12 +183,12 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
               </div>
 
               <div className="space-y-1.5">
-                <label className="font-extrabold text-neutral-900 block">描述技能用途或粘贴 SOP/MD 内容：</label>
+                <label className="font-extrabold text-text-main block">描述技能用途或粘贴 SOP/MD 内容：</label>
                 <textarea
                   rows={4}
                   value={sourceInputText}
                   onChange={e => setSourceInputText(e.target.value)}
-                  className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-[12.5px] font-medium"
+                  className="w-full p-3 bg-page-bg border border-border-default rounded-xl text-[12.5px] font-medium"
                 />
               </div>
             </div>
@@ -199,20 +199,20 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="font-extrabold text-neutral-800 block mb-1">技能名称：</label>
+                  <label className="font-extrabold text-text-main block mb-1">技能名称：</label>
                   <input
                     type="text"
                     value={skillName}
                     onChange={e => setSkillName(e.target.value)}
-                    className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                    className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                   />
                 </div>
                 <div>
-                  <label className="font-extrabold text-neutral-800 block mb-1">所属流程阶段：</label>
+                  <label className="font-extrabold text-text-main block mb-1">所属流程阶段：</label>
                   <select
                     value={processCategory}
                     onChange={e => setProcessCategory(e.target.value as ProcessCategory)}
-                    className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                    className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                   >
                     <option value="audit">审核与合规</option>
                     <option value="content">选题与内容</option>
@@ -222,39 +222,39 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
               </div>
 
               <div>
-                <label className="font-extrabold text-neutral-800 block mb-1">技能目标 (Goal)：</label>
+                <label className="font-extrabold text-text-main block mb-1">技能目标 (Goal)：</label>
                 <input
                   type="text"
                   value={goal}
                   onChange={e => setGoal(e.target.value)}
-                  className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                  className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="font-extrabold text-neutral-800 block mb-1">输入要求 (逗号分隔)：</label>
+                  <label className="font-extrabold text-text-main block mb-1">输入要求 (逗号分隔)：</label>
                   <input
                     type="text"
                     value={inputFormatText}
                     onChange={e => setInputFormatText(e.target.value)}
-                    className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                    className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                   />
                 </div>
                 <div>
-                  <label className="font-extrabold text-neutral-800 block mb-1">输出格式 (逗号分隔)：</label>
+                  <label className="font-extrabold text-text-main block mb-1">输出格式 (逗号分隔)：</label>
                   <input
                     type="text"
                     value={outputFormatText}
                     onChange={e => setOutputFormatText(e.target.value)}
-                    className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl font-bold"
+                    className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold"
                   />
                 </div>
               </div>
 
-              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
-                <span className="font-extrabold text-neutral-800 block text-[12px]">权限与数据边界设置：</span>
-                <div className="flex items-center gap-6 text-[12px] font-extrabold text-neutral-700">
+              <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 space-y-2">
+                <span className="font-extrabold text-text-main block text-[12px]">权限与数据边界设置：</span>
+                <div className="flex items-center gap-6 text-[12px] font-extrabold text-text-secondary">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
@@ -282,32 +282,32 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
           {/* STEP 3 */}
           {activeStep === 3 && (
             <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-2xl border border-blue-200 space-y-2">
+              <div className="p-4 bg-blue-50 rounded-xl border border-blue-200 space-y-2">
                 <span className="font-extrabold text-blue-900 block text-[13px]">本地测试用例输入：</span>
                 <textarea
                   rows={2}
                   value={testInput}
                   onChange={e => setTestInput(e.target.value)}
-                  className="w-full p-3 bg-white border border-blue-200 rounded-xl text-[12.5px] font-medium"
+                  className="w-full p-3 bg-surface-1 border border-blue-200 rounded-xl text-[12.5px] font-medium"
                 />
               </div>
 
               <button
                 onClick={handleRunLocalTest}
                 disabled={isTesting}
-                className="w-full py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-extrabold text-[13px] rounded-xl flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[13px] rounded-xl flex items-center justify-center gap-2"
               >
                 {isTesting ? <RefreshCw size={15} className="animate-spin" /> : <Terminal size={15} />}
                 <span>{isTesting ? '本地试用运行中...' : '运行本地测试 (必须完成 1 次)'}</span>
               </button>
 
               {testPassed && (
-                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2 animate-in fade-in duration-150">
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 animate-in fade-in duration-150">
                   <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-[14px]">
                     <CheckCircle2 size={18} className="text-emerald-600" />
                     <span>测试通过！已生成符合格式要求的结构化 JSON 清单。</span>
                   </div>
-                  <pre className="p-3 bg-neutral-900 text-emerald-300 rounded-xl text-[11px] font-mono overflow-x-auto">
+                  <pre className="p-3 bg-btn-main text-emerald-300 rounded-xl text-[11px] font-mono overflow-x-auto">
                     {testOutputResult}
                   </pre>
                 </div>
@@ -317,13 +317,13 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-neutral-50 border-t border-neutral-200 flex items-center justify-between">
+        <div className="p-4 bg-page-bg border-t border-border-default flex items-center justify-between">
           <button
             onClick={() => {
               if (activeStep > 1) setActiveStep((activeStep - 1) as any);
               else onClose();
             }}
-            className="px-4 py-2 border border-neutral-300 text-neutral-700 text-[12.5px] font-bold rounded-xl"
+            className="px-4 py-2 border border-neutral-300 text-text-secondary text-[12.5px] font-bold rounded-xl"
           >
             {activeStep === 1 ? '取消' : '上一步'}
           </button>
@@ -340,7 +340,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
           {activeStep === 2 && (
             <button
               onClick={handleGoToTest}
-              className="px-6 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
+              className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
             >
               去运行本地测试
             </button>

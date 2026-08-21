@@ -49,37 +49,37 @@ export function NoteEditor({ onSelectionChange, replacementCommand }: NoteEditor
 
   return (
     <div className="flex flex-col h-full space-y-4">
-      <h4 className="text-[14px] font-bold text-neutral-900 mb-2">笔记详情编辑</h4>
+      <h4 className="text-[14px] font-bold text-text-main mb-2">笔记详情编辑</h4>
       
       <div className="space-y-4 flex-1 overflow-y-auto pr-2 pb-4">
         <div>
-          <label className="block text-[12px] font-bold text-neutral-500 mb-1">标题</label>
+          <label className="block text-[12px] font-bold text-text-tertiary mb-1">标题</label>
           <input 
             type="text" 
             value={noteTitle}
             onChange={(e) => setNoteTitle(e.target.value)}
-            className="w-full border border-neutral-200 rounded-lg p-3 text-[14px] font-bold text-neutral-900 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
+            className="w-full border border-border-default rounded-lg p-3 text-[14px] font-bold text-text-main focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
           />
         </div>
         
         <div className="flex-1 flex flex-col relative min-h-[250px]">
-          <label className="block text-[12px] font-bold text-neutral-500 mb-1">正文 (划选文字可在右侧使用 AI 修改)</label>
+          <label className="block text-[12px] font-bold text-text-tertiary mb-1">正文 (划选文字可在右侧使用 AI 修改)</label>
           <textarea 
             ref={textareaRef}
             value={noteBody}
             onChange={handleChange}
             onMouseUp={handleMouseUp}
-            className="w-full flex-1 border border-neutral-200 rounded-lg p-4 text-[14px] text-neutral-800 leading-relaxed focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 resize-none bg-white shadow-inner"
+            className="w-full flex-1 border border-border-default rounded-lg p-4 text-[14px] text-text-main leading-relaxed focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 resize-none bg-surface-1 shadow-inner"
           />
         </div>
         
         <div>
-          <label className="block text-[12px] font-bold text-neutral-500 mb-1">话题</label>
+          <label className="block text-[12px] font-bold text-text-tertiary mb-1">话题</label>
           <input 
             type="text" 
             value={noteTopics}
             onChange={(e) => setNoteTopics(e.target.value)}
-            className="w-full border border-neutral-200 rounded-lg p-3 text-[13px] text-primary-600 font-medium focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
+            className="w-full border border-border-default rounded-lg p-3 text-[13px] text-brand-logo font-medium focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
           />
         </div>
       </div>

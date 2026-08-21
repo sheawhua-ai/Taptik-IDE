@@ -113,28 +113,28 @@ export function getUnifiedBusinessStatus(note: Note): UnifiedBusinessStatus {
 export function getStatusStyleClass(status: UnifiedBusinessStatus): { bg: string; text: string; border: string } {
   switch (status) {
     case "异常":
-      return { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" };
+      return { bg: "bg-danger-light", text: "text-danger", border: "border-danger-light" };
     case "观察完成":
-      return { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" };
+      return { bg: "bg-surface-2", text: "text-text-secondary", border: "border-border-default" };
     case "观察中":
-      return { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" };
+      return { bg: "bg-info-light", text: "text-info", border: "border-info-light" };
     case "发布识别中":
-      return { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200" };
+      return { bg: "bg-info-light", text: "text-info", border: "border-info-light" };
     case "待发布":
     case "等待账号执行":
-      return { bg: "bg-amber-50", text: "text-amber-800", border: "border-amber-200" };
+      return { bg: "bg-warning-light", text: "text-warning", border: "border-warning-light" };
     case "等待消费者领取":
     case "消费者进行中":
-      return { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" };
+      return { bg: "bg-info-light", text: "text-info", border: "border-info-light" };
     case "待内容确认":
     case "待素材":
-      return { bg: "bg-neutral-100", text: "text-neutral-700", border: "border-neutral-200" };
+      return { bg: "bg-surface-2", text: "text-text-main", border: "border-border-default" };
     case "内容已就绪":
-      return { bg: "bg-emerald-50/70", text: "text-emerald-700", border: "border-emerald-200" };
+      return { bg: "bg-success-light", text: "text-success", border: "border-success-light" };
     case "内容生成中":
     case "笔记占位":
     default:
-      return { bg: "bg-neutral-100", text: "text-neutral-600", border: "border-neutral-200" };
+      return { bg: "bg-surface-2", text: "text-text-secondary", border: "border-border-default" };
   }
 }
 

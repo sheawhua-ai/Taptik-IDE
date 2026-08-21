@@ -90,15 +90,15 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
 
   return (
     <>
-      <div className="fixed inset-0 bg-neutral-900/20 backdrop-blur-sm z-40" onClick={onClose} />
-      <div className="fixed right-0 top-0 h-full w-full sm:w-[800px] bg-neutral-50 shadow-2xl z-50 flex flex-col transform transition-transform">
+      <div className="fixed inset-0 bg-btn-main/20 backdrop-blur-sm z-40" onClick={onClose} />
+      <div className="fixed right-0 top-0 h-full w-full sm:w-[800px] bg-page-bg shadow-2xl z-50 flex flex-col transform transition-transform">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-neutral-200 bg-white">
+        <div className="flex justify-between items-center p-6 border-b border-border-default bg-surface-1">
           <div>
-            <h2 className="text-lg font-bold text-neutral-900">知识业务分类设置</h2>
-            <p className="text-sm text-neutral-500 mt-1">管理知识库分类，定义每个分类应包含的内容和应用场景。</p>
+            <h2 className="text-lg font-bold text-text-main">知识业务分类设置</h2>
+            <p className="text-sm text-text-tertiary mt-1">管理知识库分类，定义每个分类应包含的内容和应用场景。</p>
           </div>
-          <button onClick={onClose} className="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors shrink-0">
+          <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-secondary rounded-full hover:bg-hover-bg transition-colors shrink-0">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -106,9 +106,9 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
         {/* Content */}
         <div className="flex-1 overflow-hidden flex">
           {/* Left Sidebar - Categories List */}
-          <div className="w-64 bg-white border-r border-neutral-200 flex flex-col">
-            <div className="p-4 border-b border-neutral-100">
-              <button className="w-full py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors flex items-center justify-center">
+          <div className="w-64 bg-surface-1 border-r border-border-default flex flex-col">
+            <div className="p-4 border-b border-border-default">
+              <button className="w-full py-2 bg-btn-main text-white rounded-lg text-sm font-medium hover:bg-btn-main-hover transition-colors flex items-center justify-center">
                 <Plus className="w-4 h-4 mr-1.5" /> 新增分类
               </button>
             </div>
@@ -119,13 +119,13 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                   onClick={() => setActiveCategoryId(cat.id)}
                   className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors flex justify-between items-center group ${
                     activeCategoryId === cat.id 
-                      ? 'bg-neutral-100 text-neutral-900 font-medium' 
-                      : 'text-neutral-600 hover:bg-neutral-50'
+                      ? 'bg-hover-bg text-text-main font-medium' 
+                      : 'text-text-secondary hover:bg-page-bg'
                   }`}
                 >
                   {cat.name}
                   {activeCategoryId !== cat.id && (
-                    <Trash2 className="w-4 h-4 text-neutral-400 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-all" />
+                    <Trash2 className="w-4 h-4 text-text-tertiary opacity-0 group-hover:opacity-100 hover:text-danger transition-all" />
                   )}
                 </button>
               ))}
@@ -133,31 +133,31 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
           </div>
 
           {/* Right Content - Edit Category */}
-          <div className="flex-1 overflow-y-auto p-8 bg-neutral-50">
+          <div className="flex-1 overflow-y-auto p-8 bg-page-bg">
             {activeCategory ? (
               <div className="space-y-8 max-w-lg">
                 <div>
-                  <label className="block text-sm font-semibold text-neutral-900 mb-2">分类名称</label>
+                  <label className="block text-sm font-semibold text-text-main mb-2">分类名称</label>
                   <input 
                     type="text" 
                     value={activeCategory.name}
                     onChange={(e) => setCategories(prev => prev.map(c => c.id === activeCategoryId ? { ...c, name: e.target.value } : c))}
-                    className="w-full px-4 py-2 bg-white border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-neutral-200 outline-none"
+                    className="w-full px-4 py-2 bg-surface-1 border border-border-default rounded-xl text-sm focus:ring-2 focus:ring-neutral-200 outline-none"
                   />
                 </div>
 
                 <div>
                   <div className="mb-3">
-                    <label className="block text-sm font-semibold text-neutral-900 flex items-center">
+                    <label className="block text-sm font-semibold text-text-main flex items-center">
                       包含哪些知识
                     </label>
-                    <p className="text-xs text-neutral-500 mt-1">描述这个板块应收录哪些知识。</p>
+                    <p className="text-xs text-text-tertiary mt-1">描述这个板块应收录哪些知识。</p>
                   </div>
                   <div className="flex flex-wrap gap-2 mb-3 items-center">
                     {activeCategory.includes.map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1.5 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-700 flex items-center group">
+                      <span key={idx} className="px-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-sm text-text-secondary flex items-center group">
                         {tag}
-                        <button onClick={() => handleRemoveInclude(tag)} className="ml-2 text-neutral-400 hover:text-red-500">
+                        <button onClick={() => handleRemoveInclude(tag)} className="ml-2 text-text-tertiary hover:text-danger">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </span>
@@ -169,7 +169,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                           value={newIncludeTag}
                           onChange={(e) => setNewIncludeTag(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleAddInclude()}
-                          className="w-32 px-2 py-1 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                          className="w-32 px-2 py-1 bg-surface-1 border border-border-default rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-200"
                           placeholder="输入标签..."
                           autoFocus
                           onBlur={handleAddInclude}
@@ -178,7 +178,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                     ) : (
                       <button 
                         onClick={() => setIsAddingInclude(true)}
-                        className="px-3 py-1.5 bg-neutral-100 border border-neutral-200 border-dashed rounded-lg text-sm text-neutral-600 hover:bg-neutral-200 transition-colors flex items-center"
+                        className="px-3 py-1.5 bg-hover-bg border border-border-default border-dashed rounded-lg text-sm text-text-secondary hover:bg-selected-bg transition-colors flex items-center"
                       >
                         <Plus className="w-3.5 h-3.5 mr-1" /> 添加标签
                       </button>
@@ -188,16 +188,16 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
 
                 <div>
                   <div className="mb-3">
-                    <label className="block text-sm font-semibold text-neutral-900 flex items-center">
+                    <label className="block text-sm font-semibold text-text-main flex items-center">
                       影响哪些业务
                     </label>
-                    <p className="text-xs text-neutral-500 mt-1">描述 AI 应在什么业务场景使用本板块。</p>
+                    <p className="text-xs text-text-tertiary mt-1">描述 AI 应在什么业务场景使用本板块。</p>
                   </div>
                   <div className="flex flex-wrap gap-2 items-center">
                     {activeCategory.affects.map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1.5 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-700 flex items-center group">
+                      <span key={idx} className="px-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-sm text-text-secondary flex items-center group">
                         {tag}
-                        <button onClick={() => handleRemoveAffect(tag)} className="ml-2 text-neutral-400 hover:text-red-500">
+                        <button onClick={() => handleRemoveAffect(tag)} className="ml-2 text-text-tertiary hover:text-danger">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </span>
@@ -209,7 +209,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                           value={newAffectTag}
                           onChange={(e) => setNewAffectTag(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleAddAffect()}
-                          className="w-32 px-2 py-1 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-200"
+                          className="w-32 px-2 py-1 bg-surface-1 border border-border-default rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-200"
                           placeholder="输入标签..."
                           autoFocus
                           onBlur={handleAddAffect}
@@ -218,7 +218,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                     ) : (
                       <button 
                         onClick={() => setIsAddingAffect(true)}
-                        className="px-3 py-1.5 bg-neutral-100 border border-neutral-200 border-dashed rounded-lg text-sm text-neutral-600 hover:bg-neutral-200 transition-colors flex items-center"
+                        className="px-3 py-1.5 bg-hover-bg border border-border-default border-dashed rounded-lg text-sm text-text-secondary hover:bg-selected-bg transition-colors flex items-center"
                       >
                         <Plus className="w-3.5 h-3.5 mr-1" /> 添加标签
                       </button>
@@ -226,14 +226,14 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                   </div>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-neutral-200 flex justify-end">
-                  <button onClick={onClose} className="px-6 py-2 bg-neutral-900 text-white rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors shadow-sm">
+                <div className="pt-6 mt-6 border-t border-border-default flex justify-end">
+                  <button onClick={onClose} className="px-6 py-2 bg-btn-main text-white rounded-lg text-sm font-medium hover:bg-btn-main-hover transition-colors shadow-sm">
                     保存修改
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex h-full items-center justify-center text-neutral-400">
+              <div className="flex h-full items-center justify-center text-text-tertiary">
                 请选择一个分类进行编辑
               </div>
             )}

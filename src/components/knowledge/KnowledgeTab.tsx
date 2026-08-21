@@ -29,7 +29,7 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
   return (
     <div className="space-y-4 max-w-7xl mx-auto pb-12">
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-2 rounded-xl shadow-sm border border-neutral-100">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-1 p-2 rounded-xl shadow-sm border border-border-default">
         <div className="flex flex-wrap gap-1">
           {filters.map(f => (
             <button
@@ -37,8 +37,8 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
               onClick={() => setFilterType(f)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterType === f 
-                  ? 'bg-neutral-100 text-neutral-900' 
-                  : 'text-neutral-600 hover:bg-neutral-50'
+                  ? 'bg-hover-bg text-text-main' 
+                  : 'text-text-secondary hover:bg-page-bg'
               }`}
             >
               {f}
@@ -47,24 +47,24 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto px-2">
           <div className="relative flex-1 sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input 
               type="text" 
               placeholder="搜索知识或来源..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 bg-neutral-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-neutral-200 outline-none"
+              className="w-full pl-9 pr-3 py-1.5 bg-page-bg border-none rounded-lg text-sm focus:ring-2 focus:ring-neutral-200 outline-none"
             />
           </div>
           <div className="relative group">
-            <button className="p-2 text-neutral-500 hover:bg-neutral-50 rounded-lg border border-transparent hover:border-neutral-200 transition-colors">
+            <button className="p-2 text-text-tertiary hover:bg-page-bg rounded-lg border border-transparent hover:border-border-default transition-colors">
               <Filter className="w-4 h-4" />
             </button>
             {/* Simple Dropdown for Category filtering for demo */}
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-neutral-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 p-2">
-              <div className="text-xs font-semibold text-neutral-400 px-2 mb-2 uppercase tracking-wider">业务分类</div>
+            <div className="absolute right-0 mt-2 w-48 bg-surface-1 border border-border-default rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 p-2">
+              <div className="text-xs font-semibold text-text-tertiary px-2 mb-2 uppercase tracking-wider">业务分类</div>
               <button 
-                className={`w-full text-left px-2 py-1.5 text-sm rounded-md ${!selectedCategory ? 'bg-neutral-100 text-neutral-900' : 'hover:bg-neutral-50'}`}
+                className={`w-full text-left px-2 py-1.5 text-sm rounded-md ${!selectedCategory ? 'bg-hover-bg text-text-main' : 'hover:bg-page-bg'}`}
                 onClick={() => setSelectedCategory(null)}
               >
                 全部业务分类
@@ -72,7 +72,7 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
               {categories.map(cat => (
                 <button 
                   key={cat}
-                  className={`w-full text-left px-2 py-1.5 text-sm rounded-md ${selectedCategory === cat ? 'bg-neutral-100 text-neutral-900' : 'hover:bg-neutral-50'}`}
+                  className={`w-full text-left px-2 py-1.5 text-sm rounded-md ${selectedCategory === cat ? 'bg-hover-bg text-text-main' : 'hover:bg-page-bg'}`}
                   onClick={() => setSelectedCategory(cat)}
                 >
                   {cat}
@@ -84,16 +84,16 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
       </div>
 
       {selectedCategory && (
-        <div className="flex items-center text-sm text-neutral-900 bg-neutral-100 px-4 py-2 rounded-lg">
+        <div className="flex items-center text-sm text-text-main bg-hover-bg px-4 py-2 rounded-lg">
           <span className="font-medium mr-2">正在查看：</span> {selectedCategory}
-          <button onClick={() => setSelectedCategory(null)} className="ml-auto text-neutral-500 hover:text-neutral-900 text-xs">清除筛选</button>
+          <button onClick={() => setSelectedCategory(null)} className="ml-auto text-text-tertiary hover:text-text-main text-xs">清除筛选</button>
         </div>
       )}
 
       {/* List */}
-      <div className="bg-white border border-neutral-100 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
+      <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-neutral-50/80 text-xs text-neutral-500 border-b border-neutral-100 uppercase tracking-wider">
+          <thead className="bg-page-bg/80 text-xs text-text-tertiary border-b border-border-default uppercase tracking-wider">
             <tr>
               <th className="px-5 py-3 font-medium w-2/5">知识摘要</th>
               <th className="px-5 py-3 font-medium">类型</th>
@@ -106,29 +106,29 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
             {filteredList.map(item => (
               <tr 
                 key={item.id} 
-                className="hover:bg-neutral-50/50 cursor-pointer transition-colors group"
+                className="hover:bg-page-bg cursor-pointer transition-colors group"
                 onClick={() => onOpenKnowledge(item)}
               >
                 <td className="px-5 py-3.5">
-                  <div className="font-medium text-neutral-900 group-hover:text-neutral-900 transition-colors line-clamp-1">{item.summary}</div>
-                  {item.reliability && <div className="text-xs text-neutral-500 mt-0.5">{item.reliability}</div>}
+                  <div className="font-medium text-text-main group-hover:text-text-main transition-colors line-clamp-1">{item.summary}</div>
+                  {item.reliability && <div className="text-xs text-text-tertiary mt-0.5">{item.reliability}</div>}
                 </td>
                 <td className="px-5 py-3.5">
                   <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
-                    item.type === '商家事实' ? 'bg-neutral-100 text-neutral-900' :
+                    item.type === '商家事实' ? 'bg-hover-bg text-text-main' :
                     item.type === '规则与禁区' ? 'bg-red-50 text-red-700' :
                     item.type === '经验建议' ? 'bg-indigo-50 text-indigo-700' :
-                    'bg-neutral-100 text-neutral-700'
+                    'bg-hover-bg text-text-secondary'
                   }`}>
                     {item.type}
                   </span>
                 </td>
-                <td className="px-5 py-3.5 text-neutral-600">{item.scope}</td>
-                <td className="px-5 py-3.5 text-neutral-500 truncate max-w-[150px]">{item.source}</td>
+                <td className="px-5 py-3.5 text-text-secondary">{item.scope}</td>
+                <td className="px-5 py-3.5 text-text-tertiary truncate max-w-[150px]">{item.source}</td>
                 <td className="px-5 py-3.5">
                   <span className={`inline-flex items-center ${
                     item.state === '正常' ? 'text-emerald-600' : 
-                    item.state === '待确认' ? 'text-amber-600' : 'text-neutral-400'
+                    item.state === '待确认' ? 'text-amber-600' : 'text-text-tertiary'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full mr-2 ${
                       item.state === '正常' ? 'bg-emerald-500' : 
@@ -141,7 +141,7 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
             ))}
             {filteredList.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-5 py-12 text-center text-neutral-400">
+                <td colSpan={5} className="px-5 py-12 text-center text-text-tertiary">
                   没有找到符合条件的知识
                 </td>
               </tr>

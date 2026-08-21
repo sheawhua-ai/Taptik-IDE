@@ -31,34 +31,34 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 backdrop-blur-xs p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-btn-main/50 backdrop-blur-xs p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
-        className="bg-white rounded-2xl shadow-2xl border border-neutral-200 w-full max-w-md overflow-hidden my-auto"
+        className="bg-surface-1 rounded-xl shadow-2xl border border-border-default w-full max-w-md overflow-hidden my-auto"
       >
-        <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between shrink-0 bg-white">
-          <h2 className="text-[16px] font-bold text-neutral-900 flex items-center gap-2">
-            <Camera size={18} className="text-neutral-700" />
+        <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-1">
+          <h2 className="text-[16px] font-bold text-text-main flex items-center gap-2">
+            <Camera size={18} className="text-text-secondary" />
             生成项目级素材要求
           </h2>
           <button 
             onClick={onClose}
-            className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+            className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 text-[12px] text-neutral-600 leading-relaxed">
+          <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 text-[12px] text-text-secondary leading-relaxed">
             💡 提示：项目级素材要求独立于具体笔记，即使项目尚未生成笔记也可以提前派发与拍摄收集。
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-neutral-700 mb-1">
-              素材要求内容 <span className="text-rose-500">*</span>
+            <label className="block text-[12px] font-bold text-text-secondary mb-1">
+              素材要求内容 <span className="text-brand-logo">*</span>
             </label>
             <textarea
               rows={3}
@@ -66,12 +66,12 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
               value={reqs}
               onChange={(e) => setReqs(e.target.value)}
               placeholder="写下项目需要的通用拍摄或设计素材要求..."
-              className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50 resize-none"
+              className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-neutral-500 mb-1.5">
+            <label className="block text-[11px] font-bold text-text-tertiary mb-1.5">
               快速填入常见项目素材要求
             </label>
             <div className="space-y-1.5">
@@ -80,7 +80,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
                   key={idx}
                   type="button"
                   onClick={() => setReqs(preset)}
-                  className="w-full text-left p-2 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-[11px] font-medium text-neutral-700 transition-colors border border-neutral-200/60 truncate"
+                  className="w-full text-left p-2 rounded-lg bg-page-bg hover:bg-hover-bg text-[11px] font-medium text-text-secondary transition-colors border border-border-default/60 truncate"
                 >
                   + {preset}
                 </button>
@@ -89,7 +89,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-neutral-700 mb-1">
+            <label className="block text-[12px] font-bold text-text-secondary mb-1">
               素材负责/派发执行人
             </label>
             <input 
@@ -97,21 +97,21 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
               placeholder="例如：酒店策划团队 / 设计运营"
-              className="w-full px-3.5 py-2 border border-neutral-200 rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-neutral-50/50"
+              className="w-full px-3.5 py-2 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-400 bg-page-bg"
             />
           </div>
 
-          <div className="pt-3 border-t border-neutral-100 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-border-default flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-neutral-200 rounded-xl text-[13px] font-bold text-neutral-600 hover:bg-neutral-100 transition-colors"
+              className="px-4 py-2 border border-border-default rounded-xl text-[13px] font-bold text-text-secondary hover:bg-hover-bg transition-colors"
             >
               取消
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-neutral-900 text-white rounded-xl text-[13px] font-bold hover:bg-neutral-800 transition-colors shadow-xs"
+              className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors shadow-xs"
             >
               生成素材任务
             </button>

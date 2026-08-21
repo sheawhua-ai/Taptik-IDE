@@ -31,7 +31,7 @@ export const SearchTasksModal: React.FC<SearchTasksModalProps> = ({ isOpen, onCl
  initial={{ opacity: 0 }}
  animate={{ opacity: 1 }}
  exit={{ opacity: 0 }}
- className="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm"
+ className="fixed inset-0 bg-btn-main/40 backdrop-blur-sm"
  onClick={onClose}
  />
 
@@ -40,41 +40,41 @@ export const SearchTasksModal: React.FC<SearchTasksModalProps> = ({ isOpen, onCl
  initial={{ opacity: 0, scale: 0.95, y: -20 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}
  exit={{ opacity: 0, scale: 0.95, y: -20 }}
- className="relative w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col"
+ className="relative w-full max-w-2xl bg-surface-1 rounded-2xl shadow-xl overflow-hidden flex flex-col"
  >
- <div className="p-4 border-b border-neutral-100 flex items-center gap-3 bg-neutral-50/50">
- <Search size={20} className="text-neutral-400 shrink-0 ml-2" />
+ <div className="p-4 border-b border-border-default flex items-center gap-3 bg-page-bg">
+ <Search size={20} className="text-text-tertiary shrink-0 ml-2" />
  <input 
  autoFocus
  type="text"
  placeholder="搜索任务"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="flex-1 bg-transparent border-none outline-none text-[16px] text-neutral-800 placeholder:text-neutral-400 placeholder:font-normal"
+ className="flex-1 bg-transparent border-none outline-none text-[16px] text-text-main placeholder:text-text-tertiary placeholder:font-normal"
  />
  <button 
  onClick={onClose}
- className="w-8 h-8 flex items-center justify-center rounded-full text-neutral-400 hover:bg-neutral-200 hover:text-neutral-600 transition-colors"
+ className="w-8 h-8 flex items-center justify-center rounded-full text-text-tertiary hover:bg-selected-bg hover:text-text-secondary transition-colors"
  >
  <X size={16} />
  </button>
  </div>
  
  <div className="p-6 max-h-[60vh] overflow-y-auto">
- <div className="text-[13px] text-neutral-400 mb-4 px-2 tracking-wide">
+ <div className="text-[13px] text-text-tertiary mb-4 px-2 tracking-wide">
  搜索到 {MOCK_SEARCH_RESULTS.length} 个任务
  </div>
  <div className="space-y-1">
  {MOCK_SEARCH_RESULTS.map((item) => (
  <button 
  key={item.id}
- className="w-full flex items-center justify-between p-3 hover:bg-neutral-50 rounded-xl transition-colors group"
+ className="w-full flex items-center justify-between p-3 hover:bg-page-bg rounded-xl transition-colors group"
  onClick={onClose}
  >
- <span className="text-[14px] text-neutral-700 truncate max-w-[400px]">
+ <span className="text-[14px] text-text-secondary truncate max-w-[400px]">
  {item.title}
  </span>
- <div className="flex items-center gap-2 text-[12px] text-neutral-400 group-hover:text-neutral-500 font-mono">
+ <div className="flex items-center gap-2 text-[12px] text-text-tertiary group-hover:text-text-tertiary font-mono">
  <item.icon size={14} className="shrink-0" strokeWidth={1.5} />
  <span className="truncate">{item.time}</span>
  </div>

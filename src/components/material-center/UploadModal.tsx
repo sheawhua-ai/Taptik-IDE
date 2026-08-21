@@ -103,12 +103,12 @@ export const UploadModal: React.FC<UploadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-60 bg-neutral-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-neutral-200 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-60 bg-btn-main/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-surface-1 rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl border border-border-default animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="p-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-900 text-white">
+        <div className="p-6 border-b border-border-default flex items-center justify-between bg-btn-main text-white">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-primary-500/20 text-primary-400 rounded-xl">
+            <div className="p-2 bg-btn-main/20 text-primary-400 rounded-xl">
               <Upload size={20} />
             </div>
             <div>
@@ -120,7 +120,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-surface-1/10 hover:bg-surface-1/20 text-white flex items-center justify-center transition-colors"
           >
             <X size={18} />
           </button>
@@ -129,20 +129,20 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         {/* Content */}
         <div className="p-6 space-y-5 max-h-[78vh] overflow-y-auto">
           {/* Section 4.1 必选来源项目与任务 */}
-          <div className="space-y-3 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80">
-            <h4 className="text-[13.5px] font-black text-neutral-900">
+          <div className="space-y-3 bg-page-bg p-4 rounded-xl border border-border-default/80">
+            <h4 className="text-[13.5px] font-black text-text-main">
               1. 指定来源业务任务（必须保留所属项目与门店执行人）
             </h4>
 
             <div className="space-y-2.5">
               <div>
-                <label className="text-[11.5px] font-extrabold text-neutral-500 block mb-1">
+                <label className="text-[11.5px] font-extrabold text-text-tertiary block mb-1">
                   选择来源项目及收集任务 *
                 </label>
                 <select
                   value={selectedTaskId}
                   onChange={(e) => handleTaskChange(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-neutral-200 rounded-xl text-[13px] font-bold text-neutral-800"
+                  className="w-full p-2.5 bg-surface-1 border border-border-default rounded-xl text-[13px] font-bold text-text-main"
                 >
                   {tasks.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -154,13 +154,13 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
               {selectedTask && (
                 <div>
-                  <label className="text-[11.5px] font-extrabold text-neutral-500 block mb-1">
+                  <label className="text-[11.5px] font-extrabold text-text-tertiary block mb-1">
                     指定拍摄分镜 *
                   </label>
                   <select
                     value={selectedShotId}
                     onChange={(e) => setSelectedShotId(e.target.value)}
-                    className="w-full p-2.5 bg-white border border-neutral-200 rounded-xl text-[13px] font-bold text-neutral-800"
+                    className="w-full p-2.5 bg-surface-1 border border-border-default rounded-xl text-[13px] font-bold text-text-main"
                   >
                     {selectedTask.shotsList.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -172,9 +172,9 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               )}
 
               {selectedTask && (
-                <div className="grid grid-cols-2 gap-2 text-[11.5px] text-neutral-600 pt-1">
-                  <div><span className="font-bold text-neutral-400">执行门店：</span>{selectedTask.store}</div>
-                  <div><span className="font-bold text-neutral-400">执行人：</span>{selectedTask.executor}</div>
+                <div className="grid grid-cols-2 gap-2 text-[11.5px] text-text-secondary pt-1">
+                  <div><span className="font-bold text-text-tertiary">执行门店：</span>{selectedTask.store}</div>
+                  <div><span className="font-bold text-text-tertiary">执行人：</span>{selectedTask.executor}</div>
                 </div>
               )}
             </div>
@@ -182,14 +182,14 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
           {/* 2. 选择素材或示例图 */}
           <div className="space-y-3">
-            <h4 className="text-[13.5px] font-black text-neutral-900">
+            <h4 className="text-[13.5px] font-black text-text-main">
               2. 待检查图片 URL 或拍摄样本
             </h4>
             <input
               type="text"
               value={mediaUrl}
               onChange={(e) => setMediaUrl(e.target.value)}
-              className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-[13px] font-medium text-neutral-800"
+              className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl text-[13px] font-medium text-text-main"
               placeholder="输入图片/视频 URL..."
             />
             <div className="flex items-center gap-2">
@@ -197,9 +197,9 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 src={mediaUrl}
                 alt="Upload preview"
                 referrerPolicy="no-referrer"
-                className="w-20 h-20 rounded-xl object-cover border border-neutral-200"
+                className="w-20 h-20 rounded-xl object-cover border border-border-default"
               />
-              <span className="text-[12px] text-neutral-500">
+              <span className="text-[12px] text-text-tertiary">
                 预览待检图：将进行全自动AI质量分析、清晰度校验、禁限内容核查与【一句话理解】生成。
               </span>
             </div>
@@ -207,8 +207,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
           {/* AI 检查状态和结果交互 (Section 7.2 & 7.3) */}
           {inspectStatus === 'checking' && (
-            <div className="p-4 bg-primary-50 border border-primary-200 rounded-2xl flex items-center gap-3">
-              <RefreshCw size={20} className="text-primary-600 animate-spin shrink-0" />
+            <div className="p-4 bg-brand-light border border-primary-200 rounded-xl flex items-center gap-3">
+              <RefreshCw size={20} className="text-brand-logo animate-spin shrink-0" />
               <div className="space-y-1">
                 <div className="font-black text-primary-900 text-[13.5px]">
                   AI 正在执行上传自动审查流水线...
@@ -221,7 +221,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           )}
 
           {inspectStatus === 'pass' && (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2">
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
               <div className="flex items-center gap-2 font-black text-emerald-900 text-[14px]">
                 <CheckCircle2 size={18} className="text-emerald-600" />
                 <span>AI 上传检查通过！已生成一句话理解并写入素材池</span>
@@ -233,14 +233,14 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           )}
 
           {inspectStatus === 'reject' && (
-            <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl space-y-3">
+            <div className="p-4 bg-rose-50 border border-danger-light rounded-xl space-y-3">
               <div className="flex items-start gap-2 text-rose-900">
-                <ShieldAlert size={18} className="text-rose-600 shrink-0 mt-0.5" />
+                <ShieldAlert size={18} className="text-danger shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <div className="font-black text-[14px]">
                     这张图片不符合当前拍摄要求，需要重新拍摄。
                   </div>
-                  <div className="text-[12px] text-rose-800 space-y-1 font-medium">
+                  <div className="text-[12px] text-danger space-y-1 font-medium">
                     {rejectReasons.map((r, idx) => (
                       <div key={idx}>{r}</div>
                     ))}
@@ -260,7 +260,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 <button
                   type="button"
                   onClick={() => alert(`【分镜指引】\n1. 确保环境光亮无直射高光反光；\n2. 拍摄视角必须呈现完整的品牌正面包装及文字清晰可读。`)}
-                  className="px-3 py-1.5 bg-white border border-rose-200 hover:bg-rose-100 text-rose-800 rounded-xl text-[12px] font-bold"
+                  className="px-3 py-1.5 bg-surface-1 border border-danger-light hover:bg-danger-light text-danger rounded-xl text-[12px] font-bold"
                 >
                   查看拍摄要求
                 </button>
@@ -270,11 +270,11 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-neutral-100 bg-neutral-50 flex items-center justify-between">
+        <div className="p-5 border-t border-border-default bg-page-bg flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl bg-neutral-200/80 hover:bg-neutral-200 text-neutral-700 font-extrabold text-[13px] transition-colors"
+            className="px-4 py-2.5 rounded-xl bg-neutral-200/80 hover:bg-selected-bg text-text-secondary font-extrabold text-[13px] transition-colors"
           >
             取消
           </button>
@@ -284,7 +284,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               type="button"
               onClick={() => handleSimulateInspection(false)}
               disabled={inspectStatus === 'checking'}
-              className="px-4 py-2 rounded-xl bg-white border border-rose-300 hover:bg-rose-50 text-rose-700 text-[12.5px] font-bold transition-all"
+              className="px-4 py-2 rounded-xl bg-surface-1 border border-brand-logo hover:bg-danger-light text-danger text-[12.5px] font-bold transition-all"
             >
               演示：检查不通过
             </button>
@@ -292,7 +292,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               type="button"
               onClick={() => handleSimulateInspection(true)}
               disabled={inspectStatus === 'checking'}
-              className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+              className="px-5 py-2.5 rounded-xl bg-btn-main hover:bg-btn-main-hover text-white text-[13px] font-black flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
             >
               <Sparkles size={15} className="text-amber-400" />
               <span>提交并执行 AI 检查</span>

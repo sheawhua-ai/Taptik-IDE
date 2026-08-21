@@ -6,51 +6,51 @@ import {
 export const Billing: React.FC = () => {
  return (
  <div className="flex-1 flex flex-col h-full bg-neutral-0 overflow-y-auto custom-scrollbar">
- <div className="p-8 border-b border-neutral-100 bg-neutral-0 shrink-0 relative z-10">
- <h1 className="text-2xl font-semibold text-neutral-900 tracking-tight">消耗与资源对账</h1>
- <p className="text-[13px] text-neutral-400 mt-1 uppercase tracking-widest">账单与消耗管理</p>
+ <div className="p-8 border-b border-border-default bg-neutral-0 shrink-0 relative z-10">
+ <h1 className="text-2xl font-semibold text-text-main tracking-tight">消耗与资源对账</h1>
+ <p className="text-[13px] text-text-tertiary mt-1 uppercase tracking-widest">账单与消耗管理</p>
  </div>
  
  <div className="flex-1 p-8 max-w-6xl space-y-10">
  {/* 核心余额卡片 - 采用更加大气的布局 */}
  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
- <div className="lg:col-span-8 bg-neutral-900 rounded-[32px] p-8 text-neutral-0 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[260px] group transition-all hover:scale-[1.01]">
+ <div className="lg:col-span-8 bg-btn-main rounded-[32px] p-8 text-neutral-0 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[260px] group transition-all hover:scale-[1.01]">
  <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none group-hover:scale-110 transition-transform">
- <Sparkles size={160} className="text-primary-500" />
+ <Sparkles size={160} className="text-brand-logo" />
  </div>
  <div className="relative z-10">
  <div className="flex items-center gap-3 mb-6">
- <div className="px-3 py-1 bg-primary-500 rounded-lg text-[10px] uppercase tracking-widest leading-none text-white">充值钱包</div>
- <span className="text-neutral-500 text-[11px] ">当前所属账户</span>
+ <div className="px-3 py-1 bg-btn-main rounded-lg text-[10px] uppercase tracking-widest leading-none text-white">充值钱包</div>
+ <span className="text-text-tertiary text-[11px] ">当前所属账户</span>
  </div>
  <div className="flex items-baseline gap-3 mb-2">
  <span className="text-5xl tracking-tighter">4,720.00</span>
- <span className="text-neutral-500 text-lg ">人民币 (可用抵扣)</span>
+ <span className="text-text-tertiary text-lg ">人民币 (可用抵扣)</span>
  </div>
- <p className="text-neutral-400 text-[13px] font-medium max-w-md">基于 AI 的全自动消耗结算。直接扣取可用人民币抵扣金，单次调用精细至厘。</p>
+ <p className="text-text-tertiary text-[13px] font-medium max-w-md">基于 AI 的全自动消耗结算。直接扣取可用人民币抵扣金，单次调用精细至厘。</p>
  </div>
  <div className="relative z-10 flex items-center gap-3 mt-8">
- <button className="bg-neutral-0 text-neutral-900 hover:bg-neutral-100 px-8 py-3.5 rounded-2xl text-[14px] shadow-xl transition-all active:scale-95">钱包充值</button>
- <button className="bg-primary-500/20 border border-primary-500/30 text-primary-400 hover:bg-primary-500/30 px-8 py-3.5 rounded-2xl text-[14px] transition-all">账单概览</button>
+ <button className="bg-neutral-0 text-text-main hover:bg-hover-bg px-8 py-3.5 rounded-xl text-[14px] shadow-xl transition-all active:scale-95">钱包充值</button>
+ <button className="bg-btn-main/20 border border-primary-500/30 text-primary-400 hover:bg-btn-main/30 px-8 py-3.5 rounded-xl text-[14px] transition-all">账单概览</button>
  </div>
  </div>
  
- <div className="lg:col-span-4 bg-neutral-50/50 border border-neutral-100 rounded-[32px] p-8 flex flex-col justify-between shadow-sm">
+ <div className="lg:col-span-4 bg-page-bg border border-border-default rounded-[32px] p-8 flex flex-col justify-between shadow-sm">
  <div>
- <div className="flex items-center gap-2 text-neutral-400 text-[11px] uppercase tracking-widest mb-6">
+ <div className="flex items-center gap-2 text-text-tertiary text-[11px] uppercase tracking-widest mb-6">
  <CreditCard size={14} /> 订阅状态
  </div>
  <div className="mb-4">
- <h3 className="text-2xl font-semibold text-neutral-900 leading-none">企业年卡</h3>
- <p className="text-[13px] text-neutral-500 mt-2">¥ 3,990 / 年</p>
+ <h3 className="text-2xl font-semibold text-text-main leading-none">企业年卡</h3>
+ <p className="text-[13px] text-text-tertiary mt-2">¥ 3,990 / 年</p>
  </div>
  <div className="space-y-3 mt-6">
- <div className="flex items-center gap-2 text-[12px] text-neutral-900 bg-neutral-100 px-3 py-2 rounded-xl border border-success-100/50">
+ <div className="flex items-center gap-2 text-[12px] text-text-main bg-hover-bg px-3 py-2 rounded-xl border border-success-100/50">
  <Activity size={14} /> 生效中 (剩余 342 天)
  </div>
  </div>
  </div>
- <button className="w-full mt-8 bg-neutral-0 border border-neutral-200 text-neutral-900 hover:bg-neutral-50 py-3.5 rounded-2xl text-[13px] transition-all shadow-sm">续费或升级方案</button>
+ <button className="w-full mt-8 bg-neutral-0 border border-border-default text-text-main hover:bg-page-bg py-3.5 rounded-xl text-[13px] transition-all shadow-sm">续费或升级方案</button>
  </div>
  </div>
 
@@ -58,10 +58,10 @@ export const Billing: React.FC = () => {
  <div className="space-y-6">
  <div className="flex items-center justify-between">
  <div>
- <h2 className="text-lg font-semibold text-neutral-900 tracking-tight">消耗流水细分</h2>
- <p className="text-[13px] text-neutral-400 ">每日 00:00 自动校对 AI 执行日志并清结算</p>
+ <h2 className="text-lg font-semibold text-text-main tracking-tight">消耗流水细分</h2>
+ <p className="text-[13px] text-text-tertiary ">每日 00:00 自动校对 AI 执行日志并清结算</p>
  </div>
- <button className="text-[12px] text-neutral-500 border border-neutral-200 bg-neutral-0 hover:bg-neutral-50 px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
+ <button className="text-[12px] text-text-tertiary border border-border-default bg-neutral-0 hover:bg-page-bg px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
  <Download size={14}/> 导出报表
  </button>
  </div>
@@ -72,25 +72,25 @@ export const Billing: React.FC = () => {
  { date: '05-07 09:12', project: '美妆旗舰店', type: '新品高赞仿写', detail: '深度图文改写 (5个)', engine: 'GPT-4o', cost: '- ¥ 4.50' },
  { date: '05-06 22:45', project: '数码组', type: '全域 RAG 索引', detail: '同步 1,200 个文档块', engine: 'LanceDB+V3', cost: '- ¥ 0.12' },
  ].map((row, i) => (
- <div key={i} className="bg-neutral-0 border border-neutral-100 rounded-[24px] p-5 flex items-center justify-between hover:border-primary-500/20 hover:bg-primary-50/20 transition-all group shadow-sm">
+ <div key={i} className="bg-neutral-0 border border-border-default rounded-[24px] p-5 flex items-center justify-between hover:border-primary-500/20 hover:bg-brand-light/20 transition-all group shadow-sm">
  <div className="flex items-center gap-6 flex-1">
- <div className="text-[11px] font-mono text-neutral-400 bg-neutral-50 px-2 py-1 rounded-md">{row.date}</div>
+ <div className="text-[11px] font-mono text-text-tertiary bg-page-bg px-2 py-1 rounded-md">{row.date}</div>
  <div className="flex items-center gap-4">
- <div className="w-10 h-10 rounded-xl bg-neutral-50 flex items-center justify-center text-neutral-400 group-hover:bg-neutral-0 group-hover:text-primary-500 transition-colors border border-transparent group-hover:border-neutral-200">
+ <div className="w-10 h-10 rounded-xl bg-page-bg flex items-center justify-center text-text-tertiary group-hover:bg-neutral-0 group-hover:text-brand-logo transition-colors border border-transparent group-hover:border-border-default">
  <Database size={18} />
  </div>
  <div>
- <h4 className="text-[14px] font-semibold text-neutral-900 leading-tight">{row.project}</h4>
- <p className="text-[12px] text-neutral-400 mt-0.5">{row.type} · <span className="text-primary-500/70">{row.detail}</span></p>
+ <h4 className="text-[14px] font-semibold text-text-main leading-tight">{row.project}</h4>
+ <p className="text-[12px] text-text-tertiary mt-0.5">{row.type} · <span className="text-brand-logo/70">{row.detail}</span></p>
  </div>
  </div>
  </div>
  <div className="flex items-center gap-8">
  <div className="text-right">
  <div className="text-[11px] text-neutral-300 uppercase tracking-tighter mb-0.5">执行引擎</div>
- <div className="text-[13px] text-neutral-600">{row.engine}</div>
+ <div className="text-[13px] text-text-secondary">{row.engine}</div>
  </div>
- <div className="w-20 text-right text-lg text-primary-500 tracking-tighter">
+ <div className="w-20 text-right text-lg text-brand-logo tracking-tighter">
  {row.cost}
  </div>
  </div>

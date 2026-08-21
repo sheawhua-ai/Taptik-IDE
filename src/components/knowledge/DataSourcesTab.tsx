@@ -10,9 +10,9 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* List */}
-      <div className="bg-white border border-neutral-100 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
+      <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-neutral-50/80 text-xs text-neutral-500 border-b border-neutral-100 uppercase tracking-wider">
+          <thead className="bg-page-bg/80 text-xs text-text-tertiary border-b border-border-default uppercase tracking-wider">
             <tr>
               <th className="px-5 py-3 font-medium">来源名称</th>
               <th className="px-5 py-3 font-medium">所属设备/位置</th>
@@ -25,24 +25,24 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
           </thead>
           <tbody className="divide-y divide-neutral-50">
             {sources.map(source => (
-              <tr key={source.id} className="hover:bg-neutral-50/50 transition-colors group">
+              <tr key={source.id} className="hover:bg-page-bg transition-colors group">
                 <td className="px-5 py-4">
                   <div className="flex items-center">
                     {source.type === '本地文件夹' ? (
-                      <Folder className="w-4 h-4 text-neutral-400 mr-2 shrink-0" />
+                      <Folder className="w-4 h-4 text-text-tertiary mr-2 shrink-0" />
                     ) : (
-                      <FileText className="w-4 h-4 text-neutral-400 mr-2 shrink-0" />
+                      <FileText className="w-4 h-4 text-text-tertiary mr-2 shrink-0" />
                     )}
-                    <span className="font-medium text-neutral-900 truncate max-w-[200px]">{source.name}</span>
-                    <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-500">{source.type}</span>
+                    <span className="font-medium text-text-main truncate max-w-[200px]">{source.name}</span>
+                    <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-hover-bg text-text-tertiary">{source.type}</span>
                   </div>
                   {source.exceptionReason && (
-                    <div className="text-xs text-red-500 mt-1">{source.exceptionReason}</div>
+                    <div className="text-xs text-danger mt-1">{source.exceptionReason}</div>
                   )}
                 </td>
-                <td className="px-5 py-4 text-neutral-600">{source.deviceOrLocation}</td>
+                <td className="px-5 py-4 text-text-secondary">{source.deviceOrLocation}</td>
                 <td className="px-5 py-4 text-center">
-                  <span className="inline-flex items-center justify-center min-w-[2rem] h-6 bg-neutral-50 rounded-md text-neutral-700 font-medium">
+                  <span className="inline-flex items-center justify-center min-w-[2rem] h-6 bg-page-bg rounded-md text-text-secondary font-medium">
                     {source.extractedCount}
                   </span>
                 </td>
@@ -52,14 +52,14 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
                       {source.pendingCount}
                     </span>
                   ) : (
-                    <span className="text-neutral-400">-</span>
+                    <span className="text-text-tertiary">-</span>
                   )}
                 </td>
-                <td className="px-5 py-4 text-neutral-500">{source.lastSyncTime}</td>
+                <td className="px-5 py-4 text-text-tertiary">{source.lastSyncTime}</td>
                 <td className="px-5 py-4">
                   <span className={`inline-flex items-center ${
                     source.state === '正常' ? 'text-emerald-600' : 
-                    source.state === '已断开' ? 'text-red-600' : 'text-amber-600'
+                    source.state === '已断开' ? 'text-danger' : 'text-amber-600'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full mr-2 ${
                       source.state === '正常' ? 'bg-emerald-500' : 
@@ -69,7 +69,7 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
                   </span>
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <button className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded transition-colors" title="重新同步">
+                  <button className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded transition-colors" title="重新同步">
                     <RefreshCw className="w-4 h-4" />
                   </button>
                 </td>

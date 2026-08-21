@@ -57,7 +57,7 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
       <div 
-        className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-btn-main/60 backdrop-blur-sm"
         onClick={onClose}
       />
       
@@ -68,36 +68,36 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
         className="relative flex bg-transparent max-h-[92vh] w-full max-w-[820px] z-10"
       >
         {/* Left Side: Desktop Guidance */}
-        <div className="hidden md:flex flex-col w-[380px] bg-white rounded-l-3xl p-7 border-r border-neutral-200 justify-between">
+        <div className="hidden md:flex flex-col w-[380px] bg-surface-1 rounded-l-3xl p-7 border-r border-border-default justify-between">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Smartphone size={22} className="text-neutral-900" />
-              <h3 className="text-[18px] font-extrabold text-neutral-900">
+              <Smartphone size={22} className="text-text-main" />
+              <h3 className="text-[18px] font-extrabold text-text-main">
                 员工 / KOS 定向发布
               </h3>
             </div>
             
-            <p className="text-[13px] text-neutral-600 leading-relaxed">
+            <p className="text-[13px] text-text-secondary leading-relaxed">
               这是员工在手机端接收到的定向发布任务 H5 界面。支持标题与正文独立复制、图片顺序明确展示，发布后无需员工回传链接。
             </p>
 
-            <div className="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-200 space-y-2.5 text-[12.5px]">
-              <div className="font-bold text-neutral-900">执行流程规范：</div>
-              <div className="space-y-1.5 text-neutral-600">
+            <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-2.5 text-[12.5px]">
+              <div className="font-bold text-text-main">执行流程规范：</div>
+              <div className="space-y-1.5 text-text-secondary">
                 <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full bg-neutral-900 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] flex items-center justify-center font-bold">1</span>
                   <span>核对发布账号与计划时间</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full bg-neutral-900 text-white text-[10px] flex items-center justify-center font-bold">2</span>
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] flex items-center justify-center font-bold">2</span>
                   <span>分别复制标题与正文</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full bg-neutral-900 text-white text-[10px] flex items-center justify-center font-bold">3</span>
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] flex items-center justify-center font-bold">3</span>
                   <span>保存规范顺序图片</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full bg-neutral-900 text-white text-[10px] flex items-center justify-center font-bold">4</span>
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] flex items-center justify-center font-bold">4</span>
                   <span>在小红书App发布，系统自动识别</span>
                 </div>
               </div>
@@ -106,32 +106,32 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
 
           <button
             onClick={onClose}
-            className="w-full py-2.5 bg-neutral-100 text-neutral-700 font-bold rounded-xl hover:bg-neutral-200 transition-colors text-[13px]"
+            className="w-full py-2.5 bg-hover-bg text-text-secondary font-bold rounded-xl hover:bg-selected-bg transition-colors text-[13px]"
           >
             关闭模拟器
           </button>
         </div>
 
         {/* Right Side: Mobile Screen Mockup */}
-        <div className="flex-1 flex flex-col items-center bg-neutral-100/90 p-4 md:rounded-r-3xl rounded-3xl relative overflow-hidden backdrop-blur-sm shadow-2xl">
-          <div className="w-[360px] h-[680px] bg-white rounded-[38px] shadow-2xl border-[10px] border-neutral-900 overflow-hidden relative flex flex-col">
+        <div className="flex-1 flex flex-col items-center bg-hover-bg/90 p-4 md:rounded-r-3xl rounded-2xl relative overflow-hidden backdrop-blur-sm shadow-2xl">
+          <div className="w-[360px] h-[680px] bg-surface-1 rounded-[38px] shadow-2xl border-[10px] border-neutral-900 overflow-hidden relative flex flex-col">
             
             {/* Status bar */}
-            <div className="h-6 w-full bg-white flex justify-between items-center px-6 text-[11px] font-bold text-neutral-900 shrink-0">
+            <div className="h-6 w-full bg-surface-1 flex justify-between items-center px-6 text-[11px] font-bold text-text-main shrink-0">
               <span>09:41</span>
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px]">5G</span>
-                <div className="w-4 h-2.5 bg-neutral-900 rounded-[2px]" />
+                <div className="w-4 h-2.5 bg-btn-main rounded-[2px]" />
               </div>
             </div>
 
             {/* Mobile Header */}
-            <div className="px-4 py-3 bg-white border-b border-neutral-100 flex items-center justify-between shrink-0">
+            <div className="px-4 py-3 bg-surface-1 border-b border-border-default flex items-center justify-between shrink-0">
               <div>
-                <div className="text-[14px] font-extrabold text-neutral-900">
+                <div className="text-[14px] font-extrabold text-text-main">
                   小红书发布任务
                 </div>
-                <div className="text-[11px] text-neutral-500">
+                <div className="text-[11px] text-text-tertiary">
                   执行账号: {note?.account || "特唯普宠物官方旗舰店"}
                 </div>
               </div>
@@ -144,59 +144,59 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
             <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[13px]">
               
               {/* Task info banner */}
-              <div className="bg-neutral-50 p-3 rounded-2xl border border-neutral-200 space-y-1.5">
-                <div className="flex justify-between text-[11.5px] text-neutral-500">
+              <div className="bg-page-bg p-3 rounded-xl border border-border-default space-y-1.5">
+                <div className="flex justify-between text-[11.5px] text-text-tertiary">
                   <span>排期时间: {note?.plannedDate || "今日 18:00"}</span>
                   <span className="text-emerald-700 font-bold">已就绪</span>
                 </div>
-                <div className="text-[11px] text-neutral-400">
+                <div className="text-[11px] text-text-tertiary">
                   请在手机端复制内容与保存图片后，进入小红书完成发布。
                 </div>
               </div>
 
               {/* Title Section */}
-              <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-2">
+              <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-neutral-700">1. 笔记标题</span>
+                  <span className="text-[12px] font-bold text-text-secondary">1. 笔记标题</span>
                   <button
                     onClick={handleCopyTitle}
                     className={`px-3 py-1 rounded-lg text-[11.5px] font-bold transition-colors flex items-center gap-1 ${
-                      copiedTitle ? "bg-emerald-600 text-white" : "bg-neutral-900 text-white hover:bg-neutral-800"
+                      copiedTitle ? "bg-emerald-600 text-white" : "bg-btn-main text-white hover:bg-btn-main-hover"
                     }`}
                   >
                     {copiedTitle ? <><Check size={12} /> 已复制</> : <><Copy size={12} /> 复制标题</>}
                   </button>
                 </div>
-                <div className="p-2.5 bg-neutral-50 rounded-xl text-[12.5px] font-bold text-neutral-900 border border-neutral-100">
+                <div className="p-2.5 bg-page-bg rounded-xl text-[12.5px] font-bold text-text-main border border-border-default">
                   {title}
                 </div>
               </div>
 
               {/* Body Section */}
-              <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-2">
+              <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-neutral-700">2. 笔记正文与标签</span>
+                  <span className="text-[12px] font-bold text-text-secondary">2. 笔记正文与标签</span>
                   <button
                     onClick={handleCopyBody}
                     className={`px-3 py-1 rounded-lg text-[11.5px] font-bold transition-colors flex items-center gap-1 ${
-                      copiedBody ? "bg-emerald-600 text-white" : "bg-neutral-900 text-white hover:bg-neutral-800"
+                      copiedBody ? "bg-emerald-600 text-white" : "bg-btn-main text-white hover:bg-btn-main-hover"
                     }`}
                   >
                     {copiedBody ? <><Check size={12} /> 已复制</> : <><Copy size={12} /> 复制正文</>}
                   </button>
                 </div>
-                <div className="p-2.5 bg-neutral-50 rounded-xl text-[11.5px] text-neutral-800 leading-relaxed border border-neutral-100 max-h-36 overflow-y-auto whitespace-pre-line">
+                <div className="p-2.5 bg-page-bg rounded-xl text-[11.5px] text-text-main leading-relaxed border border-border-default max-h-36 overflow-y-auto whitespace-pre-line">
                   {body}
                 </div>
               </div>
 
               {/* Images Section */}
-              <div className="bg-white rounded-2xl p-3.5 border border-neutral-200 shadow-2xs space-y-2.5">
+              <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-neutral-700">3. 配图 ({images.length}张)</span>
+                  <span className="text-[12px] font-bold text-text-secondary">3. 配图 ({images.length}张)</span>
                   <button
                     onClick={handleSaveImages}
-                    className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[11.5px] font-bold transition-colors flex items-center gap-1"
+                    className="px-3 py-1 bg-hover-bg hover:bg-selected-bg text-text-secondary rounded-lg text-[11.5px] font-bold transition-colors flex items-center gap-1"
                   >
                     {savedImages ? <><Check size={12} /> 已批量保存</> : <><Download size={12} /> 一键存图</>}
                   </button>
@@ -204,9 +204,9 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
 
                 <div className="grid grid-cols-3 gap-2">
                   {images.map((img, idx) => (
-                    <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-neutral-200 bg-neutral-100">
+                    <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-border-default bg-hover-bg">
                       <img src={img} alt="pic" className="w-full h-full object-cover" />
-                      <div className="absolute top-1 left-1 bg-neutral-900/80 text-white text-[9px] font-bold px-1.5 py-0.2 rounded">
+                      <div className="absolute top-1 left-1 bg-btn-main/80 text-white text-[9px] font-bold px-1.5 py-0.2 rounded">
                         P{idx + 1}{idx === 0 ? " 封面" : ""}
                       </div>
                     </div>
@@ -218,21 +218,21 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
               {publishState === "prepare" && (
                 <button
                   onClick={handleOpenXiaohongshu}
-                  className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold text-[14px] rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold text-[14px] rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                 >
                   <ExternalLink size={16} /> 打开小红书 App 发布
                 </button>
               )}
 
               {publishState === "app_opened" && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-center space-y-1">
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-center space-y-1">
                   <div className="font-bold text-amber-900 text-[12.5px]">已唤起小红书 App</div>
                   <div className="text-[11px] text-amber-700">请在小红书中粘贴内容并发布，完成后系统自动识别。</div>
                 </div>
               )}
 
               {publishState === "detecting" && (
-                <div className="p-4 bg-purple-50 border border-purple-200 rounded-2xl text-center space-y-2">
+                <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl text-center space-y-2">
                   <RefreshCw size={20} className="text-purple-600 animate-spin mx-auto" />
                   <div className="font-bold text-purple-900 text-[13px]">正在自动识别小红书发布状态...</div>
                   <div className="text-[11px] text-purple-600">系统自动匹配账号最新发布笔记，无需手动回传链接</div>
@@ -240,7 +240,7 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
               )}
 
               {publishState === "recognized" && (
-                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-2">
                   <CheckCircle2 size={24} className="text-emerald-600 mx-auto" />
                   <div className="font-bold text-emerald-900 text-[14px]">已成功识别笔记！</div>
                   <div className="text-[11.5px] text-emerald-700">
