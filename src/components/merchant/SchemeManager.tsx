@@ -72,36 +72,35 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  </div>
  </div>
 
- {/* Smart Action Bar - The Hybrid bridge */}
- <div className="relative group max-w-4xl mx-auto mb-4">
- <div className="absolute inset-x-0 -top-px -bottom-px rounded-xl bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-primary-500/20 blur-md opacity-0 group-focus-within:opacity-100 transition-opacity" />
- <div className="relative flex items-center bg-neutral-0 border-2 border-border-default group-focus-within:border-primary-500/50 rounded-xl p-1.5 transition-all shadow-xl shadow-neutral-200/50">
+ {/* Search & Action Bar */}
+ <div className="relative max-w-4xl mx-auto mb-4">
+ <div className="flex items-center bg-surface-1 border border-border-default focus-within:border-border-strong rounded-xl p-1.5 transition-colors">
  <div className="flex items-center gap-2 pl-3 pr-4 border-r border-border-default shrink-0">
- <Sparkles size={16} className="text-brand-logo animate-pulse" />
- <span className="text-[11px] text-brand-logo uppercase tracking-widest">操盘指令</span>
+ <Search size={16} className="text-text-secondary" />
+ <span className="text-[11px] text-text-secondary font-medium">方案检索</span>
  </div>
  <input 
  value={commandValue}
  onChange={(e) => setCommandValue(e.target.value)}
- placeholder="输入业务意图... (例如: 帮我创建一个针对 618 的美妆方案)" 
- className="flex-1 bg-transparent border-none outline-none px-4 text-[14px] text-text-main placeholder:text-neutral-300"
+ placeholder="输入方案名称或关键词检索..." 
+ className="flex-1 bg-transparent border-none outline-none px-4 text-[13.5px] text-text-main placeholder:text-text-tertiary"
  />
  <div className="flex items-center gap-2 pr-2">
- <kbd className="px-2 py-1 bg-hover-bg rounded-lg text-[10px] text-text-tertiary border border-border-default">⌘ K</kbd>
- <button className="bg-btn-main hover:bg-btn-main-hover text-white w-9 h-9 flex items-center justify-center rounded-xl transition-all shadow-lg active:scale-95">
- <Plus size={20} />
+ <kbd className="px-2 py-0.5 bg-surface-subtle rounded text-[10px] text-text-tertiary border border-border-default font-normal">⌘ K</kbd>
+ <button className="bg-btn-main hover:bg-btn-main-hover text-white w-8 h-8 flex items-center justify-center rounded-lg transition-colors">
+ <Plus size={16} />
  </button>
  </div>
  </div>
  
- <div className="flex items-center gap-4 mt-3 pl-4">
- <span className="text-[10px] text-text-tertiary uppercase tracking-widest">推荐尝试:</span>
+ <div className="flex items-center gap-3 mt-2.5 pl-2">
+ <span className="text-[11px] text-text-tertiary font-normal">快捷筛选:</span>
  <div className="flex gap-2">
  {COMMAND_SUGGESTIONS.map((msg, i) => (
  <button 
  key={i} 
  onClick={() => setCommandValue(msg)}
- className="text-[11px] text-text-tertiary hover:text-text-main hover:bg-hover-bg px-3 py-1 rounded-full border border-border-default bg-neutral-0 transition-all"
+ className="text-[11.5px] text-text-secondary hover:text-text-main hover:bg-hover-bg px-2.5 py-0.5 rounded-md border border-border-default bg-surface-1 transition-colors"
  >
  {msg}
  </button>

@@ -35,20 +35,20 @@ export function AccountQueueDrawer({
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 220 }}
-        className="relative w-full max-w-[580px] bg-[#fcfcfc] h-full shadow-2xl flex flex-col z-10 border-l border-border-default"
+        className="relative w-full max-w-[560px] bg-surface-1 h-full shadow-2xl flex flex-col z-10 border-l border-border-default"
       >
         {/* Header */}
         <div className="p-5 border-b border-border-default bg-surface-1 flex justify-between items-center shrink-0">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-[16px] font-extrabold text-text-main">
+              <h2 className="text-[16px] font-semibold text-text-main">
                 账号发布队列
               </h2>
-              <span className="px-2 py-0.5 bg-hover-bg text-text-secondary text-[11px] font-bold rounded-md">
+              <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-normal rounded">
                 {accountType}
               </span>
             </div>
-            <div className="text-[13px] font-bold text-text-main mt-1 flex items-center gap-2">
+            <div className="text-[13px] font-medium text-text-main mt-1 flex items-center gap-2">
               {accountName}
               <span className="text-[11.5px] font-normal text-text-tertiary">· {persona}</span>
             </div>
@@ -72,19 +72,18 @@ export function AccountQueueDrawer({
             {notes.map((note, index) => {
               const uStatus = getUnifiedBusinessStatus(note);
               const style = getStatusStyleClass(uStatus);
-              const isH5Sent = note.publishStatus === "待发布" || note.publishStatus === "已发布";
               const hasRedNoteId = !!note.publishLink || uStatus === "观察中" || uStatus === "观察完成";
 
               return (
                 <div
                   key={note.id || index}
-                  className="bg-surface-1 rounded-xl p-4 border border-border-default hover:border-neutral-300  transition-all space-y-3"
+                  className="bg-surface-1 rounded-xl p-4 border border-border-default hover:border-border-strong transition-all space-y-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1 flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[11.5px] font-bold text-text-tertiary">#{index + 1}</span>
-                        <h4 className="text-[13.5px] font-bold text-text-main truncate">
+                        <span className="text-[11.5px] font-medium text-text-tertiary tabular-nums">#{index + 1}</span>
+                        <h4 className="text-[13.5px] font-semibold text-text-main truncate">
                           {note.title || note.contentDirection || "未命名任务"}
                         </h4>
                       </div>
@@ -97,13 +96,13 @@ export function AccountQueueDrawer({
                       </div>
                     </div>
 
-                    <span className={`px-2.5 py-0.5 rounded-md text-[11.5px] font-bold border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
+                    <span className={`px-2.5 py-0.5 rounded text-[11.5px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
                       {uStatus}
                     </span>
                   </div>
 
                   {/* Fact line */}
-                  <div className="p-2.5 bg-surface-2 rounded-xl border border-border-default text-[12px] flex items-center justify-between text-text-secondary">
+                  <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-default text-[12px] flex items-center justify-between text-text-secondary">
                     <div className="flex items-center gap-4">
                       <span>
                         小红书笔记ID: {hasRedNoteId ? "已回传并建立观察" : "等待外部发布与识别"}
@@ -113,14 +112,14 @@ export function AccountQueueDrawer({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onSelectNote(note)}
-                        className="px-2.5 py-1 bg-surface-1 border border-border-default rounded-lg text-[11.5px] font-bold text-text-secondary hover:bg-surface-2 transition-colors"
+                        className="px-2.5 py-1 bg-surface-1 border border-border-default rounded-md text-[11.5px] font-medium text-text-secondary hover:bg-hover-bg transition-colors"
                       >
                         详情
                       </button>
                       {uStatus === "异常" && onOpenExecutionCenter && (
                         <button
                           onClick={onOpenExecutionCenter}
-                          className="px-2.5 py-1 bg-rose-600 text-white rounded-lg text-[11.5px] font-bold hover:bg-rose-700 transition-colors"
+                          className="px-2.5 py-1 bg-btn-main text-white rounded-md text-[11.5px] font-medium hover:bg-btn-main-hover transition-colors"
                         >
                           去处理
                         </button>
@@ -137,7 +136,7 @@ export function AccountQueueDrawer({
         <div className="p-4 border-t border-border-default bg-surface-1 flex justify-end shrink-0">
           <button
             onClick={onClose}
-            className="px-5 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl hover:bg-btn-main-hover transition-colors"
+            className="px-5 py-2 bg-btn-main text-white font-medium text-[13px] rounded-lg hover:bg-btn-main-hover transition-colors"
           >
             关闭
           </button>

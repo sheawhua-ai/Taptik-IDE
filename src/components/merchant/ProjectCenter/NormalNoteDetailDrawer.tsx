@@ -132,16 +132,16 @@ export function NormalNoteDetailDrawer({
             <div className="space-y-4 text-[13px]">
               {/* Consumer Questionnaire Results (Only for notes generated from consumer questionnaire) */}
               {note.consumerQuestionnaire && (
-                <div className="bg-surface-1 rounded-xl p-4 border border-indigo-200/80 space-y-3 bg-gradient-to-br from-indigo-50/40 to-white">
+                <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-indigo-600" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-text-secondary" />
                       <h4 className="font-semibold text-text-main text-[13.5px]">
-                        消费者真实问卷结果
+                        消费者问卷结果
                       </h4>
                     </div>
-                    <span className="text-[11px] px-2 py-0.5 bg-indigo-50 text-indigo-700 font-medium rounded-md border border-indigo-200">
-                      AI 依据答卷个性化起草
+                    <span className="text-[11px] px-2 py-0.5 bg-surface-2 text-text-secondary font-medium rounded-md border border-border-default">
+                      依据问卷定制起草
                     </span>
                   </div>
 

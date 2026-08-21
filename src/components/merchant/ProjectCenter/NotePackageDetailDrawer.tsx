@@ -47,7 +47,7 @@ export function NotePackageDetailDrawer({
               <h2 className="text-[16px] font-semibold text-text-main">
                 {note.title || "消费者体验测评内容包"}
               </h2>
-              <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[11px] font-medium rounded-md border border-indigo-200">
+              <span className="px-2 py-0.5 bg-surface-2 text-text-secondary text-[11px] font-normal rounded border border-border-default">
                 消费者KOC · 笔记包
               </span>
             </div>
