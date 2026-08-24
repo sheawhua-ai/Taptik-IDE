@@ -1,506 +1,525 @@
 import React, { useState, useMemo } from 'react';
-import {
-  MaterialAsset,
-  CollectionTask,
-  AssetStatus,
-  FilterState
-} from './types';
-import {
-  INITIAL_ASSETS,
-  INITIAL_COLLECTION_TASKS,
-  MOCK_NOTE_DRAFT
-} from './mockData';
-import { MaterialHeader } from './MaterialHeader';
+import { MaterialAsset } from './types';
+import { INITIAL_ASSETS } from './mockData';
 import { MaterialCard } from './MaterialCard';
 import { MaterialDetailDrawer } from './MaterialDetailDrawer';
-import { FineTuneModal } from './FineTuneModal';
 import { UploadModal } from './UploadModal';
-import { NoteMatchingModal } from './NoteMatchingModal';
-import { CollectionTaskTab } from './CollectionTaskTab';
+import { ShootingTaskProposalModal } from './ShootingTaskProposalModal';
 import {
-  Image as ImageIcon,
-  CheckSquare,
   Search,
-  Sparkles,
   Plus,
-  RefreshCw,
-  SlidersHorizontal,
-  FolderOpen
+  Camera,
+  FolderOpen,
+  X,
+  RotateCw,
+  CheckSquare,
+  Tag,
+  Archive,
+  Layers,
+  Check
 } from 'lucide-react';
 
 interface MaterialCenterMainProps {
   activeProject?: any;
+  onNavigateToExecution?: () => void;
 }
 
 export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
-  activeProject
+  activeProject,
+  onNavigateToExecution
 }) => {
-  // 一级页签：只保留 2 个 (Section 3 "页面信息架构")
-  const [topLevelTab, setTopLevelTab] = useState<'materials' | 'tasks'>(
-    'materials'
-  );
-
-  // 素材池列表与收集任务列表状态
+  // Assets State
   const [assets, setAssets] = useState<MaterialAsset[]>(INITIAL_ASSETS);
-  const [tasks, setTasks] = useState<CollectionTask[]>(
-    INITIAL_COLLECTION_TASKS
+
+  // Primary 1st-level Filter Tab
+  const [primaryTab, setPrimaryTab] = useState<'publishable' | 'base_components' | 'pending_acceptance' | 'used' | 'archived'>(
+    'publishable'
   );
 
-  // 顶部状态切换：待审核 / 可用 / 已预占 / 已使用
-  const [activeStatus, setActiveStatus] = useState<AssetStatus>('available');
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMaterialUse, setSelectedMaterialUse] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedSourceType, setSelectedSourceType] = useState<string>('all');
+  const [selectedProject, setSelectedProject] = useState<string>('all');
+  const [selectedPerformanceFilter, setSelectedPerformanceFilter] = useState<string>('all');
 
-  // AI自然语言搜索
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  // Batch Management State
+  const [isBatchMode, setIsBatchMode] = useState(false);
+  const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
+  const [showBatchTagModal, setShowBatchTagModal] = useState(false);
+  const [batchTagsInput, setBatchTagsInput] = useState('');
 
-  // 筛选器状态
-  const [filterState, setFilterState] = useState<FilterState>({
-    status: [],
-    sourceType: 'all',
-    uploader: '',
-    project: '',
-    suitableForCover: 'all',
-    timeRange: ''
-  });
-
-  // Modals & Drawers 状态
-  const [selectedAssetForDetail, setSelectedAssetForDetail] =
-    useState<MaterialAsset | null>(null);
-  const [selectedAssetForFineTune, setSelectedAssetForFineTune] =
-    useState<MaterialAsset | null>(null);
+  // Modals & Drawers
+  const [selectedAssetForDetail, setSelectedAssetForDetail] = useState<MaterialAsset | null>(null);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
-  const [showNoteMatchingModal, setShowNoteMatchingModal] =
-    useState<boolean>(false);
+  const [showShootingTaskModal, setShowShootingTaskModal] = useState<boolean>(false);
 
-  // 计算各状态下素材数量
-  const statusCounts = useMemo(() => {
+  // Counts for top level tabs
+  const tabCounts = useMemo(() => {
     return {
-      available: assets.filter((a) => a.status === 'available').length,
-      pending: assets.filter((a) => a.status === 'pending').length,
-      reserved: assets.filter((a) => a.status === 'reserved').length,
-      used: assets.filter((a) => a.status === 'used').length
+      publishable: assets.filter(a => a.category !== 'base_component' && (a.status === 'available' || a.status === 'reserved')).length,
+      base_components: assets.filter(a => a.category === 'base_component').length,
+      pending_acceptance: assets.filter(a => a.status === 'pending_acceptance').length,
+      used: assets.filter(a => a.status === 'used').length,
+      archived: assets.filter(a => a.status === 'archived').length
     };
   }, [assets]);
 
-  // 获取所有可选的项目和门店供筛选使用
-  const availableProjects = useMemo(() => {
-    const set = new Set<string>();
-    assets.forEach((a) => {
-      if (a.sourceProject) set.add(a.sourceProject);
-    });
-    return Array.from(set);
-  }, [assets]);
-
-  const availableUploaders = useMemo(() => {
-    const set = new Set<string>();
-    assets.forEach((a) => {
-      if (a.uploader) set.add(a.uploader);
-    });
-    return Array.from(set);
-  }, [assets]);
-
-  // 过滤当前展示的素材
+  // Filtered Assets List
   const filteredAssets = useMemo(() => {
-    return assets.filter((asset) => {
-      // 1. 状态匹配
-      if (asset.status !== activeStatus) return false;
+    return assets.filter(asset => {
+      // 1. Primary Tab Matching
+      if (primaryTab === 'publishable') {
+        if (asset.category === 'base_component') return false;
+        if (asset.status !== 'available' && asset.status !== 'reserved') return false;
+      } else if (primaryTab === 'base_components') {
+        if (asset.category !== 'base_component') return false;
+      } else if (primaryTab === 'pending_acceptance') {
+        if (asset.status !== 'pending_acceptance') return false;
+      } else if (primaryTab === 'used') {
+        if (asset.status !== 'used') return false;
+      } else if (primaryTab === 'archived') {
+        if (asset.status !== 'archived') return false;
+      }
 
-      // 2. 来源项目匹配
-      if (
-        filterState.project &&
-        asset.sourceProject !== filterState.project
-      ) {
+      // 2. Material Use
+      if (selectedMaterialUse !== 'all' && asset.materialUse !== selectedMaterialUse) {
         return false;
       }
 
-      // 3. 上传者匹配
-      if (filterState.uploader && asset.uploader !== filterState.uploader) {
+      // 3. Category
+      if (selectedCategory !== 'all' && asset.category !== selectedCategory) {
         return false;
       }
 
-      // 4. 来源类型
-      if (filterState.sourceType !== 'all') {
-        if (asset.sourceType !== filterState.sourceType) return false;
+      // 4. Source Type
+      if (selectedSourceType !== 'all' && asset.sourceType !== selectedSourceType) {
+        return false;
       }
 
-      // 5. 封面匹配
-      if (filterState.suitableForCover !== 'all') {
-        const isCover = asset.suitableForCover === 'suitable' || asset.suitableForCover === 'optimized_suitable';
-        if (filterState.suitableForCover === 'true' && !isCover) return false;
-        if (filterState.suitableForCover === 'false' && isCover) return false;
+      // 5. Project
+      if (selectedProject !== 'all' && asset.sourceProject !== selectedProject) {
+        return false;
       }
 
-      // 自然语言搜索
+      // 6. Performance Filter
+      if (selectedPerformanceFilter === 'has_creator_data') {
+        if (asset.performance.performanceType !== 'owned_account_creator_api') return false;
+      } else if (selectedPerformanceFilter === 'no_backend_data') {
+        if (asset.performance.performanceType !== 'koc_public_captured') return false;
+      }
+
+      // 7. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchUnderstanding = asset.aiOneLineUnderstanding
-          .toLowerCase()
-          .includes(q);
-        const matchSubject = asset.fullAiAnalysis.subject
-          .toLowerCase()
-          .includes(q);
-        const matchProduct = asset.fullAiAnalysis.product
-          .toLowerCase()
-          .includes(q);
-        const matchScene = asset.fullAiAnalysis.scene
-          .toLowerCase()
-          .includes(q);
-        const matchProject = (asset.sourceProject || '').toLowerCase().includes(q);
+        const nameMatch = asset.name.toLowerCase().includes(q);
+        const idMatch = asset.id.toLowerCase().includes(q);
+        const uploaderMatch = asset.uploader.toLowerCase().includes(q);
+        const projectMatch = (asset.sourceProject || '').toLowerCase().includes(q);
+        const noteMatch = (asset.usageRelation?.noteTitle || '').toLowerCase().includes(q);
+        const tagsMatch = (asset.tags || []).some(t => t.toLowerCase().includes(q));
+        const descMatch = (asset.vectorDescription || '').toLowerCase().includes(q);
 
-        if (
-          !matchUnderstanding &&
-          !matchSubject &&
-          !matchProduct &&
-          !matchScene &&
-          !matchProject
-        ) {
+        if (!nameMatch && !idMatch && !uploaderMatch && !projectMatch && !noteMatch && !tagsMatch && !descMatch) {
           return false;
         }
       }
 
       return true;
     });
-  }, [assets, activeStatus, filterState, searchQuery]);
+  }, [assets, primaryTab, selectedMaterialUse, selectedCategory, selectedSourceType, selectedProject, selectedPerformanceFilter, searchQuery]);
 
-  // 一句话理解人工修改
-  const handleUpdateUnderstanding = async (
-    assetId: string,
-    newText: string
-  ): Promise<void> => {
-    await new Promise((resolve) => setTimeout(resolve, 600));
+  // Handle new material uploaded
+  const handleAddMaterial = (newAsset: MaterialAsset) => {
+    setAssets(prev => [newAsset, ...prev]);
+  };
 
-    setAssets((prev) =>
-      prev.map((a) => {
-        if (a.id !== assetId) return a;
-        const updatedAsset = {
-          ...a,
-          aiOneLineUnderstanding: newText,
-        };
-        if (selectedAssetForDetail?.id === assetId) {
-          setSelectedAssetForDetail(updatedAsset);
+  // Handle asset update
+  const handleUpdateAsset = (updated: MaterialAsset) => {
+    setAssets(prev => prev.map(a => a.id === updated.id ? updated : a));
+    setSelectedAssetForDetail(updated);
+  };
+
+  // Toggle single asset selection
+  const handleToggleSelectAsset = (id: string) => {
+    setSelectedAssetIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  // Select all / Deselect all
+  const handleSelectAllFiltered = () => {
+    const filteredIds = filteredAssets.map(a => a.id);
+    const allSelected = filteredIds.every(id => selectedAssetIds.includes(id));
+    if (allSelected) {
+      setSelectedAssetIds(prev => prev.filter(id => !filteredIds.includes(id)));
+    } else {
+      setSelectedAssetIds(prev => Array.from(new Set([...prev, ...filteredIds])));
+    }
+  };
+
+  // Batch action: Apply tags
+  const handleApplyBatchTags = () => {
+    if (!batchTagsInput.trim()) return;
+    const newTags = batchTagsInput.split(/[,，]/).map(t => t.trim()).filter(Boolean);
+
+    setAssets(prev =>
+      prev.map(asset => {
+        if (selectedAssetIds.includes(asset.id)) {
+          const existingTags = asset.tags || [];
+          const merged = Array.from(new Set([...existingTags, ...newTags]));
+          return { ...asset, tags: merged };
         }
-        return updatedAsset;
+        return asset;
       })
     );
+
+    setBatchTagsInput('');
+    setShowBatchTagModal(false);
   };
 
-  // 卡片选择 / 预占事件
-  const handleSelectAsset = (asset: MaterialAsset) => {
-    const targetTitle =
-      activeProject?.name || '幼犬换粮攻略种草日记';
-    const updatedAsset: MaterialAsset = {
-      ...asset,
-      status: 'reserved',
-      linkedNoteTitle: targetTitle,
-      usageRecords: [
-        {
-          id: `rec_${Date.now()}`,
-          noteTitle: targetTitle,
-          project: asset.sourceProject || '默认项目',
-          publishTime: '预占中（待发布）',
-          status: 'reserved',
-          operator: '当前操盘手'
-        },
-        ...asset.usageRecords
-      ]
-    };
-
-    setAssets((prev) => prev.map((a) => (a.id === asset.id ? updatedAsset : a)));
-    alert(
-      `已将该素材预占给笔记【${targetTitle}】。其他未发布笔记默认不可选择此素材。`
+  // Batch action: Archive
+  const handleBatchArchive = () => {
+    setAssets(prev =>
+      prev.map(asset => {
+        if (selectedAssetIds.includes(asset.id)) {
+          return { ...asset, status: 'archived' as any };
+        }
+        return asset;
+      })
     );
+    setSelectedAssetIds([]);
   };
 
-  // 微调生成衍生版本逻辑 (Section 11)
-  const handleConfirmDerive = async (
-    parentAsset: MaterialAsset,
-    modType: string
-  ): Promise<void> => {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    const derivativeUnderstanding = `基于优秀已使用爆款制作的衍生版：进行了【${modType}】。画面保留高表现力核心特征，色彩通透清晰，可作为新的可用素材进行跨项目分发。`;
-
-    const newDerivative: MaterialAsset = {
-      id: `mat_der_${Date.now().toString().slice(-4)}`,
-      type: parentAsset.type,
-      url: parentAsset.url,
-      aiOneLineUnderstanding: derivativeUnderstanding,
-      recommendationUse: parentAsset.recommendationUse,
-      suitableForCover: 'optimized_suitable',
-      coverReason: 'AI优化后主体更清晰，背景更干净，适合作为封面使用。',
-      status: 'available',
-      sourceType: 'ai_optimized',
-      sourceProject: parentAsset.sourceProject,
-      sourceTask: (parentAsset.sourceTask || '') + ' (衍生微调流水线)',
-      uploader: 'AI素材引擎',
-      uploadTime: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      authStatus: 'verified',
-      fileInfo: parentAsset.fileInfo,
-      usageRecords: [],
-      derivationInfo: {
-        parentId: parentAsset.id,
-        parentName: parentAsset.aiOneLineUnderstanding.slice(0, 18) + '...',
-        familyId:
-          parentAsset.derivationInfo?.familyId ||
-          `fam_${parentAsset.id.slice(-4)}`,
-        modificationType: modType,
-        createdBy: '主操盘手 (激活微调)',
-        createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16)
-      },
-      fullAiAnalysis: {
-        ...parentAsset.fullAiAnalysis,
-        subject: `${parentAsset.fullAiAnalysis.subject} (微调衍生版)`
-      }
-    };
-
-    setAssets((prev) => [newDerivative, ...prev]);
-    alert(
-      `衍生版本已完成 AI 画面理解、向量表征与检索索引更新！\n现已放入商家“可用”素材池，可直接跨项目调用。`
+  // Batch action: Set as available
+  const handleBatchSetAvailable = () => {
+    setAssets(prev =>
+      prev.map(asset => {
+        if (selectedAssetIds.includes(asset.id)) {
+          return { ...asset, status: 'available' as any };
+        }
+        return asset;
+      })
     );
+    setSelectedAssetIds([]);
   };
-
-  // 补充上传成功写入
-  const handleSuccessUpload = (newAsset: MaterialAsset) => {
-    setAssets((prev) => [newAsset, ...prev]);
-    setShowUploadModal(false);
-  };
-
-  // 导入历史素材处理 (兼容主页右上角“更多 - 导入历史素材” Section 4.1)
-  const handleImportHistory = () => {
-    const historicalAsset: MaterialAsset = {
-      id: `mat_hist_${Date.now().toString().slice(-4)}`,
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&auto=format&fit=crop&q=80',
-      aiOneLineUnderstanding:
-        '品牌早期沉淀的线下到店实拍场景，包含萌犬日常及宠物主亲密喂食画面，自然真实，无显式广告文案。',
-      recommendationUse: '通用到店体验、品牌可信度故事图',
-      suitableForCover: 'suitable',
-      coverReason: '真实场景，自然光线。',
-      status: 'available',
-      sourceType: 'other',
-      sourceProject: '2025年到店体验计划 (历史导入)',
-      sourceTask: '历史图库全量迁移',
-      uploader: '历史图库管理员',
-      uploadTime: '2025-11-15 10:00',
-      authStatus: 'verified',
-      fileInfo: {
-        resolution: '2048x1536',
-        format: 'JPEG',
-        size: '1.8 MB',
-        aspectRatio: '4:3'
-      },
-      usageRecords: [],
-      fullAiAnalysis: {
-        subject: '历史到店萌犬相册图',
-        product: '极宠家早期试喂礼盒',
-        scene: '线下门店体验区',
-        composition: '自然实拍构图',
-        lightingColor: '暖色温馨氛围光'
-      }
-    };
-
-    setAssets((prev) => [historicalAsset, ...prev]);
-    alert(
-      `已导入 1 张历史图库素材，AI引擎已为其生成统一【一句话理解】与语义检索向量，并统一标记为“来源：历史导入”。`
-    );
-  };
-
 
   return (
-    <div className="w-full min-h-full bg-page-bg p-5 md:p-8 space-y-6 max-w-7xl mx-auto pb-20">
-      {/* 跨一级页签切换栏：素材 / 拍摄任务 */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-1 p-2 rounded-xl border border-border-default shadow-2xs">
-        <div className="flex items-center gap-1.5 p-1 bg-hover-bg/80 rounded-xl">
+    <div className="flex flex-col h-full bg-page-bg text-text-primary p-6 space-y-5 overflow-y-auto">
+      
+      {/* Top Header Block */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-default pb-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-[20px] font-semibold text-text-primary tracking-tight">
+              素材中心
+            </h2>
+          </div>
+          <p className="text-[12px] text-text-secondary mt-1">
+            统一管理小红书内容生产素材 · 记录使用与关联关系 · 关联创作者后台数据 · 支撑自动化检索与特征分类
+          </p>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-3">
+          {/* Secondary Link to Execution Center Tasks */}
           <button
-            type="button"
-            onClick={() => setTopLevelTab('materials')}
-            className={`px-6 py-2.5 rounded-lg font-black text-[14px] transition-all flex items-center gap-2 ${
-              topLevelTab === 'materials'
-                ? 'bg-btn-main text-white shadow-2xs'
-                : 'text-text-secondary hover:text-text-main'
-            }`}
+            onClick={() => setShowShootingTaskModal(true)}
+            className="px-3 py-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-default rounded-md text-[12px] font-medium transition-colors flex items-center gap-1.5"
+            title="素材不足时，发起拍摄任务提案并下发至执行中心"
           >
-            <ImageIcon size={17} />
-            <span>素材</span>
-            <span className="px-2 py-0.5 rounded-full bg-surface-1/20 text-[11px] font-extrabold">
-              {assets.length}
-            </span>
+            <Camera size={14} className="text-text-secondary" />
+            查看待回传素材任务
           </button>
 
+          {/* Batch Mode Toggle */}
           <button
-            type="button"
-            onClick={() => setTopLevelTab('tasks')}
-            className={`px-6 py-2.5 rounded-lg font-black text-[14px] transition-all flex items-center gap-2 ${
-              topLevelTab === 'tasks'
-                ? 'bg-btn-main text-white shadow-2xs'
-                : 'text-text-secondary hover:text-text-main'
+            onClick={() => {
+              setIsBatchMode(!isBatchMode);
+              if (isBatchMode) setSelectedAssetIds([]);
+            }}
+            className={`px-3 py-2 border rounded-md text-[12px] font-medium transition-colors flex items-center gap-1.5 ${
+              isBatchMode
+                ? 'bg-action-primary text-white border-action-primary'
+                : 'bg-surface hover:bg-surface-hover text-text-primary border-border-default'
             }`}
           >
-            <CheckSquare size={17} />
-            <span>拍摄任务</span>
-            <span className="px-2 py-0.5 rounded-full bg-neutral-200 text-text-main text-[11px] font-extrabold">
-              {tasks.length}
-            </span>
+            <CheckSquare size={14} />
+            {isBatchMode ? '退出批量管理' : '批量管理'}
+          </button>
+
+          {/* Primary Action: Upload */}
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-md text-[12px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
+          >
+            <Plus size={15} />
+            上传素材
           </button>
         </div>
       </div>
 
-      {/* 当处于“素材中心”标签时，呈现 4.1-4.4 顶部操作区、搜索、极简状态、画廊卡片及空状态 */}
-      {topLevelTab === 'materials' ? (
-        <div className="space-y-6">
-          <MaterialHeader
-            activeStatus={activeStatus}
-            onChangeStatus={setActiveStatus}
-            searchQuery={searchQuery}
-            onChangeSearchQuery={setSearchQuery}
-            filterState={filterState}
-            onChangeFilterState={setFilterState}
-            availableProjects={availableProjects}
-            availableTasks={tasks.map((t) => t.taskName)}
-            onOpenUploadModal={() => setShowUploadModal(true)}
-            onOpenNoteMatching={() => setShowNoteMatchingModal(true)}
-            onImportHistory={handleImportHistory}
-            statusCounts={statusCounts}
-          />
+      {/* Primary 1st-level Filter Tabs */}
+      <div className="flex items-center justify-between gap-2 border-b border-border-subtle pb-0">
+        <div className="flex items-center gap-1">
+          {[
+            { id: 'publishable', label: '可发布素材', count: tabCounts.publishable },
+            { id: 'base_components', label: '基础元件', count: tabCounts.base_components },
+            { id: 'pending_acceptance', label: '待验收', count: tabCounts.pending_acceptance },
+            { id: 'used', label: '已使用', count: tabCounts.used },
+            { id: 'archived', label: '已归档', count: tabCounts.archived }
+          ].map(tab => {
+            const isActive = primaryTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setPrimaryTab(tab.id as any)}
+                className={`px-3.5 py-2 text-[13px] font-medium border-b-2 transition-all flex items-center gap-1.5 relative ${
+                  isActive
+                    ? 'border-action-primary text-text-primary font-semibold'
+                    : 'border-transparent text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                  isActive ? 'bg-surface-selected text-text-primary font-semibold' : 'bg-surface-subtle text-text-tertiary'
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Section 5.1 画廊视图 (取消传统文件列表，卡片只展示图片、一句话理解与极简状态) */}
-          {filteredAssets.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredAssets.map((asset) => (
-                <MaterialCard
-                  key={asset.id}
-                  asset={asset}
-                  onView={(a) => setSelectedAssetForDetail(a)}
-                  onSelect={(a) => handleSelectAsset(a)}
-                  onViewSimilar={(a) => {
-                    // 悬停：查看相似画面
-                    setSearchQuery(
-                      a.fullAiAnalysis.subject.slice(0, 10) || '幼犬'
-                    );
-                  }}
-                  onViewWhereUsed={(a) => {
-                    // 悬停：查看使用去向 -> 弹开详情并定位
-                    setSelectedAssetForDetail(a);
-                  }}
-                  onViewResults={(a) => {
-                    // 悬停：查看效果
-                    setSelectedAssetForDetail(a);
-                  }}
-                  onActivateFineTune={(a) => {
-                    // 悬停：激活微调 (Section 5.3 & 11)
-                    setSelectedAssetForFineTune(a);
-                  }}
-                />
-              ))}
-            </div>
-          ) : (
-            /* 空状态呈现 */
-            <div className="bg-surface-1 rounded-2xl border border-border-default/80 p-12 text-center space-y-4 max-w-xl mx-auto my-6">
-              <div className="w-14 h-14 rounded-xl bg-hover-bg flex items-center justify-center mx-auto text-text-tertiary">
-                <ImageIcon size={28} />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-[17px] font-black text-text-main">
-                  暂无符合要求的素材
-                </h3>
-              </div>
+        <div className="text-[11px] text-text-tertiary hidden lg:block">
+          共 {filteredAssets.length} 项素材
+        </div>
+      </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTopLevelTab('tasks');
-                    alert('请稍后创建素材任务');
-                  }}
-                  className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
-                >
-                  创建素材任务
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowUploadModal(true)}
-                  className="px-4 py-2 bg-surface-1 border border-border-default hover:bg-page-bg text-text-main font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
-                >
-                  上传素材
-                </button>
-                <button
-                  type="button"
-                  onClick={() => alert('请选择现有素材并点击AI优化')}
-                  className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-extrabold text-[13px] rounded-xl transition-all shadow-2xs"
-                >
-                  用AI优化现有素材
-                </button>
-              </div>
-            </div>
-          )}
+      {/* Filter & Search Bar */}
+      <div className="bg-surface p-3.5 rounded-lg border border-border-default space-y-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          
+          {/* Keyword Search Input */}
+          <div className="flex-1 min-w-[240px] relative">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" />
+            <input
+              type="text"
+              placeholder="搜索素材名称、ID、标签、描述或关联项目..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary focus:outline-none focus:border-border-strong"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-primary"
+              >
+                <X size={13} />
+              </button>
+            )}
+          </div>
+
+          {/* Filter Dropdowns */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* 素材用途 */}
+            <select
+              value={selectedMaterialUse}
+              onChange={(e) => setSelectedMaterialUse(e.target.value)}
+              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary font-medium"
+            >
+              <option value="all">所有用途</option>
+              <option value="cover">封面图</option>
+              <option value="body_image">笔记配图</option>
+              <option value="finished_video">笔记视频</option>
+              <option value="real_shot">实拍素材</option>
+              <option value="component_cutout">产品抠图/透明底图</option>
+              <option value="component_logo">品牌Logo/水印</option>
+              <option value="component_packaging">包装细节图</option>
+              <option value="component_swatch">品牌色板/字体</option>
+            </select>
+
+            {/* 来源类型 */}
+            <select
+              value={selectedSourceType}
+              onChange={(e) => setSelectedSourceType(e.target.value)}
+              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary font-medium"
+            >
+              <option value="all">所有来源</option>
+              <option value="merchant">操盘手上传</option>
+              <option value="task_upload">任务上传</option>
+            </select>
+
+            {/* 所属项目 */}
+            <select
+              value={selectedProject}
+              onChange={(e) => setSelectedProject(e.target.value)}
+              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary font-medium"
+            >
+              <option value="all">所有关联项目</option>
+              <option value="幼犬换粮软便卡位项目">幼犬换粮软便卡位项目</option>
+              <option value="猫粮肠胃敏感科普项目">猫粮肠胃敏感科普项目</option>
+              <option value="线下门店KOS到店引流项目">线下门店KOS到店引流项目</option>
+            </select>
+
+            {/* Reset Filter Button */}
+            {(selectedMaterialUse !== 'all' || selectedCategory !== 'all' || selectedSourceType !== 'all' || selectedProject !== 'all' || selectedPerformanceFilter !== 'all' || searchQuery) && (
+              <button
+                onClick={() => {
+                  setSelectedMaterialUse('all');
+                  setSelectedCategory('all');
+                  setSelectedSourceType('all');
+                  setSelectedProject('all');
+                  setSelectedPerformanceFilter('all');
+                  setSearchQuery('');
+                }}
+                className="px-2.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary font-medium hover:underline flex items-center gap-1"
+              >
+                <RotateCw size={12} />
+                重置筛选
+              </button>
+            )}
+          </div>
+
+        </div>
+      </div>
+
+      {/* Batch Actions Bar (Sticky/Visible in Batch Mode) */}
+      {isBatchMode && (
+        <div className="bg-surface-subtle p-3 rounded-lg border border-border-default flex items-center justify-between flex-wrap gap-3 animate-in fade-in duration-150">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleSelectAllFiltered}
+              className="text-[12px] font-semibold text-text-primary flex items-center gap-1.5 hover:underline"
+            >
+              <input
+                type="checkbox"
+                checked={filteredAssets.length > 0 && filteredAssets.every(a => selectedAssetIds.includes(a.id))}
+                readOnly
+                className="w-4 h-4 rounded border-border-strong text-action-primary focus:ring-action-primary cursor-pointer accent-neutral-900"
+              />
+              全选当前页 ({filteredAssets.length} 项)
+            </button>
+            <span className="text-border-strong">|</span>
+            <span className="text-[12px] text-text-secondary">
+              已选中 <strong className="text-text-primary font-semibold">{selectedAssetIds.length}</strong> 项素材
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              disabled={selectedAssetIds.length === 0}
+              onClick={() => setShowBatchTagModal(true)}
+              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[12px] font-medium transition-colors flex items-center gap-1"
+            >
+              <Tag size={13} />
+              批量打标签
+            </button>
+
+            <button
+              disabled={selectedAssetIds.length === 0}
+              onClick={handleBatchSetAvailable}
+              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[12px] font-medium transition-colors flex items-center gap-1"
+            >
+              <Check size={13} />
+              批量标记为可用
+            </button>
+
+            <button
+              disabled={selectedAssetIds.length === 0}
+              onClick={handleBatchArchive}
+              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[12px] font-medium transition-colors flex items-center gap-1"
+            >
+              <Archive size={13} />
+              批量归档
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Main Grid: Adaptive 3-4 Column Cards */}
+      {filteredAssets.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+          {filteredAssets.map(asset => (
+            <MaterialCard
+              key={asset.id}
+              asset={asset}
+              onOpenDetail={(a) => setSelectedAssetForDetail(a)}
+              isBatchMode={isBatchMode}
+              isSelected={selectedAssetIds.includes(asset.id)}
+              onToggleSelect={handleToggleSelectAsset}
+            />
+          ))}
         </div>
       ) : (
-        /* Section 13 当处于“收集任务”标签时，呈现任务卡片及各拍摄镜头要求 */
-        <CollectionTaskTab
-          tasks={tasks}
-          allAssets={assets}
-          onOpenUploadForTask={(task) => {
-            setShowUploadModal(true);
-          }}
-          onViewAsset={(asset) => {
-            setSelectedAssetForDetail(asset);
-          }}
-          onUpdateTask={(updatedTask) => {
-            setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
-          }}
-        />
+        <div className="bg-surface p-12 rounded-lg border border-border-default text-center text-text-tertiary space-y-2">
+          <FolderOpen size={40} className="mx-auto text-text-tertiary stroke-1" />
+          <p className="text-[14px] font-semibold text-text-primary">当前筛选下暂无匹配素材</p>
+          <p className="text-[12px] text-text-secondary">
+            可尝试调整顶部筛选条件或搜索关键词，或使用【上传素材】添加新素材。
+          </p>
+        </div>
       )}
 
-      {/* --- 全平台业务侧抽屉与模态层 --- */}
-
-      {/* Section 12: 素材详情抽屉 (右侧抽屉，宽520-600px，没有技术分值) */}
-      {selectedAssetForDetail && (
-        <MaterialDetailDrawer
-          asset={selectedAssetForDetail}
-          onClose={() => setSelectedAssetForDetail(null)}
-          onUpdateUnderstanding={handleUpdateUnderstanding}
-          onActivateFineTune={(asset) => {
-            setSelectedAssetForDetail(null);
-            setSelectedAssetForFineTune(asset);
-          }}
-        />
+      {/* Batch Tag Modal */}
+      {showBatchTagModal && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="w-[420px] bg-surface rounded-xl shadow-xl border border-border-default p-5 space-y-4">
+            <h3 className="text-[14px] font-semibold text-text-primary flex items-center gap-2">
+              <Tag size={16} />
+              批量添加标签
+            </h3>
+            <p className="text-[12px] text-text-secondary">
+              将为已选中的 {selectedAssetIds.length} 项素材追加以下标签：
+            </p>
+            <input
+              type="text"
+              placeholder="输入标签，多个用逗号隔开 (如：促销活动, 柴犬, 门店探店)"
+              value={batchTagsInput}
+              onChange={(e) => setBatchTagsInput(e.target.value)}
+              className="w-full px-3 py-2 bg-surface border border-border-default rounded text-[12px] focus:outline-none focus:border-border-strong"
+            />
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowBatchTagModal(false)}
+                className="px-3 py-1.5 border border-border-default rounded text-[12px] text-text-primary"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleApplyBatchTags}
+                className="px-4 py-1.5 bg-action-primary text-white rounded text-[12px] font-semibold"
+              >
+                确认应用
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Section 11: 已使用素材激活微调模态框 */}
-      {selectedAssetForFineTune && (
-        <FineTuneModal
-          parentAsset={selectedAssetForFineTune}
-          onClose={() => setSelectedAssetForFineTune(null)}
-          onConfirmDerive={handleConfirmDerive}
-        />
-      )}
+      {/* Material Detail Drawer */}
+      <MaterialDetailDrawer
+        asset={selectedAssetForDetail}
+        onClose={() => setSelectedAssetForDetail(null)}
+        onUpdateAsset={handleUpdateAsset}
+      />
 
-      {/* Section 7: 补充上传模态框 (需选项目与任务 + 模拟AI通过/不通过) */}
-      {showUploadModal && (
-        <UploadModal
-          tasks={tasks}
-          onClose={() => setShowUploadModal(false)}
-          onSuccessUpload={handleSuccessUpload}
-        />
-      )}
+      {/* Upload Modal */}
+      <UploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onUploadSuccess={handleAddMaterial}
+      />
 
-      {/* Section 9: 笔记驱动素材匹配模态框 (扫描三层级，无置信度数字) */}
-      {showNoteMatchingModal && (
-        <NoteMatchingModal
-          noteDraft={MOCK_NOTE_DRAFT}
-          allAssets={assets}
-          onClose={() => setShowNoteMatchingModal(false)}
-          onSelectAssetForPosition={(posIndex, asset) => {
-            handleSelectAsset(asset);
-          }}
-          onOpenCreateReshootTask={() => {
-            setShowNoteMatchingModal(false);
-            setTopLevelTab('tasks');
-            alert('即将转入【收集任务】新建门店补拍任务页面');
-          }}
-          onViewAssetDetail={(asset) => {
-            setSelectedAssetForDetail(asset);
-          }}
-        />
-      )}
+      {/* Shooting Task Proposal Modal */}
+      <ShootingTaskProposalModal
+        isOpen={showShootingTaskModal}
+        onClose={() => setShowShootingTaskModal(false)}
+        onNavigateToExecution={onNavigateToExecution}
+      />
+
     </div>
   );
 };
+

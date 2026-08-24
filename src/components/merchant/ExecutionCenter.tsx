@@ -1,255 +1,592 @@
-import React, { useState } from "react";
-import { Search, ChevronRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { useProjectStore } from "../../context/ProjectContext";
-import { ContentReviewWorkbench } from "../rings/ContentReviewWorkbench";
-import { ShootingAndUploadWorkbench } from "../rings/ShootingAndUploadWorkbench";
-import { PublishExceptionWorkbench } from "../rings/PublishExceptionWorkbench";
-import { InteractionWorkbench } from "../rings/InteractionWorkbench";
-
-const STAGE_TABS = [
-  { id: "all", label: "全部" },
-  { id: "content", label: "内容确认" },
-  { id: "assets", label: "素材审核" },
-  { id: "publish", label: "发布处理" },
-  { id: "interaction", label: "互动与线索" },
-];
+import React, { useState, useMemo } from 'react';
+import { 
+  Search, CheckCircle2, AlertCircle, Clock, Filter, 
+  RefreshCw, CheckSquare, Square, ChevronRight, User, 
+  Tag, Calendar, Sparkles, Send, RotateCcw, Pin, ShieldCheck,
+  AlertTriangle, ChevronDown, Check, ArrowRight, CornerDownRight,
+  MoreHorizontal, Users, Bot, UserCheck, Layers, FileText, Camera,
+  Share2, ShieldAlert, ArrowUpRight
+} from 'lucide-react';
+import { useProjectStore } from '../../context/ProjectContext';
+import { ExecutionCategory, ExecutionTask } from './ExecutionCenter/types';
+import { INITIAL_EXECUTION_TASKS } from './ExecutionCenter/mockData';
+import { TaskDetailView } from './ExecutionCenter/TaskDetailView';
+import { BatchActionModal } from './ExecutionCenter/BatchActionModal';
 
 export function ExecutionCenter() {
-  const { enrichedActionTasks } = useProjectStore();
+  const { currentProject } = useProjectStore();
 
-  const [activeWorkbench, setActiveWorkbench] = useState<string | null>(null);
-  const [selectedStageTab, setSelectedStageTab] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  // Tasks state
+  const [tasks, setTasks] = useState<ExecutionTask[]>(INITIAL_EXECUTION_TASKS);
+  
+  // Selection and Active Task
+  const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
-  // All pending tasks across all projects
-  const pendingTasks = enrichedActionTasks.filter((t) => t.status === "pending");
+  // Filter Axes
+  const [selectedCategory, setSelectedCategory] = useState<ExecutionCategory>('all');
+  const [showAllProcesses, setShowAllProcesses] = useState<boolean>(false);
+  const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>('all');
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
 
-  // Filtered tasks by stage tab and search query
-  const filteredTasks = pendingTasks.filter((t) => {
-    if (selectedStageTab !== "all" && t.impactedStage !== selectedStageTab) {
-      return false;
+  // Batch Action Modal state
+  const [batchActionType, setBatchActionType] = useState<'remind' | 'change_assignee' | 'extend_deadline' | 'cancel_task' | null>(null);
+
+  // Available Project Names for filter dropdown
+  const projectOptions = useMemo(() => {
+    const names = new Set<string>();
+    tasks.forEach(t => names.add(t.projectName));
+    if (currentProject?.title) names.add(currentProject.title);
+    return Array.from(names);
+  }, [tasks, currentProject]);
+
+  // Statistics calculation for the 3 top metrics
+  const stats = useMemo(() => {
+    const needMyActionTasks = tasks.filter(t => t.isMeWaiting && t.status !== '已完成' && t.status !== '已取消');
+    const todayDeadlineTasks = needMyActionTasks.filter(t => t.deadlineLabel === '今日到期' || t.deadlineLabel === '已逾期');
+    const blockedTasks = needMyActionTasks.filter(t => t.isBlocked);
+
+    return {
+      needMyActionCount: needMyActionTasks.length,
+      todayDeadlineCount: todayDeadlineTasks.length,
+      blockedCount: blockedTasks.length
+    };
+  }, [tasks]);
+
+  // Category counts for the tabs
+  const categoryCounts = useMemo(() => {
+    const base = tasks.filter(t => t.status !== '已完成' && t.status !== '已取消');
+    return {
+      all: base.filter(t => t.isMeWaiting).length,
+      content: base.filter(t => t.isMeWaiting && t.operatorCategory === 'content').length,
+      material: base.filter(t => t.isMeWaiting && t.operatorCategory === 'material').length,
+      publish: base.filter(t => t.isMeWaiting && t.operatorCategory === 'publish').length,
+      anomaly: base.filter(t => t.isMeWaiting && t.operatorCategory === 'anomaly').length,
+      allProcess: base.length
+    };
+  }, [tasks]);
+
+  // Filtered task list
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      // 1. By default, only show tasks requiring operator action unless showAllProcesses is true
+      if (!showAllProcesses) {
+        if (!task.isMeWaiting || task.status === '已完成' || task.status === '已取消') {
+          return false;
+        }
+      }
+
+      // 2. Category Filter
+      if (selectedCategory !== 'all') {
+        if (task.operatorCategory !== selectedCategory) return false;
+      }
+
+      // 3. Project Filter
+      if (selectedProjectFilter !== 'all') {
+        if (task.projectName !== selectedProjectFilter) return false;
+      }
+
+      // 4. Search Keyword
+      if (searchKeyword.trim()) {
+        const kw = searchKeyword.toLowerCase();
+        const matchTitle = task.title.toLowerCase().includes(kw);
+        const matchAccount = task.targetAccount.toLowerCase().includes(kw);
+        const matchParty = task.waitingParty.toLowerCase().includes(kw);
+        const matchSummary = task.operatorActionSummary?.toLowerCase().includes(kw);
+        if (!matchTitle && !matchAccount && !matchParty && !matchSummary) return false;
+      }
+
+      return true;
+    });
+  }, [tasks, showAllProcesses, selectedCategory, selectedProjectFilter, searchKeyword]);
+
+  // Active Task Object
+  const activeTask = useMemo(() => {
+    if (!activeTaskId) return null;
+    return tasks.find(t => t.id === activeTaskId) || null;
+  }, [tasks, activeTaskId]);
+
+  // Active task's category queue
+  const activeCategoryQueue = useMemo(() => {
+    if (!activeTask) return [];
+    return tasks.filter(t => t.operatorCategory === activeTask.operatorCategory && t.status !== '已完成' && t.status !== '已取消');
+  }, [tasks, activeTask]);
+
+  // Find next task in category queue
+  const handleSelectNextTask = () => {
+    if (!activeTask || activeCategoryQueue.length === 0) return;
+    const currentIndex = activeCategoryQueue.findIndex(t => t.id === activeTask.id);
+    if (currentIndex >= 0 && currentIndex < activeCategoryQueue.length - 1) {
+      setActiveTaskId(activeCategoryQueue[currentIndex + 1].id);
+    } else if (activeCategoryQueue.length > 0) {
+      setActiveTaskId(activeCategoryQueue[0].id);
     }
-    if (
-      searchQuery &&
-      !t.issueMessage.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !t.noteTitle.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !t.projectName.toLowerCase().includes(searchQuery.toLowerCase())
-    ) {
-      return false;
-    }
-    return true;
-  });
-
-  // Sorting: 1. 阻断 (Blocker) 2. 已逾期 (Overdue) 3. 即将到期 (Expiring soon) 4. 普通待办
-  const todayStr = new Date().toISOString().slice(0, 10);
-
-  const getTaskPriorityScore = (t: any) => {
-    const isBlocker = t.severity === "blocker";
-    const isOverdue = t.plannedDate < todayStr;
-    const isExpiringSoon = t.plannedDate === todayStr;
-
-    if (isBlocker) return 4;
-    if (isOverdue) return 3;
-    if (isExpiringSoon) return 2;
-    return 1;
   };
 
-  const sortedTasks = [...filteredTasks].sort((a, b) => {
-    const scoreA = getTaskPriorityScore(a);
-    const scoreB = getTaskPriorityScore(b);
-    if (scoreA !== scoreB) return scoreB - scoreA;
-    return a.plannedDate.localeCompare(b.plannedDate);
-  });
+  // Selection handlers
+  const handleToggleSelectTask = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedTaskIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
 
-  const getStageLabel = (stage: string) => {
-    switch (stage) {
-      case "content":
-        return "内容确认";
-      case "assets":
-        return "素材审核";
-      case "publish":
-        return "发布处理";
-      case "interaction":
-        return "互动与线索";
-      default:
-        return "通用待办";
+  const handleSelectAllVisible = () => {
+    if (selectedTaskIds.length === filteredTasks.length) {
+      setSelectedTaskIds([]);
+    } else {
+      setSelectedTaskIds(filteredTasks.map(t => t.id));
     }
   };
 
-  // Render Workbenches when clicked
-  if (activeWorkbench === "content") {
-    return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
+  // Update task handler
+  const handleUpdateTask = (updated: ExecutionTask) => {
+    setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
+  };
+
+  // Batch update handler
+  const handleBatchUpdateTasks = (updatedList: ExecutionTask[]) => {
+    setTasks(prev => {
+      const map = new Map(updatedList.map(u => [u.id, u]));
+      return prev.map(t => map.has(t.id) ? map.get(t.id)! : t);
+    });
+    setSelectedTaskIds([]);
+    setBatchActionType(null);
+  };
+
+  // If a task is active, render TaskDetailView
+  if (activeTask) {
+    return (
+      <TaskDetailView
+        task={activeTask}
+        categoryQueue={activeCategoryQueue}
+        onSelectTask={(task) => setActiveTaskId(task.id)}
+        onBack={() => setActiveTaskId(null)}
+        onUpdateTask={handleUpdateTask}
+        onNextTask={activeCategoryQueue.length > 1 ? handleSelectNextTask : undefined}
+      />
+    );
   }
-  if (activeWorkbench === "assets") {
-    return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
-  }
-  if (activeWorkbench === "publish") {
-    return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} onBack={() => setActiveWorkbench(null)} fromSource="execution" />;
-  }
-  if (activeWorkbench === "interaction") {
-    return <InteractionWorkbench onClose={() => setActiveWorkbench(null)} />;
-  }
+
+  // Selected tasks array for batch modal
+  const selectedTasks = tasks.filter(t => selectedTaskIds.includes(t.id));
 
   return (
-    <div className="h-full w-full bg-page-bg p-6 md:p-8 overflow-y-auto text-text-main">
-      <div className="max-w-4xl mx-auto space-y-5">
-        {/* Header Bar */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <h1 className="text-[22px] font-extrabold text-text-main">待办事项</h1>
-            <span className="px-3 py-0.5 rounded-full text-[12px] font-bold bg-btn-main text-white">
-              共 {pendingTasks.length} 项待处理
-            </span>
-          </div>
-        </div>
-
-        {/* Lightweight Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-surface-1 px-4 py-2 rounded-xl border border-border-default ">
-          {/* Type tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
-            {STAGE_TABS.map((tab) => {
-              const count =
-                tab.id === "all"
-                  ? pendingTasks.length
-                  : pendingTasks.filter((t) => t.impactedStage === tab.id).length;
-              const isActive = selectedStageTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedStageTab(tab.id)}
-                  className={`relative py-2 text-[13px] font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                    isActive
-                      ? "text-text-main"
-                      : "text-text-secondary hover:text-text-main"
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span
-                    className={`text-[11px] px-1.5 py-0.5 rounded-md font-medium ${
-                      isActive ? "bg-surface-2 text-text-main" : "bg-surface-2 text-text-tertiary"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                  {isActive && (
-                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-logo" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Search Box */}
-          <div className="relative min-w-[200px] flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
-            <input
-              type="text"
-              placeholder="搜索待办..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-page-bg border border-border-default rounded-xl text-[13px] outline-none focus:bg-surface-1 focus:border-neutral-400 transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Todo List */}
-        {sortedTasks.length > 0 ? (
-          <div className="space-y-3">
-            {sortedTasks.map((task, idx) => {
-              const score = getTaskPriorityScore(task);
-              const isTopPriority = idx === 0 && score >= 2;
-              const isOverdue = task.plannedDate < todayStr;
-              const isExpiringSoon = task.plannedDate === todayStr;
-
-              return (
-                <div
-                  key={task.id}
-                  onClick={() => setActiveWorkbench(task.impactedStage)}
-                  className="bg-surface-1 rounded-xl p-4 border border-border-default hover:border-neutral-400 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-4 group"
-                >
-                  <div className="space-y-1.5 flex-1 min-w-0">
-                    {/* Line 1: Title + Badges */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-[15px] font-bold text-text-main group-hover:text-info transition-colors truncate">
-                        {task.issueMessage}
-                      </h3>
-
-                      {isTopPriority && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-warning-light text-warning border-warning-light shrink-0">
-                          <Sparkles size={11} className="text-warning" />
-                          建议优先
-                        </span>
-                      )}
-
-                      {task.severity === "blocker" && (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-danger-light text-danger border-danger-light shrink-0">
-                          阻断
-                        </span>
-                      )}
-
-                      {isOverdue && (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-danger-light text-danger border-danger-light shrink-0">
-                          已逾期
-                        </span>
-                      )}
-
-                      {isExpiringSoon && !isOverdue && (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-warning-light text-warning border border-warning-light shrink-0">
-                          即将到期
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Line 2: Stage Type · Project Name */}
-                    <div className="text-[12.5px] font-medium text-text-tertiary flex items-center gap-2">
-                      <span className="font-bold text-text-secondary">{getStageLabel(task.impactedStage)}</span>
-                      <span>·</span>
-                      <span className="text-text-secondary truncate">{task.projectName}</span>
-                    </div>
-
-                    {/* Line 3: Detail / Waiting status / Deadline */}
-                    <div className="text-[12px] text-text-tertiary flex items-center gap-3 flex-wrap">
-                      {task.waitOn && (
-                        <span className="text-warning font-medium bg-warning-light px-2 py-0.5 rounded border border-warning-light">
-                          等待 {task.waitOn}
-                        </span>
-                      )}
-                      {!task.waitOn && task.noteTitle && (
-                        <span className="truncate">关联：{task.noteTitle}</span>
-                      )}
-                      <span>截止时间：{task.plannedDate}</span>
-                    </div>
-                  </div>
-
-                  {/* Action Button */}
-                  <div className="shrink-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveWorkbench(task.impactedStage);
-                      }}
-                      className="px-5 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-bold transition-all  flex items-center gap-1"
-                    >
-                      处理
-                      <ChevronRight size={14} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          /* Empty State */
-          <div className="bg-surface-1 rounded-xl p-12 border border-border-default text-center flex flex-col items-center justify-center space-y-2">
-            <CheckCircle2 size={40} className="text-success mb-1" />
-            <h3 className="text-[16px] font-bold text-text-main">当前没有待处理事项</h3>
-            <p className="text-[13px] text-text-tertiary max-w-sm leading-relaxed">
-              新的内容确认、素材审核、发布异常或互动任务会出现在这里。
+    <div className="flex-1 flex flex-col h-full bg-canvas overflow-y-auto">
+      
+      {/* 1. Header Section */}
+      <div className="px-6 py-5 bg-surface border-b border-border-default shrink-0">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          
+          {/* Title & Subtitle */}
+          <div>
+            <h1 className="text-[20px] font-semibold text-text-primary tracking-tight">
+              执行中心
+            </h1>
+            <p className="text-[13px] text-text-secondary mt-1">
+              聚焦操盘手决策、验收与纠偏 · 员工正在执行的任务不默认占满工作台
             </p>
           </div>
-        )}
+
+          {/* 3 Focused Stats */}
+          <div className="flex items-center gap-3">
+            
+            {/* Stat 1: 待操盘手处理 */}
+            <div className="px-3.5 py-2 rounded-lg bg-surface-subtle border border-border-default min-w-[100px]">
+              <div className="text-[11.5px] text-text-tertiary">待操盘手处理</div>
+              <div className="text-[18px] font-semibold text-text-primary mt-0.5 tabular-nums">
+                {stats.needMyActionCount} <span className="text-[12px] font-normal text-text-secondary">项</span>
+              </div>
+            </div>
+
+            {/* Stat 2: 今日截止 */}
+            <div className="px-3.5 py-2 rounded-lg bg-surface-subtle border border-border-default min-w-[100px]">
+              <div className="text-[11.5px] text-text-tertiary">今日截止</div>
+              <div className={`text-[18px] font-semibold mt-0.5 tabular-nums ${stats.todayDeadlineCount > 0 ? 'text-amber-800' : 'text-text-primary'}`}>
+                {stats.todayDeadlineCount} <span className="text-[12px] font-normal text-text-secondary">项</span>
+              </div>
+            </div>
+
+            {/* Stat 3: 阻断中 */}
+            <div className="px-3.5 py-2 rounded-lg bg-surface-subtle border border-border-default min-w-[100px]">
+              <div className="text-[11.5px] text-text-tertiary">阻断流转</div>
+              <div className={`text-[18px] font-semibold mt-0.5 tabular-nums ${stats.blockedCount > 0 ? 'text-rose-600' : 'text-text-primary'}`}>
+                {stats.blockedCount} <span className="text-[12px] font-normal text-text-secondary">项</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
       </div>
+
+      {/* 2. Filter & Tools Bar */}
+      <div className="px-6 py-3.5 bg-surface border-b border-border-default sticky top-0 z-10 space-y-3">
+        
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          
+          {/* Category Tabs */}
+          <div className="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg border border-border-subtle">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('all');
+                setShowAllProcesses(false);
+              }}
+              className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
+                selectedCategory === 'all' && !showAllProcesses
+                  ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              全部待办 ({categoryCounts.all})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('content');
+                setShowAllProcesses(false);
+              }}
+              className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
+                selectedCategory === 'content' && !showAllProcesses
+                  ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              笔记确认 ({categoryCounts.content})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('material');
+                setShowAllProcesses(false);
+              }}
+              className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
+                selectedCategory === 'material' && !showAllProcesses
+                  ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              素材待办 ({categoryCounts.material})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('publish');
+                setShowAllProcesses(false);
+              }}
+              className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
+                selectedCategory === 'publish' && !showAllProcesses
+                  ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              发布核销 ({categoryCounts.publish})
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('anomaly');
+                setShowAllProcesses(false);
+              }}
+              className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
+                selectedCategory === 'anomaly' && !showAllProcesses
+                  ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              异常处理 ({categoryCounts.anomaly})
+            </button>
+          </div>
+
+          {/* Right Tools: Project Selector, Search, All Processes Toggle */}
+          <div className="flex items-center gap-2.5">
+            
+            {/* Project Filter */}
+            <select
+              value={selectedProjectFilter}
+              onChange={(e) => setSelectedProjectFilter(e.target.value)}
+              className="px-2.5 py-1.5 text-[12.5px] bg-surface border border-border-default rounded-lg text-text-primary focus:outline-none focus:border-neutral-900"
+            >
+              <option value="all">全部方案</option>
+              {projectOptions.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+
+            {/* Search Input */}
+            <div className="relative">
+              <input
+                type="text"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                placeholder="搜索任务、账号或执行人..."
+                className="pl-8 pr-3 py-1.5 text-[12.5px] bg-surface border border-border-default rounded-lg text-text-primary focus:outline-none focus:border-neutral-900 w-52 placeholder:text-text-tertiary"
+              />
+              <Search size={14} className="absolute left-2.5 top-2 text-text-tertiary" />
+            </div>
+
+            {/* View All Processes Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowAllProcesses(!showAllProcesses)}
+              className={`px-3 py-1.5 text-[12px] rounded-lg border transition-colors flex items-center gap-1.5 ${
+                showAllProcesses
+                  ? 'bg-surface-selected text-text-primary border-border-strong font-medium'
+                  : 'bg-surface text-text-secondary hover:text-text-primary border-border-default'
+              }`}
+            >
+              <Layers size={13} />
+              <span>查看全部流程 ({categoryCounts.allProcess})</span>
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* Batch Operation Bar (when items selected) */}
+        {selectedTaskIds.length > 0 && (
+          <div className="p-2.5 bg-surface-subtle border border-border-default rounded-lg flex items-center justify-between text-[12.5px] animate-in fade-in duration-150">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-text-primary">
+                已选中 <strong>{selectedTaskIds.length}</strong> 项任务
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedTaskIds([])}
+                className="text-text-tertiary hover:text-text-primary underline text-[11.5px]"
+              >
+                取消全选
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setBatchActionType('remind')}
+                className="px-3 py-1 bg-surface hover:bg-surface-hover border border-border-default rounded-md text-text-primary font-medium transition-colors"
+              >
+                批量发送催促提醒
+              </button>
+              <button
+                type="button"
+                onClick={() => setBatchActionType('change_assignee')}
+                className="px-3 py-1 bg-surface hover:bg-surface-hover border border-border-default rounded-md text-text-primary font-medium transition-colors"
+              >
+                批量调整负责人
+              </button>
+              <button
+                type="button"
+                onClick={() => setBatchActionType('extend_deadline')}
+                className="px-3 py-1 bg-surface hover:bg-surface-hover border border-border-default rounded-md text-text-primary font-medium transition-colors"
+              >
+                批量调整截止时间
+              </button>
+              <button
+                type="button"
+                onClick={() => setBatchActionType('cancel_task')}
+                className="px-3 py-1 bg-surface hover:bg-rose-50 text-rose-700 border border-rose-200 rounded-md font-medium transition-colors"
+              >
+                批量标记不再需要
+              </button>
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* 3. Task List Section */}
+      <div className="p-6 space-y-4 max-w-6xl">
+        
+        {/* Table Header / Select all */}
+        <div className="flex items-center justify-between text-[12px] text-text-secondary px-2">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSelectAllVisible}
+              className="text-text-tertiary hover:text-text-primary flex items-center gap-1.5"
+            >
+              {selectedTaskIds.length === filteredTasks.length && filteredTasks.length > 0 ? (
+                <CheckSquare size={15} className="text-neutral-900" />
+              ) : (
+                <Square size={15} />
+              )}
+              <span>全选可见 ({filteredTasks.length})</span>
+            </button>
+          </div>
+          <span>点击任务进入单条协作或处理</span>
+        </div>
+
+        {/* Empty state */}
+        {filteredTasks.length === 0 && (
+          <div className="p-12 text-center bg-surface border border-border-default rounded-xl space-y-3">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center">
+              <CheckCircle2 size={24} />
+            </div>
+            <div className="text-[14px] font-semibold text-text-primary">
+              当前暂无待操盘手处理的事项
+            </div>
+            <div className="text-[12.5px] text-text-secondary max-w-md mx-auto">
+              {showAllProcesses 
+                ? '未找到符合筛选条件的任务。' 
+                : '所有团队任务与生成流程均在正常推进中。如需查看员工执行进度，可开启右上角“查看全部流程”。'}
+            </div>
+          </div>
+        )}
+
+        {/* Task Cards List */}
+        <div className="space-y-3">
+          {filteredTasks.map((task) => {
+            const isSelected = selectedTaskIds.includes(task.id);
+            const isBatchGroup = task.isBatchGroup;
+
+            return (
+              <div
+                key={task.id}
+                onClick={() => setActiveTaskId(task.id)}
+                className={`p-4 bg-surface rounded-xl border transition-all cursor-pointer relative group ${
+                  isSelected 
+                    ? 'border-neutral-900 ring-1 ring-neutral-900/10' 
+                    : 'border-border-default hover:border-border-strong'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  
+                  {/* Left checkbox & Main Info */}
+                  <div className="flex items-start gap-3 flex-1">
+                    <button
+                      type="button"
+                      onClick={(e) => handleToggleSelectTask(task.id, e)}
+                      className="mt-0.5 text-text-tertiary hover:text-text-primary shrink-0"
+                    >
+                      {isSelected ? (
+                        <CheckSquare size={16} className="text-neutral-900" />
+                      ) : (
+                        <Square size={16} />
+                      )}
+                    </button>
+
+                    <div className="space-y-1.5 flex-1">
+                      
+                      {/* Top tags & Category */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Operator Category badge */}
+                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-text-secondary border border-border-subtle">
+                          {task.operatorCategory === 'content' && '笔记确认'}
+                          {task.operatorCategory === 'material' && '素材验收'}
+                          {task.operatorCategory === 'publish' && '发布核销'}
+                          {task.operatorCategory === 'anomaly' && '异常处理'}
+                        </span>
+
+                        {/* Project name */}
+                        <span className="text-[12px] text-text-tertiary">
+                          {task.projectName}
+                        </span>
+
+                        {/* Blocked Badge */}
+                        {task.isBlocked && (
+                          <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-900 border border-amber-200">
+                            阻断流转
+                          </span>
+                        )}
+
+                        {/* Anomaly Badge */}
+                        {task.isAnomaly && (
+                          <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+                            异常警报
+                          </span>
+                        )}
+
+                        {/* Batch Group Badge */}
+                        {isBatchGroup && (
+                          <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-neutral-900 text-white">
+                            批量任务 ({task.batchGroupCount} 篇)
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Title */}
+                      <div className="text-[14.5px] font-semibold text-text-primary group-hover:text-black transition-colors flex items-center gap-2">
+                        <span>{task.title}</span>
+                      </div>
+
+                      {/* Operator Action Summary & Reason */}
+                      <div className="text-[12.5px] text-text-secondary leading-snug">
+                        <strong className="text-text-primary">动作要求：</strong>{task.operatorActionSummary}
+                        {task.reasonForIntervention && (
+                          <span className="text-text-tertiary ml-2">（{task.reasonForIntervention}）</span>
+                        )}
+                      </div>
+
+                      {/* Batch Children Preview / Details snippet */}
+                      {isBatchGroup && task.batchChildrenPreview && (
+                        <div className="pt-2 flex flex-wrap gap-1.5">
+                          {task.batchChildrenPreview.map((item) => (
+                            <span key={item.id} className="px-2 py-1 bg-surface-subtle rounded text-[11.5px] text-text-secondary border border-border-subtle flex items-center gap-1">
+                              <span>{item.account}: {item.title}</span>
+                              <span className="text-[10px] text-text-tertiary">({item.status})</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Bottom row: Account, Waiting Role, Deadline */}
+                      <div className="pt-2 flex items-center gap-4 text-[12px] text-text-tertiary">
+                        <span>目标账号：<strong className="text-text-secondary font-medium">{task.targetAccount}</strong></span>
+                        <span>等待：<strong className="text-text-secondary font-medium">{task.waitingParty}</strong></span>
+                        <span className="flex items-center gap-1">
+                          <Clock size={13} />
+                          <span className={task.deadlineLabel === '已逾期' ? 'text-rose-600 font-medium' : ''}>
+                            {task.deadline} {task.deadlineLabel && `(${task.deadlineLabel})`}
+                          </span>
+                        </span>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* Right Primary Action Button */}
+                  <div className="shrink-0 flex flex-col items-end justify-between h-full pt-1">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveTaskId(task.id);
+                      }}
+                      className="px-3.5 py-1.5 rounded-lg text-[12.5px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover transition-colors flex items-center gap-1 shadow-sm"
+                    >
+                      <span>
+                        {task.operatorCategory === 'content' ? (isBatchGroup ? '逐篇确认' : '确认笔记') :
+                         task.operatorCategory === 'material' ? '验收素材' :
+                         task.operatorCategory === 'publish' ? '核销归档' :
+                         '处理异常'}
+                      </span>
+                      <ArrowRight size={13} />
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+
+      {/* Batch Action Modal */}
+      {batchActionType && (
+        <BatchActionModal
+          actionType={batchActionType}
+          selectedTasks={selectedTasks}
+          onClose={() => setBatchActionType(null)}
+          onSuccess={handleBatchUpdateTasks}
+        />
+      )}
+
     </div>
   );
 }
-

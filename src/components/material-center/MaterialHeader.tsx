@@ -3,11 +3,11 @@ import {
   Upload, Search, Filter, MoreHorizontal, Sparkles,
   FileText, History, Trash2, ShieldCheck, CheckSquare, X, Plus
 } from 'lucide-react';
-import { AssetStatus, FilterState, AssetSourceType } from './types';
+import { MaterialStatus, FilterState, MaterialSourceType } from './types';
 
 interface MaterialHeaderProps {
-  activeStatus: AssetStatus;
-  onChangeStatus: (status: AssetStatus) => void;
+  activeStatus: MaterialStatus;
+  onChangeStatus: (status: MaterialStatus) => void;
   searchQuery: string;
   onChangeSearchQuery: (query: string) => void;
   filterState: FilterState;
@@ -39,14 +39,13 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
   const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
   const [showFilterPopover, setShowFilterPopover] = useState<boolean>(false);
 
-  const getStatusLabel = (status: AssetStatus) => {
+  const getStatusLabel = (status: MaterialStatus) => {
     switch (status) {
       case 'available': return '可用';
       case 'reserved': return '已预占';
       case 'used': return '已使用';
-      case 'pending': return '待审核';
-      case 'unavailable': return '不可用';
-      case 'optimizing': return '优化中';
+      case 'pending_acceptance': return '待验收';
+      case 'archived': return '已归档';
       default: return '未知状态';
     }
   };
@@ -184,7 +183,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 bg-hover-bg/80 p-1 rounded-xl border border-border-default/80 self-start overflow-x-auto">
-          {(['available', 'reserved', 'used', 'pending'] as AssetStatus[]).map(status => (
+          {(['available', 'reserved', 'used', 'pending_acceptance', 'archived'] as MaterialStatus[]).map(status => (
             <button
               key={status}
               type="button"
@@ -271,7 +270,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                     <label className="text-text-tertiary font-extrabold block mb-1">来源类型</label>
                     <select
                       value={filterState.sourceType}
-                      onChange={(e) => onChangeFilterState({ ...filterState, sourceType: e.target.value as AssetSourceType | 'all' })}
+                      onChange={(e) => onChangeFilterState({ ...filterState, sourceType: e.target.value as MaterialSourceType | 'all' })}
                       className="w-full p-2 bg-page-bg border border-border-default rounded-xl font-bold text-text-main"
                     >
                       <option value="all">全部来源</option>

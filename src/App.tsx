@@ -147,6 +147,7 @@ import { Strategy } from "./components/rings/Strategy";
 import { ExecutionResult } from "./components/rings/ExecutionResult";
 import { ExecutionCenter } from "./components/merchant/ExecutionCenter";
 import { AIReview } from "./components/merchant/AIReview";
+import { ReviewWorkbench } from "./components/merchant/ReviewCenter/ReviewWorkbench";
 import { CRM } from "./components/rings/CRM";
 import { ProjectReview } from "./components/rings/ProjectReview";
 import { ProjectAssets } from "./components/rings/ProjectAssets";
@@ -350,10 +351,10 @@ const PROJECT_HISTORY_ITEMS = [
 ];
 
 const PROJECT_TABS = [
-  { id: "projects", name: "项目中心", icon: FolderKanban },
+  { id: "projects", name: "方案中心", icon: FolderKanban },
   { id: "execution", name: "执行中心", icon: LayoutGrid },
   { id: "accounts", name: "账号资产", icon: Users },
-  { id: "review", name: "AI复盘", icon: Sparkles },
+  { id: "review", name: "复盘与报告", icon: Sparkles },
 ];
 
 export default function App() {
@@ -1645,7 +1646,7 @@ export default function App() {
                       <Lock size={32} />
                     </div>
                     <h3 className="text-xl font-semibold text-text-main mb-2">
-                      项目中心暂未解锁
+                      方案中心暂未解锁
                     </h3>
                     <p className="text-text-tertiary text-sm max-w-sm leading-relaxed mb-6">
                       该商家还在冷启动配置阶段。请先前往工作台，与智能搭档
@@ -1670,7 +1671,11 @@ export default function App() {
 
                     {workflowTab === "execution" && <ExecutionCenter />}
 
-                    {workflowTab === "review" && <AIReview />}
+                    {workflowTab === "review" && (
+                      <ReviewWorkbench
+                        onNavigateToExecution={() => setWorkflowTab("execution")}
+                      />
+                    )}
                     {workflowTab === "accounts" && <AccountAssets />}
                     {workflowTab === "blueocean" && <BlueOcean />}
                     {workflowTab === "topics" && <TopicStrategy />}
@@ -1720,7 +1725,10 @@ export default function App() {
 
         {activeNav === "materials" && (
           <div className="flex-1 h-full overflow-y-auto bg-page-bg">
-            <MaterialStation activeProject={activeProject} />
+            <MaterialStation
+              activeProject={activeProject}
+              onNavigateToExecution={() => setActiveNav("execution")}
+            />
           </div>
         )}
         {activeNav === "search_explorer" && (

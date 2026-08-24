@@ -73,7 +73,7 @@ export function ProjectAssets() {
                 onClick={() => setSelectedProject(null)}
                 className="flex items-center gap-1 text-[13px] text-text-tertiary hover:text-text-main font-bold transition-colors"
               >
-                <ChevronLeft size={16} /> 返回项目列表
+                <ChevronLeft size={16} /> 返回方案列表
               </button>
               <div className="w-px h-4 bg-neutral-200" />
               <h2 className="text-[18px] font-bold text-text-main flex items-center gap-2">

@@ -682,7 +682,7 @@ export const ProjectReview: React.FC = () => {
 
                 <button
                   onClick={() => {
-                    alert("项目调整草案已通过！已更新项目计划并同步至【项目中心】。");
+                    alert("项目调整草案已通过！已更新项目计划并同步至【方案中心】。");
                     setShowAdjustmentDraftModal(false);
                   }}
                   className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12px] font-bold transition-colors shadow-sm"

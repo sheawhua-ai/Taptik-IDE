@@ -575,7 +575,7 @@ export function AddSingleNoteModal({ project, onClose, initialTab = "single" }: 
               ? "支持上传文件后进行列匹配确认并批量入库" 
               : activeTab === "feishu"
               ? "与飞书多维表格双向数据同步"
-              : "填写信息后直接向项目列表追加单篇笔记"}
+              : "填写信息后直接向方案列表追加单篇笔记"}
           </span>
           <button
             type="button"

@@ -134,7 +134,7 @@ export function ProjectCenter({
   if (!currentProject) {
     return (
       <div className="flex-1 flex items-center justify-center text-text-tertiary bg-page-bg text-[14px]">
-        请选择左侧项目或新建项目
+        请选择左侧方案或新建方案
       </div>
     );
   }
@@ -281,18 +281,18 @@ export function ProjectCenter({
           >
             <div className="p-4 border-b border-border-default space-y-3 w-[280px]">
               <div className="flex justify-between items-center">
-                <h2 className="text-[15px] font-semibold text-text-main">项目列表</h2>
+                <h2 className="text-[15px] font-semibold text-text-main">方案列表</h2>
                 <div className="flex items-center gap-1">
                   <button 
                     onClick={() => setActiveWorkbench("create_project")}
                     className="w-7 h-7 rounded-lg bg-btn-main text-white flex items-center justify-center hover:bg-btn-main-hover transition-colors"
-                    title="新建项目"
+                    title="新建方案"
                   >
                     <Plus size={14} />
                   </button>
                   <button 
                     onClick={() => setIsSidebarOpen(false)} 
-                    title="收起项目列表" 
+                    title="收起方案列表" 
                     className="w-7 h-7 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"
                   >
                     <PanelLeftClose size={16} />
@@ -304,7 +304,7 @@ export function ProjectCenter({
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
                 <input 
                   type="text" 
-                  placeholder="搜索项目..." 
+                  placeholder="搜索方案..." 
                   value={projectSearchQuery}
                   onChange={(e) => setProjectSearchQuery(e.target.value)}
                   className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[12.5px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
@@ -387,7 +387,7 @@ export function ProjectCenter({
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                title="展开项目列表"
+                title="展开方案列表"
                 className="mt-0.5 w-7 h-7 flex items-center justify-center border border-border-default rounded-lg text-text-secondary hover:text-text-main hover:bg-surface-subtle transition-colors"
               >
                 <PanelLeftOpen size={15} />
@@ -562,12 +562,12 @@ export function ProjectCenter({
                   )}
                 </div>
 
-                {/* 1.2 项目策略与方案摘要 */}
+                {/* 1.2 运营策略摘要 */}
                 <div className="bg-surface-1 rounded-xl p-5 border border-border-default space-y-4">
                   <div className="flex items-center justify-between border-b border-border-default pb-3">
                     <h3 className="text-[14px] font-semibold text-text-main flex items-center gap-2">
                       <Target size={16} className="text-text-secondary" />
-                      项目策略与方案
+                      运营策略
                     </h3>
                     <div className="flex items-center gap-2">
                       <button 
@@ -1379,6 +1379,14 @@ export function ProjectCenter({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Create Project Workstation (AI Agent Driven) */}
+      {activeWorkbench === "create_project" && (
+        <CreateProjectWorkstation 
+          onClose={() => setActiveWorkbench(null)} 
+          onCreate={() => setActiveWorkbench(null)} 
+        />
       )}
 
       {/* Note Import / Creation Modal */}
