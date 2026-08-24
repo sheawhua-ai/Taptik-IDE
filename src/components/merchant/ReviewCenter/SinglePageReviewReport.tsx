@@ -24,7 +24,7 @@ export function SinglePageReviewReport({
   isDataSpecExpanded,
   onToggleDataSpec,
 }: SinglePageReviewReportProps) {
-  const { coreConclusions, suggestedActions, analysisDetails, crossProjectComparison } = task;
+  const { coreConclusions, suggestedActions, analysisDetails } = task;
 
   // Local state for expandable data spec if not controlled from parent
   const [internalDataSpecOpen, setInternalDataSpecOpen] = useState(false);
@@ -33,10 +33,8 @@ export function SinglePageReviewReport({
 
   // Filter inside content performance table
   const [contentFilter, setContentFilter] = useState<"all" | "high_converting" | "qa" | "promo">("all");
-  // Comparison metric filter
-  const [comparisonMetric, setComparisonMetric] = useState<"conversion" | "impressions" | "leads" | "cpl">("conversion");
-  // Funnel filter
-  const [funnelDimension, setFunnelDimension] = useState<"overall" | "by_store" | "night_loss">("overall");
+  // Expandable representative samples state (default show top 3)
+  const [showAllSamples, setShowAllSamples] = useState(false);
 
   // Applied actions count
   const appliedCount = suggestedActions.filter((a) => !!a.appliedDestinationLabel).length;
@@ -74,9 +72,9 @@ export function SinglePageReviewReport({
       note: "痛点疑问型封面点击率达 48.6%",
     },
     {
-      label: "笔记总互动量 (赞/藏/评)",
-      current: "28,240",
-      before: "23,820",
+      label: "笔记总互动量",
+      current: "28,240 次",
+      before: "23,820 次",
       change: "+18.5%",
       isGood: true,
       efficiencyLabel: "综合互动率",
@@ -120,7 +118,6 @@ export function SinglePageReviewReport({
       conversionRate: "58.2%",
       isTop: true,
       tags: ["高转化标杆", "真实出镜", "置顶引导"],
-      leadRatio: "篇均产出第一",
     },
     {
       id: "note-2",
@@ -135,7 +132,6 @@ export function SinglePageReviewReport({
       conversionRate: "52.4%",
       isTop: true,
       tags: ["搜索长尾", "成分党", "顾问答疑"],
-      leadRatio: "长效获客",
     },
     {
       id: "note-3",
@@ -150,7 +146,6 @@ export function SinglePageReviewReport({
       conversionRate: "48.3%",
       isTop: false,
       tags: ["新手痛点", "自测表领取"],
-      leadRatio: "平稳转化",
     },
     {
       id: "note-4",
@@ -165,7 +160,6 @@ export function SinglePageReviewReport({
       conversionRate: "28.5%",
       isTop: false,
       tags: ["泛流量偏高", "评论区无引导"],
-      leadRatio: "转化偏低",
     },
     {
       id: "note-5",
@@ -180,7 +174,6 @@ export function SinglePageReviewReport({
       conversionRate: "18.2%",
       isTop: false,
       tags: ["低转化待优化", "过度硬广"],
-      leadRatio: "产出极低",
     },
   ];
 
@@ -190,6 +183,8 @@ export function SinglePageReviewReport({
     if (contentFilter === "promo") return note.type.includes("促销");
     return true;
   });
+
+  const displayedNotes = showAllSamples ? filteredNotes : filteredNotes.slice(0, 3);
 
   // 24-Hour distribution
   const hourlyData = [
@@ -207,102 +202,138 @@ export function SinglePageReviewReport({
   ];
 
   return (
-    <div id="single-page-review-report" className="space-y-8 pb-16 font-sans text-text-main">
+    <div id="single-page-review-report" className="space-y-8 pb-16 font-sans text-text-main relative">
       
       {/* ========================================================= */}
-      {/* 1. 复盘结论 (Executive Conclusion) */}
+      {/* Sticky Table of Contents (报告目录) */}
       {/* ========================================================= */}
-      <section id="section-conclusion" className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+      <div className="sticky top-0 z-30 bg-surface-1/95 backdrop-blur-md border-b border-border-default px-6 py-2.5 flex items-center justify-between text-xs font-medium text-text-secondary shadow-2xs">
+        <div className="flex items-center gap-6">
+          <a 
+            href="#section-conclusion" 
+            onClick={(e) => { e.preventDefault(); document.getElementById('section-conclusion')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="hover:text-btn-main transition-colors font-semibold"
+          >
+            结论
+          </a>
+          <span className="text-border-default">｜</span>
+          <a 
+            href="#section-metrics" 
+            onClick={(e) => { e.preventDefault(); document.getElementById('section-metrics')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="hover:text-btn-main transition-colors font-semibold"
+          >
+            关键指标
+          </a>
+          <span className="text-border-default">｜</span>
+          <a 
+            href="#section-analyses" 
+            onClick={(e) => { e.preventDefault(); document.getElementById('section-analyses')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="hover:text-btn-main transition-colors font-semibold"
+          >
+            分析与证据
+          </a>
+          <span className="text-border-default">｜</span>
+          <a 
+            href="#section-suggestions" 
+            onClick={(e) => { e.preventDefault(); document.getElementById('section-suggestions')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="hover:text-btn-main transition-colors font-semibold"
+          >
+            后续建议
+          </a>
+        </div>
+        <div className="text-[11px] text-text-tertiary">
+          单页纵向复盘报告锚点目录
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 1. 核心复盘结论 (Core Conclusions) */}
+      {/* ========================================================= */}
+      <section id="section-conclusion" className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-3">
+        <div className="flex items-center justify-between border-b border-border-subtle pb-2.5">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-4.5 bg-btn-main rounded-sm" />
             <h2 className="text-[16px] md:text-[17px] font-bold text-text-main tracking-tight">
               1. 核心复盘结论
             </h2>
           </div>
-          <span className="text-[12px] text-text-tertiary">
-            {analysisDetails?.summary?.timeWindow || task.dateRange.label} · 覆盖 {task.projectNames.join("、")}
-          </span>
         </div>
 
-        {/* Big Conclusion Highlight Banner */}
-        <div className="p-4 md:p-5 bg-surface-subtle rounded-xl border border-border-default space-y-3">
-          <p className="text-[15px] md:text-[16px] font-bold text-text-main leading-relaxed">
-            {coreConclusions?.overallPerformance?.title 
-              ? `${coreConclusions.overallPerformance.title}。${coreConclusions.mainIssue.title}。`
-              : "周期内共发布 58 篇笔记，带来 44.2 万曝光与 1,420 条私信咨询。三亚店通过‘专业答疑与实测’类笔记贡献了 54% 的高意向线索，但夜间 20:00—24:00 咨询高峰时段由于人工回复断层造成明显线索流失。"}
+        {/* Compressed Conclusion Banner (~25% height reduced) */}
+        <div className="p-3.5 md:p-4 bg-surface-subtle rounded-xl border border-border-default space-y-2.5">
+          <p className="text-[14.5px] md:text-[15.5px] font-bold text-text-main leading-relaxed">
+            曝光稳定上升，但私信承接效率分化。内容互动正常，但青岛/杭州私信转化偏低。
           </p>
 
-          <div className="flex flex-wrap items-center gap-2 text-[12px] pt-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg font-semibold">
-              <TrendingUp size={13} className="text-emerald-600" />
-              <span>获客增长极：三亚店实测答疑（私信留资率 58.2%，篇均产出 34.9 条咨询）</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg font-semibold">
-              <Clock size={13} className="text-amber-600" />
-              <span>核心承接卡点：夜间 20:00—24:00 咨询集中但流失率达 52%</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded-lg font-semibold">
-              <Layers size={13} className="text-blue-600" />
-              <span>内容规模反馈：累计发布 58 篇（爆文率 17.2% / 总曝光 44.2万）</span>
-            </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11.5px] pt-1">
+            <div className="px-3 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg font-semibold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span>主要增长：三亚店专业答疑 (留资率 58.2%)</span>
+            </div>
+            <div className="px-3 py-1.5 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg font-semibold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+              <span>核心问题：夜间咨询流失 (20点-24点占比41.9%)</span>
+            </div>
+            <div className="px-3 py-1.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-lg font-semibold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+              <span>内容规模：58篇，爆文率17.2%</span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ========================================================= */}
-      {/* 2. 核心内容与获客指标大盘 (Content & Lead Generation Metrics) */}
+      {/* 2. 关键经营指标 (Key Operating Metrics) */}
       {/* ========================================================= */}
       <section id="section-metrics" className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-border-subtle pb-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-4.5 bg-btn-main rounded-sm" />
-            <div>
-              <h2 className="text-[16px] md:text-[17px] font-bold text-text-main tracking-tight">
-                2. 笔记内容运营与获客指标大盘
-              </h2>
-            </div>
+            <h2 className="text-[16px] md:text-[17px] font-bold text-text-main tracking-tight">
+              2. 关键经营指标
+            </h2>
           </div>
           <span className="text-[12px] text-text-tertiary">
             基于 58 篇笔记互动与私信真实数据 · 较上一周期环比
           </span>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+        {/* 3 columns x 2 rows metric grid, compact & no truncation */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
           {coreMetrics.map((m, idx) => (
             <div
               key={idx}
               className="bg-surface-subtle p-3.5 rounded-xl border border-border-default shadow-2xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="text-[11.5px] font-semibold text-text-secondary truncate" title={m.label}>
+                <span className="text-[12px] font-bold text-text-secondary">
                   {m.label}
                 </span>
                 <span
-                  className={`inline-flex items-center gap-0.5 text-[10.5px] font-bold px-1 py-0.2 rounded ${
+                  className={`inline-flex items-center gap-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded ${
                     m.isGood ? "text-emerald-700 bg-emerald-50 border border-emerald-200" : "text-red-700 bg-red-50 border border-red-200"
                   }`}
                 >
-                  {m.isGood ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                  {m.isGood ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
                   <span>{m.change}</span>
                 </span>
               </div>
 
               <div>
-                <div className="text-[17px] md:text-[19px] font-bold text-text-main tracking-tight font-mono">
+                <div className="text-[18px] md:text-[20px] font-bold text-text-main tracking-tight font-mono">
                   {m.current}
                 </div>
-                <div className="text-[10.5px] text-text-tertiary font-mono mt-0.5">
+                <div className="text-[11px] text-text-tertiary font-mono mt-0.5">
                   上期基准 {m.before}
                 </div>
               </div>
 
               <div className="pt-2 border-t border-border-subtle space-y-1">
-                <div className="flex justify-between items-center text-[10px]">
-                  <span className="text-text-tertiary truncate">{m.efficiencyLabel}</span>
-                  <span className="font-bold text-text-main font-mono shrink-0">{m.efficiencyValue}</span>
+                <div className="flex justify-between items-center text-[10.5px]">
+                  <span className="text-text-tertiary">{m.efficiencyLabel}</span>
+                  <span className="font-bold text-text-main font-mono">{m.efficiencyValue}</span>
                 </div>
-                <div className="text-[9.5px] text-text-tertiary truncate" title={m.note}>
+                <div className="text-[10px] text-text-tertiary truncate" title={m.note}>
                   {m.note}
                 </div>
               </div>
@@ -312,209 +343,112 @@ export function SinglePageReviewReport({
       </section>
 
       {/* ========================================================= */}
-      {/* 3. 关键分析 (Key Analyses: 门店表现 → 内容表现 → 用户洞察 → 转化链路) */}
+      {/* 3. 关键分析与证据 (Key Analysis & Evidence) */}
       {/* ========================================================= */}
       <section id="section-analyses" className="space-y-6">
         <div className="flex items-center gap-2 border-b border-border-subtle pb-2">
           <span className="w-2.5 h-4.5 bg-btn-main rounded-sm" />
           <h2 className="text-[16px] md:text-[17px] font-bold text-text-main tracking-tight">
-            3. 关键业务分析（真实数据与证据归因）
+            3. 关键分析与证据
           </h2>
         </div>
 
-        {/* 3.1 门店表现与项目对比 (Store Performance) */}
+        {/* 3.1 门店账号表现对比 (Store Comparison Table) */}
         <div className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded">
-                  分析维度一
-                </span>
-                <h3 className="text-[15px] font-bold text-text-main">
-                  3.1 门店账号矩阵产出与获客表现
-                </h3>
-              </div>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
-                结论：三亚店长号通过真实专业答疑实现 58.2% 留资转化；青岛体验店因过度促销与夜间响应不及时导致转化效率偏低。
-              </p>
+          <div className="border-b border-border-subtle pb-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded">
+                3.1
+              </span>
+              <h3 className="text-[15px] font-bold text-text-main">
+                门店账号表现对比
+              </h3>
             </div>
-
-            <div className="flex bg-surface-subtle p-0.5 rounded-lg border border-border-default text-[11.5px]">
-              {[
-                { id: "conversion", label: "有效留资率" },
-                { id: "impressions", label: "发文与曝光" },
-                { id: "leads", label: "互动与私信量" },
-              ].map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => setComparisonMetric(st.id as any)}
-                  className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                    comparisonMetric === st.id
-                      ? "bg-surface-1 text-text-main shadow-xs font-bold"
-                      : "text-text-tertiary hover:text-text-main"
-                  }`}
-                >
-                  {st.label}
-                </button>
-              ))}
-            </div>
+            <p className="text-[12px] text-text-tertiary mt-0.5">
+              结论：三亚海棠湾店长账号通过真实专业答疑实现最高留资率，青岛体验店因促销偏多与响应不足导致转化偏低。
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-            {/* Sanya */}
-            <div className="bg-surface-subtle p-4 rounded-xl border-2 border-emerald-500/30 shadow-2xs space-y-3 relative overflow-hidden">
-              <div className="absolute top-0 right-0 px-2 py-0.5 bg-emerald-600 text-white text-[10.5px] font-bold rounded-bl-lg">
-                获客效率第一
-              </div>
-              <div className="flex items-center gap-2">
-                <Store size={16} className="text-emerald-600" />
-                <h4 className="text-[14px] font-bold text-text-main">三亚海棠湾店长账号</h4>
-              </div>
+          <div className="border border-border-default rounded-xl overflow-hidden">
+            <table className="w-full text-left text-[12px]">
+              <thead>
+                <tr className="bg-surface-subtle border-b border-border-default text-text-tertiary font-medium">
+                  <th className="py-2.5 px-4">门店账号</th>
+                  <th className="py-2.5 px-4">发布数量与曝光</th>
+                  <th className="py-2.5 px-4">有效留资率</th>
+                  <th className="py-2.5 px-4">私信咨询量</th>
+                  <th className="py-2.5 px-4">篇均线索产出</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-subtle bg-surface-1 text-text-main">
+                <tr className="hover:bg-surface-subtle">
+                  <td className="py-3 px-4 font-bold flex items-center gap-1.5">
+                    <Store size={14} className="text-emerald-600" />
+                    <span>三亚海棠湾店长账号</span>
+                  </td>
+                  <td className="py-3 px-4 font-mono">22 篇 · 18.4 万</td>
+                  <td className="py-3 px-4 font-mono font-bold text-emerald-700 bg-emerald-50/50">
+                    58.2% (全网最高)
+                  </td>
+                  <td className="py-3 px-4 font-mono">768 条 (54.1%)</td>
+                  <td className="py-3 px-4 font-mono font-bold text-emerald-700">34.9 条/篇</td>
+                </tr>
+                <tr className="hover:bg-surface-subtle">
+                  <td className="py-3 px-4 font-bold flex items-center gap-1.5">
+                    <Store size={14} className="text-amber-600" />
+                    <span>青岛万象城体验店账号</span>
+                  </td>
+                  <td className="py-3 px-4 font-mono">20 篇 · 14.2 万</td>
+                  <td className="py-3 px-4 font-mono font-bold text-amber-700 bg-amber-50/50">
+                    24.5% (偏低卡点)
+                  </td>
+                  <td className="py-3 px-4 font-mono">362 条 (25.5%)</td>
+                  <td className="py-3 px-4 font-mono text-amber-700">18.1 条/篇</td>
+                </tr>
+                <tr className="hover:bg-surface-subtle">
+                  <td className="py-3 px-4 font-bold flex items-center gap-1.5">
+                    <Store size={14} className="text-blue-600" />
+                    <span>杭州西湖概念店账号</span>
+                  </td>
+                  <td className="py-3 px-4 font-mono">16 篇 · 11.6 万</td>
+                  <td className="py-3 px-4 font-mono">48.3% (平稳)</td>
+                  <td className="py-3 px-4 font-mono">290 条 (20.4%)</td>
+                  <td className="py-3 px-4 font-mono">18.1 条/篇</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-              <div className="grid grid-cols-2 gap-2 text-[12px]">
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">发文与总曝光</span>
-                  <span className="font-bold text-text-main">22 篇 · 18.4 万</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">有效留资率</span>
-                  <span className="font-bold text-emerald-700">58.2% (矩阵首位)</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">私信咨询总量</span>
-                  <span className="font-bold text-text-main">768 条 (占54.1%)</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">篇均线索产出</span>
-                  <span className="font-bold text-emerald-700">34.9 条/篇 (最高)</span>
-                </div>
-              </div>
-
-              <div className="p-2.5 bg-emerald-50/70 rounded-lg border border-emerald-200 text-[11.5px] text-text-secondary space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-emerald-800">
-                  <Award size={13} className="text-emerald-700" />
-                  <span>标杆经验证据：</span>
-                </div>
-                <p>店长真人实测出镜 + 评论区置顶领取《科学换粮自测表》，平均响应时效 3.2 分钟，有效承接高意向宠主。</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11.5px]">
+            <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200 text-text-secondary">
+              <strong className="text-emerald-800 block mb-0.5">三亚：</strong>
+              专业答疑与快速回复形成高转化。
             </div>
-
-            {/* Qingdao */}
-            <div className="bg-surface-subtle p-4 rounded-xl border border-border-default shadow-2xs space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Store size={16} className="text-amber-600" />
-                  <h4 className="text-[14px] font-bold text-text-main">青岛万象城体验店账号</h4>
-                </div>
-                <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[10.5px] font-bold rounded">
-                  承接待优化
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-[12px]">
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">发文与总曝光</span>
-                  <span className="font-bold text-text-main">20 篇 · 14.2 万</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">有效留资率</span>
-                  <span className="font-bold text-amber-700">24.5% (偏低)</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">私信咨询总量</span>
-                  <span className="font-bold text-text-main">362 条 (占25.5%)</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">篇均线索产出</span>
-                  <span className="font-bold text-amber-700">18.1 条/篇</span>
-                </div>
-              </div>
-
-              <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-[11.5px] text-text-secondary space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-amber-800">
-                  <AlertTriangle size={13} className="text-amber-700" />
-                  <span>差距原因归因：</span>
-                </div>
-                <p>内容以促销海报为主，泛流量占比高；夜间无自动接待话术，平均首次响应超 45 分钟造成大量流失。</p>
-              </div>
+            <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200 text-text-secondary">
+              <strong className="text-amber-800 block mb-0.5">青岛：</strong>
+              促销内容偏多，夜间响应不足。
             </div>
-
-            {/* Hangzhou */}
-            <div className="bg-surface-subtle p-4 rounded-xl border border-border-default shadow-2xs space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Store size={16} className="text-blue-600" />
-                  <h4 className="text-[14px] font-bold text-text-main">杭州西湖概念店账号</h4>
-                </div>
-                <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[10.5px] font-bold rounded">
-                  平稳转化
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-[12px]">
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">发文与总曝光</span>
-                  <span className="font-bold text-text-main">16 篇 · 11.6 万</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">有效留资率</span>
-                  <span className="font-bold text-text-main">48.3% (中等)</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">私信咨询总量</span>
-                  <span className="font-bold text-text-main">290 条 (占20.4%)</span>
-                </div>
-                <div className="p-2 bg-surface-1 rounded border border-border-subtle">
-                  <span className="text-text-tertiary block text-[10.5px]">篇均线索产出</span>
-                  <span className="font-bold text-text-main">18.1 条/篇</span>
-                </div>
-              </div>
-
-              <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-[11.5px] text-text-secondary space-y-1">
-                <span className="font-bold text-text-main block">ℹ️ 运营特征分析：</span>
-                <p>日常科普类笔记互动平稳（互动率 15.4%），但缺乏搜索长尾关键词布局，需增加高搜低竞词覆盖。</p>
-              </div>
+            <div className="p-3 bg-surface-subtle rounded-xl border border-border-default text-text-secondary">
+              <strong className="text-text-main block mb-0.5">杭州：</strong>
+              互动稳定，但搜索关键词覆盖不足。
             </div>
           </div>
         </div>
 
-        {/* 3.2 内容表现与样本分析 (Content Performance) */}
+        {/* 3.2 内容表现与高低转化样本 */}
         <div className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-bold rounded">
-                  分析维度二
-                </span>
-                <h3 className="text-[15px] font-bold text-text-main">
-                  3.2 内容表现与高低转化样本归因
-                </h3>
-              </div>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
-                结论：专业答疑与实测类笔记留资转化率（58.2%）是纯活动硬广（18.2%）的 3.2 倍，长尾搜索词是获客主阵地。
-              </p>
+          <div className="border-b border-border-subtle pb-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-bold rounded">
+                3.2
+              </span>
+              <h3 className="text-[15px] font-bold text-text-main">
+                内容表现与高低转化样本
+              </h3>
             </div>
-
-            <div className="flex bg-surface-subtle p-0.5 rounded-lg border border-border-default text-[11.5px]">
-              {[
-                { id: "all", label: "全部样本 (58篇)" },
-                { id: "high_converting", label: "⭐ 高转化标杆" },
-                { id: "qa", label: "专业答疑类" },
-                { id: "promo", label: "活动促销类" },
-              ].map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => setContentFilter(f.id as any)}
-                  className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                    contentFilter === f.id
-                      ? "bg-surface-1 text-text-main shadow-xs font-bold"
-                      : "text-text-tertiary hover:text-text-main"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
+            <p className="text-[12px] text-text-tertiary mt-0.5">
+              结论：专业答疑与实测类笔记留资转化率（58.2%）是纯活动硬广（18.2%）的 3.2 倍，长尾搜索词是获客主阵地。
+            </p>
           </div>
 
           {/* High vs Low Attributes Evidence Box */}
@@ -522,12 +456,12 @@ export function SinglePageReviewReport({
             <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-200 space-y-2">
               <div className="flex items-center gap-1.5 font-bold text-emerald-800 text-[13px]">
                 <CheckCircle2 size={15} />
-                <span>高转化笔记关键要素 (Top 20% 样本)</span>
+                <span>高转化内容关键要素 (Top 20% 样本)</span>
               </div>
               <ul className="space-y-1.5 text-text-secondary text-[11.5px] leading-relaxed">
                 <li>• <strong>标题：</strong> 14-18字，以真实疑问痛点切入（如“幼犬换粮连拉3天便便？”）。</li>
                 <li>• <strong>封面：</strong> 真人店长手把手温水泡粮、真实便便状态实拍，杜绝棚拍精修。</li>
-                <li>• <strong>关键词：</strong> 聚焦‘幼犬软便’、‘低温烘焙粮’等月搜 10万+ 商业精准词。</li>
+                <li>• <strong>关键词：</strong> 聚焦‘幼犬软便’、‘低温烘焙粮’等商业精准词。</li>
                 <li>• <strong>转化触点：</strong> 置顶第一条评论引导领取《科学换粮自测表》私信通道。</li>
               </ul>
             </div>
@@ -538,19 +472,19 @@ export function SinglePageReviewReport({
                 <span>低转化内容问题特征 (Bottom 20% 样本)</span>
               </div>
               <ul className="space-y-1.5 text-text-secondary text-[11.5px] leading-relaxed">
-                <li>• <strong>标题：</strong> 超过22字，大篇幅品牌口号，核心修饰词在移动端被截断。</li>
-                <li>• <strong>封面：</strong> 纯包装棚拍精修图或商场海报，被算法判定商业硬广限制推荐。</li>
+                <li>• <strong>标题：</strong> 超过22字，大篇幅品牌口号，移动端易被截断。</li>
+                <li>• <strong>封面：</strong> 纯包装棚拍精修图或商场海报，被算法判定商业硬广。</li>
                 <li>• <strong>关键词：</strong> 泛品牌词堆砌，缺乏用户主动搜索场景。</li>
                 <li>• <strong>转化触点：</strong> 仅正文文末一句口播，评论区无任何互动工具承接。</li>
               </ul>
             </div>
           </div>
 
-          {/* Note Ranking Table */}
+          {/* Note Ranking Table with Expand/Collapse */}
           <div className="border border-border-default rounded-xl overflow-hidden">
             <div className="px-4 py-2.5 bg-surface-subtle border-b border-border-default flex items-center justify-between text-[12px]">
               <span className="font-semibold text-text-main">代表性笔记内容与获客明细</span>
-              <span className="text-text-tertiary">共 {filteredNotes.length} 篇代表样本</span>
+              <span className="text-text-tertiary">默认展示前 3 条（共 {filteredNotes.length} 条样本）</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-[12px]">
@@ -560,13 +494,13 @@ export function SinglePageReviewReport({
                     <th className="py-2.5 px-4">内容类型</th>
                     <th className="py-2.5 px-4">曝光量</th>
                     <th className="py-2.5 px-4">阅读与点击率</th>
-                    <th className="py-2.5 px-4">互动量 (赞/藏/评)</th>
+                    <th className="py-2.5 px-4">互动量</th>
                     <th className="py-2.5 px-4">私信咨询</th>
                     <th className="py-2.5 px-4">私信留资率</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-subtle bg-surface-1">
-                  {filteredNotes.map((note) => (
+                  {displayedNotes.map((note) => (
                     <tr key={note.id} className="hover:bg-surface-subtle transition-colors">
                       <td className="py-3 px-4 max-w-xs">
                         <div className="font-semibold text-text-main truncate" title={note.title}>
@@ -596,34 +530,44 @@ export function SinglePageReviewReport({
                 </tbody>
               </table>
             </div>
+            
+            {/* Expand / Collapse Button */}
+            <div className="p-3 bg-surface-subtle border-t border-border-default text-center">
+              <button
+                onClick={() => setShowAllSamples(!showAllSamples)}
+                className="text-xs font-semibold text-btn-main hover:underline flex items-center justify-center gap-1 mx-auto"
+              >
+                <span>{showAllSamples ? "收起部分样本" : `查看全部 ${filteredNotes.length} 条代表样本`}</span>
+                {showAllSamples ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* 3.3 用户意图与时段洞察 (User Insights) */}
+        {/* 3.3 用户意图与咨询时段 */}
         <div className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-4">
           <div className="border-b border-border-subtle pb-3">
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold rounded">
-                分析维度三
+                3.3
               </span>
               <h3 className="text-[15px] font-bold text-text-main">
-                3.3 真实用户意图与咨询时段分布
+                用户意图与咨询时段
               </h3>
             </div>
             <p className="text-[12px] text-text-tertiary mt-0.5">
-              基于 1,420 条私信会话真实文本归纳：64.2% 用户因换粮软便等急迫痛点发起咨询；全天 41.9% 的咨询发生在 20:00—24:00 夜间时段。
+              基于 1,420 条私信会话文本归纳：64.2% 用户因换粮软便等急迫痛点发起咨询；全天 41.9% 的咨询发生在 20:00—24:00 夜间时段。
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-            {/* User Needs */}
             <div className="bg-surface-subtle p-4 rounded-xl border border-border-default space-y-3">
-              <span className="text-[13px] font-bold text-text-main block">核心咨询需求与痛点分布 (1,420条私信文本归因)</span>
+              <span className="text-[13px] font-bold text-text-main block">核心咨询需求与痛点分布</span>
               <div className="space-y-2.5 text-[12px]">
                 <div>
                   <div className="flex justify-between text-[11.5px] mb-1">
                     <span className="text-text-secondary">幼犬断奶换粮 / 软便拉稀应对</span>
-                    <span className="font-bold text-btn-main">64.2% (高意向)</span>
+                    <span className="font-bold text-btn-main">64.2%</span>
                   </div>
                   <div className="w-full bg-surface-1 h-2 rounded-full overflow-hidden border border-border-subtle">
                     <div className="bg-btn-main h-full rounded-full" style={{ width: "64.2%" }} />
@@ -652,15 +596,13 @@ export function SinglePageReviewReport({
               </div>
             </div>
 
-            {/* High ROI Search Words */}
             <div className="bg-surface-subtle p-4 rounded-xl border border-border-default space-y-3">
-              <span className="text-[13px] font-bold text-text-main block">高转化长尾搜索词排名 (聚光搜索指数)</span>
+              <span className="text-[13px] font-bold text-text-main block">高转化长尾搜索词排名</span>
               <div className="space-y-2 text-[12px]">
                 {[
                   { term: "幼犬软便怎么换粮", vol: "12.8 万/月", roi: "高意向词" },
                   { term: "低温烘焙粮推荐 幼犬", vol: "9.4 万/月", roi: "高商业价值" },
                   { term: "7天换粮过渡法 表格", vol: "7.6 万/月", roi: "留资触点" },
-                  { term: "金毛幼犬换粮拉稀怎么办", vol: "5.2 万/月", roi: "垂直场景" },
                 ].map((item, idx) => (
                   <div key={idx} className="p-2 bg-surface-1 rounded-lg border border-border-subtle flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -686,10 +628,10 @@ export function SinglePageReviewReport({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-[13px] font-bold text-text-main">
                 <Clock size={15} className="text-btn-main" />
-                <span>24小时私信咨询发生时段分布（证实夜间咨询卡点）</span>
+                <span>24小时私信咨询时段分布</span>
               </div>
               <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold rounded">
-                20:00-24:00 集中占比 41.9%
+                20:00—24:00 集中占比 41.9%
               </span>
             </div>
 
@@ -712,42 +654,20 @@ export function SinglePageReviewReport({
           </div>
         </div>
 
-        {/* 3.4 转化链路与流失归因 (Conversion Funnel) */}
+        {/* 3.4 转化链路与流失节点 */}
         <div className="bg-surface-1 rounded-2xl border border-border-default shadow-xs p-5 md:p-6 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded">
-                  分析维度四
-                </span>
-                <h3 className="text-[15px] font-bold text-text-main">
-                  3.4 笔记全链路转化漏斗与卡点归因
-                </h3>
-              </div>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
-                结论：从“发起私信”到“有效留资”流失率达 52.0%，夜间无自动接待话术是造成客群流失的直接根因。
-              </p>
+          <div className="border-b border-border-subtle pb-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded">
+                3.4
+              </span>
+              <h3 className="text-[15px] font-bold text-text-main">
+                转化链路与流失节点
+              </h3>
             </div>
-
-            <div className="flex bg-surface-subtle p-0.5 rounded-lg border border-border-default text-[11.5px]">
-              {[
-                { id: "overall", label: "全矩阵总漏斗" },
-                { id: "by_store", label: "门店漏斗对比" },
-                { id: "night_loss", label: "夜间流失高亮" },
-              ].map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => setFunnelDimension(st.id as any)}
-                  className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                    funnelDimension === st.id
-                      ? "bg-surface-1 text-text-main shadow-xs font-bold"
-                      : "text-text-tertiary hover:text-text-main"
-                  }`}
-                >
-                  {st.label}
-                </button>
-              ))}
-            </div>
+            <p className="text-[12px] text-text-tertiary mt-0.5">
+              结论：从“发起私信”到“有效留资”流失率达 52.0%，夜间无自动接待话术是造成客群流失的直接根因。
+            </p>
           </div>
 
           <div className="space-y-2 text-[12px]">
@@ -777,16 +697,6 @@ export function SinglePageReviewReport({
               </div>
             ))}
           </div>
-
-          <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-subtle text-[12px] space-y-1.5">
-            <div className="flex items-center gap-1.5 font-bold text-text-main">
-              <BarChart2 size={13} className="text-brand-600" />
-              <span>漏斗差异证据与归因：</span>
-            </div>
-            <p className="text-text-secondary leading-relaxed">
-              三亚店在第 4 到第 5 步（私信 → 留资）转化率高达 <strong>58.2%</strong>，而青岛店仅 <strong>24.5%</strong>。三亚店配置了“7天换粮自测表”自动引导，而青岛店依赖人工单聊且夜间无人应答，直接证实了“夜间咨询流失”的判断依据。
-            </p>
-          </div>
         </div>
       </section>
 
@@ -799,7 +709,7 @@ export function SinglePageReviewReport({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-4.5 bg-emerald-600 rounded-sm" />
               <h2 className="text-[16px] md:text-[17px] font-bold text-text-main tracking-tight">
-                4. 后续迭代建议与应用去向
+                4. 后续迭代建议
               </h2>
             </div>
             <p className="text-[12px] text-text-tertiary mt-0.5">
@@ -809,6 +719,11 @@ export function SinglePageReviewReport({
           <span className="text-[12px] text-text-tertiary font-medium">
             已应用 ({appliedCount}/{suggestedActions.length})
           </span>
+        </div>
+
+        {/* Weak Hint */}
+        <div className="text-[11.5px] text-text-tertiary px-1">
+          提示：基于当前数据估算，实际结果以下次复盘为准。
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -832,18 +747,15 @@ export function SinglePageReviewReport({
                             : "bg-blue-50 text-blue-700 border border-blue-200"
                         }`}
                       >
-                        {action.priority} 优先级
+                        {action.priority}
                       </span>
                       <span className="px-1.5 py-0.5 bg-surface-1 text-text-secondary border border-border-default text-[10.5px] rounded">
-                        {action.category}
-                      </span>
-                      <span className="px-1.5 py-0.5 bg-neutral-200 text-text-secondary text-[10px] rounded">
-                        {isPlan ? "流程 / 策略" : "内容 / 选题"}
+                        {isPlan ? "流程/策略" : "内容/选题"}
                       </span>
                     </div>
 
                     {isApplied && (
-                      <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
+                      <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded flex items-center gap-1 font-medium">
                         <Check size={11} strokeWidth={2.5} />
                         <span>{action.appliedDestinationLabel}</span>
                       </span>
@@ -855,12 +767,14 @@ export function SinglePageReviewReport({
                   </h4>
 
                   <p className="text-[12px] text-text-secondary leading-relaxed">
-                    <span className="text-text-tertiary font-medium">目标：</span>{action.target}
+                    <span className="text-text-tertiary font-medium">依据：</span>{action.target}
                   </p>
 
-                  <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-[11.5px] text-text-secondary">
-                    <span className="font-semibold text-btn-main">预期收益：</span>
-                    <span>{action.expectedGain}</span>
+                  <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-[11.5px] text-text-secondary flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-btn-main">预期影响：</span>
+                      <span>{action.expectedGain}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -888,12 +802,12 @@ export function SinglePageReviewReport({
                     {isPlan ? (
                       <>
                         <FolderPlus size={12} />
-                        <span>{isApplied ? "修改方案设置" : "纳入项目方案"}</span>
+                        <span>{isApplied ? "查看应用位置" : "纳入项目方案"}</span>
                       </>
                     ) : (
                       <>
                         <FileText size={12} />
-                        <span>{isApplied ? "修改应用设置" : "应用到后续笔记"}</span>
+                        <span>{isApplied ? "查看应用位置" : "应用到后续笔记"}</span>
                       </>
                     )}
                   </button>
@@ -905,7 +819,7 @@ export function SinglePageReviewReport({
       </section>
 
       {/* ========================================================= */}
-      {/* 5. 风险与数据说明 (Risks & Data Specification - 默认折叠) */}
+      {/* 5. 数据范围与指标口径 (Data Scope & Metric Definitions - Default Collapsed) */}
       {/* ========================================================= */}
       <section ref={dataSpecRef} id="section-data-spec" className="bg-surface-1 rounded-2xl border border-border-default shadow-xs overflow-hidden">
         <button
@@ -914,18 +828,18 @@ export function SinglePageReviewReport({
           className="w-full p-5 flex items-center justify-between text-left hover:bg-surface-subtle transition-colors"
         >
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-4.5 bg-amber-600 rounded-sm" />
+            <span className="w-2.5 h-4.5 bg-neutral-500 rounded-sm" />
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-[16px] md:text-[17px] font-bold text-text-main tracking-tight">
-                  5. 风险与数据说明
+                  数据范围与指标口径
                 </h2>
                 <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-tertiary text-[11px] rounded">
                   默认折叠
                 </span>
               </div>
               <p className="text-[12px] text-text-tertiary mt-0.5">
-                包含异常风险、分析周期、数据覆盖范围、指标计算口径与更新时间
+                包含分析周期、涉及项目和账号、样本数量、指标定义与更新时间
               </p>
             </div>
           </div>
@@ -939,42 +853,10 @@ export function SinglePageReviewReport({
         {isDataSpecOpen && (
           <div className="p-5 pt-0 border-t border-border-subtle space-y-5 bg-surface-1">
             
-            {/* 5.1 业务风险与异常预警 */}
             <div className="space-y-2.5 pt-4">
               <div className="flex items-center gap-1.5 text-[13px] font-bold text-text-main">
-                <AlertTriangle size={15} className="text-amber-600" />
-                <span>关键业务风险与异常说明</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[12px]">
-                <div className="p-3 bg-red-50/40 rounded-xl border border-red-200 space-y-1.5">
-                  <span className="font-bold text-red-800 block">夜间时段潜客流失风险 (严重)</span>
-                  <p className="text-text-secondary leading-relaxed">
-                    青岛与杭州在 20:00—24:00 夜间时段无专人值守，高意向咨询由于超时无应答流失率达 52%，预估每周损失近 120+ 组意向换粮新客。
-                  </p>
-                </div>
-
-                <div className="p-3 bg-amber-50/40 rounded-xl border border-amber-200 space-y-1.5">
-                  <span className="font-bold text-amber-800 block">青岛店私信数据补偿校准</span>
-                  <p className="text-text-secondary leading-relaxed">
-                    7月15日前由于平台私信接口维护，部分会话数据存在延迟入库，系统已通过时序平滑算法完成对齐校准。
-                  </p>
-                </div>
-
-                <div className="p-3 bg-blue-50/40 rounded-xl border border-blue-200 space-y-1.5">
-                  <span className="font-bold text-blue-800 block">烘焙粮样本集中度提示</span>
-                  <p className="text-text-secondary leading-relaxed">
-                    烘焙粮品类的高转化数据主要由 2 篇核心爆款拉动，建议在后续批次中补齐 3 组对照样本以固化最佳实践。
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 5.2 数据覆盖范围与周期 */}
-            <div className="space-y-2.5 pt-2">
-              <div className="flex items-center gap-1.5 text-[13px] font-bold text-text-main">
                 <Database size={15} className="text-btn-main" />
-                <span>数据范围与接入说明</span>
+                <span>数据范围与分析周期</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[12px]">
@@ -987,39 +869,33 @@ export function SinglePageReviewReport({
                 </div>
 
                 <div className="p-3 bg-surface-subtle rounded-xl border border-border-default space-y-1">
-                  <span className="text-text-tertiary block text-[11px]">覆盖账号与数据源</span>
+                  <span className="text-text-tertiary block text-[11px]">覆盖账号与样本数量</span>
                   <p className="font-medium text-text-main">
-                    覆盖账号：三亚海棠湾店长账号、青岛万象城体验店账号、杭州西湖概念店账号（共 3 个矩阵账号，累计 58 篇笔记）<br />
-                    数据源：小红书官方创作者服务平台数据、聚光推广数据、企业私信沟通会话日志
+                    覆盖账号：三亚海棠湾店、青岛万象城店、杭州西湖店（共 3 个账号，累计 58 篇笔记，1,420 条私信样本）<br />
+                    数据更新时间：2026-08-01 04:00
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* 5.3 核心指标定义口径 */}
             <div className="space-y-2.5 pt-2">
               <div className="flex items-center gap-1.5 text-[13px] font-bold text-text-main">
                 <Info size={15} className="text-btn-main" />
-                <span>核心指标定义与统计口径</span>
+                <span>核心指标定义口径</span>
               </div>
 
               <div className="divide-y divide-border-subtle rounded-xl border border-border-default overflow-hidden text-[12px]">
                 <div className="p-3 bg-surface-subtle flex flex-col md:flex-row md:items-center justify-between gap-1">
                   <span className="font-bold text-text-main md:w-40 shrink-0">封面平均点击率 CTR</span>
-                  <span className="text-text-secondary">计算公式：（笔记在信息流中的实际阅读/点击打开次数）÷（笔记全网曝光展示总次数）× 100%。</span>
+                  <span className="text-text-secondary">计算公式：（笔记实际阅读/点击打开次数）÷（全网曝光展示总次数）× 100%。</span>
                 </div>
                 <div className="p-3 bg-surface-1 flex flex-col md:flex-row md:items-center justify-between gap-1">
                   <span className="font-bold text-text-main md:w-40 shrink-0">综合互动率</span>
-                  <span className="text-text-secondary">计算公式：（点赞数 + 收藏数 + 真实评论数）÷（笔记阅读量）× 100%（已过滤作者自身回复与系统提示）。</span>
+                  <span className="text-text-secondary">计算公式：（点赞数 + 收藏数 + 真实评论数）÷（阅读量）× 100%。</span>
                 </div>
                 <div className="p-3 bg-surface-subtle flex flex-col md:flex-row md:items-center justify-between gap-1">
                   <span className="font-bold text-text-main md:w-40 shrink-0">有效私信留资率</span>
-                  <span className="text-text-secondary">分子：在私信沟通过程中提供完整微信号/手机号的有效用户数；分母：由笔记触达并主动发起私信咨询的独立访客数。</span>
-                </div>
-                <div className="p-3 bg-surface-1 flex flex-col md:flex-row md:items-center justify-between gap-1">
-                  <span className="font-bold text-text-main md:w-40 shrink-0">篇均线索产出</span>
-                  <span className="font-bold text-text-main md:w-40 shrink-0">篇均线索产出</span>
-                  <span className="text-text-secondary">计算公式：（该账号或该分类笔记带来的私信留资线索总量）÷（周期内发布的有效笔记篇数）。</span>
+                  <span className="text-text-secondary">分子：提供完整微信号/手机号的有效用户数；分母：由笔记触达并发起私信咨询的独立访客数。</span>
                 </div>
               </div>
             </div>

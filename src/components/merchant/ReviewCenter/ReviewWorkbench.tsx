@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { 
   Plus, Calendar, Search, PanelLeftClose, PanelLeftOpen, RefreshCw, 
   Download, Layers, CheckCircle2, Clock, ShieldAlert, Sparkles,
-  FileText, Check, AlertCircle, Info, ChevronRight, History
+  FileText, Check, AlertCircle, Info, ChevronRight, History, ChevronDown, FileCode, Printer
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { INITIAL_REVIEW_TASKS } from "./mockData";
@@ -38,6 +38,7 @@ export function ReviewWorkbench({ onNavigateToExecution }: ReviewWorkbenchProps)
   const [actionForPlanModal, setActionForPlanModal] = useState<SuggestedAction | null>(null);
   const [actionForNoteModal, setActionForNoteModal] = useState<SuggestedAction | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isExportDropdownOpen, setIsExportDropdownOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isRerunning, setIsRerunning] = useState(false);
 
@@ -296,14 +297,45 @@ export function ReviewWorkbench({ onNavigateToExecution }: ReviewWorkbenchProps)
                 <span>{isRerunning ? "重跑分析中..." : "重新分析"}</span>
               </button>
 
-              {/* Primary Action Button: Export Report */}
-              <button
-                onClick={() => setIsExportModalOpen(true)}
-                className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12.5px] font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
-              >
-                <Download size={14} />
-                <span>导出报告</span>
-              </button>
+              {/* Primary Action Button: Export Report with Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsExportDropdownOpen(!isExportDropdownOpen)}
+                  className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12.5px] font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
+                >
+                  <Download size={14} />
+                  <span>导出报告</span>
+                  <ChevronDown size={13} />
+                </button>
+
+                {isExportDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsExportDropdownOpen(false)} />
+                    <div className="absolute right-0 mt-1 w-44 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1 text-xs">
+                      <button
+                        onClick={() => {
+                          setIsExportDropdownOpen(false);
+                          setIsExportModalOpen(true);
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-surface-subtle text-text-main flex items-center gap-2 font-medium transition-colors"
+                      >
+                        <FileCode size={13} className="text-btn-main" />
+                        <span>导出HTML报告</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsExportDropdownOpen(false);
+                          window.print();
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-surface-subtle text-text-main flex items-center gap-2 font-medium transition-colors border-t border-border-subtle"
+                      >
+                        <Printer size={13} className="text-btn-main" />
+                        <span>下载PDF</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

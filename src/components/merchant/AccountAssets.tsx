@@ -1211,7 +1211,7 @@ export const AccountAssets: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedAccountId(null)}
-              className="fixed inset-0 bg-neutral-900/25 backdrop-blur-2xs"
+              className="fixed inset-0 bg-btn-main/40 backdrop-blur-sm"
             />
 
             <motion.div
@@ -1219,10 +1219,10 @@ export const AccountAssets: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: 540 }}
               transition={{ type: "spring", damping: 28, stiffness: 280 }}
-              className="relative z-10 w-full max-w-[540px] bg-white border-l border-border-default h-full shadow-dialog flex flex-col overflow-hidden"
+              className="relative z-10 w-full max-w-[540px] bg-surface-1 border-l border-border-default h-full shadow-2xl flex flex-col overflow-hidden"
             >
               {/* Drawer Top Header */}
-              <div className="px-6 py-4 border-b border-border-default bg-white shrink-0">
+              <div className="px-6 py-4 border-b border-border-default bg-surface-1 shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-text-tertiary" />
@@ -1672,17 +1672,17 @@ export const AccountAssets: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowAddModal(false)}
-              className="fixed inset-0 bg-neutral-900/40 backdrop-blur-2xs"
+              className="fixed inset-0 bg-btn-main/40 backdrop-blur-sm"
             />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
-              className="bg-white rounded-lg shadow-dialog border border-border-default w-full max-w-2xl overflow-hidden flex flex-col my-auto relative z-10"
+              className="bg-surface-1 rounded-2xl shadow-xl border border-border-default w-full max-w-2xl overflow-hidden flex flex-col my-auto relative z-10"
             >
               {/* Modal Header */}
-              <div className="px-6 py-4 border-b border-border-default flex items-center justify-between bg-white shrink-0">
+              <div className="px-6 py-4 border-b border-border-default flex items-center justify-between bg-surface-1 shrink-0">
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-[16px] font-semibold text-text-primary">
