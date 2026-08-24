@@ -435,11 +435,12 @@ export const AccountAssets: React.FC = () => {
   const [filterAccountRelation, setFilterAccountRelation] = useState<string>("all");
   const [filterBusinessRole, setFilterBusinessRole] = useState<string>("all");
   const [filterDataSyncStatus, setFilterDataSyncStatus] = useState<string>("all");
-  const [filterProject, setFilterProject] = useState<string>("all");
+  const [showAddAccountMenu, setShowAddAccountMenu] = useState(false);
+  const [showMoreFiltersDropdown, setShowMoreFiltersDropdown] = useState(false);
 
   // Selected Account in Detail Drawer
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
-  const [drawerTab, setDrawerTab] = useState<"overview" | "performance" | "projects" | "settings">("overview");
+  const [drawerTab, setDrawerTab] = useState<"overview" | "performance" | "settings">("overview");
 
   // Action Menu Dropdown State
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
@@ -534,12 +535,16 @@ export const AccountAssets: React.FC = () => {
       if (filterDataSyncStatus === "needs_relogin" && acc.dataSyncStatus !== "needs_relogin") return false;
       if (filterDataSyncStatus === "failed" && acc.dataSyncStatus !== "failed") return false;
     }
-    // Project
-    if (filterProject !== "all") {
-      const hasProj = acc.projects.some((p) => p.projectName === filterProject && p.isActive);
-      if (!hasProj) return false;
-    }
     return true;
+  });
+
+  // Sort abnormal accounts to the top
+  const sortedAndFilteredAccounts = [...filteredAccounts].sort((a, b) => {
+    const aAbnormal = a.dataSyncStatus === "needs_relogin" || a.dataSyncStatus === "failed";
+    const bAbnormal = b.dataSyncStatus === "needs_relogin" || b.dataSyncStatus === "failed";
+    if (aAbnormal && !bAbnormal) return -1;
+    if (!aAbnormal && bAbnormal) return 1;
+    return 0;
   });
 
   // Open creator dashboard in new window
@@ -598,61 +603,6 @@ export const AccountAssets: React.FC = () => {
       })
     );
     showToast("数据同步已完成");
-  };
-
-  // Toggle project active status
-  const handleToggleProjectActive = (accId: string, projectId: string) => {
-    setAccounts((prev) =>
-      prev.map((a) => {
-        if (a.id === accId) {
-          return {
-            ...a,
-            projects: a.projects.map((p) =>
-              p.projectId === projectId ? { ...p, isActive: !p.isActive } : p
-            ),
-          };
-        }
-        return a;
-      })
-    );
-    showToast("项目启用状态已更新");
-  };
-
-  // Remove project association
-  const handleRemoveProject = (accId: string, projectId: string) => {
-    setAccounts((prev) =>
-      prev.map((a) => {
-        if (a.id === accId) {
-          return {
-            ...a,
-            projects: a.projects.filter((p) => p.projectId !== projectId),
-          };
-        }
-        return a;
-      })
-    );
-    showToast("已移除该项目关联");
-  };
-
-  // Add project to current selected account
-  const handleAddProjectToAccount = () => {
-    if (!selectedAccountId || !newProjName.trim()) return;
-    const newProj: ProjectAssociation = {
-      projectId: `p_${Date.now()}`,
-      projectName: newProjName,
-      projectRole: newProjRole,
-      period: newProjPeriod,
-      postScope: newProjPostScope,
-      dataScope: newProjDataScope,
-      isActive: true,
-    };
-    setAccounts((prev) =>
-      prev.map((a) =>
-        a.id === selectedAccountId ? { ...a, projects: [...a.projects, newProj] } : a
-      )
-    );
-    setShowAddProjectModal(false);
-    showToast(`已成功将账号关联至项目「${newProjName}」`);
   };
 
   // Simulate scanning QR Code completion
@@ -816,35 +766,54 @@ export const AccountAssets: React.FC = () => {
         </div>
 
         {/* Primary & Secondary Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="relative">
           <button
-            onClick={() => {
-              setModalMode("add_public");
-              setPublicStep(1);
-              setDetectedAccount(null);
-              setInputPublicUrl("");
-              setShowAddModal(true);
-            }}
-            className="h-9 px-3 text-xs font-medium text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1.5 transition-colors"
+            onClick={() => setShowAddAccountMenu(!showAddAccountMenu)}
+            className="h-9 px-4 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1.5 shadow-xs transition-colors"
           >
-            <Globe className="w-3.5 h-3.5 text-text-secondary" />
-            <span>添加公开监控</span>
+            <Plus className="w-4 h-4" />
+            <span>添加账号</span>
           </button>
 
-          <button
-            onClick={() => {
-              setModalMode("scan_creator");
-              setScanStep(1);
-              setQrStatus("waiting");
-              setQrCountdown(60);
-              setDetectedAccount(null);
-              setShowAddModal(true);
-            }}
-            className="h-9 px-3.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1.5 shadow-xs transition-colors"
-          >
-            <QrCode className="w-3.5 h-3.5" />
-            <span>扫码登录创作者中心</span>
-          </button>
+          {showAddAccountMenu && (
+            <div className="absolute right-0 top-10 z-30 w-48 bg-surface border border-border-default rounded-md shadow-float py-1 text-xs text-left">
+              <button
+                onClick={() => {
+                  setShowAddAccountMenu(false);
+                  setModalMode("scan_creator");
+                  setScanStep(1);
+                  setQrStatus("waiting");
+                  setQrCountdown(60);
+                  setDetectedAccount(null);
+                  setShowAddModal(true);
+                }}
+                className="w-full px-3 py-2 text-left text-text-primary hover:bg-surface-hover flex items-center gap-2"
+              >
+                <QrCode className="w-4 h-4 text-text-secondary" />
+                <div>
+                  <div className="font-medium">接入可运营账号</div>
+                  <div className="text-[10px] text-text-tertiary">扫码登录创作者服务平台</div>
+                </div>
+              </button>
+              <button
+                onClick={() => {
+                  setShowAddAccountMenu(false);
+                  setModalMode("add_public");
+                  setPublicStep(1);
+                  setDetectedAccount(null);
+                  setInputPublicUrl("");
+                  setShowAddModal(true);
+                }}
+                className="w-full px-3 py-2 text-left text-text-primary hover:bg-surface-hover flex items-center gap-2 border-t border-border-subtle"
+              >
+                <Globe className="w-4 h-4 text-text-secondary" />
+                <div>
+                  <div className="font-medium">添加公开监控账号</div>
+                  <div className="text-[10px] text-text-tertiary">通过主页链接抓取公开数据</div>
+                </div>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -873,31 +842,16 @@ export const AccountAssets: React.FC = () => {
             )}
           </div>
 
-          {/* Filter: 账号关系 */}
+          {/* Filter: 账号类型 */}
           <select
             value={filterAccountRelation}
             onChange={(e) => setFilterAccountRelation(e.target.value)}
             className="h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
           >
-            <option value="all">全部账号关系</option>
+            <option value="all">全部账号类型</option>
             <option value="自有账号">自有账号</option>
             <option value="外部合作">外部合作</option>
             <option value="公开监控">公开监控</option>
-          </select>
-
-          {/* Filter: 运营角色 */}
-          <select
-            value={filterBusinessRole}
-            onChange={(e) => setFilterBusinessRole(e.target.value)}
-            className="h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
-          >
-            <option value="all">全部运营角色</option>
-            <option value="品牌官方号">品牌官方号</option>
-            <option value="自有矩阵号">自有矩阵号</option>
-            <option value="员工KOS">员工KOS</option>
-            <option value="合作达人">合作达人</option>
-            <option value="素人KOC">素人KOC</option>
-            <option value="竞品观察">竞品观察</option>
           </select>
 
           {/* Filter: 数据状态 */}
@@ -908,41 +862,83 @@ export const AccountAssets: React.FC = () => {
           >
             <option value="all">全部数据状态</option>
             <option value="synced">正常 (已更新)</option>
-            <option value="needs_relogin">需重新登录</option>
+            <option value="needs_relogin">授权失效</option>
             <option value="failed">同步失败</option>
           </select>
 
-          {/* Filter: 所属项目 */}
-          <select
-            value={filterProject}
-            onChange={(e) => setFilterProject(e.target.value)}
-            className="h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
-          >
-            <option value="all">全部关联项目</option>
-            <option value="宠粮新客运营">宠粮新客运营</option>
-            <option value="全域品牌心智">全域品牌心智</option>
-          </select>
+          {/* More Filters Dropdown Toggle */}
+          <div className="relative">
+            <button
+              onClick={() => setShowMoreFiltersDropdown(!showMoreFiltersDropdown)}
+              className={`h-8 px-3 text-xs bg-surface border rounded-md flex items-center gap-1.5 transition-colors ${
+                filterBusinessRole !== "all" 
+                  ? "border-brand-500 text-brand-700 bg-brand-50/50" 
+                  : "border-border-default text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              <span>更多筛选 {filterBusinessRole !== "all" && "(1)"}</span>
+            </button>
+
+            {showMoreFiltersDropdown && (
+              <div className="absolute left-0 top-9 z-35 w-56 bg-surface border border-border-default rounded-md shadow-float p-3 text-xs space-y-3">
+                <div className="flex items-center justify-between border-b border-border-default pb-2">
+                  <span className="font-semibold text-text-primary">更多筛选条件</span>
+                  <button
+                    onClick={() => setShowMoreFiltersDropdown(false)}
+                    className="text-text-tertiary hover:text-text-primary"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] text-text-tertiary mb-1">账号定位</label>
+                  <select
+                    value={filterBusinessRole}
+                    onChange={(e) => setFilterBusinessRole(e.target.value)}
+                    className="w-full h-8 px-2 text-xs bg-surface border border-border-default rounded-md text-text-primary"
+                  >
+                    <option value="all">全部账号定位</option>
+                    <option value="品牌官方号">品牌官方号</option>
+                    <option value="自有矩阵号">自有矩阵号</option>
+                    <option value="员工KOS">员工KOS</option>
+                    <option value="合作达人">合作达人</option>
+                    <option value="素人KOC">素人KOC</option>
+                    <option value="竞品观察">竞品观察</option>
+                  </select>
+                </div>
+
+                <div className="flex justify-end pt-1 border-t border-border-subtle">
+                  <button
+                    onClick={() => {
+                      setFilterBusinessRole("all");
+                      setShowMoreFiltersDropdown(false);
+                    }}
+                    className="text-[11px] text-text-secondary hover:text-text-primary"
+                  >
+                    清空筛选
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Reset Filters */}
-          {(searchQuery || filterAccountRelation !== "all" || filterBusinessRole !== "all" || filterDataSyncStatus !== "all" || filterProject !== "all") && (
+          {(searchQuery || filterAccountRelation !== "all" || filterBusinessRole !== "all" || filterDataSyncStatus !== "all") && (
             <button
               onClick={() => {
                 setSearchQuery("");
                 setFilterAccountRelation("all");
                 setFilterBusinessRole("all");
                 setFilterDataSyncStatus("all");
-                setFilterProject("all");
               }}
               className="h-8 px-2 text-xs text-text-tertiary hover:text-text-primary flex items-center gap-1"
             >
               <RefreshCw className="w-3 h-3" />
-              <span>重置筛选</span>
+              <span>重置</span>
             </button>
           )}
-        </div>
-
-        <div className="text-xs text-text-tertiary">
-          显示 {filteredAccounts.length} / {accounts.length} 条记录
         </div>
       </div>
 
@@ -953,18 +949,17 @@ export const AccountAssets: React.FC = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-border-default bg-surface-subtle text-[12px] font-medium text-text-secondary select-none">
-              <th className="py-2.5 px-6 font-medium">账号 (平台身份)</th>
-              <th className="py-2.5 px-4 font-medium">内部运营角色</th>
+              <th className="py-2.5 px-6 font-medium">账号</th>
+              <th className="py-2.5 px-4 font-medium">账号定位</th>
               <th className="py-2.5 px-4 font-medium">负责人</th>
-              <th className="py-2.5 px-4 font-medium">数据更新状态</th>
-              <th className="py-2.5 px-4 font-medium">项目关联</th>
+              <th className="py-2.5 px-4 font-medium">数据连接</th>
               <th className="py-2.5 px-6 font-medium text-right">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle text-xs">
-            {filteredAccounts.length === 0 ? (
+            {sortedAndFilteredAccounts.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-16 text-center text-text-tertiary">
+                <td colSpan={5} className="py-16 text-center text-text-tertiary">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <User className="w-8 h-8 text-neutral-300 stroke-[1.5]" />
                     <p className="text-sm text-text-secondary">未找到匹配的账号资产</p>
@@ -973,9 +968,20 @@ export const AccountAssets: React.FC = () => {
                 </td>
               </tr>
             ) : (
-              filteredAccounts.map((acc) => {
-                const activeProjectsCount = acc.projects.filter((p) => p.isActive).length;
+              sortedAndFilteredAccounts.map((acc) => {
                 const isSelected = selectedAccountId === acc.id;
+                const isAbnormal = acc.dataSyncStatus === "needs_relogin" || acc.dataSyncStatus === "failed";
+
+                // Determine connection badge
+                const getConnectionBadge = () => {
+                  if (acc.accountRelation === "公开监控") {
+                    return <span className="text-[11px] font-medium text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs whitespace-nowrap">公开监控</span>;
+                  }
+                  if (isAbnormal) {
+                    return <span className="text-[11px] font-medium text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded-xs whitespace-nowrap">授权失效</span>;
+                  }
+                  return <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs whitespace-nowrap">可运营</span>;
+                };
 
                 return (
                   <tr
@@ -988,7 +994,7 @@ export const AccountAssets: React.FC = () => {
                       isSelected ? "bg-surface-selected" : "hover:bg-surface-hover"
                     }`}
                   >
-                    {/* 1. 账号 (头像 + 昵称 + ID + 平台客观真实认证) */}
+                    {/* 1. 账号 (头像 + 昵称 + 平台认证 + 连接类型) */}
                     <td className="py-3 px-6">
                       <div className="flex items-center gap-3">
                         <img
@@ -1001,12 +1007,12 @@ export const AccountAssets: React.FC = () => {
                             <span className="text-sm font-semibold text-text-primary truncate max-w-[180px]">
                               {acc.nickname}
                             </span>
-                            {/* 平台官方真实认证标签 (中性微标，严格独立，不与内部角色混同) */}
                             {acc.platformVerify && acc.platformVerify !== "无认证" && (
                               <span className="text-[11px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs whitespace-nowrap">
                                 {acc.platformVerify}
                               </span>
                             )}
+                            {getConnectionBadge()}
                           </div>
                           <div className="text-[11px] text-text-tertiary truncate font-mono mt-0.5">
                             ID: {acc.xhsId}
@@ -1015,7 +1021,7 @@ export const AccountAssets: React.FC = () => {
                       </div>
                     </td>
 
-                    {/* 2. 内部运营角色 (统一中性灰分类标签) */}
+                    {/* 2. 账号定位 */}
                     <td className="py-3 px-4">
                       <span className="inline-flex items-center text-xs font-normal text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded-md whitespace-nowrap">
                         {acc.businessRole}
@@ -1030,47 +1036,51 @@ export const AccountAssets: React.FC = () => {
                       )}
                     </td>
 
-                    {/* 4. 数据更新状态 (时间相对格式 + 状态语义点) */}
+                    {/* 4. 数据连接 / 状态 */}
                     <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        {acc.dataSyncStatus === "synced" && (
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" title="数据正常" />
-                        )}
-                        {acc.dataSyncStatus === "needs_relogin" && (
-                          <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" title="会话失效，需重新登录" />
-                        )}
-                        {acc.dataSyncStatus === "failed" && (
-                          <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" title="同步失败" />
-                        )}
-                        {acc.dataSyncStatus === "syncing" && (
-                          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shrink-0" title="正在同步" />
-                        )}
-
-                        <span className="text-xs text-text-primary font-normal">
-                          {acc.lastUpdatedRelative}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-text-tertiary mt-0.5 truncate max-w-[130px]" title={acc.dataSource}>
-                        {acc.dataSource === "小红书公开主页" ? "公开主页抓取" : "创作者中心"}
-                      </div>
+                      {isAbnormal ? (
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-rose-600 font-medium">授权失效</span>
+                            <span className="text-xs text-text-tertiary">3天前停止更新</span>
+                          </div>
+                          <div className="mt-0.5">
+                            <button
+                              onClick={(e) => handleTriggerRelogin(acc, e)}
+                              className="text-[11px] font-medium text-rose-600 hover:underline"
+                            >
+                              重新登录
+                            </button>
+                          </div>
+                        </div>
+                      ) : acc.accountRelation === "公开监控" ? (
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-text-primary font-medium">正常</span>
+                            <span className="text-xs text-text-secondary">{acc.lastUpdatedRelative}更新</span>
+                          </div>
+                          <div className="text-[11px] text-text-tertiary mt-0.5">
+                            来源：公开主页
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-text-primary font-medium">正常</span>
+                            <span className="text-xs text-text-secondary">{acc.lastUpdatedRelative}更新</span>
+                          </div>
+                          <div className="text-[11px] text-text-tertiary mt-0.5">
+                            来源：创作者中心
+                          </div>
+                        </div>
+                      )}
                     </td>
 
-                    {/* 5. 关联项目 (仅显示 用于 N 个项目 - 完整关系进抽屉管理) */}
-                    <td className="py-3 px-4">
-                      <span 
-                        className="inline-flex items-center gap-1 text-xs font-normal text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded-md"
-                        title={acc.projects.filter(p => p.isActive).map(p => p.projectName).join("、")}
-                      >
-                        <FolderKanban className="w-3 h-3 text-text-tertiary" />
-                        <span>用于 {activeProjectsCount} 个项目</span>
-                      </span>
-                    </td>
-
-                    {/* 6. 操作 (单行唯一情境主操作 + ··· 更多菜单) */}
+                    {/* 5. 操作 */}
                     <td className="py-3 px-6 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1.5">
-                        {/* 场景主操作 1: 会话失效 -> 重新登录 */}
-                        {acc.dataSyncStatus === "needs_relogin" && (
+                        {/* 授权失效 -> 重新登录 */}
+                        {isAbnormal && (
                           <button
                             onClick={(e) => handleTriggerRelogin(acc, e)}
                             className="h-7 px-2.5 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md flex items-center gap-1 transition-colors"
@@ -1080,25 +1090,29 @@ export const AccountAssets: React.FC = () => {
                           </button>
                         )}
 
-                        {/* 场景主操作 2: 自有账号正常 -> 打开创作者中心 */}
-                        {acc.dataSyncStatus !== "needs_relogin" && acc.accountRelation === "自有账号" && (
+                        {/* 正常可运营账号 -> 查看账号 */}
+                        {!isAbnormal && acc.accountRelation === "自有账号" && (
                           <button
-                            onClick={(e) => handleOpenCreator(acc, e)}
+                            onClick={(e) => {
+                              setSelectedAccountId(acc.id);
+                              setDrawerTab("overview");
+                            }}
                             className="h-7 px-2.5 text-xs font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
                           >
-                            <ExternalLink className="w-3 h-3 text-text-secondary" />
-                            <span>打开后台</span>
+                            <span>查看账号</span>
                           </button>
                         )}
 
-                        {/* 场景主操作 3: 公开监控/合作账号 -> 打开主页 */}
-                        {acc.dataSyncStatus !== "needs_relogin" && acc.accountRelation !== "自有账号" && (
+                        {/* 公开监控账号 -> 查看数据 */}
+                        {!isAbnormal && acc.accountRelation !== "自有账号" && (
                           <button
-                            onClick={(e) => handleOpenProfile(acc, e)}
+                            onClick={(e) => {
+                              setSelectedAccountId(acc.id);
+                              setDrawerTab("performance");
+                            }}
                             className="h-7 px-2.5 text-xs font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
                           >
-                            <Globe className="w-3 h-3 text-text-secondary" />
-                            <span>打开主页</span>
+                            <span>查看数据</span>
                           </button>
                         )}
 
@@ -1117,27 +1131,33 @@ export const AccountAssets: React.FC = () => {
 
                           {activeMenuId === acc.id && (
                             <div 
-                              className="absolute right-0 top-8 z-30 w-36 bg-surface border border-border-default rounded-md shadow-float py-1 text-xs text-left"
+                              className="absolute right-0 top-8 z-30 w-40 bg-surface border border-border-default rounded-md shadow-float py-1 text-xs text-left"
                               onClick={(e) => e.stopPropagation()}
                             >
+                              {acc.accountRelation === "自有账号" ? (
+                                <button
+                                  onClick={(e) => handleOpenCreator(acc, e)}
+                                  className="w-full px-3 py-1.5 text-left text-text-primary hover:bg-surface-hover flex items-center gap-2"
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5 text-text-secondary" />
+                                  <span>打开创作者中心</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={(e) => handleOpenProfile(acc, e)}
+                                  className="w-full px-3 py-1.5 text-left text-text-primary hover:bg-surface-hover flex items-center gap-2"
+                                >
+                                  <Globe className="w-3.5 h-3.5 text-text-secondary" />
+                                  <span>打开公开主页</span>
+                                </button>
+                              )}
+
                               <button
                                 onClick={(e) => handleSyncAccount(acc.id, e)}
                                 className="w-full px-3 py-1.5 text-left text-text-primary hover:bg-surface-hover flex items-center gap-2"
                               >
                                 <RefreshCw className="w-3.5 h-3.5 text-text-secondary" />
                                 <span>立即同步数据</span>
-                              </button>
-
-                              <button
-                                onClick={() => {
-                                  setSelectedAccountId(acc.id);
-                                  setDrawerTab("projects");
-                                  setActiveMenuId(null);
-                                }}
-                                className="w-full px-3 py-1.5 text-left text-text-primary hover:bg-surface-hover flex items-center gap-2"
-                              >
-                                <FolderKanban className="w-3.5 h-3.5 text-text-secondary" />
-                                <span>管理项目关联</span>
                               </button>
 
                               <button
@@ -1263,7 +1283,7 @@ export const AccountAssets: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Drawer 4 Tabs Navigation */}
+                {/* Drawer 3 Tabs Navigation */}
                 <div className="flex items-center gap-6 mt-5 border-b border-border-default -mb-4">
                   <button
                     onClick={() => setDrawerTab("overview")}
@@ -1284,16 +1304,6 @@ export const AccountAssets: React.FC = () => {
                     }`}
                   >
                     数据表现
-                  </button>
-                  <button
-                    onClick={() => setDrawerTab("projects")}
-                    className={`pb-2.5 text-xs font-medium border-b-2 transition-colors ${
-                      drawerTab === "projects"
-                        ? "text-text-primary border-brand-500"
-                        : "text-text-secondary border-transparent hover:text-text-primary"
-                    }`}
-                  >
-                    项目使用范围 ({selectedAccount.projects.filter(p => p.isActive).length})
                   </button>
                   <button
                     onClick={() => setDrawerTab("settings")}
@@ -1320,7 +1330,7 @@ export const AccountAssets: React.FC = () => {
                       <h3 className="text-xs font-medium text-text-secondary mb-3">内部配置</h3>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary block">运营角色</span>
+                          <span className="text-[11px] text-text-tertiary block">账号定位</span>
                           <span className="text-xs font-medium text-text-primary mt-1 block">
                             {selectedAccount.businessRole}
                           </span>
@@ -1346,6 +1356,20 @@ export const AccountAssets: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Project Usage Summary Card */}
+                    <div>
+                      <h3 className="text-xs font-medium text-text-secondary mb-3">使用情况</h3>
+                      <div className="p-3.5 bg-surface-subtle border border-border-default rounded-md flex items-center justify-between">
+                        <div>
+                          <span className="text-[11px] text-text-tertiary block">关联项目</span>
+                          <span className="text-xs font-medium text-text-primary mt-1 block">
+                            使用项目：{selectedAccount.projects.filter(p => p.isActive).length}个&nbsp;&nbsp;&nbsp;&nbsp;{selectedAccount.projects.filter(p => p.isActive).map(p => p.projectName).join("、")}
+                          </span>
+                        </div>
+                        <span className="text-xs text-text-secondary font-medium">查看</span>
+                      </div>
+                    </div>
+
                     {/* Persona & Boundaries */}
                     <div>
                       <h3 className="text-xs font-medium text-text-secondary mb-3">人设定位与内容边界</h3>
@@ -1362,45 +1386,6 @@ export const AccountAssets: React.FC = () => {
                             {selectedAccount.contentBoundaries || "暂未配置内容边界"}
                           </p>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Project Association Summary */}
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-xs font-medium text-text-secondary">关联项目概况</h3>
-                        <button
-                          onClick={() => setDrawerTab("projects")}
-                          className="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-0.5 font-medium"
-                        >
-                          <span>查看完整项目关系</span>
-                          <ChevronRight className="w-3 h-3" />
-                        </button>
-                      </div>
-                      <div className="space-y-2">
-                        {selectedAccount.projects.map((proj) => (
-                          <div
-                            key={proj.projectId}
-                            className="p-3 bg-surface-subtle border border-border-default rounded-md flex items-center justify-between gap-2"
-                          >
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium text-text-primary">{proj.projectName}</span>
-                                <span className="text-[11px] text-text-secondary bg-surface border border-border-default px-1.5 py-0.2 rounded-xs">
-                                  {proj.projectRole}
-                                </span>
-                              </div>
-                              <div className="text-[11px] text-text-tertiary mt-1">
-                                周期: {proj.period} · {proj.postScope}
-                              </div>
-                            </div>
-                            <span className={`text-[11px] px-1.5 py-0.5 rounded-xs ${
-                              proj.isActive ? "text-emerald-700 bg-emerald-50" : "text-text-disabled bg-surface"
-                            }`}>
-                              {proj.isActive ? "生效中" : "已停用"}
-                            </span>
-                          </div>
-                        ))}
                       </div>
                     </div>
                   </div>
@@ -1537,95 +1522,7 @@ export const AccountAssets: React.FC = () => {
                 )}
 
                 {/* -------------------------------------- */}
-                {/* TAB 3: 项目使用范围 (完整项目关系管理) */}
-                {/* -------------------------------------- */}
-                {drawerTab === "projects" && (
-                  <div className="space-y-6 text-xs">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-xs font-medium text-text-secondary">关联项目清单</h3>
-                        <p className="text-[11px] text-text-tertiary mt-0.5">
-                          一个账号可在不同项目中承担不同角色与发布/数据归集范围。
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => setShowAddProjectModal(true)}
-                        className="h-7 px-2.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1 transition-colors"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>关联新项目</span>
-                      </button>
-                    </div>
-
-                    {/* Project Items Detail Cards */}
-                    <div className="space-y-3">
-                      {selectedAccount.projects.map((proj) => (
-                        <div
-                          key={proj.projectId}
-                          className="p-4 bg-surface-subtle border border-border-default rounded-md space-y-3"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold text-text-primary">
-                                {proj.projectName}
-                              </span>
-                              <span className="text-[11px] text-text-secondary bg-surface border border-border-default px-1.5 py-0.5 rounded-xs">
-                                {proj.projectRole}
-                              </span>
-                            </div>
-
-                            {/* Active Toggle Switch */}
-                            <div className="flex items-center gap-2">
-                              <span className="text-[11px] text-text-tertiary">
-                                {proj.isActive ? "已启用" : "已停用"}
-                              </span>
-                              <button
-                                onClick={() => handleToggleProjectActive(selectedAccount.id, proj.projectId)}
-                                className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors ${
-                                  proj.isActive ? "bg-action-primary" : "bg-neutral-300"
-                                }`}
-                              >
-                                <div
-                                  className={`bg-white w-3.5 h-3.5 rounded-full shadow-xs transform transition-transform ${
-                                    proj.isActive ? "translate-x-3.5" : "translate-x-0"
-                                  }`}
-                                />
-                              </button>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-border-subtle">
-                            <div>
-                              <span className="text-text-tertiary block">使用周期</span>
-                              <span className="text-text-primary mt-0.5 block">{proj.period}</span>
-                            </div>
-                            <div>
-                              <span className="text-text-tertiary block">发布范围</span>
-                              <span className="text-text-primary mt-0.5 block">{proj.postScope}</span>
-                            </div>
-                            <div className="col-span-2">
-                              <span className="text-text-tertiary block">数据范围</span>
-                              <span className="text-text-primary mt-0.5 block">{proj.dataScope}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-end pt-2 border-t border-border-subtle">
-                            <button
-                              onClick={() => handleRemoveProject(selectedAccount.id, proj.projectId)}
-                              className="text-[11px] text-rose-600 hover:text-rose-700 flex items-center gap-1"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                              <span>解除该项目关联</span>
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* -------------------------------------- */}
-                {/* TAB 4: 属性设置 */}
+                {/* TAB 3: 属性设置 */}
                 {/* -------------------------------------- */}
                 {drawerTab === "settings" && (
                   <div className="space-y-6 text-xs">
@@ -1761,112 +1658,7 @@ export const AccountAssets: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ========================================== */}
-      {/* Add Project Modal in Drawer */}
-      {/* ========================================== */}
-      <AnimatePresence>
-        {showAddProjectModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowAddProjectModal(false)}
-              className="fixed inset-0 bg-neutral-900/40 backdrop-blur-2xs"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              className="bg-white rounded-lg shadow-dialog border border-border-default w-full max-w-md overflow-hidden flex flex-col relative z-10 p-6 space-y-4"
-            >
-              <div className="flex items-center justify-between border-b border-border-default pb-3">
-                <h3 className="text-sm font-semibold text-text-primary">关联新项目</h3>
-                <button
-                  onClick={() => setShowAddProjectModal(false)}
-                  className="text-text-tertiary hover:text-text-primary"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
 
-              <div className="space-y-3 text-xs">
-                <div>
-                  <label className="block text-[11px] text-text-tertiary mb-1">选择项目</label>
-                  <select
-                    value={newProjName}
-                    onChange={(e) => setNewProjName(e.target.value)}
-                    className="w-full h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-primary"
-                  >
-                    <option value="宠粮新客运营">宠粮新客运营</option>
-                    <option value="全域品牌心智">全域品牌心智</option>
-                    <option value="大促节点蓄水">大促节点蓄水</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] text-text-tertiary mb-1">项目角色</label>
-                  <input
-                    type="text"
-                    value={newProjRole}
-                    onChange={(e) => setNewProjRole(e.target.value)}
-                    placeholder="如: 品牌心智分发"
-                    className="w-full h-8 px-3 text-xs bg-surface border border-border-default rounded-md text-text-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] text-text-tertiary mb-1">使用周期</label>
-                  <input
-                    type="text"
-                    value={newProjPeriod}
-                    onChange={(e) => setNewProjPeriod(e.target.value)}
-                    placeholder="如: 长期 或 2026-08-01 至 2026-12-31"
-                    className="w-full h-8 px-3 text-xs bg-surface border border-border-default rounded-md text-text-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] text-text-tertiary mb-1">发布范围</label>
-                  <input
-                    type="text"
-                    value={newProjPostScope}
-                    onChange={(e) => setNewProjPostScope(e.target.value)}
-                    placeholder="如: 图文/视频发布"
-                    className="w-full h-8 px-3 text-xs bg-surface border border-border-default rounded-md text-text-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] text-text-tertiary mb-1">数据范围</label>
-                  <input
-                    type="text"
-                    value={newProjDataScope}
-                    onChange={(e) => setNewProjDataScope(e.target.value)}
-                    placeholder="如: 公开互动指标与留资"
-                    className="w-full h-8 px-3 text-xs bg-surface border border-border-default rounded-md text-text-primary"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2 border-t border-border-default">
-                <button
-                  onClick={() => setShowAddProjectModal(false)}
-                  className="h-8 px-3 text-xs text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md"
-                >
-                  取消
-                </button>
-                <button
-                  onClick={handleAddProjectToAccount}
-                  className="h-8 px-3.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md"
-                >
-                  确认关联
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* ========================================== */}
       {/* Add Account Modal (Wizard) */}
