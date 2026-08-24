@@ -19,7 +19,7 @@ export function StaffH5PublishModal({ note, onClose, onSuccess }: StaffH5Publish
   const [publishState, setPublishState] = useState<"prepare" | "app_opened" | "detecting" | "recognized">("prepare");
 
   const title = note?.title || "幼犬换粮总软便？宠物店长教你3步过渡避坑指南";
-  const body = note?.body || `很多新手家长在幼犬3-6个月换粮期，常常遇到软便拉稀的问题。\n\n其实幼犬肠胃娇嫩，换粮最忌讳直接一刀切！\n\n📌 建议遵循【7日渐进换粮法】：\nDay 1-2：旧粮 80% + 新粮 20%\nDay 3-4：旧粮 50% + 新粮 50%\nDay 5-6：旧粮 20% + 新粮 80%\nDay 7+：完全过渡为新粮\n\n✨ 核心划重点：搭配活性益生菌配方，有助于平稳建立肠道菌群。如果狗狗有挑食问题，可以温水微泡激发肉香。\n\n#幼犬换粮 #新手养狗避坑 #狗狗软便 #宠物店长科普 #特唯普宠粮`;
+  const body = note?.body || `很多新手家长在幼犬3-6个月换粮期，常常遇到软便拉稀的问题。\n\n其实幼犬肠胃娇嫩，换粮最忌讳直接一刀切！\n\n【建议遵循7日渐进换粮法】：\nDay 1-2：旧粮 80% + 新粮 20%\nDay 3-4：旧粮 50% + 新粮 50%\nDay 5-6：旧粮 20% + 新粮 80%\nDay 7+：完全过渡为新粮\n\n核心划重点：搭配活性益生菌配方，有助于平稳建立肠道菌群。如果狗狗有挑食问题，可以温水微泡激发肉香。\n\n#幼犬换粮 #新手养狗避坑 #狗狗软便 #宠物店长科普 #特唯普宠粮`;
 
   const images = [
     "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop",

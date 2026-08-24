@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { MaterialAsset } from './types';
 import { INITIAL_ASSETS } from './mockData';
 import { MaterialCard } from './MaterialCard';
@@ -206,96 +207,110 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-page-bg text-text-primary p-6 space-y-5 overflow-y-auto">
+    <div className="flex flex-col h-full bg-page-bg text-text-primary overflow-hidden">
       
       {/* Top Header Block */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-default pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-[20px] font-semibold text-text-primary tracking-tight">
-              素材中心
-            </h2>
+      <div className="bg-surface-1 border-b border-border-default shrink-0">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-8 py-3.5">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-[18px] font-semibold text-text-main tracking-tight">
+                素材中心
+              </h2>
+            </div>
+            <p className="text-[12px] text-text-secondary mt-0.5">
+              统一管理小红书内容生产素材 · 记录使用与关联关系 · 关联创作者后台数据 · 支撑自动化检索与特征分类
+            </p>
           </div>
-          <p className="text-[12px] text-text-secondary mt-1">
-            统一管理小红书内容生产素材 · 记录使用与关联关系 · 关联创作者后台数据 · 支撑自动化检索与特征分类
-          </p>
+
+          {/* Action Controls */}
+          <div className="flex items-center gap-2.5">
+            {/* Secondary Link to Execution Center Tasks */}
+            <button
+              onClick={() => setShowShootingTaskModal(true)}
+              className="px-3.5 py-2 bg-surface-1 hover:bg-hover-bg text-text-main border border-border-default rounded-xl text-[12.5px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              title="素材不足时，发起拍摄任务提案并下发至执行中心"
+            >
+              <Camera size={14} className="text-text-secondary" />
+              查看待回传素材任务
+            </button>
+
+            {/* Batch Mode Toggle */}
+            <button
+              onClick={() => {
+                setIsBatchMode(!isBatchMode);
+                if (isBatchMode) setSelectedAssetIds([]);
+              }}
+              className={`px-3.5 py-2 border rounded-xl text-[12.5px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer ${
+                isBatchMode
+                  ? 'bg-btn-main text-white border-neutral-900'
+                  : 'bg-surface-1 hover:bg-hover-bg text-text-main border-border-default'
+              }`}
+            >
+              <CheckSquare size={14} />
+              {isBatchMode ? '退出批量管理' : '批量管理'}
+            </button>
+
+            {/* Primary Action: Upload */}
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12.5px] font-medium transition-all active:scale-95 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+            >
+              <Plus size={15} />
+              上传素材
+            </button>
+          </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-3">
-          {/* Secondary Link to Execution Center Tasks */}
-          <button
-            onClick={() => setShowShootingTaskModal(true)}
-            className="px-3 py-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-default rounded-md text-[12px] font-medium transition-colors flex items-center gap-1.5"
-            title="素材不足时，发起拍摄任务提案并下发至执行中心"
-          >
-            <Camera size={14} className="text-text-secondary" />
-            查看待回传素材任务
-          </button>
+        {/* Primary 1st-level Filter Tabs */}
+        <div className="h-13 px-8 flex items-center justify-between border-t border-border-default bg-surface-1">
+          <div className="flex items-center gap-8 h-full">
+            {[
+              { id: 'publishable', label: '可发布素材', count: tabCounts.publishable },
+              { id: 'base_components', label: '基础元件', count: tabCounts.base_components },
+              { id: 'pending_acceptance', label: '待验收', count: tabCounts.pending_acceptance },
+              { id: 'used', label: '已使用', count: tabCounts.used },
+              { id: 'archived', label: '已归档', count: tabCounts.archived }
+            ].map(tab => {
+              const isActive = primaryTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setPrimaryTab(tab.id as any)}
+                  className={`relative h-full flex items-center gap-2 px-1 text-[14px] transition-all whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? 'text-text-main font-semibold'
+                      : 'text-text-secondary hover:text-text-main font-medium'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={`px-1.5 py-0.5 rounded-full text-[11px] leading-none transition-colors ${
+                    isActive
+                      ? 'bg-neutral-900 text-white font-medium'
+                      : 'bg-surface-1 text-text-tertiary border border-border-default'
+                  }`}>
+                    {tab.count}
+                  </span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="materialTab"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900 rounded-full"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-          {/* Batch Mode Toggle */}
-          <button
-            onClick={() => {
-              setIsBatchMode(!isBatchMode);
-              if (isBatchMode) setSelectedAssetIds([]);
-            }}
-            className={`px-3 py-2 border rounded-md text-[12px] font-medium transition-colors flex items-center gap-1.5 ${
-              isBatchMode
-                ? 'bg-action-primary text-white border-action-primary'
-                : 'bg-surface hover:bg-surface-hover text-text-primary border-border-default'
-            }`}
-          >
-            <CheckSquare size={14} />
-            {isBatchMode ? '退出批量管理' : '批量管理'}
-          </button>
-
-          {/* Primary Action: Upload */}
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-md text-[12px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
-          >
-            <Plus size={15} />
-            上传素材
-          </button>
+          <div className="text-[12px] text-text-tertiary hidden lg:block">
+            共 {filteredAssets.length} 项素材
+          </div>
         </div>
       </div>
 
-      {/* Primary 1st-level Filter Tabs */}
-      <div className="flex items-center justify-between gap-2 border-b border-border-subtle pb-0">
-        <div className="flex items-center gap-1">
-          {[
-            { id: 'publishable', label: '可发布素材', count: tabCounts.publishable },
-            { id: 'base_components', label: '基础元件', count: tabCounts.base_components },
-            { id: 'pending_acceptance', label: '待验收', count: tabCounts.pending_acceptance },
-            { id: 'used', label: '已使用', count: tabCounts.used },
-            { id: 'archived', label: '已归档', count: tabCounts.archived }
-          ].map(tab => {
-            const isActive = primaryTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setPrimaryTab(tab.id as any)}
-                className={`px-3.5 py-2 text-[13px] font-medium border-b-2 transition-all flex items-center gap-1.5 relative ${
-                  isActive
-                    ? 'border-action-primary text-text-primary font-semibold'
-                    : 'border-transparent text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                  isActive ? 'bg-surface-selected text-text-primary font-semibold' : 'bg-surface-subtle text-text-tertiary'
-                }`}>
-                  {tab.count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="text-[11px] text-text-tertiary hidden lg:block">
-          共 {filteredAssets.length} 项素材
-        </div>
-      </div>
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-y-auto p-8 space-y-4">
 
       {/* Filter & Search Bar */}
       <div className="bg-surface p-3.5 rounded-lg border border-border-default space-y-3">
@@ -497,6 +512,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
           </div>
         </div>
       )}
+      </div>
 
       {/* Material Detail Drawer */}
       <MaterialDetailDrawer

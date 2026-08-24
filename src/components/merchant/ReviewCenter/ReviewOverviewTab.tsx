@@ -1,401 +1,324 @@
-import React, { useState } from "react";
+import React from "react";
 import { 
-  CheckCircle2, Clock, AlertTriangle, AlertCircle, RefreshCw, 
-  ArrowRight, TrendingUp, TrendingDown, Minus, Check, Layers, 
-  Sparkles, ExternalLink, ChevronRight, ChevronDown, ChevronUp,
-  ShieldAlert, FileText, Database, UserCheck, Play, Eye, Plus, 
-  Zap, Users, BarChart2, Target, Lightbulb, History, RotateCcw,
-  User, ShieldCheck, HelpCircle, Info
+  TrendingUp, TrendingDown, Sparkles, ChevronRight, AlertTriangle, 
+  Check, ArrowRight, ShieldAlert, Target, Zap, Users, BarChart2,
+  FileText, Store, Clock, HelpCircle, Layers, FolderPlus
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ReviewTask, SuggestedAction, ReviewHistoryVersion } from "./types";
+import { ReviewTask, SuggestedAction } from "./types";
 
 interface ReviewOverviewTabProps {
   task: ReviewTask;
-  onToggleActionSync: (actionId: string) => void;
   onActionDetail: (action: SuggestedAction) => void;
-  onSwitchVersion?: (versionId: string) => void;
-  onSupplementData?: () => void;
+  onApplyAction?: (action: SuggestedAction) => void;
+  onNavigateToEvidence?: (target: { section: "overall" | "comparison" | "content" | "user" | "funnel" | "data_spec"; filter?: string }) => void;
 }
-
-const DEFAULT_METRIC_DEFINITIONS = [
-  {
-    name: "有效私信咨询率",
-    formula: "(提供犬龄/品种/手机号等有效线索会话数 ÷ 私信总会话量) × 100%",
-    explanation: "衡量内容引流人群的精准度，剔除无意向的纯寒暄与机器人灌水。",
-  },
-  {
-    name: "单线索平均获客成本 (CPL)",
-    formula: "(该项目总投入预算 + 内容制作折算成本) ÷ 获取的有效留资线索数",
-    explanation: "核算各门店或矩阵号的真实获客效率，用于评估自然流量与投产性价比。",
-  },
-  {
-    name: "内容综合互动率",
-    formula: "[(点赞数 + 收藏数 × 1.5 + 评论数 × 2) ÷ 笔记总曝光量] × 100%",
-    explanation: "综合评估笔记在小红书算法推荐池中的表现力，重点衡量深度互动意愿。",
-  },
-  {
-    name: "线下到店 / 私域核销率",
-    formula: "(实际到店完成核销体验券人数 ÷ 领券并留资总人数) × 100%",
-    explanation: "连接线上小红书与线下门店的核心转化效率，直接决定最终闭环ROI。",
-  },
-  {
-    name: "搜索收录与长尾流量占比",
-    formula: "(通过搜索词进入笔记的曝光量 ÷ 笔记总曝光量) × 100%",
-    explanation: "衡量笔记在换粮、软便等长尾关键词上的自然卡位能力与长效获客潜力。",
-  },
-];
 
 export function ReviewOverviewTab({
   task,
-  onToggleActionSync,
   onActionDetail,
-  onSwitchVersion,
-  onSupplementData,
+  onApplyAction,
+  onNavigateToEvidence,
 }: ReviewOverviewTabProps) {
-  const { coreConclusions, suggestedActions, analysisDetails, historyVersions, activeVersionId } = task;
+  const { coreConclusions, suggestedActions, analysisDetails } = task;
 
-  // Accordion state for Data Scope & Metric Definitions (折叠的“数据范围与指标口径”)
-  const [isDataScopeOpen, setIsDataScopeOpen] = useState(false);
+  // Applied actions count
+  const appliedCount = suggestedActions.filter((a) => !!a.appliedDestinationLabel).length;
 
-  // Active insight tab selection for User/Content/Conversion insights
-  const [activeInsightTab, setActiveInsightTab] = useState<"all" | "content" | "user" | "conversion">("all");
-
-  // Fallback metric shifts if not populated
-  const metricShifts = analysisDetails?.metricShifts || [
-    { metric: "跨项目总曝光量", before: "37.8万", current: "44.2万", change: "+16.8%", isGood: true, note: "三亚店高爆文拉动明显" },
-    { metric: "全网总互动量 (赞/藏/评)", before: "24,200", current: "28,240", change: "+16.7%", isGood: true, note: "测评类笔记互动率高" },
-    { metric: "私信咨询线索量", before: "1,210", current: "1,420", change: "+17.3%", isGood: true, note: "整体咨询量保持平稳上升" },
-    { metric: "有效咨询线索转化率", before: "13.2%", current: "14.3%", change: "+1.1%", isGood: true, note: "三亚大幅提升拉高均值" },
-    { metric: "单线索获客成本 (CPL)", before: "¥24.8", current: "¥19.2", change: "-22.5%", isGood: true, note: "自然搜索与KOS自带流量降本" },
+  // 6 Core Metrics for high-level decision making
+  const coreMetrics = [
+    {
+      label: "会员新增与拓客",
+      current: "340 人",
+      before: "265 人",
+      change: "+28.5%",
+      isGood: true,
+      note: "达成既定月度目标的 112%",
+    },
+    {
+      label: "内容全网总曝光",
+      current: "44.2 万",
+      before: "37.8 万",
+      change: "+16.8%",
+      isGood: true,
+      note: "三亚店高爆文持续贡献长尾",
+    },
+    {
+      label: "私信咨询线索量",
+      current: "1,420 条",
+      before: "1,210 条",
+      change: "+17.3%",
+      isGood: true,
+      note: "日均咨询保持稳步递增",
+    },
+    {
+      label: "有效私信留资率",
+      current: "48.0%",
+      before: "42.1%",
+      change: "+5.9%",
+      isGood: true,
+      note: "标准化开场白有效促成留资",
+    },
+    {
+      label: "门店核销 / 转化单量",
+      current: "248 单",
+      before: "202 单",
+      change: "+22.8%",
+      isGood: true,
+      note: "三亚店核销率达 22.4% 居首",
+    },
+    {
+      label: "单线索获客成本 CPL",
+      current: "¥19.2",
+      before: "¥24.8",
+      change: "-22.5%",
+      isGood: true,
+      note: "自然搜索与店长号降本明显",
+    },
   ];
 
-  // Diagnoses / Risks & Anomalies
-  const diagnoses = analysisDetails?.diagnoses || [
+  // 3 Key Drivers (The 3 "Whys")
+  const keyDrivers = [
     {
-      issue: "跨项目私信承接响应时效差距显著",
-      cause: "青岛及杭州门店夜间未配置自动化承接SOP，客服平均首次响应超过 45 分钟。",
-      impact: "预估每月导致约 42% 的高意向潜客在评论区或私信入口流失。",
+      id: "content_driver",
+      title: "哪类内容带来了增长？",
+      headline: "真实养宠答疑与《店长换粮实测》笔记是核心引擎",
+      description:
+        "三亚店采用真实养宠场景实测（如店长手把手温水泡粮、记录便便变化），互动率与长尾搜索转化是普通硬广的 3.8 倍，单篇贡献 22.4% 进店核销率。",
+      tag: "内容策略",
+      tagColor: "bg-blue-50 text-blue-700 border-blue-200",
+      targetSection: "content" as const,
+      filter: "high_converting",
+      actionLabel: "查看内容分析依据",
+    },
+    {
+      id: "store_driver",
+      title: "哪个门店表现最好？",
+      headline: "三亚店在矩阵中综合 ROI 与转化力均居第一",
+      description:
+        "三亚店以店长人设深度运营，在内容完播率、私信回复时效（<3分钟）及到店核销率（22.4%）三项指标全矩阵领跑，贡献全项目 54% 的线索增量。",
+      tag: "门店对比",
+      tagColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      targetSection: "comparison" as const,
+      filter: "sanya",
+      actionLabel: "查看门店对比依据",
+    },
+    {
+      id: "loss_driver",
+      title: "哪个环节造成了流失？",
+      headline: "青岛、杭州 20:00—24:00 夜间咨询承接严重断层",
+      description:
+        "复盘数据显示 42% 的高意向咨询发生在 20:00-24:00，青岛与杭州夜间未配置自动化回复 SOP，客服平均首次响应超过 45 分钟，造成大量潜客在私信入口流失。",
+      tag: "转化卡点",
+      tagColor: "bg-amber-50 text-amber-700 border-amber-200",
+      targetSection: "funnel" as const,
+      filter: "night_loss",
+      actionLabel: "查看漏斗流失依据",
+    },
+  ];
+
+  // 3 Critical Risks / Anomalies (Truly affecting decisions)
+  const criticalRisks = [
+    {
+      title: "夜间时段高意向潜客流失风险",
       severity: "high" as const,
-      affectedStage: "私信承接与转化环节",
+      description: "青岛与杭州门店在 20:00—24:00 夜间时段无专人值守，高意向咨询由于超时无应答流失率达 42%。",
+      impact: "预估每月损失近 120+ 组意向换粮新客。",
+      actionText: "查看转化链路",
+      targetSection: "funnel" as const,
+      filter: "night_loss",
     },
     {
-      issue: "部分矩阵号过度依赖硬广活动，泛流量占比偏高",
-      cause: "发布内容以纯买赠优惠券为主，缺乏真实店长出镜与专业知识背书。",
-      impact: "虽然互动量达标，但实际到店核销率仅 4.2%（远低于标杆三亚店的 22.4%）。",
+      title: "青岛店部分私信日志存在数据补录修正",
       severity: "medium" as const,
-      affectedStage: "内容分发与客群沉淀",
+      description: "青岛店 7月15日前由于第三方系统接口维护，部分私信会话存在数据延迟，系统已采用加权平滑算法完成校准。",
+      impact: "已校准数据基准，不影响综合趋势判断。",
+      actionText: "查看数据说明",
+      targetSection: "data_spec" as const,
+    },
+    {
+      title: "烘焙粮品类高转化样本集中度偏高",
+      severity: "low" as const,
+      description: "烘焙粮品类的高转化数据主要由 2 篇核心爆款拉动，其余普通笔记样本量偏少。",
+      impact: "建议在后续批次中补齐 3 组对照样本以固化最佳实践。",
+      actionText: "查看内容样本",
+      targetSection: "content" as const,
+      filter: "sample_notes",
     },
   ];
-
-  const contentInsight = analysisDetails?.insights?.contentInsight || {
-    title: "内容与素材洞察",
-    takeaways: [
-      "真实养宠场景实测（如店长手把手温水泡粮、记录便便变化）信任度最高，完播率超 62%。",
-      "纯产品棚拍图与包装精修图容易被算法识别为商业广告，长尾搜索自然推流受限。",
-      "视频前 3 秒植入具体痛点问题（如‘幼犬换粮天天软便？’）的笔记互动率高出 2.3 倍。",
-    ],
-  };
-
-  const userInsight = analysisDetails?.insights?.userInsight || {
-    title: "潜客与意向洞察",
-    takeaways: [
-      "64% 的咨询宠主为初次养犬新手（犬龄在 2-6 个月），对‘益生菌活性’与‘胃肠耐受’极度敏感。",
-      "用户不仅有买粮诉求，更需要‘科学养宠指导’，对专业营养顾问答疑具有高信任粘性。",
-      "地域偏好：南方城市更关注泪痕与湿热软便，北方城市更关注适口性与颗粒大小。",
-    ],
-  };
-
-  const conversionInsight = analysisDetails?.insights?.conversionInsight || {
-    title: "私信与转化洞察",
-    takeaways: [
-      "置顶评论引导‘领取 7 天科学换粮自测表’的点击率比正文口播高出 4 倍。",
-      "私信第 1 轮主动询问宠龄与品种的标准化会话，后续微信留资率高达 78%。",
-      "夜间开启自动接待并赠送新客试吃装，可将次日到店核销率提升 31%。",
-    ],
-  };
 
   return (
     <div className="space-y-6 pb-12 font-sans text-text-main">
       
       {/* ========================================================= */}
-      {/* 1. 核心结论 (Core Conclusions) */}
+      {/* 1. 一句话复盘结论 (One-Sentence Executive Conclusion) */}
+      {/* ========================================================= */}
+      <section className="bg-gradient-to-r from-surface-subtle via-surface-1 to-surface-subtle p-5 rounded-2xl border border-border-default shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-btn-main text-white text-[11px] font-bold rounded">
+              经营结论
+            </span>
+            <h2 className="text-[15px] font-bold text-text-main">本次复盘核心定论</h2>
+          </div>
+          <span className="text-[12px] text-text-tertiary">
+            {analysisDetails?.summary?.timeWindow || task.dateRange.label} · 覆盖 {task.projectNames.join("、")}
+          </span>
+        </div>
+
+        <div className="p-4 bg-surface-1 rounded-xl border border-border-subtle shadow-2xs space-y-2.5">
+          <p className="text-[14.5px] font-semibold text-text-main leading-relaxed">
+            {coreConclusions?.overallPerformance?.title 
+              ? `${coreConclusions.overallPerformance.title}。${coreConclusions.mainIssue.title}。`
+              : "Q2 会员增长主要来自三亚店的专业答疑与实测内容，但青岛、杭州在 20:00—24:00 夜间咨询承接上存在明显流失。"}
+          </p>
+          <div className="flex flex-wrap items-center gap-2 text-[12px]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-medium">
+              <TrendingUp size={12} />
+              <span>增长极：三亚店实测答疑（核销率 22.4%）</span>
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded font-medium">
+              <Clock size={12} />
+              <span>卡点：夜间咨询流失率达 42%</span>
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded font-medium">
+              <Target size={12} />
+              <span>目标达成：全网曝光 44.2万（达成率 112%）</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* 2. 核心指标 (Core Metrics - 4~6个指标与相比上期变化) */}
       {/* ========================================================= */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-2 h-4 bg-btn-main rounded-full" />
-            <h3 className="text-[15px] font-semibold text-text-main tracking-tight">核心结论</h3>
+            <h3 className="text-[15px] font-semibold text-text-main tracking-tight">核心经营指标</h3>
           </div>
-          <span className="text-[12px] text-text-tertiary">综合跨周期漏斗与多维线索提炼</span>
+          <span className="text-[12px] text-text-tertiary">较上一周期环比基准</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          {/* Card 1: 总体表现 */}
-          <div className="bg-surface-1 p-4 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] font-medium text-text-tertiary flex items-center gap-1">
-                  <TrendingUp size={13} className="text-emerald-600" />
-                  <span>总体表现</span>
-                </span>
-                {coreConclusions.overallPerformance.metricBadge && (
-                  <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-semibold rounded">
-                    {coreConclusions.overallPerformance.metricBadge}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {coreMetrics.map((m, idx) => (
+            <div
+              key={idx}
+              className="bg-surface-1 p-3.5 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors"
+            >
+              <span className="text-[11.5px] font-medium text-text-tertiary truncate">
+                {m.label}
+              </span>
+              <div>
+                <div className="text-[19px] font-bold text-text-main tracking-tight">
+                  {m.current}
+                </div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span
+                    className={`inline-flex items-center gap-0.5 text-[11px] font-bold px-1 py-0.2 rounded ${
+                      m.isGood ? "text-emerald-700 bg-emerald-50" : "text-red-700 bg-red-50"
+                    }`}
+                  >
+                    {m.isGood ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                    <span>{m.change}</span>
                   </span>
-                )}
+                  <span className="text-[10.5px] text-text-tertiary font-mono">
+                    前值 {m.before}
+                  </span>
+                </div>
               </div>
-              <h4 className="text-[13.5px] font-semibold text-text-main leading-snug">
-                {coreConclusions.overallPerformance.title}
-              </h4>
+              <p className="text-[10.5px] text-text-secondary leading-tight pt-1.5 border-t border-border-subtle line-clamp-1">
+                {m.note}
+              </p>
             </div>
-            <p className="text-[12px] text-text-secondary leading-relaxed line-clamp-3">
-              {coreConclusions.overallPerformance.description}
-            </p>
-          </div>
-
-          {/* Card 2: 主要问题 */}
-          <div className="bg-surface-1 p-4 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] font-medium text-text-tertiary flex items-center gap-1">
-                  <AlertCircle size={13} className="text-red-600" />
-                  <span>主要问题</span>
-                </span>
-                <span className="px-1.5 py-0.5 bg-red-50 text-red-700 text-[11px] font-semibold rounded">
-                  {coreConclusions.mainIssue.stage}
-                </span>
-              </div>
-              <h4 className="text-[13.5px] font-semibold text-text-main leading-snug">
-                {coreConclusions.mainIssue.title}
-              </h4>
-            </div>
-            <p className="text-[12px] text-text-secondary leading-relaxed line-clamp-3">
-              {coreConclusions.mainIssue.description}
-            </p>
-          </div>
-
-          {/* Card 3: 关键机会 */}
-          <div className="bg-surface-1 p-4 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] font-medium text-text-tertiary flex items-center gap-1">
-                  <Sparkles size={13} className="text-blue-600" />
-                  <span>关键机会</span>
-                </span>
-                <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[11px] font-semibold rounded">
-                  {coreConclusions.keyOpportunity.potentialGain || "增长突破点"}
-                </span>
-              </div>
-              <h4 className="text-[13.5px] font-semibold text-text-main leading-snug">
-                {coreConclusions.keyOpportunity.title}
-              </h4>
-            </div>
-            <p className="text-[12px] text-text-secondary leading-relaxed line-clamp-3">
-              {coreConclusions.keyOpportunity.description}
-            </p>
-          </div>
-
-          {/* Card 4: 优先动作 */}
-          <div className="bg-surface-1 p-4 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] font-medium text-text-tertiary flex items-center gap-1">
-                  <Zap size={13} className="text-amber-600" />
-                  <span>优先动作</span>
-                </span>
-                <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded">
-                  建议优先执行
-                </span>
-              </div>
-              <h4 className="text-[13.5px] font-semibold text-text-main leading-snug">
-                {coreConclusions.priorityAction.title}
-              </h4>
-            </div>
-            <p className="text-[12px] text-text-secondary leading-relaxed line-clamp-3">
-              {coreConclusions.priorityAction.description}
-            </p>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* ========================================================= */}
-      {/* 2. 关键指标变化 (Key Metrics Shifts) */}
+      {/* 3. 关键驱动因素 (Key Drivers - 最重要的3个“为什么”) */}
       {/* ========================================================= */}
-      <section className="bg-surface-1 rounded-xl border border-border-default shadow-xs overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-border-default flex items-center justify-between bg-surface-1">
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BarChart2 size={16} className="text-btn-main" />
-            <h3 className="text-[14px] font-semibold text-text-main">关键指标变化</h3>
+            <div className="w-2 h-4 bg-btn-main rounded-full" />
+            <h3 className="text-[15px] font-semibold text-text-main tracking-tight">关键驱动因素</h3>
           </div>
-          <span className="text-[12px] text-text-tertiary">较上一复盘周期环比基准对照</span>
+          <span className="text-[12px] text-text-tertiary">3 大核心原因解析与分析依据直达</span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-[12.5px]">
-            <thead>
-              <tr className="bg-surface-subtle border-b border-border-default text-[11.5px] text-text-tertiary font-medium">
-                <th className="py-2.5 px-4">指标名称</th>
-                <th className="py-2.5 px-4">上周期基准</th>
-                <th className="py-2.5 px-4">本期数值</th>
-                <th className="py-2.5 px-4">环比变化</th>
-                <th className="py-2.5 px-4">归因解读</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border-subtle">
-              {metricShifts.map((m, idx) => (
-                <tr key={idx} className="hover:bg-surface-subtle transition-colors">
-                  <td className="py-3 px-4 font-semibold text-text-main">{m.metric}</td>
-                  <td className="py-3 px-4 text-text-tertiary">{m.before}</td>
-                  <td className="py-3 px-4 font-medium text-text-main">{m.current}</td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-semibold ${
-                        m.isGood
-                          ? "bg-emerald-50 text-emerald-700"
-                          : "bg-red-50 text-red-700"
-                      }`}
-                    >
-                      {m.isGood ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                      <span>{m.change}</span>
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-text-secondary text-[12px]">{m.note}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {keyDrivers.map((driver) => (
+            <div
+              key={driver.id}
+              className="bg-surface-1 p-4 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-3 hover:border-border-strong transition-all"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[12px] font-bold text-text-tertiary">
+                    {driver.title}
+                  </span>
+                  <span className={`px-1.5 py-0.5 text-[10.5px] font-semibold rounded border ${driver.tagColor}`}>
+                    {driver.tag}
+                  </span>
+                </div>
+
+                <h4 className="text-[13.5px] font-semibold text-text-main leading-snug">
+                  {driver.headline}
+                </h4>
+
+                <p className="text-[12px] text-text-secondary leading-relaxed line-clamp-4">
+                  {driver.description}
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-border-subtle flex items-center justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onNavigateToEvidence) {
+                      onNavigateToEvidence({
+                        section: driver.targetSection,
+                        filter: driver.filter,
+                      });
+                    }
+                  }}
+                  className="text-[12px] text-btn-main hover:text-btn-main-hover font-semibold flex items-center gap-1 group py-1"
+                >
+                  <span>{driver.actionLabel}</span>
+                  <ChevronRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ========================================================= */}
-      {/* 3. 用户 / 内容 / 转化洞察 (Insights) */}
-      {/* ========================================================= */}
-      <section className="bg-surface-1 rounded-xl border border-border-default shadow-xs overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-border-default flex items-center justify-between bg-surface-1">
-          <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-btn-main" />
-            <h3 className="text-[14px] font-semibold text-text-main">用户 / 内容 / 转化洞察</h3>
-          </div>
-
-          {/* Filter Pills */}
-          <div className="flex bg-surface-subtle p-0.5 rounded-lg border border-border-default text-[12px]">
-            {[
-              { id: "all", label: "全部洞察" },
-              { id: "content", label: "内容洞察" },
-              { id: "user", label: "用户洞察" },
-              { id: "conversion", label: "转化洞察" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveInsightTab(tab.id as any)}
-                className={`px-3 py-1 font-medium rounded-md transition-all ${
-                  activeInsightTab === tab.id
-                    ? "bg-surface-1 text-text-main shadow-xs"
-                    : "text-text-tertiary hover:text-text-main"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-5">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            
-            {/* Panel 1: 内容与素材洞察 */}
-            {(activeInsightTab === "all" || activeInsightTab === "content") && (
-              <div className={`space-y-3 p-4 bg-surface-subtle rounded-xl border border-border-default ${activeInsightTab !== "all" ? "md:col-span-3" : ""}`}>
-                <div className="flex items-center gap-2 border-b border-border-subtle pb-2">
-                  <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
-                    <FileText size={13} />
-                  </div>
-                  <h4 className="text-[13.5px] font-semibold text-text-main">{contentInsight.title}</h4>
-                </div>
-                <ul className="space-y-2">
-                  {contentInsight.takeaways.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-[12px] text-text-secondary leading-relaxed bg-surface-1 p-2.5 rounded-lg border border-border-subtle">
-                      <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-800 text-[10px] flex items-center justify-center font-bold shrink-0 mt-0.5">
-                        {idx + 1}
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Panel 2: 潜客与意向洞察 */}
-            {(activeInsightTab === "all" || activeInsightTab === "user") && (
-              <div className={`space-y-3 p-4 bg-surface-subtle rounded-xl border border-border-default ${activeInsightTab !== "all" ? "md:col-span-3" : ""}`}>
-                <div className="flex items-center gap-2 border-b border-border-subtle pb-2">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
-                    <Users size={13} />
-                  </div>
-                  <h4 className="text-[13.5px] font-semibold text-text-main">{userInsight.title}</h4>
-                </div>
-                <ul className="space-y-2">
-                  {userInsight.takeaways.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-[12px] text-text-secondary leading-relaxed bg-surface-1 p-2.5 rounded-lg border border-border-subtle">
-                      <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 text-[10px] flex items-center justify-center font-bold shrink-0 mt-0.5">
-                        {idx + 1}
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Panel 3: 私信与转化洞察 */}
-            {(activeInsightTab === "all" || activeInsightTab === "conversion") && (
-              <div className={`space-y-3 p-4 bg-surface-subtle rounded-xl border border-border-default ${activeInsightTab !== "all" ? "md:col-span-3" : ""}`}>
-                <div className="flex items-center gap-2 border-b border-border-subtle pb-2">
-                  <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
-                    <TrendingUp size={13} />
-                  </div>
-                  <h4 className="text-[13.5px] font-semibold text-text-main">{conversionInsight.title}</h4>
-                </div>
-                <ul className="space-y-2">
-                  {conversionInsight.takeaways.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-[12px] text-text-secondary leading-relaxed bg-surface-1 p-2.5 rounded-lg border border-border-subtle">
-                      <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-800 text-[10px] flex items-center justify-center font-bold shrink-0 mt-0.5">
-                        {idx + 1}
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 4. 可执行建议 (Actionable Suggestions) */}
+      {/* 4. 后续迭代建议 (Follow-up Iteration Suggestions) */}
       {/* ========================================================= */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-4 bg-emerald-600 rounded-full" />
-              <h3 className="text-[15px] font-semibold text-text-main tracking-tight">可执行建议</h3>
+              <h3 className="text-[15px] font-semibold text-text-main tracking-tight">后续迭代建议</h3>
             </div>
             <p className="text-[12px] text-text-tertiary mt-0.5">
-              复盘的终点是行动。可将建议动作一键同步至执行中心推进日常落地
+              基于本次复盘结果，将有效经验和优化方向应用到下一期方案或后续笔记。
             </p>
           </div>
-          <span className="text-[12px] text-text-tertiary">
-            已同步 ({suggestedActions.filter(a => a.inExecutionCenter).length}/{suggestedActions.length})
+          <span className="text-[12px] text-text-tertiary font-medium">
+            已应用 ({appliedCount}/{suggestedActions.length})
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {suggestedActions.map((action) => {
             const isP0 = action.priority === "P0";
+            const isApplied = !!action.appliedDestinationLabel;
+            const isPlan = action.actionType === "plan";
+
             return (
               <div
                 key={action.id}
@@ -416,12 +339,15 @@ export function ReviewOverviewTab({
                       <span className="px-1.5 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[10.5px] rounded">
                         {action.category}
                       </span>
+                      <span className="px-1.5 py-0.5 bg-neutral-100 text-text-tertiary border border-neutral-200 text-[10px] rounded">
+                        {isPlan ? "流程 / 策略" : "内容 / 选题"}
+                      </span>
                     </div>
 
-                    {action.inExecutionCenter && (
-                      <span className="text-[11px] text-emerald-600 flex items-center gap-1 font-medium">
-                        <Check size={12} strokeWidth={2.5} />
-                        <span>已在执行中心</span>
+                    {isApplied && (
+                      <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
+                        <Check size={11} strokeWidth={2.5} />
+                        <span>{action.appliedDestinationLabel}</span>
                       </span>
                     )}
                   </div>
@@ -445,27 +371,31 @@ export function ReviewOverviewTab({
                     onClick={() => onActionDetail(action)}
                     className="text-[12px] text-text-secondary hover:text-text-main font-medium flex items-center gap-1"
                   >
-                    <span>查看落地步骤</span>
+                    <span>查看落地方式</span>
                     <ChevronRight size={13} />
                   </button>
 
                   <button
-                    onClick={() => onToggleActionSync(action.id)}
+                    onClick={() => {
+                      if (onApplyAction) {
+                        onApplyAction(action);
+                      }
+                    }}
                     className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs ${
-                      action.inExecutionCenter
+                      isApplied
                         ? "bg-surface-subtle text-text-secondary border border-border-default hover:bg-hover-bg"
                         : "bg-btn-main text-white hover:bg-btn-main-hover"
                     }`}
                   >
-                    {action.inExecutionCenter ? (
+                    {isPlan ? (
                       <>
-                        <Check size={12} />
-                        <span>已同步执行</span>
+                        <FolderPlus size={12} />
+                        <span>{isApplied ? "修改方案设置" : "纳入项目方案"}</span>
                       </>
                     ) : (
                       <>
-                        <Plus size={12} />
-                        <span>加入执行中心</span>
+                        <FileText size={12} />
+                        <span>{isApplied ? "修改应用设置" : "应用到后续笔记"}</span>
                       </>
                     )}
                   </button>
@@ -477,246 +407,66 @@ export function ReviewOverviewTab({
       </section>
 
       {/* ========================================================= */}
-      {/* 5. 风险与异常 (Risks and Anomalies) */}
+      {/* 5. 风险和待关注问题 (Risks & Watch-outs - 真正影响判断的异常) */}
       {/* ========================================================= */}
       <section className="bg-surface-1 rounded-xl border border-border-default shadow-xs overflow-hidden">
         <div className="px-5 py-3.5 border-b border-border-default flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2">
             <AlertTriangle size={16} className="text-red-600" />
-            <h3 className="text-[14px] font-semibold text-text-main">风险与异常</h3>
+            <h3 className="text-[14px] font-semibold text-text-main">风险和待关注问题</h3>
           </div>
           <span className="text-[12px] text-text-tertiary">
-            共发现 {diagnoses.length} 处业务卡点与时效风险
+            提示可能影响业务判断与经营指标的异常
           </span>
         </div>
 
         <div className="divide-y divide-border-subtle p-3 space-y-3">
-          {diagnoses.map((diag, i) => {
-            const isHigh = diag.severity === "high";
+          {criticalRisks.map((risk, i) => {
+            const isHigh = risk.severity === "high";
+            const isMed = risk.severity === "medium";
             return (
-              <div key={i} className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-2.5">
+              <div key={i} className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span
                       className={`px-2 py-0.5 text-[11px] font-bold rounded ${
                         isHigh
                           ? "bg-red-100 text-red-700 border border-red-200"
-                          : "bg-amber-100 text-amber-700 border border-amber-200"
+                          : isMed
+                          ? "bg-amber-100 text-amber-700 border border-amber-200"
+                          : "bg-blue-50 text-blue-700 border border-blue-200"
                       }`}
                     >
-                      {isHigh ? "高风险 / 严重卡点" : "中风险 / 提示预警"}
+                      {isHigh ? "严重卡点" : isMed ? "数据预警" : "样本提示"}
                     </span>
-                    <h4 className="text-[13.5px] font-semibold text-text-main">{diag.issue}</h4>
+                    <h4 className="text-[13.5px] font-semibold text-text-main">{risk.title}</h4>
                   </div>
-                  <span className="px-2 py-0.5 bg-surface-1 border border-border-default text-[11px] font-medium text-text-tertiary rounded">
-                    {diag.affectedStage}
-                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onNavigateToEvidence) {
+                        onNavigateToEvidence({
+                          section: risk.targetSection,
+                          filter: risk.filter,
+                        });
+                      }
+                    }}
+                    className="text-[11.5px] text-btn-main hover:text-btn-main-hover font-medium flex items-center gap-0.5"
+                  >
+                    <span>{risk.actionText}</span>
+                    <ChevronRight size={12} />
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[12px]">
-                  <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle">
-                    <span className="font-medium text-text-tertiary block mb-0.5">🔍 根本原因剖析：</span>
-                    <p className="text-text-secondary leading-relaxed">{diag.cause}</p>
+                  <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-text-secondary leading-relaxed">
+                    <span className="font-medium text-text-tertiary block mb-0.5">异常详情：</span>
+                    {risk.description}
                   </div>
-                  <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle">
-                    <span className="font-medium text-red-700 block mb-0.5">⚠️ 业务影响评估：</span>
-                    <p className="text-text-secondary leading-relaxed">{diag.impact}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 6. 折叠的“数据范围与指标口径” (Collapsible Data Scope & Metrics) */}
-      {/* ========================================================= */}
-      <section className="bg-surface-1 rounded-xl border border-border-default shadow-xs overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setIsDataScopeOpen(!isDataScopeOpen)}
-          className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-surface-subtle transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <Database size={16} className="text-text-tertiary" />
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-[14px] font-semibold text-text-main">数据范围与指标口径</h3>
-                <span className="px-1.5 py-0.5 bg-surface-subtle border border-border-default text-text-tertiary text-[10.5px] rounded">
-                  {isDataScopeOpen ? "点击折叠" : "点击展开详情"}
-                </span>
-              </div>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
-                覆盖 {analysisDetails?.summary?.scope || task.projectNames.join('、')} · {analysisDetails?.summary?.sampleNotesCount || 58} 篇笔记样本 · {analysisDetails?.summary?.timeWindow || task.dateRange.label}
-              </p>
-            </div>
-          </div>
-
-          <div className="w-7 h-7 rounded-lg bg-surface-subtle border border-border-default flex items-center justify-center text-text-tertiary">
-            {isDataScopeOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </div>
-        </button>
-
-        <AnimatePresence>
-          {isDataScopeOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="border-t border-border-default"
-            >
-              <div className="p-5 space-y-5 bg-surface-1">
-                
-                {/* 1. Scope & Baseline Grid */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-text-main">
-                    <Info size={14} className="text-btn-main" />
-                    <span>分析范围与样本基准</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-[12px]">
-                    <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
-                      <span className="text-text-tertiary text-[11px] block">覆盖项目 / 门店</span>
-                      <span className="font-semibold text-text-main block">{analysisDetails?.summary?.scope || task.projectNames.join('、')}</span>
-                    </div>
-
-                    <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
-                      <span className="text-text-tertiary text-[11px] block">复盘核心目标</span>
-                      <span className="font-semibold text-text-main block">{analysisDetails?.summary?.target || task.targetObjectiveLabel}</span>
-                    </div>
-
-                    <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
-                      <span className="text-text-tertiary text-[11px] block">分析时间窗口</span>
-                      <span className="font-semibold text-text-main block">{analysisDetails?.summary?.timeWindow || task.dateRange.label}</span>
-                    </div>
-
-                    <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1 sm:col-span-2">
-                      <span className="text-text-tertiary text-[11px] block">接入数据源范围</span>
-                      <span className="font-semibold text-text-main block">{analysisDetails?.summary?.dataSource || "小红书聚光后台、来客私信系统、线下核销系统"}</span>
-                    </div>
-
-                    <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
-                      <span className="text-text-tertiary text-[11px] block">样本笔记 / 会话规模</span>
-                      <span className="font-semibold text-text-main block">共 {analysisDetails?.summary?.sampleNotesCount || 58} 篇笔记样本</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. Metric Formulas & Calculation Standards */}
-                <div className="space-y-2.5 pt-2 border-t border-border-subtle">
-                  <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-text-main">
-                    <Target size={14} className="text-btn-main" />
-                    <span>核心指标统计口径与计算公式</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {DEFAULT_METRIC_DEFINITIONS.map((def, idx) => (
-                      <div key={idx} className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1.5 text-[12px]">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-text-main">{def.name}</span>
-                          <span className="text-[10.5px] text-text-tertiary font-mono">公式 #{idx + 1}</span>
-                        </div>
-                        <div className="p-2 bg-surface-1 rounded border border-border-default font-mono text-[11px] text-text-secondary">
-                          {def.formula}
-                        </div>
-                        <p className="text-[11.5px] text-text-tertiary leading-relaxed">
-                          {def.explanation}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 7. 版本历史 (Version History) */}
-      {/* ========================================================= */}
-      <section className="bg-surface-1 rounded-xl border border-border-default shadow-xs p-5 space-y-4">
-        <div className="flex items-center justify-between border-b border-border-subtle pb-3">
-          <div className="flex items-center gap-2">
-            <History size={16} className="text-btn-main" />
-            <h3 className="text-[14px] font-semibold text-text-main">版本历史</h3>
-          </div>
-          <span className="text-[12px] text-text-tertiary">
-            累计 {historyVersions.length} 个快照版本
-          </span>
-        </div>
-
-        {/* Timeline List */}
-        <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border-default">
-          {historyVersions.map((ver) => {
-            const isActive = ver.id === activeVersionId;
-            return (
-              <div key={ver.id} className="relative group">
-                {/* Dot */}
-                <div
-                  className={`absolute -left-6 top-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                    isActive
-                      ? "bg-btn-main border-btn-main text-white"
-                      : "bg-surface-1 border-border-strong text-text-disabled group-hover:border-btn-main"
-                  }`}
-                >
-                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                </div>
-
-                {/* Card */}
-                <div
-                  className={`p-3.5 rounded-xl border transition-all space-y-2 ${
-                    isActive
-                      ? "bg-surface-subtle border-border-strong shadow-xs"
-                      : "bg-surface-1 border-border-default hover:border-border-strong"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[13.5px] font-semibold text-text-main">{ver.versionName}</span>
-                      <span
-                        className={`px-1.5 py-0.5 text-[10.5px] font-medium rounded ${
-                          isActive
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-neutral-100 text-text-tertiary border border-neutral-200"
-                        }`}
-                      >
-                        {ver.versionTag}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-[11.5px] text-text-tertiary">
-                      <span className="flex items-center gap-1">
-                        <Clock size={11} /> {ver.createdAt}
-                      </span>
-                      <span>·</span>
-                      <span className="flex items-center gap-1">
-                        <User size={11} /> {ver.createdBy}
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-[12px] text-text-secondary leading-relaxed bg-surface-1 p-2.5 rounded-lg border border-border-subtle">
-                    {ver.summarySnapshot}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-1 text-[11px]">
-                    <span className="text-text-tertiary">
-                      <strong className="text-text-secondary">数据截至时间：</strong> {ver.dataCutoff}
-                    </span>
-
-                    {!isActive && onSwitchVersion && (
-                      <button
-                        onClick={() => onSwitchVersion(ver.id)}
-                        className="px-2.5 py-1 text-btn-main hover:bg-hover-bg rounded-md font-medium flex items-center gap-1 transition-colors"
-                      >
-                        <RotateCcw size={11} />
-                        <span>切换至该版本</span>
-                      </button>
-                    )}
+                  <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-text-secondary leading-relaxed">
+                    <span className="font-medium text-text-tertiary block mb-0.5">经营影响评估：</span>
+                    {risk.impact}
                   </div>
                 </div>
               </div>

@@ -190,8 +190,11 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                         <Gift size={16} className="text-danger" />
                         参与专属奖励
                       </div>
-                      <div className="text-[12.5px] text-text-secondary leading-relaxed bg-amber-50/70 p-3 rounded-xl border border-amber-100 font-medium">
-                        🎁 完成小红书真实体验分享，立得 <strong>50元宠粮无门槛券</strong> + 幼犬益生菌试用礼包！
+                      <div className="text-[12.5px] text-text-secondary leading-relaxed bg-amber-50/70 p-3 rounded-xl border border-amber-100 font-medium flex items-start gap-2">
+                        <Gift size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                        <div>
+                          完成小红书真实体验分享，立得 <strong>50元宠粮无门槛券</strong> + 幼犬益生菌试用礼包！
+                        </div>
                       </div>
                     </div>
 
@@ -357,8 +360,8 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2">
                     <div className="font-bold text-text-main text-[13.5px]">拍摄要求</div>
                     <div className="text-[12px] text-text-secondary space-y-1 bg-page-bg p-2.5 rounded-xl border border-border-default">
-                      <div>📸 <strong>场景 1 (必拍):</strong> 狗狗进食特写或与粮袋合影 (1-2张)</div>
-                      <div>🐶 <strong>场景 2 (选拍):</strong> 狗狗精神饱满生活照 (1张)</div>
+                      <div><strong>场景 1 (必拍):</strong> 狗狗进食特写或与粮袋合影 (1-2张)</div>
+                      <div><strong>场景 2 (选拍):</strong> 狗狗精神饱满生活照 (1张)</div>
                     </div>
                   </div>
 

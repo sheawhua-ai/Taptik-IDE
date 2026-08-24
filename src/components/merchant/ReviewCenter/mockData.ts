@@ -266,7 +266,10 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "预计提升私信留资率 +24%，夜间意向客户挽回率 45%",
         priority: "P0",
         category: "转化承接",
-        inExecutionCenter: true,
+        actionType: "plan",
+        appliedStatus: "in_plan",
+        appliedDestinationLabel: "已纳入下一期方案",
+        inExecutionCenter: false,
         reason: "复盘数据显示 42% 的高意向咨询发生在 20:00-24:00，当前缺乏自动化接待导致严重丢单。",
         recommendedSteps: [
           "在来客系统开启 AI 操盘副手夜间自动回复规则",
@@ -281,7 +284,10 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "单篇互动成本预计下降 35%，有效咨询提升 18%",
         priority: "P0",
         category: "内容策略",
-        inExecutionCenter: true,
+        actionType: "note",
+        appliedStatus: "in_note",
+        appliedDestinationLabel: "已应用到后续笔记",
+        inExecutionCenter: false,
         reason: "三亚店该选题转化率达 22.4%，证明专业实测具有高信任度和搜索长尾效应。",
         recommendedSteps: [
           "下发 5 篇《店长换粮打卡》标准模板至青岛、杭州店长账号",
@@ -296,6 +302,8 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "评论区到私信的有效点击率预计从 3.4% 提升至 9.0%",
         priority: "P1",
         category: "账号运营",
+        actionType: "plan",
+        appliedStatus: "not_applied",
         inExecutionCenter: false,
         reason: "青岛店评论区充斥‘求链接’但无人回复引导，白白浪费已有自然流量。",
         recommendedSteps: [
@@ -310,6 +318,8 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "搜索推荐流量占比预计从 14% 提升至 30%",
         priority: "P2",
         category: "搜索卡位",
+        actionType: "note",
+        appliedStatus: "not_applied",
         inExecutionCenter: false,
         reason: "搜索词分析显示‘幼犬软便怎么换粮’月搜索指数达 12.8 万，商业价值极高。",
         recommendedSteps: [
@@ -545,6 +555,8 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "预计点击率从 4.2% 提升至 6.5%",
         priority: "P0",
         category: "内容制作",
+        actionType: "note",
+        appliedStatus: "not_applied",
         inExecutionCenter: false,
         reason: "分析显示超过 20 字的标题在移动端有 60% 概率截断核心修饰词。",
         recommendedSteps: [
@@ -559,7 +571,10 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "预计私信咨询总量增加 +30%",
         priority: "P1",
         category: "素材调度",
-        inExecutionCenter: true,
+        actionType: "plan",
+        appliedStatus: "in_plan",
+        appliedDestinationLabel: "已纳入下一期方案",
+        inExecutionCenter: false,
         reason: "此类内容在张店长人设下具备天然真实度，完播率与互动率双高。",
         recommendedSteps: [
           "向素材中心指派 4 组真实换粮视频拍摄任务",
@@ -793,6 +808,8 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "立即解锁青岛店全量分析结论与对比报告",
         priority: "P0",
         category: "系统设置",
+        actionType: "plan",
+        appliedStatus: "not_applied",
         inExecutionCenter: false,
         reason: "数据缺失导致无法输出综合 ROI 归因结论。",
         recommendedSteps: [
@@ -958,7 +975,10 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
         expectedGain: "预计搜索进店量日均提升 +150 人",
         priority: "P0",
         category: "搜索卡位",
-        inExecutionCenter: true,
+        actionType: "note",
+        appliedStatus: "in_note",
+        appliedDestinationLabel: "已应用到后续笔记",
+        inExecutionCenter: false,
         reason: "烘焙粮品类词搜索涨幅高且竞争小，具备极高 ROI 潜力。",
         recommendedSteps: [
           "在方案中心创建‘烘焙粮专项搜索’方案",

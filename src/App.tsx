@@ -294,6 +294,23 @@ const MOCK_PROJECTS: Record<string, any> = {
     chatHistory: [],
     isNew: true,
   },
+  "project-archived": {
+    id: "project-archived",
+    name: "商家D：家装设计定制",
+    initial: "装",
+    color: "var(--neutral-100)",
+    textColor: "var(--neutral-500)",
+    tags: ["家装设计", "全案定制", "历史项目"],
+    status: "archived",
+    archivedAt: "2024-03-12",
+    stats: {
+      pendingLeads: 0,
+      pendingContent: 0,
+      profileCompleteness: 100,
+    },
+    fileTree: [],
+    chatHistory: [],
+  },
 };
 
 const SIDE_NAV_ITEMS = [
@@ -351,16 +368,18 @@ const PROJECT_HISTORY_ITEMS = [
 ];
 
 const PROJECT_TABS = [
-  { id: "projects", name: "方案中心", icon: FolderKanban },
-  { id: "execution", name: "执行中心", icon: LayoutGrid },
-  { id: "accounts", name: "账号资产", icon: Users },
-  { id: "review", name: "复盘与报告", icon: Sparkles },
+  { id: "projects", name: "方案中心" },
+  { id: "execution", name: "执行中心" },
+  { id: "accounts", name: "账号资产" },
+  { id: "review", name: "复盘与报告" },
 ];
 
 export default function App() {
+  const [merchantProjects, setMerchantProjects] =
+    useState<Record<string, any>>(MOCK_PROJECTS);
   const [activeProjectId, setActiveProjectId] =
-    useState<keyof typeof MOCK_PROJECTS>("project-a");
-    const [onboardingStep, setOnboardingStep] = useState(0);
+    useState<string>("project-a");
+  const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingData, setOnboardingData] = useState<{
     strategyKeywords: { word: string; rate: string }[];
     industry?: string;
@@ -421,9 +440,61 @@ export default function App() {
     }
   }, []);
 
-  const activeProject = MOCK_PROJECTS[activeProjectId];
+  const activeProject =
+    merchantProjects[activeProjectId] ||
+    merchantProjects["project-a"] ||
+    Object.values(merchantProjects)[0] ||
+    {};
   const messages = messagesMap[activeProjectId] || [];
   const hasData = !(activeProject as any).isNew || onboardingStep >= 3;
+
+  const handleArchiveProject = (projectId: string) => {
+    setMerchantProjects((prev) => {
+      const target = prev[projectId];
+      if (!target) return prev;
+      return {
+        ...prev,
+        [projectId]: {
+          ...target,
+          status: "archived",
+          archivedAt: new Date().toISOString().split("T")[0],
+        },
+      };
+    });
+
+    if (activeProjectId === projectId) {
+      const remainingActive = Object.values(merchantProjects).find(
+        (p: any) => p.id !== projectId && p.id !== "new-merchant" && p.status !== "archived"
+      ) as any;
+      if (remainingActive) {
+        setActiveProjectId(remainingActive.id);
+      }
+    }
+  };
+
+  const handleRestoreProject = (projectId: string) => {
+    setMerchantProjects((prev) => {
+      const target = prev[projectId];
+      if (!target) return prev;
+      return {
+        ...prev,
+        [projectId]: {
+          ...target,
+          status: "active",
+          archivedAt: undefined,
+        },
+      };
+    });
+  };
+
+  const handleAddMerchant = (newMerchant: any) => {
+    if (!newMerchant?.id) return;
+    setMerchantProjects((prev) => ({
+      ...prev,
+      [newMerchant.id]: newMerchant,
+    }));
+    setActiveProjectId(newMerchant.id);
+  };
 
   const setMessages = (setter: React.SetStateAction<Message[]>) => {
     setMessagesMap((prev) => ({
@@ -949,12 +1020,15 @@ export default function App() {
       <ProjectSwitcherModal
         isOpen={isProjectSelectorOpen}
         onClose={() => setIsProjectSelectorOpen(false)}
-        projects={MOCK_PROJECTS}
+        projects={merchantProjects}
         activeProjectId={activeProjectId}
         onSelect={(id) => {
-          setActiveProjectId(id as keyof typeof MOCK_PROJECTS);
+          setActiveProjectId(id);
           setIsProjectSelectorOpen(false);
         }}
+        onArchive={handleArchiveProject}
+        onRestore={handleRestoreProject}
+        onAddMerchant={handleAddMerchant}
       />
 
       <CreateProjectModal
@@ -1597,10 +1671,11 @@ export default function App() {
             />
 
             {/* 顶部导航与专注模式 */}
-            <div className="h-14 border-b border-border-default flex items-center justify-between px-8 bg-surface-1 shrink-0 shadow-sm z-20">
-              <div className="flex items-center gap-10">
+            <div className="h-13 border-b border-border-default flex items-center justify-between px-8 bg-surface-1 shrink-0 z-20">
+              <div className="flex items-center gap-8 h-full">
                 {PROJECT_TABS.map((tab) => {
                   const isLocked = !hasData;
+                  const isActive = workflowTab === tab.id;
                   return (
                     <button
                       key={tab.id}
@@ -1610,25 +1685,20 @@ export default function App() {
                         }
                         setWorkflowTab(tab.id as any);
                       }}
-                      className={`flex items-center gap-2 px-1 py-4 text-[13px] transition-all relative group ${isLocked ? "opacity-50 cursor-not-allowed" : workflowTab === tab.id ? "text-text-main" : "text-text-tertiary hover:text-text-secondary"}`}
+                      className={`relative h-full flex items-center gap-2 px-1 text-[14px] transition-all whitespace-nowrap cursor-pointer ${
+                        isLocked
+                          ? "opacity-50 cursor-not-allowed text-text-tertiary"
+                          : isActive
+                          ? "font-semibold text-text-main"
+                          : "font-medium text-text-secondary hover:text-text-main"
+                      }`}
                     >
-                      {isLocked ? (
-                        <Lock size={14} className="text-neutral-300" />
-                      ) : (
-                        <tab.icon
-                          size={16}
-                          className={
-                            workflowTab === tab.id
-                              ? "text-brand-logo"
-                              : "text-neutral-300"
-                          }
-                        />
-                      )}
                       <span>{tab.name}</span>
-                      {workflowTab === tab.id && !isLocked && (
+                      {isActive && !isLocked && (
                         <motion.div
                           layoutId="wfTab"
-                          className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-btn-main rounded-full"
+                          className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900 rounded-full"
+                          transition={{ type: "spring", stiffness: 500, damping: 35 }}
                         />
                       )}
                     </button>
@@ -1724,7 +1794,7 @@ export default function App() {
         )}
 
         {activeNav === "materials" && (
-          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
+          <div className="flex-1 h-full overflow-hidden bg-page-bg flex flex-col">
             <MaterialStation
               activeProject={activeProject}
               onNavigateToExecution={() => setActiveNav("execution")}
@@ -1737,12 +1807,12 @@ export default function App() {
           </div>
         )}
         {activeNav === "knowledge" && (
-          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
+          <div className="flex-1 h-full overflow-hidden bg-page-bg flex flex-col">
             <KnowledgeMemory activeProject={activeProject} />
           </div>
         )}
         {activeNav === "skills" && (
-          <div className="flex-1 h-full overflow-y-auto bg-page-bg">
+          <div className="flex-1 h-full overflow-hidden bg-page-bg flex flex-col">
             <SkillMarket
               creatingSkill={creatingSkill}
               setCreatingSkill={setCreatingSkill}

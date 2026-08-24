@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { motion } from 'motion/react';
 import { FilePlus, FolderPlus, Settings2, CheckCircle2 } from 'lucide-react';
 import { OverviewTab } from './knowledge/OverviewTab';
 import { KnowledgeTab } from './knowledge/KnowledgeTab';
@@ -207,32 +208,34 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
 
       {/* Header */}
       <header className="shrink-0 bg-surface-1 border-b border-border-default flex flex-col z-10">
-        <div className="flex justify-between items-center px-6 py-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-8 py-3.5">
           <div>
-            <h1 className="text-2xl font-bold text-text-main">知识与记忆</h1>
-            <p className="text-xs text-text-tertiary mt-1 flex items-center space-x-2">
+            <div className="flex items-center gap-2">
+              <h1 className="text-[18px] font-semibold text-text-main tracking-tight">知识与记忆</h1>
+            </div>
+            <p className="text-[12px] text-text-secondary mt-0.5 flex items-center space-x-1.5">
               <span>调用优先级：</span>
-              <span className="font-medium text-text-tertiary">商家已确认事实</span>
-              <span>&gt;</span>
-              <span className="font-medium text-text-tertiary">规则与禁区</span>
-              <span>&gt;</span>
-              <span className="font-medium text-text-tertiary">项目要求</span>
-              <span>&gt;</span>
-              <span className="font-medium text-text-tertiary">经验建议</span>
+              <span className="font-medium text-text-secondary">商家已确认事实</span>
+              <span className="text-text-tertiary">&gt;</span>
+              <span className="font-medium text-text-secondary">规则与禁区</span>
+              <span className="text-text-tertiary">&gt;</span>
+              <span className="font-medium text-text-secondary">项目要求</span>
+              <span className="text-text-tertiary">&gt;</span>
+              <span className="font-medium text-text-secondary">经验建议</span>
             </p>
           </div>
-          <div className="flex items-center space-x-2.5">
+          <div className="flex items-center gap-2.5">
             <button 
               onClick={() => setIsCategorySettingsOpen(true)}
-              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default text-text-secondary rounded-xl text-sm font-medium hover:bg-page-bg transition-colors shadow-2xs"
+              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default text-text-main rounded-xl text-[12.5px] font-medium hover:bg-hover-bg transition-colors shadow-2xs cursor-pointer"
             >
-              <Settings2 className="w-4 h-4 mr-1.5 text-text-tertiary" /> 分类设置
+              <Settings2 className="w-4 h-4 mr-1.5 text-text-secondary" /> 分类设置
             </button>
 
             {/* 添加文件 - 直接弹出电脑选择文件 */}
             <button 
               onClick={handlePickFiles}
-              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default hover:border-neutral-300 text-text-main rounded-xl text-sm font-bold hover:bg-page-bg transition-colors shadow-2xs cursor-pointer"
+              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default hover:border-neutral-300 text-text-main rounded-xl text-[12.5px] font-medium hover:bg-hover-bg transition-colors shadow-2xs cursor-pointer"
               title="直接选择本地文件"
             >
               <FilePlus className="w-4 h-4 mr-1.5 text-text-secondary" />
@@ -242,7 +245,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
             {/* 添加文件夹 - 直接弹出电脑选择文件夹 */}
             <button 
               onClick={handlePickFolder}
-              className="flex items-center px-3.5 py-2 bg-btn-main text-white rounded-xl text-sm font-bold hover:bg-btn-main-hover transition-colors shadow-2xs cursor-pointer"
+              className="flex items-center px-4 py-2 bg-btn-main text-white rounded-xl text-[12.5px] font-medium hover:bg-btn-main-hover transition-all active:scale-95 shadow-2xs cursor-pointer"
               title="直接选择本地文件夹"
             >
               <FolderPlus className="w-4 h-4 mr-1.5 text-white" />
@@ -252,30 +255,41 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         </div>
 
         {/* Tabs */}
-        <div className="px-6 flex space-x-8 text-sm">
-          <button 
-            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'overview' ? 'border-neutral-900 text-text-main' : 'border-transparent text-text-tertiary hover:text-text-secondary'}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            总览
-          </button>
-          <button 
-            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'knowledge' ? 'border-neutral-900 text-text-main' : 'border-transparent text-text-tertiary hover:text-text-secondary'}`}
-            onClick={() => setActiveTab('knowledge')}
-          >
-            知识
-          </button>
-          <button 
-            className={`pb-3 border-b-2 font-medium transition-colors ${activeTab === 'sources' ? 'border-neutral-900 text-text-main' : 'border-transparent text-text-tertiary hover:text-text-secondary'}`}
-            onClick={() => setActiveTab('sources')}
-          >
-            资料来源
-          </button>
+        <div className="h-13 px-8 flex items-center justify-between border-t border-border-default bg-surface-1">
+          <div className="flex items-center gap-8 h-full">
+            {[
+              { id: 'overview', label: '总览' },
+              { id: 'knowledge', label: '知识' },
+              { id: 'sources', label: '资料来源' },
+            ].map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`relative h-full flex items-center gap-2 px-1 text-[14px] transition-all whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? 'font-semibold text-text-main'
+                      : 'font-medium text-text-secondary hover:text-text-main'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="knowledgeTab"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900 rounded-full"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-page-bg/30 p-6">
+      <main className="flex-1 overflow-y-auto bg-page-bg/30 p-8">
         {activeTab === 'overview' && (
           <OverviewTab 
             pendingTasks={mockPendingTasks}

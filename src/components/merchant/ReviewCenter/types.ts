@@ -81,7 +81,10 @@ export interface SuggestedAction {
   expectedGain: string;
   priority: 'P0' | 'P1' | 'P2';
   category: string;
-  inExecutionCenter: boolean;
+  actionType: 'plan' | 'note'; // 'plan' -> 纳入项目方案, 'note' -> 应用到后续笔记
+  appliedStatus?: 'not_applied' | 'in_plan' | 'in_note' | 'in_specific_note' | 'manual_task';
+  appliedDestinationLabel?: string; // e.g. "已纳入下一期方案", "已应用到后续笔记", "已应用到《幼犬换粮实测篇》", "已创建人工任务"
+  inExecutionCenter?: boolean; // Only for genuine manual tasks if needed
   reason: string;
   recommendedSteps: string[];
 }

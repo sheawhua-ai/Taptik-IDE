@@ -3,28 +3,45 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Store, User, Phone, Lock, Eye, EyeOff, QrCode, Download, Copy } from 'lucide-react';
 
 interface CreateMerchantModalProps {
- isOpen: boolean;
- onClose: () => void;
- onSuccess?: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: (merchantData?: any) => void;
 }
 
 export const CreateMerchantModal: React.FC<CreateMerchantModalProps> = ({ isOpen, onClose, onSuccess }) => {
- const [showPassword, setShowPassword] = useState(false);
- const [activeTab, setActiveTab] = useState<'manual' | 'qr'>('manual');
- const [formData, setFormData] = useState({
- merchantName: '',
- username: '',
- phone: '',
- password: ''
- });
+  const [showPassword, setShowPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState<'manual' | 'qr'>('manual');
+  const [formData, setFormData] = useState({
+    merchantName: '',
+    username: '',
+    phone: '',
+    password: ''
+  });
 
- if (!isOpen) return null;
+  if (!isOpen) return null;
 
- const handleSubmit = (e: React.FormEvent) => {
- e.preventDefault();
- if (onSuccess) onSuccess();
- onClose();
- };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newId = `project-${Date.now()}`;
+    const newMerchant = {
+      id: newId,
+      name: formData.merchantName || '新创建商家',
+      initial: (formData.merchantName || '商').charAt(0),
+      color: 'var(--primary-50)',
+      textColor: 'var(--primary-600)',
+      tags: ['新进商家', '待冷启'],
+      status: 'active',
+      stats: {
+        pendingLeads: 0,
+        pendingContent: 0,
+        profileCompleteness: 30,
+      },
+      fileTree: [],
+      chatHistory: [],
+    };
+    if (onSuccess) onSuccess(newMerchant);
+    onClose();
+  };
 
  return (
  <AnimatePresence>

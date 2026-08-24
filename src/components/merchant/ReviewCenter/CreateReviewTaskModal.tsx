@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { 
-  X, Sparkles, Check, Calendar, Search, Layers, 
-  ChevronDown, ChevronUp, CheckCircle2, ArrowRight,
+  X, Sparkles, Check, Search, Layers, 
+  ChevronDown, ChevronUp, CheckCircle2,
   TrendingUp, BarChart2, Users, FileText, Target, ShieldCheck,
-  Plus, Tag, MessageSquare, AlertCircle
+  Plus, Tag, AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AVAILABLE_PROJECTS_LIST } from "./mockData";
@@ -15,71 +15,129 @@ interface CreateReviewTaskModalProps {
   onCreateTask: (newTask: ReviewTask) => void;
 }
 
-const OBJECTIVE_SHORTCUTS = [
+export interface ObjectiveItem {
+  id: string;
+  title: string;
+  category: "对比分析" | "项目诊断" | "内容策略" | "用户增长" | "转化分析";
+  desc: string;
+  applicableMode?: "single" | "multi" | "all";
+}
+
+const OBJECTIVE_LIBRARY: ObjectiveItem[] = [
+  // 1. 对比分析
   {
     id: "benchmark",
     title: "横向比较",
+    category: "对比分析",
     desc: "对比多个门店/账号在曝光、互动与转化上的表现，挖掘可复制标杆",
-    icon: Layers,
-    recommendedFor: "多项目",
+    applicableMode: "multi",
   },
+  {
+    id: "script_compare",
+    title: "新旧脚本完播率对比",
+    category: "对比分析",
+    desc: "对比不同时期、不同版本脚本完播率与互动留资效率变化",
+    applicableMode: "all",
+  },
+  {
+    id: "format_compare",
+    title: "图文与视频形式效能对比",
+    category: "对比分析",
+    desc: "分析图文与短视频在各门店长尾收录与获客效能差异",
+    applicableMode: "all",
+  },
+
+  // 2. 项目诊断
   {
     id: "project_diagnosis",
-    title: "项目诊断",
+    title: "项目全维健康度体检",
+    category: "项目诊断",
     desc: "针对单一项目进行全维度健康度体检，快速定位阻断与流失环节",
-    icon: ShieldCheck,
-    recommendedFor: "单项目",
-  },
-  {
-    id: "content_strategy",
-    title: "内容策略复盘",
-    desc: "深度拆解爆文结构、实测视频完播率与长尾搜索收录",
-    icon: FileText,
-    recommendedFor: "图文/视频",
-  },
-  {
-    id: "user_growth",
-    title: "用户增长分析",
-    desc: "挖掘高意向宠主搜索痛点（软便/换粮/泪痕）及客群画像分布",
-    icon: Users,
-    recommendedFor: "新客增长",
-  },
-  {
-    id: "conversion",
-    title: "转化与留资漏斗",
-    desc: "测算私信咨询、顾问答疑留资与线下门店到店核销转化漏斗",
-    icon: TrendingUp,
-    recommendedFor: "私信承接",
-  },
-  {
-    id: "viral_attribution",
-    title: "爆文归因与复制",
-    desc: "定位高ROI爆文要素（封面标题、前3秒钩子、正文利益点与评论承接）",
-    icon: Sparkles,
-    recommendedFor: "爆文打造",
-  },
-  {
-    id: "cost_roi",
-    title: "获客成本与ROI测算",
-    desc: "核算单客获取成本、线索留资单价与各矩阵号投产产出比",
-    icon: BarChart2,
-    recommendedFor: "投产分析",
+    applicableMode: "all",
   },
   {
     id: "comprehensive",
     title: "自动综合全景分析",
-    desc: "启动全部 6 个专职 Agent 任务流，输出全要素综合分析报告与行动建议",
-    icon: Target,
-    recommendedFor: "全面复盘",
+    category: "项目诊断",
+    desc: "启动全部专职 Agent 任务流，输出全要素综合分析报告与行动建议",
+    applicableMode: "all",
   },
-];
 
-const QUICK_CUSTOM_SUGGESTIONS = [
-  "夜间私信流失排查",
-  "评论区客诉与异议归因",
-  "搜索截流关键词分析",
-  "线下到店核销率分析",
-  "新旧脚本完播率对比",
+  // 3. 内容策略
+  {
+    id: "viral_attribution",
+    title: "爆文归因与复制",
+    category: "内容策略",
+    desc: "定位高ROI爆文要素（封面标题、前3秒黄金钩子与正文利益点）",
+    applicableMode: "all",
+  },
+  {
+    id: "content_strategy",
+    title: "内容策略复盘",
+    category: "内容策略",
+    desc: "深度拆解选题模型、实测视频完播率与长尾搜索收录",
+    applicableMode: "all",
+  },
+  {
+    id: "comment_hook",
+    title: "评论区话术与截流承接",
+    category: "内容策略",
+    desc: "复盘置顶评论、引导物料与神评互动的承接引导效率",
+    applicableMode: "all",
+  },
+
+  // 4. 用户增长
+  {
+    id: "user_growth",
+    title: "用户画像与痛点洞察",
+    category: "用户增长",
+    desc: "挖掘高意向宠主搜索痛点（软便/换粮/泪痕/挑食）及客群画像分布",
+    applicableMode: "all",
+  },
+  {
+    id: "search_intercept",
+    title: "搜索截流关键词分析",
+    category: "用户增长",
+    desc: "分析小红书搜索流核心截流词、品类词与长尾词的自然渗透率",
+    applicableMode: "all",
+  },
+
+  // 5. 转化分析
+  {
+    id: "conversion",
+    title: "转化与留资全链路漏斗",
+    category: "转化分析",
+    desc: "测算私信咨询、顾问答疑留资与线下门店到店核销转化漏斗",
+    applicableMode: "all",
+  },
+  {
+    id: "night_loss",
+    title: "夜间私信流失排查",
+    category: "转化分析",
+    desc: "排查 20:00—24:00 夜间咨询断点，定位因无人应答导致的线索流失",
+    applicableMode: "all",
+  },
+  {
+    id: "complaint_attribution",
+    title: "评论区客诉与异议归因",
+    category: "转化分析",
+    desc: "归类评论区负反馈、异议与咨询，分析其对私信转化的负面影响",
+    applicableMode: "all",
+  },
+  {
+    id: "offline_redeem",
+    title: "线下到店核销率分析",
+    category: "转化分析",
+    desc: "测算从小红书私信领券/礼包到实体门店 POS 核销的落地转化率",
+    applicableMode: "all",
+  },
+  {
+    id: "cost_roi",
+    title: "获客成本与ROI测算",
+    category: "转化分析",
+    desc: "核算单客获取成本 CPL、线索留资单价与各矩阵账号投产产出比",
+    applicableMode: "all",
+  },
 ];
 
 export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateReviewTaskModalProps) {
@@ -92,10 +150,11 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
   const [customStartDate, setCustomStartDate] = useState("2026-08-01");
   const [customEndDate, setCustomEndDate] = useState("2026-08-23");
   
-  // Objectives state (supports multiple shortcuts + free custom inputs)
-  const [selectedObjectiveIds, setSelectedObjectiveIds] = useState<string[]>(["benchmark"]);
-  const [customObjectives, setCustomObjectives] = useState<string[]>([]);
+  // Compact unified objectives state
+  const [selectedGoals, setSelectedGoals] = useState<string[]>(["横向比较", "夜间私信流失排查"]);
   const [customInputText, setCustomInputText] = useState("");
+  const [isMoreGoalsOpen, setIsMoreGoalsOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("全部");
   const [detailedNotes, setDetailedNotes] = useState("");
   
   // Advanced settings (collapsible)
@@ -121,28 +180,31 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
     }
   };
 
-  const handleToggleShortcutObjective = (id: string) => {
-    if (selectedObjectiveIds.includes(id)) {
-      // Allow deselecting as long as there is at least another shortcut or a custom objective
-      setSelectedObjectiveIds(selectedObjectiveIds.filter(item => item !== id));
-    } else {
-      setSelectedObjectiveIds([...selectedObjectiveIds, id]);
+  const handleAddGoal = (goalText?: string) => {
+    const target = (goalText !== undefined ? goalText : customInputText).trim();
+    if (!target) return;
+    if (!selectedGoals.includes(target)) {
+      setSelectedGoals([...selectedGoals, target]);
     }
-  };
-
-  const handleAddCustomObjective = (text?: string) => {
-    const targetText = (text || customInputText).trim();
-    if (!targetText) return;
-    if (!customObjectives.includes(targetText)) {
-      setCustomObjectives([...customObjectives, targetText]);
-    }
-    if (!text) {
+    if (goalText === undefined || goalText === customInputText) {
       setCustomInputText("");
     }
   };
 
-  const handleRemoveCustomObjective = (text: string) => {
-    setCustomObjectives(customObjectives.filter(item => item !== text));
+  const handleRemoveGoal = (goalText: string) => {
+    setSelectedGoals(selectedGoals.filter((g) => g !== goalText));
+  };
+
+  const handleClearAllGoals = () => {
+    setSelectedGoals([]);
+  };
+
+  const handleToggleGoal = (goalText: string) => {
+    if (selectedGoals.includes(goalText)) {
+      handleRemoveGoal(goalText);
+    } else {
+      handleAddGoal(goalText);
+    }
   };
 
   const filteredProjects = AVAILABLE_PROJECTS_LIST.filter(p => 
@@ -150,15 +212,21 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
     p.category.toLowerCase().includes(projectSearchQuery.toLowerCase())
   );
 
-  // Collect all active objective titles
-  const activeShortcutTitles = OBJECTIVE_SHORTCUTS
-    .filter(o => selectedObjectiveIds.includes(o.id))
-    .map(o => o.title);
-  
-  const allObjectiveLabels = [...activeShortcutTitles, ...customObjectives];
-  if (customInputText.trim() && !allObjectiveLabels.includes(customInputText.trim())) {
-    allObjectiveLabels.push(customInputText.trim());
-  }
+  // Recommendations filtered by mode
+  const effectiveRecommendations = [
+    ...(mode === "multi" ? [{ id: "rec-multi", title: "横向比较", desc: "对比多个门店/账号在曝光、互动与转化上的表现" }] : []),
+    { id: "rec-night", title: "夜间私信流失排查", desc: "排查 20:00—24:00 夜间咨询断点，评估因无人值守导致的潜客流失" },
+    { id: "rec-complaint", title: "评论区客诉与异议归因", desc: "归类评论区负反馈、异议与咨询，分析对留资与转化造成的负面阻断" },
+    { id: "rec-search", title: "搜索截流关键词分析", desc: "分析小红书搜索流核心截流词、品类词与长尾词的自然渗透率" },
+  ];
+
+  // Full library filtered by current mode and active category
+  const displayedLibraryItems = OBJECTIVE_LIBRARY.filter((item) => {
+    if (mode === "single" && item.applicableMode === "multi") return false;
+    if (mode === "multi" && item.applicableMode === "single") return false;
+    if (selectedCategory !== "全部" && item.category !== selectedCategory) return false;
+    return true;
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -194,22 +262,17 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
     const projectNames = selectedProjects.map(p => p.name);
 
     // Final list of objectives
-    const finalCustomObjectives = [...customObjectives];
-    if (customInputText.trim() && !finalCustomObjectives.includes(customInputText.trim())) {
-      finalCustomObjectives.push(customInputText.trim());
+    const finalObjectiveLabels = [...selectedGoals];
+    if (customInputText.trim() && !finalObjectiveLabels.includes(customInputText.trim())) {
+      finalObjectiveLabels.push(customInputText.trim());
     }
-
-    const finalObjectiveLabels = [
-      ...OBJECTIVE_SHORTCUTS.filter(o => selectedObjectiveIds.includes(o.id)).map(o => o.title),
-      ...finalCustomObjectives,
-    ];
 
     if (finalObjectiveLabels.length === 0) {
       finalObjectiveLabels.push("全景运营复盘");
     }
 
     const targetObjectiveLabel = finalObjectiveLabels.join("、");
-    const primaryObjectiveId = selectedObjectiveIds[0] || "custom";
+    const primaryObjectiveId = finalObjectiveLabels[0] || "custom";
 
     const resolvedTitle = taskName.trim() || (
       mode === "multi" 
@@ -218,17 +281,14 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
     );
 
     // Construct detailed goal description
-    const selectedShortcutDescs = OBJECTIVE_SHORTCUTS
-      .filter(o => selectedObjectiveIds.includes(o.id))
-      .map(o => `【${o.title}】${o.desc}`);
+    const goalDescriptions = finalObjectiveLabels.map((goal) => {
+      const match = OBJECTIVE_LIBRARY.find((o) => o.title === goal);
+      return match ? `【${match.title}】${match.desc}` : `【分析目标】${goal}`;
+    });
     
-    const customDescs = finalCustomObjectives.map(c => `【专项目标】${c}`);
     const notesDesc = detailedNotes.trim() ? `\n重点关注说明：${detailedNotes.trim()}` : "";
     
-    const goalDescription = [
-      ...selectedShortcutDescs,
-      ...customDescs,
-    ].join("；") + notesDesc || "由 Agent 自动化执行数据采集、漏斗指标计算与多目标协同策略建议输出";
+    const goalDescription = goalDescriptions.join("；") + notesDesc || "由 Agent 自动化执行数据采集、漏斗指标计算与多目标协同策略建议输出";
 
     const newTask: ReviewTask = {
       id: `rev-task-${Date.now()}`,
@@ -240,7 +300,7 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
       targetObjective: primaryObjectiveId,
       targetObjectiveLabel,
       targetObjectiveLabels: finalObjectiveLabels,
-      customObjectives: finalCustomObjectives,
+      customObjectives: finalObjectiveLabels,
       goalDescription,
       status: "analyzing",
       statusText: "分析中",
@@ -413,7 +473,9 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
           expectedGain: "预计提升私信留资率 +20%",
           priority: "P0",
           category: "转化承接",
-          inExecutionCenter: autoSyncToExecutionCenter,
+          actionType: "plan",
+          appliedStatus: "not_applied",
+          inExecutionCenter: false,
           reason: "解决夜间时段无专人接待的问题。",
           recommendedSteps: ["开启AI夜间自动接待", "配置引导物料"],
         },
@@ -424,7 +486,9 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
           expectedGain: "单篇互动成本预计下降 30%",
           priority: "P1",
           category: "内容策略",
-          inExecutionCenter: autoSyncToExecutionCenter,
+          actionType: "note",
+          appliedStatus: "not_applied",
+          inExecutionCenter: false,
           reason: "标杆经验可在矩阵内快速复用。",
           recommendedSteps: ["下发脚本模板", "建立审核抽检"],
         },
@@ -537,6 +601,8 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
                     if (selectedProjectIds.length > 1) {
                       setSelectedProjectIds([selectedProjectIds[0]]);
                     }
+                    // Auto-adjust objectives for single mode
+                    setSelectedGoals(prev => prev.filter(g => g !== "横向比较"));
                   }}
                   className={`px-3 py-1 text-[12px] font-medium rounded-md transition-all ${
                     mode === "single"
@@ -548,7 +614,12 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
                 </button>
                 <button
                   type="button"
-                  onClick={() => setMode("multi")}
+                  onClick={() => {
+                    setMode("multi");
+                    if (!selectedGoals.includes("横向比较")) {
+                      setSelectedGoals(prev => ["横向比较", ...prev]);
+                    }
+                  }}
                   className={`px-3 py-1 text-[12px] font-medium rounded-md transition-all ${
                     mode === "multi"
                       ? "bg-surface-1 text-text-main shadow-xs"
@@ -684,176 +755,211 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
             </div>
           </div>
 
-          {/* STEP 2: Choose & Enter Review Objectives (Shortcuts + Free Custom Input + Multi-select) */}
-          <div className="space-y-3.5">
+          {/* STEP 2: Unified Compact Objectives Component */}
+          <div className="space-y-2.5">
+            {/* Header: Title + Selected Count */}
             <div className="flex items-center justify-between">
               <span className="text-[13px] font-semibold text-text-main flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-btn-main text-white text-[11px] flex items-center justify-center font-bold">2</span>
                 设定复盘目标
-                <span className="text-[12px] text-text-tertiary font-normal">(支持多选快捷方式，也支持自由输入)</span>
               </span>
 
-              {/* Active Objectives Count Badge */}
-              <span className="text-[11.5px] px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-md font-medium">
-                已设定 {allObjectiveLabels.length} 个目标
-              </span>
-            </div>
-
-            {/* Active Selected Objectives Tag Cloud / Summary */}
-            {allObjectiveLabels.length > 0 && (
-              <div className="p-3 bg-surface-subtle rounded-xl border border-border-default space-y-2">
-                <div className="flex items-center justify-between text-[11.5px] text-text-tertiary">
-                  <span>本次复盘将同时覆盖以下重点分析方向：</span>
+              <div className="flex items-center gap-2">
+                {selectedGoals.length > 0 && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setSelectedObjectiveIds([]);
-                      setCustomObjectives([]);
-                      setCustomInputText("");
-                    }}
-                    className="text-text-tertiary hover:text-red-600 transition-colors"
+                    onClick={handleClearAllGoals}
+                    className="text-[11.5px] text-text-tertiary hover:text-red-500 transition-colors"
                   >
                     清空重选
                   </button>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {/* Selected Preset Shortcuts */}
-                  {OBJECTIVE_SHORTCUTS.filter(o => selectedObjectiveIds.includes(o.id)).map(opt => (
-                    <span
-                      key={opt.id}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-1 border border-btn-main text-btn-main rounded-lg text-[12px] font-medium shadow-2xs"
-                    >
-                      <Check size={12} strokeWidth={2.5} />
-                      <span>{opt.title}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleShortcutObjective(opt.id)}
-                        className="hover:text-red-500 ml-0.5"
-                      >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  ))}
+                )}
+                <span className="text-[11.5px] px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default rounded-md font-medium">
+                  已选择 {selectedGoals.length} 项
+                </span>
+              </div>
+            </div>
 
-                  {/* Custom Objective Tags */}
-                  {customObjectives.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-1 border border-border-strong text-text-main rounded-lg text-[12px] font-medium shadow-2xs"
-                    >
-                      <Tag size={11} className="text-text-tertiary" />
-                      <span>{tag}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveCustomObjective(tag)}
-                        className="hover:text-red-500 ml-0.5 text-text-tertiary"
-                      >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  ))}
-                </div>
+            {/* Warning if too many goals (> 3) */}
+            {selectedGoals.length > 3 && (
+              <div className="flex items-center gap-1.5 text-[11.5px] text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200">
+                <AlertCircle size={13} className="shrink-0 text-amber-600" />
+                <span>建议选择 1-3 个核心目标，目标过多可能分散分析重点。</span>
               </div>
             )}
 
-            {/* Custom Input Box (Free text entry) */}
-            <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-2.5">
-              <label className="block text-[12px] font-medium text-text-secondary">
-                自由填入自定义目标 / 专项分析诉求
-              </label>
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    placeholder="输入自定义目标（例如：排查夜间私信流失原因、分析金毛犬种ROI...）"
-                    value={customInputText}
-                    onChange={(e) => setCustomInputText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddCustomObjective();
-                      }
-                    }}
-                    className="w-full px-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-[12.5px] outline-none focus:border-border-strong"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleAddCustomObjective()}
-                  className="px-3 py-1.5 bg-surface-1 border border-border-default hover:bg-hover-bg text-text-main text-[12px] font-medium rounded-lg transition-colors flex items-center gap-1 shrink-0 shadow-2xs"
-                >
-                  <Plus size={13} />
-                  <span>添加目标</span>
-                </button>
+            {/* Selected Objectives Tag Cloud (Displayed cleanly above the input box) */}
+            {selectedGoals.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5 min-h-[30px] items-center p-2 bg-surface-subtle rounded-xl border border-border-default">
+                {selectedGoals.map((goal) => {
+                  const matchLib = OBJECTIVE_LIBRARY.find((o) => o.title === goal);
+                  return (
+                    <span
+                      key={goal}
+                      title={matchLib?.desc || `分析目标：${goal}`}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-1 border border-border-strong text-text-main rounded-lg text-[12px] font-medium shadow-2xs group cursor-default transition-all"
+                    >
+                      <span>{goal}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveGoal(goal)}
+                        className="text-text-tertiary hover:text-red-500 transition-colors ml-0.5"
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  );
+                })}
               </div>
+            ) : (
+              <div className="text-[11.5px] text-text-tertiary italic px-1">
+                未选择目标（默认执行全要素综合全景分析）
+              </div>
+            )}
 
-              {/* Quick suggestion pills */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                <span className="text-[11px] text-text-tertiary">快捷填入：</span>
-                {QUICK_CUSTOM_SUGGESTIONS.map((sug) => {
-                  const isAdded = customObjectives.includes(sug);
+            {/* Custom Input Box (Primary Entry) */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="输入自定义分析目标（例如：排查夜间私信流失、分析金毛犬种ROI...）"
+                  value={customInputText}
+                  onChange={(e) => setCustomInputText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddGoal();
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-surface-subtle border border-border-default rounded-lg text-[12.5px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => handleAddGoal()}
+                className="px-4 py-2 bg-surface-1 border border-border-default hover:bg-hover-bg text-text-main text-[12.5px] font-medium rounded-lg transition-colors flex items-center gap-1 shrink-0 shadow-2xs"
+              >
+                <Plus size={13} />
+                <span>添加</span>
+              </button>
+            </div>
+
+            {/* Recommendations Row & More Goals Entrance */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 text-[11.5px]">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-text-tertiary shrink-0">推荐：</span>
+                {effectiveRecommendations.map((item) => {
+                  const isAdded = selectedGoals.includes(item.title);
                   return (
                     <button
-                      key={sug}
+                      key={item.id}
                       type="button"
                       disabled={isAdded}
-                      onClick={() => handleAddCustomObjective(sug)}
-                      className={`text-[11px] px-2 py-0.5 rounded border transition-colors ${
+                      onClick={() => handleAddGoal(item.title)}
+                      title={item.desc}
+                      className={`px-2.5 py-1 rounded-md border transition-colors flex items-center gap-1 ${
                         isAdded
                           ? "bg-surface-subtle text-text-tertiary border-border-subtle cursor-default"
-                          : "bg-surface-1 text-text-secondary hover:text-text-main border-border-default hover:bg-hover-bg"
+                          : "bg-surface-subtle text-text-secondary hover:text-text-main hover:bg-surface-1 border-border-default cursor-pointer"
                       }`}
                     >
-                      + {sug}
+                      <span>+</span>
+                      <span>{item.title}</span>
                     </button>
                   );
                 })}
               </div>
+
+              {/* More Goals Toggle */}
+              <button
+                type="button"
+                onClick={() => setIsMoreGoalsOpen(!isMoreGoalsOpen)}
+                className={`px-2.5 py-1 rounded-md border text-[11.5px] font-medium flex items-center gap-1 transition-all ${
+                  isMoreGoalsOpen
+                    ? "bg-btn-main text-white border-btn-main shadow-2xs"
+                    : "bg-surface-1 border-border-default text-btn-main hover:bg-hover-bg"
+                }`}
+              >
+                <span>+ 更多目标</span>
+                <ChevronDown size={12} className={`transition-transform duration-200 ${isMoreGoalsOpen ? "rotate-180" : ""}`} />
+              </button>
             </div>
 
-            {/* Shortcut Objective Cards (Click to toggle / multi-select) */}
-            <div className="space-y-2 pt-1">
-              <label className="block text-[12px] font-medium text-text-secondary">
-                常用目标快捷方式 <span className="text-text-tertiary font-normal">(点击卡片可多选)</span>
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {OBJECTIVE_SHORTCUTS.map((opt) => {
-                  const isSelected = selectedObjectiveIds.includes(opt.id);
-                  const Icon = opt.icon;
-                  return (
-                    <div
-                      key={opt.id}
-                      onClick={() => handleToggleShortcutObjective(opt.id)}
-                      className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between select-none ${
-                        isSelected
-                          ? "bg-surface-1 border-btn-main shadow-xs ring-1 ring-btn-main"
-                          : "bg-surface-subtle border-border-default hover:bg-surface-1 hover:border-border-strong"
-                      }`}
+            {/* Categorized Dropdown / Popover Panel for Complete Objective Library */}
+            <AnimatePresence>
+              {isMoreGoalsOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -6 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -6 }}
+                  className="overflow-hidden border border-border-default rounded-xl bg-surface-1 shadow-lg mt-1 p-3.5 space-y-3"
+                >
+                  <div className="flex items-center justify-between border-b border-border-subtle pb-2">
+                    <div className="flex items-center gap-1 text-[11.5px] overflow-x-auto">
+                      {["全部", "对比分析", "项目诊断", "内容策略", "用户增长", "转化分析"].map((cat) => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => setSelectedCategory(cat)}
+                          className={`px-2.5 py-1 rounded-md transition-colors font-medium shrink-0 ${
+                            selectedCategory === cat
+                              ? "bg-btn-main text-white shadow-2xs"
+                              : "text-text-secondary hover:bg-hover-bg hover:text-text-main"
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsMoreGoalsOpen(false)}
+                      className="text-[11.5px] text-text-tertiary hover:text-text-main px-2 py-0.5 rounded hover:bg-hover-bg shrink-0 ml-2"
                     >
-                      <div className="flex items-start justify-between gap-2 mb-1.5">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${isSelected ? "bg-btn-main text-white" : "bg-hover-bg text-text-secondary"}`}>
-                            <Icon size={14} />
+                      收起
+                    </button>
+                  </div>
+
+                  {/* Filtered Library Items */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+                    {displayedLibraryItems.map((item) => {
+                      const isSelected = selectedGoals.includes(item.title);
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => handleToggleGoal(item.title)}
+                          title={item.desc}
+                          className={`p-2.5 rounded-lg border cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
+                            isSelected
+                              ? "bg-surface-subtle border-btn-main ring-1 ring-btn-main"
+                              : "bg-surface-subtle border-border-subtle hover:border-border-strong hover:bg-surface-1"
+                          }`}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[12px] font-semibold text-text-main truncate">{item.title}</span>
+                              <span className="text-[10px] px-1.5 py-0.2 bg-surface-1 border border-border-subtle text-text-tertiary rounded shrink-0">
+                                {item.category}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-text-tertiary truncate mt-0.5" title={item.desc}>
+                              {item.desc}
+                            </p>
                           </div>
-                          <span className="text-[13px] font-semibold text-text-main">{opt.title}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="px-1.5 py-0.5 bg-surface-1 border border-border-default text-text-tertiary text-[10.5px] rounded">
-                            {opt.recommendedFor}
-                          </span>
-                          <div className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${
+
+                          <div className={`w-4 h-4 rounded flex items-center justify-center border shrink-0 transition-colors ${
                             isSelected ? "bg-btn-main border-btn-main text-white" : "border-border-strong bg-surface-1"
                           }`}>
                             {isSelected && <Check size={11} strokeWidth={3} />}
                           </div>
                         </div>
-                      </div>
-                      <p className="text-[11.5px] text-text-secondary leading-relaxed">{opt.desc}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Optional Freeform Notes / Focus Areas */}
             <div className="pt-1">
@@ -865,7 +971,7 @@ export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateR
                 placeholder="例如：重点关注7月份两家店在幼犬换粮期的客单价差距，并给出3条可执行的脚本优化方案..."
                 value={detailedNotes}
                 onChange={(e) => setDetailedNotes(e.target.value)}
-                className="w-full px-3 py-2 bg-surface-subtle border border-border-default rounded-lg text-[12px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors resize-none"
+                className="w-full px-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[12px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors resize-none"
               />
             </div>
           </div>

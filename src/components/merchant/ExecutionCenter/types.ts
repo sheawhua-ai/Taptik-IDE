@@ -70,7 +70,7 @@ export interface TimelineEvent {
   note?: string;
 }
 
-export type SelectionTargetType = 'title' | 'body_paragraph' | 'body_all' | 'tags' | 'material' | null;
+export type SelectionTargetType = 'title' | 'body_paragraph' | 'body_all' | 'tags' | 'material' | 'material_recommendation' | null;
 
 export interface SelectionAIProposal {
   target: SelectionTargetType;

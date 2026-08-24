@@ -25,7 +25,6 @@ export function ExecutionCenter() {
 
   // Filter Axes
   const [selectedCategory, setSelectedCategory] = useState<ExecutionCategory>('all');
-  const [showAllProcesses, setShowAllProcesses] = useState<boolean>(false);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
@@ -61,19 +60,16 @@ export function ExecutionCenter() {
       content: base.filter(t => t.isMeWaiting && t.operatorCategory === 'content').length,
       material: base.filter(t => t.isMeWaiting && t.operatorCategory === 'material').length,
       publish: base.filter(t => t.isMeWaiting && t.operatorCategory === 'publish').length,
-      anomaly: base.filter(t => t.isMeWaiting && t.operatorCategory === 'anomaly').length,
-      allProcess: base.length
+      anomaly: base.filter(t => t.isMeWaiting && t.operatorCategory === 'anomaly').length
     };
   }, [tasks]);
 
   // Filtered task list
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
-      // 1. By default, only show tasks requiring operator action unless showAllProcesses is true
-      if (!showAllProcesses) {
-        if (!task.isMeWaiting || task.status === '已完成' || task.status === '已取消') {
-          return false;
-        }
+      // 1. Only show tasks requiring operator action / pending
+      if (!task.isMeWaiting || task.status === '已完成' || task.status === '已取消') {
+        return false;
       }
 
       // 2. Category Filter
@@ -98,7 +94,7 @@ export function ExecutionCenter() {
 
       return true;
     });
-  }, [tasks, showAllProcesses, selectedCategory, selectedProjectFilter, searchKeyword]);
+  }, [tasks, selectedCategory, selectedProjectFilter, searchKeyword]);
 
   // Active Task Object
   const activeTask = useMemo(() => {
@@ -229,12 +225,9 @@ export function ExecutionCenter() {
           <div className="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg border border-border-subtle">
             <button
               type="button"
-              onClick={() => {
-                setSelectedCategory('all');
-                setShowAllProcesses(false);
-              }}
+              onClick={() => setSelectedCategory('all')}
               className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                selectedCategory === 'all' && !showAllProcesses
+                selectedCategory === 'all'
                   ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
@@ -244,12 +237,9 @@ export function ExecutionCenter() {
 
             <button
               type="button"
-              onClick={() => {
-                setSelectedCategory('content');
-                setShowAllProcesses(false);
-              }}
+              onClick={() => setSelectedCategory('content')}
               className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                selectedCategory === 'content' && !showAllProcesses
+                selectedCategory === 'content'
                   ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
@@ -259,12 +249,9 @@ export function ExecutionCenter() {
 
             <button
               type="button"
-              onClick={() => {
-                setSelectedCategory('material');
-                setShowAllProcesses(false);
-              }}
+              onClick={() => setSelectedCategory('material')}
               className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                selectedCategory === 'material' && !showAllProcesses
+                selectedCategory === 'material'
                   ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
@@ -274,12 +261,9 @@ export function ExecutionCenter() {
 
             <button
               type="button"
-              onClick={() => {
-                setSelectedCategory('publish');
-                setShowAllProcesses(false);
-              }}
+              onClick={() => setSelectedCategory('publish')}
               className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                selectedCategory === 'publish' && !showAllProcesses
+                selectedCategory === 'publish'
                   ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
@@ -289,12 +273,9 @@ export function ExecutionCenter() {
 
             <button
               type="button"
-              onClick={() => {
-                setSelectedCategory('anomaly');
-                setShowAllProcesses(false);
-              }}
+              onClick={() => setSelectedCategory('anomaly')}
               className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                selectedCategory === 'anomaly' && !showAllProcesses
+                selectedCategory === 'anomaly'
                   ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
@@ -303,7 +284,7 @@ export function ExecutionCenter() {
             </button>
           </div>
 
-          {/* Right Tools: Project Selector, Search, All Processes Toggle */}
+          {/* Right Tools: Project Selector, Search */}
           <div className="flex items-center gap-2.5">
             
             {/* Project Filter */}
@@ -329,20 +310,6 @@ export function ExecutionCenter() {
               />
               <Search size={14} className="absolute left-2.5 top-2 text-text-tertiary" />
             </div>
-
-            {/* View All Processes Toggle */}
-            <button
-              type="button"
-              onClick={() => setShowAllProcesses(!showAllProcesses)}
-              className={`px-3 py-1.5 text-[12px] rounded-lg border transition-colors flex items-center gap-1.5 ${
-                showAllProcesses
-                  ? 'bg-surface-selected text-text-primary border-border-strong font-medium'
-                  : 'bg-surface text-text-secondary hover:text-text-primary border-border-default'
-              }`}
-            >
-              <Layers size={13} />
-              <span>查看全部流程 ({categoryCounts.allProcess})</span>
-            </button>
 
           </div>
 
@@ -431,9 +398,7 @@ export function ExecutionCenter() {
               当前暂无待操盘手处理的事项
             </div>
             <div className="text-[12.5px] text-text-secondary max-w-md mx-auto">
-              {showAllProcesses 
-                ? '未找到符合筛选条件的任务。' 
-                : '所有团队任务与生成流程均在正常推进中。如需查看员工执行进度，可开启右上角“查看全部流程”。'}
+              当前分类下暂无需要您人工介入或确认的任务，所有团队流程均在有序推进中。
             </div>
           </div>
         )}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Camera, Plus, Users, FileText } from 'lucide-react';
+import { X, Camera, Plus, Users, FileText, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useProjectStore } from '../../context/ProjectContext';
 import { Project } from '../../data/projectStore';
@@ -52,8 +52,11 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 text-[12px] text-text-secondary leading-relaxed">
-            💡 提示：项目级素材要求独立于具体笔记，即使项目尚未生成笔记也可以提前派发与拍摄收集。
+          <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 text-[12px] text-text-secondary leading-relaxed flex items-start gap-1.5">
+            <Info size={14} className="text-text-tertiary shrink-0 mt-0.5" />
+            <div>
+              提示：项目级素材要求独立于具体笔记，即使项目尚未生成笔记也可以提前派发与拍摄收集。
+            </div>
           </div>
 
           <div>

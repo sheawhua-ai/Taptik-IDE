@@ -13,6 +13,10 @@ import {
   UploadedAsset, LibraryMaterialItem, GeneratedMaterialTask 
 } from './types';
 import { MOCK_LIBRARY_MATERIALS, MOCK_STAFF_MEMBERS } from './materialMockData';
+import { ContentAiHub } from './aiPanels/ContentAiHub';
+import { MaterialAiHub } from './aiPanels/MaterialAiHub';
+import { PublishAiHub } from './aiPanels/PublishAiHub';
+import { AnomalyAiHub } from './aiPanels/AnomalyAiHub';
 
 interface TaskDetailViewProps {
   task: ExecutionTask;
@@ -1417,396 +1421,83 @@ export function TaskDetailView({
 
         </div>
 
-        {/* Column 3: Right Selection-Aware AI Collaboration Panel (340px) */}
-        <div className="w-80 border-l border-border-default bg-surface flex flex-col shrink-0">
-          
-          {/* Header */}
-          <div className="p-3.5 border-b border-border-default bg-surface-subtle flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center text-[11px] font-bold">
-                <Sparkles size={13} />
-              </div>
-              <div>
-                <div className="text-[13px] font-semibold text-text-primary">
-                  {selectionTarget === 'title' 
-                    ? '正在修改：笔记标题'
-                    : selectionTarget === 'body_paragraph'
-                    ? '正在修改：正文选中段落'
-                    : selectionTarget === 'body_all'
-                    ? '正在修改：整篇正文'
-                    : selectionTarget === 'tags'
-                    ? '正在修改：话题'
-                    : selectionTarget === 'material_recommendation'
-                    ? '素材中心匹配与推荐'
-                    : 'AI 协作'}
-                </div>
-                <div className="text-[11px] text-text-tertiary">
-                  {selectionTarget === 'material_recommendation'
-                    ? '已自动匹配素材库可用资产'
-                    : selectionTarget ? '仅对当前选中范围生效' : '选中即协作'}
-                </div>
-              </div>
-            </div>
-
-            {selectionTarget && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectionTarget(null);
-                  setActiveAIProposal(null);
-                }}
-                className="text-[11px] text-text-tertiary hover:text-text-primary"
-              >
-                取消选择
-              </button>
-            )}
-          </div>
-
-          {/* Body Content */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[12.5px]">
-            
-            {/* When No Selection */}
-            {!selectionTarget && (
-              <div className="space-y-4 pt-2">
-                <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg text-text-secondary text-[12px] leading-relaxed">
-                  选中标题、正文段落或话题，AI 将只针对选中内容提供修改建议。
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-[11.5px] font-medium text-text-tertiary">快速选中目标：</div>
-                  <button
-                    type="button"
-                    onClick={handleSelectTitle}
-                    className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-                  >
-                    <span>修改笔记标题</span>
-                    <ArrowRight size={13} className="text-text-tertiary" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectionTarget('body_paragraph');
-                      setSelectedTextExcerpt(draftBody.slice(0, 80) + '...');
-                    }}
-                    className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-                  >
-                    <span>修改正文段落</span>
-                    <ArrowRight size={13} className="text-text-tertiary" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleSelectTag(0)}
-                    className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-                  >
-                    <span>优化话题标签</span>
-                    <ArrowRight size={13} className="text-text-tertiary" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* When Selection Active */}
-            {selectionTarget && (
-              <div className="space-y-3.5">
-                
-                {/* 1. If Material Recommendation is selected */}
-                {selectionTarget === 'material_recommendation' ? (
-                  <div className="space-y-4">
-                    {/* Header info */}
-                    <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg space-y-1">
-                      <div className="text-[11.5px] font-semibold text-text-primary flex items-center justify-between">
-                        <span>智能匹配素材资产</span>
-                        <span className="text-[10.5px] text-emerald-700 font-medium">已关联方案词簇</span>
-                      </div>
-                      <div className="text-[11px] text-text-secondary leading-relaxed">
-                        系统根据<strong>幼犬换粮</strong>、<strong>猫粮测评</strong>和<strong>适口性</strong>已从素材中心调取可用实拍与封面。
-                      </div>
-                    </div>
-
-                    {/* Recommended Covers Section */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="text-[11.5px] font-semibold text-text-primary flex items-center gap-1.5">
-                          <Sparkle size={12} className="text-rose-600" />
-                          <span>推荐高点击封面</span>
-                        </div>
-                        <span className="text-[10.5px] text-text-tertiary">点击立即切换封面</span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        {MOCK_LIBRARY_MATERIALS.filter(m => m.isRecommendedCover || m.category === '门店实拍' || m.category === '产品特写').slice(0, 4).map((coverItem) => (
-                          <div
-                            key={coverItem.id}
-                            onClick={() => handleSelectMaterialCover(coverItem)}
-                            className={`group relative rounded-lg border overflow-hidden cursor-pointer transition-all ${
-                              selectedCoverUrl === coverItem.url
-                                ? 'border-neutral-900 ring-2 ring-neutral-900/10'
-                                : 'border-border-default hover:border-border-strong'
-                            }`}
-                          >
-                            <div className="aspect-[3/4] bg-neutral-100 relative">
-                              <img
-                                src={coverItem.url}
-                                alt={coverItem.title}
-                                className="w-full h-full object-cover"
-                                referrerPolicy="no-referrer"
-                              />
-                              {selectedCoverUrl === coverItem.url && (
-                                <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-neutral-900 text-white text-[9.5px] font-medium flex items-center gap-0.5 shadow-sm">
-                                  <Check size={10} />
-                                  <span>当前封面</span>
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-medium transition-opacity">
-                                设为封面
-                              </div>
-                            </div>
-                            <div className="p-1.5 bg-surface text-[11px]">
-                              <div className="truncate font-medium text-text-primary">{coverItem.title}</div>
-                              <div className="text-[10px] text-text-tertiary truncate">{coverItem.tags.join(' · ')}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Recommended Body Images from Library */}
-                    <div className="space-y-2 pt-2 border-t border-border-subtle">
-                      <div className="flex items-center justify-between">
-                        <div className="text-[11.5px] font-semibold text-text-primary flex items-center gap-1.5">
-                          <FolderPlus size={12} className="text-text-secondary" />
-                          <span>推荐正文配图</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setShowLibraryModal(true)}
-                          className="text-[11px] text-text-secondary hover:text-text-primary font-medium"
-                        >
-                          打开素材库 →
-                        </button>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        {MOCK_LIBRARY_MATERIALS.slice(0, 3).map((item) => {
-                          const isSelected = selectedMaterialAssets.some(a => a.id === item.id);
-                          return (
-                            <div
-                              key={item.id}
-                              onClick={() => handleToggleMaterialAsset(item)}
-                              className={`p-2 rounded-lg border text-[11.5px] flex items-center justify-between cursor-pointer transition-all ${
-                                isSelected
-                                  ? 'bg-neutral-50 border-neutral-900 ring-1 ring-neutral-900/10'
-                                  : 'bg-surface hover:bg-surface-hover border-border-default'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2 overflow-hidden">
-                                <img
-                                  src={item.url}
-                                  alt={item.title}
-                                  className="w-9 h-9 rounded object-cover border border-border-subtle shrink-0"
-                                  referrerPolicy="no-referrer"
-                                />
-                                <div className="truncate">
-                                  <div className="font-medium text-text-primary truncate">{item.title}</div>
-                                  <div className="text-[10.5px] text-text-tertiary truncate">{item.category} · {item.tags.slice(0, 2).join(' ')}</div>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                className={`px-2 py-0.5 rounded text-[10.5px] font-medium shrink-0 ml-2 transition-colors ${
-                                  isSelected
-                                    ? 'bg-neutral-900 text-white'
-                                    : 'bg-surface-subtle text-text-secondary hover:text-text-primary border border-border-default'
-                                }`}
-                              >
-                                {isSelected ? '已选用' : '+ 选用'}
-                              </button>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Fast Dispatch New Task */}
-                    <div className="pt-2 border-t border-border-subtle space-y-2">
-                      <div className="text-[11.5px] font-semibold text-text-primary flex items-center justify-between">
-                        <span>素材库缺少所需图片？</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setShowCreateTaskModal(true)}
-                        className="w-full py-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-default rounded-lg text-[12px] font-medium transition-colors flex items-center justify-center gap-1.5"
-                      >
-                        <Plus size={13} />
-                        <span>生成素材补拍任务</span>
-                      </button>
-                    </div>
-
-                  </div>
-                ) : (
-                  <>
-                    {/* Selected Excerpt Preview */}
-                    <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg space-y-1">
-                      <div className="text-[11px] font-semibold text-text-tertiary">选中的原文：</div>
-                      <div className="text-[12px] text-text-primary line-clamp-3 leading-snug">
-                        "{selectedTextExcerpt}"
-                      </div>
-                    </div>
-
-                    {/* Quick Prompts */}
-                    <div className="space-y-1.5">
-                      <div className="text-[11px] font-medium text-text-tertiary">快捷修改要求：</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {selectionTarget === 'title' && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('更口语化，突出软便痛点')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              更口语化
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('强化新手避坑情绪')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              强化避坑情绪
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('缩短字数')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              缩短字数
-                            </button>
-                          </>
-                        )}
-
-                        {(selectionTarget === 'body_paragraph' || selectionTarget === 'body_all') && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('删除功效承诺，替换为合规说明')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              删除功效承诺
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('更符合店长顾问口吻')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              店长口吻
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('保留原意并缩短')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              精炼段落
-                            </button>
-                          </>
-                        )}
-
-                        {selectionTarget === 'tags' && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('从项目关键词词簇补充')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              从词簇补充
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateAIProposal('替换为精准长尾词')}
-                              className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
-                            >
-                              替换长尾词
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Custom Input */}
-                    <div className="space-y-1.5">
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={userAIPrompt}
-                          onChange={(e) => setUserAIPrompt(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleGenerateAIProposal();
-                          }}
-                          placeholder="输入自然语言修改要求..."
-                          className="w-full px-3 py-2 text-[12px] bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 pr-14"
-                        />
-                        <button
-                          type="button"
-                          disabled={isAIGenerating}
-                          onClick={() => handleGenerateAIProposal()}
-                          className="absolute right-1.5 top-1.5 px-2.5 py-1 bg-action-primary text-white text-[11.5px] font-semibold rounded-md hover:bg-action-primary-hover disabled:opacity-50 transition-colors"
-                        >
-                          {isAIGenerating ? '生成中...' : '生成'}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* AI Diff Proposal Result */}
-                    {activeAIProposal && (
-                      <div className="p-3 bg-surface border border-neutral-900/20 rounded-xl space-y-2.5 shadow-sm animate-in fade-in duration-150">
-                        <div className="text-[12px] font-semibold text-text-primary flex items-center justify-between">
-                          <span>修改建议 (Diff)</span>
-                          <span className="text-[10.5px] text-emerald-700 font-medium">已生成</span>
-                        </div>
-
-                        <div className="space-y-1.5 text-[12px]">
-                          <div className="p-2 bg-rose-50/60 border border-rose-200/60 rounded text-rose-900">
-                            <span className="text-[10.5px] font-bold text-rose-700 block">修改前：</span>
-                            <span>{activeAIProposal.originalText}</span>
-                          </div>
-                          <div className="p-2 bg-emerald-50/60 border border-emerald-200/60 rounded text-emerald-900">
-                            <span className="text-[10.5px] font-bold text-emerald-700 block">修改后：</span>
-                            <span>{activeAIProposal.suggestedText}</span>
-                          </div>
-                        </div>
-
-                        <div className="text-[11.5px] text-text-secondary space-y-0.5">
-                          <div><strong>理由：</strong>{activeAIProposal.reason}</div>
-                          <div className="text-text-tertiary"><strong>影响范围：</strong>{activeAIProposal.impactScope}</div>
-                        </div>
-
-                        <div className="pt-2 border-t border-border-subtle flex items-center justify-between gap-2">
-                          <button
-                            type="button"
-                            onClick={handleDiscardAIProposal}
-                            className="px-3 py-1.5 text-[11.5px] text-text-secondary hover:text-text-primary rounded-lg border border-border-default transition-colors"
-                          >
-                            保留原文
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleApplyAIProposal}
-                            className="px-3.5 py-1.5 text-[11.5px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors shadow-sm"
-                          >
-                            应用到选中内容
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-
-              </div>
-            )}
-
-          </div>
-
-        </div>
+        {/* Column 3: Task-Specific AI Coordination Hub */}
+        {task.operatorCategory === 'material' ? (
+          <MaterialAiHub
+            task={task}
+            onOpenReshootModal={(item, defaultReason) => {
+              setReshootTargetItem(item);
+              setReshootInputReason(defaultReason || '');
+            }}
+            onAcceptSubItem={(itemId) => {
+              handleAcceptMaterialSubItem(itemId);
+            }}
+            showToast={showToast}
+          />
+        ) : task.operatorCategory === 'publish' ? (
+          <PublishAiHub
+            task={task}
+            onConfirmPublishArchive={handleConfirmPublishArchive}
+            showToast={showToast}
+          />
+        ) : task.operatorCategory === 'anomaly' ? (
+          <AnomalyAiHub
+            task={task}
+            onOpenReassignModal={() => setShowReassignModal(true)}
+            onOpenQrModal={() => setShowQrModal(true)}
+            onRemindExecutor={handleRemindExecutor}
+            onResolveAnomaly={(planTitle) => {
+              const updated: ExecutionTask = {
+                ...task,
+                status: '已完成',
+                isAnomaly: false,
+                operatorActionSummary: `已执行异常处置：${planTitle}`,
+                waitingParty: '已完成',
+                waitingRole: 'completed',
+                isMeWaiting: false,
+                isBlocked: false,
+                timelineEvents: [
+                  ...task.timelineEvents,
+                  {
+                    id: `evt-${Date.now()}`,
+                    time: '刚刚',
+                    actor: '操盘手',
+                    action: `执行异常处置方案：${planTitle}`
+                  }
+                ]
+              };
+              onUpdateTask(updated);
+              showToast(`已成功执行【${planTitle}】，异常已解除！`);
+              if (onNextTask) {
+                setTimeout(() => onNextTask(), 600);
+              }
+            }}
+            showToast={showToast}
+          />
+        ) : (
+          <ContentAiHub
+            task={task}
+            draftTitle={draftTitle}
+            setDraftTitle={setDraftTitle}
+            draftBody={draftBody}
+            setDraftBody={setDraftBody}
+            tags={tags}
+            setTags={setTags}
+            selectedTagIndex={selectedTagIndex}
+            setSelectedTagIndex={setSelectedTagIndex}
+            selectionTarget={selectionTarget}
+            setSelectionTarget={setSelectionTarget}
+            selectedTextExcerpt={selectedTextExcerpt}
+            setSelectedTextExcerpt={setSelectedTextExcerpt}
+            selectedCoverUrl={selectedCoverUrl}
+            setSelectedCoverUrl={setSelectedCoverUrl}
+            selectedMaterialAssets={selectedMaterialAssets}
+            setSelectedMaterialAssets={setSelectedMaterialAssets}
+            onOpenLibraryModal={() => setShowLibraryModal(true)}
+            onOpenCreateTaskModal={() => setShowCreateTaskModal(true)}
+            showToast={showToast}
+          />
+        )}
 
       </div>
 

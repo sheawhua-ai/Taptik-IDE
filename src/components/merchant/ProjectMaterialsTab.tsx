@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Video, Eye, Send, Image as ImageIcon, X, ExternalLink
+  Video, Eye, Send, Image as ImageIcon, X, ExternalLink, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectStore } from '../../context/ProjectContext';
@@ -198,8 +198,9 @@ export function ProjectMaterialsTab({ project, onNavigateToMaterials }: Props) {
               <div className="flex flex-wrap items-center gap-2 text-[12px]">
                 <span className="text-text-secondary font-medium">关联笔记:</span>
                 {scenario.associatedNotes.map((noteTitle, idx) => (
-                  <span key={idx} className="px-2.5 py-1 bg-surface-1 border border-border-default text-text-main rounded-lg font-medium">
-                    📄 {noteTitle}
+                  <span key={idx} className="px-2.5 py-1 bg-surface-1 border border-border-default text-text-main rounded-lg font-medium flex items-center gap-1">
+                    <FileText size={12} className="text-text-tertiary" />
+                    <span>{noteTitle}</span>
                   </span>
                 ))}
                 <span className="text-text-secondary ml-auto font-medium">

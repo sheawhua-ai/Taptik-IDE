@@ -1,16 +1,18 @@
 import React from "react";
-import { X, Check, Plus, ArrowRight, Target, TrendingUp, ShieldCheck, Zap } from "lucide-react";
+import { X, Check, Plus, ArrowRight, Target, TrendingUp, ShieldCheck, Zap, FolderPlus, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import { SuggestedAction } from "./types";
 
 interface ActionDetailModalProps {
   action: SuggestedAction | null;
   onClose: () => void;
-  onToggleSync: (actionId: string) => void;
+  onApplyAction?: (action: SuggestedAction) => void;
 }
 
-export function ActionDetailModal({ action, onClose, onToggleSync }: ActionDetailModalProps) {
+export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDetailModalProps) {
   if (!action) return null;
+
+  const isApplied = !!action.appliedDestinationLabel;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 font-sans text-text-main">
@@ -55,8 +57,10 @@ export function ActionDetailModal({ action, onClose, onToggleSync }: ActionDetai
               <span className="font-medium text-text-main">{action.expectedGain}</span>
             </div>
             <div className="p-3 bg-surface-subtle rounded-xl border border-border-default">
-              <span className="font-semibold text-text-tertiary text-[11.5px] block mb-1">策略归类</span>
-              <span className="font-medium text-text-main">{action.category}</span>
+              <span className="font-semibold text-text-tertiary text-[11.5px] block mb-1">建议类型</span>
+              <span className="font-medium text-text-main">
+                {action.actionType === "plan" ? "项目方案 / 流程策略" : "后续内容 / 选题结构"}
+              </span>
             </div>
           </div>
 
@@ -68,7 +72,7 @@ export function ActionDetailModal({ action, onClose, onToggleSync }: ActionDetai
           </div>
 
           <div className="space-y-2">
-            <span className="font-semibold text-text-main block">落地执行 SOP 步骤</span>
+            <span className="font-semibold text-text-main block">建议落地方式</span>
             <div className="space-y-1.5">
               {action.recommendedSteps.map((step, idx) => (
                 <div key={idx} className="p-2.5 bg-surface-1 rounded-lg border border-border-default flex items-center gap-2.5 text-text-secondary">
@@ -83,8 +87,15 @@ export function ActionDetailModal({ action, onClose, onToggleSync }: ActionDetai
         </div>
 
         <div className="p-4 border-t border-border-default flex items-center justify-between bg-surface-subtle">
-          <div className="text-[12px] text-text-tertiary">
-            {action.inExecutionCenter ? "✅ 已同步至执行中心待办队列" : "尚未同步至执行中心"}
+          <div className="text-[12px] text-text-tertiary flex items-center gap-1.5">
+            {isApplied ? (
+              <span className="text-emerald-700 font-medium flex items-center gap-1">
+                <Check size={13} className="text-emerald-600" />
+                {action.appliedDestinationLabel}
+              </span>
+            ) : (
+              <span className="text-text-tertiary">尚未应用</span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -96,24 +107,22 @@ export function ActionDetailModal({ action, onClose, onToggleSync }: ActionDetai
             </button>
             <button
               onClick={() => {
-                onToggleSync(action.id);
+                if (onApplyAction) {
+                  onApplyAction(action);
+                }
                 onClose();
               }}
-              className={`px-4 py-2 text-[12.5px] font-medium rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs ${
-                action.inExecutionCenter
-                  ? "bg-surface-1 border border-border-default text-text-secondary hover:bg-hover-bg"
-                  : "bg-btn-main text-white hover:bg-btn-main-hover"
-              }`}
+              className="px-4 py-2 text-[12.5px] font-medium rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs bg-btn-main text-white hover:bg-btn-main-hover"
             >
-              {action.inExecutionCenter ? (
+              {action.actionType === "plan" ? (
                 <>
-                  <Check size={13} />
-                  <span>移出执行中心</span>
+                  <FolderPlus size={13} />
+                  <span>纳入项目方案</span>
                 </>
               ) : (
                 <>
-                  <Plus size={13} />
-                  <span>一键加入执行中心</span>
+                  <FileText size={13} />
+                  <span>应用到后续笔记</span>
                 </>
               )}
             </button>
@@ -123,3 +132,4 @@ export function ActionDetailModal({ action, onClose, onToggleSync }: ActionDetai
     </div>
   );
 }
+

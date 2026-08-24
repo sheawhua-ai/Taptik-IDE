@@ -115,17 +115,25 @@ export function ProjectAssets() {
         </div>
 
         {/* Detail Tabs */}
-        <div className="px-8 pt-4 border-b border-border-default bg-surface-1 shrink-0">
-          <div className="flex items-center gap-6 overflow-x-auto">
+        <div className="h-12 px-8 border-b border-border-default bg-surface-1 shrink-0 flex items-center">
+          <div className="flex items-center gap-8 h-full overflow-x-auto">
             {(["项目总览", "内容包", "素材与拍摄", "发布与账号", "互动与线索", "消费者参与", "调整与复盘"] as DetailTab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setDetailTab(tab)}
-                className={`pb-4 text-[14px] font-bold transition-colors relative whitespace-nowrap ${detailTab === tab ? "text-brand-logo" : "text-text-tertiary hover:text-text-secondary"}`}
+                className={`relative h-full flex items-center gap-2 px-1 text-[13.5px] transition-all whitespace-nowrap cursor-pointer ${
+                  detailTab === tab
+                    ? "font-semibold text-text-main"
+                    : "font-medium text-text-secondary hover:text-text-main"
+                }`}
               >
-                {tab}
+                <span>{tab}</span>
                 {detailTab === tab && (
-                  <motion.div layoutId="detail-tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600" />
+                  <motion.div
+                    layoutId="projectDetailTab"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900 rounded-full"
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  />
                 )}
               </button>
             ))}
@@ -702,16 +710,24 @@ export function ProjectAssets() {
         </div>
 
         {/* Main Tabs (项目 / 账号资产) */}
-        <div className="flex gap-8 border-b border-transparent">
+        <div className="h-12 flex items-center gap-8 border-b border-transparent">
            {(["项目", "账号资产"] as MainTab[]).map(tab => (
              <button
                key={tab}
                onClick={() => { setMainTab(tab); setSelectedAccount(null); }}
-               className={`pb-4 text-[16px] font-bold transition-colors relative ${mainTab === tab ? "text-brand-logo" : "text-text-tertiary hover:text-text-secondary"}`}
+               className={`relative h-full flex items-center gap-2 px-1 text-[15px] transition-all whitespace-nowrap cursor-pointer ${
+                 mainTab === tab
+                   ? "font-semibold text-text-main"
+                   : "font-medium text-text-secondary hover:text-text-main"
+               }`}
              >
-               {tab}
+               <span>{tab}</span>
                {mainTab === tab && (
-                 <motion.div layoutId="main-tab" className="absolute bottom-0 left-0 right-0 h-[3px] rounded-t-full bg-primary-600" />
+                 <motion.div
+                   layoutId="projectMainTab"
+                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900 rounded-full"
+                   transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                 />
                )}
              </button>
            ))}
@@ -721,17 +737,25 @@ export function ProjectAssets() {
       {mainTab === "项目" && (
         <>
           {/* Project Status Tabs */}
-          <div className="px-8 pt-4 border-b border-border-default bg-surface-1 shrink-0">
-            <div className="flex items-center gap-6">
+          <div className="h-12 px-8 border-b border-border-default bg-surface-1 shrink-0 flex items-center">
+            <div className="flex items-center gap-8 h-full">
               {(["进行中", "待启动", "已暂停", "已完成", "已归档"] as ProjectStatus[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-4 text-[13px] font-bold transition-colors relative ${activeTab === tab ? "text-text-main" : "text-text-tertiary hover:text-text-secondary"}`}
+                  className={`relative h-full flex items-center gap-2 px-1 text-[13.5px] transition-all whitespace-nowrap cursor-pointer ${
+                    activeTab === tab
+                      ? "font-semibold text-text-main"
+                      : "font-medium text-text-secondary hover:text-text-main"
+                  }`}
                 >
-                  {tab}
+                  <span>{tab}</span>
                   {activeTab === tab && (
-                    <motion.div layoutId="project-tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-btn-main" />
+                    <motion.div
+                      layoutId="projectStatusTab"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-900 rounded-full"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
                   )}
                 </button>
               ))}

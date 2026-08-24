@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   CheckCircle2, ChevronDown, ChevronUp, Layers, Users, 
   Target, ShieldCheck, FileText, Check, Sparkles, ArrowRight,
-  Calendar, Eye, HelpCircle, AlertTriangle, Clock
+  Calendar, Eye, HelpCircle, AlertTriangle, Clock, Bot, UserCheck
 } from 'lucide-react';
 import { StrategyDraftData } from './types';
 
@@ -232,7 +232,10 @@ export function StrategyDraftChatCard({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11.5px]">
               <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg space-y-1">
-                <span className="font-semibold text-text-primary block text-[11px]">⚙ 系统全自动执行：</span>
+                <div className="flex items-center gap-1.5 font-semibold text-text-primary text-[11px]">
+                  <Bot size={13} className="text-slate-600" />
+                  <span>系统全自动执行：</span>
+                </div>
                 <ul className="space-y-1 text-text-secondary">
                   {draft.humanInTheLoop.systemAutomated.map((item, idx) => (
                     <li key={idx} className="flex items-center gap-1.5">
@@ -244,7 +247,10 @@ export function StrategyDraftChatCard({
               </div>
 
               <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg space-y-1">
-                <span className="font-semibold text-emerald-900 block text-[11px]">👤 运营必须人工确认：</span>
+                <div className="flex items-center gap-1.5 font-semibold text-emerald-900 text-[11px]">
+                  <UserCheck size={13} className="text-emerald-700" />
+                  <span>运营必须人工确认：</span>
+                </div>
                 <ul className="space-y-1 text-text-secondary">
                   {draft.humanInTheLoop.operatorRequired.map((item, idx) => (
                     <li key={idx} className="flex items-center gap-1.5">
