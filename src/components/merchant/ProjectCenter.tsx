@@ -93,6 +93,7 @@ export function ProjectCenter({
   const [showAddNoteModal, setShowAddNoteModal] = useState<"file" | "feishu" | "single" | null>(null);
   const [showBatchAIGenerator, setShowBatchAIGenerator] = useState(false);
   const [showDispatchModal, setShowDispatchModal] = useState(false);
+  const [showAssetsDrawer, setShowAssetsDrawer] = useState(false);
   const [previewAssetUrl, setPreviewAssetUrl] = useState<string | null>(null);
   const [activeWorkbench, setActiveWorkbench] = useState<"content" | "assets" | "publish" | "create_project" | null>(null);
   const [isLogsExpanded, setIsLogsExpanded] = useState(false);
@@ -499,68 +500,7 @@ export function ProjectCenter({
             {activeTab === "概览" && (
               <div className="space-y-5">
                 
-                {/* 1.1 当前代办 (原待办与阻塞列表，合并整理，区域唯一定向Primary) */}
-                <div className="bg-surface-1 rounded-xl p-5 border border-border-default space-y-3.5">
-                  <div className="flex items-center justify-between border-b border-border-default pb-3">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-[14px] font-semibold text-text-main">当前代办</h3>
-                      <span className="text-[12px] text-text-tertiary">
-                        {projectPendingTasks.length > 0 ? `共 ${projectPendingTasks.length} 项事项` : `当前无代办`}
-                      </span>
-                    </div>
-                  </div>
 
-                  {projectPendingTasks.length === 0 ? (
-                    <div className="p-4 bg-surface-subtle rounded-lg border border-border-default text-[12.5px] text-text-secondary flex items-center gap-2">
-                      <CheckCircle2 size={16} className="text-emerald-700 shrink-0" />
-                      <span>暂无阻塞与待办事项，执行流程正常推进。</span>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {projectPendingTasks.map((task, idx) => (
-                        <div 
-                          key={task.id}
-                          onClick={() => handleTaskAction(task)}
-                          className="p-3 bg-surface-subtle hover:bg-hover-bg rounded-lg border border-border-default flex items-center justify-between text-[12.5px] cursor-pointer transition-colors group"
-                        >
-                          <div className="flex items-center gap-2.5 truncate max-w-[680px]">
-                            {task.severity === "blocker" ? (
-                              <span className="px-1.5 py-0.5 bg-danger text-white text-[10.5px] font-medium rounded shrink-0">
-                                阻断
-                              </span>
-                            ) : (
-                              <span className="px-1.5 py-0.5 bg-surface-1 border border-border-default text-text-secondary text-[10.5px] font-medium rounded shrink-0">
-                                待办
-                              </span>
-                            )}
-                            <span className="font-medium text-text-main truncate group-hover:text-text-main">
-                              {task.issueMessage}
-                            </span>
-                            <span className="text-text-tertiary text-[11.5px] truncate">
-                              ({task.noteTitle || currentProject.name})
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-text-tertiary text-[11.5px]">截止: {task.plannedDate}</span>
-                            {idx === 0 ? (
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); handleTaskAction(task); }}
-                                className="px-3 py-1 bg-btn-main text-white text-[11.5px] font-medium rounded-md hover:bg-btn-main-hover transition-colors"
-                              >
-                                处理
-                              </button>
-                            ) : (
-                              <span className="text-[12px] font-medium text-text-secondary group-hover:text-text-main group-hover:underline">
-                                处理
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
 
                 {/* 1.2 运营策略摘要 */}
                 <div className="bg-surface-1 rounded-xl p-5 border border-border-default space-y-4">
@@ -616,14 +556,6 @@ export function ProjectCenter({
                       <BarChart2 size={16} className="text-text-secondary" />
                       <h3 className="text-[14px] font-semibold text-text-main">运营指标与复盘</h3>
                     </div>
-
-                    <button
-                      onClick={() => setWorkflowTab?.("review")}
-                      className="text-[12px] text-text-secondary hover:text-text-main font-medium flex items-center gap-1 transition-colors"
-                    >
-                      <span>查看复盘数据</span>
-                      <ChevronRight size={13} />
-                    </button>
                   </div>
 
                   {/* 4 Core Metrics */}
@@ -676,36 +608,7 @@ export function ProjectCenter({
                   </div>
                 </div>
 
-                {/* 1.4 操作记录 */}
-                <div className="bg-surface-1 rounded-xl p-5 border border-border-default space-y-3">
-                  <div className="flex items-center justify-between border-b border-border-default pb-3">
-                    <div className="flex items-center gap-2">
-                      <History size={16} className="text-text-secondary" />
-                      <h3 className="text-[14px] font-semibold text-text-main">操作记录</h3>
-                    </div>
-                    <button 
-                      onClick={() => setIsLogsExpanded(!isLogsExpanded)}
-                      className="text-[12px] text-text-secondary hover:text-text-main font-medium"
-                    >
-                      {isLogsExpanded ? "收起" : "展开完整记录"}
-                    </button>
-                  </div>
 
-                  <div className="space-y-2">
-                    {(isLogsExpanded ? currentProject.operationLogs : currentProject.operationLogs.slice(0, 3)).map((log) => (
-                      <div key={log.id} className="p-3 bg-surface-subtle rounded-lg border border-border-default flex items-start justify-between gap-4 text-[12.5px]">
-                        <div className="space-y-0.5">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-text-main">{log.action}</span>
-                            <span className="text-[11px] px-1.5 py-0.2 bg-surface-1 border border-border-default rounded text-text-secondary">{log.operator}</span>
-                          </div>
-                          <div className="text-text-secondary text-[12px]">{log.detail}</div>
-                        </div>
-                        <span className="text-[11.5px] text-text-tertiary shrink-0">{log.timestamp}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
               </div>
             )}
@@ -716,42 +619,32 @@ export function ProjectCenter({
             {activeTab === "内容与素材" && (
               <div className="space-y-5">
 
-                {/* Context Strip for Materials & Tasks */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-surface-subtle border border-border-default flex items-center justify-center text-text-secondary">
-                        <Send size={15} />
+                {/* Compact Material Collaboration Status Bar */}
+                <div className="h-14 px-5 bg-surface-1 rounded-xl border border-border-default shadow-2xs flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <div className="text-[13px] font-semibold text-text-main flex items-center gap-2">
+                        <span>素材协作</span>
+                        <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-medium rounded-md">有任务等待确认</span>
                       </div>
-                      <div>
-                        <div className="text-[13px] font-medium text-text-main">场景素材任务</div>
-                        <div className="text-[11.5px] text-text-tertiary">3 项进行中 · 调度与追踪</div>
+                      <div className="text-[11.5px] text-text-secondary mt-0.5">
+                        3项任务进行中 · 5件素材已回传
                       </div>
                     </div>
-                    <button
-                      onClick={() => setShowDispatchModal(true)}
-                      className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors"
-                    >
-                      下发素材任务
-                    </button>
                   </div>
 
-                  <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-surface-subtle border border-border-default flex items-center justify-center text-text-secondary">
-                        <Package size={15} />
-                      </div>
-                      <div>
-                        <div className="text-[13px] font-medium text-text-main">项目素材归集</div>
-                        <div className="text-[11.5px] text-text-tertiary">5 件已回传 · 素材中心</div>
-                      </div>
-                    </div>
+                  <div className="flex items-center gap-2.5">
                     <button
-                      onClick={() => setWorkflowTab?.("materials")}
-                      className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors flex items-center gap-1"
+                      onClick={() => setShowAssetsDrawer(true)}
+                      className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors cursor-pointer"
                     >
-                      <span>素材中心</span>
-                      <ExternalLink size={12} className="text-text-secondary" />
+                      查看素材
+                    </button>
+                    <button
+                      onClick={() => setShowDispatchModal(true)}
+                      className="px-3.5 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[12px] font-medium transition-colors shadow-xs cursor-pointer"
+                    >
+                      下发素材任务
                     </button>
                   </div>
                 </div>
@@ -1231,6 +1124,120 @@ export function ProjectCenter({
           project={currentProject} 
           onClose={() => setShowProjectQuestionnaire(false)} 
         />
+      )}
+
+      {/* Project Assets Drawer */}
+      {showAssetsDrawer && currentProject && (
+        <div className="fixed inset-0 z-[150] flex justify-end">
+          <div className="absolute inset-0 bg-btn-main/40 backdrop-blur-xs transition-opacity" onClick={() => setShowAssetsDrawer(false)} />
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 220 }}
+            className="relative w-full max-w-[640px] bg-surface-1 h-full shadow-2xl flex flex-col z-10 border-l border-border-default"
+          >
+            <div className="p-5 border-b border-border-default bg-surface-1 flex justify-between items-center shrink-0">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[16px] font-semibold text-text-main">方案已归集素材</h2>
+                  <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-medium rounded-md">
+                    5件已回传
+                  </span>
+                </div>
+                <div className="text-[12px] text-text-tertiary mt-0.5 truncate max-w-[480px]">
+                  {currentProject.name}
+                </div>
+              </div>
+              <button onClick={() => setShowAssetsDrawer(false)} className="p-2 text-text-tertiary hover:text-text-main rounded-xl hover:bg-hover-bg transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  {
+                    id: 'al1',
+                    title: '幼犬吃粮高清大头照',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '员工a',
+                    time: '10分钟前',
+                    noteRef: '幼犬换粮避坑指南'
+                  },
+                  {
+                    id: 'al2',
+                    title: '金毛第3天换粮便便与产品合影',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '卡卡',
+                    time: '1小时前',
+                    noteRef: '金毛换粮7天打卡笔记包'
+                  },
+                  {
+                    id: 'al3',
+                    title: '店长出镜讲解15s高清视频帧',
+                    category: 'video',
+                    url: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '张店长',
+                    time: '3小时前',
+                    noteRef: '【官方科普】幼犬肠胃敏感期'
+                  },
+                  {
+                    id: 'al4',
+                    title: '试用装开箱体验特写',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '员工b',
+                    time: '昨天',
+                    noteRef: '【KOC问卷笔记包】软便打卡'
+                  },
+                  {
+                    id: 'al5',
+                    title: '宠物品类核心成分授权认证卡',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=600&auto=format&fit=crop',
+                    aiStatus: '通用素材',
+                    uploader: '商家自行上传',
+                    time: '2天前',
+                    noteRef: '通用项目素材'
+                  }
+                ].map(asset => (
+                  <div key={asset.id} className="bg-surface-subtle rounded-xl border border-border-default overflow-hidden group hover:shadow-md transition-all flex flex-col">
+                    <div 
+                      onClick={() => setPreviewAssetUrl(asset.url)}
+                      className="relative h-36 bg-surface-subtle overflow-hidden cursor-pointer"
+                    >
+                      <img src={asset.url} alt={asset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 text-white text-[10px] font-bold rounded-md backdrop-blur-xs flex items-center gap-1">
+                        {asset.category === 'video' ? <Video size={10} /> : <ImageIcon size={10} />}
+                        {asset.category === 'video' ? '视频' : '照片'}
+                      </span>
+                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-md shadow-xs">
+                        {asset.aiStatus}
+                      </span>
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[12.5px] font-semibold text-text-main truncate mb-0.5">{asset.title}</div>
+                        <div className="text-[11px] text-text-tertiary truncate">关联: {asset.noteRef}</div>
+                      </div>
+                      <div className="pt-2 mt-2 border-t border-border-default flex items-center justify-between text-[11px] text-text-secondary">
+                        <span>{asset.uploader}</span>
+                        <span>{asset.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
       )}
 
       {/* Archive Project Confirm Modal */}

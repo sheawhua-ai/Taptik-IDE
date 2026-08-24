@@ -117,13 +117,13 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 border border-border-default text-[#344054] hover:bg-page-bg rounded-xl text-[14px] font-bold transition-colors"
+              className="px-5 py-2.5 border border-border-default text-[#344054] hover:bg-page-bg rounded-xl text-[14px] font-bold transition-colors cursor-pointer"
             >
               取消
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 bg-[#D93850] hover:bg-[#c22e44] text-white rounded-xl text-[14px] font-bold transition-colors shadow-xs"
+              className="px-6 py-2.5 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[14px] font-bold transition-colors shadow-xs cursor-pointer"
             >
               确认下发
             </button>
