@@ -19,6 +19,14 @@ interface Props {
 export function LandingPageSettingsModal({ project, onClose }: Props) {
   const { updateLandingPageSettings } = useProjectStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentPackage = project.notes?.find(note => note.isNotePackage);
+  const packageFeedbackQuestions = (contentPackage?.packageSpec?.feedbackQuestions || []).map((question, index) => ({
+    id: question.id,
+    title: `${index + 1}. ${question.prompt}`,
+    type: "单选" as const,
+    isRequired: true,
+    options: question.options
+  }));
 
   const currentSettings = project.landingPageSettings || {
     loginMode: "无需登录",
@@ -28,11 +36,13 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
   };
 
   const [loginMode, setLoginMode] = useState<"无需登录" | "微信登录">(currentSettings.loginMode);
-  const [hasQuestionnaire, setHasQuestionnaire] = useState<boolean>(currentSettings.hasQuestionnaire !== false);
+  const hasQuestionnaire = true;
   const [bannerUrl, setBannerUrl] = useState<string>(currentSettings.bannerUrl || "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop");
   
   const [questions, setQuestions] = useState<any[]>(
-    currentSettings.questionnaireQuestions && currentSettings.questionnaireQuestions.length > 0
+    packageFeedbackQuestions.length > 0
+      ? packageFeedbackQuestions
+      : currentSettings.questionnaireQuestions && currentSettings.questionnaireQuestions.length > 0
       ? currentSettings.questionnaireQuestions
       : DEFAULT_QUESTIONNAIRE_QUESTIONS
   );
@@ -96,7 +106,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                 落地页推广设置
               </h2>
               <p className="text-[12px] text-text-tertiary mt-0.5">
-                管理源分发平台的访客登录方式、海报与体验问卷；客户端不承载或修改公开落地页内容。
+                用一张海报承载内容包信息，并配置领取后的轻量体验反馈与访客登录方式。
               </p>
             </div>
             <button 
@@ -113,76 +123,38 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
             {/* Left 2 Columns: Settings Controls */}
             <div className="md:col-span-2 space-y-5">
 
-              {/* Card 0: Consumer Questionnaire */}
+              {/* Card 0: Content package experience feedback */}
               <div className="bg-surface-1 rounded-xl border border-border-default p-5 space-y-3.5">
                 <div>
-                  <h3 className="text-[14px] font-semibold text-text-main">1. 消费者体验问卷设置</h3>
+                  <h3 className="text-[14px] font-semibold text-text-main">1. 内容包体验反馈</h3>
                   <p className="text-[12px] text-text-tertiary mt-0.5">
-                    设置访客在落地页投稿前是否需要填写体验调研问卷（用于提炼真实事实即时生成笔记）。
+                    消费者领取内容包后，用约 10 秒反馈真实体验；反馈只生成该消费者的笔记，并绑定领取时的方案版本。
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Option 1: 包含消费者问卷 */}
-                  <div
-                    onClick={() => setHasQuestionnaire(true)}
-                    className={`p-3.5 rounded-lg border cursor-pointer transition-all flex flex-col justify-between ${
-                      hasQuestionnaire
-                        ? "border-text-main bg-surface-subtle"
-                        : "border-border-default bg-surface-1 hover:border-border-strong"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[13px] font-semibold text-text-main">包含消费者问卷</span>
-                      {hasQuestionnaire && (
-                        <CheckCircle2 size={16} className="text-text-main" />
-                      )}
+                <div className="flex items-center justify-between gap-3 bg-surface-subtle p-3.5 rounded-lg border border-border-default">
+                  <div className="min-w-0 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-surface-1 border border-border-default flex items-center justify-center shrink-0">
+                      <FileText size={16} className="text-text-secondary" />
                     </div>
-                    <p className="text-[12px] text-text-secondary leading-relaxed">
-                      访客投稿前先回答几道简易体验问卷，AI 提取事实后自动即时生成笔记。
-                    </p>
-                  </div>
-
-                  {/* Option 2: 不使用问卷 */}
-                  <div
-                    onClick={() => setHasQuestionnaire(false)}
-                    className={`p-3.5 rounded-lg border cursor-pointer transition-all flex flex-col justify-between ${
-                      !hasQuestionnaire
-                        ? "border-text-main bg-surface-subtle"
-                        : "border-border-default bg-surface-1 hover:border-border-strong"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[13px] font-semibold text-text-main">不使用问卷（直接投稿）</span>
-                      {!hasQuestionnaire && (
-                        <CheckCircle2 size={16} className="text-text-main" />
-                      )}
+                    <div className="min-w-0">
+                      <div className="text-[12.5px] font-semibold text-text-main truncate">
+                        {contentPackage?.title || "当前方案内容包"}
+                      </div>
+                      <div className="text-[11.5px] text-text-tertiary mt-0.5">
+                        体验反馈 V{contentPackage?.packageSpec?.feedbackVersion || 1} · {questions.length} 项 · 约 10 秒
+                      </div>
                     </div>
-                    <p className="text-[12px] text-text-secondary leading-relaxed">
-                      访客跳过问卷环节，直接输入标题、心得并上传体验照片与视频。
-                    </p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowQuestionnaireDrawer(true)}
+                    className="px-3.5 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shrink-0"
+                  >
+                    <Edit3 size={13} className="text-text-secondary" />
+                    <span>编辑体验反馈</span>
+                  </button>
                 </div>
-
-                {/* View & Edit Questionnaire Actions if enabled */}
-                {hasQuestionnaire && (
-                  <div className="pt-3 border-t border-border-default flex items-center justify-between gap-3 bg-surface-subtle p-3 rounded-lg border border-border-default">
-                    <div className="flex items-center gap-2">
-                      <FileText size={15} className="text-text-secondary" />
-                      <span className="text-[12px] font-medium text-text-main">
-                        已启用问卷模式（当前配置 {questions.length} 道题目）
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowQuestionnaireDrawer(true)}
-                      className="px-3.5 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
-                    >
-                      <Edit3 size={13} className="text-text-secondary" />
-                      <span>配置问卷题目与规则</span>
-                    </button>
-                  </div>
-                )}
               </div>
               
               {/* Card 1: Guest Login Mode */}
@@ -400,6 +372,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
       {/* Unified Project Questionnaire Drawer */}
       {showQuestionnaireDrawer && (
         <ProjectQuestionnaireDrawer
+          contentPackage={contentPackage}
           project={{
             ...project,
             landingPageSettings: {

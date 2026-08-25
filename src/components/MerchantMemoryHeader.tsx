@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Zap, Users, Target, ArrowLeftRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { MerchantProfileDrawer } from "./merchant/MerchantProfileDrawer";
 
 interface MerchantMemoryHeaderProps {
@@ -30,12 +30,14 @@ export function MerchantMemoryHeader({
 
   return (
     <>
-      <div className="h-[64px] shrink-0 px-6 flex items-center justify-between bg-surface-1 border-b border-border-default z-10 relative">
-        <div 
-          className="flex items-center gap-3 cursor-pointer group"
+      <div className="h-[60px] shrink-0 px-6 flex items-center justify-between bg-surface-1 border-b border-border-default z-10 relative">
+        <button
+          type="button"
+          className="flex items-center gap-3 cursor-pointer group text-left min-w-0"
           onClick={() => setIsDrawerOpen(true)}
+          title="查看商家资料"
         >
-          <div className="w-8 h-8 bg-btn-main rounded-lg flex items-center justify-center text-white font-bold text-[14px] group-hover:bg-btn-main-hover transition-colors shadow-sm">
+          <div className="w-9 h-9 bg-btn-main rounded-lg flex items-center justify-center text-white font-bold text-[14px] group-hover:bg-btn-main-hover transition-colors shrink-0">
             {onboardingData?.name?.[0] || '特'}
           </div>
           
@@ -49,6 +51,8 @@ export function MerchantMemoryHeader({
             <div className="text-[13px] text-text-tertiary font-medium">
               宠物食品 · 幼犬主粮
             </div>
+
+            <ChevronRight size={14} className="text-text-tertiary group-hover:text-text-secondary transition-colors" />
             
             {isConnectionError && (
               <span className="ml-2 px-2 py-0.5 bg-red-50 text-danger border border-red-100 text-[11px] font-bold rounded-md">
@@ -56,7 +60,7 @@ export function MerchantMemoryHeader({
               </span>
             )}
           </div>
-        </div>
+        </button>
       </div>
       <MerchantProfileDrawer
         isOpen={isDrawerOpen}

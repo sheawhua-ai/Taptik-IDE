@@ -2,13 +2,18 @@ import React, { createContext, useContext, useState, useMemo } from "react";
 import { Project as OldProject, Note as OldNote, NoteIssue as OldNoteIssue } from "../data/projectStore";
 import { 
   Merchant, Project, Round, NoteSlot, ContentDraft, MaterialRequirement, MaterialTask,
-  MaterialAsset, PublishTask, PublishedNote, EvidenceSnapshot, Issue, ActionTask, TimelineEvent,
-  DistributionScheme
+  MaterialAsset, PublishTask, PublishedNote, Issue, ActionTask, TimelineEvent,
+  DistributionScheme, StrategyConfiguration, StrategyVersion, ReviewAdjustmentProposal,
+  NotePerformanceSnapshot, KeywordSearchSnapshot, ProjectMaterialAsset, MaterialRecommendation,
+  NoteMaterialSelection, ConsumerContentPackageClaim, ConsumerExperienceFeedback, ExecutionNavTarget
 } from "../data/unifiedStore";
 import { 
   mockMerchants, mockProjects, mockRounds, mockNoteSlots, mockContentDrafts,
   mockMaterialRequirements, mockMaterialTasks, mockMaterialAssets, mockPublishTasks,
-  mockPublishedNotes, mockIssues, mockActionTasks, mockTimelineEvents
+  mockPublishedNotes, mockIssues, mockActionTasks, mockTimelineEvents, mockStrategyVersions,
+  mockReviewAdjustmentProposals, mockNotePerformanceSnapshots, mockKeywordSearchSnapshots,
+  mockProjectMaterialAssets, mockMaterialRecommendations, mockNoteMaterialSelections,
+  mockConsumerContentPackageClaims, mockConsumerExperienceFeedbacks
 } from "../data/unifiedMockData";
 
 export interface EnrichedActionTask {
@@ -47,6 +52,15 @@ interface UnifiedState {
   materialAssets: MaterialAsset[];
   publishTasks: PublishTask[];
   publishedNotes: PublishedNote[];
+  strategyVersions: StrategyVersion[];
+  reviewAdjustmentProposals: ReviewAdjustmentProposal[];
+  notePerformanceSnapshots: NotePerformanceSnapshot[];
+  keywordSearchSnapshots: KeywordSearchSnapshot[];
+  projectMaterialAssets: ProjectMaterialAsset[];
+  materialRecommendations: MaterialRecommendation[];
+  noteMaterialSelections: NoteMaterialSelection[];
+  consumerContentPackageClaims: ConsumerContentPackageClaim[];
+  consumerExperienceFeedbacks: ConsumerExperienceFeedback[];
   issues: Issue[];
   actionTasks: ActionTask[];
   timelineEvents: TimelineEvent[];
@@ -62,8 +76,9 @@ export interface ProjectContextType {
   // Navigation & Tabs
   activeWorkflowTab: string;
   setActiveWorkflowTab: (tab: string) => void;
-  executionNavTarget: { projectId?: string; taskId?: string } | null;
-  jumpToExecution: (projectId?: string, taskId?: string) => void;
+  executionNavTarget: ExecutionNavTarget | null;
+  jumpToExecution: (projectOrTarget?: string | ExecutionNavTarget, taskId?: string) => void;
+  clearExecutionNavTarget: () => void;
   jumpToProject: (projectId: string) => void;
 
   // Basic generic updates (to be replaced by specific actions)
@@ -115,6 +130,7 @@ export interface ProjectContextType {
   updateLandingPageSettings: (projectId: string, settings: Partial<import("../data/unifiedStore").LandingPageSettings>) => void;
   addConsumerSubmission: (projectId: string, submission: { nickname: string; contentType: string; title: string; body?: string; images: string[]; contact?: string }) => void;
   submitKOCQuestionnaire: (noteSlotId: string, questionnaireData: { petBreed: string; petAge: string; symptom: string; experience: string; storeName?: string }) => void;
+  updateContentPackageFeedback: (noteSlotId: string, questions: Array<{ id: string; title: string; options?: string[] }>) => void;
 
   // New Unified State access
   unifiedState: UnifiedState;
@@ -124,6 +140,7 @@ export interface ProjectContextType {
   resolveActionTask: (taskId: string) => void;
   updateMaterialTaskStatus: (taskId: string, status: MaterialTask['status']) => void;
   updatePublishTaskStatus: (taskId: string, status: PublishTask['status']) => void;
+  createStrategyVersion: (projectId: string, configuration: StrategyConfiguration, changedFields: string[], source?: StrategyVersion['source']) => string;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -140,6 +157,15 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     materialAssets: mockMaterialAssets,
     publishTasks: mockPublishTasks,
     publishedNotes: mockPublishedNotes,
+    strategyVersions: mockStrategyVersions,
+    reviewAdjustmentProposals: mockReviewAdjustmentProposals,
+    notePerformanceSnapshots: mockNotePerformanceSnapshots,
+    keywordSearchSnapshots: mockKeywordSearchSnapshots,
+    projectMaterialAssets: mockProjectMaterialAssets,
+    materialRecommendations: mockMaterialRecommendations,
+    noteMaterialSelections: mockNoteMaterialSelections,
+    consumerContentPackageClaims: mockConsumerContentPackageClaims,
+    consumerExperienceFeedbacks: mockConsumerExperienceFeedbacks,
     issues: mockIssues,
     actionTasks: mockActionTasks,
     timelineEvents: mockTimelineEvents
@@ -147,12 +173,17 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [selectedProjectId, setSelectedProjectId] = useState<string>("p1");
   const [activeWorkflowTab, setActiveWorkflowTab] = useState<string>("projects");
-  const [executionNavTarget, setExecutionNavTarget] = useState<{ projectId?: string; taskId?: string } | null>(null);
+  const [executionNavTarget, setExecutionNavTarget] = useState<ExecutionNavTarget | null>(null);
 
-  const jumpToExecution = (projectId?: string, taskId?: string) => {
-    setExecutionNavTarget({ projectId, taskId });
+  const jumpToExecution = (projectOrTarget?: string | ExecutionNavTarget, taskId?: string) => {
+    const target = typeof projectOrTarget === "string"
+      ? { projectId: projectOrTarget, taskId, source: "project_creation" as const }
+      : (projectOrTarget || {});
+    setExecutionNavTarget(target);
     setActiveWorkflowTab("execution");
   };
+
+  const clearExecutionNavTarget = () => setExecutionNavTarget(null);
 
   const jumpToProject = (projectId: string) => {
     setSelectedProjectId(projectId);
@@ -254,6 +285,30 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const matTask = matReq ? state.materialTasks.find(t => t.requirementId === matReq.id) : undefined;
         const pubTask = state.publishTasks.find(t => t.noteSlotId === slot.id);
         const pubNote = pubTask ? state.publishedNotes.find(pn => pn.publishTaskId === pubTask.id) : undefined;
+        const recommendationRecords = state.materialRecommendations.filter(item => item.noteSlotId === slot.id);
+        const recommendedMaterials = recommendationRecords.flatMap(recommendation => {
+          const asset = state.projectMaterialAssets.find(item => item.id === recommendation.assetId);
+          return asset ? [{
+            id: asset.id,
+            title: asset.title,
+            url: asset.url,
+            matchScore: recommendation.matchScore,
+            reason: recommendation.reason
+          }] : [];
+        });
+        const materialSelection = state.noteMaterialSelections.find(selection => selection.noteSlotId === slot.id);
+        const selectedMaterials = (materialSelection?.selectedAssetIds || []).flatMap(assetId => {
+          const asset = state.projectMaterialAssets.find(item => item.id === assetId);
+          return asset ? [{
+            id: asset.id,
+            title: asset.title,
+            url: asset.url,
+            isCover: materialSelection?.coverAssetId === asset.id
+          }] : [];
+        });
+        const claim = state.consumerContentPackageClaims.find(item => item.generatedNoteSlotId === slot.id);
+        const feedback = claim ? state.consumerExperienceFeedbacks.find(item => item.claimId === claim.id) : undefined;
+        const packageClaimCount = state.consumerContentPackageClaims.filter(item => item.contentPackageNoteSlotId === slot.id).length;
         
         // Find if this note has an issue and an action task
         const associatedIds = [slot.id];
@@ -277,7 +332,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           };
         }
 
-        let materialStatus = "无需素材";
+        let materialStatus = selectedMaterials.length > 0 ? "已齐" : "无需素材";
+        if (recommendedMaterials.length > 0 && selectedMaterials.length === 0) materialStatus = "待收集";
         if (matReq && !matTask) materialStatus = "待收集";
         else if (matTask) {
           if (["待验收", "待提交", "执行中", "已上传", "AI预检"].includes(matTask.status)) materialStatus = "待验收";
@@ -298,6 +354,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           batchName: round?.name || "",
           title: draft?.title || (slot.isNotePackage ? `【笔记包】${slot.contentDirection}` : "未命名笔记"),
           participant: slot.accountName,
+          claimedCount: slot.isNotePackage ? packageClaimCount : undefined,
           type: slot.accountType,
           contentDirection: slot.contentDirection,
           plannedDate: slot.plannedDate,
@@ -307,8 +364,29 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           resultStatus: pubNote ? pubNote.status as any : "未开始观察",
           publishLink: pubTask?.publishUrl,
           body: draft?.body,
+          tags: draft?.tags || [],
           isNotePackage: slot.isNotePackage,
           packageSpec: slot.packageSpec,
+          materialTask: matTask ? {
+            id: matTask.id,
+            reqs: matReq?.reqs || "",
+            status: matTask.status,
+            returnedUrls: state.materialAssets.filter(asset => asset.taskId === matTask.id).map(asset => asset.url)
+          } : undefined,
+          recommendedMaterials,
+          selectedMaterials,
+          consumerQuestionnaire: feedback ? {
+            submittedAt: feedback.submittedAt,
+            sourcePackageName: state.noteSlots.find(item => item.id === feedback.contentPackageNoteSlotId)?.contentDirection,
+            petBreed: feedback.answers.petBreed,
+            petAge: feedback.answers.petAge,
+            symptom: feedback.answers.problem,
+            experience: feedback.answers.experience,
+            claimId: feedback.claimId,
+            contentPackageNoteSlotId: feedback.contentPackageNoteSlotId,
+            strategyVersionId: feedback.strategyVersionId,
+            feedbackVersion: feedback.feedbackVersion
+          } : undefined,
           currentIssue
         };
       });
@@ -382,9 +460,60 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   };
 
+  const createStrategyVersion = (
+    projectId: string,
+    configuration: StrategyConfiguration,
+    changedFields: string[],
+    source: StrategyVersion['source'] = "expert_adjustment"
+  ) => {
+    const newVersionId = `sv_${projectId}_${Date.now()}`;
+    setState(prev => {
+      const projectVersions = prev.strategyVersions.filter(version => version.projectId === projectId);
+      const nextVersion = Math.max(0, ...projectVersions.map(version => version.version)) + 1;
+      const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      const newVersion: StrategyVersion = {
+        id: newVersionId,
+        projectId,
+        version: nextVersion,
+        source,
+        status: "active",
+        configuration,
+        changedFields,
+        createdAt: now,
+        createdBy: source === "review_applied" ? "操盘手确认复盘建议" : "操盘手",
+        effectiveFrom: now
+      };
+
+      return {
+        ...prev,
+        projects: prev.projects.map(project => project.id === projectId
+          ? { ...project, strategyProtocol: configuration }
+          : project
+        ),
+        strategyVersions: [
+          ...prev.strategyVersions.map(version => version.projectId === projectId && version.status === "active"
+            ? { ...version, status: "superseded" as const }
+            : version
+          ),
+          newVersion
+        ],
+        timelineEvents: [{
+          id: `evt-${Date.now()}`,
+          targetId: projectId,
+          actor: "操盘手",
+          action: `创建策略 V${nextVersion}，仅对之后生成的笔记生效`,
+          timestamp: now,
+          isAutomatic: false
+        }, ...prev.timelineEvents]
+      };
+    });
+    return newVersionId;
+  };
+
   // Add single project note
   const createProjectNote = (projectId: string, noteData: { title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => {
     setState(prev => {
+      const activeStrategyVersionId = prev.strategyVersions.find(version => version.projectId === projectId && version.status === "active")?.id;
       const newSlotId = `ns_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
       const newDraftId = `cd_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
       const newPublishId = `pt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
@@ -405,7 +534,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         status: "已确认",
         title: noteData.title,
         body: noteData.body || "已完成初步文案提纲与内容方向确认。",
-        tags: [noteData.contentDirection]
+        tags: [noteData.contentDirection],
+        strategyVersionId: activeStrategyVersionId
       };
 
       const newPublishTask: PublishTask = {
@@ -437,6 +567,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Batch generate project notes from strategy
   const batchGenerateProjectNotes = (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => {
     setState(prev => {
+      const activeStrategyVersionId = prev.strategyVersions.find(version => version.projectId === projectId && version.status === "active")?.id;
       const newSlots: NoteSlot[] = [];
       const newDrafts: ContentDraft[] = [];
       const newPubTasks: PublishTask[] = [];
@@ -459,7 +590,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           status: "已确认",
           title: item.title,
           body: item.body || "基于项目方案AI智能批量排期与方向生成。",
-          tags: [item.contentDirection]
+          tags: [item.contentDirection],
+          strategyVersionId: activeStrategyVersionId
         });
 
         newPubTasks.push({
@@ -639,6 +771,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     matchedAssetsCount?: number;
   }) => {
     const newId = `p_${Date.now()}`;
+    const newStrategyVersionId = `sv_${newId}_v1`;
     const newProject: Project = {
       id: newId,
       merchantId: "m1",
@@ -691,7 +824,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         status: "已确认",
         title: note.title,
         body: note.body || `【目标用户】${note.targetAudience || '幼犬初次换粮宠主'}\n【核心表达】${note.coreExpression || '真实换粮体验解析'}\n【搜索意图】${note.searchIntent || '解决腹泻软便'}\n【所需素材】${(note.requiredMaterials || []).join('、')}`,
-        tags: [note.contentDirection]
+        tags: [note.contentDirection],
+        strategyVersionId: newStrategyVersionId
       });
 
       newPubTasks.push({
@@ -737,6 +871,22 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return {
         ...prev,
         projects: [newProject, ...prev.projects],
+        strategyVersions: [{
+          id: newStrategyVersionId,
+          projectId: newId,
+          version: 1,
+          source: "initial",
+          status: "active",
+          configuration: {
+            ...newProject.strategyProtocol,
+            targetKeywords: newProject.strategyProtocol?.targetKeywords || [],
+            observationDays: newProject.strategyProtocol?.observationDays || 14
+          },
+          changedFields: [],
+          createdAt: newEvent.timestamp,
+          createdBy: "方案生成 Agent",
+          effectiveFrom: newEvent.timestamp
+        }, ...prev.strategyVersions],
         noteSlots: [...prev.noteSlots, ...newSlots],
         contentDrafts: [...prev.contentDrafts, ...newDrafts],
         publishTasks: [...prev.publishTasks, ...newPubTasks],
@@ -753,6 +903,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Create new project
   const addNewProject = (projectData: { name: string; goal: string; status?: "准备中" | "进行中" | "已结束"; startDate?: string; endDate?: string; budget?: string; strategyProtocol?: any; landingPageSettings?: any }) => {
     const newId = `p_${Date.now()}`;
+    const newStrategyVersionId = `sv_${newId}_v1`;
     const newProject: Project = {
       id: newId,
       merchantId: "m1",
@@ -790,6 +941,22 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return {
         ...prev,
         projects: [newProject, ...prev.projects],
+        strategyVersions: [{
+          id: newStrategyVersionId,
+          projectId: newId,
+          version: 1,
+          source: "initial",
+          status: "active",
+          configuration: {
+            ...newProject.strategyProtocol,
+            targetKeywords: newProject.strategyProtocol?.targetKeywords || [],
+            observationDays: newProject.strategyProtocol?.observationDays || 14
+          },
+          changedFields: [],
+          createdAt: newEvent.timestamp,
+          createdBy: "方案生成 Agent",
+          effectiveFrom: newEvent.timestamp
+        }, ...prev.strategyVersions],
         timelineEvents: [newEvent, ...prev.timelineEvents]
       };
     });
@@ -808,7 +975,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return {
         ...prev,
         projects: remainingProjects,
-        noteSlots: prev.noteSlots.filter(s => s.projectId !== projectId)
+        noteSlots: prev.noteSlots.filter(s => s.projectId !== projectId),
+        strategyVersions: prev.strategyVersions.filter(version => version.projectId !== projectId),
+        reviewAdjustmentProposals: prev.reviewAdjustmentProposals.filter(proposal => proposal.projectId !== projectId),
+        keywordSearchSnapshots: prev.keywordSearchSnapshots.filter(snapshot => snapshot.projectId !== projectId)
       };
     });
   };
@@ -836,17 +1006,69 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (draft.noteSlotId === noteId) {
           return {
             ...draft,
+            title: updates.title !== undefined ? updates.title : draft.title,
             body: updates.body !== undefined ? updates.body : (updates.contentPackage?.body !== undefined ? updates.contentPackage.body : draft.body),
+            tags: updates.tags !== undefined ? updates.tags : draft.tags,
+            status: updates.contentStatus !== undefined ? updates.contentStatus as ContentDraft['status'] : draft.status,
             direction: updates.contentDirection !== undefined ? updates.contentDirection : draft.direction,
           };
         }
         return draft;
       });
 
+      const incomingMaterials = updates.selectedMaterials;
+      const updatedProjectMaterialAssets = incomingMaterials
+        ? incomingMaterials.reduce((assets, material) => {
+            if (assets.some(asset => asset.id === material.id)) return assets;
+            return [...assets, {
+              id: material.id,
+              projectId,
+              title: material.title,
+              url: material.url,
+              tags: []
+            }];
+          }, prev.projectMaterialAssets)
+        : prev.projectMaterialAssets;
+      const updatedMaterialSelections = incomingMaterials
+        ? [
+            ...prev.noteMaterialSelections.filter(selection => selection.noteSlotId !== noteId),
+            {
+              noteSlotId: noteId,
+              selectedAssetIds: incomingMaterials.map(material => material.id),
+              coverAssetId: incomingMaterials.find(material => material.isCover)?.id || incomingMaterials[0]?.id,
+              updatedAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+            }
+          ]
+        : prev.noteMaterialSelections;
+
+      const updatedMaterialTasks = updates.materialTask
+        ? prev.materialTasks.map(task => task.id === updates.materialTask?.id
+            ? { ...task, status: updates.materialTask?.status as MaterialTask['status'] }
+            : task)
+        : prev.materialTasks;
+
+      const publishStatus = updates.publishStatus;
+      const updatedPublishTasks = prev.publishTasks.map(task => {
+        if (task.noteSlotId !== noteId) return task;
+        const supportedStatus = publishStatus && [
+          '未安排', '待认领', '准备中', '待发布', '发布中', '已回传链接',
+          '已发布', '系统验证中', '已验证/验证异常', '人工确认', '已关闭'
+        ].includes(publishStatus) ? publishStatus as PublishTask['status'] : task.status;
+        return {
+          ...task,
+          status: supportedStatus,
+          publishUrl: updates.publishLink !== undefined ? updates.publishLink : task.publishUrl
+        };
+      });
+
       return {
         ...prev,
         noteSlots: updatedNoteSlots,
-        contentDrafts: updatedDrafts
+        contentDrafts: updatedDrafts,
+        projectMaterialAssets: updatedProjectMaterialAssets,
+        noteMaterialSelections: updatedMaterialSelections,
+        materialTasks: updatedMaterialTasks,
+        publishTasks: updatedPublishTasks
       };
     });
   };
@@ -866,101 +1088,161 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
   const submitKOCQuestionnaire = (noteSlotId: string, questionnaireData: { petBreed: string; petAge: string; symptom: string; experience: string; storeName?: string }) => {
     setState(prev => {
-      const slot = prev.noteSlots.find(s => s.id === noteSlotId);
-      if (!slot) return prev;
-
-      const updatedNoteSlots = prev.noteSlots.map(s => {
-        if (s.id === noteSlotId) {
-          return {
-            ...s,
-            packageSpec: {
-              guidelines: s.packageSpec?.guidelines || "【笔记包规范】按要求提供体验心量与素材",
-              materialTaskReqs: s.packageSpec?.materialTaskReqs || "【按任务拍摄】拍摄进食视频1条及合影2张",
-              questionnaireStatus: "已填写" as const,
-              questionnaireFields: questionnaireData
-            }
-          };
-        }
-        return s;
-      });
+      const contentPackage = prev.noteSlots.find(s => s.id === noteSlotId);
+      if (!contentPackage) return prev;
+      const nowId = Date.now();
+      const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      const activeStrategyVersion = prev.strategyVersions.find(version => version.projectId === contentPackage.projectId && version.status === "active");
+      const strategyVersionId = activeStrategyVersion?.id || `strategy-${contentPackage.projectId}-current`;
+      const feedbackVersion = contentPackage.packageSpec?.feedbackVersion || 1;
+      const claimId = `claim-${nowId}`;
+      const generatedNoteSlotId = `ns-consumer-${nowId}`;
 
       const generatedTitle = `我家${questionnaireData.petBreed || "幼犬"}${questionnaireData.petAge || ""}换粮记录：从${questionnaireData.symptom || "软便"}到消化吸收好！`;
-      const generatedBody = `【体验官问卷回传笔记】\n` +
+      const generatedBody = `【消费者真实体验反馈生成】\n` +
         `🐾 宠物品种：${questionnaireData.petBreed || "未填写"} (${questionnaireData.petAge || "幼犬"})\n` +
         `换粮前困扰：${questionnaireData.symptom || "经常拉软便"}\n` +
-        `试用心得：${questionnaireData.experience || "按七日换粮法顺利过渡，便便形状非常好"}\n` +
+        `真实体验：${questionnaireData.experience || "按七日换粮法顺利过渡，便便形状更稳定"}\n` +
         `体验领样渠道：${questionnaireData.storeName || "品牌合作体验门店"}\n\n` +
-        `记录一下我家宝子的换粮全过程！严格遵守七日换粮法，肠胃消化吸收特别好，强推给大家！`;
+        `这是我自己的体验过程，变化因狗狗情况而异，我会继续观察。`;
 
-      const existingDraft = prev.contentDrafts.find(d => d.noteSlotId === noteSlotId);
-      let updatedDrafts = prev.contentDrafts;
-      if (existingDraft) {
-        updatedDrafts = prev.contentDrafts.map(d => d.noteSlotId === noteSlotId ? {
-          ...d,
-          status: "已确认" as const,
-          title: generatedTitle,
-          body: generatedBody
-        } : d);
-      } else {
-        updatedDrafts = [
-          ...prev.contentDrafts,
-          {
-            id: `cd-${Date.now()}`,
-            noteSlotId,
-            status: "已确认" as const,
-            title: generatedTitle,
-            body: generatedBody,
-            tags: ["幼犬换粮", "真实体验", "换粮不软便"]
-          }
-        ];
-      }
+      const reqText = contentPackage.packageSpec?.materialTaskReqs || "【按任务拍摄】1. 幼犬进食视频 1条；2. 试用粮合影 2张";
+      const matReqId = `mr-${nowId}`;
+      const matTaskId = `mt-${nowId}`;
 
-      const matReqId = `mr-${Date.now()}`;
-      const matTaskId = `mt-${Date.now()}`;
-      const reqText = slot.packageSpec?.materialTaskReqs || "【按任务拍摄】1. 幼犬进食视频 1条；2. 试用粮合影 2张";
-
-      const updatedMatReqs = [
-        ...prev.materialRequirements.filter(m => m.noteSlotId !== noteSlotId),
-        { id: matReqId, noteSlotId, reqs: reqText }
-      ];
-
-      const updatedMatTasks = [
-        ...prev.materialTasks.filter(t => t.requirementId !== matReqId),
-        {
-          id: matTaskId,
-          requirementId: matReqId,
-          reqs: reqText,
-          usageScenario: "KOC问卷拍摄任务回传",
-          specs: reqText,
-          assignee: slot.accountName || "体验官KOC",
-          status: "待提交" as const,
-          returnedUrls: [
-            "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&auto=format&fit=crop"
-          ]
+      const claim: ConsumerContentPackageClaim = {
+        id: claimId,
+        contentPackageNoteSlotId: noteSlotId,
+        projectId: contentPackage.projectId,
+        consumerName: questionnaireData.petBreed ? `${questionnaireData.petBreed}家长` : "消费者体验官",
+        claimedAt: now,
+        strategyVersionId,
+        feedbackVersion,
+        generatedNoteSlotId,
+        status: "note_generated"
+      };
+      const feedback: ConsumerExperienceFeedback = {
+        id: `feedback-${nowId}`,
+        claimId,
+        contentPackageNoteSlotId: noteSlotId,
+        strategyVersionId,
+        feedbackVersion,
+        submittedAt: now,
+        answers: {
+          petBreed: questionnaireData.petBreed,
+          petAge: questionnaireData.petAge,
+          problem: questionnaireData.symptom,
+          experience: questionnaireData.experience,
+          storeName: questionnaireData.storeName
         }
-      ];
+      };
 
       const newEvent: TimelineEvent = {
-        id: `evt-${Date.now()}`,
-        targetId: noteSlotId,
-        actor: "KOC体验官",
-        action: `提交问卷，即时生成笔记《${generatedTitle}》及按任务拍摄素材需求`,
-        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        id: `evt-${nowId}`,
+        targetId: generatedNoteSlotId,
+        actor: "消费者体验官",
+        action: `领取内容包并提交真实体验反馈，按策略 V${activeStrategyVersion?.version || 1} 生成个人笔记《${generatedTitle}》`,
+        timestamp: now,
         isAutomatic: true
       };
 
       return {
         ...prev,
-        noteSlots: updatedNoteSlots,
-        contentDrafts: updatedDrafts,
-        materialRequirements: updatedMatReqs,
-        materialTasks: updatedMatTasks,
+        noteSlots: [...prev.noteSlots, {
+          id: generatedNoteSlotId,
+          projectId: contentPackage.projectId,
+          roundId: contentPackage.roundId,
+          accountType: "KOC",
+          accountName: claim.consumerName,
+          contentDirection: contentPackage.contentDirection,
+          plannedDate: contentPackage.plannedDate
+        }],
+        contentDrafts: [...prev.contentDrafts, {
+          id: `cd-${nowId}`,
+          noteSlotId: generatedNoteSlotId,
+          status: "待确认",
+          title: generatedTitle,
+          body: generatedBody,
+          tags: ["幼犬换粮", "真实体验", questionnaireData.symptom].filter(Boolean),
+          strategyVersionId
+        }],
+        publishTasks: [...prev.publishTasks, {
+          id: `pt-${nowId}`,
+          noteSlotId: generatedNoteSlotId,
+          assignee: claim.consumerName,
+          status: "未安排"
+        }],
+        materialRequirements: [...prev.materialRequirements, { id: matReqId, noteSlotId: generatedNoteSlotId, reqs: reqText }],
+        materialTasks: [...prev.materialTasks, {
+          id: matTaskId,
+          requirementId: matReqId,
+          assignee: claim.consumerName,
+          status: "待提交"
+        }],
+        consumerContentPackageClaims: [...prev.consumerContentPackageClaims, claim],
+        consumerExperienceFeedbacks: [...prev.consumerExperienceFeedbacks, feedback],
         timelineEvents: [newEvent, ...prev.timelineEvents]
       };
     });
   };
 
-  const updateProject = () => {};
+  const updateContentPackageFeedback = (noteSlotId: string, questions: Array<{ id: string; title: string; options?: string[] }>) => {
+    setState(prev => ({
+      ...prev,
+      noteSlots: prev.noteSlots.map(slot => slot.id === noteSlotId ? {
+        ...slot,
+        packageSpec: {
+          guidelines: slot.packageSpec?.guidelines || "按消费者真实体验生成个人笔记",
+          materialTaskReqs: slot.packageSpec?.materialTaskReqs || "上传真实体验照片",
+          questionnaireStatus: slot.packageSpec?.questionnaireStatus || "待填写",
+          ...slot.packageSpec,
+          feedbackVersion: (slot.packageSpec?.feedbackVersion || 1) + 1,
+          feedbackQuestions: questions.slice(0, 4).map((question, index) => ({
+            id: question.id,
+            prompt: question.title.replace(/^\d+\.\s*/, ''),
+            options: question.options || [],
+            contentField: index === 0 ? "identity" as const : index === questions.length - 1 ? "experience" as const : "problem" as const
+          }))
+        }
+      } : slot),
+      timelineEvents: [{
+        id: `evt-feedback-${Date.now()}`,
+        targetId: noteSlotId,
+        actor: "操盘手",
+        action: "更新内容包体验反馈；新版本只应用于之后领取该内容包的消费者",
+        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        isAutomatic: false
+      }, ...prev.timelineEvents]
+    }));
+  };
+
+  const updateProject = (projectId: string, updates: Partial<OldProject>) => {
+    setState(prev => {
+      const { notes: _notes, operationLogs: _operationLogs, ...projectUpdates } = updates;
+      const nextProjects = prev.projects.map(project =>
+        project.id === projectId
+          ? { ...project, ...(projectUpdates as Partial<Project>) }
+          : project
+      );
+
+      const statusEvent = updates.status
+        ? [{
+            id: `evt-${Date.now()}`,
+            targetId: projectId,
+            actor: "操盘手",
+            action: updates.status === "已结束" ? "归档方案" : `将方案状态更新为：${updates.status}`,
+            timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
+            isAutomatic: false
+          } as TimelineEvent]
+        : [];
+
+      return {
+        ...prev,
+        projects: nextProjects,
+        timelineEvents: [...statusEvent, ...prev.timelineEvents]
+      };
+    });
+  };
   const addProject = () => {};
 
   return (
@@ -974,6 +1256,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setActiveWorkflowTab,
         executionNavTarget,
         jumpToExecution,
+        clearExecutionNavTarget,
         jumpToProject,
         updateNoteStatus,
         updateProject,
@@ -988,11 +1271,13 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateLandingPageSettings,
         addConsumerSubmission,
         submitKOCQuestionnaire,
+        updateContentPackageFeedback,
         unifiedState: state,
         enrichedActionTasks,
         resolveActionTask,
         updateMaterialTaskStatus,
-        updatePublishTaskStatus
+        updatePublishTaskStatus,
+        createStrategyVersion
       }}
     >
       {children}
@@ -1007,4 +1292,3 @@ export function useProjectStore() {
   }
   return context;
 }
-

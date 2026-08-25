@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ArrowLeft, CheckCircle2, AlertCircle, Clock, ExternalLink, 
   Send, User, Tag, Plus, Trash2, RotateCcw, AlertTriangle, 
@@ -12,7 +12,8 @@ import {
   ExecutionTask, MaterialSubItem, SelectionAIProposal, SelectionTargetType, 
   UploadedAsset, LibraryMaterialItem, GeneratedMaterialTask 
 } from './types';
-import { MOCK_LIBRARY_MATERIALS, MOCK_STAFF_MEMBERS } from './materialMockData';
+import { ExecutionAction } from '../../../data/unifiedStore';
+import { getProjectLibraryMaterials, MOCK_STAFF_MEMBERS } from './materialMockData';
 import { ContentAiHub } from './aiPanels/ContentAiHub';
 import { MaterialAiHub } from './aiPanels/MaterialAiHub';
 import { PublishAiHub } from './aiPanels/PublishAiHub';
@@ -25,6 +26,72 @@ interface TaskDetailViewProps {
   onBack: () => void;
   onUpdateTask: (updated: ExecutionTask) => void;
   onNextTask?: () => void;
+  initialAction?: ExecutionAction;
+}
+
+function getDefaultMaterialTasks(projectId: string): GeneratedMaterialTask[] {
+  if (projectId === 'p89') {
+    return [
+      {
+        id: 'gen-task-hotel-1',
+        requirement: '回传宴会厅采光、落地窗与布场全景实拍',
+        assigneeRole: 'KOC体验官',
+        assigneeName: '试菜体验官_晴晴',
+        deadline: '明天 18:00',
+        status: 'pending',
+        selectedForBatch: false,
+        isCustom: false
+      },
+      {
+        id: 'gen-task-hotel-2',
+        requirement: '回传试菜现场主菜、菜单名牌与餐桌细节',
+        assigneeRole: 'KOC体验官',
+        assigneeName: '试菜体验官_晴晴',
+        deadline: '后天 18:00',
+        status: 'pending',
+        selectedForBatch: false,
+        isCustom: false
+      }
+    ];
+  }
+
+  return [
+    {
+      id: 'gen-task-1',
+      requirement: '拍摄幼犬进食场景高清特写（需体现食欲与产品颗粒）',
+      assigneeRole: 'KOC体验官',
+      assigneeName: '小红薯_汪汪队',
+      deadline: '明天 18:00',
+      status: 'pending',
+      selectedForBatch: false,
+      isCustom: false
+    },
+    {
+      id: 'gen-task-2',
+      requirement: '拍摄新旧粮颗粒细节对比图（手持量杯参照）',
+      assigneeRole: '门店KOS',
+      assigneeName: '张店长 (陆家嘴店)',
+      deadline: '今天 22:00',
+      status: 'pending',
+      selectedForBatch: false,
+      isCustom: false
+    }
+  ];
+}
+
+function getInitialMaterialTasks(task: ExecutionTask): GeneratedMaterialTask[] {
+  if (!task.generatedMaterialTasks?.length) return getDefaultMaterialTasks(task.projectId);
+
+  return task.generatedMaterialTasks.map(item => ({
+    id: item.id,
+    requirement: item.requirement,
+    assigneeRole: '执行人',
+    assigneeName: item.assignee,
+    deadline: item.deadline,
+    status: item.status === '已派发' ? 'sent' : 'pending',
+    selectedForBatch: false,
+    isCustom: true
+  }));
 }
 
 export function TaskDetailView({
@@ -33,8 +100,14 @@ export function TaskDetailView({
   onSelectTask,
   onBack,
   onUpdateTask,
-  onNextTask
+  onNextTask,
+  initialAction
 }: TaskDetailViewProps) {
+  const availableLibraryMaterials = useMemo(
+    () => getProjectLibraryMaterials(task.projectId),
+    [task.projectId]
+  );
+
   // Content editing state
   const [draftTitle, setDraftTitle] = useState(task.draftTitle || task.noteTitle || '');
   const [draftBody, setDraftBody] = useState(task.draftBody || '');
@@ -45,37 +118,13 @@ export function TaskDetailView({
 
   // Material Matching & Task Generation State (for Note Confirmation Flow)
   const [selectedCoverUrl, setSelectedCoverUrl] = useState<string>(
-    task.selectedCoverUrl || 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&auto=format&fit=crop'
+    task.selectedCoverUrl || task.selectedMaterialAssets?.[0]?.url || getProjectLibraryMaterials(task.projectId)[0]?.url || ''
   );
   const [selectedMaterialAssets, setSelectedMaterialAssets] = useState<LibraryMaterialItem[]>(
-    task.selectedMaterialAssets || [
-      MOCK_LIBRARY_MATERIALS[0],
-      MOCK_LIBRARY_MATERIALS[2]
-    ]
+    task.selectedMaterialAssets || getProjectLibraryMaterials(task.projectId).slice(0, 2)
   );
   const [generatedMaterialTasks, setGeneratedMaterialTasks] = useState<GeneratedMaterialTask[]>(
-    task.generatedMaterialTasks || [
-      {
-        id: 'gen-task-1',
-        requirement: '拍摄幼犬进食场景高清特写（需体现食欲与产品颗粒）',
-        assigneeRole: 'KOC体验官',
-        assigneeName: '小红薯_汪汪队',
-        deadline: '明天 18:00',
-        status: 'pending',
-        selectedForBatch: false,
-        isCustom: false
-      },
-      {
-        id: 'gen-task-2',
-        requirement: '拍摄新旧粮颗粒细节对比图（手持量杯参照）',
-        assigneeRole: '门店KOS',
-        assigneeName: '张店长 (陆家嘴店)',
-        deadline: '今天 22:00',
-        status: 'pending',
-        selectedForBatch: false,
-        isCustom: false
-      }
-    ]
+    getInitialMaterialTasks(task)
   );
 
   // Material Library Modal & Task Generation Modal State
@@ -120,6 +169,52 @@ export function TaskDetailView({
 
   // Toast feedback
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    // 同一类操作共用一个工作台；切换笔记时必须以新任务的数据重置，
+    // 避免上一篇笔记的文案、素材或弹窗状态残留到下一篇。
+    setDraftTitle(task.draftTitle || task.noteTitle || '');
+    setDraftBody(task.draftBody || '');
+    setTags(task.tags || []);
+    setSelectedTagIndex(null);
+    setNewTagInput('');
+    setShowAddTag(false);
+
+    setSelectedCoverUrl(
+      task.selectedCoverUrl || task.selectedMaterialAssets?.[0]?.url || getProjectLibraryMaterials(task.projectId)[0]?.url || ''
+    );
+    setSelectedMaterialAssets(
+      task.selectedMaterialAssets || getProjectLibraryMaterials(task.projectId).slice(0, 2)
+    );
+    setGeneratedMaterialTasks(
+      getInitialMaterialTasks(task)
+    );
+
+    setShowLibraryModal(false);
+    setMaterialFilterCategory('all');
+    setShowCreateTaskModal(initialAction === 'create_material_task');
+    setNewTaskRequirement('');
+    setShowBatchSendModal(false);
+    setSelectionTarget(
+      initialAction === 'replace_material' || initialAction === 'create_material_task'
+        ? 'material_recommendation'
+        : null
+    );
+    setSelectedTextExcerpt('');
+    setUserAIPrompt('');
+    setIsAIGenerating(false);
+    setActiveAIProposal(null);
+    setReshootTargetItem(null);
+    setReshootInputReason('');
+    setPreviewImageUrl(null);
+    setShowQrModal(false);
+    setQrVerified(false);
+    setShowReassignModal(false);
+    setIsEvidenceOpen(false);
+    setIsStrategyOpen(false);
+    setIsTimelineOpen(false);
+    setFeedbackMessage(null);
+  }, [initialAction, task]);
 
   const showToast = (msg: string) => {
     setFeedbackMessage(msg);
@@ -1640,7 +1735,7 @@ export function TaskDetailView({
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                {MOCK_LIBRARY_MATERIALS.map((item) => {
+                {availableLibraryMaterials.map((item) => {
                   const isSelected = selectedMaterialAssets.some(a => a.id === item.id);
                   const isCover = selectedCoverUrl === item.url;
                   return (

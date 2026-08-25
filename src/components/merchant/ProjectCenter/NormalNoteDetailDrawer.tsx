@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { 
   X, Image as ImageIcon, FileText, Send, Eye, 
@@ -7,37 +7,40 @@ import {
 } from "lucide-react";
 import { Note } from "../../../data/projectStore";
 import { getUnifiedBusinessStatus, getStatusStyleClass } from "../../../utils/noteStatus";
+import { getNotePrimaryAction, getNoteReadiness } from "../../../utils/noteStatus";
+import { ExecutionAction } from "../../../data/unifiedStore";
+import { formatChineseDate } from "../../../utils/formatDate";
 
 interface NormalNoteDetailDrawerProps {
   note: Note;
   projectId?: string;
   onClose: () => void;
-  onOpenExecutionCenter?: () => void;
-  onSelectFromMaterials?: () => void;
-  onTriggerPhotoTask?: () => void;
+  onExecuteAction?: (action: ExecutionAction) => void;
 }
 
 export function NormalNoteDetailDrawer({
   note,
   projectId,
   onClose,
-  onOpenExecutionCenter,
-  onSelectFromMaterials,
-  onTriggerPhotoTask,
+  onExecuteAction,
 }: NormalNoteDetailDrawerProps) {
   const [activeTab, setActiveTab] = useState<"content" | "images" | "publish" | "observe">("content");
 
-  // Editable / manageable image state
-  const defaultImages = [
-    { id: "img_1", url: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop", name: "幼犬换粮吃食封面图" },
-    { id: "img_2", url: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop", name: "狗粮颗粒硬度微距特写" },
-    { id: "img_3", url: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=600&auto=format&fit=crop", name: "成分报告与益生菌说明" },
-  ];
+  const getSelectedImages = () => (note.selectedMaterials || []).map(material => ({
+    id: material.id,
+    url: material.url,
+    name: material.title
+  }));
+  const [images, setImages] = useState(getSelectedImages);
 
-  const [images, setImages] = useState(defaultImages);
+  useEffect(() => {
+    setImages(getSelectedImages());
+  }, [note.id]);
 
   const uStatus = getUnifiedBusinessStatus(note);
   const style = getStatusStyleClass(uStatus);
+  const primaryAction = getNotePrimaryAction(note);
+  const readiness = getNoteReadiness(note);
 
   const moveImage = (index: number, direction: "up" | "down") => {
     const newIdx = direction === "up" ? index - 1 : index + 1;
@@ -86,7 +89,7 @@ export function NormalNoteDetailDrawer({
               <span>·</span>
               <span>类型: <span className="font-medium text-text-secondary">{note.type || "品牌号"}</span></span>
               <span>·</span>
-              <span>计划: {note.plannedDate || "2026-08-15"}</span>
+              <span>发布计划：{formatChineseDate(note.plannedDate) || "排期中"}</span>
             </div>
           </div>
 
@@ -176,8 +179,8 @@ export function NormalNoteDetailDrawer({
                   </div>
 
                   <div className="text-[11px] text-text-tertiary flex items-center justify-between pt-1 border-t border-border-default">
-                    <span>问卷来源: {note.consumerQuestionnaire.sourcePackageName || "换粮体验事实问卷 (标准版)"}</span>
-                    <span>提交时间: {note.consumerQuestionnaire.submittedAt || "2024-03-06 08:30"}</span>
+                    <span>内容包：{note.consumerQuestionnaire.sourcePackageName || "消费者真实体验内容包"} · 反馈 V{note.consumerQuestionnaire.feedbackVersion || 1}</span>
+                    <span>提交时间：{formatChineseDate(note.consumerQuestionnaire.submittedAt, true)}</span>
                   </div>
                 </div>
               )}
@@ -237,17 +240,17 @@ export function NormalNoteDetailDrawer({
 
               {/* Action bar */}
               <div className="flex gap-2">
-                {onSelectFromMaterials && (
+                {onExecuteAction && (
                   <button
-                    onClick={onSelectFromMaterials}
+                    onClick={() => onExecuteAction("replace_material")}
                     className="flex-1 py-2 bg-surface-1 border border-border-default rounded-xl text-[12px] font-medium text-text-secondary hover:bg-surface-2 transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Plus size={13} /> 从素材中心选择
                   </button>
                 )}
-                {onTriggerPhotoTask && (
+                {onExecuteAction && (
                   <button
-                    onClick={onTriggerPhotoTask}
+                    onClick={() => onExecuteAction("create_material_task")}
                     className="flex-1 py-2 bg-surface-1 border border-border-default rounded-xl text-[12px] font-medium text-text-secondary hover:bg-surface-2 transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Camera size={13} /> 发起拍摄任务
@@ -255,8 +258,59 @@ export function NormalNoteDetailDrawer({
                 )}
               </div>
 
+              {note.materialTask?.returnedUrls?.length ? (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[12.5px] font-semibold text-amber-900">素材任务已回传 {note.materialTask.returnedUrls.length} 件</div>
+                    <div className="text-[11.5px] text-amber-800 mt-0.5">验收通过后才会计入当前笔记素材。</div>
+                  </div>
+                  {onExecuteAction && (
+                    <button
+                      onClick={() => onExecuteAction("review_material")}
+                      className="shrink-0 px-3 py-1.5 bg-surface-1 border border-amber-300 rounded-lg text-[12px] font-medium text-amber-900 hover:bg-amber-100"
+                    >
+                      去验收
+                    </button>
+                  )}
+                </div>
+              ) : null}
+
+              {note.recommendedMaterials?.length ? (
+                <div className="rounded-xl border border-border-default bg-surface-1 p-3 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[12.5px] font-semibold text-text-main">项目素材库推荐</div>
+                      <div className="text-[11.5px] text-text-tertiary">推荐不等于已选，需操盘手确认后才会进入笔记。</div>
+                    </div>
+                    {onExecuteAction && (
+                      <button onClick={() => onExecuteAction("replace_material")} className="text-[12px] font-medium text-text-main hover:underline">
+                        去选图
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {note.recommendedMaterials.map(material => (
+                      <div key={material.id} className="flex items-center gap-2 rounded-lg bg-surface-subtle p-2 border border-border-default min-w-0">
+                        <img src={material.url} alt={material.title} className="w-10 h-10 object-cover rounded-md shrink-0" />
+                        <div className="min-w-0">
+                          <div className="text-[11.5px] font-medium text-text-main truncate">{material.title}</div>
+                          <div className="text-[10.5px] text-text-tertiary">匹配 {material.matchScore}%</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
               {/* Image List (Unified hierarchy: 1st is cover) */}
               <div className="space-y-3">
+                {images.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-border-strong bg-surface-subtle px-4 py-6 text-center">
+                    <ImageIcon size={22} className="mx-auto text-text-tertiary mb-2" />
+                    <div className="text-[12.5px] font-medium text-text-main">当前还没有已确认素材</div>
+                    <div className="text-[11.5px] text-text-tertiary mt-1">可从推荐素材中选择，或发起新的拍摄任务。</div>
+                  </div>
+                )}
                 {images.map((img, index) => (
                   <div
                     key={img.id}
@@ -358,9 +412,9 @@ export function NormalNoteDetailDrawer({
                   </a>
                 )}
 
-                {uStatus === "异常" && onOpenExecutionCenter && (
+                {uStatus === "异常" && onExecuteAction && (
                   <button
-                    onClick={onOpenExecutionCenter}
+                    onClick={() => onExecuteAction("handle_publish_error")}
                     className="w-full py-2.5 bg-danger-light text-danger border border-danger-light rounded-xl text-[12.5px] font-medium hover:bg-danger-light transition-colors flex items-center justify-center gap-2"
                   >
                     <AlertCircle size={15} /> 前往执行中心处理异常
@@ -420,14 +474,18 @@ export function NormalNoteDetailDrawer({
         {/* Footer */}
         <div className="p-4 border-t border-border-default bg-surface-1 flex justify-between items-center shrink-0">
           <div className="text-[12px] text-text-tertiary">
-            ID: {note.id || "note_single"}
+            {readiness.readyToPublish ? "标题、正文、标签与素材已完整" : `还缺：${readiness.missing.join("、") || "待确认"}`}
           </div>
-          <button
-            onClick={onClose}
-            className="px-5 py-2 bg-btn-main text-white font-medium text-[13px] rounded-xl hover:bg-btn-main-hover transition-colors"
-          >
-            完成查看
-          </button>
+          <div className="flex items-center gap-2">
+            {primaryAction && onExecuteAction && (
+              <button onClick={() => onExecuteAction(primaryAction.action)} className="px-4 py-2 bg-btn-main text-white font-medium text-[13px] rounded-xl hover:bg-btn-main-hover transition-colors">
+                {primaryAction.label}
+              </button>
+            )}
+            <button onClick={onClose} className="px-4 py-2 border border-border-default bg-surface-1 text-text-secondary font-medium text-[13px] rounded-xl hover:bg-hover-bg transition-colors">
+              关闭
+            </button>
+          </div>
         </div>
       </motion.div>
     </div>

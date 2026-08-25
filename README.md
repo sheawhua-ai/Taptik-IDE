@@ -12,6 +12,19 @@
 
 然后打开 <http://localhost:5173>。
 
+如需脱离当前终端在后台运行：
+
+```powershell
+.\preview-service.ps1 start
+.\preview-service.ps1 status
+.\preview-service.ps1 stop
+```
+
+后台日志保存在 `.tools/preview/`，关闭 Codex 任务不会停止该进程。
+
+项目的 `.codex/hooks.json` 会在 Codex 会话启动或恢复时自动执行 `start`。
+第一次启用或修改 Hook 后，需要在 Codex 中检查并信任该 Hook；服务已运行时不会重复启动。
+
 如果已经安装全局 Node.js，也可以直接运行：
 
 ```powershell

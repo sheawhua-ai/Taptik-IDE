@@ -1,4 +1,5 @@
 import { Note } from "../data/projectStore";
+import { ExecutionAction } from "../data/unifiedStore";
 
 // 13 统一业务状态 (Section 7.1)
 export type UnifiedBusinessStatus =
@@ -28,6 +29,60 @@ export type DisplayStatus =
   | "观察中"
   | "已完成"
   | "内容准备";
+
+export interface NoteReadiness {
+  titleReady: boolean;
+  contentReady: boolean;
+  tagsReady: boolean;
+  materialReady: boolean;
+  readyToPublish: boolean;
+  missing: Array<"标题" | "正文" | "标签" | "素材">;
+}
+
+export function getNoteReadiness(note: Note): NoteReadiness {
+  const titleReady = Boolean(note.title?.trim() && note.title !== "未命名笔记");
+  const contentReady = Boolean(note.body?.trim() && note.contentStatus === "已确认");
+  const tagsReady = Boolean(note.tags && note.tags.length > 0);
+  const materialReady = note.materialStatus === "已齐" || note.materialStatus === "无需素材" || Boolean(note.selectedMaterials?.length);
+  const missing: NoteReadiness["missing"] = [];
+  if (!titleReady) missing.push("标题");
+  if (!contentReady) missing.push("正文");
+  if (!tagsReady) missing.push("标签");
+  if (!materialReady) missing.push("素材");
+  return { titleReady, contentReady, tagsReady, materialReady, readyToPublish: missing.length === 0, missing };
+}
+
+export interface NotePrimaryAction {
+  label: string;
+  action: ExecutionAction;
+  tone: "primary" | "secondary" | "danger";
+}
+
+export function getNotePrimaryAction(note: Note): NotePrimaryAction | null {
+  if (note.isNotePackage) return null;
+  if (note.publishStatus === "发布异常" || note.resultStatus === "数据异常" || note.currentIssue?.type === "blocker") {
+    return { label: "处理异常", action: "handle_publish_error", tone: "danger" };
+  }
+  if (note.publishStatus === "已发布" || note.resultStatus === "观察中" || note.resultStatus === "已完成") {
+    return null;
+  }
+  if (note.contentStatus === "待生成" || note.contentStatus === "待确认" || !note.body || !note.tags?.length) {
+    return { label: "修改内容", action: "edit_content", tone: "primary" };
+  }
+  if (note.materialTask?.status === "待验收") {
+    return { label: "验收素材", action: "review_material", tone: "primary" };
+  }
+  if (note.materialTask && ["待提交", "执行中", "已上传", "AI预检"].includes(note.materialTask.status)) {
+    return { label: "查看素材任务", action: "view_material_task", tone: "secondary" };
+  }
+  if (note.recommendedMaterials?.length) {
+    return { label: note.selectedMaterials?.length ? "换图" : "选图", action: "replace_material", tone: "secondary" };
+  }
+  if (note.materialStatus === "待收集") {
+    return { label: "创建素材任务", action: "create_material_task", tone: "primary" };
+  }
+  return null;
+}
 
 /**
  * 转换为规范的 13 种业务状态之一
@@ -75,6 +130,10 @@ export function getUnifiedBusinessStatus(note: Note): UnifiedBusinessStatus {
 
   // 7. 待发布
   if (note.publishStatus === "待发布") {
+    return "待发布";
+  }
+
+  if (note.publishStatus === "未安排" && getNoteReadiness(note).readyToPublish) {
     return "待发布";
   }
 
@@ -304,4 +363,3 @@ export function getActionTextForIssue(issue: { type: string, message: string } |
 
   return defaultAction;
 }
-

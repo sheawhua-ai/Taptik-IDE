@@ -1,0 +1,19 @@
+{
+  "description": "Start the TAPTIK Vite preview when this workspace opens in Codex.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& (Join-Path (git rev-parse --show-toplevel) 'preview-service.ps1') start\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& (Join-Path (git rev-parse --show-toplevel) 'preview-service.ps1') start\"",
+            "timeout": 30,
+            "statusMessage": "Starting TAPTIK local preview"
+          }
+        ]
+      }
+    ]
+  }
+}

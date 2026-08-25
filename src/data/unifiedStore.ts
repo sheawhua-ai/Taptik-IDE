@@ -56,6 +56,41 @@ export interface Project {
   distributionScheme?: DistributionScheme;
 }
 
+export interface StrategyConfiguration {
+  targetAudience?: string;
+  coreProblem: string;
+  solutionSummary: string;
+  verifyHypothesis: string;
+  continueCondition?: string;
+  stopCondition?: string;
+  targetKeywords: string[];
+  observationDays?: number;
+}
+
+export interface StrategyVersion {
+  id: string;
+  projectId: string;
+  version: number;
+  source: "initial" | "expert_adjustment" | "review_applied";
+  status: "active" | "superseded";
+  configuration: StrategyConfiguration;
+  changedFields: string[];
+  createdAt: string;
+  createdBy: string;
+  effectiveFrom: string;
+}
+
+export interface ReviewAdjustmentProposal {
+  id: string;
+  projectId: string;
+  sourcePublishedNoteIds: string[];
+  summary: string;
+  changedFields: string[];
+  status: "pending" | "applied" | "dismissed";
+  createdAt: string;
+  appliedStrategyVersionId?: string;
+}
+
 export interface Round {
   id: string;
   projectId: string;
@@ -73,6 +108,13 @@ export interface NotePackageSpec {
     experience?: string;
     storeName?: string;
   };
+  feedbackVersion?: number;
+  feedbackQuestions?: Array<{
+    id: string;
+    prompt: string;
+    options: string[];
+    contentField: "identity" | "problem" | "experience";
+  }>;
 }
 
 export interface NoteSlot {
@@ -94,6 +136,8 @@ export interface ContentDraft {
   title: string;
   body: string;
   tags: string[];
+  /** The strategy version is frozen when the note is generated. */
+  strategyVersionId?: string;
 }
 
 export interface MaterialRequirement {
@@ -120,6 +164,73 @@ export interface MaterialAsset {
   aiStatus: string;
 }
 
+export interface ProjectMaterialAsset {
+  id: string;
+  projectId: string;
+  title: string;
+  url: string;
+  tags: string[];
+}
+
+export interface MaterialRecommendation {
+  id: string;
+  noteSlotId: string;
+  assetId: string;
+  matchScore: number;
+  reason: string;
+}
+
+export interface NoteMaterialSelection {
+  noteSlotId: string;
+  selectedAssetIds: string[];
+  coverAssetId?: string;
+  updatedAt: string;
+}
+
+export interface ConsumerContentPackageClaim {
+  id: string;
+  contentPackageNoteSlotId: string;
+  projectId: string;
+  consumerName: string;
+  claimedAt: string;
+  strategyVersionId: string;
+  feedbackVersion: number;
+  generatedNoteSlotId?: string;
+  status: "claimed" | "feedback_submitted" | "note_generated";
+}
+
+export interface ConsumerExperienceFeedback {
+  id: string;
+  claimId: string;
+  contentPackageNoteSlotId: string;
+  strategyVersionId: string;
+  feedbackVersion: number;
+  submittedAt: string;
+  answers: {
+    petBreed?: string;
+    petAge?: string;
+    problem: string;
+    experience: string;
+    storeName?: string;
+  };
+}
+
+export type ExecutionAction =
+  | "edit_content"
+  | "replace_material"
+  | "create_material_task"
+  | "view_material_task"
+  | "review_material"
+  | "handle_publish_error";
+
+export interface ExecutionNavTarget {
+  projectId?: string;
+  taskId?: string;
+  noteId?: string;
+  action?: ExecutionAction;
+  source?: "note_list" | "note_detail" | "project_creation";
+}
+
 export type PublishTaskStatus = "未安排" | "待认领" | "准备中" | "待发布" | "发布中" | "已回传链接" | "已发布" | "系统验证中" | "已验证/验证异常" | "人工确认" | "已关闭";
 export interface PublishTask {
   id: string;
@@ -134,6 +245,8 @@ export interface PublishedNote {
   id: string;
   publishTaskId: string;
   status: PublishedNoteStatus;
+  /** Platform note ID returned after publishing; used to match keyword search results. */
+  platformNoteId?: string;
 }
 
 export interface EvidenceSnapshot {
@@ -141,6 +254,38 @@ export interface EvidenceSnapshot {
   publishedNoteId: string;
   metrics: any;
   captureTime: string;
+}
+
+export interface NotePerformanceSnapshot {
+  id: string;
+  publishedNoteId: string;
+  capturedAt: string;
+  source: string;
+  metrics: {
+    views?: number;
+    likes?: number;
+    collects?: number;
+    comments?: number;
+    shares?: number;
+    effectiveConsultations?: number;
+  };
+}
+
+export interface KeywordSearchResultItem {
+  noteId: string;
+  rank: number;
+  noteTitle?: string;
+  accountName?: string;
+}
+
+export interface KeywordSearchSnapshot {
+  id: string;
+  projectId: string;
+  keyword: string;
+  capturedAt: string;
+  resultLimit: number;
+  source: string;
+  results: KeywordSearchResultItem[];
 }
 
 export interface Issue {

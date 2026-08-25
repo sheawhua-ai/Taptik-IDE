@@ -91,6 +91,16 @@ export const MOCK_LIBRARY_MATERIALS: LibraryMaterialItem[] = [
   }
 ];
 
+/**
+ * 工作台只能展示当前方案的素材。真实接口接入后可直接用 projectId
+ * 作为查询条件；演示数据先在这里做唯一的项目边界映射。
+ */
+export function getProjectLibraryMaterials(projectId?: string): LibraryMaterialItem[] {
+  return projectId === 'p89'
+    ? MOCK_LIBRARY_MATERIALS.filter(item => item.id === 'mat-7' || item.id === 'mat-8')
+    : MOCK_LIBRARY_MATERIALS.filter(item => item.id !== 'mat-7' && item.id !== 'mat-8');
+}
+
 export const MOCK_STAFF_MEMBERS = [
   { id: 'staff_zhang', name: '张店长 (陆家嘴店)', role: '门店KOS / 货架实拍', countPending: 2 },
   { id: 'staff_li', name: '李店长 (静安店)', role: '门店KOS / 备用执行', countPending: 1 },

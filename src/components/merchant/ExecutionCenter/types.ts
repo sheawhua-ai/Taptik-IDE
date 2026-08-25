@@ -1,3 +1,5 @@
+import type { ExecutionAction } from '../../../data/unifiedStore';
+
 // Types for TapTik Execution Center (Operator Workbench Baseline 2.0)
 
 export type ExecutionOperatorCategory = 'all' | 'content' | 'material' | 'publish' | 'anomaly';
@@ -96,6 +98,7 @@ export interface StrategyContext {
 export type AnomalyType = 
   | 'overdue_unclaimed'
   | 'material_reshoot_overdue'
+  | 'publish_overdue'
   | 'unverified_publish_link'
   | 'executor_account_unavailable'
   | 'data_sync_auth_expired'
@@ -114,8 +117,10 @@ export interface ExecutionTask {
   id: string;
   title: string;
   operatorCategory: 'content' | 'material' | 'publish' | 'anomaly';
-  categoryLabel: '笔记确认' | '素材待办' | '发布核销' | '异常处理';
+  categoryLabel: '笔记确认' | '素材待办' | '发布核销' | '发布与回传' | '异常处理';
   status: LegalTaskStatus;
+  /** 操盘手主动从笔记发起的具体操作；普通待办可根据分类推导。 */
+  actionType?: ExecutionAction;
   isAnomaly?: boolean;
   anomalyType?: AnomalyType;
   anomalyReason?: string;
@@ -176,6 +181,9 @@ export interface ExecutionTask {
   
   // Publish details (operatorCategory === 'publish')
   publishType?: '自有员工发布' | 'KOS店长发布' | 'KOC协作发布';
+  publishExecutorType?: '员工发布' | '内容包KOC发布';
+  publishStage?: '待通知' | '待领取' | '待发布' | '已回传' | '识别中' | '观察中';
+  notificationChannel?: string;
   publisherName?: string;
   publishContent?: {
     title: string;
@@ -202,4 +210,3 @@ export interface TaskBatchGroup {
   taskIds: string[];
   primaryActionLabel: string;
 }
-

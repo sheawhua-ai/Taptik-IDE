@@ -2,27 +2,22 @@ import React from "react";
 import { Note } from "../../../data/projectStore";
 import { NotePackageDetailDrawer } from "./NotePackageDetailDrawer";
 import { NormalNoteDetailDrawer } from "./NormalNoteDetailDrawer";
+import { ExecutionAction } from "../../../data/unifiedStore";
 
 interface NoteDetailDrawerProps {
   note: Note;
   projectId?: string;
   onClose: () => void;
-  onActionClick?: () => void;
-  onOpenInExecutionCenter?: () => void;
+  onExecuteAction?: (action: ExecutionAction) => void;
   onEditQuestionnaire?: () => void;
-  onSelectFromMaterials?: () => void;
-  onTriggerPhotoTask?: () => void;
 }
 
 export function NoteDetailDrawer({
   note,
   projectId,
   onClose,
-  onActionClick,
-  onOpenInExecutionCenter,
+  onExecuteAction,
   onEditQuestionnaire,
-  onSelectFromMaterials,
-  onTriggerPhotoTask,
 }: NoteDetailDrawerProps) {
   // Only actual note packages (recruitment pool templates) open the package drawer
   const isPackage = Boolean(note.isNotePackage || note.title?.includes("笔记包"));
@@ -43,9 +38,7 @@ export function NoteDetailDrawer({
       note={note}
       projectId={projectId}
       onClose={onClose}
-      onOpenExecutionCenter={onOpenInExecutionCenter}
-      onSelectFromMaterials={onSelectFromMaterials}
-      onTriggerPhotoTask={onTriggerPhotoTask}
+      onExecuteAction={onExecuteAction}
     />
   );
 }

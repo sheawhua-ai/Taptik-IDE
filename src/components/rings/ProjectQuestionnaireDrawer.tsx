@@ -6,11 +6,12 @@ import {
   FileText
 } from 'lucide-react';
 import { useProjectStore } from '../../context/ProjectContext';
-import { Project } from '../../data/projectStore';
+import { Note, Project } from '../../data/projectStore';
 import { DEFAULT_QUESTIONNAIRE_QUESTIONS, QuestionnaireQuestion } from '../merchant/CreateProjectWorkstation';
 
 interface ProjectQuestionnaireDrawerProps {
   project?: Project;
+  contentPackage?: Note;
   onClose: () => void;
   onSaved?: (updatedQuestions: QuestionnaireQuestion[]) => void;
 }
@@ -69,13 +70,6 @@ function parseRequirementsToQuestions(prompt: string): QuestionnaireQuestion[] {
         isRequired: true,
         options: ["非常爱吃，主动秒光", "正常进食，适口性好", "需要拌粮才吃", "不太适应"]
       },
-      {
-        id: `q_${Date.now()}_5`,
-        title: "5. 您是否愿意向同类宠物家长推荐？",
-        type: "单选",
-        isRequired: false,
-        options: ["强烈推荐", "愿意推荐", "视情况而定"]
-      }
     ];
   }
 
@@ -213,14 +207,23 @@ function parseRequirementsToQuestions(prompt: string): QuestionnaireQuestion[] {
 
 export function ProjectQuestionnaireDrawer({ 
   project: propProject, 
+  contentPackage,
   onClose, 
   onSaved 
 }: ProjectQuestionnaireDrawerProps) {
-  const { currentProject, updateLandingPageSettings } = useProjectStore();
+  const { currentProject, updateLandingPageSettings, updateContentPackageFeedback } = useProjectStore();
   const activeProject = propProject || currentProject;
 
-  const initialQuestions: QuestionnaireQuestion[] = 
-    activeProject?.landingPageSettings?.questionnaireQuestions && 
+  const packageFeedbackQuestions: QuestionnaireQuestion[] = (contentPackage?.packageSpec?.feedbackQuestions || []).map((question, index) => ({
+    id: question.id,
+    title: `${index + 1}. ${question.prompt}`,
+    type: "单选",
+    isRequired: true,
+    options: question.options
+  }));
+  const initialQuestions: QuestionnaireQuestion[] = packageFeedbackQuestions.length > 0
+    ? packageFeedbackQuestions
+    : activeProject?.landingPageSettings?.questionnaireQuestions && 
     activeProject.landingPageSettings.questionnaireQuestions.length > 0
       ? activeProject.landingPageSettings.questionnaireQuestions
       : DEFAULT_QUESTIONNAIRE_QUESTIONS;
@@ -237,10 +240,11 @@ export function ProjectQuestionnaireDrawer({
   const [aiGeneratedQuestions, setAiGeneratedQuestions] = useState<QuestionnaireQuestion[] | null>(null);
 
   const handleAddQuestion = () => {
+    if (questions.length >= 4) return;
     const newId = `q_${Date.now()}`;
     const newQ: QuestionnaireQuestion = {
       id: newId,
-      title: `${questions.length + 1}. 新增体验调研问题`,
+      title: `${questions.length + 1}. 新增体验反馈问题`,
       type: "单选",
       isRequired: true,
       options: ["选项 A", "选项 B", "选项 C"]
@@ -250,7 +254,7 @@ export function ProjectQuestionnaireDrawer({
 
   const handleRemoveQuestion = (id: string) => {
     if (questions.length <= 1) {
-      alert("问卷至少需要保留 1 道题目");
+      alert("体验反馈至少需要保留 1 道题目");
       return;
     }
     setQuestions(questions.filter(q => q.id !== id));
@@ -353,7 +357,9 @@ export function ProjectQuestionnaireDrawer({
   };
 
   const handleSave = () => {
-    if (activeProject) {
+    if (contentPackage) {
+      updateContentPackageFeedback(contentPackage.id, questions);
+    } else if (activeProject) {
       updateLandingPageSettings(activeProject.id, {
         ...(activeProject.landingPageSettings || { loginMode: "无需登录", bannerUrl: "" }),
         hasQuestionnaire: true,
@@ -392,13 +398,13 @@ export function ProjectQuestionnaireDrawer({
             <div>
               <div className="flex items-center gap-2">
                 <Settings2 size={18} className="text-text-main" />
-                <h3 className="text-[16px] font-semibold text-text-main">项目体验问卷配置</h3>
+                <h3 className="text-[16px] font-semibold text-text-main">内容包体验反馈配置</h3>
                 <span className="text-[11.5px] font-normal px-2 py-0.5 rounded bg-surface-subtle border border-border-default text-text-secondary">
                   共 {questions.length} 道题目
                 </span>
               </div>
               <p className="text-[12px] text-text-tertiary mt-1">
-                面向体验官与消费者收集真实体验事实，AI 定向提炼要点生成个性化笔记。
+                领取后约 10 秒完成；反馈与当前内容包及方案版本绑定，只影响该消费者生成的笔记。
               </p>
             </div>
             <button 
@@ -417,8 +423,8 @@ export function ProjectQuestionnaireDrawer({
                   <Sparkles size={14} />
                 </div>
                 <div>
-                  <span className="text-[13px] font-semibold text-text-main">AI 智能生成问卷</span>
-                  <span className="text-[11.5px] text-text-tertiary ml-2">输入调研需求，点击解析自动提炼题干与选项</span>
+                  <span className="text-[13px] font-semibold text-text-main">AI 生成体验反馈项</span>
+                  <span className="text-[11.5px] text-text-tertiary ml-2">建议 3 题，全部使用一键选择</span>
                 </div>
               </div>
               <button
@@ -465,7 +471,7 @@ export function ProjectQuestionnaireDrawer({
                     rows={3}
                     value={aiRequirement}
                     onChange={(e) => setAiRequirement(e.target.value)}
-                    placeholder="请输入问卷调研需求或业务场景，例如：针对3-6个月幼犬初次换粮软便问题，需要收集犬种月龄、换粮天数、便便状态及进食变化..."
+                    placeholder="请输入体验反馈需求，例如：针对幼犬换粮内容包，收集犬种月龄、换粮前困扰和实际变化..."
                     className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-lg text-[12.5px] text-text-main placeholder:text-text-tertiary outline-none focus:border-border-strong font-normal"
                   />
                   <div className="flex items-center justify-between">
@@ -509,7 +515,7 @@ export function ProjectQuestionnaireDrawer({
                           onClick={handleApplyAiReplace}
                           className="px-3 py-1 bg-btn-main hover:bg-btn-main-hover text-white text-[11.5px] font-medium rounded-md transition-colors"
                         >
-                          替换当前问卷
+                          替换当前反馈项
                         </button>
                         <button
                           type="button"
@@ -557,7 +563,7 @@ export function ProjectQuestionnaireDrawer({
           <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-canvas">
             <div className="flex items-center justify-between pb-1">
               <div className="text-[12px] text-text-tertiary">
-                问卷采用单选与多选格式，便于访客在 30 秒内完成答题，保障事实提炼精度。
+                体验反馈采用单选与多选格式，控制在 4 项以内，消费者约 10 秒即可完成。
               </div>
               <button
                 type="button"
@@ -718,7 +724,7 @@ export function ProjectQuestionnaireDrawer({
                     <span>已保存</span>
                   </>
                 ) : (
-                  <span>保存并应用问卷</span>
+                  <span>保存并应用反馈配置</span>
                 )}
               </button>
             </div>

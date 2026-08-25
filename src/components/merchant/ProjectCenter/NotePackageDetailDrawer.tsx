@@ -54,7 +54,7 @@ export function NotePackageDetailDrawer({
             <div className="flex items-center gap-3 text-[12px] text-text-tertiary">
               <span>招募进度: <span className="font-semibold text-text-main tabular-nums">{claimedCount}</span> / <span className="tabular-nums">{totalCount}</span> 人已领取</span>
               <span>·</span>
-              <span>问卷: <span className="font-medium text-emerald-700">{isQuestionnaireEnabled ? "已启用" : "未启用"}</span></span>
+              <span>体验反馈: <span className="font-medium text-emerald-700">{isQuestionnaireEnabled ? "已配置" : "未配置"}</span></span>
             </div>
           </div>
 
@@ -70,7 +70,7 @@ export function NotePackageDetailDrawer({
         <div className="px-5 bg-surface-1 border-b border-border-default flex gap-4 text-[13px] font-medium shrink-0">
           {[
             { id: "reqs", label: "生成要求" },
-            { id: "questionnaire", label: "项目问卷" },
+            { id: "questionnaire", label: "体验反馈" },
             { id: "photos", label: "照片拍摄要求" },
             { id: "publish", label: "发布要求" },
           ].map((tab) => (
@@ -102,7 +102,7 @@ export function NotePackageDetailDrawer({
               <div className="p-3.5 bg-surface-2 rounded-xl border border-border-default text-text-secondary text-[12.5px] leading-relaxed flex items-start gap-2.5">
                 <FileText size={16} className="text-text-secondary shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-text-main font-medium">动态即时生成说明：</strong> 本内容包不是固定模板复制。系统将在每位消费者提交其真实体验问卷后，结合项目方案、商家资料与问卷答案，即时生成其专属的个性化笔记。
+                  <strong className="text-text-main font-medium">动态即时生成说明：</strong> 本内容包不是固定模板复制。消费者领取后提交真实体验反馈，反馈与该内容包及当前方案版本绑定，再生成消费者视角的个人笔记。
                 </div>
               </div>
 
@@ -155,20 +155,20 @@ export function NotePackageDetailDrawer({
             </div>
           )}
 
-          {/* TAB 2: 项目问卷 */}
+          {/* TAB 2: 体验反馈 */}
           {activeTab === "questionnaire" && (
             <div className="space-y-4 text-[13px]">
               <div className="p-3.5 bg-hover-bg/70 rounded-xl border border-border-default text-[12.5px] text-text-secondary leading-relaxed">
-                <strong className="text-text-main font-medium">问卷作用机制：</strong> 项目问卷由项目统一配置。消费者的真实回答将直接决定 AI 生成笔记的以下 6 个关键维度：<strong>笔记角度、语气口吻、消费者人设、体验过程、痛点强弱、推荐态度</strong>。
+                <strong className="text-text-main font-medium">体验反馈作用：</strong> 消费者领取内容包后，用约 10 秒提交真实体验。反馈只影响这位消费者生成的笔记，不会修改内容包本身或其他消费者的内容。
               </div>
 
               <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold text-text-main text-[13.5px]">
-                      换粮体验事实问卷 (标准版)
+                      内容包体验反馈 V{note.packageSpec?.feedbackVersion || 1}
                     </h4>
-                    <span className="text-[11.5px] text-text-tertiary">共 4 题 · 耗时约 1-2 分钟</span>
+                    <span className="text-[11.5px] text-text-tertiary">共 {note.packageSpec?.feedbackQuestions?.length || 3} 题 · 约 10 秒完成</span>
                   </div>
 
                   {onEditQuestionnaire && (
@@ -176,48 +176,23 @@ export function NotePackageDetailDrawer({
                       onClick={onEditQuestionnaire}
                       className="px-3 py-1.5 bg-btn-main text-white rounded-lg text-[12px] font-medium hover:bg-btn-main-hover transition-colors flex items-center gap-1.5"
                     >
-                      <Edit3 size={13} /> 编辑问卷
+                      <Edit3 size={13} /> 编辑体验反馈
                     </button>
                   )}
                 </div>
 
-                {/* Question List */}
+                {/* Feedback question list */}
                 <div className="space-y-2.5 pt-2 border-t border-border-default">
-                  <div className="p-3 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
-                    <div className="font-medium text-text-main text-[12.5px]">
-                      1. 您的宠物当前月龄阶段？ <span className="text-danger">*</span>
+                  {(note.packageSpec?.feedbackQuestions || [
+                    { id: "age", prompt: "狗狗现在多大？", options: ["0-3个月", "3-6个月", "6个月以上"], contentField: "identity" as const },
+                    { id: "problem", prompt: "体验前最困扰什么？", options: ["软便/拉稀", "挑食不爱吃", "泪痕明显"], contentField: "problem" as const },
+                    { id: "experience", prompt: "这次最真实的变化？", options: ["便便更成型", "胃口变好了", "暂时没明显变化"], contentField: "experience" as const }
+                  ]).map((question, index) => (
+                    <div key={question.id} className="p-3 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
+                      <div className="font-medium text-text-main text-[12.5px]">{index + 1}. {question.prompt}</div>
+                      <div className="text-[11.5px] text-text-tertiary pl-3">{question.options.join(" / ")}</div>
                     </div>
-                    <div className="text-[11.5px] text-text-tertiary pl-3">
-                      选项: 0-3个月 / 3-6个月 / 6个月以上
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
-                    <div className="font-medium text-text-main text-[12.5px]">
-                      2. 换粮前最主要的困扰？ <span className="text-danger">*</span>
-                    </div>
-                    <div className="text-[11.5px] text-text-tertiary pl-3">
-                      选项: 软便/拉稀 / 挑食不爱吃 / 泪痕严重 / 太瘦不长肉
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
-                    <div className="font-medium text-text-main text-[12.5px]">
-                      3. 试用本产品的效果与变化？ <span className="text-danger">*</span>
-                    </div>
-                    <div className="text-[11.5px] text-text-tertiary pl-3">
-                      选项: 便便成型正常 / 胃口大开 / 毛发变亮 / 无明显变化
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
-                    <div className="font-medium text-text-main text-[12.5px]">
-                      4. 您愿意向同款铲屎官推荐吗？ <span className="text-danger">*</span>
-                    </div>
-                    <div className="text-[11.5px] text-text-tertiary pl-3">
-                      选项: 一定会 / 可能会 / 视情况而定
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>

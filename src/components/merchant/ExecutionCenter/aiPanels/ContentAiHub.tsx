@@ -6,7 +6,7 @@ import {
 import { 
   ExecutionTask, LibraryMaterialItem, SelectionAIProposal, SelectionTargetType 
 } from '../types';
-import { MOCK_LIBRARY_MATERIALS } from '../materialMockData';
+import { getProjectLibraryMaterials } from '../materialMockData';
 
 interface ContentAiHubProps {
   task: ExecutionTask;
@@ -53,6 +53,7 @@ export function ContentAiHub({
   onOpenCreateTaskModal,
   showToast
 }: ContentAiHubProps) {
+  const projectLibraryMaterials = getProjectLibraryMaterials(task.projectId);
   const [userAIPrompt, setUserAIPrompt] = useState<string>('');
   const [isAIGenerating, setIsAIGenerating] = useState<boolean>(false);
   const [activeAIProposal, setActiveAIProposal] = useState<SelectionAIProposal | null>(null);
@@ -352,7 +353,7 @@ export function ContentAiHub({
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
-                    {MOCK_LIBRARY_MATERIALS.filter(m => m.isRecommendedCover || m.category === '门店实拍' || m.category === '产品特写').slice(0, 4).map((coverItem) => (
+                    {projectLibraryMaterials.filter(m => m.isRecommendedCover || m.category === '门店实拍' || m.category === '产品特写').slice(0, 4).map((coverItem) => (
                       <div
                         key={coverItem.id}
                         onClick={() => handleSelectMaterialCover(coverItem)}
@@ -405,7 +406,7 @@ export function ContentAiHub({
                   </div>
 
                   <div className="space-y-1.5">
-                    {MOCK_LIBRARY_MATERIALS.slice(0, 3).map((item) => {
+                    {projectLibraryMaterials.slice(0, 3).map((item) => {
                       const isSelected = selectedMaterialAssets.some(a => a.id === item.id);
                       return (
                         <div

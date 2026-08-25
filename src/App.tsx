@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ProjectCenter } from "./components/merchant/ProjectCenter";
-import { AccountAssets } from "./components/merchant/AccountAssets";
+import { AccountAssetsV2 } from "./components/merchant/AccountAssetsV2";
 import { BlueOcean } from "./components/merchant/BlueOcean";
 import { SearchKeywordsExplorer } from "./components/merchant/SearchKeywordsExplorer";
 import { TopicStrategy } from "./components/merchant/TopicStrategy";
@@ -524,7 +524,7 @@ export default function App() {
   }, []);
 
   const [workflowTab, setWorkflowTab] = useState<
-    "projects" | "execution" | "review"
+    "projects" | "execution" | "accounts" | "review"
   >("projects");
   const [focusMode, setFocusMode] = useState<
     "normal" | "creation" | "monitoring" | "review"
@@ -683,7 +683,18 @@ export default function App() {
   const [isSettingsPopupOpen, setIsSettingsPopupOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
   const [isChatSpaceExpanded, setIsChatSpaceExpanded] = useState(true);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 1279px)");
+    const syncViewport = () => setIsCompactViewport(media.matches);
+    syncViewport();
+    media.addEventListener("change", syncViewport);
+    return () => media.removeEventListener("change", syncViewport);
+  }, []);
+
+  const isGlobalNavCollapsed = isSidebarCollapsed || isCompactViewport;
   const [isSearchTasksModalOpen, setIsSearchTasksModalOpen] = useState(false);
   const [isTasksFilterDropdownOpen, setIsTasksFilterDropdownOpen] =
     useState(false);
@@ -1052,12 +1063,12 @@ export default function App() {
 
       {/* SaaS Nav Sidebar */}
       <div
-        className={`${isSidebarCollapsed ? "w-[68px]" : "w-[240px]"} transition-all duration-300 bg-sidebar-bg border-r border-border-default flex flex-col shrink-0 h-full relative z-20 overflow-hidden`}
+        className={`${isGlobalNavCollapsed ? "w-[64px]" : "w-[256px]"} transition-[width] duration-200 ease-out bg-sidebar-bg border-r border-border-default flex flex-col shrink-0 h-full relative z-20 overflow-hidden`}
       >
         <div
-          className={`h-14 flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-4"} tracking-tight text-text-main border-b border-transparent shrink-0`}
+          className={`h-14 flex items-center ${isGlobalNavCollapsed ? "justify-center" : "justify-between px-4"} tracking-tight text-text-main border-b border-transparent shrink-0`}
         >
-          {!isSidebarCollapsed && (
+          {!isGlobalNavCollapsed && (
             <div className="flex items-center gap-2">
               <Logo className="w-6 h-6 shadow-sm rounded-[6px]" />
               <h1 className="text-[17px] font-semibold tracking-tight text-text-main uppercase mt-0.5">
@@ -1068,24 +1079,25 @@ export default function App() {
               </span>
             </div>
           )}
-          {isSidebarCollapsed && (
+          {isGlobalNavCollapsed && (
             <Logo className="w-7 h-7 shadow-sm rounded-[6px] mx-auto mt-2" />
           )}
           <div
-            className={`flex items-center text-text-tertiary ${isSidebarCollapsed ? "flex-col gap-2 mt-2" : "gap-1.5"}`}
+            className={`flex items-center text-text-tertiary ${isGlobalNavCollapsed ? "flex-col gap-2 mt-2" : "gap-1.5"}`}
           >
             <button
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
               className="p-1 hover:bg-surface-1 hover:shadow-sm rounded hover:text-text-main transition-all"
-              title={isSidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
+              title={isCompactViewport ? "窄窗口使用图标导航" : isSidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
+              disabled={isCompactViewport}
             >
-              {isSidebarCollapsed ? (
+              {isGlobalNavCollapsed ? (
                 <PanelLeftOpen size={16} />
               ) : (
                 <PanelLeftClose size={16} />
               )}
             </button>
-            {!isSidebarCollapsed && (
+            {!isGlobalNavCollapsed && (
               <>
                 <button
                   className="p-1 hover:bg-surface-1 hover:shadow-sm rounded hover:text-text-main transition-all"
@@ -1180,11 +1192,11 @@ export default function App() {
         <div className="px-3 py-3 cursor-pointer relative shrink-0">
           <button
             onClick={() => setIsProjectSelectorOpen(true)}
-            title={isSidebarCollapsed ? activeProject.name : undefined}
-            className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between px-2.5"} py-2 hover:bg-surface-1 hover:shadow-sm rounded-xl text-sm text-text-main transition-all border border-transparent shadow-[0_2px_8px_rgba(0,0,0,0.02)] bg-surface-1`}
+            title={isGlobalNavCollapsed ? activeProject.name : undefined}
+            className={`w-full flex items-center ${isGlobalNavCollapsed ? "justify-center" : "justify-between px-2.5"} py-2 hover:bg-surface-1 rounded-xl text-sm text-text-main transition-colors border border-transparent bg-surface-1`}
           >
             <div
-              className={`flex items-center gap-3 w-full justify-center ${isSidebarCollapsed ? "" : "xl:justify-start"}`}
+              className={`flex items-center gap-3 w-full justify-center ${isGlobalNavCollapsed ? "" : "justify-start"}`}
             >
               <div
                 className="w-5 h-5 rounded flex items-center justify-center text-[10px] shadow-sm shrink-0"
@@ -1195,13 +1207,13 @@ export default function App() {
               >
                 {activeProject.initial}
               </div>
-              {!isSidebarCollapsed && (
+              {!isGlobalNavCollapsed && (
                 <span className="truncate max-w-[120px] text-[13px] text-text-main">
                   {activeProject.name}
                 </span>
               )}
             </div>
-            {!isSidebarCollapsed && (
+            {!isGlobalNavCollapsed && (
               <div className="flex items-center gap-1.5 min-w-[32px] shrink-0">
                 <span className="text-[10px] text-text-tertiary bg-border-default px-1.5 py-0.5 rounded">
                   ⌘K
@@ -1213,19 +1225,19 @@ export default function App() {
         </div>
 
         <div
-          className={`flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar flex flex-col ${isSidebarCollapsed ? "items-center" : ""}`}
+          className={`flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar flex flex-col ${isGlobalNavCollapsed ? "items-center" : ""}`}
         >
           <button
             onClick={() => setActiveNav("workbench")}
-            title={isSidebarCollapsed ? "新对话" : undefined}
-            className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} relative overflow-hidden rounded-xl transition-all group border border-transparent ${activeNav === "workbench" ? "bg-selected-bg text-text-main" : "hover:bg-hover-bg text-text-secondary"} mb-2`}
+            title={isGlobalNavCollapsed ? "新对话" : undefined}
+            className={`w-full flex items-center gap-3 ${isGlobalNavCollapsed ? "justify-center px-0 h-10 w-10 shrink-0" : "px-3 py-2.5"} relative overflow-hidden rounded-xl transition-colors group border border-transparent ${activeNav === "workbench" ? "bg-selected-bg text-text-main" : "hover:bg-hover-bg text-text-secondary"} mb-2`}
           >
             <div
-              className={`w-5 h-5 flex items-center justify-center bg-slate-800 text-white rounded-[6px] shrink-0 shadow-sm border border-slate-700 ${isSidebarCollapsed ? "mx-auto" : ""}`}
+              className={`w-5 h-5 flex items-center justify-center bg-slate-800 text-white rounded-[6px] shrink-0 border border-slate-700 ${isGlobalNavCollapsed ? "mx-auto" : ""}`}
             >
               <Plus size={14} strokeWidth={3} />
             </div>
-            {!isSidebarCollapsed && (
+            {!isGlobalNavCollapsed && (
               <span className="text-[13px] ">新对话</span>
             )}
           </button>
@@ -1234,8 +1246,8 @@ export default function App() {
             <button
               key={item.id}
               onClick={() => setActiveNav(item.id)}
-              title={isSidebarCollapsed ? item.name : undefined}
-              className={`w-full flex items-center gap-3 ${isSidebarCollapsed ? "justify-center px-0 h-10 w-10 shrink-0 mx-auto" : "px-3 py-2"} relative overflow-hidden rounded-xl transition-all group border border-transparent ${activeNav === item.id ? "bg-selected-bg text-text-main " : "text-text-secondary hover:bg-hover-bg hover:text-text-main "}`}
+              title={isGlobalNavCollapsed ? item.name : undefined}
+              className={`w-full flex items-center gap-3 ${isGlobalNavCollapsed ? "justify-center px-0 h-10 w-10 shrink-0 mx-auto" : "px-3 py-2"} relative overflow-hidden rounded-xl transition-colors group border border-transparent ${activeNav === item.id ? "bg-selected-bg text-text-main " : "text-text-secondary hover:bg-hover-bg hover:text-text-main "}`}
             >
               {activeNav === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-brand-logo rounded-r-full" />}
               <item.icon
@@ -1243,7 +1255,7 @@ export default function App() {
                 strokeWidth={activeNav === item.id ? 2.5 : 2}
                 className={`shrink-0 ${activeNav === item.id ? "text-text-main" : "text-text-tertiary group-hover:text-text-secondary"}`}
               />
-              {!isSidebarCollapsed && (
+              {!isGlobalNavCollapsed && (
                 <span className="text-[13px]">{item.name}</span>
               )}
             </button>
@@ -1252,7 +1264,7 @@ export default function App() {
 
 
           <div className="border-t border-[#e9eaec] mt-6 pt-4 mb-2 w-full px-3">
-            {!isSidebarCollapsed && (
+            {!isGlobalNavCollapsed && (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between group cursor-pointer hover:bg-border-default rounded-md py-1" onClick={() => setIsChatSpaceExpanded(!isChatSpaceExpanded)}>
@@ -1429,17 +1441,17 @@ export default function App() {
         </div>
 
         <div
-          className={`p-3 ${isSidebarCollapsed ? "px-1" : "xl:p-4"} border-t border-border-default flex flex-col gap-1 bg-surface-1 relative z-[60] shrink-0`}
+          className={`p-3 ${isGlobalNavCollapsed ? "px-1" : "p-4"} border-t border-border-default flex flex-col gap-1 bg-surface-1 relative z-[60] shrink-0`}
         >
           <div
-            title={isSidebarCollapsed ? "18616306063" : undefined}
-            className={`flex items-center gap-3 p-1 ${isSidebarCollapsed ? "justify-center" : "xl:px-3"} py-2 cursor-pointer hover:bg-page-bg rounded-xl transition-colors`}
+            title={isGlobalNavCollapsed ? "18616306063" : undefined}
+            className={`flex items-center gap-3 p-1 ${isGlobalNavCollapsed ? "justify-center" : "px-3"} py-2 cursor-pointer hover:bg-page-bg rounded-xl transition-colors`}
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
           >
             <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm overflow-hidden border border-border-default">
               <Logo className="w-full h-full" />
             </div>
-            {!isSidebarCollapsed && (
+            {!isGlobalNavCollapsed && (
               <>
                 <div className="hidden xl:flex flex-1 min-w-0 flex-col">
                   <p className="text-[14px] text-text-main truncate tracking-tight">
@@ -1746,7 +1758,7 @@ export default function App() {
                         onNavigateToExecution={() => setWorkflowTab("execution")}
                       />
                     )}
-                    {workflowTab === "accounts" && <AccountAssets />}
+                    {workflowTab === "accounts" && <AccountAssetsV2 />}
                     {workflowTab === "blueocean" && <BlueOcean />}
                     {workflowTab === "topics" && <TopicStrategy />}
                   </>

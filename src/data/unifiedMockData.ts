@@ -1,6 +1,9 @@
 import {
   Merchant, Project, Round, NoteSlot, ContentDraft, MaterialRequirement, MaterialTask,
-  MaterialAsset, PublishTask, PublishedNote, EvidenceSnapshot, Issue, ActionTask, TimelineEvent
+  MaterialAsset, PublishTask, PublishedNote, Issue, ActionTask, TimelineEvent,
+  StrategyVersion, ReviewAdjustmentProposal, NotePerformanceSnapshot, KeywordSearchSnapshot,
+  ProjectMaterialAsset, MaterialRecommendation, NoteMaterialSelection,
+  ConsumerContentPackageClaim, ConsumerExperienceFeedback
 } from './unifiedStore';
 
 export const mockMerchants: Merchant[] = [{ id: "m1", name: "默认商家" }];
@@ -54,6 +57,58 @@ export const mockProjects: Project[] = [
   }
 ];
 
+export const mockStrategyVersions: StrategyVersion[] = [
+  {
+    id: "sv-p1-v1",
+    projectId: "p1",
+    version: 1,
+    source: "initial",
+    status: "superseded",
+    configuration: {
+      ...mockProjects[0].strategyProtocol,
+      targetKeywords: ["幼犬换粮", "幼犬软便"],
+      observationDays: 14
+    },
+    changedFields: [],
+    createdAt: "2024-03-01 09:30",
+    createdBy: "方案生成 Agent",
+    effectiveFrom: "2024-03-01 09:30"
+  },
+  {
+    id: "sv-p1-v2",
+    projectId: "p1",
+    version: 2,
+    source: "expert_adjustment",
+    status: "active",
+    configuration: {
+      ...mockProjects[0].strategyProtocol,
+      solutionSummary: "KOC真实七日换粮记录 + 店长号专业科普指导 + 评论区私信承接",
+      targetKeywords: ["幼犬换粮软便", "幼犬换粮方法"],
+      observationDays: 14
+    },
+    changedFields: ["内容方法", "目标关键词"],
+    createdAt: "2024-03-03 14:20",
+    createdBy: "操盘手",
+    effectiveFrom: "2024-03-03 14:20"
+  },
+  {
+    id: "sv-p89-v1",
+    projectId: "p89",
+    version: 1,
+    source: "initial",
+    status: "active",
+    configuration: {
+      ...mockProjects[1].strategyProtocol,
+      targetKeywords: ["青岛婚宴酒店", "青岛婚宴场地"],
+      observationDays: 14
+    },
+    changedFields: [],
+    createdAt: "2026-08-01 10:00",
+    createdBy: "方案生成 Agent",
+    effectiveFrom: "2026-08-01 10:00"
+  }
+];
+
 export const mockRounds: Round[] = [{ id: "r1", projectId: "p1", name: "第一批爆发" }];
 
 export const mockNoteSlots: NoteSlot[] = [
@@ -73,7 +128,13 @@ export const mockNoteSlots: NoteSlot[] = [
     packageSpec: {
       guidelines: "【笔记包约束】规定要怎么写：1. 必须说明狗狗品种与月龄；2. 记录从软便到便便成型的7天换粮过程；3. 给出3条换粮避坑建议与真实体验分。",
       materialTaskReqs: "【按任务拍摄】1. 幼犬进食干饭短视频(>10s) 1条；2. 试用粮与狗狗合影 2张。",
-      questionnaireStatus: "待填写"
+      questionnaireStatus: "待填写",
+      feedbackVersion: 2,
+      feedbackQuestions: [
+        { id: "fb-age", prompt: "狗狗现在多大？", options: ["0-3个月", "3-6个月", "6个月以上"], contentField: "identity" },
+        { id: "fb-problem", prompt: "体验前最困扰什么？", options: ["软便/拉稀", "挑食不爱吃", "泪痕明显", "太瘦不长肉"], contentField: "problem" },
+        { id: "fb-result", prompt: "这次最真实的变化？", options: ["便便更成型", "胃口变好了", "状态更稳定", "暂时没明显变化"], contentField: "experience" }
+      ]
     }
   },
   {
@@ -88,16 +149,21 @@ export const mockNoteSlots: NoteSlot[] = [
     packageSpec: {
       guidelines: "【笔记包约束】规定要怎么写：1. 店长视角解答3个新手幼犬换粮禁忌；2. 推荐门店试用装与专利益生菌；3. 结合门店实景照片。",
       materialTaskReqs: "【按任务拍摄】1. 门店货架摆放实拍图 1张；2. 店长工服出镜讲解短视频 1条。",
-      questionnaireStatus: "待填写"
+      questionnaireStatus: "待填写",
+      feedbackVersion: 1,
+      feedbackQuestions: [
+        { id: "fb-store-scene", prompt: "顾客最常咨询哪类问题？", options: ["换粮软便", "挑食", "喂食量", "适口性"], contentField: "problem" },
+        { id: "fb-store-result", prompt: "你观察到的真实反馈？", options: ["过渡更平稳", "接受度更高", "复购咨询增加", "反馈不明显"], contentField: "experience" }
+      ]
     }
   }
 ];
 
 export const mockContentDrafts: ContentDraft[] = [
-  { id: "cd1", noteSlotId: "ns1", status: "待确认", title: "幼犬换粮总是拉肚子？店长教你避坑七日换粮法", body: "今天给各位家长分享幼犬换粮的避坑经验！...可以搭配少量专利益生菌过渡。", tags: ["幼犬换粮", "科学养狗", "宠物店长"] },
-  { id: "cd2", noteSlotId: "ns2", status: "已确认", title: "我家金毛幼犬换粮体验，记录七天变化", body: "...", tags: [] },
-  { id: "cd3", noteSlotId: "ns3", status: "已确认", title: "【官方科普】幼犬肠胃敏感期如何顺利换粮？", body: "...", tags: [] },
-  { id: "cd4", noteSlotId: "ns4", status: "已确认", title: "换粮避坑指南！终于不软便了", body: "...", tags: [] }
+  { id: "cd1", noteSlotId: "ns1", status: "待确认", title: "幼犬换粮总是拉肚子？店长教你避坑七日换粮法", body: "今天给各位家长分享幼犬换粮的避坑经验！...可以搭配少量专利益生菌过渡。", tags: ["幼犬换粮", "科学养狗", "宠物店长"], strategyVersionId: "sv-p1-v2" },
+  { id: "cd2", noteSlotId: "ns2", status: "已确认", title: "我家金毛幼犬换粮体验，记录七天变化", body: "...", tags: [], strategyVersionId: "sv-p1-v1" },
+  { id: "cd3", noteSlotId: "ns3", status: "已确认", title: "【官方科普】幼犬肠胃敏感期如何顺利换粮？", body: "...", tags: [], strategyVersionId: "sv-p1-v1" },
+  { id: "cd4", noteSlotId: "ns4", status: "已确认", title: "换粮避坑指南！终于不软便了", body: "...", tags: [], strategyVersionId: "sv-p1-v2" }
 ];
 
 export const mockMaterialRequirements: MaterialRequirement[] = [
@@ -115,6 +181,48 @@ export const mockMaterialAssets: MaterialAsset[] = [
   { id: "ma1", taskId: "mt1", url: "https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=500&auto=format&fit=crop", type: "image", aiStatus: "AI预检通过" }
 ];
 
+export const mockProjectMaterialAssets: ProjectMaterialAsset[] = [
+  { id: "pa1", projectId: "p1", title: "幼犬进食场景", url: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop", tags: ["幼犬", "进食", "真实场景"] },
+  { id: "pa2", projectId: "p1", title: "狗粮颗粒特写", url: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop", tags: ["狗粮", "产品特写"] },
+  { id: "pa3", projectId: "p1", title: "幼犬生活场景", url: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=600&auto=format&fit=crop", tags: ["幼犬", "生活方式"] }
+];
+
+export const mockMaterialRecommendations: MaterialRecommendation[] = [
+  { id: "rec-ns1-pa1", noteSlotId: "ns1", assetId: "pa1", matchScore: 96, reason: "符合幼犬进食和真实体验场景" },
+  { id: "rec-ns1-pa2", noteSlotId: "ns1", assetId: "pa2", matchScore: 88, reason: "可补充产品颗粒细节" },
+  { id: "rec-ns3-pa2", noteSlotId: "ns3", assetId: "pa2", matchScore: 91, reason: "适合官方科普内容" }
+];
+
+export const mockNoteMaterialSelections: NoteMaterialSelection[] = [
+  { noteSlotId: "ns3", selectedAssetIds: ["pa2", "pa1"], coverAssetId: "pa2", updatedAt: "2024-03-03 11:20" }
+];
+
+export const mockConsumerContentPackageClaims: ConsumerContentPackageClaim[] = [
+  {
+    id: "claim-ns5-001",
+    contentPackageNoteSlotId: "ns5",
+    projectId: "p1",
+    consumerName: "体验官_小满",
+    claimedAt: "2024-03-06 08:28",
+    strategyVersionId: "sv-p1-v2",
+    feedbackVersion: 2,
+    generatedNoteSlotId: "ns2",
+    status: "note_generated"
+  }
+];
+
+export const mockConsumerExperienceFeedbacks: ConsumerExperienceFeedback[] = [
+  {
+    id: "feedback-claim-ns5-001",
+    claimId: "claim-ns5-001",
+    contentPackageNoteSlotId: "ns5",
+    strategyVersionId: "sv-p1-v2",
+    feedbackVersion: 2,
+    submittedAt: "2024-03-06 08:30",
+    answers: { petBreed: "金毛", petAge: "3-6个月", problem: "软便/拉稀", experience: "便便更成型" }
+  }
+];
+
 export const mockPublishTasks: PublishTask[] = [
   { id: "pt1", noteSlotId: "ns1", assignee: "店长号_陆家嘴店", status: "待发布" },
   { id: "pt2", noteSlotId: "ns2", assignee: "小红薯_汪汪队", status: "未安排" },
@@ -123,8 +231,56 @@ export const mockPublishTasks: PublishTask[] = [
 ];
 
 export const mockPublishedNotes: PublishedNote[] = [
-  { id: "pn1", publishTaskId: "pt3", status: "观察中" },
-  { id: "pn2", publishTaskId: "pt4", status: "暂时无法访问" }
+  { id: "pn1", publishTaskId: "pt3", status: "观察中", platformNoteId: "65f123456789a" },
+  { id: "pn2", publishTaskId: "pt4", status: "暂时无法访问", platformNoteId: "65f987654321b" }
+];
+
+export const mockNotePerformanceSnapshots: NotePerformanceSnapshot[] = [
+  {
+    id: "perf-pn1-1",
+    publishedNoteId: "pn1",
+    capturedAt: "2024-03-18 09:00",
+    source: "发布后数据回传接口",
+    metrics: { views: 2860, likes: 126, collects: 84, comments: 21, effectiveConsultations: 12 }
+  }
+];
+
+export const mockKeywordSearchSnapshots: KeywordSearchSnapshot[] = [
+  {
+    id: "search-p1-soft-stool-1",
+    projectId: "p1",
+    keyword: "幼犬换粮软便",
+    capturedAt: "2024-03-18 09:15",
+    resultLimit: 50,
+    source: "关键词搜索接口",
+    results: [
+      { noteId: "65f123456789a", rank: 8, noteTitle: "【官方科普】幼犬肠胃敏感期如何顺利换粮？", accountName: "品牌官方旗舰店" },
+      { noteId: "external-note-1", rank: 12, noteTitle: "幼犬换粮软便怎么办", accountName: "养宠笔记" }
+    ]
+  },
+  {
+    id: "search-p1-method-1",
+    projectId: "p1",
+    keyword: "幼犬换粮方法",
+    capturedAt: "2024-03-18 09:18",
+    resultLimit: 50,
+    source: "关键词搜索接口",
+    results: [
+      { noteId: "65f987654321b", rank: 23, noteTitle: "换粮避坑指南！终于不软便了", accountName: "小红薯_咪咪猫" }
+    ]
+  }
+];
+
+export const mockReviewAdjustmentProposals: ReviewAdjustmentProposal[] = [
+  {
+    id: "review-adjust-p1-1",
+    projectId: "p1",
+    sourcePublishedNoteIds: ["pn1"],
+    summary: "店长号的步骤型科普带来更高质量咨询，建议提高后续店长号内容占比，并强化七日换粮过程证据。",
+    changedFields: ["主体配比", "内容证据要求"],
+    status: "pending",
+    createdAt: "2024-03-18 10:00"
+  }
 ];
 
 export const mockIssues: Issue[] = [

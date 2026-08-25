@@ -368,13 +368,13 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     ]
   },
 
-  // ================= 3. 发布核销 (publish) =================
+  // ================= 3. 发布与回传（正常流程自动进入观察） =================
   {
     id: 'task-p1',
-    title: '发布结果待核销',
+    title: '发布结果自动识别中',
     operatorCategory: 'publish',
-    categoryLabel: '发布核销',
-    status: '待执行',
+    categoryLabel: '发布与回传',
+    status: '执行中',
     isAnomaly: false,
     projectId: 'p1',
     projectName: '幼犬换粮搜索卡位第三轮',
@@ -382,20 +382,20 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     noteTitle: '换粮避坑指南！我家毛孩终于不软便了',
     targetAccount: '体验官_萌宠阿宝',
     accountType: 'KOC',
-    operatorActionSummary: '根据创作者回传的发布链接与截图进行人工核销',
-    reasonForIntervention: '系统暂时无法确认该链接的公开状态，请根据执行者回传的链接或截图进行核销',
-    deadline: '今天 16:00',
-    deadlineLabel: '今日到期',
-    isBlocked: true,
-    isPinned: true,
-    waitingParty: '操盘手',
-    waitingRole: 'operator',
-    isMeWaiting: true,
+    operatorActionSummary: '平台笔记 ID 已回传，正在自动建立观察',
+    reasonForIntervention: '发布信息已齐全，无需操盘手核销',
+    deadline: '无',
+    deadlineLabel: '普通',
+    isBlocked: false,
+    isPinned: false,
+    waitingParty: '发布识别与数据同步引擎',
+    waitingRole: 'system',
+    isMeWaiting: false,
     isTeamExecuting: false,
-    isSystemProcessing: false,
+    isSystemProcessing: true,
     createdAt: '2026-08-21 08:30',
-    primaryActionLabel: '核销发布结果',
-    currentOccurrence: '体验官阿宝已在小红书手动发布笔记并回传了笔记链接与发布截图。系统暂时无法确认该链接的公开状态，请人工核销并归档。',
+    primaryActionLabel: '查看观察进度',
+    currentOccurrence: '体验官已回传笔记链接与平台笔记 ID，系统正在自动建立发布记录并进入数据观察。',
     confirmedFacts: [
       '发布人：阿宝 (合作体验官)',
       '目标账号：体验官_萌宠阿宝 (KOC)',
@@ -403,9 +403,12 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
       '回传截图：已上传 1 张小红书个人主页发布成功截图',
       '回传时间：2026-08-21 08:15'
     ],
-    nextStepAfterAction: '核销通过后，笔记正式归档并接入数据归集流程，系统将开始记录曝光、互动与搜索收录走势。',
+    nextStepAfterAction: '识别完成后自动进入笔记观察，持续回传互动、咨询、搜索收录与排名。',
     publisherName: '阿宝 (合作体验官)',
     publishType: 'KOC协作发布',
+    publishExecutorType: '内容包KOC发布',
+    publishStage: '识别中',
+    notificationChannel: '内容包领取页通知',
     publishContent: {
       title: '换粮避坑指南！我家毛孩终于不软便了',
       body: '换粮第7天打卡！幼犬玻璃胃的姐妹们一定要记住慢换粮法则...',
@@ -421,12 +424,12 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
       publishTime: '2026-08-21 08:15',
       screenshotUrl: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&auto=format&fit=crop',
       notes: '已在小红书按要求发布，截图附在回传凭据中。',
-      unverifiedReason: '系统暂时无法确认该链接的公开状态，请根据执行者回传的链接或截图进行核销。'
+      unverifiedReason: '正在进行公开状态与平台笔记 ID 的自动校验。'
     },
     timelineEvents: [
       { id: 'e1', time: '2026-08-20 18:00', actor: '操盘手', action: '下发手动发布图文包' },
       { id: 'e2', time: '2026-08-21 08:15', actor: '体验官_萌宠阿宝', action: '在小红书App手动发布并回传链接与截图' },
-      { id: 'e3', time: '2026-08-21 08:30', actor: '系统', action: '生成操盘手核销待办' }
+      { id: 'e3', time: '2026-08-21 08:30', actor: '系统', action: '匹配平台笔记 ID，自动进入数据观察' }
     ]
   },
 
@@ -539,6 +542,45 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     ]
   },
   {
+    id: 'task-a4',
+    title: '内容包KOC超过发布排期仍未发布',
+    operatorCategory: 'anomaly',
+    categoryLabel: '异常处理',
+    status: '待执行',
+    isAnomaly: true,
+    anomalyType: 'publish_overdue',
+    anomalyReason: '体验官已领取完整图文包，但超过约定发布时间仍未发布或回传链接',
+    projectId: 'p1',
+    projectName: '幼犬换粮搜索卡位第三轮',
+    noteId: 'ns-c-09',
+    noteTitle: '给金毛宝宝换粮成功！再也不用天天擦屁屁了',
+    targetAccount: '体验官_萌宠阿宝',
+    accountType: 'KOC',
+    operatorActionSummary: '催促发布、调整排期或更换内容包KOC',
+    reasonForIntervention: '原定8月22日20:00前发布，当前已逾期且未收到发布链接，需要操盘手选择处置方式',
+    deadline: '2026-08-22 20:00',
+    deadlineLabel: '已逾期',
+    isBlocked: true,
+    waitingParty: '操盘手',
+    waitingRole: 'operator',
+    isMeWaiting: true,
+    isTeamExecuting: false,
+    isSystemProcessing: false,
+    createdAt: '2026-08-22 20:01',
+    primaryActionLabel: '处理发布逾期',
+    currentOccurrence: '体验官已领取内容包并确认参与，但超过发布排期后仍未发布，也未反馈无法执行的原因。',
+    confirmedFacts: [
+      '图文内容、配图与标签均已准备完整',
+      '体验官已于8月20日15:00领取内容包',
+      '约定发布时间为8月22日20:00，当前未识别到发布笔记'
+    ],
+    nextStepAfterAction: '催促后恢复等待发布；若更换执行人，则重新发送内容包与发布排期。',
+    timelineEvents: [
+      { id: 'e1', time: '2026-08-20 15:00', actor: '体验官_萌宠阿宝', action: '领取完整图文内容包' },
+      { id: 'e2', time: '2026-08-22 20:01', actor: '规则引擎', action: '发布排期逾期，转入异常待办' }
+    ]
+  },
+  {
     id: 'task-a3',
     title: '账号数据同步授权需要更新',
     operatorCategory: 'anomaly',
@@ -604,8 +646,12 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     createdAt: '2026-08-20 15:00',
     primaryActionLabel: '查看进度',
     currentOccurrence: '消费者体验官已领取完整图文物料包，正在小红书自主发布周期内。',
+    publishType: 'KOC协作发布',
+    publishExecutorType: '内容包KOC发布',
+    publishStage: '待发布',
+    notificationChannel: '内容包领取页通知',
     confirmedFacts: ['图文物料已确认', '任务认领时间：2026-08-20 15:00'],
-    nextStepAfterAction: '创作者回传链接后将进入发布核销队列。',
+    nextStepAfterAction: '创作者回传链接后，系统自动匹配平台笔记 ID 并进入数据观察。',
     timelineEvents: [
       { id: 'e1', time: '2026-08-20 15:00', actor: '体验官_萌宠阿宝', action: '认领图文物料包' }
     ]
@@ -643,10 +689,47 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     ]
   },
   {
+    id: 'task-team-publish-employee',
+    title: '店长手动发布任务已通知',
+    operatorCategory: 'publish',
+    categoryLabel: '发布与回传',
+    status: '执行中',
+    isAnomaly: false,
+    projectId: 'p1',
+    projectName: '幼犬换粮搜索卡位第三轮',
+    noteId: 'ns1',
+    noteTitle: '幼犬换粮总是拉肚子？店长教你避坑七日换粮法',
+    targetAccount: '店长号-陆家嘴店',
+    accountType: '店长号/KOS',
+    operatorActionSummary: '店长已收到手动发布任务',
+    reasonForIntervention: '员工正在正常执行，无需操盘手介入',
+    deadline: '2026-08-23 12:00',
+    deadlineLabel: '即将到期',
+    isBlocked: false,
+    waitingParty: '张店长 (陆家嘴店)',
+    waitingRole: 'team',
+    isMeWaiting: false,
+    isTeamExecuting: true,
+    isSystemProcessing: false,
+    createdAt: '2026-08-21 10:10',
+    primaryActionLabel: '查看发布任务',
+    currentOccurrence: '系统已向张店长的员工工作台发送完整图文包和发布排期，等待其在小红书手动发布。',
+    confirmedFacts: ['图文包已锁定', '员工通知已送达', '计划发布：8月23日 12:00'],
+    nextStepAfterAction: '员工完成手动发布后，系统通过账号数据采集识别新笔记并进入观察。',
+    publishType: 'KOS店长发布',
+    publishExecutorType: '员工发布',
+    publishStage: '待发布',
+    notificationChannel: '员工工作台 / H5 任务',
+    publisherName: '张店长 (陆家嘴店)',
+    timelineEvents: [
+      { id: 'e1', time: '2026-08-21 10:10', actor: '系统', action: '按账号发布日历向店长送达手动发布任务' }
+    ]
+  },
+  {
     id: 'task-sys-normal-1',
     title: '官方旗舰店已发布笔记数据归集同步中',
     operatorCategory: 'publish',
-    categoryLabel: '发布核销',
+    categoryLabel: '发布与回传',
     status: '执行中',
     isAnomaly: false,
     projectId: 'p1',
@@ -667,18 +750,22 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     isSystemProcessing: true,
     createdAt: '2026-08-20 12:00',
     primaryActionLabel: '查看数据',
-    currentOccurrence: '笔记已由官方运营在小红书手动发布并核销，系统持续同步前24小时曝光与互动数据。',
-    confirmedFacts: ['已核销入库', '当前曝光量：1,280，互动量：46'],
+    currentOccurrence: '笔记已识别到平台 ID 并进入观察，系统持续同步前24小时曝光与互动数据。',
+    publishType: '自有员工发布',
+    publishExecutorType: '员工发布',
+    publishStage: '观察中',
+    notificationChannel: '员工工作台 / H5 任务',
+    confirmedFacts: ['平台笔记 ID 已匹配', '当前曝光量：1,280，互动量：46'],
     nextStepAfterAction: '数据自动沉淀至复盘归因。',
     timelineEvents: [
-      { id: 'e1', time: '2026-08-20 12:00', actor: '官方运营', action: '小红书发布并核销' }
+      { id: 'e1', time: '2026-08-20 12:00', actor: '系统', action: '识别平台笔记 ID 并启动数据观察' }
     ]
   },
   {
     id: 'task-done-normal-1',
     title: '换粮避坑指南！终于不软便了（已归档）',
     operatorCategory: 'publish',
-    categoryLabel: '发布核销',
+    categoryLabel: '发布与回传',
     status: '已完成',
     isAnomaly: false,
     projectId: 'p1',
@@ -699,11 +786,11 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     isSystemProcessing: false,
     createdAt: '2026-08-18 10:00',
     primaryActionLabel: '查看详情',
-    currentOccurrence: '笔记已由店长发布，操盘手核销通过，物料已归档。',
+    currentOccurrence: '笔记已由店长发布，系统识别平台笔记 ID 后完成归档。',
     confirmedFacts: ['全流程闭环完成'],
     nextStepAfterAction: '已进入长期复盘监控。',
     timelineEvents: [
-      { id: 'e1', time: '2026-08-18 10:00', actor: '操盘手', action: '完成核销与归档' }
+      { id: 'e1', time: '2026-08-18 10:00', actor: '系统', action: '完成发布识别与归档' }
     ]
   }
 ];

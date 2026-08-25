@@ -37,6 +37,13 @@ export interface NotePackageSpec {
     experience?: string;
     storeName?: string;
   };
+  feedbackVersion?: number;
+  feedbackQuestions?: Array<{
+    id: string;
+    prompt: string;
+    options: string[];
+    contentField: "identity" | "problem" | "experience";
+  }>;
 }
 
 export interface ConsumerQuestionnaireAnswer {
@@ -47,6 +54,10 @@ export interface ConsumerQuestionnaireAnswer {
   symptom?: string;
   experience?: string;
   willingnessToRecommend?: string;
+  claimId?: string;
+  contentPackageNoteSlotId?: string;
+  strategyVersionId?: string;
+  feedbackVersion?: number;
   answers?: {
     question: string;
     answer: string;
@@ -73,6 +84,7 @@ export interface Note {
   publishLink?: string;
   publishTime?: string;
   body?: string;
+  tags?: string[];
   isNotePackage?: boolean;
   packageSpec?: NotePackageSpec;
   consumerQuestionnaire?: ConsumerQuestionnaireAnswer;
@@ -89,6 +101,19 @@ export interface Note {
     status: string;
     returnedUrls?: string[];
   };
+  recommendedMaterials?: Array<{
+    id: string;
+    title: string;
+    url: string;
+    matchScore: number;
+    reason: string;
+  }>;
+  selectedMaterials?: Array<{
+    id: string;
+    title: string;
+    url: string;
+    isCover: boolean;
+  }>;
   metrics?: NoteMetrics;
   currentIssue?: NoteIssue;
   logs?: {

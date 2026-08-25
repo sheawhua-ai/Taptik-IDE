@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, Smartphone, CheckCircle2, Upload, 
   Sparkles, Send, Copy, Check, ChevronRight, 
-  FileText, Image as ImageIcon, ExternalLink, RefreshCw, AlertCircle, Award, Gift
+  ExternalLink, RefreshCw, AlertCircle, Award
 } from "lucide-react";
 import { Project } from "../../data/projectStore";
 
@@ -18,11 +18,12 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
   >("claim");
 
   // Questionnaire state
+  const contentPackage = project?.notes?.find(note => note.isNotePackage);
+  const feedbackVersion = contentPackage?.packageSpec?.feedbackVersion || 1;
   const [answers, setAnswers] = useState({
-    petAge: "3-6个月",
-    problem: "软便/拉稀",
-    effect: "便便成型正常",
-    recommend: "一定会推荐"
+    petAge: "",
+    problem: "",
+    effect: ""
   });
 
   // Generated note state
@@ -56,7 +57,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
       } else {
         setTitle(`我家${answers.petAge}金毛换粮测评，终于告别${answers.problem}！`);
         setBody(
-          `真心分享换粮经验！之前因为${answers.problem}天天提心吊胆。\n\n按方法过渡到特唯普幼犬益生菌粮后，${answers.effect}，精神和毛发状态肉眼可见变好！\n\n${answers.recommend}给各位新手铲屎官！\n\n#幼犬换粮 #宠物益生菌 #狗狗软便改善 #养宠日常`
+          `真心分享换粮经验！之前因为${answers.problem}天天提心吊胆。\n\n按方法过渡到特唯普幼犬粮后，我最真实的感受是${answers.effect}。每只狗狗的情况不一样，这是我自己的体验记录，也会继续观察。\n\n#幼犬换粮 #狗狗软便改善 #真实养宠记录 #养宠日常`
         );
       }
       setStep("note_confirm");
@@ -116,7 +117,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
             </div>
             
             <p className="text-[13px] text-text-secondary leading-relaxed">
-              消费者扫描二维码后进入轻量招募落地页。无需理解复杂创作规则，仅通过问卷选择即由 AI 秒级生成个性化笔记。
+              消费者领取内容包后，用约 10 秒提交真实体验反馈。反馈与该内容包、当前方案版本绑定，并据此生成消费者视角的个人笔记。
             </p>
 
             <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-2.5 text-[12.5px]">
@@ -124,11 +125,11 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
               <div className="space-y-2 text-text-secondary">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>极简事实问卷 (仅需3-4题)</span>
+                  <span>3 个真实体验选择（约 10 秒）</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>AI 根据真实回答即时生成专属笔记</span>
+                  <span>反馈绑定内容包与当前方案版本</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
@@ -136,7 +137,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>发布后系统自动识别，奖励秒级到账</span>
+                  <span>内容与素材完整后进入待发笔记池</span>
                 </div>
               </div>
             </div>
@@ -168,42 +169,18 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
               
               {/* STEP 1: 扫码领取落地页 */}
               {step === "claim" && (
-                <div className="space-y-4 pb-20">
-                  <div className="h-44 bg-btn-main relative">
+                <div className="relative min-h-full pb-20 bg-surface-1">
+                  <div className="h-[570px] bg-btn-main relative">
                     <img 
-                      src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop" 
-                      className="w-full h-full object-cover opacity-80" 
-                      alt="banner" 
+                      src={project?.landingPageSettings?.bannerUrl || "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop"}
+                      className="w-full h-full object-cover" 
+                      alt="活动海报" 
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="absolute bottom-3 left-4 right-4 text-white">
-                      <span className="text-[10px] bg-surface-1/20 backdrop-blur-xs px-2 py-0.5 rounded-full font-medium">
-                        特唯普官方招募
-                      </span>
-                      <h2 className="text-[17px] font-extrabold mt-1">幼犬换粮体验官招募计划</h2>
-                    </div>
-                  </div>
-
-                  <div className="px-4 space-y-3">
-                    <div className="bg-surface-1 rounded-xl p-4 border border-border-default shadow-2xs space-y-2.5">
-                      <div className="flex items-center gap-2 font-bold text-[13.5px] text-text-main">
-                        <Gift size={16} className="text-danger" />
-                        参与专属奖励
-                      </div>
-                      <div className="text-[12.5px] text-text-secondary leading-relaxed bg-amber-50/70 p-3 rounded-xl border border-amber-100 font-medium flex items-start gap-2">
-                        <Gift size={15} className="text-amber-600 shrink-0 mt-0.5" />
-                        <div>
-                          完成小红书真实体验分享，立得 <strong>50元宠粮无门槛券</strong> + 幼犬益生菌试用礼包！
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-surface-1 rounded-xl p-4 border border-border-default shadow-2xs space-y-2">
-                      <div className="font-bold text-[13px] text-text-main">参与三步走：</div>
-                      <div className="space-y-1.5 text-[12px] text-text-secondary">
-                        <div className="flex items-center gap-2"><FileText size={14} className="text-text-tertiary" /> 1. 填写4道换粮问卷 (1分钟)</div>
-                        <div className="flex items-center gap-2"><ImageIcon size={14} className="text-text-tertiary" /> 2. 拍1-2张狗狗吃粮照片</div>
-                        <div className="flex items-center gap-2"><Send size={14} className="text-text-tertiary" /> 3. 复制AI生成的专属文案发布</div>
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-4 pb-5 pt-24 text-white">
+                      <div className="text-[10.5px] text-white/80">即将领取</div>
+                      <div className="mt-1 text-[15px] font-bold line-clamp-2">{contentPackage?.title || contentPackage?.contentDirection || "消费者真实体验内容包"}</div>
+                      <div className="mt-1.5 text-[11px] leading-relaxed text-white/80">
+                        领取后提交 3 个真实体验选择，反馈将与内容包绑定并生成你的个人笔记。
                       </div>
                     </div>
                   </div>
@@ -213,23 +190,26 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                       onClick={handleStartQuestionnaire}
                       className="w-full py-3 bg-btn-main text-white font-bold text-[14px] rounded-xl shadow-lg active:scale-95 transition-transform"
                     >
-                      立即免费领取内容包
+                      领取内容包
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* STEP 2: 体验问卷 */}
+              {/* STEP 2: 真实体验反馈 */}
               {step === "questionnaire" && (
                 <div className="p-4 space-y-4 pb-20">
                   <div className="bg-surface-1 rounded-xl p-4 border border-border-default shadow-2xs space-y-1">
-                    <h3 className="font-extrabold text-[15px] text-text-main">真实喂养体验问卷</h3>
-                    <p className="text-[11.5px] text-text-tertiary">AI将根据你的真实情况定制笔记，无需费心构思</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-extrabold text-[15px] text-text-main">真实体验反馈</h3>
+                      <span className="rounded bg-surface-subtle px-2 py-0.5 text-[10px] text-text-tertiary">约 10 秒</span>
+                    </div>
+                    <p className="text-[11.5px] text-text-tertiary">反馈 V{feedbackVersion} · 已绑定当前内容包，仅用于生成你的真实体验笔记</p>
                   </div>
 
                   {/* Q1 */}
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-2">
-                    <div className="text-[12.5px] font-bold text-text-main">1. 狗狗当前月龄？</div>
+                    <div className="text-[12.5px] font-bold text-text-main">1. 狗狗现在多大？</div>
                     <div className="grid grid-cols-3 gap-2 text-[12px]">
                       {["0-3个月", "3-6个月", "6个月以上"].map((item) => (
                         <button
@@ -249,7 +229,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
 
                   {/* Q2 */}
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-2">
-                    <div className="text-[12.5px] font-bold text-text-main">2. 换粮前最主要的困扰？</div>
+                    <div className="text-[12.5px] font-bold text-text-main">2. 体验前最困扰什么？</div>
                     <div className="grid grid-cols-2 gap-2 text-[12px]">
                       {["软便/拉稀", "挑食不爱吃", "泪痕严重", "太瘦不长肉"].map((item) => (
                         <button
@@ -269,9 +249,9 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
 
                   {/* Q3 */}
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-2">
-                    <div className="text-[12.5px] font-bold text-text-main">3. 试用本品后的改善效果？</div>
+                    <div className="text-[12.5px] font-bold text-text-main">3. 这次最真实的变化？</div>
                     <div className="grid grid-cols-2 gap-2 text-[12px]">
-                      {["便便成型正常", "胃口大开", "毛发更亮", "长肉发腮"].map((item) => (
+                      {["便便更成型", "胃口变好了", "状态更稳定", "暂时没明显变化"].map((item) => (
                         <button
                           key={item}
                           onClick={() => setAnswers({ ...answers, effect: item })}
@@ -290,9 +270,10 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                   <div className="fixed bottom-3 left-3 right-3 max-w-[336px] mx-auto z-20">
                     <button
                       onClick={handleSubmitQuestionnaire}
-                      className="w-full py-3 bg-btn-main text-white font-bold text-[14px] rounded-xl shadow-lg active:scale-95 transition-transform"
+                      disabled={!answers.petAge || !answers.problem || !answers.effect}
+                      className="w-full py-3 bg-btn-main text-white font-bold text-[14px] rounded-xl shadow-lg active:scale-95 transition-transform disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      提交并即时生成笔记
+                      生成我的体验笔记
                     </button>
                   </div>
                 </div>
@@ -303,7 +284,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                 <div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-3">
                   <Sparkles size={36} className="text-brand-logo animate-spin" />
                   <h3 className="font-extrabold text-[16px] text-text-main">
-                    AI 正在结合您的问卷生成专属笔记...
+                    AI 正在根据你的真实反馈生成体验笔记...
                   </h3>
                   <p className="text-[12px] text-text-tertiary max-w-[260px]">
                     已提炼：{answers.petAge}幼犬 · 解决{answers.problem}痛点 · 采用真实亲测口吻

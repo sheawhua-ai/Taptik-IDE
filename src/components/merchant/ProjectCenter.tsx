@@ -2,25 +2,28 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, Search, Calendar, AlertTriangle, CheckCircle2, History, 
-  MoreHorizontal, Settings, FileText, Check, ChevronRight, X,
+  MoreHorizontal, FileText, Check, ChevronRight, X,
   ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, 
   BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, 
   PanelLeftClose, PanelLeftOpen, Upload, Target, ShieldAlert, 
-  Layers, Clock, RefreshCw, Users, Eye, ArrowRight, Package, Send,
+  Layers, Clock, Users, Eye, ArrowRight, Package, Send,
   HelpCircle, Image as ImageIcon, Video, Activity
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
 import { Project, Note } from "../../data/projectStore";
+import { KeywordSearchSnapshot } from "../../data/unifiedStore";
 import { 
   calculateProjectPipeline, 
   getUnifiedBusinessStatus, 
   getStatusStyleClass, 
   UnifiedBusinessStatus,
-  getActionTextForIssue
+  getActionTextForIssue,
+  getNotePrimaryAction,
+  getNoteReadiness
 } from "../../utils/noteStatus";
 
 import { NoteDetailDrawer } from "./ProjectCenter/NoteDetailDrawer";
-import { StrategyProtocolDrawer } from "./ProjectCenter/StrategyProtocolDrawer";
+import { StrategyCustomizationDrawer } from "./ProjectCenter/StrategyCustomizationDrawer";
 import { AccountQueueDrawer } from "./ProjectCenter/AccountQueueDrawer";
 import { ProjectQuestionnaireDrawer } from "../rings/ProjectQuestionnaireDrawer";
 import { ContentReviewWorkbench } from "../rings/ContentReviewWorkbench";
@@ -31,6 +34,7 @@ import { LandingPageSettingsModal } from "./LandingPageSettingsModal";
 import { BatchNoteGeneratorModal } from "./BatchNoteGeneratorModal";
 import { AddSingleNoteModal } from "./AddSingleNoteModal";
 import { DispatchMaterialTaskModal } from "./DispatchMaterialTaskModal";
+import { formatChineseDate } from "../../utils/formatDate";
 
 export function ProjectCenter({ 
   setWorkflowTab, 
@@ -46,8 +50,10 @@ export function ProjectCenter({
     selectedProjectId, 
     setSelectedProjectId, 
     currentProject, 
-    enrichedActionTasks,
-    deleteProject
+    updateProject,
+    unifiedState,
+    createStrategyVersion,
+    jumpToExecution
   } = useProjectStore();
 
   // 1. Unified 2 Tabs: 概览, 内容与素材
@@ -60,7 +66,7 @@ export function ProjectCenter({
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("全部");
   const [projectSearchQuery, setProjectSearchQuery] = useState("");
-  const [projectFilterStatus, setProjectFilterStatus] = useState<string>("全部");
+  const [projectFilterStatus, setProjectFilterStatus] = useState<"全部" | "运行中" | "准备中" | "已归档">("全部");
 
   // Expanded accounts in By Account View
   const [expandedAccountIds, setExpandedAccountIds] = useState<Record<string, boolean>>({
@@ -83,9 +89,10 @@ export function ProjectCenter({
     notes: Note[];
   } | null>(null);
 
-  const [showStrategyDrawer, setShowStrategyDrawer] = useState(false);
+  const [showStrategyCustomization, setShowStrategyCustomization] = useState(false);
   const [showLandingPage, setShowLandingPage] = useState(false);
   const [showProjectQuestionnaire, setShowProjectQuestionnaire] = useState(false);
+  const [feedbackContentPackage, setFeedbackContentPackage] = useState<Note | null>(null);
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showOperationLogs, setShowOperationLogs] = useState(false);
@@ -99,23 +106,12 @@ export function ProjectCenter({
   const [isLogsExpanded, setIsLogsExpanded] = useState(false);
 
   // Auto-refresh timestamp
-  const [isRefreshingProgress, setIsRefreshingProgress] = useState(false);
   const [lastUpdatedText, setLastUpdatedText] = useState("刚刚");
   const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<number>(Date.now());
 
   useEffect(() => {
     localStorage.setItem("tap_tik_project_sidebar", JSON.stringify(isSidebarOpen));
   }, [isSidebarOpen]);
-
-  const handleRefreshProgress = () => {
-    if (isRefreshingProgress) return;
-    setIsRefreshingProgress(true);
-    setTimeout(() => {
-      setIsRefreshingProgress(false);
-      setLastUpdatedTimestamp(Date.now());
-      setLastUpdatedText("刚刚");
-    }, 500);
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -148,23 +144,64 @@ export function ProjectCenter({
 
   const pipeline = calculateProjectPipeline(currentProject.notes || []);
 
-  // Filtered projects for sidebar
+  // The plan list represents lifecycle only. Operational exceptions live in Execution Center.
+  const getProjectLifecycleState = (project: Project) => {
+    if (project.status === "已结束") return { label: "已归档", tone: "archived" as const };
+    if (project.status === "准备中") return { label: "准备中", tone: "idle" as const };
+    return { label: "运行中", tone: "running" as const };
+  };
+
   const filteredProjects = projects.filter((p) => {
     if (projectSearchQuery && !p.name.toLowerCase().includes(projectSearchQuery.toLowerCase())) return false;
-    if (projectFilterStatus !== "全部" && p.status !== projectFilterStatus) return false;
+    if (projectFilterStatus === "运行中" && p.status !== "进行中") return false;
+    if (projectFilterStatus === "准备中" && p.status !== "准备中") return false;
+    if (projectFilterStatus === "已归档" && p.status !== "已结束") return false;
     return true;
   });
+  const currentLifecycleState = getProjectLifecycleState(currentProject);
 
-  // Action Tasks for this project
-  const projectPendingTasks = enrichedActionTasks.filter(
-    (t) => t.projectId === currentProject.id && t.status === "pending"
+  const projectStrategyVersions = unifiedState.strategyVersions.filter(version => version.projectId === currentProject.id);
+  const activeStrategyVersion = projectStrategyVersions.find(version => version.status === "active");
+  const activeStrategy = activeStrategyVersion?.configuration || {
+    ...currentProject.strategyProtocol,
+    targetKeywords: currentProject.strategyProtocol?.targetKeywords || [],
+    observationDays: currentProject.strategyProtocol?.observationDays || 14
+  };
+  const projectSlots = unifiedState.noteSlots.filter(slot => slot.projectId === currentProject.id);
+  const projectSlotIds = new Set(projectSlots.map(slot => slot.id));
+  const projectDrafts = unifiedState.contentDrafts.filter(draft => projectSlotIds.has(draft.noteSlotId));
+  const projectPublishTasks = unifiedState.publishTasks.filter(task => projectSlotIds.has(task.noteSlotId));
+  const projectPublishTaskIds = new Set(projectPublishTasks.map(task => task.id));
+  const projectPublishedNotes = unifiedState.publishedNotes.filter(note => projectPublishTaskIds.has(note.publishTaskId));
+  const publishedNoteIds = new Set(projectPublishedNotes.map(note => note.id));
+  const performanceSnapshots = unifiedState.notePerformanceSnapshots.filter(snapshot => publishedNoteIds.has(snapshot.publishedNoteId));
+  const notesWithPerformance = new Set(performanceSnapshots.map(snapshot => snapshot.publishedNoteId));
+  const effectiveConsultations = performanceSnapshots.reduce((sum, snapshot) => sum + (snapshot.metrics.effectiveConsultations || 0), 0);
+  const latestKeywordSnapshots: KeywordSearchSnapshot[] = Array.from(
+    unifiedState.keywordSearchSnapshots
+      .filter(snapshot => snapshot.projectId === currentProject.id)
+      .reduce((latest, snapshot) => {
+        const previous = latest.get(snapshot.keyword);
+        if (!previous || previous.capturedAt < snapshot.capturedAt) latest.set(snapshot.keyword, snapshot);
+        return latest;
+      }, new Map<string, KeywordSearchSnapshot>())
+      .values()
   );
+  const searchableNotes = projectPublishedNotes.filter(note => note.platformNoteId);
+  const searchMatches = searchableNotes.flatMap(note => latestKeywordSnapshots.flatMap(snapshot => {
+    const match = snapshot.results.find(result => result.noteId === note.platformNoteId);
+    return match ? [{ publishedNoteId: note.id, keyword: snapshot.keyword, rank: match.rank, capturedAt: snapshot.capturedAt }] : [];
+  }));
+  const indexedPublishedNoteIds = new Set(searchMatches.map(match => match.publishedNoteId));
+  const bestSearchMatch = [...searchMatches].sort((a, b) => a.rank - b.rank)[0];
+  const latestReviewProposal = unifiedState.reviewAdjustmentProposals
+    .filter(proposal => proposal.projectId === currentProject.id)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+  const futureNoteCount = Math.max(0, projectSlots.length - projectDrafts.length);
 
-  const handleTaskAction = (task: any) => {
-    if (task.impactedStage === "content") setActiveWorkbench("content");
-    else if (task.impactedStage === "assets") setActiveWorkbench("assets");
-    else if (task.impactedStage === "publish") setActiveWorkbench("publish");
-    else setWorkflowTab?.("execution");
+  const openNoteOperation = (note: Note, action: import("../../data/unifiedStore").ExecutionAction, source: "note_list" | "note_detail") => {
+    jumpToExecution({ projectId: currentProject.id, noteId: note.id, action, source });
+    setWorkflowTab?.("execution");
   };
 
   // Notes filtering
@@ -276,11 +313,12 @@ export function ProjectCenter({
         {isSidebarOpen && (
           <motion.div 
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 280, opacity: 1 }}
+            animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden"
           >
-            <div className="p-4 border-b border-border-default space-y-3 w-[280px]">
+            <div className="p-4 border-b border-border-default space-y-3 w-[320px] shrink-0">
               <div className="flex justify-between items-center">
                 <h2 className="text-[15px] font-semibold text-text-main">方案列表</h2>
                 <div className="flex items-center gap-1">
@@ -313,7 +351,7 @@ export function ProjectCenter({
               </div>
 
               <div className="flex gap-1.5 pt-1">
-                {["全部", "进行中", "已结束"].map((status) => (
+                {(["全部", "运行中", "准备中", "已归档"] as const).map((status) => (
                   <button
                     key={status}
                     onClick={() => setProjectFilterStatus(status)}
@@ -329,25 +367,12 @@ export function ProjectCenter({
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto w-[280px]">
+            <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
               {filteredProjects.map((proj) => {
-                const projTasks = enrichedActionTasks.filter(t => t.projectId === proj.id && t.status === "pending");
-                const blockers = projTasks.filter(t => t.severity === "blocker");
-                const errors = projTasks.filter(t => t.actionType === "ResolvePublishError" || t.issueMessage?.includes("异常"));
-                
-                let statusText = "按计划推进";
-                let statusClass = "text-text-tertiary";
-                
-                if (errors.length > 0) {
-                  statusText = `${errors.length}项异常待处理`;
-                  statusClass = "text-danger font-medium";
-                } else if (blockers.length > 0) {
-                  statusText = `${blockers.length}项阻断待处理`;
-                  statusClass = "text-danger font-medium";
-                } else if (projTasks.length > 0) {
-                  statusText = `${projTasks.length}项待办`;
-                  statusClass = "text-text-secondary";
-                }
+                const lifecycleState = getProjectLifecycleState(proj);
+                const version = unifiedState.strategyVersions.find(item => item.projectId === proj.id && item.status === "active");
+                const planNoteCount = unifiedState.noteSlots.filter(slot => slot.projectId === proj.id).length;
+                const statusText = `${planNoteCount} 篇发布计划${version ? ` · 策略 V${version.version}` : ""}`;
 
                 const isSelected = selectedProjectId === proj.id;
 
@@ -355,7 +380,7 @@ export function ProjectCenter({
                   <button
                     key={proj.id}
                     onClick={() => setSelectedProjectId(proj.id)}
-                    className={`w-full text-left p-3.5 transition-all border-b border-border-default relative ${
+                    className={`w-full text-left px-4 py-3.5 transition-colors border-b border-border-subtle relative ${
                       isSelected 
                         ? "bg-surface-subtle" 
                         : "bg-transparent hover:bg-hover-bg text-text-main"
@@ -364,16 +389,31 @@ export function ProjectCenter({
                     {isSelected && (
                       <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-logo" />
                     )}
-                    <div className={`text-[13px] line-clamp-1 mb-1 ${isSelected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>
+                    <div className={`text-[13px] line-clamp-1 ${isSelected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>
                       {proj.name}
                     </div>
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-text-tertiary">{proj.startDate}</span>
-                      <span className={statusClass}>{statusText}</span>
+                    <div className="mt-1 flex items-center gap-1.5 text-[11px] text-text-tertiary tabular-nums">
+                      <span>{formatChineseDate(proj.startDate)}</span>
+                      <span>—</span>
+                      <span>{formatChineseDate(proj.endDate)}</span>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-[11px] min-w-0">
+                      <span className={`shrink-0 rounded-md px-1.5 py-0.5 font-medium ${
+                        lifecycleState.tone === "running" ? "bg-info-light text-info" :
+                        "bg-surface-selected text-text-secondary"
+                      }`}>
+                        {lifecycleState.label}
+                      </span>
+                      <span className="truncate text-text-tertiary" title={statusText}>{statusText}</span>
                     </div>
                   </button>
                 );
               })}
+              {filteredProjects.length === 0 && (
+                <div className="px-5 py-10 text-center text-[12px] text-text-tertiary">
+                  当前筛选下没有方案
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -383,7 +423,7 @@ export function ProjectCenter({
       <div className="flex-1 flex flex-col min-w-0 bg-page-bg overflow-hidden">
         
         {/* Header Bar */}
-        <div className="bg-surface-1 border-b border-border-default shrink-0 px-6 py-3.5 flex items-start justify-between">
+        <div className="bg-surface-1 border-b border-border-default shrink-0 px-6 py-3 flex items-start justify-between">
           <div className="flex items-start gap-3.5">
             {!isSidebarOpen && (
               <button 
@@ -395,30 +435,27 @@ export function ProjectCenter({
               </button>
             )}
             <div>
-              <div className="flex items-center gap-3 mb-1">
+              <div className="flex items-center gap-2.5 mb-1">
                 <h1 className="text-[17px] font-semibold text-text-main">{currentProject.name}</h1>
+                <span className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${
+                  currentLifecycleState.tone === "running" ? "bg-info-light text-info" :
+                  "bg-surface-selected text-text-secondary"
+                }`}>
+                  {currentLifecycleState.label}
+                </span>
               </div>
 
               <div className="flex items-center gap-3 text-[12px] text-text-secondary">
-                <span className="flex items-center gap-1.5"><Calendar size={13} className="text-text-tertiary" /> {currentProject.startDate} 至 {currentProject.endDate}</span>
+                <span className="flex items-center gap-1.5"><Calendar size={13} className="text-text-tertiary" /> {formatChineseDate(currentProject.startDate)} 至 {formatChineseDate(currentProject.endDate)}</span>
                 <span className="text-border-strong">|</span>
-                <span className="truncate max-w-[500px] text-text-tertiary" title={currentProject.goal}>
-                  目标: {currentProject.goal || "验证真实换粮体验与店长专业解释能否提高有效咨询"}
+                <span className="truncate max-w-[min(48vw,680px)] text-text-tertiary" title={currentProject.goal}>
+                  目标：{currentProject.goal || "验证真实换粮体验与店长专业解释能否提高有效咨询"}
                 </span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button 
-              onClick={handleRefreshProgress}
-              disabled={isRefreshingProgress}
-              title="刷新数据"
-              className="w-8 h-8 border border-border-default text-text-secondary hover:text-text-main rounded-lg hover:bg-surface-subtle transition-colors flex items-center justify-center bg-surface-1"
-            >
-              <RefreshCw size={14} className={isRefreshingProgress ? "animate-spin text-text-main" : ""} />
-            </button>
-
             {/* Actions in More Menu */}
             <div className="relative">
               <button 
@@ -434,10 +471,14 @@ export function ProjectCenter({
                   <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1.5 text-[12.5px]">
                     <button 
                       className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium" 
-                      onClick={() => { setShowMoreMenu(false); setShowProjectQuestionnaire(true); }}
+                      onClick={() => {
+                        setShowMoreMenu(false);
+                        setFeedbackContentPackage(allNotes.find(note => note.isNotePackage) || null);
+                        setShowProjectQuestionnaire(true);
+                      }}
                     >
                       <FileText size={14} className="text-text-tertiary" />
-                      <span>问卷配置</span>
+                      <span>内容包体验反馈</span>
                     </button>
                     <button 
                       className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium" 
@@ -502,110 +543,133 @@ export function ProjectCenter({
                 
 
 
-                {/* 1.2 运营策略摘要 */}
-                <div className="bg-surface-1 rounded-xl p-5 border border-border-default space-y-4">
+                {/* 1.1 Current operating logic */}
+                <div className="space-y-4 rounded-xl border border-border-default bg-surface-1 p-5">
                   <div className="flex items-center justify-between border-b border-border-default pb-3">
-                    <h3 className="text-[14px] font-semibold text-text-main flex items-center gap-2">
-                      <Target size={16} className="text-text-secondary" />
-                      运营策略
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setShowStrategyDrawer(true)}
-                        className="px-3 py-1 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1 transition-colors"
-                      >
-                        方案详情 <ChevronRight size={13} />
-                      </button>
-                      <button 
-                        onClick={() => setActiveTab("项目设置")}
-                        className="px-3 py-1 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1 transition-colors"
-                      >
-                        设置编辑 <Settings size={13} />
-                      </button>
+                    <div>
+                      <h3 className="flex items-center gap-2 text-[14px] font-semibold text-text-main">
+                        <Target size={16} className="text-text-secondary" />
+                        当前运营逻辑
+                        <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[11px] font-medium text-text-secondary">
+                          V{activeStrategyVersion?.version || 1}
+                        </span>
+                      </h3>
+                      <div className="mt-1 text-[11px] text-text-tertiary">
+                        {activeStrategyVersion?.source === "expert_adjustment" ? "专家定制版本" : activeStrategyVersion?.source === "review_applied" ? "复盘建议应用版本" : "首次方案生成版本"}
+                        {activeStrategyVersion?.effectiveFrom ? ` · ${formatChineseDate(activeStrategyVersion.effectiveFrom, true)} 起生效` : ""}
+                      </div>
+                    </div>
+                    <button onClick={() => setShowStrategyCustomization(true)} className="rounded-lg bg-btn-main px-3 py-1.5 text-[12px] font-medium text-white hover:bg-btn-main-hover">
+                      专家定制
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 text-[12.5px] md:grid-cols-3">
+                    <div className="space-y-1 rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">核心问题</div>
+                      <div className="font-medium leading-relaxed text-text-main">{activeStrategy.coreProblem || currentProject.goal}</div>
+                    </div>
+                    <div className="space-y-1 rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">内容方法</div>
+                      <div className="font-medium leading-relaxed text-text-main">{activeStrategy.solutionSummary || "尚未配置"}</div>
+                    </div>
+                    <div className="space-y-1 rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">验证目标</div>
+                      <div className="font-medium leading-relaxed text-text-main">{activeStrategy.verifyHypothesis || "尚未配置"}</div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[12.5px]">
-                    <div className="p-3.5 bg-surface-subtle rounded-lg border border-border-default space-y-1">
-                      <div className="text-text-tertiary font-normal text-[11.5px]">核心问题</div>
-                      <div className="font-medium text-text-main leading-relaxed">
-                        {currentProject.strategyProtocol?.coreProblem || currentProject.goal || "解决幼犬换粮软便挑食顾虑，建立搜索词拦截卡位"}
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border border-border-default px-3.5 py-3 text-[11.5px]">
+                    <span className="text-text-tertiary">发布计划结构</span>
+                    {(["品牌主号", "店长号/KOS", "KOC"] as const).map(accountType => (
+                      <span key={accountType} className="text-text-secondary">
+                        {accountType} <strong className="font-semibold text-text-main">{projectSlots.filter(slot => slot.accountType === accountType).length}</strong>
+                      </span>
+                    ))}
+                    <span className="text-text-secondary">待生成 <strong className="font-semibold text-text-main">{futureNoteCount}</strong></span>
+                    <span className="ml-auto text-text-tertiary">之后生成的笔记使用 V{activeStrategyVersion?.version || 1}</span>
+                  </div>
+                </div>
+
+                {/* 1.2 Post-publish feedback */}
+                <div className="space-y-4 rounded-xl border border-border-default bg-surface-1 p-5">
+                  <div className="flex items-center justify-between border-b border-border-default pb-3">
+                    <div>
+                      <h3 className="flex items-center gap-2 text-[14px] font-semibold text-text-main">
+                        <BarChart2 size={16} className="text-text-secondary" />
+                        发布后数据回传
+                      </h3>
+                      <p className="mt-1 text-[11px] text-text-tertiary">只展示已经由接口回传的数据，不以计划值代替结果。</p>
+                    </div>
+                    {latestKeywordSnapshots[0] && <span className="text-[11px] text-text-tertiary">搜索快照：{formatChineseDate(latestKeywordSnapshots[0].capturedAt, true)}</span>}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                    <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">已发布笔记</div>
+                      <div className="mt-1 text-[20px] font-semibold tabular-nums text-text-main">{projectPublishedNotes.length} 篇</div>
+                      <div className="mt-0.5 text-[11px] text-text-tertiary">已取得平台 ID {searchableNotes.length} 篇</div>
+                    </div>
+                    <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">笔记数据回传</div>
+                      <div className="mt-1 text-[20px] font-semibold tabular-nums text-text-main">{notesWithPerformance.size}/{projectPublishedNotes.length}</div>
+                      <div className="mt-0.5 text-[11px] text-text-tertiary">互动与咨询数据</div>
+                    </div>
+                    <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">有效咨询</div>
+                      <div className={`mt-1 text-[20px] font-semibold tabular-nums ${notesWithPerformance.size ? "text-emerald-700" : "text-text-tertiary"}`}>
+                        {notesWithPerformance.size ? `${effectiveConsultations} 条` : "待回传"}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-text-tertiary">属于发布后的笔记数据</div>
+                    </div>
+                    <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div className="text-[11.5px] text-text-tertiary">关键词收录与排名</div>
+                      <div className="mt-1 text-[20px] font-semibold tabular-nums text-text-main">
+                        {latestKeywordSnapshots.length === 0 ? "待采集" : `${indexedPublishedNoteIds.size}/${searchableNotes.length} 篇`}
+                      </div>
+                      <div className="mt-0.5 truncate text-[11px] text-text-tertiary" title={bestSearchMatch?.keyword}>
+                        {bestSearchMatch ? `最佳第 ${bestSearchMatch.rank} 位 · ${bestSearchMatch.keyword}` : searchableNotes.length ? "本次搜索结果未匹配到笔记 ID" : "发布并取得笔记 ID 后开始搜索"}
                       </div>
                     </div>
+                  </div>
 
-                    <div className="p-3.5 bg-surface-subtle rounded-lg border border-border-default space-y-1">
-                      <div className="text-text-tertiary font-normal text-[11.5px]">内容方法</div>
-                      <div className="font-medium text-text-main leading-relaxed">
-                        {currentProject.strategyProtocol?.solutionSummary || "店长专业科普 + 消费者真实体验 + 动态问卷笔记包"}
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 bg-surface-subtle rounded-lg border border-border-default space-y-1">
-                      <div className="text-text-tertiary font-normal text-[11.5px]">核心策略与主体结构</div>
-                      <div className="font-medium text-text-main leading-relaxed">
-                        {currentProject.strategyProtocol?.verifyHypothesis || "品牌官方号 (2) + 店长号 (5) + KOC笔记包 (10-13) · 观察14天"}
+                  <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5 text-[12px] text-text-secondary">
+                    <div className="flex items-start gap-2">
+                      <Search size={15} className="mt-0.5 shrink-0 text-text-tertiary" />
+                      <div className="leading-relaxed">
+                        <span className="font-medium text-text-main">收录判断：</span>
+                        调用关键词搜索接口获取结果列表，以平台笔记 ID 匹配；匹配成功即记录该关键词下已收录及所在名次。当前配置关键词：
+                        {activeStrategy.targetKeywords?.length ? activeStrategy.targetKeywords.join("、") : "尚未配置"}。
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 1.3 运营指标与复盘 */}
-                <div className="bg-surface-1 rounded-xl p-5 border border-border-default space-y-4">
-                  <div className="flex items-center justify-between border-b border-border-default pb-3">
-                    <div className="flex items-center gap-2">
-                      <BarChart2 size={16} className="text-text-secondary" />
-                      <h3 className="text-[14px] font-semibold text-text-main">运营指标与复盘</h3>
-                    </div>
+                {/* 1.3 Strategy evolution */}
+                <div className="space-y-3 rounded-xl border border-border-default bg-surface-1 p-5">
+                  <div className="flex items-center gap-2 border-b border-border-default pb-3">
+                    <Lightbulb size={16} className="text-text-secondary" />
+                    <h3 className="text-[14px] font-semibold text-text-main">复盘如何影响方案</h3>
                   </div>
-
-                  {/* 4 Core Metrics */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="bg-surface-subtle rounded-lg p-3.5 border border-border-default">
-                      <div className="text-[11.5px] text-text-tertiary font-normal">已发布笔记</div>
-                      <div className="text-[20px] font-semibold text-text-main mt-1 tabular-nums">6 篇</div>
-                      <div className="text-[11px] text-text-tertiary mt-0.5">观察中 3 篇 · 已完成 3 篇</div>
-                    </div>
-
-                    <div className="bg-surface-subtle rounded-lg p-3.5 border border-border-default">
-                      <div className="text-[11.5px] text-text-tertiary font-normal">有效咨询总数</div>
-                      <div className="text-[20px] font-semibold text-emerald-700 mt-1 tabular-nums">45 条</div>
-                      <div className="text-[11px] text-text-tertiary mt-0.5">目标完成度 90%</div>
-                    </div>
-
-                    <div className="bg-surface-subtle rounded-lg p-3.5 border border-border-default">
-                      <div className="text-[11.5px] text-text-tertiary font-normal">核心词搜索卡位</div>
-                      <div className="text-[20px] font-semibold text-text-main mt-1 tabular-nums">前 8 位</div>
-                      <div className="text-[11px] text-text-tertiary mt-0.5">【幼犬换粮软便】拦截词</div>
-                    </div>
-
-                    <div className="bg-surface-subtle rounded-lg p-3.5 border border-border-default">
-                      <div className="text-[11.5px] text-text-tertiary font-normal">平台收录率</div>
-                      <div className="text-[20px] font-semibold text-text-main mt-1 tabular-nums">100%</div>
-                      <div className="text-[11px] text-text-tertiary mt-0.5">已识别 6 篇全部收录</div>
-                    </div>
-                  </div>
-
-                  {/* Review Conclusion Box */}
-                  <div className="p-3.5 bg-surface-subtle rounded-lg border border-border-default space-y-2 text-[12.5px]">
-                    <div className="flex items-center gap-2 font-medium text-text-main">
-                      <Lightbulb size={15} className="text-text-secondary" />
-                      <span>复盘结论：店长号“科学7日换粮法”在有效咨询率上显著优于普通晒宠内容</span>
-                    </div>
-                    <div className="text-text-secondary leading-relaxed text-[12px] space-y-0.5 pl-5">
-                      <div>· 店长号产出 31 条有效咨询，单篇咨询转化效率是泛KOC的 2.8 倍。</div>
-                      <div>· 真实痛点问卷生成的 KOC 测评在收藏率上表现突出（单篇收藏均值 65+）。</div>
-                    </div>
-
-                    <div className="pt-2 border-t border-border-default flex items-center justify-between text-[11.5px] pl-5">
-                      <span className="text-text-tertiary">建议：加大店长号排期比重，KOC问卷强化“排便成型”事实细节。</span>
-                      <button
-                        onClick={() => setWorkflowTab?.("review")}
-                        className="px-2.5 py-1 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[11px] font-medium rounded transition-colors"
-                      >
-                        查看复盘详情
+                  {latestReviewProposal ? (
+                    <div className="flex items-start justify-between gap-5 rounded-lg border border-border-default bg-surface-subtle p-3.5">
+                      <div>
+                        <div className="flex items-center gap-2 text-[12.5px] font-medium text-text-main">
+                          复盘调整建议
+                          <span className={`rounded px-1.5 py-0.5 text-[10.5px] ${latestReviewProposal.status === "pending" ? "bg-warning-light text-warning" : "bg-success-light text-success"}`}>
+                            {latestReviewProposal.status === "pending" ? "待确认，尚未生效" : "已生成新策略版本"}
+                          </span>
+                        </div>
+                        <p className="mt-1.5 text-[12px] leading-relaxed text-text-secondary">{latestReviewProposal.summary}</p>
+                        <p className="mt-1 text-[11px] text-text-tertiary">即使应用，也只影响之后生成的笔记；历史内容继续绑定原版本。</p>
+                      </div>
+                      <button onClick={() => setWorkflowTab?.("review")} className="shrink-0 rounded-lg border border-border-default bg-surface-1 px-3 py-1.5 text-[11.5px] font-medium text-text-main hover:bg-hover-bg">
+                        查看复盘
                       </button>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="rounded-lg bg-surface-subtle p-3.5 text-[12px] text-text-tertiary">当前还没有可影响后续策略的复盘建议。</div>
+                  )}
                 </div>
 
 
@@ -752,26 +816,8 @@ export function ProjectCenter({
                         const style = getStatusStyleClass(uStatus);
                         const isPkg = Boolean(note.isNotePackage || note.title?.includes("笔记包"));
                         const hasConsumerAnswers = Boolean(note.consumerQuestionnaire);
-
-                        // Fact calculation
-                        let factText = "等待排期执行";
-                        if (uStatus === "内容生成中") factText = "正在根据方案起草正文";
-                        else if (uStatus === "待内容确认") factText = "正文已起草，等待确认";
-                        else if (uStatus === "待素材") factText = "尚缺场景图，已下发拍摄任务";
-                        else if (uStatus === "内容已就绪" || uStatus === "待发布") factText = "内容与图片已就绪，已推送到发布端";
-                        else if (uStatus === "等待账号执行") factText = "已下发至账号发布任务";
-                        else if (uStatus === "等待消费者领取") factText = "已放入招募池，等待领取代写任务";
-                        else if (uStatus === "消费者进行中") factText = "消费者已领取代写任务，正在填卷或拍摄";
-                        else if (uStatus === "发布识别中") factText = "已在小红书发布，系统正在自动识别笔记ID";
-                        else if (uStatus === "观察中") factText = "已成功识别关联，正在进行数据观察";
-                        else if (uStatus === "观察完成") factText = "观察周期结束，数据已归集";
-                        else if (uStatus === "异常") factText = "发布状态或识别超时，需核对";
-
-                        if (isPkg) {
-                          factText = `问卷已配置 · 当前已领取 ${note.claimedCount || 4}/${note.totalSlotsCount || 10} 人`;
-                        } else if (hasConsumerAnswers) {
-                          factText = `消费者已提交问卷（${note.consumerQuestionnaire?.petBreed || "金毛幼犬"}） · 依据答卷起草`;
-                        }
+                        const primaryAction = getNotePrimaryAction(note);
+                        const readiness = getNoteReadiness(note);
 
                         return (
                           <div
@@ -804,26 +850,43 @@ export function ProjectCenter({
                                 </div>
 
                                 <div className="text-[12px] text-text-tertiary flex items-center gap-3">
-                                  <span>主体: <span className="font-normal text-text-secondary">{note.account || note.participant || "特唯普官方旗舰店"}</span></span>
+                                  <span>账号：<span className="font-normal text-text-secondary">{note.account || note.participant || "特唯普官方旗舰店"}</span></span>
                                   <span>·</span>
-                                  <span>计划: {note.plannedDate || "排期中"}</span>
+                                  <span>发布计划：{note.plannedDate ? formatChineseDate(note.plannedDate) : "排期中"}</span>
+                                  {!isPkg && !["已发布", "发布异常"].includes(note.publishStatus) && !readiness.readyToPublish && readiness.missing.length > 0 && (
+                                    <>
+                                      <span>·</span>
+                                      <span>缺少：{readiness.missing.join("、")}</span>
+                                    </>
+                                  )}
                                 </div>
                               </div>
 
-                              <span className={`px-2.5 py-0.5 rounded text-[11.5px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
-                                {uStatus}
-                              </span>
+                              <div className="flex shrink-0 items-center gap-2">
+                                <span className={`px-2.5 py-0.5 rounded text-[11.5px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
+                                  {readiness.readyToPublish && note.publishStatus === "未安排" ? "已进入待发池" : uStatus}
+                                </span>
+                                {primaryAction && (
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      openNoteOperation(note, primaryAction.action, "note_list");
+                                    }}
+                                    className={`rounded-lg px-3 py-1.5 text-[11.5px] font-medium transition-colors ${
+                                      primaryAction.tone === "danger"
+                                        ? "border border-danger-light bg-danger-light text-danger hover:opacity-85"
+                                        : primaryAction.tone === "primary"
+                                        ? "bg-btn-main text-white hover:bg-btn-main-hover"
+                                        : "border border-border-default bg-surface-subtle text-text-main hover:bg-hover-bg"
+                                    }`}
+                                  >
+                                    {primaryAction.label}
+                                  </button>
+                                )}
+                              </div>
                             </div>
 
-                            <div className="flex items-center justify-between text-[12px] pt-2 border-t border-border-default">
-                              <span className="text-text-secondary truncate max-w-[700px] font-normal">
-                                说明: {factText}
-                              </span>
-
-                              <span className="text-[12px] font-medium text-text-secondary group-hover:text-text-main group-hover:underline">
-                                详情
-                              </span>
-                            </div>
                           </div>
                         );
                       })
@@ -924,7 +987,7 @@ export function ProjectCenter({
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
-                                  <span className="text-text-secondary text-[12px]">下次发布: {acc.nextPlannedDate.split(' ')[0]}</span>
+                                  <span className="text-text-secondary text-[12px]">下次发布：{formatChineseDate(acc.nextPlannedDate, true)}</span>
                                 </div>
                               </div>
 
@@ -944,7 +1007,7 @@ export function ProjectCenter({
                                         >
                                           <div className="flex items-center gap-2 truncate max-w-[500px]">
                                             <span className="font-medium text-text-main truncate group-hover:text-text-main">{note.title || "未命名笔记"}</span>
-                                            <span className="text-[11.5px] text-text-tertiary">({note.plannedDate})</span>
+                                            <span className="text-[11.5px] text-text-tertiary">（{formatChineseDate(note.plannedDate)}）</span>
                                           </div>
 
                                           <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${style.bg} ${style.text} ${style.border}`}>
@@ -1066,11 +1129,18 @@ export function ProjectCenter({
       {/* DRAWERS & MODALS                                         */}
       {/* ======================================================== */}
 
-      {/* Strategy Protocol Drawer */}
-      {showStrategyDrawer && (
-        <StrategyProtocolDrawer
+      {showStrategyCustomization && (
+        <StrategyCustomizationDrawer
           project={currentProject}
-          onClose={() => setShowStrategyDrawer(false)}
+          activeVersion={activeStrategyVersion}
+          versions={projectStrategyVersions}
+          onClose={() => setShowStrategyCustomization(false)}
+          onSave={(configuration, changedFields) => {
+            createStrategyVersion(currentProject.id, configuration, changedFields);
+            setShowStrategyCustomization(false);
+            setLastUpdatedTimestamp(Date.now());
+            setLastUpdatedText("刚刚");
+          }}
         />
       )}
 
@@ -1099,11 +1169,13 @@ export function ProjectCenter({
           note={activeNoteDetail}
           projectId={currentProject.id}
           onClose={() => setActiveNoteDetail(null)}
-          onOpenInExecutionCenter={() => {
+          onExecuteAction={(action) => {
+            const targetNote = activeNoteDetail;
             setActiveNoteDetail(null);
-            setWorkflowTab?.("execution");
+            openNoteOperation(targetNote, action, "note_detail");
           }}
           onEditQuestionnaire={() => {
+            setFeedbackContentPackage(activeNoteDetail);
             setActiveNoteDetail(null);
             setShowProjectQuestionnaire(true);
           }}
@@ -1122,7 +1194,11 @@ export function ProjectCenter({
       {showProjectQuestionnaire && currentProject && (
         <ProjectQuestionnaireDrawer 
           project={currentProject} 
-          onClose={() => setShowProjectQuestionnaire(false)} 
+          contentPackage={feedbackContentPackage || undefined}
+          onClose={() => {
+            setShowProjectQuestionnaire(false);
+            setFeedbackContentPackage(null);
+          }} 
         />
       )}
 
@@ -1267,7 +1343,7 @@ export function ProjectCenter({
               </button>
               <button
                 onClick={() => {
-                  deleteProject(currentProject.id);
+                  updateProject(currentProject.id, { status: "已结束" });
                   setShowArchiveConfirm(false);
                 }}
                 className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[12.5px] font-medium transition-colors"
@@ -1295,7 +1371,7 @@ export function ProjectCenter({
                 <div key={log.id} className="p-3 bg-surface-subtle rounded-lg border border-border-default space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-text-main">{log.action}</span>
-                    <span className="text-[11px] text-text-tertiary">{log.timestamp}</span>
+                    <span className="text-[11px] text-text-tertiary">{formatChineseDate(log.timestamp, true)}</span>
                   </div>
                   <div className="text-text-secondary text-[12px] font-normal">{log.detail}</div>
                   <div className="text-[11px] text-text-tertiary">操作人: {log.operator}</div>
@@ -1332,7 +1408,7 @@ export function ProjectCenter({
                     <span>批量导入 Excel / CSV</span>
                     <span className="text-[11px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">批量解析</span>
                   </div>
-                  <div className="text-[12px] text-text-tertiary mt-0.5 font-normal">上传表格文件，批量解析提取笔记标题与计划</div>
+                  <div className="text-[12px] text-text-tertiary mt-0.5 font-normal">上传表格文件，批量解析提取笔记标题与发布计划</div>
                 </div>
               </button>
 
