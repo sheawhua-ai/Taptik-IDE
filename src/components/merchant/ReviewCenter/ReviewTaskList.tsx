@@ -1,5 +1,5 @@
-import React from "react";
-import { Plus, Search, Calendar, PanelLeftClose, AlertTriangle, CheckCircle2, Clock, Sparkles, Layers } from "lucide-react";
+import React, { useState } from "react";
+import { Plus, Search, Calendar, PanelLeftClose, MoreHorizontal, Sparkles, Layers, Trash2 } from "lucide-react";
 import { ReviewTask } from "./types";
 import { formatChineseDate } from "../../../utils/formatDate";
 
@@ -8,6 +8,7 @@ interface ReviewTaskListProps {
   selectedTaskId: string;
   onSelectTask: (taskId: string) => void;
   onOpenCreateModal: () => void;
+  onRequestDelete: (taskId: string) => void;
   onCloseSidebar: () => void;
   searchQuery: string;
   setSearchQuery: (val: string) => void;
@@ -22,6 +23,7 @@ export function ReviewTaskList({
   selectedTaskId,
   onSelectTask,
   onOpenCreateModal,
+  onRequestDelete,
   onCloseSidebar,
   searchQuery,
   setSearchQuery,
@@ -30,6 +32,7 @@ export function ReviewTaskList({
   scopeFilter,
   setScopeFilter,
 }: ReviewTaskListProps) {
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const filteredTasks = tasks.filter((t) => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
@@ -169,10 +172,10 @@ export function ReviewTaskList({
             }
 
             return (
+              <div key={task.id} className="relative">
               <button
-                key={task.id}
-                onClick={() => onSelectTask(task.id)}
-                className={`w-full text-left p-3.5 transition-all relative group ${
+                onClick={() => { onSelectTask(task.id); setOpenMenuId(null); }}
+                className={`w-full text-left p-3.5 pr-10 transition-all relative group ${
                   isSelected
                     ? "bg-surface-subtle"
                     : "bg-transparent hover:bg-hover-bg text-text-main"
@@ -180,7 +183,7 @@ export function ReviewTaskList({
               >
                 {/* Left Active Indicator line */}
                 {isSelected && (
-                  <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-btn-main" />
+                  <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-logo" />
                 )}
 
                 {/* Title & Status */}
@@ -210,6 +213,14 @@ export function ReviewTaskList({
                   <span>{task.updatedAt}</span>
                 </div>
               </button>
+              <button
+                type="button"
+                aria-label={`更多操作：${task.title}`}
+                onClick={(event) => { event.stopPropagation(); setOpenMenuId(openMenuId === task.id ? null : task.id); }}
+                className="absolute right-2.5 top-10 flex h-7 w-7 items-center justify-center rounded-md text-text-tertiary hover:bg-hover-bg hover:text-text-main"
+              ><MoreHorizontal size={14} /></button>
+              {openMenuId === task.id && <div className="absolute right-2.5 top-16 z-30 w-32 rounded-lg border border-border-default bg-surface-1 p-1 shadow-lg"><button type="button" onClick={() => { setOpenMenuId(null); onRequestDelete(task.id); }} className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-[11px] text-rose-700 hover:bg-rose-50"><Trash2 size={13} />删除复盘</button></div>}
+              </div>
             );
           })
         )}

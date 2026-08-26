@@ -3,7 +3,7 @@ import {
   ArrowRight, BarChart3, Bot, CheckCircle2, Clock, Database, Download,
   ExternalLink, FileText, Info, Layers, MessageCircle, PanelLeftOpen,
   RefreshCw, Search, Settings2, ShieldAlert, Sparkles, Target, TrendingUp,
-  Users, Workflow, X
+  Trash2, Users, Workflow, X
 } from "lucide-react";
 import { INITIAL_REVIEW_TASKS } from "./mockData";
 import type { ReviewTask, SuggestedAction } from "./types";
@@ -95,6 +95,8 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isEvidenceDrawerOpen, setIsEvidenceDrawerOpen] = useState(false);
+  const [isRefreshConfirmOpen, setIsRefreshConfirmOpen] = useState(false);
+  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
   const [actionToApply, setActionToApply] = useState<SuggestedAction | null>(null);
   const [expandedEvidenceId, setExpandedEvidenceId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
@@ -121,7 +123,13 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
   const hasDirection = (id: (typeof ALL_REVIEW_DIRECTION_IDS)[number]) => currentDirectionIds.includes(id);
   const showCrossPlanComparison = Boolean(currentTask && currentTask.mode === "multi" && (currentTask.includeCrossPlanComparison ?? true));
 
-  if (!currentTask || !meta || !dataSummary) return null;
+  if (!currentTask || !meta || !dataSummary) return (
+    <div className="relative flex h-full flex-1 overflow-hidden bg-surface-base">
+      <ReviewTaskList tasks={tasks} selectedTaskId="" onSelectTask={setSelectedTaskId} onOpenCreateModal={() => setIsCreateModalOpen(true)} onRequestDelete={setDeleteTaskId} onCloseSidebar={() => setIsSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} scopeFilter={scopeFilter} setScopeFilter={setScopeFilter} />
+      <div className="flex flex-1 flex-col items-center justify-center bg-surface-subtle p-8 text-center"><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-1 text-text-tertiary shadow-sm"><Sparkles size={20} /></div><h2 className="mt-4 text-[15px] font-semibold text-text-main">还没有复盘记录</h2><p className="mt-1 text-[11.5px] text-text-tertiary">创建复盘后，最新报告会显示在这里。</p><button onClick={() => setIsCreateModalOpen(true)} className="mt-4 rounded-lg bg-neutral-950 px-4 py-2 text-[11.5px] font-medium text-white">新建复盘</button></div>
+      <CreateReviewTaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onCreateTask={(newTask) => { setTasks([newTask]); setSelectedTaskId(newTask.id); setIsCreateModalOpen(false); }} />
+    </div>
+  );
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -148,6 +156,56 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
     setIsCreateModalOpen(false);
     showToast("复盘任务已创建，Agent 正在按本次问题组织数据");
   };
+
+  const handleRefreshReview = () => {
+    const taskId = currentTask.id;
+    const wasDataInsufficient = currentTask.status === "exception";
+    const now = new Date();
+    const cutoff = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    setIsRefreshConfirmOpen(false);
+    setTasks(previous => previous.map(task => task.id === taskId ? {
+      ...task,
+      status: "analyzing",
+      statusText: "分析中",
+      updatedAt: "刚刚",
+      progressSteps: [
+        { id: `${taskId}-refresh-data`, type: "completed", statusLabel: "已完成", title: "已刷新所选方案的最新数据", description: "保持原复盘周期、方案范围和复盘方向不变。" },
+        { id: `${taskId}-refresh-metrics`, type: "analyzing", statusLabel: "分析中", title: "重新计算指标与归因", description: "使用本次刷新后的数据快照重新回答原复盘问题。" },
+        { id: `${taskId}-refresh-report`, type: "analyzing", statusLabel: "分析中", title: "重新生成单份报告", description: "完成后覆盖当前报告，不创建历史版本。" }
+      ]
+    } : task));
+    showToast("已使用最新数据重新开始复盘");
+    window.setTimeout(() => {
+      setTasks(previous => previous.map(task => task.id === taskId ? {
+        ...task,
+        status: "completed",
+        statusText: "已完成",
+        updatedAt: "刚刚",
+        progressSteps: task.progressSteps.map(step => ({ ...step, type: "completed" as const, statusLabel: "已完成" as const })),
+        historyVersions: task.historyVersions.length ? task.historyVersions.map((version, index) => index === 0 ? { ...version, dataCutoff: cutoff } : version) : task.historyVersions,
+        analysisDetails: {
+          ...task.analysisDetails,
+          summary: { ...task.analysisDetails.summary, sampleNotesCount: task.analysisDetails.summary.sampleNotesCount + (wasDataInsufficient ? 3 : 1) }
+        }
+      } : task));
+      showToast("最新复盘报告已生成，原报告已被替换");
+    }, 1400);
+  };
+
+  const handleDeleteTask = () => {
+    if (!deleteTaskId) return;
+    const remaining = tasks.filter(task => task.id !== deleteTaskId);
+    setTasks(remaining);
+    if (selectedTaskId === deleteTaskId) setSelectedTaskId(remaining[0]?.id || "");
+    setDeleteTaskId(null);
+    showToast("复盘记录已删除；已应用的方案、Skill 和执行任务保持不变");
+  };
+
+  const refreshButtonLabel = currentTask.status === "exception"
+    ? "重新采集并复盘"
+    : currentTask.status === "analyzing"
+      ? "使用最新数据重新开始"
+      : "刷新数据并重新复盘";
 
   const handleApplyAction = () => {
     if (!actionToApply) return;
@@ -198,7 +256,7 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
     <article className="overflow-hidden rounded-2xl border border-border-default bg-white shadow-sm">
       <section className="border-b border-border-default px-7 py-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div><div className="text-[10.5px] font-semibold tracking-[0.18em] text-blue-700">TAPTIK · 小红书运营复盘报告</div><h2 className="mt-2 text-[22px] font-semibold leading-8 text-text-main">{currentTask.title}</h2><p className="mt-1.5 text-[11.5px] text-text-tertiary">报告周期：{formatChineseDate(currentTask.dateRange.start)}—{formatChineseDate(currentTask.dateRange.end)} · 方案：{currentTask.projectNames.join("、")}</p></div>
+          <div><div className="text-[10.5px] font-semibold tracking-[0.18em] text-blue-700">TAPTIK · 小红书运营复盘报告</div><h2 className="mt-2 text-[22px] font-semibold leading-8 text-text-main">{currentTask.title}</h2><p className="mt-1.5 text-[11.5px] text-text-tertiary">报告周期：{formatChineseDate(currentTask.dateRange.start)}—{formatChineseDate(currentTask.dateRange.end)} · 数据截止：{formatChineseDate(dataSummary.cutoff, true) || dataSummary.cutoff} · 生成时间：{currentTask.updatedAt}</p><p className="mt-1 text-[10.5px] text-text-tertiary">方案：{currentTask.projectNames.join("、")}</p></div>
           <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10.5px] font-medium text-emerald-700">数据覆盖 {dataSummary.returnedCount}/{dataSummary.sampleCount} 篇 · 中高可信</span>
         </div>
         <div className="mt-6 border-l-4 border-neutral-950 pl-4"><div className="text-[10.5px] font-medium text-text-tertiary">执行摘要</div><h3 className="mt-1 text-[17px] font-semibold leading-7 text-text-main">{currentTask.coreConclusions.overallPerformance.title}</h3><p className="mt-1 text-[12px] leading-6 text-text-secondary">{currentTask.coreConclusions.overallPerformance.description}</p></div>
@@ -255,13 +313,13 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
 
   return (
     <div className="relative flex h-full flex-1 overflow-hidden bg-surface-base">
-      {isSidebarOpen ? <ReviewTaskList tasks={tasks} selectedTaskId={selectedTaskId} onSelectTask={setSelectedTaskId} onOpenCreateModal={() => setIsCreateModalOpen(true)} onCloseSidebar={() => setIsSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} scopeFilter={scopeFilter} setScopeFilter={setScopeFilter} /> : <button onClick={() => setIsSidebarOpen(true)} className="absolute left-3 top-4 z-20 rounded-lg border border-border-default bg-surface-1 p-2 text-text-secondary"><PanelLeftOpen size={16} /></button>}
+      {isSidebarOpen ? <ReviewTaskList tasks={tasks} selectedTaskId={selectedTaskId} onSelectTask={setSelectedTaskId} onOpenCreateModal={() => setIsCreateModalOpen(true)} onRequestDelete={setDeleteTaskId} onCloseSidebar={() => setIsSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} scopeFilter={scopeFilter} setScopeFilter={setScopeFilter} /> : <button onClick={() => setIsSidebarOpen(true)} className="absolute left-3 top-4 z-20 rounded-lg border border-border-default bg-surface-1 p-2 text-text-secondary"><PanelLeftOpen size={16} /></button>}
 
       <div className="flex min-w-0 flex-1 flex-col bg-surface-subtle">
         <header className="shrink-0 border-b border-border-default bg-surface-1 px-6 py-4">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0"><div className="flex items-center gap-2"><h1 className="truncate text-[17px] font-semibold text-text-main">{currentTask.title}</h1><span className={`rounded-md border px-2 py-0.5 text-[10.5px] font-medium ${meta.className}`}>{meta.label}</span></div><div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11.5px] text-text-tertiary"><span className="flex items-center gap-1"><Clock size={12} />{formatChineseDate(currentTask.dateRange.start)} 至 {formatChineseDate(currentTask.dateRange.end)}</span><span>·</span><span className="flex items-center gap-1"><Layers size={12} />{currentTask.projectNames.join("、")}</span><span>·</span><span>更新于 {currentTask.updatedAt}</span></div></div>
-            <div className="flex items-center gap-2"><button onClick={() => setIsEvidenceDrawerOpen(true)} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[11.5px] text-text-secondary"><Bot size={13} />AI 复盘依据</button><button onClick={() => setIsExportModalOpen(true)} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[11.5px] text-text-secondary"><Download size={13} />导出报告</button></div>
+            <div className="flex items-center gap-2"><button onClick={() => setIsRefreshConfirmOpen(true)} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[11.5px] font-medium text-text-main"><RefreshCw size={13} />{refreshButtonLabel}</button><button onClick={() => setIsEvidenceDrawerOpen(true)} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[11.5px] text-text-secondary"><Bot size={13} />AI 复盘依据</button><button onClick={() => setIsExportModalOpen(true)} disabled={currentTask.status === "analyzing"} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[11.5px] text-text-secondary disabled:cursor-not-allowed disabled:opacity-40"><Download size={13} />导出报告</button></div>
           </div>
           <div className="mt-3 flex items-start gap-2 rounded-lg bg-surface-subtle px-3 py-2 text-[11.5px] leading-5 text-text-secondary"><Target size={13} className="mt-0.5 shrink-0" /><span><strong className="font-medium text-text-main">本次要回答：</strong>{currentTask.goalDescription}</span></div>
         </header>
@@ -271,7 +329,11 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
       <CreateReviewTaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onCreateTask={handleCreateTask} />
       <ExportReportModal task={currentTask} isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)} />
 
-      {isEvidenceDrawerOpen && <div className="fixed inset-0 z-[70] flex justify-end bg-black/25" onClick={() => setIsEvidenceDrawerOpen(false)}><aside className="flex h-full w-full max-w-xl flex-col bg-surface-1 shadow-2xl" onClick={event => event.stopPropagation()}><div className="flex items-start justify-between border-b border-border-default px-5 py-4"><div><div className="flex items-center gap-2 text-[14px] font-semibold text-text-main"><Bot size={16} />AI 复盘依据</div><p className="mt-1 text-[11px] text-text-tertiary">用于核验结论，不属于对外导出的报告主体。</p></div><button onClick={() => setIsEvidenceDrawerOpen(false)} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg"><X size={16} /></button></div><div className="flex-1 space-y-4 overflow-y-auto p-5"><section className="rounded-xl border border-border-default p-4"><div className="flex items-center gap-2 text-[12px] font-semibold text-text-main"><Database size={14} />数据范围与口径</div><div className="mt-3 grid gap-2 text-[11px] leading-5 text-text-secondary"><p><strong className="text-text-main">方案：</strong>{currentTask.projectNames.join("、")}</p><p><strong className="text-text-main">方向：</strong>{currentDirections.map(item => item.title).join("、")}</p><p><strong className="text-text-main">来源：</strong>{dataSummary.source}</p><p><strong className="text-text-main">截止：</strong>{formatChineseDate(dataSummary.cutoff, true) || dataSummary.cutoff}</p><p><strong className="text-text-main">覆盖：</strong>{dataSummary.returnedCount}/{dataSummary.sampleCount} 篇已有数据回传</p></div></section><section className="rounded-xl border border-border-default p-4"><div className="flex items-center gap-2 text-[12px] font-semibold text-text-main"><Workflow size={14} />分析过程</div><div className="mt-3 space-y-2">{currentTask.agentPipeline.map((agent, index) => <div key={agent.id} className="rounded-lg bg-surface-subtle p-3"><div className="flex items-center justify-between gap-2"><span className="text-[11px] font-medium text-text-main">{index + 1}. {agent.name}</span><span className="text-[9.5px] text-text-tertiary">{agent.statusText} · {agent.duration}</span></div><p className="mt-1 text-[10.5px] leading-5 text-text-secondary">{agent.summary}</p>{agent.outputItems.length > 0 && <div className="mt-2 flex flex-wrap gap-1">{agent.outputItems.map(item => <span key={item} className="rounded bg-white px-1.5 py-0.5 text-[9.5px] text-text-tertiary">{item}</span>)}</div>}</div>)}</div></section><section className="rounded-xl border border-border-default p-4"><div className="flex items-center gap-2 text-[12px] font-semibold text-text-main"><ShieldAlert size={14} />结论限制</div><ul className="mt-3 space-y-2 text-[10.5px] leading-5 text-text-secondary"><li>· 缺失数据不会以计划值、行业均值或 AI 估算值替代。</li><li>· 搜索排名采用关键词搜索快照与笔记 ID 比对，代表采样时点位置。</li><li>· 有效咨询、转化等结论只使用已回传的发布后数据。</li><li>· 本次报告为固定快照，后续数据更新不会静默改写历史结论。</li></ul></section></div></aside></div>}
+      {isEvidenceDrawerOpen && <div className="fixed inset-0 z-[70] flex justify-end bg-black/25" onClick={() => setIsEvidenceDrawerOpen(false)}><aside className="flex h-full w-full max-w-xl flex-col bg-surface-1 shadow-2xl" onClick={event => event.stopPropagation()}><div className="flex items-start justify-between border-b border-border-default px-5 py-4"><div><div className="flex items-center gap-2 text-[14px] font-semibold text-text-main"><Bot size={16} />AI 复盘依据</div><p className="mt-1 text-[11px] text-text-tertiary">用于核验结论，不属于对外导出的报告主体。</p></div><button onClick={() => setIsEvidenceDrawerOpen(false)} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg"><X size={16} /></button></div><div className="flex-1 space-y-4 overflow-y-auto p-5"><section className="rounded-xl border border-border-default p-4"><div className="flex items-center gap-2 text-[12px] font-semibold text-text-main"><Database size={14} />数据范围与口径</div><div className="mt-3 grid gap-2 text-[11px] leading-5 text-text-secondary"><p><strong className="text-text-main">方案：</strong>{currentTask.projectNames.join("、")}</p><p><strong className="text-text-main">方向：</strong>{currentDirections.map(item => item.title).join("、")}</p><p><strong className="text-text-main">来源：</strong>{dataSummary.source}</p><p><strong className="text-text-main">截止：</strong>{formatChineseDate(dataSummary.cutoff, true) || dataSummary.cutoff}</p><p><strong className="text-text-main">覆盖：</strong>{dataSummary.returnedCount}/{dataSummary.sampleCount} 篇已有数据回传</p></div></section><section className="rounded-xl border border-border-default p-4"><div className="flex items-center gap-2 text-[12px] font-semibold text-text-main"><Workflow size={14} />分析过程</div><div className="mt-3 space-y-2">{currentTask.agentPipeline.map((agent, index) => <div key={agent.id} className="rounded-lg bg-surface-subtle p-3"><div className="flex items-center justify-between gap-2"><span className="text-[11px] font-medium text-text-main">{index + 1}. {agent.name}</span><span className="text-[9.5px] text-text-tertiary">{agent.statusText} · {agent.duration}</span></div><p className="mt-1 text-[10.5px] leading-5 text-text-secondary">{agent.summary}</p>{agent.outputItems.length > 0 && <div className="mt-2 flex flex-wrap gap-1">{agent.outputItems.map(item => <span key={item} className="rounded bg-white px-1.5 py-0.5 text-[9.5px] text-text-tertiary">{item}</span>)}</div>}</div>)}</div></section><section className="rounded-xl border border-border-default p-4"><div className="flex items-center gap-2 text-[12px] font-semibold text-text-main"><ShieldAlert size={14} />结论限制</div><ul className="mt-3 space-y-2 text-[10.5px] leading-5 text-text-secondary"><li>· 缺失数据不会以计划值、行业均值或 AI 估算值替代。</li><li>· 搜索排名采用关键词搜索快照与笔记 ID 比对，代表采样时点位置。</li><li>· 有效咨询、转化等结论只使用已回传的发布后数据。</li><li>· 数据更新不会自动改写报告；只有操盘手主动刷新后才会替换当前成果。</li></ul></section></div></aside></div>}
+
+      {isRefreshConfirmOpen && <div className="fixed inset-0 z-[75] flex items-center justify-center bg-black/35 p-4"><div className="w-full max-w-md rounded-2xl border border-border-default bg-surface-1 p-5 shadow-2xl"><div className="flex items-start justify-between gap-3"><div><div className="text-[11px] font-medium text-blue-700">使用最新数据重新复盘</div><h2 className="mt-1 text-[15px] font-semibold text-text-main">{currentTask.title}</h2></div><button onClick={() => setIsRefreshConfirmOpen(false)} className="rounded-lg p-1 text-text-tertiary hover:bg-hover-bg"><X size={16} /></button></div><div className="mt-4 rounded-xl bg-surface-subtle p-3 text-[11.5px] leading-5 text-text-secondary"><p>复盘周期、方案范围、问题和方向保持不变，只刷新数据并重新生成报告。</p><p className="mt-2 font-medium text-amber-800">当前报告将被替换，不保留历史版本。</p></div><div className="mt-3 text-[10.5px] leading-5 text-text-tertiary">已经确认应用到方案、Skill 或执行中心的动作不会被回滚。</div><div className="mt-5 flex justify-end gap-2"><button onClick={() => setIsRefreshConfirmOpen(false)} className="rounded-lg px-3 py-2 text-[11.5px] text-text-secondary">取消</button><button onClick={handleRefreshReview} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[11.5px] font-medium text-white"><RefreshCw size={13} />确认刷新并覆盖</button></div></div></div>}
+
+      {deleteTaskId && <div className="fixed inset-0 z-[75] flex items-center justify-center bg-black/35 p-4"><div className="w-full max-w-md rounded-2xl border border-border-default bg-surface-1 p-5 shadow-2xl"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-700"><Trash2 size={18} /></div><h2 className="mt-3 text-[15px] font-semibold text-text-main">删除这条复盘记录？</h2><p className="mt-1 text-[11.5px] leading-5 text-text-secondary">{tasks.find(task => task.id === deleteTaskId)?.title}</p><div className="mt-4 rounded-xl bg-rose-50 p-3 text-[10.5px] leading-5 text-rose-900">将删除复盘任务、当前报告和 AI 分析依据。已经应用的方案修改、Skill、执行任务及已导出的本地文件不会被删除。</div><div className="mt-5 flex justify-end gap-2"><button onClick={() => setDeleteTaskId(null)} className="rounded-lg px-3 py-2 text-[11.5px] text-text-secondary">取消</button><button onClick={handleDeleteTask} className="rounded-lg bg-rose-600 px-4 py-2 text-[11.5px] font-medium text-white">确认删除</button></div></div></div>}
 
       {actionToApply && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4"><div className="w-full max-w-lg rounded-2xl border border-border-default bg-surface-1 p-5 shadow-2xl"><div className="flex items-start justify-between gap-3"><div><div className="text-[11px] font-medium text-text-tertiary">优化动作确认 · {actionDestination(actionToApply).label}</div><h2 className="mt-1 text-[15px] font-semibold text-text-main">{actionToApply.title}</h2></div><button onClick={() => setActionToApply(null)} className="p-1 text-text-tertiary"><X size={16} /></button></div><div className="mt-4 space-y-3 text-[12px]"><div className="rounded-xl border border-border-default p-3"><div className="text-[10.5px] text-text-tertiary">当前使用版本</div><div className="mt-1 text-text-secondary">保持现有运营逻辑、生成规则与账号配比。</div></div><div className="rounded-xl border border-blue-200 bg-blue-50 p-3"><div className="text-[10.5px] text-blue-700">确认后的新版本</div><div className="mt-1 font-medium text-blue-950">{actionToApply.target}</div><div className="mt-1 text-blue-800">预期：{actionToApply.expectedGain}</div></div><div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3 text-[11.5px] leading-5 text-amber-900"><Info size={14} className="mt-0.5 shrink-0" />只影响确认后新生成的内容；已有草稿、已发布笔记、历史数据和本次报告保持不变。</div></div><div className="mt-5 flex justify-end gap-2"><button onClick={() => setActionToApply(null)} className="rounded-lg px-3.5 py-2 text-[12px] text-text-secondary">暂不应用</button><button onClick={handleApplyAction} className="rounded-lg bg-neutral-950 px-4 py-2 text-[12px] font-medium text-white">确认并生成新版本</button></div></div></div>}
       {toastMessage && <div className="fixed bottom-5 left-1/2 z-[80] -translate-x-1/2 rounded-xl bg-neutral-950 px-4 py-2.5 text-[12px] text-white shadow-xl">{toastMessage}</div>}
