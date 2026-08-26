@@ -35,15 +35,20 @@ import { BatchNoteGeneratorModal } from "./BatchNoteGeneratorModal";
 import { AddSingleNoteModal } from "./AddSingleNoteModal";
 import { DispatchMaterialTaskModal } from "./DispatchMaterialTaskModal";
 import { formatChineseDate } from "../../utils/formatDate";
+import type { IndustryDefaults, MerchantIndustryProfile } from "../../data/industryCatalog";
 
 export function ProjectCenter({ 
   setWorkflowTab, 
   hasData, 
-  activeProjectId 
+  activeProjectId,
+  industryProfile,
+  industryDefaults
 }: { 
   setWorkflowTab?: (tab: string) => void; 
   hasData?: boolean; 
-  activeProjectId?: string; 
+  activeProjectId?: string;
+  industryProfile?: MerchantIndustryProfile;
+  industryDefaults?: IndustryDefaults;
 }) {
   const { 
     projects, 
@@ -140,7 +145,7 @@ export function ProjectCenter({
   if (activeWorkbench === "content") return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
   if (activeWorkbench === "assets") return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
   if (activeWorkbench === "publish") return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} onBack={() => setActiveWorkbench(null)} fromSource="project" />;
-  if (activeWorkbench === "create_project") return <CreateProjectWorkstation onClose={() => setActiveWorkbench(null)} onCreate={() => setActiveWorkbench(null)} />;
+  if (activeWorkbench === "create_project") return <CreateProjectWorkstation industryDefaults={industryDefaults} industryProfile={industryProfile} onClose={() => setActiveWorkbench(null)} onCreate={() => setActiveWorkbench(null)} />;
 
   const pipeline = calculateProjectPipeline(currentProject.notes || []);
 
@@ -540,7 +545,40 @@ export function ProjectCenter({
             {/* ======================================================== */}
             {activeTab === "概览" && (
               <div className="space-y-5">
-                
+
+                {industryProfile && industryDefaults && (
+                  <section className="rounded-xl border border-blue-200 bg-blue-50/60 p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2 text-[11px] font-medium text-blue-700">
+                          <Layers size={14} />行业默认起盘模板
+                        </div>
+                        <h3 className="mt-1.5 text-[14px] font-semibold text-blue-950">{industryDefaults.workflowName}</h3>
+                        <div className="mt-1 text-[11px] text-blue-800">
+                          {industryProfile.primaryName}
+                          {industryProfile.secondaryNames.length > 0 ? ` · ${industryProfile.secondaryNames.join("、")}` : ""}
+                          {industryProfile.tertiaryNames.length > 0 ? ` · ${industryProfile.tertiaryNames.join("、")}` : ""}
+                        </div>
+                      </div>
+                      <button onClick={() => setActiveWorkbench("create_project")} className="rounded-lg bg-blue-700 px-3.5 py-2 text-[11.5px] font-medium text-white hover:bg-blue-800">
+                        使用模板创建方案
+                      </button>
+                    </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                      {industryDefaults.workflowSteps.map((step, index) => (
+                        <React.Fragment key={step}>
+                          <span className="rounded-md border border-blue-100 bg-white/80 px-2 py-1 text-[10.5px] text-blue-900">{index + 1}. {step}</span>
+                          {index < industryDefaults.workflowSteps.length - 1 && <ArrowRight size={11} className="text-blue-300" />}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    <div className="mt-3 grid gap-2 border-t border-blue-100 pt-3 text-[10.5px] sm:grid-cols-3">
+                      <div><span className="text-blue-600">方案模板：</span><span className="text-blue-950">{industryDefaults.planTemplates.join("、")}</span></div>
+                      <div><span className="text-blue-600">内容模板：</span><span className="text-blue-950">{industryDefaults.contentTemplates.join("、")}</span></div>
+                      <div><span className="text-blue-600">账号角色：</span><span className="text-blue-950">{industryDefaults.accountRoles.join("、")}</span></div>
+                    </div>
+                  </section>
+                )}
 
 
                 {/* 1.1 Current operating logic */}
@@ -1467,6 +1505,8 @@ export function ProjectCenter({
       {/* Create Project Workstation (AI Agent Driven) */}
       {activeWorkbench === "create_project" && (
         <CreateProjectWorkstation 
+          industryDefaults={industryDefaults}
+          industryProfile={industryProfile}
           onClose={() => setActiveWorkbench(null)} 
           onCreate={() => setActiveWorkbench(null)} 
         />

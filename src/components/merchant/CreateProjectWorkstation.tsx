@@ -22,15 +22,20 @@ import {
 } from './CreateProject/mockData';
 import { DialogueWorkbench } from './CreateProject/DialogueWorkbench';
 import { ContextDrawer, DEFAULT_CONTEXT_STATE, ContextState } from './CreateProject/ContextDrawer';
+import type { IndustryDefaults, MerchantIndustryProfile } from '../../data/industryCatalog';
 
 export function CreateProjectWorkstation({
   onClose,
   onCreate,
   mode = 'create',
+  industryDefaults,
+  industryProfile,
 }: {
   onClose: () => void;
   onCreate: (project?: any) => void;
   mode?: 'create' | 'edit';
+  industryDefaults?: IndustryDefaults;
+  industryProfile?: MerchantIndustryProfile;
 }) {
   const { createFullOperationsProject, jumpToExecution, setSelectedProjectId } = useProjectStore();
 
@@ -41,7 +46,94 @@ export function CreateProjectWorkstation({
   const [questions, setQuestions] = useState<MissingInfoItem[]>(INITIAL_PRIORITIZED_QUESTIONS);
 
   // Strategy draft state
-  const [strategyDraft, setStrategyDraft] = useState<StrategyDraftData>(() => GENERATE_DEFAULT_STRATEGY());
+  const [strategyDraft, setStrategyDraft] = useState<StrategyDraftData>(() => {
+    const base = GENERATE_DEFAULT_STRATEGY();
+    if (!industryDefaults) return base;
+    const industryPath = [
+      industryProfile?.primaryName,
+      ...(industryProfile?.secondaryNames || []),
+      ...(industryProfile?.tertiaryNames || [])
+    ].filter(Boolean).join(' / ');
+    const brandRole = industryDefaults.accountRoles[0] || '品牌主号';
+    const kosRole = industryDefaults.accountRoles[1] || 'KOS账号';
+    const kocRole = industryDefaults.accountRoles[2] || '消费者KOC';
+    return {
+      ...base,
+      projectName: `${industryDefaults.planTemplates[0]}｜行业起盘`,
+      promotionTarget: {
+        ...base.promotionTarget,
+        targetName: '待确认的主推产品 / 服务',
+        targetCategory: industryPath || industryDefaults.workflowName,
+        targetAudience: '待结合商家资料确认核心目标人群',
+        confirmedFacts: [{ label: '行业配置', detail: industryPath || industryDefaults.workflowName, source: '【商家资料】行业选择' }],
+        unconfirmedGaps: ['主推产品或服务', '核心目标人群', '本周期重点场景']
+      },
+      coreGoalAndVerification: {
+        ...base.coreGoalAndVerification,
+        primaryBusinessGoal: `按照“${industryDefaults.workflowName}”验证核心内容方法与转化链路，沉淀可复用行业打法`,
+        observableSignals: ['目标关键词下的笔记搜索位置', '已发布笔记的平台收录结果', '发布后的互动、咨询与转化反馈'],
+        successCriteria: '形成可复用的内容结构，并找到表现稳定的账号与发布节奏',
+        adjustmentCriteria: '搜索位置、收录或发布后反馈连续低于预期时，调整内容结构与账号配比',
+        stopCriteria: '出现合规风险、事实依据不足或关键资源长期无法交付时暂停'
+      },
+      coreStrategy: {
+        ...base.coreStrategy,
+        problemToSolve: `围绕${industryDefaults.planTemplates[0]}建立清晰、可执行、可复盘的内容运营路径。`,
+        contentLogic: `默认采用：${industryDefaults.contentTemplates.join(' + ')}；流程依次覆盖${industryDefaults.workflowSteps.join('、')}`,
+        rationale: `行业模板提供默认起点，最终策略以商家资料、真实素材和发布后数据为准。`,
+        collaborationMechanism: `${brandRole}负责标准表达，${kosRole}负责场景解释，${kocRole}提供真实体验反馈。`
+      },
+      accountAndContentAssignment: {
+        ...base.accountAndContentAssignment,
+        brandAccounts: base.accountAndContentAssignment.brandAccounts.map((account, index) => ({
+          ...account,
+          name: index === 0 ? brandRole : `${brandRole}${index + 1}`,
+          roleInProject: '建立品牌标准表达与核心信息锚点',
+          contentDirection: industryDefaults.contentTemplates[0] || '品牌核心信息'
+        })),
+        kosAccounts: base.accountAndContentAssignment.kosAccounts.map((account, index) => ({
+          ...account,
+          name: index === 0 ? kosRole : `${kosRole}${index + 1}`,
+          storeName: `参与账号${index + 1}`,
+          roleInProject: '提供专业解释与真实经营场景',
+          contentDirection: industryDefaults.contentTemplates[1] || '场景化专业解答'
+        })),
+        kocParticipants: {
+          ...base.accountAndContentAssignment.kocParticipants,
+          roleInProject: `${kocRole}真实体验反馈`,
+          contentDirection: industryDefaults.contentTemplates[2] || '真实体验记录',
+          requiredMaterialSpecs: '真实体验图片或视频，并完成十几秒轻量反馈问卷'
+        }
+      },
+      humanInTheLoop: {
+        systemAutomated: [
+          '读取商家资料、行业模板与平台合规规则',
+          '依据默认流程生成内容骨架、发布计划与素材需求',
+          '对标题、正文、标签和素材完整度进行基础预检',
+          '记录发布后的搜索位置、平台收录与数据回传状态'
+        ],
+        operatorRequired: [
+          '确认主推对象、目标人群和本周期核心目标',
+          '核验内容事实、品牌口吻与素材真实性',
+          '确认发布人、发布时间并完成手动发布',
+          '处理素材缺失、逾期未发与数据回传异常'
+        ]
+      },
+      hypothesesAndBasis: {
+        confirmedFacts: [{ id: 'industry_fact', text: `商家行业已选择为${industryPath || industryDefaults.workflowName}`, source: '【商家资料】行业配置' }],
+        pendingHypotheses: [{
+          id: 'industry_hypothesis',
+          text: `以“${industryDefaults.contentTemplates.join(' + ')}”组成内容矩阵，可改善搜索收录与发布后反馈`,
+          basis: `行业默认模板：${industryDefaults.workflowName}`,
+          status: 'hypothesis'
+        }],
+        missingItemsToTrack: [
+          { id: 'missing_target', text: '主推产品或服务的事实资料', impact: '影响内容准确性与合规判断' },
+          { id: 'missing_account', text: '实际参与发布的账号与排期', impact: '影响笔记数量、分工与发布计划' }
+        ]
+      }
+    };
+  });
 
   // Context drawer
   const [showContextDrawer, setShowContextDrawer] = useState<boolean>(false);
@@ -69,7 +161,7 @@ export function CreateProjectWorkstation({
         cycleDays: 7,
         startDate,
         endDate,
-        projectName: '幼犬换粮搜索卡位与顾问答疑｜7天'
+        projectName: industryDefaults ? `${industryDefaults.planTemplates[0]}｜7天快速验证` : '7天快速验证方案'
       }));
     } else if (userText.includes('21天') || userText.includes('21 天')) {
       const startDate = new Date().toISOString().split('T')[0];
@@ -82,7 +174,7 @@ export function CreateProjectWorkstation({
         cycleDays: 21,
         startDate,
         endDate,
-        projectName: '幼犬换粮搜索卡位与顾问答疑｜21天'
+        projectName: industryDefaults ? `${industryDefaults.planTemplates[0]}｜21天完整周期` : '21天完整运营方案'
       }));
     }
   };
@@ -110,7 +202,9 @@ export function CreateProjectWorkstation({
         ...prev,
         coreGoalAndVerification: {
           ...prev.coreGoalAndVerification,
-          primaryBusinessGoal: '唯一目标：验证“幼犬换粮软便”核心搜索词排名前3位覆盖与有效收录，沉淀真实顾问答疑内容'
+          primaryBusinessGoal: industryDefaults
+            ? `唯一目标：验证“${industryDefaults.planTemplates[0]}”的搜索位置、平台收录与发布后反馈，沉淀可复用内容方法`
+            : '唯一目标：验证核心关键词的搜索位置、平台收录与发布后反馈'
         }
       }));
     }
@@ -281,6 +375,7 @@ export function CreateProjectWorkstation({
           onApplyProposal={handleApplyProposal}
           onConfirmAndCreate={handleConfirmAndCreateProject}
           onUpdateStrategyDraft={setStrategyDraft}
+          industryDefaults={industryDefaults}
         />
       </div>
 

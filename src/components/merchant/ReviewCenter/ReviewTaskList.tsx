@@ -1,6 +1,7 @@
 import React from "react";
 import { Plus, Search, Calendar, PanelLeftClose, AlertTriangle, CheckCircle2, Clock, Sparkles, Layers } from "lucide-react";
 import { ReviewTask } from "./types";
+import { formatChineseDate } from "../../../utils/formatDate";
 
 interface ReviewTaskListProps {
   tasks: ReviewTask[];
@@ -37,18 +38,18 @@ export function ReviewTaskList({
       if (!matchTitle && !matchProjects) return false;
     }
 
-    if (statusFilter === "进行中" && t.status !== "analyzing" && t.status !== "pending_confirmation") return false;
+    if (statusFilter === "分析中" && t.status !== "analyzing") return false;
     if (statusFilter === "已完成" && t.status !== "completed") return false;
-    if (statusFilter === "失败 / 异常" && t.status !== "exception") return false;
+    if (statusFilter === "数据不足" && t.status !== "exception") return false;
 
-    if (scopeFilter === "单项目" && t.mode !== "single") return false;
-    if (scopeFilter === "多项目" && t.mode !== "multi") return false;
+    if (scopeFilter === "单方案" && t.mode !== "single") return false;
+    if (scopeFilter === "多方案" && t.mode !== "multi") return false;
 
     return true;
   });
 
   return (
-    <div className="h-full w-[280px] bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden font-sans">
+    <div className="h-full w-[320px] bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden font-sans">
       {/* Header & Actions */}
       <div className="p-4 border-b border-border-default space-y-3 shrink-0">
         <div className="flex justify-between items-center">
@@ -86,10 +87,11 @@ export function ReviewTaskList({
 
         {/* Status Filter Pills */}
         <div className="flex gap-1 pt-0.5">
-          {["全部", "进行中", "已完成", "失败 / 异常"].map((st) => (
+          {["全部", "分析中", "已完成", "数据不足"].map((st) => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
+              title={st === "数据不足" ? "关键数据缺失或授权中断，无法形成可靠结论时认定" : undefined}
               className={`px-2 py-1 text-[11px] rounded-md font-medium transition-colors ${
                 statusFilter === st
                   ? "bg-btn-main text-white"
@@ -104,7 +106,7 @@ export function ReviewTaskList({
         {/* Scope Filter Sub-row */}
         <div className="flex items-center justify-between text-[11px] text-text-tertiary pt-0.5">
           <div className="flex gap-1.5">
-            {["全部范围", "单项目", "多项目"].map((sc) => {
+            {["全部范围", "单方案", "多方案"].map((sc) => {
               const active = (sc === "全部范围" && scopeFilter === "全部") || scopeFilter === sc;
               return (
                 <button
@@ -131,7 +133,7 @@ export function ReviewTaskList({
             <div>
               <p className="font-medium text-text-secondary">还没有复盘任务</p>
               <p className="text-[11.5px] text-text-tertiary mt-0.5">
-                你可以创建一个复盘任务，按项目、时间范围和分析目标生成复盘结果
+                你可以创建一个复盘任务，按方案、复盘方向和观察窗口生成复盘结果
               </p>
             </div>
             <button
@@ -161,13 +163,7 @@ export function ReviewTaskList({
             } else if (task.status === "exception") {
               statusBadge = (
                 <span className="px-1.5 py-0.5 bg-red-50 text-red-700 border border-red-200 text-[10.5px] rounded-md font-medium">
-                  {task.statusText || "1项异常"}
-                </span>
-              );
-            } else if (task.status === "pending_confirmation") {
-              statusBadge = (
-                <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[10.5px] rounded-md font-medium">
-                  待确认
+                  数据不足
                 </span>
               );
             }
@@ -202,14 +198,14 @@ export function ReviewTaskList({
                 {/* Date range */}
                 <div className="flex items-center gap-1 text-[11.5px] text-text-secondary mb-1">
                   <Calendar size={12} className="text-text-tertiary shrink-0" />
-                  <span className="truncate">{task.dateRange.start} 至 {task.dateRange.end}</span>
+                  <span className="truncate">{formatChineseDate(task.dateRange.start)} 至 {formatChineseDate(task.dateRange.end)}</span>
                 </div>
 
                 {/* Project Summary & Update time */}
                 <div className="flex items-center justify-between text-[11px] text-text-tertiary pt-0.5">
                   <span className="truncate max-w-[140px] flex items-center gap-1" title={task.projectNames.join(', ')}>
                     <Layers size={11} className="shrink-0 text-text-disabled" />
-                    <span>{task.projectNames.length} 个项目 · {task.projectNames[0]}</span>
+                    <span>{task.projectNames.length} 个方案 · {task.projectNames[0]}</span>
                   </span>
                   <span>{task.updatedAt}</span>
                 </div>

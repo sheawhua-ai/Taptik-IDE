@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from "react";
 import {
   Activity, AlertTriangle, BarChart3, CalendarDays, CheckCircle2,
-  ChevronRight, Clock3, Database, FileText, Link2, Plus, Radio,
-  RefreshCw, Search, TrendingUp, Users, X
+  ChevronRight, Clock3, Database, ExternalLink, FileText, Plus, Radio,
+  RefreshCw, Save, Search, ShieldCheck, Smartphone, TrendingUp, UserRound,
+  Users, X
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
 import { formatChineseDate } from "../../utils/formatDate";
 
 type AccountRelation = "自有品牌号" | "员工KOS" | "协作KOC";
 type CollectionState = "数据已更新" | "正在采集" | "部分数据缺失" | "采集失败" | "尚未采集";
-type DetailTab = "calendar" | "notes" | "live" | "followers" | "collection";
+type DetailTab = "config" | "calendar" | "notes" | "live" | "followers" | "collection";
 
 interface HistoricalNoteMetric {
   id: string;
@@ -46,9 +47,17 @@ interface AccountProfile {
   id: string;
   nickname: string;
   xhsId: string;
+  avatarUrl: string;
+  platformProfileUpdatedAt: string;
   relation: AccountRelation;
   matrixRole: string;
   description: string;
+  persona: string;
+  publishDevice: string;
+  devicePhone: string;
+  employeeName: string;
+  employeeDept: string;
+  publishInstruction: string;
   collectionState: CollectionState;
   lastCollectedAt?: string;
   nextCollectionAt?: string;
@@ -60,6 +69,28 @@ interface AccountProfile {
   followerTrend: number[];
   collectionLogs: CollectionLog[];
 }
+
+interface AccountConfigDraft {
+  relation: AccountRelation;
+  matrixRole: string;
+  persona: string;
+  publishDevice: string;
+  devicePhone: string;
+  employeeName: string;
+  employeeDept: string;
+  publishInstruction: string;
+}
+
+const toConfigDraft = (profile: AccountProfile): AccountConfigDraft => ({
+  relation: profile.relation,
+  matrixRole: profile.matrixRole,
+  persona: profile.persona,
+  publishDevice: profile.publishDevice,
+  devicePhone: profile.devicePhone,
+  employeeName: profile.employeeName,
+  employeeDept: profile.employeeDept,
+  publishInstruction: profile.publishInstruction
+});
 
 interface AccountScheduleItem {
   id: string;
@@ -75,9 +106,17 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     id: "account-brand",
     nickname: "品牌官方旗舰店",
     xhsId: "taptik_pet_official",
+    avatarUrl: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=96&h=96&fit=crop",
+    platformProfileUpdatedAt: "2026-08-25 10:30",
     relation: "自有品牌号",
     matrixRole: "品牌背书与权威科普",
     description: "承担品牌权威解释、产品信息和搜索词卡位。",
+    persona: "可信、克制的品牌营养顾问，以检测依据和喂养方法建立专业感。",
+    publishDevice: "发布手机 A-01",
+    devicePhone: "186****1836",
+    employeeName: "林晓雯",
+    employeeDept: "品牌运营组",
+    publishInstruction: "发布前核对产品批次与检测报告；评论区专业问题在 30 分钟内转交营养顾问。",
     collectionState: "数据已更新",
     lastCollectedAt: "2026-08-25 10:30",
     nextCollectionAt: "2026-08-25 12:30",
@@ -102,9 +141,17 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     id: "account-store",
     nickname: "店长号_陆家嘴店",
     xhsId: "store_lujiazui_pet",
+    avatarUrl: "https://images.unsplash.com/photo-1560743641-3914f2c45636?w=96&h=96&fit=crop",
+    platformProfileUpdatedAt: "2026-08-25 09:40",
     relation: "员工KOS",
     matrixRole: "门店专业解答",
     description: "以店长视角讲解喂养问题，承接门店咨询。",
+    persona: "在店十年的宠粮店长，用顾客案例解释换粮问题，语言直接、可靠。",
+    publishDevice: "发布手机 A-02",
+    devicePhone: "186****5219",
+    employeeName: "陆佳怡",
+    employeeDept: "陆家嘴门店",
+    publishInstruction: "按发布任务完成店内实拍；收到指令后 2 小时内发布并回传笔记链接。",
     collectionState: "部分数据缺失",
     lastCollectedAt: "2026-08-25 09:40",
     nextCollectionAt: "2026-08-25 13:40",
@@ -125,9 +172,17 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     id: "account-wang",
     nickname: "小红薯_汪汪队",
     xhsId: "wangwang_puppy",
+    avatarUrl: "https://images.unsplash.com/photo-1558788353-f76d92427f16?w=96&h=96&fit=crop",
+    platformProfileUpdatedAt: "2026-08-25 08:15",
     relation: "协作KOC",
     matrixRole: "消费者真实体验",
     description: "通过内容包参与体验，发布真实换粮记录。",
+    persona: "新手金毛家长，重点记录七日换粮中的便便、食欲与精神状态变化。",
+    publishDevice: "协作手机 K-01",
+    devicePhone: "137****6608",
+    employeeName: "周婧",
+    employeeDept: "KOC 协作组",
+    publishInstruction: "由协作负责人通知领取内容包的 KOC；只提醒节点，不改写消费者真实体验。",
     collectionState: "正在采集",
     lastCollectedAt: "2026-08-25 08:15",
     nextCollectionAt: "2026-08-25 12:15",
@@ -147,9 +202,17 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     id: "account-mimi",
     nickname: "小红薯_咪咪猫",
     xhsId: "mimi_pet_notes",
+    avatarUrl: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=96&h=96&fit=crop",
+    platformProfileUpdatedAt: "2026-08-24 18:20",
     relation: "协作KOC",
     matrixRole: "消费者避坑分享",
     description: "以消费者视角分享换粮避坑与使用感受。",
+    persona: "谨慎型养猫用户，用日常观察讲换粮踩坑与解决过程。",
+    publishDevice: "协作手机 K-02",
+    devicePhone: "139****2471",
+    employeeName: "周婧",
+    employeeDept: "KOC 协作组",
+    publishInstruction: "周婧统一发送发布提醒；体验反馈与问卷绑定，确认素材完整后再通知发布。",
     collectionState: "采集失败",
     lastCollectedAt: "2026-08-24 18:20",
     nextCollectionAt: "2026-08-25 14:20",
@@ -196,9 +259,9 @@ export const AccountAssetsV2: React.FC = () => {
   const [relationFilter, setRelationFilter] = useState<"all" | AccountRelation>("all");
   const [collectionFilter, setCollectionFilter] = useState<"all" | CollectionState>("all");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [newXhsId, setNewXhsId] = useState("");
+  const [authorizationStep, setAuthorizationStep] = useState<"login" | "waiting" | "profile">("login");
   const [newRelation, setNewRelation] = useState<AccountRelation>("员工KOS");
+  const [configDraft, setConfigDraft] = useState<AccountConfigDraft | null>(null);
   const [feedback, setFeedback] = useState("");
 
   const scheduleMap = useMemo<Map<string, AccountScheduleItem[]>>(() => {
@@ -247,15 +310,39 @@ export const AccountAssetsV2: React.FC = () => {
     showFeedback("已加入数据采集队列");
   };
 
+  const openAccount = (profile: AccountProfile, tab: DetailTab = "config") => {
+    setSelectedId(profile.id);
+    setDetailTab(tab);
+    setConfigDraft(toConfigDraft(profile));
+  };
+
+  const saveAccountConfig = () => {
+    if (!selected || !configDraft) return;
+    const duplicatedDevice = profiles.find(profile => profile.id !== selected.id && profile.devicePhone === configDraft.devicePhone && configDraft.devicePhone.trim());
+    if (duplicatedDevice) {
+      showFeedback(`该手机已绑定「${duplicatedDevice.nickname}」，一机只能对应一个账号`);
+      return;
+    }
+    setProfiles(previous => previous.map(profile => profile.id === selected.id ? { ...profile, ...configDraft, description: configDraft.persona } : profile));
+    showFeedback("运营配置已保存；平台头像和昵称仍由小红书同步");
+  };
+
   const addAccount = () => {
-    if (!newName.trim() || !newXhsId.trim()) return;
     const next: AccountProfile = {
       id: `account-${Date.now()}`,
-      nickname: newName.trim(),
-      xhsId: newXhsId.trim(),
+      nickname: "陆家嘴萌宠顾问",
+      xhsId: "xhs_668821039",
+      avatarUrl: "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=96&h=96&fit=crop",
+      platformProfileUpdatedAt: "刚刚",
       relation: newRelation,
       matrixRole: newRelation === "自有品牌号" ? "品牌内容发布" : newRelation === "员工KOS" ? "员工专业内容" : "消费者体验内容",
       description: "待根据后续发布计划补充账号矩阵角色。",
+      persona: "待配置账号人设与表达边界。",
+      publishDevice: "待绑定专用手机",
+      devicePhone: "",
+      employeeName: "待分配",
+      employeeDept: "",
+      publishInstruction: "待配置发布提醒与回传要求。",
       collectionState: "正在采集",
       nextCollectionAt: "首次采集队列中",
       coverage: [],
@@ -266,44 +353,42 @@ export const AccountAssetsV2: React.FC = () => {
     };
     setProfiles(previous => [next, ...previous]);
     setShowAddModal(false);
-    setNewName("");
-    setNewXhsId("");
-    showFeedback("账号已加入，正在开始首次数据采集");
+    setAuthorizationStep("login");
+    showFeedback("已通过小红书登录获取账号资料，正在开始首次数据采集");
   };
 
   return (
     <div className="flex-1 h-full overflow-y-auto bg-canvas">
-      <div className="border-b border-border-default bg-surface px-6 py-5">
+      <div className="border-b border-border-default bg-surface px-6 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-[20px] font-semibold text-text-primary">账号资产</h1>
               <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[11px] text-text-secondary">{profiles.length} 个发布账号</span>
             </div>
-            <p className="mt-1 text-[13px] text-text-secondary">统一查看账号发布日历与后台爬虫数据表现，不推断账号是否可用。</p>
+            <p className="mt-1 text-[12px] text-text-secondary">平台资料由小红书同步；Taptik 管理账号角色、发布员工与一机一号关系。</p>
           </div>
-          <button onClick={() => setShowAddModal(true)} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3.5 py-2 text-[12.5px] font-semibold text-white hover:bg-action-primary-hover">
+          <button onClick={() => { setAuthorizationStep("login"); setShowAddModal(true); }} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3.5 py-2 text-[12.5px] font-semibold text-white hover:bg-action-primary-hover">
             <Plus size={15} />加入账号
           </button>
         </div>
 
-        <div className="mt-5 grid grid-cols-4 gap-3">
+        <div className="mt-3 grid grid-cols-4 divide-x divide-border-default rounded-xl border border-border-default bg-surface-subtle">
           {[
             { label: "发布账号", value: profiles.length, suffix: "个", note: "已加入账号矩阵" },
             { label: "发布安排", value: allScheduleCount, suffix: "篇", note: "与方案账号矩阵一致" },
             { label: "当前发布任务", value: activePublishCount, suffix: "项", note: "全部为人工发布" },
             { label: "数据待补齐", value: incompleteCollectionCount, suffix: "个", note: "包含采集中与失败" }
           ].map(item => (
-            <div key={item.label} className="rounded-xl border border-border-default bg-surface-subtle px-4 py-3">
-              <div className="text-[11.5px] text-text-tertiary">{item.label}</div>
-              <div className="mt-1 text-[20px] font-semibold text-text-primary tabular-nums">{item.value}<span className="ml-1 text-[12px] font-normal text-text-secondary">{item.suffix}</span></div>
-              <div className="mt-1 text-[10.5px] text-text-tertiary">{item.note}</div>
+            <div key={item.label} className="flex items-center justify-between gap-3 px-4 py-2.5">
+              <div><div className="text-[10.5px] text-text-tertiary">{item.label}</div><div className="mt-0.5 text-[9.5px] text-text-tertiary">{item.note}</div></div>
+              <div className="text-[18px] font-semibold text-text-primary tabular-nums">{item.value}<span className="ml-0.5 text-[10px] font-normal text-text-secondary">{item.suffix}</span></div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border-default bg-surface px-6 py-3">
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border-default bg-surface px-6 py-2.5">
         <div className="relative w-64">
           <Search size={14} className="absolute left-3 top-2.5 text-text-tertiary" />
           <input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索账号、ID或矩阵角色..." className="w-full rounded-lg border border-border-default bg-surface pl-8 pr-3 py-2 text-[12px] outline-none focus:border-border-strong" />
@@ -322,10 +407,10 @@ export const AccountAssetsV2: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 px-6">
         <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
-          <div className="grid grid-cols-[1.45fr_1.1fr_1.25fr_1fr_1fr_1.25fr_92px] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[11px] font-medium text-text-tertiary">
-            <span>账号</span><span>矩阵角色</span><span>发布安排</span><span>发布任务</span><span>近期笔记</span><span>数据采集</span><span>操作</span>
+          <div className="grid grid-cols-[1.4fr_1.25fr_1.2fr_1.25fr_1fr_72px] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2 text-[10.5px] font-medium text-text-tertiary">
+            <span>小红书账号</span><span>角色与人设</span><span>发布员工 / 手机</span><span>排期与任务</span><span>数据采集</span><span>操作</span>
           </div>
           {filteredProfiles.map(profile => {
             const schedules = scheduleMap.get(profile.nickname) || [];
@@ -333,33 +418,30 @@ export const AccountAssetsV2: React.FC = () => {
             const activeTasks = schedules.filter(item => !["已发布", "观察中", "已关闭"].includes(item.publishStatus));
             const lastNote = profile.noteMetrics[0];
             return (
-              <button key={profile.id} onClick={() => { setSelectedId(profile.id); setDetailTab("calendar"); }} className="grid w-full grid-cols-[1.45fr_1.1fr_1.25fr_1fr_1fr_1.25fr_92px] items-center gap-3 border-b border-border-subtle px-4 py-4 text-left last:border-b-0 hover:bg-surface-hover">
-                <span className="flex min-w-0 items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-neutral-950 text-[14px] font-semibold text-white">{profile.nickname.slice(0, 1)}</span>
+              <button key={profile.id} onClick={() => openAccount(profile)} className="grid w-full grid-cols-[1.4fr_1.25fr_1.2fr_1.25fr_1fr_72px] items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-surface-hover">
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <img src={profile.avatarUrl} alt="" className="h-9 w-9 shrink-0 rounded-full border border-border-default object-cover" />
                   <span className="min-w-0">
                     <span className="block truncate text-[13px] font-semibold text-text-primary">{profile.nickname}</span>
-                    <span className="mt-0.5 block truncate text-[10.5px] text-text-tertiary">ID: {profile.xhsId} · {profile.relation}</span>
+                    <span className="mt-0.5 block truncate text-[10px] text-text-tertiary">ID: {profile.xhsId} · 平台同步</span>
                   </span>
                 </span>
                 <span className="min-w-0">
                   <span className="block truncate text-[12px] font-medium text-text-primary">{profile.matrixRole}</span>
-                  <span className="mt-0.5 block truncate text-[10.5px] text-text-tertiary">{profile.description}</span>
+                  <span className="mt-0.5 block truncate text-[10px] text-text-tertiary">{profile.persona}</span>
                 </span>
                 <span>
-                  {next ? <><span className="block text-[12px] font-medium text-text-primary">{formatChineseDate(next.plannedDate)}</span><span className="mt-0.5 block truncate text-[10.5px] text-text-tertiary">{next.title}</span></> : <span className="text-[11px] text-text-tertiary">暂无发布安排</span>}
+                  <span className="block text-[11.5px] font-medium text-text-primary">{profile.employeeName}<span className="ml-1 font-normal text-text-tertiary">· {profile.employeeDept}</span></span>
+                  <span className="mt-0.5 block truncate text-[10px] text-text-tertiary">{profile.publishDevice} · {profile.devicePhone || "未绑定"}</span>
                 </span>
                 <span>
-                  <span className="block text-[12px] font-semibold text-text-primary">{activeTasks.length} 项</span>
-                  <span className="mt-0.5 block text-[10.5px] text-text-tertiary">{activeTasks[0]?.publishStatus || "无进行中任务"}</span>
-                </span>
-                <span>
-                  {lastNote ? <><span className="block text-[12px] font-medium text-text-primary">{lastNote.views?.toLocaleString() || "未获取"} 阅读</span><span className="mt-0.5 block text-[10.5px] text-text-tertiary">{formatChineseDate(lastNote.publishedAt, true)}</span></> : <span className="text-[11px] text-text-tertiary">暂无数据</span>}
+                  {next ? <><span className="block text-[11.5px] font-medium text-text-primary">{formatChineseDate(next.plannedDate)} · {activeTasks.length} 项任务</span><span className="mt-0.5 block truncate text-[10px] text-text-tertiary">{next.title}</span></> : <span className="text-[10.5px] text-text-tertiary">暂无发布安排</span>}
                 </span>
                 <span>
                   <span className={`inline-flex rounded-md border px-2 py-0.5 text-[10.5px] font-medium ${stateTone[profile.collectionState]}`}>{profile.collectionState}</span>
-                  <span className="mt-1 block text-[10.5px] text-text-tertiary">{profile.lastCollectedAt ? `${formatChineseDate(profile.lastCollectedAt, true)} 更新` : "等待首次采集"}</span>
+                  <span className="mt-0.5 block text-[10px] text-text-tertiary">{lastNote ? `${lastNote.views?.toLocaleString() || "未获取"} 阅读` : profile.lastCollectedAt ? `${formatChineseDate(profile.lastCollectedAt, true)} 更新` : "等待首次采集"}</span>
                 </span>
-                <span className="flex items-center justify-end gap-1 text-[11px] font-medium text-text-secondary">查看<ChevronRight size={14} /></span>
+                <span className="flex items-center justify-end gap-0.5 text-[10.5px] font-medium text-text-secondary">管理<ChevronRight size={13} /></span>
               </button>
             );
           })}
@@ -373,10 +455,10 @@ export const AccountAssetsV2: React.FC = () => {
             <div className="border-b border-border-default px-5 py-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-950 text-[15px] font-semibold text-white">{selected.nickname.slice(0, 1)}</div>
+                  <img src={selected.avatarUrl} alt="" className="h-11 w-11 rounded-full border border-border-default object-cover" />
                   <div>
                     <div className="flex items-center gap-2"><h2 className="text-[16px] font-semibold text-text-primary">{selected.nickname}</h2><span className="rounded border border-border-default bg-surface-subtle px-1.5 py-0.5 text-[10px] text-text-secondary">{selected.relation}</span></div>
-                    <div className="mt-1 text-[11px] text-text-tertiary">ID: {selected.xhsId} · {selected.matrixRole}</div>
+                    <div className="mt-1 text-[11px] text-text-tertiary">ID: {selected.xhsId} · 头像与昵称由小红书同步</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -386,6 +468,7 @@ export const AccountAssetsV2: React.FC = () => {
               </div>
               <div className="mt-4 flex items-center gap-1 border-b border-border-subtle">
                 {([
+                  ["config", "运营配置", UserRound],
                   ["calendar", "发布日历", CalendarDays],
                   ["notes", "笔记表现", FileText],
                   ["live", "直播表现", Radio],
@@ -398,6 +481,34 @@ export const AccountAssetsV2: React.FC = () => {
             </div>
 
             <div className="flex-1 overflow-y-auto bg-canvas p-5">
+              {detailTab === "config" && configDraft && (
+                <div className="space-y-4">
+                  <section className="rounded-xl border border-border-default bg-surface p-4">
+                    <div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2 text-[12.5px] font-semibold text-text-primary"><ShieldCheck size={14} />小红书平台资料</div><p className="mt-1 text-[10.5px] text-text-tertiary">登录小红书创作服务平台后获取，Taptik 内不可手工修改。</p></div><span className="rounded-md bg-emerald-50 px-2 py-1 text-[10px] font-medium text-emerald-700">已同步</span></div>
+                    <div className="mt-3 flex items-center gap-3 rounded-lg bg-surface-subtle p-3"><img src={selected.avatarUrl} alt="" className="h-12 w-12 rounded-full object-cover" /><div><div className="text-[13px] font-semibold text-text-primary">{selected.nickname}</div><div className="mt-0.5 text-[10.5px] text-text-tertiary">小红书号：{selected.xhsId}</div><div className="mt-0.5 text-[9.5px] text-text-tertiary">最近同步：{formatChineseDate(selected.platformProfileUpdatedAt, true) || selected.platformProfileUpdatedAt}</div></div></div>
+                  </section>
+
+                  <section className="rounded-xl border border-border-default bg-surface p-4">
+                    <div className="flex items-start justify-between gap-4"><div><div className="text-[12.5px] font-semibold text-text-primary">Taptik 运营配置</div><p className="mt-1 text-[10.5px] text-text-tertiary">决定该账号以什么身份参与方案，以及由谁使用哪台手机完成发布。</p></div><button onClick={saveAccountConfig} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-3 py-2 text-[11px] font-medium text-white"><Save size={13} />保存配置</button></div>
+                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                      <ConfigField label="账号关系"><select value={configDraft.relation} onChange={event => setConfigDraft({ ...configDraft, relation: event.target.value as AccountRelation })} className="w-full rounded-lg border border-border-default bg-surface px-3 py-2 text-[11.5px] outline-none"><option>自有品牌号</option><option>员工KOS</option><option>协作KOC</option></select></ConfigField>
+                      <ConfigField label="账号角色"><input value={configDraft.matrixRole} onChange={event => setConfigDraft({ ...configDraft, matrixRole: event.target.value })} className="w-full rounded-lg border border-border-default px-3 py-2 text-[11.5px] outline-none" /></ConfigField>
+                      <div className="md:col-span-2"><ConfigField label="账号人设"><textarea value={configDraft.persona} onChange={event => setConfigDraft({ ...configDraft, persona: event.target.value })} rows={3} className="w-full resize-none rounded-lg border border-border-default px-3 py-2 text-[11.5px] leading-5 outline-none" /></ConfigField></div>
+                    </div>
+                    <div className="my-4 border-t border-border-subtle" />
+                    <div className="flex items-center gap-2 text-[11.5px] font-semibold text-text-primary"><Smartphone size={14} />发布责任与设备</div>
+                    <div className="mt-3 grid gap-4 md:grid-cols-2">
+                      <ConfigField label="发布手机"><input value={configDraft.publishDevice} onChange={event => setConfigDraft({ ...configDraft, publishDevice: event.target.value })} placeholder="例如：发布手机 A-03" className="w-full rounded-lg border border-border-default px-3 py-2 text-[11.5px] outline-none" /></ConfigField>
+                      <ConfigField label="对应手机号 / 设备标识" hint="一机只能绑定一个账号"><input value={configDraft.devicePhone} onChange={event => setConfigDraft({ ...configDraft, devicePhone: event.target.value })} placeholder="例如：186****5219" className="w-full rounded-lg border border-border-default px-3 py-2 text-[11.5px] outline-none" /></ConfigField>
+                      <ConfigField label="发布负责人" hint="同一员工可以负责多个账号"><input value={configDraft.employeeName} onChange={event => setConfigDraft({ ...configDraft, employeeName: event.target.value })} className="w-full rounded-lg border border-border-default px-3 py-2 text-[11.5px] outline-none" /></ConfigField>
+                      <ConfigField label="所属团队 / 门店"><input value={configDraft.employeeDept} onChange={event => setConfigDraft({ ...configDraft, employeeDept: event.target.value })} className="w-full rounded-lg border border-border-default px-3 py-2 text-[11.5px] outline-none" /></ConfigField>
+                      <div className="md:col-span-2"><ConfigField label="发布指令与回传要求"><textarea value={configDraft.publishInstruction} onChange={event => setConfigDraft({ ...configDraft, publishInstruction: event.target.value })} rows={3} className="w-full resize-none rounded-lg border border-border-default px-3 py-2 text-[11.5px] leading-5 outline-none" /></ConfigField></div>
+                    </div>
+                    <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-[10.5px] leading-5 text-blue-900">系统约束：一台发布手机只能绑定一个小红书账号；同一员工可以接收并处理多个账号的发布任务。</div>
+                  </section>
+                </div>
+              )}
+
               {detailTab === "calendar" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between rounded-xl border border-border-default bg-surface px-4 py-3">
@@ -475,15 +586,17 @@ export const AccountAssetsV2: React.FC = () => {
 
       {showAddModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/35 p-4" onClick={() => setShowAddModal(false)}>
-          <div className="w-full max-w-md rounded-2xl border border-border-default bg-surface p-5 shadow-2xl" onClick={event => event.stopPropagation()}>
-            <div className="flex items-start justify-between"><div><h3 className="text-[15px] font-semibold text-text-primary">加入发布账号</h3><p className="mt-1 text-[11px] text-text-tertiary">加入后可参与方案发布日历，并开始首次账号后台爬虫采集。</p></div><button onClick={() => setShowAddModal(false)} className="p-1 text-text-tertiary"><X size={17} /></button></div>
-            <div className="mt-5 space-y-4">
-              <label className="block"><span className="text-[11.5px] font-medium text-text-secondary">账号昵称</span><input value={newName} onChange={event => setNewName(event.target.value)} placeholder="输入小红书账号昵称" className="mt-1.5 w-full rounded-lg border border-border-default px-3 py-2.5 text-[12px] outline-none focus:border-border-strong" /></label>
-              <label className="block"><span className="text-[11.5px] font-medium text-text-secondary">平台账号ID</span><div className="relative mt-1.5"><Link2 size={14} className="absolute left-3 top-2.5 text-text-tertiary" /><input value={newXhsId} onChange={event => setNewXhsId(event.target.value)} placeholder="用于匹配发布笔记与后台数据" className="w-full rounded-lg border border-border-default py-2.5 pl-8 pr-3 text-[12px] outline-none focus:border-border-strong" /></div></label>
-              <label className="block"><span className="text-[11.5px] font-medium text-text-secondary">账号关系</span><select value={newRelation} onChange={event => setNewRelation(event.target.value as AccountRelation)} className="mt-1.5 w-full rounded-lg border border-border-default bg-surface px-3 py-2.5 text-[12px] outline-none"><option>自有品牌号</option><option>员工KOS</option><option>协作KOC</option></select></label>
-              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-[11px] leading-5 text-blue-900">这里只记录发布关系与数据采集状态，不判断账号是否可用。</div>
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border-default bg-surface shadow-2xl" onClick={event => event.stopPropagation()}>
+            <div className="flex items-start justify-between border-b border-border-default px-5 py-4"><div><h3 className="text-[15px] font-semibold text-text-primary">登录小红书并加入账号</h3><p className="mt-1 text-[11px] text-text-tertiary">昵称、头像和小红书号由创作服务平台返回，无需手工填写。</p></div><button onClick={() => setShowAddModal(false)} className="p-1 text-text-tertiary"><X size={17} /></button></div>
+            <div className="bg-canvas p-5">
+              <div className="overflow-hidden rounded-xl border border-border-default bg-white shadow-sm">
+                <div className="flex items-center gap-2 border-b border-border-default bg-surface-subtle px-3 py-2"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-300" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /><div className="ml-2 flex flex-1 items-center justify-center rounded-md border border-border-default bg-white py-1 text-[9.5px] text-text-tertiary">https://creator.xiaohongshu.com</div></div>
+                {authorizationStep === "login" && <div className="grid min-h-[330px] md:grid-cols-[1.15fr_1fr]"><div className="flex flex-col justify-center bg-gradient-to-br from-rose-50 to-white p-8"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ff2442] text-[15px] font-bold text-white">薯</div><h4 className="mt-4 text-[18px] font-semibold text-text-primary">小红书创作服务平台</h4><p className="mt-2 text-[11.5px] leading-6 text-text-secondary">登录后授权 Taptik 获取当前账号的基础资料和创作数据，用于账号矩阵、发布日历与复盘。</p><div className="mt-4 flex items-center gap-2 text-[10.5px] text-text-tertiary"><ShieldCheck size={14} className="text-emerald-600" />不在 Taptik 保存登录密码</div></div><div className="flex flex-col justify-center p-8"><div className="text-[13px] font-semibold text-text-primary">使用小红书账号登录</div><p className="mt-1 text-[10.5px] text-text-tertiary">将在创作服务平台完成登录与授权。</p><button onClick={() => { window.open("https://creator.xiaohongshu.com", "_blank", "noopener,noreferrer"); setAuthorizationStep("waiting"); }} className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#ff2442] px-4 py-2.5 text-[12px] font-semibold text-white">打开登录页面<ExternalLink size={13} /></button><div className="mt-3 text-center text-[9.5px] text-text-tertiary">完成登录后，本窗口将获取账号资料</div></div></div>}
+                {authorizationStep === "waiting" && <div className="flex min-h-[330px] flex-col items-center justify-center p-8 text-center"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50"><RefreshCw size={20} className="animate-spin text-blue-600" /></div><h4 className="mt-4 text-[14px] font-semibold text-text-primary">等待小红书登录授权</h4><p className="mt-2 max-w-sm text-[11px] leading-5 text-text-tertiary">请在刚打开的创作服务平台完成登录。授权回调后将自动读取头像、昵称和小红书号。</p><button onClick={() => setAuthorizationStep("profile")} className="mt-5 rounded-lg border border-border-default bg-white px-4 py-2 text-[11.5px] font-medium text-text-primary">已完成登录，获取账号资料</button></div>}
+                {authorizationStep === "profile" && <div className="min-h-[330px] p-7"><div className="flex items-center gap-2 text-[12px] font-semibold text-emerald-700"><CheckCircle2 size={15} />已获取小红书账号资料</div><div className="mt-4 flex items-center gap-3 rounded-xl bg-surface-subtle p-4"><img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=96&h=96&fit=crop" alt="" className="h-14 w-14 rounded-full object-cover" /><div><div className="text-[14px] font-semibold text-text-primary">陆家嘴萌宠顾问</div><div className="mt-1 text-[10.5px] text-text-tertiary">小红书号：xhs_668821039</div><div className="mt-1 text-[9.5px] text-emerald-700">头像、昵称来自小红书接口</div></div></div><label className="mt-5 block"><span className="text-[11px] font-medium text-text-secondary">加入后的账号关系</span><select value={newRelation} onChange={event => setNewRelation(event.target.value as AccountRelation)} className="mt-1.5 w-full rounded-lg border border-border-default bg-white px-3 py-2.5 text-[11.5px] outline-none"><option>自有品牌号</option><option>员工KOS</option><option>协作KOC</option></select></label><div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-[10.5px] leading-5 text-blue-900">加入后进入“运营配置”，继续设置账号角色、人设、专用手机、发布员工和发布指令。</div></div>}
+              </div>
             </div>
-            <div className="mt-5 flex justify-end gap-2"><button onClick={() => setShowAddModal(false)} className="rounded-lg px-3 py-2 text-[12px] text-text-secondary">取消</button><button disabled={!newName.trim() || !newXhsId.trim()} onClick={addAccount} className="rounded-lg bg-action-primary px-4 py-2 text-[12px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40">加入并开始采集</button></div>
+            <div className="flex items-center justify-between border-t border-border-default px-5 py-4"><span className="text-[10px] text-text-tertiary">一台手机仅绑定一个账号；员工可负责多个账号。</span><div className="flex gap-2"><button onClick={() => setShowAddModal(false)} className="rounded-lg px-3 py-2 text-[12px] text-text-secondary">取消</button>{authorizationStep === "profile" && <button onClick={addAccount} className="rounded-lg bg-action-primary px-4 py-2 text-[12px] font-semibold text-white">确认加入账号</button>}</div></div>
           </div>
         </div>
       )}
@@ -504,4 +617,8 @@ function DataScopeNotice({ profile, scope }: { profile: AccountProfile; scope: s
 
 function InfoCard({ label, value, icon: Icon }: { label: string; value: string; icon: React.ElementType }) {
   return <div className="rounded-xl border border-border-default bg-surface p-4"><div className="flex items-center gap-1.5 text-[10.5px] text-text-tertiary"><Icon size={13} />{label}</div><div className="mt-2 text-[12px] font-semibold text-text-primary">{value}</div></div>;
+}
+
+function ConfigField({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  return <label className="block"><span className="flex items-center justify-between gap-2 text-[10.5px] font-medium text-text-secondary"><span>{label}</span>{hint && <span className="font-normal text-text-tertiary">{hint}</span>}</span><span className="mt-1.5 block">{children}</span></label>;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Download, FileCode, Printer, Check, ShieldCheck, Sparkles, FileText, CheckCircle2 } from "lucide-react";
+import { X, Download, FolderOpen, ShieldCheck, Table2, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { ReviewTask } from "./types";
 
@@ -11,6 +11,8 @@ interface ExportReportModalProps {
 
 export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalProps) {
   const [exportType, setExportType] = useState<"html" | "pdf">("html");
+  const [includeSourceData, setIncludeSourceData] = useState(true);
+  const [saveToProjectDirectory, setSaveToProjectDirectory] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -385,44 +387,95 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
 </html>`;
   };
 
-  // Export as HTML file
-  const handleExportHTML = () => {
-    setDownloading(true);
-    const htmlContent = generateStandaloneHTML();
-    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${task.title}_运营复盘报告.html`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const safeFileName = task.title.replace(/[\\/:*?"<>|]/g, "-");
+  const xmlEscape = (value: unknown) => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const workbookCell = (value: unknown) => `<Cell><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`;
+  const workbookSheet = (name: string, rows: unknown[][]) => `<Worksheet ss:Name="${xmlEscape(name)}"><Table>${rows.map(row => `<Row>${row.map(workbookCell).join("")}</Row>`).join("")}</Table></Worksheet>`;
 
-    setTimeout(() => {
-      setDownloading(false);
-      setSuccessMsg("已成功生成并下载 HTML 报告，可在浏览器中直接打开与分享！");
-      setTimeout(() => setSuccessMsg(null), 3000);
-    }, 500);
+  const generateSourceWorkbook = () => {
+    const summaryRows = [
+      ["字段", "内容"], ["复盘任务", task.title], ["复盘周期", `${task.dateRange.start} 至 ${task.dateRange.end}`],
+      ["方案范围", task.projectNames.join("、")], ["复盘问题", task.goalDescription], ["目标", task.targetObjectiveLabel],
+      ["样本笔记", `${task.analysisDetails.summary.sampleNotesCount} 篇`], ["数据来源", task.analysisDetails.summary.dataSource],
+      ["综合结论", task.analysisDetails.finalConclusion]
+    ];
+    const metricRows = [["指标", "上一周期", "本周期", "变化", "方向", "说明"], ...task.analysisDetails.metricShifts.map(item => [item.metric, item.before, item.current, item.change, item.isGood ? "改善" : "下降", item.note])];
+    const planRows = [["方案ID", "方案名称", "复盘周期"], ...task.projectNames.map((name, index) => [task.projectIds[index] || `plan-${index + 1}`, name, task.dateRange.label])];
+    const actionRows = [["优先级", "类别", "建议动作", "修改目标", "预期收益", "依据", "当前状态"], ...task.suggestedActions.map(action => [action.priority, action.category, action.title, action.target, action.expectedGain, action.reason, action.appliedDestinationLabel || "待人工确认"] )];
+    const scopeRows = [["口径项", "内容"], ["数据截止", task.historyVersions[0]?.dataCutoff || task.updatedAt], ["观察窗口", task.observationWindowLabel || "截至当前"], ["复盘方向", (task.reviewDirections || []).join("、") || "完整复盘"], ["说明", "缺失字段保持为空，不用计划值或 AI 估算值补齐"]];
+    return `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">${workbookSheet("复盘概览", summaryRows)}${workbookSheet("指标明细", metricRows)}${workbookSheet("方案范围", planRows)}${workbookSheet("优化动作", actionRows)}${workbookSheet("数据口径", scopeRows)}</Workbook>`;
   };
 
-  // Export as PDF (Open optimized print window)
-  const handleExportPDF = () => {
+  const downloadFile = (fileName: string, content: string, type: string) => {
+    const url = URL.createObjectURL(new Blob([content], { type }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const deliverFiles = async (files: { name: string; content: string; type: string }[]) => {
+    const directoryPicker = (window as typeof window & { showDirectoryPicker?: (options?: { mode?: string }) => Promise<any> }).showDirectoryPicker;
+    if (saveToProjectDirectory && directoryPicker) {
+      const directory = await directoryPicker({ mode: "readwrite" });
+      for (const file of files) {
+        const handle = await directory.getFileHandle(file.name, { create: true });
+        const writer = await handle.createWritable();
+        await writer.write(new Blob([file.content], { type: file.type }));
+        await writer.close();
+      }
+      return "project";
+    }
+    files.forEach(file => downloadFile(file.name, file.content, file.type));
+    return "download";
+  };
+
+  const sourceFile = () => ({ name: `${safeFileName}_源数据.xls`, content: generateSourceWorkbook(), type: "application/vnd.ms-excel;charset=utf-8" });
+
+  const handleExportHTML = async () => {
+    setDownloading(true);
+    try {
+      const files = [{ name: `${safeFileName}_运营复盘报告.html`, content: generateStandaloneHTML(), type: "text/html;charset=utf-8" }];
+      if (includeSourceData) files.push(sourceFile());
+      const destination = await deliverFiles(files);
+      setSuccessMsg(destination === "project" ? `报告${includeSourceData ? "和源数据" : ""}已保存到所选项目目录` : `报告${includeSourceData ? "和源数据 Excel" : ""} 已下载`);
+    } catch (error) {
+      if ((error as { name?: string }).name !== "AbortError") setSuccessMsg("保存未完成，请重新选择目录或改为下载到本机");
+    } finally {
+      setDownloading(false);
+      window.setTimeout(() => setSuccessMsg(null), 3200);
+    }
+  };
+
+  const handleExportPDF = async () => {
     setDownloading(true);
     const htmlContent = generateStandaloneHTML();
-    const printWindow = window.open("", "_blank");
-    if (printWindow) {
-      printWindow.document.write(htmlContent);
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(() => {
-        printWindow.print();
-        setDownloading(false);
-        setSuccessMsg("已调起打印与 PDF 生成面板（可选择“另存为 PDF”）");
-        setTimeout(() => setSuccessMsg(null), 3000);
-      }, 500);
-    } else {
-      // Fallback if popup blocked: download HTML
-      handleExportHTML();
+    try {
+      if (includeSourceData || saveToProjectDirectory) {
+        const files = saveToProjectDirectory
+          ? [{ name: `${safeFileName}_运营复盘报告.html`, content: htmlContent, type: "text/html;charset=utf-8" }, ...(includeSourceData ? [sourceFile()] : [])]
+          : includeSourceData ? [sourceFile()] : [];
+        if (files.length) await deliverFiles(files);
+      }
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+        printWindow.focus();
+        window.setTimeout(() => printWindow.print(), 400);
+        setSuccessMsg(`已打开 PDF 打印面板${includeSourceData ? "，源数据 Excel 已同时导出" : ""}`);
+      } else {
+        downloadFile(`${safeFileName}_运营复盘报告.html`, htmlContent, "text/html;charset=utf-8");
+        setSuccessMsg("打印窗口被阻止，已改为导出 HTML 报告");
+      }
+    } catch (error) {
+      if ((error as { name?: string }).name !== "AbortError") setSuccessMsg("导出未完成，请重新选择保存位置");
+    } finally {
+      setDownloading(false);
+      window.setTimeout(() => setSuccessMsg(null), 3200);
     }
   };
 
@@ -443,7 +496,7 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
             <div>
               <h3 className="text-[15px] font-bold text-text-main">导出复盘报告</h3>
               <p className="text-[11.5px] text-text-tertiary">
-                支持完整视觉网页版与打印版 PDF 报告
+                仅导出报告主体，适合对外分享与归档
               </p>
             </div>
           </div>
@@ -457,6 +510,10 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
 
         {/* Content */}
         <div className="p-5 space-y-4">
+          <div className="flex items-start gap-2 rounded-xl border border-blue-100 bg-blue-50 p-3 text-[11.5px] leading-5 text-blue-900">
+            <ShieldCheck size={15} className="mt-0.5 shrink-0" />
+            <span>包含结论、图表、数据表与行动建议；不包含 AI 分析过程、Agent 日志和内部判断依据。</span>
+          </div>
           <div className="space-y-3">
             <label className="text-[12.5px] font-semibold text-text-secondary block">
               选择导出格式
@@ -527,6 +584,19 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
             </div>
           </div>
 
+          <div className="overflow-hidden rounded-xl border border-border-default bg-surface-1">
+            <label className="flex cursor-pointer items-start gap-3 border-b border-border-subtle p-3.5">
+              <input type="checkbox" checked={includeSourceData} onChange={event => setIncludeSourceData(event.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-neutral-950" />
+              <Table2 size={15} className="mt-0.5 shrink-0 text-emerald-700" />
+              <span className="min-w-0"><span className="block text-[12px] font-semibold text-text-main">同时导出源数据 Excel</span><span className="mt-0.5 block text-[10.5px] leading-5 text-text-tertiary">包含复盘概览、指标明细、方案范围、优化动作和数据口径，可继续筛选与分析。</span></span>
+            </label>
+            <label className="flex cursor-pointer items-start gap-3 p-3.5">
+              <input type="checkbox" checked={saveToProjectDirectory} onChange={event => setSaveToProjectDirectory(event.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-neutral-950" />
+              <FolderOpen size={15} className="mt-0.5 shrink-0 text-blue-700" />
+              <span className="min-w-0"><span className="block text-[12px] font-semibold text-text-main">保存到项目目录</span><span className="mt-0.5 block text-[10.5px] leading-5 text-text-tertiary">首次导出时选择当前项目文件夹；不勾选则使用浏览器下载目录。</span></span>
+            </label>
+          </div>
+
           {/* Success Message Banner */}
           {successMsg && (
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-[12px] text-emerald-800 flex items-center gap-2">
@@ -539,7 +609,7 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
         {/* Footer */}
         <div className="p-4 border-t border-border-default flex items-center justify-between bg-surface-subtle">
           <span className="text-[11.5px] text-text-tertiary">
-            已包含 5 大纵向章节与完整归因
+            报告主体 · 可附源数据 Excel · 不含 AI 过程
           </span>
           <div className="flex items-center gap-2">
             <button

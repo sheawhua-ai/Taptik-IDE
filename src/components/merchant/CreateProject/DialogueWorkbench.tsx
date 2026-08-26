@@ -10,6 +10,7 @@ import {
 } from './types';
 import { StrategyDraftChatCard } from './StrategyDraftChatCard';
 import { ProposalDiffChatCard } from './ProposalDiffChatCard';
+import type { IndustryDefaults } from '../../../data/industryCatalog';
 
 interface DialogueWorkbenchProps {
   facts: FactItem[];
@@ -22,6 +23,7 @@ interface DialogueWorkbenchProps {
   onApplyProposal?: (proposal: StrategyChangeProposal) => void;
   onConfirmAndCreate: () => void;
   onUpdateStrategyDraft?: (draft: StrategyDraftData) => void;
+  industryDefaults?: IndustryDefaults;
 }
 
 export function DialogueWorkbench({
@@ -32,26 +34,41 @@ export function DialogueWorkbench({
   onNaturalLanguageSubmit,
   onApplyProposal,
   onConfirmAndCreate,
-  onUpdateStrategyDraft
+  onUpdateStrategyDraft,
+  industryDefaults
 }: DialogueWorkbenchProps) {
   const [inputText, setInputText] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   // Conversational message history
-  const [messages, setMessages] = useState<DialogueTurn[]>([
-    {
+  const [messages, setMessages] = useState<DialogueTurn[]>(() => {
+    if (!industryDefaults) {
+      return [{
+        id: 'turn_1',
+        sender: 'ai',
+        timestamp: '刚刚',
+        content: '你好！我是你的运营操盘 Agent。我已接入当前商家的资料、账号、知识与历史复盘。\n\n本周期你想重点启动哪类运营打法？请选择或直接输入你的运营诉求：',
+        suggestedChips: [
+          { group: '推荐打法', text: '制定 14 天标准起盘方案', actionValue: '采用14天标准周期，结合品牌号、KOS与消费者KOC完成内容生产、发布和复盘。' },
+          { group: '推荐打法', text: '启动 7 天快速验证', actionValue: '启动7天紧凑周期，优先验证搜索收录、内容反馈与有效咨询。' },
+          { group: '特定诉求', text: '开启消费者真实体验', actionValue: '开启消费者KOC真实体验模式，通过轻量问卷和素材回传沉淀真实反馈。' }
+        ]
+      }];
+    }
+
+    return [{
       id: 'turn_1',
       sender: 'ai',
       timestamp: '刚刚',
-      content: '你好！我是你的运营操盘 Agent。我已自动接入当前商家【特唯普宠物】的上下文（1 份品牌档案、2 个主推单品、5 个可用矩阵账号、12 份知识与SGS质检报告，以及上期运营复盘记忆）。\n\n本周期你想重点启动哪类运营打法？请选择或直接输入你的运营诉求：',
-      suggestedChips: [
-        { group: '推荐打法', text: '为「无谷鲜肉幼犬粮」制定 14 天标准打法 (推荐)', actionValue: '主推无谷高蛋白鲜肉幼犬粮(2kg)，采用14天标准周期：品牌号2篇 + 5家店长号5篇 + 体验官KOC 10篇，重点解决换粮软便搜索卡位，带动到店领样咨询。' },
-        { group: '推荐打法', text: '启动 7 天换粮期搜索卡位与顾问答疑 (紧凑周期)', actionValue: '启动7天紧凑周期快速验证搜索收录与自然咨询，聚焦无谷鲜肉幼犬粮' },
-        { group: '特定诉求', text: '开启 10 人消费者真实测评与问卷打卡', actionValue: '开启消费者KOC真实测评模式，招募10名3-6月龄幼犬宠主回传排便对比照片与问卷打卡' }
-      ]
-    }
-  ]);
+      content: `已载入商家选择的【${industryDefaults.workflowName}】。系统会先按行业默认流程生成底稿，再由你调整目标、内容结构与账号配比。\n\n请选择一个起盘模板，或直接描述本周期的运营诉求：`,
+      suggestedChips: industryDefaults.planTemplates.map((template, index) => ({
+        group: index === 0 ? '推荐模板' : '行业模板',
+        text: `${template}${index === 0 ? '（推荐）' : ''}`,
+        actionValue: `采用“${template}”模板，以${industryDefaults.contentTemplates.join('、')}为默认内容结构，按照“${industryDefaults.workflowName}”生成14天方案。`
+      }))
+    }];
+  });
 
   // Auto scroll to bottom of chat
   useEffect(() => {
@@ -134,7 +151,7 @@ export function DialogueWorkbench({
             ],
             impactScope: {
               affectedNotesCount: 5,
-              affectedAccounts: ['特唯普上海静安店', '特唯普静安二店', '特唯普徐汇店', '特唯普浦东店', '特唯普长宁店'],
+              affectedAccounts: ['参与本方案的KOS账号'],
               affectedSchedule: '发布窗口由工作日改为周末同城高峰期',
               taskChanges: {
                 added: ['为各店长生成周末排期提醒日历'],
@@ -158,10 +175,10 @@ export function DialogueWorkbench({
             ],
             impactScope: {
               affectedNotesCount: 3,
-              affectedAccounts: ['特唯普官方旗舰店', '消费者KOC体验池'],
+              affectedAccounts: ['品牌主号', '消费者KOC体验池'],
               affectedSchedule: '第1周品牌号发布合并为1篇官方质检长图文，招募落地页增加2个名额',
               taskChanges: {
-                added: ['新增 2 个 KOC 真实体验问卷与排便图片验收任务'],
+                added: ['新增 2 个 KOC 真实体验问卷与素材验收任务'],
                 removed: ['取消 1 篇品牌官方质检长图文排期'],
                 modified: ['调整招募落地页计划名额至 12 人']
               },
@@ -186,12 +203,12 @@ export function DialogueWorkbench({
         id: `ai_${Date.now()}`,
         sender: 'ai',
         timestamp: '刚刚',
-        content: `已结合商家【特唯普宠物】的 12 份知识资料、SGS 质检报告、合规禁区与 5 个矩阵账号画像，为你装配完成【${strategyDraft.projectName}】打法方案。\n\n请直接核对下方 6 大核心模块。你可以在此通过自然语言提出微调要求，或直接点击确认方案：`,
+        content: `已结合商家资料、行业模板、合规要求与账号画像，为你装配完成【${strategyDraft.projectName}】打法方案。\n\n请直接核对下方 6 大核心模块。你可以通过自然语言提出微调要求，或直接确认方案：`,
         isDraftGenerated: true,
         suggestedChips: [
-          { group: '快捷调整', text: '品牌号减少1篇，把篇数增加给KOC', actionValue: '品牌号减少1篇，把篇数增加给KOC体验官' },
-          { group: '快捷调整', text: '我们只有1名摄影，降低素材任务量', actionValue: '我们只有1名专职摄影，降低素材拍摄任务量' },
-          { group: '快捷调整', text: '5家店长号错开在周末发布', actionValue: '5家店长号错开在周五至周日晚间发布' }
+          { group: '快捷调整', text: '调整品牌号与KOC的内容配比', actionValue: '减少品牌号内容，把篇数增加给KOC体验账号' },
+          { group: '快捷调整', text: '降低素材任务量', actionValue: '当前拍摄资源有限，请降低素材拍摄任务量' },
+          { group: '快捷调整', text: '错开账号发布时间', actionValue: '将参与账号错开在不同日期和时段发布' }
         ]
       };
 

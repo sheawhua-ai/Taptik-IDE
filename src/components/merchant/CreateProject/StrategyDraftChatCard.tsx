@@ -165,11 +165,11 @@ export function StrategyDraftChatCard({
               <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg flex items-center justify-between text-[12px]">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-text-primary">品牌官方主号</span>
-                    <span className="text-[11px] text-text-tertiary">(1 个账号)</span>
+                    <span className="font-semibold text-text-primary">{draft.accountAndContentAssignment.brandAccounts[0]?.name || '品牌官方主号'}</span>
+                    <span className="text-[11px] text-text-tertiary">({draft.accountAndContentAssignment.brandAccounts.length} 个账号)</span>
                   </div>
                   <div className="text-[11.5px] text-text-secondary mt-0.5">
-                    方向：SGS权威质检报告拆解与科学换粮7天过渡法
+                    方向：{draft.accountAndContentAssignment.brandAccounts[0]?.contentDirection || '品牌核心信息表达'}
                   </div>
                 </div>
                 <div className="text-right shrink-0 ml-3">
@@ -184,18 +184,18 @@ export function StrategyDraftChatCard({
               <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg flex items-center justify-between text-[12px]">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-text-primary">门店店长号 (KOS)</span>
-                    <span className="text-[11px] text-text-tertiary">(5 家真实门店)</span>
+                    <span className="font-semibold text-text-primary">{draft.accountAndContentAssignment.kosAccounts[0]?.name || '专业账号 (KOS)'}</span>
+                    <span className="text-[11px] text-text-tertiary">({draft.accountAndContentAssignment.kosAccounts.length} 个账号)</span>
                   </div>
                   <div className="text-[11.5px] text-text-secondary mt-0.5">
-                    方向：同城顾问一对一软便答疑、便便对照与领样到店核销
+                    方向：{draft.accountAndContentAssignment.kosAccounts[0]?.contentDirection || '专业场景解答'}
                   </div>
                 </div>
                 <div className="text-right shrink-0 ml-3">
                   <span className="font-semibold text-text-primary text-[13px]">
                     {draft.accountAndContentAssignment.kosAccounts.reduce((acc, k) => acc + k.noteCount, 0)} 篇
                   </span>
-                  <span className="text-[10.5px] text-text-tertiary block">每店各 1 篇</span>
+                  <span className="text-[10.5px] text-text-tertiary block">按参与账号分配</span>
                 </div>
               </div>
 
@@ -204,13 +204,13 @@ export function StrategyDraftChatCard({
                 <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg flex items-center justify-between text-[12px]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-text-primary">消费者真实体验官 (KOC)</span>
+                      <span className="font-semibold text-text-primary">{draft.accountAndContentAssignment.kocParticipants.roleInProject || '消费者真实体验官 (KOC)'}</span>
                       <span className="text-[11px] text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
                         体验打卡池
                       </span>
                     </div>
                     <div className="text-[11.5px] text-text-secondary mt-0.5">
-                      方向：3-6月龄幼犬换粮实测与7天排便照片打卡 (含问卷回收)
+                      方向：{draft.accountAndContentAssignment.kocParticipants.contentDirection}
                     </div>
                   </div>
                   <div className="text-right shrink-0 ml-3">
@@ -271,10 +271,10 @@ export function StrategyDraftChatCard({
             </div>
             <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg text-[11.5px] space-y-1.5">
               <div className="text-text-secondary">
-                <strong className="text-text-primary">核心假设：</strong>“以 SGS 权威质检报告拆解 + 5 家门店顾问真实答疑 + 10 名真实宠主换粮打卡”可有效占领搜索前3位并提升到店咨询转化。
+                <strong className="text-text-primary">核心假设：</strong>{draft.hypothesesAndBasis.pendingHypotheses[0]?.text || '当前内容结构与账号分工能够改善搜索收录和发布后反馈。'}
               </div>
               <div className="flex items-center gap-2 pt-1 border-t border-border-subtle text-[11px] text-text-tertiary">
-                <span>每日监控：搜索排名收录、有效咨询增长、KOC问卷提交率</span>
+                <span>持续观察：搜索位置、平台收录、发布后反馈与KOC问卷提交率</span>
               </div>
             </div>
           </div>
@@ -293,9 +293,9 @@ export function StrategyDraftChatCard({
             </div>
             <div className="flex flex-wrap gap-1.5">
               {[
-                '品牌号减少1篇，把篇数增加给KOC',
-                '我们只有1名摄影，降低素材拍摄量',
-                '5家店长号排期错开在周末发布',
+                '调整品牌号与KOC的内容配比',
+                '当前拍摄资源有限，降低素材任务量',
+                '将参与账号错开发布时间',
                 '将打法周期缩短为7天快速验证'
               ].map((suggestion, sIdx) => (
                 <button
@@ -315,7 +315,7 @@ export function StrategyDraftChatCard({
         {/* Primary Action Button */}
         <div className="flex items-center justify-between pt-1 border-t border-border-subtle">
           <div className="text-[12px] text-text-tertiary">
-            确认后将为 5 家店长与品牌号自动生成排期槽位与拍摄需求
+            确认后将按当前账号分工生成发布计划与素材需求
           </div>
 
           <div className="flex items-center gap-2">

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
+import { Search, CheckCircle2, Clock, ArrowLeft, ArrowRight, Activity } from 'lucide-react';
 import { useProjectStore } from '../../context/ProjectContext';
 import { ExecutionCategory, ExecutionTask } from './ExecutionCenter/types';
 import { INITIAL_EXECUTION_TASKS } from './ExecutionCenter/mockData';
@@ -117,12 +117,15 @@ export function ExecutionCenter() {
   // Active task's category queue
   const activeCategoryQueue = useMemo(() => {
     if (!activeTask) return [];
+    const isOperatorQueue = activeTask.isMeWaiting || activeTask.status === '已完成';
     return tasks.filter(t =>
       t.operatorCategory === activeTask.operatorCategory &&
       t.status !== '已完成' &&
       t.status !== '已取消' &&
-      (activeTask.isMeWaiting || activeTask.status === '已完成'
-        ? t.isMeWaiting
+      (isOperatorQueue
+        ? requiresOperatorAction(t)
+        : t.operatorCategory === 'publish'
+        ? isActivePublishTask(t)
         : (t.isTeamExecuting || t.isSystemProcessing))
     );
   }, [tasks, activeTask]);
@@ -344,16 +347,40 @@ export function ExecutionCenter() {
       
       {/* 1. Header Section */}
       <div className="px-6 py-5 bg-surface border-b border-border-default shrink-0">
-        <div>
-          <div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {queueView === 'background' && (
+              <button
+                type="button"
+                onClick={() => { setQueueView('operator'); setSelectedCategory('all'); }}
+                className="rounded-lg border border-border-default bg-surface p-2 text-text-tertiary transition-colors hover:bg-surface-subtle hover:text-text-primary"
+                aria-label="返回待我处理"
+              >
+                <ArrowLeft size={16} />
+              </button>
+            )}
+            <div>
             <h1 className="text-[20px] font-semibold text-text-primary tracking-tight">
-              执行中心
+              {queueView === 'operator' ? '执行中心' : '执行进度'}
             </h1>
             <p className="text-[13px] text-text-secondary mt-1">
-              只呈现无法自动继续的决策、验收与纠偏 · 其余流程在后台运行
+              {queueView === 'operator'
+                ? '只呈现无法自动继续的决策、验收与纠偏'
+                : '查看员工、KOC 与 Agent 正在执行的事项'}
             </p>
+            </div>
           </div>
-
+          {queueView === 'operator' && (
+            <button
+              type="button"
+              onClick={() => { setQueueView('background'); setSelectedCategory('all'); }}
+              className="flex items-center gap-2 rounded-lg border border-border-default bg-surface px-3.5 py-2 text-[12.5px] font-medium text-text-secondary transition-colors hover:bg-surface-subtle hover:text-text-primary"
+            >
+              <Activity size={15} />
+              查看执行进度
+              <span className="rounded bg-surface-subtle px-1.5 py-0.5 text-[10.5px] tabular-nums text-text-tertiary">{backgroundFlowCount}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -366,28 +393,17 @@ export function ExecutionCenter() {
           <div className="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg border border-border-subtle">
             <button
               type="button"
-              onClick={() => { setQueueView('operator'); setSelectedCategory('all'); }}
+              onClick={() => setSelectedCategory('all')}
               className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                queueView === 'operator' && selectedCategory === 'all'
+                selectedCategory === 'all'
                   ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
             >
-              待我处理 ({operatorTodoCount})
+              全部 ({queueView === 'operator' ? operatorTodoCount : backgroundFlowCount})
             </button>
 
-            <button
-              type="button"
-              onClick={() => { setQueueView('background'); setSelectedCategory('all'); }}
-              className={`px-3 py-1.5 rounded-md text-[12.5px] font-medium transition-colors ${
-                queueView === 'background' && selectedCategory === 'all'
-                  ? 'bg-surface text-text-primary shadow-sm border border-border-subtle'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              执行动态 ({backgroundFlowCount})
-            </button>
-
+            {(queueView === 'operator' || categoryCounts.content > 0) && (
             <button
               type="button"
               onClick={() => setSelectedCategory('content')}
@@ -399,7 +415,9 @@ export function ExecutionCenter() {
             >
               {queueView === 'operator' ? '内容风险' : '内容生成'} ({categoryCounts.content})
             </button>
+            )}
 
+            {(queueView === 'operator' || categoryCounts.material > 0) && (
             <button
               type="button"
               onClick={() => setSelectedCategory('material')}
@@ -411,6 +429,7 @@ export function ExecutionCenter() {
             >
               {queueView === 'operator' ? '素材决策' : '素材执行'} ({categoryCounts.material})
             </button>
+            )}
 
             {queueView === 'background' && (
               <button
@@ -477,7 +496,7 @@ export function ExecutionCenter() {
       {/* 3. Task List Section */}
       <div className="p-6 space-y-4 max-w-6xl w-full">
         <div className="flex items-center justify-between text-[12px] text-text-secondary px-1">
-          <span>{queueView === 'operator' ? `待处理 ${filteredTasks.length} 项` : `执行动态 ${filteredTasks.length} 项`}</span>
+          <span>{queueView === 'operator' ? `待处理 ${filteredTasks.length} 项` : `执行中 ${filteredTasks.length} 项`}</span>
           <span>{queueView === 'operator' ? '仅显示必须由你操作后才能继续的事项' : '发布任务与其他执行中的事项不会计入待我处理'}</span>
         </div>
 

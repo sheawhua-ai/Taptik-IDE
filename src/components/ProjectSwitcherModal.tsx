@@ -490,6 +490,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
             onAddMerchant(newMerchant);
           }
           setIsCreateModalOpen(false);
+          onClose();
           showToast("新商家已成功创建并加入服务列表");
         }} 
       />

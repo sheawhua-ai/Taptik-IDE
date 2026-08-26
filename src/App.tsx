@@ -1747,6 +1747,8 @@ export default function App() {
                       <ProjectCenter
                         hasData={hasData}
                         activeProjectId={activeProjectId}
+                        industryProfile={activeProject?.industryProfile}
+                        industryDefaults={activeProject?.industryDefaults}
                         setWorkflowTab={setWorkflowTab as any}
                       />
                     )}
@@ -1756,6 +1758,8 @@ export default function App() {
                     {workflowTab === "review" && (
                       <ReviewWorkbench
                         onNavigateToExecution={() => setWorkflowTab("execution")}
+                        onNavigateToPlan={() => setWorkflowTab("projects")}
+                        onNavigateToSkills={() => setActiveNav("skills")}
                       />
                     )}
                     {workflowTab === "accounts" && <AccountAssetsV2 />}

@@ -1,9 +1,11 @@
-export type ReviewTaskStatus = 'analyzing' | 'completed' | 'exception' | 'pending_confirmation';
+export type ReviewTaskStatus = 'analyzing' | 'completed' | 'exception';
+export type ReviewDirectionId = 'search_note' | 'content_audience' | 'seeding_conversion';
+export type ReviewObservationWindow = 'd7' | 'd14' | 'd30' | 'to_date';
 
 export interface ReviewProgressStep {
   id: string;
-  type: 'confirm' | 'analyzing' | 'blocked' | 'completed';
-  statusLabel: '待确认' | '分析中' | '阻断' | '已完成';
+  type: 'analyzing' | 'blocked' | 'completed';
+  statusLabel: '分析中' | '阻断' | '已完成';
   title: string;
   description: string;
   deadline?: string;
@@ -112,6 +114,12 @@ export interface ReviewTask {
   mode: 'single' | 'multi';
   projectIds: string[];
   projectNames: string[];
+  accountIds?: string[];
+  accountNames?: string[];
+  reviewDirections?: ReviewDirectionId[];
+  includeCrossPlanComparison?: boolean;
+  observationWindow?: ReviewObservationWindow;
+  observationWindowLabel?: string;
   targetObjective: string;
   targetObjectiveLabel: string;
   targetObjectiveLabels?: string[];

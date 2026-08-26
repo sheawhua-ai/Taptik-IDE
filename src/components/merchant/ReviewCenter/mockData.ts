@@ -464,8 +464,8 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
       },
       {
         id: "step-203",
-        type: "confirm",
-        statusLabel: "待确认",
+        type: "analyzing",
+        statusLabel: "分析中",
         title: "确认是否纳入 7 月同期历史方案数据？",
         description: "纳入 7 月历史数据可生成环比增长对照，有助于明确打法迭代成效",
         actionText: "确认纳入",

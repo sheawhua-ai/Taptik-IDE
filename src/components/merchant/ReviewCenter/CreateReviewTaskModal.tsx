@@ -1,13 +1,8 @@
-import React, { useState } from "react";
-import { 
-  X, Sparkles, Check, Search, Layers, 
-  ChevronDown, ChevronUp, CheckCircle2,
-  TrendingUp, BarChart2, Users, FileText, Target, ShieldCheck,
-  Plus, Tag, AlertCircle
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { AVAILABLE_PROJECTS_LIST } from "./mockData";
-import { ReviewTask } from "./types";
+import React, { useMemo, useState } from "react";
+import { AlertCircle, CalendarDays, Check, ChevronLeft, ChevronRight, Database, Layers, Search, Sparkles, X } from "lucide-react";
+import { INITIAL_REVIEW_TASKS } from "./mockData";
+import type { ReviewDirectionId, ReviewTask } from "./types";
+import { ALL_REVIEW_DIRECTION_IDS, REVIEW_DIRECTION_DEFINITIONS } from "./reviewDirections";
 
 interface CreateReviewTaskModalProps {
   isOpen: boolean;
@@ -15,1039 +10,243 @@ interface CreateReviewTaskModalProps {
   onCreateTask: (newTask: ReviewTask) => void;
 }
 
-export interface ObjectiveItem {
-  id: string;
-  title: string;
-  category: "对比分析" | "项目诊断" | "内容策略" | "用户增长" | "转化分析";
-  desc: string;
-  applicableMode?: "single" | "multi" | "all";
-}
-
-const OBJECTIVE_LIBRARY: ObjectiveItem[] = [
-  // 1. 对比分析
-  {
-    id: "benchmark",
-    title: "横向比较",
-    category: "对比分析",
-    desc: "对比多个门店/账号在曝光、互动与转化上的表现，挖掘可复制标杆",
-    applicableMode: "multi",
-  },
-  {
-    id: "script_compare",
-    title: "新旧脚本完播率对比",
-    category: "对比分析",
-    desc: "对比不同时期、不同版本脚本完播率与互动留资效率变化",
-    applicableMode: "all",
-  },
-  {
-    id: "format_compare",
-    title: "图文与视频形式效能对比",
-    category: "对比分析",
-    desc: "分析图文与短视频在各门店长尾收录与获客效能差异",
-    applicableMode: "all",
-  },
-
-  // 2. 项目诊断
-  {
-    id: "project_diagnosis",
-    title: "项目全维健康度体检",
-    category: "项目诊断",
-    desc: "针对单一项目进行全维度健康度体检，快速定位阻断与流失环节",
-    applicableMode: "all",
-  },
-  {
-    id: "comprehensive",
-    title: "自动综合全景分析",
-    category: "项目诊断",
-    desc: "启动全部专职 Agent 任务流，输出全要素综合分析报告与行动建议",
-    applicableMode: "all",
-  },
-
-  // 3. 内容策略
-  {
-    id: "viral_attribution",
-    title: "爆文归因与复制",
-    category: "内容策略",
-    desc: "定位高ROI爆文要素（封面标题、前3秒黄金钩子与正文利益点）",
-    applicableMode: "all",
-  },
-  {
-    id: "content_strategy",
-    title: "内容策略复盘",
-    category: "内容策略",
-    desc: "深度拆解选题模型、实测视频完播率与长尾搜索收录",
-    applicableMode: "all",
-  },
-  {
-    id: "comment_hook",
-    title: "评论区话术与截流承接",
-    category: "内容策略",
-    desc: "复盘置顶评论、引导物料与神评互动的承接引导效率",
-    applicableMode: "all",
-  },
-
-  // 4. 用户增长
-  {
-    id: "user_growth",
-    title: "用户画像与痛点洞察",
-    category: "用户增长",
-    desc: "挖掘高意向宠主搜索痛点（软便/换粮/泪痕/挑食）及客群画像分布",
-    applicableMode: "all",
-  },
-  {
-    id: "search_intercept",
-    title: "搜索截流关键词分析",
-    category: "用户增长",
-    desc: "分析小红书搜索流核心截流词、品类词与长尾词的自然渗透率",
-    applicableMode: "all",
-  },
-
-  // 5. 转化分析
-  {
-    id: "conversion",
-    title: "转化与留资全链路漏斗",
-    category: "转化分析",
-    desc: "测算私信咨询、顾问答疑留资与线下门店到店核销转化漏斗",
-    applicableMode: "all",
-  },
-  {
-    id: "night_loss",
-    title: "夜间私信流失排查",
-    category: "转化分析",
-    desc: "排查 20:00—24:00 夜间咨询断点，定位因无人应答导致的线索流失",
-    applicableMode: "all",
-  },
-  {
-    id: "complaint_attribution",
-    title: "评论区客诉与异议归因",
-    category: "转化分析",
-    desc: "归类评论区负反馈、异议与咨询，分析其对私信转化的负面影响",
-    applicableMode: "all",
-  },
-  {
-    id: "offline_redeem",
-    title: "线下到店核销率分析",
-    category: "转化分析",
-    desc: "测算从小红书私信领券/礼包到实体门店 POS 核销的落地转化率",
-    applicableMode: "all",
-  },
-  {
-    id: "cost_roi",
-    title: "获客成本与ROI测算",
-    category: "转化分析",
-    desc: "核算单客获取成本 CPL、线索留资单价与各矩阵账号投产产出比",
-    applicableMode: "all",
-  },
+const REVIEW_SCOPE_PROJECTS = [
+  { id: "scope-plan-7", name: "秋季肠胃敏感内容起盘", start: "2026-08-10", end: "2026-08-25", activeNotes: 9, accountCount: 3, keywordCount: 5, completeness: 84 },
+  { id: "scope-plan-8", name: "夏末养宠问答内容矩阵", start: "2026-08-05", end: "2026-08-24", activeNotes: 10, accountCount: 3, keywordCount: 4, completeness: 86 },
+  { id: "scope-plan-4", name: "门店顾问答疑优化", start: "2026-08-01", end: "2026-08-20", activeNotes: 12, accountCount: 2, keywordCount: 3, completeness: 76 },
+  { id: "scope-plan-3", name: "肠胃敏感人群内容矩阵", start: "2026-07-01", end: "2026-07-31", activeNotes: 18, accountCount: 5, keywordCount: 8, completeness: 81 },
+  { id: "scope-plan-6", name: "暑期KOC真实体验计划", start: "2026-06-25", end: "2026-07-18", activeNotes: 16, accountCount: 4, keywordCount: 4, completeness: 89 },
+  { id: "scope-plan-2", name: "宠物食品新品试用起盘", start: "2026-06-01", end: "2026-06-21", activeNotes: 14, accountCount: 4, keywordCount: 6, completeness: 92 },
+  { id: "scope-plan-5", name: "618门店搜索承接方案", start: "2026-05-20", end: "2026-06-18", activeNotes: 11, accountCount: 3, keywordCount: 5, completeness: 87 },
+  { id: "scope-plan-1", name: "幼犬换粮搜索卡位第三轮", start: "2026-03-01", end: "2026-03-20", activeNotes: 6, accountCount: 3, keywordCount: 4, completeness: 88 }
 ];
 
+const PERIOD_PRESETS = [
+  { id: "30d", label: "近30天", start: "2026-07-28", end: "2026-08-26" },
+  { id: "90d", label: "近90天", start: "2026-05-28", end: "2026-08-26" },
+  { id: "quarter", label: "本季度", start: "2026-07-01", end: "2026-09-30" },
+  { id: "custom", label: "自定义", start: "2026-07-01", end: "2026-08-26" }
+] as const;
+
+function formatShortDate(value: string) {
+  const [, month, day] = value.split("-");
+  return `${Number(month)}月${Number(day)}日`;
+}
+
+function projectsInPeriod(start: string, end: string) {
+  return REVIEW_SCOPE_PROJECTS
+    .filter(project => project.end >= start && project.start <= end)
+    .sort((a, b) => b.end.localeCompare(a.end));
+}
+
+function toISODate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function buildMonthDays(month: Date) {
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+  const firstDay = new Date(year, monthIndex, 1);
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+  const start = new Date(year, monthIndex, 1 - mondayOffset);
+  return Array.from({ length: 42 }, (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index));
+}
+
 export function CreateReviewTaskModal({ isOpen, onClose, onCreateTask }: CreateReviewTaskModalProps) {
-  // Form states
-  const [taskName, setTaskName] = useState("");
-  const [mode, setMode] = useState<"single" | "multi">("multi");
-  const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>(["p4", "p5"]);
-  const [projectSearchQuery, setProjectSearchQuery] = useState("");
-  const [timePreset, setTimePreset] = useState<"7d" | "30d" | "this_month" | "last_month" | "custom">("30d");
-  const [customStartDate, setCustomStartDate] = useState("2026-08-01");
-  const [customEndDate, setCustomEndDate] = useState("2026-08-23");
-  
-  // Compact unified objectives state
-  const [selectedGoals, setSelectedGoals] = useState<string[]>(["横向比较", "夜间私信流失排查"]);
-  const [customInputText, setCustomInputText] = useState("");
-  const [isMoreGoalsOpen, setIsMoreGoalsOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>("全部");
-  const [detailedNotes, setDetailedNotes] = useState("");
-  
-  // Advanced settings (collapsible)
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-  const [includeHistoryData, setIncludeHistoryData] = useState(true);
-  const [generateCrossComparison, setGenerateCrossComparison] = useState(true);
-  const [outputActionProposals, setOutputActionProposals] = useState(true);
-  const [autoSyncToExecutionCenter, setAutoSyncToExecutionCenter] = useState(false);
+  const defaultPeriod = PERIOD_PRESETS[0];
+  const defaultProjects = projectsInPeriod(defaultPeriod.start, defaultPeriod.end);
+  const [periodPreset, setPeriodPreset] = useState(defaultPeriod.id as string);
+  const [periodStart, setPeriodStart] = useState(defaultPeriod.start);
+  const [periodEnd, setPeriodEnd] = useState(defaultPeriod.end);
+  const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>(defaultProjects[0] ? [defaultProjects[0].id] : []);
+  const [selectedDirections, setSelectedDirections] = useState<ReviewDirectionId[]>([...ALL_REVIEW_DIRECTION_IDS]);
+  const [includeCrossPlanComparison, setIncludeCrossPlanComparison] = useState(false);
+  const [customFocus, setCustomFocus] = useState("");
+  const [includeFeedback, setIncludeFeedback] = useState(true);
+  const [showMoreProjects, setShowMoreProjects] = useState(false);
+  const [projectSearch, setProjectSearch] = useState("");
+  const [showRangeCalendar, setShowRangeCalendar] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date(2026, 7, 1));
+  const [draftRangeStart, setDraftRangeStart] = useState(periodStart);
+  const [draftRangeEnd, setDraftRangeEnd] = useState(periodEnd);
+  const [awaitingRangeEnd, setAwaitingRangeEnd] = useState(false);
+
+  const candidateProjects = useMemo(() => projectsInPeriod(periodStart, periodEnd), [periodStart, periodEnd]);
+  const visibleProjects = candidateProjects.slice(0, 3);
+  const selectedProjects = REVIEW_SCOPE_PROJECTS.filter(project => selectedProjectIds.includes(project.id));
+  const selectedDirectionDefinitions = REVIEW_DIRECTION_DEFINITIONS.filter(direction => selectedDirections.includes(direction.id));
+  const searchedProjects = candidateProjects.filter(project => project.name.toLowerCase().includes(projectSearch.trim().toLowerCase()));
+  const totalNotes = selectedProjects.reduce((sum, project) => sum + project.activeNotes, 0);
+  const totalAccounts = selectedProjects.reduce((sum, project) => sum + project.accountCount, 0);
+  const totalKeywords = selectedProjects.reduce((sum, project) => sum + project.keywordCount, 0);
+  const averageCompleteness = selectedProjects.length
+    ? Math.round(selectedProjects.reduce((sum, project) => sum + project.completeness, 0) / selectedProjects.length)
+    : 0;
+  const platformIdCount = Math.max(totalNotes - Math.max(1, Math.round(totalNotes * 0.06)), 0);
+  const returnedCount = Math.max(totalNotes - Math.max(1, Math.round(totalNotes * 0.1)), 0);
+  const calendarDays = buildMonthDays(calendarMonth);
 
   if (!isOpen) return null;
 
-  const handleToggleProject = (id: string) => {
-    if (mode === "single") {
-      setSelectedProjectIds([id]);
-    } else {
-      if (selectedProjectIds.includes(id)) {
-        if (selectedProjectIds.length > 1) {
-          setSelectedProjectIds(selectedProjectIds.filter(p => p !== id));
-        }
-      } else {
-        setSelectedProjectIds([...selectedProjectIds, id]);
-      }
-    }
+  const applyPeriod = (preset: (typeof PERIOD_PRESETS)[number]) => {
+    setPeriodPreset(preset.id);
+    setPeriodStart(preset.start);
+    setPeriodEnd(preset.end);
+    const nextProjects = projectsInPeriod(preset.start, preset.end);
+    setSelectedProjectIds(nextProjects[0] ? [nextProjects[0].id] : []);
+    setIncludeCrossPlanComparison(false);
+    setShowRangeCalendar(false);
   };
 
-  const handleAddGoal = (goalText?: string) => {
-    const target = (goalText !== undefined ? goalText : customInputText).trim();
-    if (!target) return;
-    if (!selectedGoals.includes(target)) {
-      setSelectedGoals([...selectedGoals, target]);
-    }
-    if (goalText === undefined || goalText === customInputText) {
-      setCustomInputText("");
-    }
-  };
-
-  const handleRemoveGoal = (goalText: string) => {
-    setSelectedGoals(selectedGoals.filter((g) => g !== goalText));
-  };
-
-  const handleClearAllGoals = () => {
-    setSelectedGoals([]);
-  };
-
-  const handleToggleGoal = (goalText: string) => {
-    if (selectedGoals.includes(goalText)) {
-      handleRemoveGoal(goalText);
-    } else {
-      handleAddGoal(goalText);
-    }
-  };
-
-  const filteredProjects = AVAILABLE_PROJECTS_LIST.filter(p => 
-    p.name.toLowerCase().includes(projectSearchQuery.toLowerCase()) ||
-    p.category.toLowerCase().includes(projectSearchQuery.toLowerCase())
-  );
-
-  // Recommendations filtered by mode
-  const effectiveRecommendations = [
-    ...(mode === "multi" ? [{ id: "rec-multi", title: "横向比较", desc: "对比多个门店/账号在曝光、互动与转化上的表现" }] : []),
-    { id: "rec-night", title: "夜间私信流失排查", desc: "排查 20:00—24:00 夜间咨询断点，评估因无人值守导致的潜客流失" },
-    { id: "rec-complaint", title: "评论区客诉与异议归因", desc: "归类评论区负反馈、异议与咨询，分析对留资与转化造成的负面阻断" },
-    { id: "rec-search", title: "搜索截流关键词分析", desc: "分析小红书搜索流核心截流词、品类词与长尾词的自然渗透率" },
-  ];
-
-  // Full library filtered by current mode and active category
-  const displayedLibraryItems = OBJECTIVE_LIBRARY.filter((item) => {
-    if (mode === "single" && item.applicableMode === "multi") return false;
-    if (mode === "multi" && item.applicableMode === "single") return false;
-    if (selectedCategory !== "全部" && item.category !== selectedCategory) return false;
-    return true;
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Resolve date range
-    let start = "2026-08-01";
-    let end = "2026-08-23";
-    let label = "最近 30 天";
-    
-    if (timePreset === "7d") {
-      start = "2026-08-16";
-      end = "2026-08-23";
-      label = "2026-08-16 至 2026-08-23 (最近 7 天)";
-    } else if (timePreset === "30d") {
-      start = "2026-07-24";
-      end = "2026-08-23";
-      label = "2026-07-24 至 2026-08-23 (最近 30 天)";
-    } else if (timePreset === "this_month") {
-      start = "2026-08-01";
-      end = "2026-08-23";
-      label = "2026-08-01 至 2026-08-23 (本月)";
-    } else if (timePreset === "last_month") {
-      start = "2026-07-01";
-      end = "2026-07-31";
-      label = "2026-07-01 至 2026-07-31 (上月)";
-    } else {
-      start = customStartDate;
-      end = customEndDate;
-      label = `${customStartDate} 至 ${customEndDate} (自定义)`;
-    }
-
-    const selectedProjects = AVAILABLE_PROJECTS_LIST.filter(p => selectedProjectIds.includes(p.id));
-    const projectNames = selectedProjects.map(p => p.name);
-
-    // Final list of objectives
-    const finalObjectiveLabels = [...selectedGoals];
-    if (customInputText.trim() && !finalObjectiveLabels.includes(customInputText.trim())) {
-      finalObjectiveLabels.push(customInputText.trim());
-    }
-
-    if (finalObjectiveLabels.length === 0) {
-      finalObjectiveLabels.push("全景运营复盘");
-    }
-
-    const targetObjectiveLabel = finalObjectiveLabels.join("、");
-    const primaryObjectiveId = finalObjectiveLabels[0] || "custom";
-
-    const resolvedTitle = taskName.trim() || (
-      mode === "multi" 
-        ? `${projectNames.slice(0, 2).join('与')}${projectNames.length > 2 ? `等${projectNames.length}个项目` : ''} - ${finalObjectiveLabels[0] || '复盘'}`
-        : `${projectNames[0] || '项目'}运营复盘 (${finalObjectiveLabels[0] || '综合'})`
-    );
-
-    // Construct detailed goal description
-    const goalDescriptions = finalObjectiveLabels.map((goal) => {
-      const match = OBJECTIVE_LIBRARY.find((o) => o.title === goal);
-      return match ? `【${match.title}】${match.desc}` : `【分析目标】${goal}`;
+  const commitCustomRange = (nextStart: string, nextEnd: string) => {
+    setPeriodPreset("custom");
+    setPeriodStart(nextStart);
+    setPeriodEnd(nextEnd);
+    const validIds = new Set(projectsInPeriod(nextStart, nextEnd).map(project => project.id));
+    setSelectedProjectIds(previous => {
+      const retained = previous.filter(id => validIds.has(id));
+      if (retained.length > 0) return retained;
+      const first = projectsInPeriod(nextStart, nextEnd)[0];
+      return first ? [first.id] : [];
     });
-    
-    const notesDesc = detailedNotes.trim() ? `\n重点关注说明：${detailedNotes.trim()}` : "";
-    
-    const goalDescription = goalDescriptions.join("；") + notesDesc || "由 Agent 自动化执行数据采集、漏斗指标计算与多目标协同策略建议输出";
+    setIncludeCrossPlanComparison(false);
+  };
 
+  const openRangeCalendar = () => {
+    setDraftRangeStart(periodStart);
+    setDraftRangeEnd(periodEnd);
+    setAwaitingRangeEnd(false);
+    const [, month] = periodEnd.split("-").map(Number);
+    setCalendarMonth(new Date(Number(periodEnd.slice(0, 4)), month - 1, 1));
+    setShowRangeCalendar(value => !value);
+  };
+
+  const selectCalendarDate = (date: Date) => {
+    const value = toISODate(date);
+    if (!awaitingRangeEnd) {
+      setDraftRangeStart(value);
+      setDraftRangeEnd("");
+      setAwaitingRangeEnd(true);
+      return;
+    }
+    const start = value < draftRangeStart ? value : draftRangeStart;
+    const end = value < draftRangeStart ? draftRangeStart : value;
+    setDraftRangeStart(start);
+    setDraftRangeEnd(end);
+    setAwaitingRangeEnd(false);
+    setShowRangeCalendar(false);
+    commitCustomRange(start, end);
+  };
+
+  const toggleProject = (id: string) => {
+    setSelectedProjectIds(previous => {
+      const next = previous.includes(id)
+        ? previous.length === 1 ? previous : previous.filter(item => item !== id)
+        : [...previous, id];
+      setIncludeCrossPlanComparison(next.length > 1);
+      return next;
+    });
+  };
+
+  const toggleDirection = (id: ReviewDirectionId) => {
+    setSelectedDirections(previous => previous.includes(id)
+      ? previous.length === 1 ? previous : previous.filter(item => item !== id)
+      : [...previous, id]);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (selectedProjects.length === 0 || selectedDirections.length === 0) return;
+    const template = INITIAL_REVIEW_TASKS[1] || INITIAL_REVIEW_TASKS[0];
+    const directionNames = selectedDirectionDefinitions.map(direction => direction.title);
+    const title = customFocus.trim() || `${directionNames.join("、")}复盘`;
+    const goalDescription = customFocus.trim() || `围绕${directionNames.join("、")}形成${selectedProjects.length > 1 && includeCrossPlanComparison ? "包含跨方案打法对比的" : ""}复盘结论`;
     const newTask: ReviewTask = {
-      id: `rev-task-${Date.now()}`,
-      title: resolvedTitle,
-      dateRange: { start, end, label },
-      mode,
-      projectIds: selectedProjectIds,
-      projectNames,
-      targetObjective: primaryObjectiveId,
-      targetObjectiveLabel,
-      targetObjectiveLabels: finalObjectiveLabels,
-      customObjectives: finalObjectiveLabels,
+      ...template,
+      id: `review-${Date.now()}`,
+      title,
       goalDescription,
+      dateRange: { start: periodStart, end: periodEnd, label: `${periodStart} 至 ${periodEnd}` },
+      mode: selectedProjects.length > 1 ? "multi" : "single",
+      projectIds: selectedProjects.map(project => project.id),
+      projectNames: selectedProjects.map(project => project.name),
+      accountIds: undefined,
+      accountNames: undefined,
+      reviewDirections: selectedDirections,
+      includeCrossPlanComparison: selectedProjects.length > 1 && includeCrossPlanComparison,
+      observationWindow: "to_date",
+      observationWindowLabel: `${formatShortDate(periodStart)}—${formatShortDate(periodEnd)}`,
+      targetObjectiveLabel: directionNames.join(" · "),
       status: "analyzing",
       statusText: "分析中",
       updatedAt: "刚刚",
-      createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      activeVersionId: "v1",
-      historyVersions: [
-        {
-          id: "v1",
-          versionName: "v1.0 实时生成任务",
-          versionTag: "运行中",
-          createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
-          createdBy: "张操盘 (发起任务)",
-          dataCutoff: end,
-          status: "draft",
-          changelog: "新建复盘任务，Agent 任务流正在并发抓取与分析中",
-          summarySnapshot: `针对 ${projectNames.join(', ')} 启动目标【${targetObjectiveLabel}】的任务流`,
-        }
-      ],
+      createdAt: new Date().toISOString(),
+      activeVersionId: "draft-1",
+      historyVersions: [],
+      suggestedActions: [],
       progressSteps: [
-        {
-          id: `step-${Date.now()}-1`,
-          type: "completed",
-          statusLabel: "已完成",
-          title: "数据采集 Agent 已连通数据源",
-          description: `成功调取 ${selectedProjects.length} 个项目的全量笔记、会话与私信线索`,
-          actionText: "查看数据",
-          actionType: "view_log",
-          agentName: "数据采集 Agent"
-        },
-        {
-          id: `step-${Date.now()}-2`,
-          type: "analyzing",
-          statusLabel: "分析中",
-          title: "指标分析与用户洞察 Agent 正在运算",
-          description: `正在结合目标【${targetObjectiveLabel}】进行跨周期测算与痛点聚类`,
-          actionText: "查看日志",
-          actionType: "view_log",
-          agentName: "指标分析 Agent"
-        },
-        {
-          id: `step-${Date.now()}-3`,
-          type: "confirm",
-          statusLabel: "待确认",
-          title: "等待确认生成策略行动建议",
-          description: "分析完成后将自动产出结构化多目标优化策略",
-          actionText: "查看进度",
-          actionType: "confirm",
-          agentName: "策略建议 Agent"
-        }
-      ],
-      coreConclusions: {
-        overallPerformance: {
-          status: "up",
-          title: `针对【${finalObjectiveLabels[0]}】等多目标指标聚合中，整体表现稳健向上`,
-          description: `已接入 ${selectedProjects.length} 个运营项目，正在针对 ${finalObjectiveLabels.length} 个核心复盘诉求进行多维交叉校验与漏斗拟合。`,
-          metricBadge: "同步完成率 100%",
-          metricDiff: "分析中...",
-        },
-        mainIssue: {
-          title: "部分长尾流量承接时效有待提升",
-          description: "夜间非工作时段咨询线索响应时间偏长，建议部署自动化应答规则。",
-          cause: "人工客服排班未覆盖夜间峰值",
-          stage: "私信承接阶段",
-        },
-        keyOpportunity: {
-          title: "专业测评打卡内容转化效率显著领先",
-          description: "真实养宠体验与店长答疑结合的内容形式在各项目均体现出较强的留资吸引力。",
-          potentialGain: "预计可带动咨询转化提升 15%~20%",
-        },
-        priorityAction: {
-          title: "复用标杆门店的承接话术与排雷指南",
-          description: "统一配置《幼犬换粮自测表》作为私信承接钩子物料。",
-          immediateTarget: "下发至执行中心统一推进",
-        },
-      },
-      crossProjectComparison: mode === "multi" ? {
-        projects: selectedProjects.map((p, idx) => ({
-          id: p.id,
-          name: p.name,
-          impressions: { val: `${(15 + idx * 3.5).toFixed(1)}万`, diff: `↑${10 + idx * 8}%`, trend: "up" },
-          conversion: { val: `${(12 + idx * 4.2).toFixed(1)}%`, diff: `↑${5 + idx * 6}%`, trend: "up" },
-          interaction: { val: `${(7000 + idx * 2400).toLocaleString()}`, diff: `↑${8 + idx * 4}%`, trend: "up" },
-          leads: { val: `${320 + idx * 110}人`, diff: `↑${12 + idx * 10}%`, trend: "up" },
-          aiJudgeTag: idx === 0 ? "表现最佳 · 标杆可复用" : "运行平稳 · 转化良好",
-          aiJudgeType: idx === 0 ? "best" : "normal",
-          keyStrength: "真人IP背书 + 专业答疑",
-          weakness: "长尾搜索词覆盖可进一步加强",
-        })),
-        aiSummary: {
-          bestProject: `${selectedProjects[0]?.name || '标杆项目'}在有效私信咨询率上领先，具备高复用价值。`,
-          reusableFactor: "以专业营养师视角解答真实换粮疑难问题，置顶评论提供干货自测表。",
-          weakProjectIssue: "其余项目在夜间时段响应较慢，流失率高于标杆项目。",
-          overallRecommendation: `建议围绕目标【${targetObjectiveLabel}】，将标杆项目的选题库与5分钟私信响应链推广至全部已选项目。`,
-        },
-      } : undefined,
-      agentPipeline: [
-        {
-          id: "ag-n-1",
-          name: "数据采集 Agent",
-          role: "Data Extraction",
-          status: "completed",
-          statusText: "已完成",
-          summary: `已成功同步 ${selectedProjects.length} 个项目全量数据`,
-          duration: "1.1s",
-          outputItems: ["小红书笔记数据", "私信互动流水", "用户搜索词快照"],
-          logs: [{ time: "刚刚", level: "success", message: "多端数据同步完成" }],
-        },
-        {
-          id: "ag-n-2",
-          name: "指标分析 Agent",
-          role: "Metrics Calculation",
-          status: "running",
-          statusText: "运算中",
-          summary: `正在基于【${targetObjectiveLabel}】计算跨项目漏斗衰减与ROI...`,
-          duration: "进行中 (已用时 4s)",
-          outputItems: [],
-          logs: [{ time: "刚刚", level: "info", message: "开始指标测算" }],
-        },
-        {
-          id: "ag-n-3",
-          name: "用户洞察 Agent",
-          role: "User Mining",
-          status: "pending",
-          statusText: "等待中",
-          summary: "待指标分析完成后启动",
-          duration: "0s",
-          outputItems: [],
-          logs: [],
-        },
-        {
-          id: "ag-n-4",
-          name: "内容分析 Agent",
-          role: "Content Evaluation",
-          status: "pending",
-          statusText: "等待中",
-          summary: "待指标分析完成后启动",
-          duration: "0s",
-          outputItems: [],
-          logs: [],
-        },
-        {
-          id: "ag-n-5",
-          name: "转化分析 Agent",
-          role: "Conversion Funnel",
-          status: "pending",
-          statusText: "等待中",
-          summary: "待指标分析完成后启动",
-          duration: "0s",
-          outputItems: [],
-          logs: [],
-        },
-        {
-          id: "ag-n-6",
-          name: "策略建议 Agent",
-          role: "Strategy Synthesis",
-          status: "pending",
-          statusText: "等待中",
-          summary: "待全部Agent分析后产出多目标建议",
-          duration: "0s",
-          outputItems: [],
-          logs: [],
-        },
-      ],
-      suggestedActions: [
-        {
-          id: `act-${Date.now()}-1`,
-          title: "优化高转化内容承接链路与夜间自动应答",
-          target: "缩短线索流失时间，提升夜间客户挽回率",
-          expectedGain: "预计提升私信留资率 +20%",
-          priority: "P0",
-          category: "转化承接",
-          actionType: "plan",
-          appliedStatus: "not_applied",
-          inExecutionCenter: false,
-          reason: "解决夜间时段无专人接待的问题。",
-          recommendedSteps: ["开启AI夜间自动接待", "配置引导物料"],
-        },
-        {
-          id: `act-${Date.now()}-2`,
-          title: "复制标杆门店选题库到其余项目",
-          target: "升级图文与视频内容信任度",
-          expectedGain: "单篇互动成本预计下降 30%",
-          priority: "P1",
-          category: "内容策略",
-          actionType: "note",
-          appliedStatus: "not_applied",
-          inExecutionCenter: false,
-          reason: "标杆经验可在矩阵内快速复用。",
-          recommendedSteps: ["下发脚本模板", "建立审核抽检"],
-        },
-      ],
-      analysisDetails: {
-        summary: {
-          scope: projectNames.join("、"),
-          target: targetObjectiveLabel,
-          projectCount: selectedProjects.length,
-          timeWindow: label,
-          dataSource: "小红书专业号、来客私信、门店核销系统",
-          sampleNotesCount: selectedProjects.reduce((acc, curr) => acc + curr.activeNotes, 0),
-        },
-        diagnoses: [
-          {
-            issue: "跨项目私信响应时效不均",
-            cause: "部分门店未配置夜间自动回复规则。",
-            impact: "估算每月错失约 15% 的高潜线索。",
-            severity: "medium",
-            affectedStage: "私信承接阶段",
-          },
-        ],
-        metricShifts: [
-          { metric: "总曝光量", before: "32.0万", current: "38.6万", change: "+20.6%", isGood: true, note: "稳步上涨" },
-          { metric: "私信线索总量", before: "980", current: "1,180", change: "+20.4%", isGood: true, note: "留资增长" },
-        ],
-        insights: {
-          contentInsight: {
-            title: "内容洞察",
-            takeaways: ["实测打卡类笔记信任度最高，完播率超 55%。"],
-          },
-          userInsight: {
-            title: "用户洞察",
-            takeaways: ["新手宠主对软便与换粮期胃肠耐受关注度最高。"],
-          },
-          conversionInsight: {
-            title: "转化洞察",
-            takeaways: ["置顶评论引导自测表的点击转化率高出 3.5 倍。"],
-          },
-        },
-        strategicGuidelines: [
-          {
-            title: "推行专业顾问人设打法",
-            detail: "从纯促销转向专业营养学解答，提升单客价值。",
-            actionSteps: ["统一拍摄模板", "配置知识库"],
-          },
-        ],
-        finalConclusion: `已启动针对【${targetObjectiveLabel}】的复盘任务流，Agent 正在完成推导，建议动作已就绪。`,
-      },
+        { id: "collect", type: "completed", statusLabel: "已完成", title: "锁定周期、方案与数据快照", description: `已锁定${formatShortDate(periodStart)}至${formatShortDate(periodEnd)}，纳入 ${selectedProjects.length} 个方案、${totalNotes} 篇笔记、${totalAccounts} 个参与账号和 ${totalKeywords} 个目标关键词。` },
+        { id: "analyze", type: "analyzing", statusLabel: "分析中", title: "按复盘方向组织证据", description: `正在生成${directionNames.join("、")}章节。${includeFeedback ? "消费者体验反馈将纳入内容与人群分析。" : "本次不纳入消费者体验反馈。"}` },
+        { id: "conclusion", type: "analyzing", statusLabel: "分析中", title: "生成综合结论与行动建议", description: selectedProjects.length > 1 && includeCrossPlanComparison ? "将增加跨方案打法对比，默认使用发布后7天的标准化口径。" : "完成后直接形成报告；具体优化动作在报告中逐条确认。" }
+      ]
     };
-
     onCreateTask(newTask);
-    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 10 }}
-        className="bg-surface-1 rounded-2xl shadow-dialog border border-border-default w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden text-text-main"
-      >
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-1">
-          <div>
-            <h2 className="text-[16px] font-semibold text-text-main">创建复盘任务</h2>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
-              配置复盘对象、时间范围与分析目标，支持多目标组合与自由填入
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-tertiary hover:text-text-main transition-colors"
-          >
-            <X size={16} />
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4">
+      <form onSubmit={handleSubmit} className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border-default bg-surface-1 shadow-2xl">
+        <div className="flex items-start justify-between border-b border-border-default px-5 py-4">
+          <div><h2 className="text-[16px] font-semibold text-text-main">新建复盘</h2><p className="mt-1 text-[11px] text-text-tertiary">先确定复盘周期，再选择该周期内的方案和分析方向。</p></div>
+          <button type="button" onClick={onClose} className="p-1 text-text-tertiary hover:text-text-main"><X size={17} /></button>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Task Name */}
-          <div>
-            <label className="block text-[13px] font-medium text-text-main mb-1.5">
-              任务名称 <span className="text-text-tertiary font-normal">(选填，不填将根据对象与目标自动命名)</span>
-            </label>
-            <input
-              type="text"
-              placeholder="例如：8月三亚与青岛店横向复盘、幼犬换粮期多目标转化诊断..."
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
-              className="w-full px-3.5 py-2 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
-            />
-          </div>
+        <div className="flex-1 space-y-4 overflow-y-auto p-5">
+          <section className="relative">
+            <div className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold text-text-main"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-950 text-[10px] text-white">1</span>复盘周期</div>
+            <div className="flex flex-wrap gap-1.5">{PERIOD_PRESETS.map(preset => <button key={preset.id} type="button" onClick={() => applyPeriod(preset)} className={`rounded-lg border px-3 py-1.5 text-[10.5px] ${periodPreset === preset.id ? "border-neutral-900 bg-neutral-950 text-white" : "border-border-default bg-surface-1 text-text-secondary"}`}>{preset.label}</button>)}</div>
+            <button type="button" onClick={openRangeCalendar} className={`mt-2 flex w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-left ${showRangeCalendar ? "border-neutral-900 bg-surface-1" : "border-border-default bg-surface-subtle"}`}><CalendarDays size={14} className="shrink-0 text-text-tertiary" /><span className="flex-1 text-[11.5px] font-medium text-text-main">{formatShortDate(periodStart)} 至 {formatShortDate(periodEnd)}</span><span className="text-[10px] text-text-tertiary">点击选择起止日期</span></button>
+            {showRangeCalendar && <div className="absolute left-0 top-[92px] z-30 w-[310px] rounded-xl border border-border-default bg-surface-1 p-3 shadow-xl">
+              <div className="flex items-center justify-between"><button type="button" onClick={() => setCalendarMonth(month => new Date(month.getFullYear(), month.getMonth() - 1, 1))} className="rounded-lg p-1.5 text-text-tertiary hover:bg-surface-subtle"><ChevronLeft size={14} /></button><div className="text-[11.5px] font-semibold text-text-main">{calendarMonth.getFullYear()}年{calendarMonth.getMonth() + 1}月</div><button type="button" onClick={() => setCalendarMonth(month => new Date(month.getFullYear(), month.getMonth() + 1, 1))} className="rounded-lg p-1.5 text-text-tertiary hover:bg-surface-subtle"><ChevronRight size={14} /></button></div>
+              <div className="mt-2 grid grid-cols-7 text-center text-[9px] text-text-tertiary">{["一", "二", "三", "四", "五", "六", "日"].map(day => <span key={day} className="py-1">{day}</span>)}</div>
+              <div className="grid grid-cols-7">{calendarDays.map(date => {
+                const value = toISODate(date);
+                const inMonth = date.getMonth() === calendarMonth.getMonth();
+                const isEndpoint = value === draftRangeStart || value === draftRangeEnd;
+                const inRange = Boolean(draftRangeEnd && value > draftRangeStart && value < draftRangeEnd);
+                return <button key={value} type="button" onClick={() => selectCalendarDate(date)} className={`h-8 text-[10px] transition-colors ${isEndpoint ? "rounded-lg bg-neutral-950 font-medium text-white" : inRange ? "bg-blue-50 text-blue-800" : inMonth ? "text-text-main hover:rounded-lg hover:bg-surface-subtle" : "text-text-disabled"}`}>{date.getDate()}</button>;
+              })}</div>
+              <div className="mt-2 flex items-center justify-between border-t border-border-subtle pt-2 text-[9.5px]"><span className="text-text-tertiary">{awaitingRangeEnd ? "请选择结束日期" : "先选开始日期，再选结束日期"}</span><button type="button" onClick={() => setShowRangeCalendar(false)} className="text-text-secondary">关闭</button></div>
+            </div>}
+          </section>
 
-          {/* STEP 1: Select Analysis Target & Mode */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[13px] font-semibold text-text-main flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-btn-main text-white text-[11px] flex items-center justify-center font-bold">1</span>
-                选择分析对象与时间范围
-              </span>
+          <section>
+            <div className="mb-2 flex items-center justify-between"><div className="flex items-center gap-2 text-[12.5px] font-semibold text-text-main"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-950 text-[10px] text-white">2</span>选择方案 <span className="text-[10px] font-normal text-text-tertiary">· 可多选</span></div>{candidateProjects.length > 3 && <button type="button" onClick={() => setShowMoreProjects(true)} className="flex items-center gap-0.5 text-[10.5px] font-medium text-text-secondary">更多周期内方案<ChevronRight size={12} /></button>}</div>
+            {visibleProjects.length > 0 ? <div className="space-y-1.5">{visibleProjects.map(project => {
+              const checked = selectedProjectIds.includes(project.id);
+              return <button key={project.id} type="button" onClick={() => toggleProject(project.id)} className={`flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-left ${checked ? "border-neutral-900 bg-surface-subtle" : "border-border-default bg-surface-1"}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${checked ? "border-neutral-900 bg-neutral-950 text-white" : "border-border-strong"}`}>{checked && <Check size={10} />}</span><span className="min-w-0 flex-1 truncate text-[11.5px] font-medium text-text-main">{project.name}</span><span className="shrink-0 text-[10px] text-text-tertiary">{formatShortDate(project.start)}—{formatShortDate(project.end)} · {project.activeNotes}篇</span></button>;
+            })}</div> : <div className="rounded-xl border border-dashed border-border-default p-4 text-center text-[11px] text-text-tertiary">该周期内没有可复盘方案，请调整时间范围。</div>}
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-subtle px-3 py-2 text-[10px] text-text-secondary"><span>已选 {selectedProjects.length} 个方案 · 自动带入 {totalAccounts} 个账号、{totalNotes} 篇笔记、{totalKeywords} 个关键词</span>{selectedProjects.length > 1 && <button type="button" onClick={() => setIncludeCrossPlanComparison(value => !value)} className="flex items-center gap-1.5 font-medium text-blue-700"><span className={`flex h-3.5 w-3.5 items-center justify-center rounded border ${includeCrossPlanComparison ? "border-blue-600 bg-blue-600 text-white" : "border-blue-300"}`}>{includeCrossPlanComparison && <Check size={9} />}</span>跨方案打法对比</button>}</div>
+          </section>
 
-              {/* Mode Switcher */}
-              <div className="flex bg-surface-subtle p-0.5 rounded-lg border border-border-default">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode("single");
-                    if (selectedProjectIds.length > 1) {
-                      setSelectedProjectIds([selectedProjectIds[0]]);
-                    }
-                    // Auto-adjust objectives for single mode
-                    setSelectedGoals(prev => prev.filter(g => g !== "横向比较"));
-                  }}
-                  className={`px-3 py-1 text-[12px] font-medium rounded-md transition-all ${
-                    mode === "single"
-                      ? "bg-surface-1 text-text-main shadow-xs"
-                      : "text-text-tertiary hover:text-text-main"
-                  }`}
-                >
-                  单项目诊断
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode("multi");
-                    if (!selectedGoals.includes("横向比较")) {
-                      setSelectedGoals(prev => ["横向比较", ...prev]);
-                    }
-                  }}
-                  className={`px-3 py-1 text-[12px] font-medium rounded-md transition-all ${
-                    mode === "multi"
-                      ? "bg-surface-1 text-text-main shadow-xs"
-                      : "text-text-tertiary hover:text-text-main"
-                  }`}
-                >
-                  多项目横向对比
-                </button>
-              </div>
-            </div>
+          <section>
+            <div className="mb-2 flex items-center justify-between"><div className="flex items-center gap-2 text-[12.5px] font-semibold text-text-main"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-950 text-[10px] text-white">3</span>复盘方向 <span className="text-[10px] font-normal text-text-tertiary">· 可多选</span></div><button type="button" onClick={() => setSelectedDirections([...ALL_REVIEW_DIRECTION_IDS])} className={`rounded-lg border px-2.5 py-1 text-[10px] ${selectedDirections.length === ALL_REVIEW_DIRECTION_IDS.length ? "border-neutral-900 bg-neutral-950 text-white" : "border-border-default text-text-secondary"}`}>完整复盘</button></div>
+            <div className="grid gap-2 sm:grid-cols-3">{REVIEW_DIRECTION_DEFINITIONS.map(direction => {
+              const checked = selectedDirections.includes(direction.id);
+              return <button key={direction.id} type="button" onClick={() => toggleDirection(direction.id)} title={`报告输出：${direction.output}`} className={`rounded-xl border p-2.5 text-left ${checked ? "border-neutral-900 bg-surface-subtle" : "border-border-default bg-surface-1 opacity-65"}`}><div className="flex items-start justify-between gap-2"><div className="text-[11.5px] font-semibold text-text-main">{direction.title}</div><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${checked ? "border-neutral-900 bg-neutral-950 text-white" : "border-border-strong"}`}>{checked && <Check size={10} />}</span></div><div className="mt-1 line-clamp-2 text-[9.5px] leading-4 text-text-tertiary">{direction.description}</div></button>;
+            })}</div>
+            <div className="mt-2 flex gap-2"><input value={customFocus} onChange={event => setCustomFocus(event.target.value)} placeholder="补充其他复盘需求（可选）" className="min-w-0 flex-1 rounded-lg border border-border-default px-3 py-2 text-[10.5px] outline-none focus:border-border-strong" /><label className="flex shrink-0 items-center gap-1.5 rounded-lg border border-border-default px-2.5 text-[10px] text-text-secondary"><input type="checkbox" checked={includeFeedback} onChange={event => setIncludeFeedback(event.target.checked)} />体验反馈</label></div>
+          </section>
 
-            {/* Project Selection Box */}
-            <div className="p-3 bg-surface-subtle rounded-xl border border-border-default space-y-2.5">
-              <div className="flex items-center justify-between gap-2">
-                <div className="relative flex-1">
-                  <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
-                  <input
-                    type="text"
-                    placeholder="搜索门店、账号或项目..."
-                    value={projectSearchQuery}
-                    onChange={(e) => setProjectSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-[12px] outline-none"
-                  />
-                </div>
-                <span className="text-[11px] text-text-tertiary shrink-0">
-                  {mode === "single" ? "单选模式" : `已选 ${selectedProjectIds.length} 个项目`}
-                </span>
-              </div>
+        </div>
 
-              {/* Selected Pills */}
-              <div className="flex flex-wrap gap-1.5 min-h-[28px] items-center">
-                {selectedProjectIds.map((id) => {
-                  const proj = AVAILABLE_PROJECTS_LIST.find((p) => p.id === id);
-                  if (!proj) return null;
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-1 border border-border-default text-text-main text-[11.5px] rounded-lg shadow-2xs font-medium"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      <span>{proj.name}</span>
-                      {mode === "multi" && selectedProjectIds.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleProject(id);
-                          }}
-                          className="text-text-tertiary hover:text-text-main ml-0.5"
-                        >
-                          <X size={12} />
-                        </button>
-                      )}
-                    </span>
-                  );
-                })}
-              </div>
+        <div className="flex items-center justify-between border-t border-border-default px-5 py-3.5"><div className="flex flex-wrap items-center gap-x-2 text-[9.5px] text-text-tertiary"><Database size={11} /><span>平台ID {platformIdCount}/{totalNotes}</span><span>·</span><span>回传 {returnedCount}/{totalNotes}</span><span>·</span><span>完整度 {averageCompleteness}%</span>{selectedDirections.includes("seeding_conversion") && <span className="flex items-center gap-1 text-amber-700"><AlertCircle size={10} />转化仅用已回传数据</span>}</div><div className="flex gap-2"><button type="button" onClick={onClose} className="rounded-lg px-4 py-2 text-[11.5px] text-text-secondary">取消</button><button type="submit" disabled={selectedProjects.length === 0 || selectedDirections.length === 0} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[11.5px] font-medium text-white disabled:opacity-40"><Sparkles size={13} />开始复盘</button></div></div>
 
-              {/* Project Candidates List */}
-              <div className="max-h-36 overflow-y-auto space-y-1 pt-1 pr-1">
-                {filteredProjects.map((p) => {
-                  const isChecked = selectedProjectIds.includes(p.id);
-                  return (
-                    <div
-                      key={p.id}
-                      onClick={() => handleToggleProject(p.id)}
-                      className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg cursor-pointer transition-colors text-[12px] ${
-                        isChecked
-                          ? "bg-surface-1 border border-border-default text-text-main font-medium"
-                          : "hover:bg-surface-1 text-text-secondary"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-3.5 h-3.5 rounded flex items-center justify-center border ${isChecked ? "bg-btn-main border-btn-main text-white" : "border-border-strong bg-surface-1"}`}>
-                          {isChecked && <Check size={10} strokeWidth={3} />}
-                        </div>
-                        <span>{p.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-[11px] text-text-tertiary">
-                        <span>{p.category}</span>
-                        <span>·</span>
-                        <span>{p.activeNotes} 篇笔记</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Time Range */}
-            <div className="space-y-1.5 pt-1">
-              <label className="block text-[12px] font-medium text-text-secondary">时间范围</label>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { id: "7d", label: "最近 7 天" },
-                  { id: "30d", label: "最近 30 天" },
-                  { id: "this_month", label: "本月" },
-                  { id: "last_month", label: "上月" },
-                  { id: "custom", label: "自定义时间" },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setTimePreset(item.id as any)}
-                    className={`px-3 py-1.5 text-[12px] rounded-lg font-medium transition-all ${
-                      timePreset === item.id
-                        ? "bg-btn-main text-white"
-                        : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-
-              {timePreset === "custom" && (
-                <div className="flex items-center gap-2 pt-2">
-                  <input
-                    type="date"
-                    value={customStartDate}
-                    onChange={(e) => setCustomStartDate(e.target.value)}
-                    className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[12px]"
-                  />
-                  <span className="text-text-tertiary text-[12px]">至</span>
-                  <input
-                    type="date"
-                    value={customEndDate}
-                    onChange={(e) => setCustomEndDate(e.target.value)}
-                    className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[12px]"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* STEP 2: Unified Compact Objectives Component */}
-          <div className="space-y-2.5">
-            {/* Header: Title + Selected Count */}
-            <div className="flex items-center justify-between">
-              <span className="text-[13px] font-semibold text-text-main flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-btn-main text-white text-[11px] flex items-center justify-center font-bold">2</span>
-                设定复盘目标
-              </span>
-
-              <div className="flex items-center gap-2">
-                {selectedGoals.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={handleClearAllGoals}
-                    className="text-[11.5px] text-text-tertiary hover:text-red-500 transition-colors"
-                  >
-                    清空重选
-                  </button>
-                )}
-                <span className="text-[11.5px] px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default rounded-md font-medium">
-                  已选择 {selectedGoals.length} 项
-                </span>
-              </div>
-            </div>
-
-            {/* Warning if too many goals (> 3) */}
-            {selectedGoals.length > 3 && (
-              <div className="flex items-center gap-1.5 text-[11.5px] text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200">
-                <AlertCircle size={13} className="shrink-0 text-amber-600" />
-                <span>建议选择 1-3 个核心目标，目标过多可能分散分析重点。</span>
-              </div>
-            )}
-
-            {/* Selected Objectives Tag Cloud (Displayed cleanly above the input box) */}
-            {selectedGoals.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5 min-h-[30px] items-center p-2 bg-surface-subtle rounded-xl border border-border-default">
-                {selectedGoals.map((goal) => {
-                  const matchLib = OBJECTIVE_LIBRARY.find((o) => o.title === goal);
-                  return (
-                    <span
-                      key={goal}
-                      title={matchLib?.desc || `分析目标：${goal}`}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-1 border border-border-strong text-text-main rounded-lg text-[12px] font-medium shadow-2xs group cursor-default transition-all"
-                    >
-                      <span>{goal}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveGoal(goal)}
-                        className="text-text-tertiary hover:text-red-500 transition-colors ml-0.5"
-                      >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="text-[11.5px] text-text-tertiary italic px-1">
-                未选择目标（默认执行全要素综合全景分析）
-              </div>
-            )}
-
-            {/* Custom Input Box (Primary Entry) */}
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="输入自定义分析目标（例如：排查夜间私信流失、分析金毛犬种ROI...）"
-                  value={customInputText}
-                  onChange={(e) => setCustomInputText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddGoal();
-                    }
-                  }}
-                  className="w-full px-3 py-2 bg-surface-subtle border border-border-default rounded-lg text-[12.5px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => handleAddGoal()}
-                className="px-4 py-2 bg-surface-1 border border-border-default hover:bg-hover-bg text-text-main text-[12.5px] font-medium rounded-lg transition-colors flex items-center gap-1 shrink-0 shadow-2xs"
-              >
-                <Plus size={13} />
-                <span>添加</span>
-              </button>
-            </div>
-
-            {/* Recommendations Row & More Goals Entrance */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 text-[11.5px]">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-text-tertiary shrink-0">推荐：</span>
-                {effectiveRecommendations.map((item) => {
-                  const isAdded = selectedGoals.includes(item.title);
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      disabled={isAdded}
-                      onClick={() => handleAddGoal(item.title)}
-                      title={item.desc}
-                      className={`px-2.5 py-1 rounded-md border transition-colors flex items-center gap-1 ${
-                        isAdded
-                          ? "bg-surface-subtle text-text-tertiary border-border-subtle cursor-default"
-                          : "bg-surface-subtle text-text-secondary hover:text-text-main hover:bg-surface-1 border-border-default cursor-pointer"
-                      }`}
-                    >
-                      <span>+</span>
-                      <span>{item.title}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* More Goals Toggle */}
-              <button
-                type="button"
-                onClick={() => setIsMoreGoalsOpen(!isMoreGoalsOpen)}
-                className={`px-2.5 py-1 rounded-md border text-[11.5px] font-medium flex items-center gap-1 transition-all ${
-                  isMoreGoalsOpen
-                    ? "bg-btn-main text-white border-btn-main shadow-2xs"
-                    : "bg-surface-1 border-border-default text-btn-main hover:bg-hover-bg"
-                }`}
-              >
-                <span>+ 更多目标</span>
-                <ChevronDown size={12} className={`transition-transform duration-200 ${isMoreGoalsOpen ? "rotate-180" : ""}`} />
-              </button>
-            </div>
-
-            {/* Categorized Dropdown / Popover Panel for Complete Objective Library */}
-            <AnimatePresence>
-              {isMoreGoalsOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, y: -6 }}
-                  animate={{ opacity: 1, height: "auto", y: 0 }}
-                  exit={{ opacity: 0, height: 0, y: -6 }}
-                  className="overflow-hidden border border-border-default rounded-xl bg-surface-1 shadow-lg mt-1 p-3.5 space-y-3"
-                >
-                  <div className="flex items-center justify-between border-b border-border-subtle pb-2">
-                    <div className="flex items-center gap-1 text-[11.5px] overflow-x-auto">
-                      {["全部", "对比分析", "项目诊断", "内容策略", "用户增长", "转化分析"].map((cat) => (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => setSelectedCategory(cat)}
-                          className={`px-2.5 py-1 rounded-md transition-colors font-medium shrink-0 ${
-                            selectedCategory === cat
-                              ? "bg-btn-main text-white shadow-2xs"
-                              : "text-text-secondary hover:bg-hover-bg hover:text-text-main"
-                          }`}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setIsMoreGoalsOpen(false)}
-                      className="text-[11.5px] text-text-tertiary hover:text-text-main px-2 py-0.5 rounded hover:bg-hover-bg shrink-0 ml-2"
-                    >
-                      收起
-                    </button>
-                  </div>
-
-                  {/* Filtered Library Items */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                    {displayedLibraryItems.map((item) => {
-                      const isSelected = selectedGoals.includes(item.title);
-                      return (
-                        <div
-                          key={item.id}
-                          onClick={() => handleToggleGoal(item.title)}
-                          title={item.desc}
-                          className={`p-2.5 rounded-lg border cursor-pointer transition-all flex items-center justify-between gap-2 select-none ${
-                            isSelected
-                              ? "bg-surface-subtle border-btn-main ring-1 ring-btn-main"
-                              : "bg-surface-subtle border-border-subtle hover:border-border-strong hover:bg-surface-1"
-                          }`}
-                        >
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-[12px] font-semibold text-text-main truncate">{item.title}</span>
-                              <span className="text-[10px] px-1.5 py-0.2 bg-surface-1 border border-border-subtle text-text-tertiary rounded shrink-0">
-                                {item.category}
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-text-tertiary truncate mt-0.5" title={item.desc}>
-                              {item.desc}
-                            </p>
-                          </div>
-
-                          <div className={`w-4 h-4 rounded flex items-center justify-center border shrink-0 transition-colors ${
-                            isSelected ? "bg-btn-main border-btn-main text-white" : "border-border-strong bg-surface-1"
-                          }`}>
-                            {isSelected && <Check size={11} strokeWidth={3} />}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Optional Freeform Notes / Focus Areas */}
-            <div className="pt-1">
-              <label className="block text-[12px] font-medium text-text-secondary mb-1">
-                补充说明 / 重点关注问题 <span className="text-text-tertiary font-normal">(选填，用于向 Agent 传递具体诉求)</span>
-              </label>
-              <textarea
-                rows={2}
-                placeholder="例如：重点关注7月份两家店在幼犬换粮期的客单价差距，并给出3条可执行的脚本优化方案..."
-                value={detailedNotes}
-                onChange={(e) => setDetailedNotes(e.target.value)}
-                className="w-full px-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[12px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors resize-none"
-              />
-            </div>
-          </div>
-
-          {/* STEP 3: Advanced Settings (Collapsible) */}
-          <div className="border-t border-border-default pt-3">
-            <button
-              type="button"
-              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-              className="flex items-center justify-between w-full text-[12.5px] text-text-secondary hover:text-text-main font-medium py-1"
-            >
-              <span>高级设置 (可选)</span>
-              {isAdvancedOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            </button>
-
-            {isAdvancedOpen && (
-              <div className="mt-2 space-y-2.5 p-3.5 bg-surface-subtle rounded-xl border border-border-default text-[12px]">
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={includeHistoryData}
-                    onChange={(e) => setIncludeHistoryData(e.target.checked)}
-                    className="rounded border-border-strong text-btn-main"
-                  />
-                  <span className="text-text-main">纳入上期历史方案数据作为环比对照</span>
-                </label>
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={generateCrossComparison}
-                    onChange={(e) => setGenerateCrossComparison(e.target.checked)}
-                    className="rounded border-border-strong text-btn-main"
-                  />
-                  <span className="text-text-main">生成跨项目横向对比矩阵与标杆归因</span>
-                </label>
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={outputActionProposals}
-                    onChange={(e) => setOutputActionProposals(e.target.checked)}
-                    className="rounded border-border-strong text-btn-main"
-                  />
-                  <span className="text-text-main">输出可落地的结构化行动建议卡片</span>
-                </label>
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={autoSyncToExecutionCenter}
-                    onChange={(e) => setAutoSyncToExecutionCenter(e.target.checked)}
-                    className="rounded border-border-strong text-btn-main"
-                  />
-                  <span className="text-text-main">建议动作自动同步至【执行中心】待办队列</span>
-                </label>
-              </div>
-            )}
-          </div>
-
-          {/* Footer Buttons */}
-          <div className="pt-2 flex items-center justify-end gap-3 border-t border-border-default">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
-            >
-              取消
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 text-[13px] font-medium text-white bg-btn-main hover:bg-btn-main-hover rounded-xl shadow-sm transition-all flex items-center gap-1.5"
-            >
-              <Sparkles size={14} />
-              <span>开始复盘</span>
-            </button>
-          </div>
-        </form>
-      </motion.div>
+        {showMoreProjects && <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/35 p-4"><div className="flex max-h-[72vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-border-default bg-surface-1 shadow-2xl"><div className="flex items-start justify-between border-b border-border-default px-5 py-4"><div><h3 className="text-[14px] font-semibold text-text-main">选择更多方案</h3><p className="mt-1 text-[10.5px] text-text-tertiary">仅显示{formatShortDate(periodStart)}至{formatShortDate(periodEnd)}期间执行过的方案。</p></div><button type="button" onClick={() => setShowMoreProjects(false)} className="p-1 text-text-tertiary"><X size={16} /></button></div><div className="border-b border-border-default p-3"><div className="relative"><Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" /><input value={projectSearch} onChange={event => setProjectSearch(event.target.value)} placeholder="搜索方案" className="w-full rounded-lg border border-border-default py-2 pl-8 pr-3 text-[11px] outline-none" /></div></div><div className="flex-1 space-y-1.5 overflow-y-auto p-3">{searchedProjects.map(project => { const checked = selectedProjectIds.includes(project.id); return <button key={project.id} type="button" onClick={() => toggleProject(project.id)} className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left ${checked ? "border-neutral-900 bg-surface-subtle" : "border-border-default"}`}><span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${checked ? "border-neutral-900 bg-neutral-950 text-white" : "border-border-strong"}`}>{checked && <Check size={10} />}</span><div className="min-w-0 flex-1"><div className="truncate text-[11.5px] font-medium text-text-main">{project.name}</div><div className="mt-0.5 text-[9.5px] text-text-tertiary">{formatShortDate(project.start)}—{formatShortDate(project.end)} · {project.activeNotes}篇笔记 · 完整度{project.completeness}%</div></div></button>; })}</div><div className="flex items-center justify-between border-t border-border-default px-4 py-3"><span className="text-[10px] text-text-tertiary">已选 {selectedProjects.length} 个方案</span><button type="button" onClick={() => setShowMoreProjects(false)} className="rounded-lg bg-neutral-950 px-4 py-2 text-[11px] font-medium text-white">完成选择</button></div></div></div>}
+      </form>
     </div>
   );
 }

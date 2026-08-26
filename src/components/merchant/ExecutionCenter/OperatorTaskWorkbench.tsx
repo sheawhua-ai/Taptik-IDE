@@ -83,6 +83,7 @@ export function OperatorTaskWorkbench({
   const [publishUrl, setPublishUrl] = useState(task.returnedData?.publishUrl || '');
   const [resolution, setResolution] = useState(() => getAnomalyOptions(task)[0]);
   const [resolutionNote, setResolutionNote] = useState('');
+  const [replacementPublisher, setReplacementPublisher] = useState('备用KOC_小丸子');
   const [agentQuestion, setAgentQuestion] = useState('');
   const [agentAnswer, setAgentAnswer] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -101,6 +102,7 @@ export function OperatorTaskWorkbench({
     setPublishUrl(task.returnedData?.publishUrl || '');
     setResolution(getAnomalyOptions(task)[0]);
     setResolutionNote('');
+    setReplacementPublisher('备用KOC_小丸子');
     setAgentQuestion('');
     setAgentAnswer('');
   }, [task.id]);
@@ -139,6 +141,48 @@ export function OperatorTaskWorkbench({
       ]
     });
     showFeedback(message);
+  };
+
+  const resolveAnomaly = () => {
+    const isPublishAnomaly = task.anomalyType === 'publish_overdue' || task.anomalyType === 'executor_account_unavailable';
+    if (!isPublishAnomaly) {
+      completeTask({ anomalyReason: `${resolution}${resolutionNote ? `：${resolutionNote}` : ''}`, isAnomaly: false, isBlocked: false }, '已确认异常处理方案');
+      return;
+    }
+
+    const stopped = resolution === '本轮不再继续';
+    const changedPublisher = resolution.includes('更换');
+    const nextPublisher = changedPublisher ? replacementPublisher : task.targetAccount;
+    const actionMessage = changedPublisher
+      ? `已更换发布人：${nextPublisher}`
+      : resolution === '催促当前发布人'
+      ? `已催促当前发布人：${task.targetAccount}`
+      : resolution;
+
+    onUpdateTask({
+      ...task,
+      actionType: undefined,
+      operatorCategory: stopped ? task.operatorCategory : 'publish',
+      categoryLabel: stopped ? task.categoryLabel : '发布与回传',
+      status: stopped ? '已取消' : '执行中',
+      isAnomaly: false,
+      anomalyReason: `${actionMessage}${resolutionNote ? `：${resolutionNote}` : ''}`,
+      isBlocked: false,
+      isMeWaiting: false,
+      isTeamExecuting: !stopped,
+      isSystemProcessing: false,
+      waitingRole: stopped ? 'completed' : 'team',
+      waitingParty: stopped ? '本轮已停止' : nextPublisher,
+      publishStage: stopped ? task.publishStage : '待发布',
+      currentOccurrence: stopped
+        ? '操盘手已决定本轮不再继续发布。'
+        : `${actionMessage}，任务已恢复到执行动态，等待手动发布与链接回传。`,
+      timelineEvents: [
+        ...task.timelineEvents,
+        { id: `resolved-${Date.now()}`, time: '刚刚', actor: '操盘手', action: actionMessage }
+      ]
+    });
+    showFeedback(stopped ? '本轮发布任务已停止' : `${actionMessage}，已恢复执行`);
   };
 
   const toggleMaterial = (material: LibraryMaterialItem) => {
@@ -331,11 +375,21 @@ export function OperatorTaskWorkbench({
           </button>
         ))}
       </div>
+      {resolution.includes('更换') && (task.anomalyType === 'publish_overdue' || task.anomalyType === 'executor_account_unavailable') && (
+        <label className="block space-y-1.5 rounded-xl border border-border-default bg-surface-1 p-3">
+          <span className="text-[11.5px] font-medium text-text-secondary">选择新的发布人</span>
+          <select value={replacementPublisher} onChange={event => setReplacementPublisher(event.target.value)} className="w-full rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[12.5px] outline-none focus:border-border-strong">
+            <option value="备用KOC_小丸子">备用KOC_小丸子</option>
+            <option value="静安店李店长">静安店李店长</option>
+            <option value="操盘手代发">操盘手代发</option>
+          </select>
+        </label>
+      )}
       <textarea value={resolutionNote} onChange={event => setResolutionNote(event.target.value)} rows={4} placeholder="补充处理说明（选填）" className="w-full rounded-xl border border-border-default bg-surface-1 px-3.5 py-3 text-[12.5px] outline-none" />
       <PrimaryAction
-        label="确认处理方案"
+        label={task.anomalyType === 'publish_overdue' ? '确认并恢复发布任务' : '确认处理方案'}
         hint="只处理当前异常；如需改变后续运营逻辑，应返回方案中心进行专家定制。"
-        onClick={() => completeTask({ anomalyReason: `${resolution}${resolutionNote ? `：${resolutionNote}` : ''}`, isAnomaly: false, isBlocked: false }, '已确认异常处理方案')}
+        onClick={resolveAnomaly}
       />
     </div>
   );
