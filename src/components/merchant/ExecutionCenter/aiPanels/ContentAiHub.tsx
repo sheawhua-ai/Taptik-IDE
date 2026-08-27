@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Sparkles, ArrowRight, Check, FolderPlus, Plus, Sparkle, RefreshCw, 
-  Copy, ShieldCheck, AlertTriangle, FileText, CheckCheck
+  Copy, ShieldCheck, FileText, CheckCheck
 } from 'lucide-react';
 import { 
   ExecutionTask, LibraryMaterialItem, SelectionAIProposal, SelectionTargetType 
@@ -57,6 +57,17 @@ export function ContentAiHub({
   const [userAIPrompt, setUserAIPrompt] = useState<string>('');
   const [isAIGenerating, setIsAIGenerating] = useState<boolean>(false);
   const [activeAIProposal, setActiveAIProposal] = useState<SelectionAIProposal | null>(null);
+  const accountPersona = /KOC|体验官|消费者/i.test(task.accountType)
+    ? '消费者体验者：第一人称、真实过程、减少营销感'
+    : /店长|KOS|门店/i.test(`${task.accountType}${task.targetAccount}`)
+    ? '门店专业角色：用经验解释问题，提供可执行方法'
+    : '品牌专业账号：信息准确、表达克制、突出产品依据';
+  const writingFramework = /店长|KOS|门店/i.test(`${task.accountType}${task.targetAccount}`)
+    ? ['用户痛点', '店长判断', '步骤方法', '咨询承接']
+    : ['真实场景', '体验过程', '结果感受', '互动收口'];
+  const factItems = task.confirmedFacts?.length
+    ? task.confirmedFacts.slice(0, 4)
+    : ['方案策略与目标人群已载入', '正文只使用商家已确认的信息'];
 
   // Selection handlers
   const handleSelectTitle = () => {
@@ -88,7 +99,7 @@ export function ContentAiHub({
             target: 'title',
             selectedExcerpt: selectedTextExcerpt,
             originalText: draftTitle,
-            suggestedText: '换粮小狗狂拉稀？宠物店长手把手教你7天稳妥换粮',
+            suggestedText: '小狗换粮拉稀？店长教你7天过渡',
             reason: '突出高频搜索痛点“拉稀”与店长人设立场，点击率预估提升 28%',
             impactScope: '仅调整笔记主标题，正文及话题保持不变'
           });
@@ -97,7 +108,7 @@ export function ContentAiHub({
             target: 'title',
             selectedExcerpt: selectedTextExcerpt,
             originalText: draftTitle,
-            suggestedText: '新手养狗换粮别踩坑！店长总结的7日不软便保姆级法则',
+            suggestedText: '新手换粮别踩坑！店长7日过渡法',
             reason: '强化“新手避坑”与“保姆级法则”心理暗示，提升收藏与完读意愿',
             impactScope: '仅调整笔记主标题'
           });
@@ -106,8 +117,8 @@ export function ContentAiHub({
             target: 'title',
             selectedExcerpt: selectedTextExcerpt,
             originalText: draftTitle,
-            suggestedText: '幼犬换粮避坑必看：7日渐进过渡法，新手店长实测不软便',
-            reason: '根据修改要求优化标题节奏，字数精简至23字以内',
+            suggestedText: '幼犬换粮避坑：7日渐进过渡法',
+            reason: '根据修改要求优化标题节奏，字数控制在20字以内',
             impactScope: '仅调整笔记主标题'
           });
         }
@@ -158,7 +169,7 @@ export function ContentAiHub({
     if (!activeAIProposal) return;
 
     if (activeAIProposal.target === 'title') {
-      setDraftTitle(activeAIProposal.suggestedText);
+      setDraftTitle(activeAIProposal.suggestedText.slice(0, 20));
       showToast('已将AI建议应用到标题');
     } else if (activeAIProposal.target === 'body_paragraph' || activeAIProposal.target === 'body_all') {
       if (draftBody.includes(activeAIProposal.originalText)) {
@@ -222,12 +233,12 @@ export function ContentAiHub({
                 ? '正在修改：话题标签'
                 : selectionTarget === 'material_recommendation'
                 ? '素材中心匹配与推荐'
-                : '内容与合规 AI 协同'}
+                : 'AI 写作说明'}
             </div>
             <div className="text-[11px] text-text-tertiary">
               {selectionTarget === 'material_recommendation'
                 ? '已自动匹配素材库可用资产'
-                : selectionTarget ? '仅对当前选中范围生效' : '选区感知 · 局部改写'}
+                : selectionTarget ? '仅对当前选中范围生效' : '框架、人设、事实与判断'}
             </div>
           </div>
         </div>
@@ -249,78 +260,46 @@ export function ContentAiHub({
       {/* Body Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[12.5px]">
         
-        {/* Compliance Alert if task has compliance risk */}
-        {task.complianceRisk && !selectionTarget && (
-          <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-xl space-y-2">
-            <div className="text-[12px] font-semibold text-amber-900 flex items-center gap-1.5">
-              <AlertTriangle size={14} className="text-amber-700" />
-              <span>AI 合规预检提示</span>
-            </div>
-            <div className="text-[11.5px] text-amber-800 leading-relaxed">
-              {task.complianceRisk}
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectionTarget('body_paragraph');
-                setSelectedTextExcerpt('专利级益生菌配方');
-                handleGenerateAIProposal('删除功效承诺，替换为合规说明');
-              }}
-              className="w-full py-1.5 bg-amber-100/80 hover:bg-amber-200/80 text-amber-900 border border-amber-300 rounded-lg text-[11.5px] font-medium transition-colors flex items-center justify-center gap-1"
-            >
-              <Sparkles size={12} />
-              <span>一键合规化替换</span>
-            </button>
-          </div>
-        )}
-
         {/* When No Selection */}
         {!selectionTarget && (
           <div className="space-y-4 pt-1">
-            <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg text-text-secondary text-[12px] leading-relaxed">
-              在左侧编辑器中<strong>划选文字、点击标题或话题</strong>，AI 将只针对选中范围提供精准修改建议。
+            <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-3.5 py-3 text-[11px] leading-5 text-[#743548]">
+              <div className="flex items-center gap-1.5 font-semibold"><ShieldCheck size={13} />本次 AI 判断</div>
+              <p className="mt-1.5 text-text-secondary">{task.reasonForIntervention}</p>
+              {task.complianceRisk ? <p className="mt-1 font-medium text-[#88394d]">风险提示：{task.complianceRisk}</p> : null}
             </div>
 
-            <div className="space-y-2">
-              <div className="text-[11.5px] font-medium text-text-tertiary">快捷修改目标：</div>
-              <button
-                type="button"
-                onClick={handleSelectTitle}
-                className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-              >
-                <span>修改笔记标题</span>
-                <ArrowRight size={13} className="text-text-tertiary" />
-              </button>
+            <section className="space-y-2">
+              <div className="text-[11px] font-medium text-text-tertiary">内容框架</div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {writingFramework.map((item, index) => <React.Fragment key={item}><span className="rounded-md bg-surface-subtle px-2 py-1 text-[10.5px] font-medium text-text-primary">{item}</span>{index < writingFramework.length - 1 ? <ArrowRight size={11} className="text-text-tertiary" /> : null}</React.Fragment>)}
+              </div>
+            </section>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectionTarget('body_paragraph');
-                  setSelectedTextExcerpt(draftBody.slice(0, 80) + '...');
-                }}
-                className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-              >
-                <span>修改正文段落</span>
-                <ArrowRight size={13} className="text-text-tertiary" />
-              </button>
+            <section className="rounded-xl border border-border-default bg-surface px-3 py-2.5">
+              <div className="text-[10.5px] font-medium text-text-tertiary">账号人设</div>
+              <div className="mt-1 text-[11.5px] font-medium leading-5 text-text-primary">{task.targetAccount}</div>
+              <p className="mt-0.5 text-[10.5px] leading-5 text-text-secondary">{accountPersona}</p>
+            </section>
 
-              <button
-                type="button"
-                onClick={() => handleSelectTag(0)}
-                className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-              >
-                <span>优化话题标签</span>
-                <ArrowRight size={13} className="text-text-tertiary" />
-              </button>
+            <section className="space-y-2">
+              <div className="flex items-center justify-between"><span className="text-[11px] font-medium text-text-tertiary">采用的事实</span><span className="text-[9.5px] text-text-tertiary">{factItems.length} 项</span></div>
+              <div className="space-y-1.5">
+                {factItems.map((fact, index) => <div key={`${task.id}-fact-${index}`} className="flex items-start gap-2 rounded-lg bg-surface-subtle px-2.5 py-2 text-[10.5px] leading-4 text-text-secondary"><CheckCheck size={12} className="mt-0.5 shrink-0 text-emerald-600" /><span>{fact}</span></div>)}
+              </div>
+            </section>
 
-              <button
-                type="button"
-                onClick={() => setSelectionTarget('material_recommendation')}
-                className="w-full text-left p-2.5 bg-surface hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center justify-between text-text-primary font-medium"
-              >
-                <span>素材中心匹配与配图</span>
-                <ArrowRight size={13} className="text-text-tertiary" />
-              </button>
+            <section className="rounded-xl border border-border-default px-3 py-2.5">
+              <div className="text-[10.5px] font-medium text-text-tertiary">方案约束</div>
+              <div className="mt-1 space-y-1 text-[10.5px] leading-4 text-text-secondary">
+                <p><strong className="font-medium text-text-primary">目标：</strong>{task.strategyContext?.intent || '建立专业信任并承接互动'}</p>
+                <p><strong className="font-medium text-text-primary">人群：</strong>{task.strategyContext?.targetAudience || '当前方案目标消费者'}</p>
+                <p><strong className="font-medium text-text-primary">关键词：</strong>{task.strategyContext?.searchKeywords?.join('、') || task.tags?.slice(0, 3).join('、') || '随方案词簇生成'}</p>
+              </div>
+            </section>
+
+            <div className="rounded-lg bg-surface-subtle px-3 py-2 text-[10.5px] leading-4 text-text-tertiary">
+              点击中间的标题、正文、标签或素材区域后，这里会切换为对应修改操作。
             </div>
           </div>
         )}

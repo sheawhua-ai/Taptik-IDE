@@ -17,19 +17,36 @@ interface MaterialDetailDrawerProps {
   asset: MaterialAsset | null;
   onClose: () => void;
   onUpdateAsset?: (updated: MaterialAsset) => void;
+  manualTags?: string[];
+  onManualTagsChange?: (tags: string[]) => void;
 }
 
 export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
   asset,
   onClose,
-  onUpdateAsset
+  onUpdateAsset,
+  manualTags = [],
+  onManualTagsChange
 }) => {
   if (!asset) return null;
+  return <MaterialDetailDrawerContent key={asset.id} asset={asset} onClose={onClose} onUpdateAsset={onUpdateAsset} manualTags={manualTags} onManualTagsChange={onManualTagsChange} />;
+};
+
+const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'asset'> & { asset: MaterialAsset }> = ({
+  asset,
+  onClose,
+  onUpdateAsset,
+  manualTags = [],
+  onManualTagsChange
+}) => {
+  const manualTagSet = new Set(manualTags);
+  const existingManualTags = (asset.tags ?? []).filter(tagName => manualTagSet.has(tagName));
+  const automaticTags = (asset.tags ?? []).filter(tagName => !manualTagSet.has(tagName));
 
   // Editing state for Vector Description & Tags
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
   const [vectorDescription, setVectorDescription] = useState(asset.vectorDescription || '');
-  const [tagsInput, setTagsInput] = useState((asset.tags || []).join(', '));
+  const [tagsInput, setTagsInput] = useState(existingManualTags.join(', '));
 
   // Editing state for Recognition
   const [isEditingRecognition, setIsEditingRecognition] = useState(false);
@@ -44,10 +61,12 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
         .map(t => t.trim())
         .filter(Boolean);
 
+      onManualTagsChange?.(parsedTags);
+
       onUpdateAsset({
         ...asset,
         vectorDescription: vectorDescription.trim(),
-        tags: parsedTags
+        tags: Array.from(new Set([...automaticTags, ...parsedTags]))
       });
     }
     setIsEditingMetadata(false);
@@ -142,7 +161,7 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
             <div className="flex items-center justify-between border-b border-border-subtle pb-1.5">
               <h4 className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5">
                 <AlignLeft size={14} className="text-text-secondary" />
-                特征描述与标签 (用于语义匹配)
+                画面描述与标签
               </h4>
               {!isEditingMetadata ? (
                 <button
@@ -164,7 +183,7 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
             {isEditingMetadata ? (
               <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-3 text-[12px]">
                 <div>
-                  <label className="text-text-tertiary block mb-1 font-medium">一句话特征描述 (向量化索引用):</label>
+                  <label className="text-text-tertiary block mb-1 font-medium">画面描述:</label>
                   <textarea
                     rows={2}
                     value={vectorDescription}
@@ -174,7 +193,7 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-text-tertiary block mb-1 font-medium">分类标签 (逗号分隔):</label>
+                  <label className="text-text-tertiary block mb-1 font-medium">手动标签（逗号分隔）:</label>
                   <input
                     type="text"
                     value={tagsInput}
@@ -187,23 +206,32 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
             ) : (
               <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-2.5 text-[12px]">
                 <div>
-                  <span className="text-text-tertiary block mb-0.5">一句话特征描述:</span>
+                  <span className="text-text-tertiary block mb-0.5">画面描述:</span>
                   <p className="text-text-primary font-medium bg-surface p-2 rounded border border-border-subtle leading-relaxed">
                     {asset.vectorDescription || '暂无描述，可点击编辑添加。'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-text-tertiary block mb-1">素材标签:</span>
+                  <span className="text-text-tertiary block mb-1">手动标签:</span>
                   <div className="flex flex-wrap gap-1">
-                    {asset.tags && asset.tags.length > 0 ? (
-                      asset.tags.map((t, idx) => (
+                    {existingManualTags.length > 0 ? (
+                      existingManualTags.map((t, idx) => (
                         <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface border border-border-default rounded text-[11px] text-text-primary font-medium">
                           <Tag size={10} className="text-text-tertiary" /> {t}
                         </span>
                       ))
                     ) : (
-                      <span className="text-text-tertiary italic">未添加标签</span>
+                      <span className="text-text-tertiary italic">未添加手动标签</span>
                     )}
+                  </div>
+                </div>
+                <div>
+                  <span className="text-text-tertiary block mb-1">AI自动标签:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {automaticTags.length > 0 ? automaticTags.slice(0, 8).map(tagName => (
+                      <span key={tagName} className="rounded bg-surface px-2 py-0.5 text-[10px] text-text-secondary">{tagName}</span>
+                    )) : <span className="text-text-tertiary italic">暂无自动标签</span>}
+                    {automaticTags.length > 8 ? <span className="px-1 py-0.5 text-[10px] text-text-tertiary">+{automaticTags.length - 8}</span> : null}
                   </div>
                 </div>
               </div>
@@ -331,7 +359,7 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
             <h4 className="text-[13px] font-semibold text-text-primary flex items-center justify-between border-b border-border-subtle pb-1.5">
               <span className="flex items-center gap-1.5">
                 <FileCheck size={14} className="text-text-secondary" />
-                画面视觉属性识别
+                系统识别信息
               </span>
               <span className="px-1.5 py-0.5 rounded text-[10px] bg-surface border border-border-default text-text-secondary font-medium">
                 {asset.acceptance.aiRecognition.tag}
@@ -416,4 +444,3 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
     </div>
   );
 };
-

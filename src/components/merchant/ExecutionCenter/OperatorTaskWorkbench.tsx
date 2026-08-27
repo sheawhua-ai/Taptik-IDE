@@ -14,6 +14,7 @@ interface OperatorTaskWorkbenchProps {
   initialAction?: ExecutionAction;
   onSelectTask: (task: ExecutionTask) => void;
   onBack: () => void;
+  workspaceNavigation?: React.ReactNode;
   onUpdateTask: (task: ExecutionTask) => void;
   onNextTask?: () => void;
 }
@@ -66,6 +67,7 @@ export function OperatorTaskWorkbench({
   initialAction,
   onSelectTask,
   onBack,
+  workspaceNavigation,
   onUpdateTask,
   onNextTask
 }: OperatorTaskWorkbenchProps) {
@@ -438,7 +440,7 @@ export function OperatorTaskWorkbench({
       <header className="shrink-0 border-b border-border-default bg-surface-1 px-5 py-3.5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
-            <button onClick={onBack} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="返回执行中心"><ArrowLeft size={17} /></button>
+            {workspaceNavigation ?? <button onClick={onBack} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="返回执行中心"><ArrowLeft size={17} /></button>}
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-[11.5px] text-text-tertiary"><span>{formatCategory(task)}</span><ChevronRight size={12} /><span>{task.projectName}</span></div>
               <h1 className="mt-0.5 truncate text-[15px] font-semibold text-text-main">{ACTION_LABELS[mode]} · {task.noteTitle}</h1>

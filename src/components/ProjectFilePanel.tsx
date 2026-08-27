@@ -133,7 +133,7 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
             style={{ paddingLeft: `${depth * 12 + 8}px` }}
             title={node.name}
           >
-            {isSelected && <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#DF4965] rounded-r-full" />}
+            {isSelected && <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-neutral-800 rounded-r-full" />}
             
             <div className="w-4 h-4 flex items-center justify-center shrink-0" onClick={(e) => isFolder && toggleFolder(node.id, e)}>
               {isFolder ? (
@@ -143,7 +143,7 @@ export const ProjectFilePanel: React.FC<ProjectFilePanelProps> = ({ isOpen, onCl
             <div className="relative">
               {getIcon(node)}
               {/* Optional: Mocking new/updated file dot indicator for demo purposes */}
-              {node.name.includes('企划') && <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#DF4965] rounded-full border border-white" />}
+              {node.name.includes('企划') && <div className="absolute -top-1 -right-1 w-2 h-2 bg-neutral-500 rounded-full border border-white" />}
             </div>
             <span className="text-[13px] truncate select-none flex-1 group-hover:text-text-main transition-colors">{node.name}</span>
             <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">

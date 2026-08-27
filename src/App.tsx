@@ -122,6 +122,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { SkillMarket } from "./components/SkillMarket";
 import { DataCenter } from "./components/DataCenter";
 import { MaterialStation } from "./components/MaterialStation";
+import type { MaterialAsset } from "./components/material-center/types";
 import { KnowledgeMemory } from "./components/KnowledgeMemory";
 import { Billing } from "./components/Billing";
 import { ServiceManagement } from "./components/ServiceManagement";
@@ -513,6 +514,7 @@ export default function App() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const [activeNav, setActiveNav] = useState("workflow");
+  const [acceptedExecutionAssets, setAcceptedExecutionAssets] = useState<MaterialAsset[]>([]);
     useEffect(() => {
     const handleNav = (e: any) => {
       if (e.detail?.tab) {
@@ -1245,7 +1247,9 @@ export default function App() {
           {SIDE_NAV_ITEMS.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveNav(item.id)}
+              onClick={() => {
+                setActiveNav(item.id);
+              }}
               title={isGlobalNavCollapsed ? item.name : undefined}
               className={`w-full flex items-center gap-3 ${isGlobalNavCollapsed ? "justify-center px-0 h-10 w-10 shrink-0 mx-auto" : "px-3 py-2"} relative overflow-hidden rounded-xl transition-colors group border border-transparent ${activeNav === item.id ? "bg-selected-bg text-text-main " : "text-text-secondary hover:bg-hover-bg hover:text-text-main "}`}
             >
@@ -1753,7 +1757,14 @@ export default function App() {
                       />
                     )}
 
-                    {workflowTab === "execution" && <ExecutionCenter />}
+                    {workflowTab === "execution" && (
+                      <ExecutionCenter
+                        onAssetsAccepted={(assets) => setAcceptedExecutionAssets(current => {
+                          const nextIds = new Set(assets.map(asset => asset.id));
+                          return [...assets, ...current.filter(asset => !nextIds.has(asset.id))];
+                        })}
+                      />
+                    )}
 
                     {workflowTab === "review" && (
                       <ReviewWorkbench
@@ -1813,7 +1824,7 @@ export default function App() {
           <div className="flex-1 h-full overflow-hidden bg-page-bg flex flex-col">
             <MaterialStation
               activeProject={activeProject}
-              onNavigateToExecution={() => setActiveNav("execution")}
+              importedAssets={acceptedExecutionAssets}
             />
           </div>
         )}

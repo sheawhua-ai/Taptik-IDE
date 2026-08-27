@@ -1,19 +1,20 @@
 import React from 'react';
-import { MaterialCenterMain } from './material-center/MaterialCenterMain';
+import { MaterialCenterV2 } from './material-center/MaterialCenterV2';
+import type { MaterialAsset } from './material-center/types';
 
 interface MaterialStationProps {
   activeProject?: any;
-  onNavigateToExecution?: () => void;
+  importedAssets?: MaterialAsset[];
 }
 
 export const MaterialStation: React.FC<MaterialStationProps> = ({
   activeProject,
-  onNavigateToExecution
+  importedAssets
 }) => {
   return (
-    <MaterialCenterMain
+    <MaterialCenterV2
       activeProject={activeProject}
-      onNavigateToExecution={onNavigateToExecution}
+      importedAssets={importedAssets}
     />
   );
 };

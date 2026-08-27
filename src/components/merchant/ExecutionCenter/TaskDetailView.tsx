@@ -24,9 +24,39 @@ interface TaskDetailViewProps {
   categoryQueue: ExecutionTask[];
   onSelectTask: (task: ExecutionTask) => void;
   onBack: () => void;
+  workspaceNavigation?: React.ReactNode;
   onUpdateTask: (updated: ExecutionTask) => void;
   onNextTask?: () => void;
   initialAction?: ExecutionAction;
+}
+
+type NoteQueueTab = 'all' | 'content' | 'material';
+
+const NOTE_QUEUE_TABS: { id: NoteQueueTab; label: string }[] = [
+  { id: 'all', label: '全部' },
+  { id: 'content', label: '内容修改' },
+  { id: 'material', label: '选图/换图' }
+];
+
+function getNoteQueueTab(task: ExecutionTask): Exclude<NoteQueueTab, 'all'> {
+  const materialAction = task.actionType === 'replace_material' || task.actionType === 'create_material_task';
+  const materialTask = task.materialType === 'matched_library_asset';
+  const materialCopy = /选图|换图|配图|素材库匹配|创建素材/.test(`${task.title}${task.operatorActionSummary}`);
+  return materialAction || materialTask || materialCopy ? 'material' : 'content';
+}
+
+function getNoteIssueLabels(task: ExecutionTask): string[] {
+  const labels: string[] = [];
+  if (getNoteQueueTab(task) === 'material') labels.push('素材');
+  if (task.complianceRisk || task.anomalyType === 'content_compliance_risk') labels.push('合规');
+  if (task.evidenceNeeded || /依据|来源|事实/.test(`${task.title}${task.reasonForIntervention}`)) labels.push('事实');
+  if (/口吻|人设/.test(`${task.title}${task.reasonForIntervention}`)) labels.push('口吻');
+  if (labels.length === 0) labels.push('内容');
+  return labels.slice(0, 2);
+}
+
+function getNoteQueueKey(task: ExecutionTask) {
+  return task.noteId || task.id;
 }
 
 function getDefaultMaterialTasks(projectId: string): GeneratedMaterialTask[] {
@@ -99,19 +129,24 @@ export function TaskDetailView({
   categoryQueue,
   onSelectTask,
   onBack,
+  workspaceNavigation,
   onUpdateTask,
   onNextTask,
   initialAction
 }: TaskDetailViewProps) {
+  const noteSourceTask = useMemo(() => (
+    categoryQueue.find(item => item.noteId === task.noteId && item.operatorCategory === 'content') || task
+  ), [categoryQueue, task]);
+  const isNoteWorkbench = task.operatorCategory === 'content' || task.materialType === 'matched_library_asset';
   const availableLibraryMaterials = useMemo(
     () => getProjectLibraryMaterials(task.projectId),
     [task.projectId]
   );
 
   // Content editing state
-  const [draftTitle, setDraftTitle] = useState(task.draftTitle || task.noteTitle || '');
-  const [draftBody, setDraftBody] = useState(task.draftBody || '');
-  const [tags, setTags] = useState<string[]>(task.tags || []);
+  const [draftTitle, setDraftTitle] = useState((noteSourceTask.draftTitle || task.noteTitle || '').slice(0, 20));
+  const [draftBody, setDraftBody] = useState(noteSourceTask.draftBody || '');
+  const [tags, setTags] = useState<string[]>(noteSourceTask.tags || []);
   const [selectedTagIndex, setSelectedTagIndex] = useState<number | null>(null);
   const [newTagInput, setNewTagInput] = useState('');
   const [showAddTag, setShowAddTag] = useState(false);
@@ -163,19 +198,48 @@ export function TaskDetailView({
   const [reassignedAssignee, setReassignedAssignee] = useState('李店长 (静安店)');
 
   // Collapsible panels
-  const [isEvidenceOpen, setIsEvidenceOpen] = useState(false);
   const [isStrategyOpen, setIsStrategyOpen] = useState(false);
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
 
   // Toast feedback
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [noteQueueTab, setNoteQueueTab] = useState<NoteQueueTab>('all');
+
+  const noteQueueCounts = useMemo(() => {
+    const all = new Set(categoryQueue.map(getNoteQueueKey));
+    const content = new Set(categoryQueue.filter(item => getNoteQueueTab(item) === 'content').map(getNoteQueueKey));
+    const material = new Set(categoryQueue.filter(item => getNoteQueueTab(item) === 'material').map(getNoteQueueKey));
+    return { all: all.size, content: content.size, material: material.size };
+  }, [categoryQueue]);
+
+  const visibleNoteQueue = useMemo(() => {
+    const candidates = noteQueueTab === 'all'
+      ? categoryQueue
+      : categoryQueue.filter(item => getNoteQueueTab(item) === noteQueueTab);
+    const groups = new Map<string, ExecutionTask[]>();
+    candidates.forEach(item => {
+      const key = getNoteQueueKey(item);
+      groups.set(key, [...(groups.get(key) || []), item]);
+    });
+    return Array.from(groups.values()).map(items => {
+      const sameNoteTasks = categoryQueue.filter(item => getNoteQueueKey(item) === getNoteQueueKey(items[0]));
+      const activeItem = items.find(item => item.id === task.id);
+      const contentItem = sameNoteTasks.find(item => item.operatorCategory === 'content');
+      const filteredItem = items[0];
+      return {
+        task: activeItem || contentItem || filteredItem,
+        displayTask: noteQueueTab === 'all' ? (contentItem || filteredItem) : filteredItem,
+        allTasks: sameNoteTasks
+      };
+    });
+  }, [categoryQueue, noteQueueTab, task.id]);
 
   useEffect(() => {
     // 同一类操作共用一个工作台；切换笔记时必须以新任务的数据重置，
     // 避免上一篇笔记的文案、素材或弹窗状态残留到下一篇。
-    setDraftTitle(task.draftTitle || task.noteTitle || '');
-    setDraftBody(task.draftBody || '');
-    setTags(task.tags || []);
+    setDraftTitle((noteSourceTask.draftTitle || task.draftTitle || task.noteTitle || '').slice(0, 20));
+    setDraftBody(noteSourceTask.draftBody || task.draftBody || '');
+    setTags(noteSourceTask.tags || task.tags || []);
     setSelectedTagIndex(null);
     setNewTagInput('');
     setShowAddTag(false);
@@ -196,7 +260,7 @@ export function TaskDetailView({
     setNewTaskRequirement('');
     setShowBatchSendModal(false);
     setSelectionTarget(
-      initialAction === 'replace_material' || initialAction === 'create_material_task'
+      initialAction === 'replace_material' || initialAction === 'create_material_task' || task.materialType === 'matched_library_asset'
         ? 'material_recommendation'
         : null
     );
@@ -210,11 +274,10 @@ export function TaskDetailView({
     setShowQrModal(false);
     setQrVerified(false);
     setShowReassignModal(false);
-    setIsEvidenceOpen(false);
     setIsStrategyOpen(false);
     setIsTimelineOpen(false);
     setFeedbackMessage(null);
-  }, [initialAction, task]);
+  }, [initialAction, noteSourceTask, task]);
 
   const showToast = (msg: string) => {
     setFeedbackMessage(msg);
@@ -423,6 +486,7 @@ export function TaskDetailView({
   const handleConfirmNoteContent = () => {
     const updated: ExecutionTask = {
       ...task,
+      actionType: task.materialType === 'matched_library_asset' ? 'replace_material' : task.actionType,
       draftTitle,
       draftBody,
       tags,
@@ -659,23 +723,31 @@ export function TaskDetailView({
       )}
 
       {/* Top Header Bar */}
-      <div className="h-13 px-5 bg-surface border-b border-border-default flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onBack}
-            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors flex items-center gap-1 text-[12.5px]"
-          >
-            <ArrowLeft size={16} />
-            <span>返回执行中心</span>
-          </button>
-          <span className="text-border-strong">/</span>
-          <span className="text-[13px] font-semibold text-text-primary truncate max-w-md">
-            {task.title}
-          </span>
-          <span className="text-[11.5px] text-text-tertiary">
-            ({task.projectName})
-          </span>
+      <div className="min-h-13 px-5 py-2.5 bg-surface border-b border-border-default flex items-center justify-between gap-4 shrink-0">
+        <div className="flex min-w-0 items-center gap-3">
+          {workspaceNavigation ?? (
+            <>
+              <button
+                type="button"
+                onClick={onBack}
+                className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors flex items-center gap-1 text-[12.5px]"
+              >
+                <ArrowLeft size={16} />
+                <span>返回执行中心</span>
+              </button>
+              <span className="text-border-strong">/</span>
+            </>
+          )}
+          <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-2 text-[11px] text-text-tertiary">
+              <span className="truncate">{task.projectName}</span>
+              <ChevronRight size={12} className="shrink-0" />
+              <span className="truncate">{task.noteTitle}</span>
+              <ChevronRight size={12} className="shrink-0" />
+              <span className="shrink-0">{task.targetAccount}</span>
+            </div>
+            <div className="mt-0.5 truncate text-[13px] font-semibold text-text-primary">{task.operatorActionSummary}</div>
+          </div>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -704,85 +776,90 @@ export function TaskDetailView({
       <div className="flex-1 flex min-h-0 overflow-hidden">
         
         {/* Column 1: Left Queue Sidebar (240px) */}
-        <div className="w-60 border-r border-border-default bg-surface flex flex-col shrink-0">
-          <div className="p-3 border-b border-border-subtle bg-surface-subtle flex items-center justify-between">
-            <span className="text-[12px] font-semibold text-text-secondary">同类待处理队列</span>
-            <span className="text-[11px] text-text-tertiary">{categoryQueue.length} 项</span>
+        <div className="w-[286px] border-r border-border-default bg-surface flex flex-col shrink-0">
+          <div className="border-b border-border-subtle bg-surface px-3 py-3">
+            <div className="mb-2.5 flex items-center justify-between">
+              <span className="text-[12px] font-semibold text-text-primary">待处理笔记</span>
+              <span className="text-[10.5px] text-text-tertiary">{visibleNoteQueue.length} 项</span>
+            </div>
+            <nav className="grid grid-cols-3 gap-1 rounded-lg bg-surface-subtle p-1" aria-label="笔记处理类型">
+              {NOTE_QUEUE_TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    setNoteQueueTab(tab.id);
+                    setSelectionTarget(tab.id === 'material' ? 'material_recommendation' : null);
+                  }}
+                  className={`rounded-md px-1.5 py-1.5 text-[10.5px] font-medium transition-colors ${
+                    noteQueueTab === tab.id
+                      ? 'bg-neutral-950 text-white shadow-sm'
+                      : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+                  }`}
+                >
+                  {tab.label}<span className="ml-1 opacity-65">{noteQueueCounts[tab.id]}</span>
+                </button>
+              ))}
+            </nav>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {categoryQueue.map(qTask => {
-              const isCurrent = qTask.id === task.id;
+            {visibleNoteQueue.map(({ task: queueTask, displayTask, allTasks }) => {
+              const qTask = displayTask;
+              const isCurrent = getNoteQueueKey(qTask) === getNoteQueueKey(task);
+              const issueLabels = Array.from(new Set(allTasks.flatMap(getNoteIssueLabels))).slice(0, 3);
               return (
                 <button
-                  key={qTask.id}
+                  key={getNoteQueueKey(qTask)}
                   type="button"
-                  onClick={() => onSelectTask(qTask)}
+                  onClick={() => onSelectTask(queueTask)}
                   className={`w-full text-left p-2.5 rounded-lg text-[12px] transition-all relative ${
                     isCurrent 
                       ? 'bg-surface-selected text-text-primary font-medium' 
                       : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
                   }`}
                 >
-                  {isCurrent && (
-                    <div className="absolute left-0 top-2 bottom-2 w-0.5 bg-brand-500 rounded-r" />
-                  )}
-                  <div className="line-clamp-2 leading-snug">{qTask.title}</div>
-                  <div className="flex items-center justify-between text-[11px] text-text-tertiary mt-1.5">
-                    <span className="truncate max-w-[120px]">{qTask.targetAccount}</span>
-                    {qTask.isBlocked && (
-                      <span className="text-amber-700 font-medium shrink-0">阻断</span>
-                    )}
+                  <div className="flex items-start gap-2">
+                    {isCurrent ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" aria-label="当前选中" /> : <span className="w-2 shrink-0" />}
+                    <div className="line-clamp-2 pr-1 text-[12px] font-semibold leading-[18px]">{qTask.noteTitle}</div>
+                  </div>
+                  <div className="mt-1 line-clamp-1 text-[10.5px] font-normal text-text-secondary">{qTask.operatorActionSummary}</div>
+                  <div className="mt-2 flex flex-wrap items-center gap-1">
+                    {issueLabels.map(label => <span key={label} className="rounded border border-border-subtle bg-surface px-1.5 py-0.5 text-[9px] font-normal text-text-tertiary">{label}</span>)}
+                    {qTask.isBlocked ? <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[9px] font-medium text-amber-700">阻断</span> : null}
+                    {allTasks.length > 1 ? <span className="ml-auto text-[9px] font-medium text-text-secondary">{allTasks.length}项待处理</span> : null}
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-2 text-[9.5px] font-normal text-text-tertiary">
+                    <span className="truncate">{qTask.projectName} · {qTask.targetAccount}</span>
+                    <span className={`shrink-0 ${qTask.deadlineLabel === '已逾期' ? 'font-medium text-rose-600' : ''}`}>{qTask.deadline || '未设置'}</span>
                   </div>
                 </button>
               );
             })}
+            {visibleNoteQueue.length === 0 ? (
+              <div className="px-4 py-10 text-center text-[10.5px] leading-5 text-text-tertiary">当前类型没有待处理笔记</div>
+            ) : null}
           </div>
         </div>
 
         {/* Column 2: Center Editor / Inspector Area (Flex-1) */}
         <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-5 bg-canvas">
           
-          {/* Top Intervention Banner: You need to do / Why intervention is needed */}
-          <div className="p-4 bg-surface border border-border-default rounded-xl space-y-2.5">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="text-[14px] font-semibold text-text-primary flex items-center gap-2">
-                  <span>{task.operatorActionSummary}</span>
-                  {task.isBlocked && (
-                    <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200">
-                      阻断后续流转
-                    </span>
-                  )}
+          {/* AI 只在这里给出一条轻提示；完整写作依据统一放在右侧说明面板。 */}
+          <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-4 py-3">
+            <div className="flex items-start gap-2.5">
+              <Sparkles size={14} className="mt-0.5 shrink-0 text-[#a7475e]" />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="text-[10.5px] font-semibold text-[#88394d]">AI 修改提示</span>
+                  <span className="text-[12.5px] font-semibold text-text-primary">{task.operatorActionSummary}</span>
                 </div>
-                <div className="text-[12.5px] text-text-secondary mt-1">
-                  <strong>介入原因：</strong>{task.reasonForIntervention}
-                </div>
-              </div>
-
-              <div className="text-right shrink-0">
-                <div className="text-[11.5px] text-text-tertiary">处理截止</div>
-                <div className={`text-[12.5px] font-medium ${task.deadlineLabel === '已逾期' ? 'text-rose-600' : 'text-text-primary'}`}>
-                  {task.deadline || '未设置'}
-                </div>
+                <div className="mt-1 line-clamp-2 text-[10.5px] leading-5 text-text-secondary">{task.reasonForIntervention} · 截止 {task.deadline || '未设置'}</div>
               </div>
             </div>
-
-            {/* Confirmed facts */}
-            {task.confirmedFacts && task.confirmedFacts.length > 0 && (
-              <div className="pt-2.5 border-t border-border-subtle flex items-start gap-2 text-[12px] text-text-secondary">
-                <ShieldCheck size={14} className="text-emerald-600 shrink-0 mt-0.5" />
-                <div className="space-y-0.5">
-                  <span className="font-medium text-text-primary">已确认事实：</span>
-                  {task.confirmedFacts.map((fact, i) => (
-                    <span key={i} className="inline-block mr-3">· {fact}</span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* === A. 笔记确认交互 (Content Review) === */}
-          {task.operatorCategory === 'content' && (
+          {isNoteWorkbench && (
             <div className="space-y-4">
               
               {/* Title Section */}
@@ -797,20 +874,20 @@ export function TaskDetailView({
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-[12px] font-semibold text-text-secondary flex items-center gap-1.5">
                     <span>笔记标题</span>
-                    <span className="text-[11px] font-normal text-text-tertiary">（点击选中后可在右侧通过 AI 优化）</span>
                   </label>
-                  {selectionTarget === 'title' && (
-                    <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-900 text-white">
-                      正在修改标题
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10.5px] ${draftTitle.length >= 20 ? 'font-medium text-amber-700' : 'text-text-tertiary'}`}>{draftTitle.length}/20 字</span>
+                    {selectionTarget === 'title' ? <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-900 text-white">正在修改标题</span> : <span className="text-[10.5px] text-text-tertiary">可直接编辑</span>}
+                  </div>
                 </div>
                 <input
                   type="text"
+                  maxLength={20}
                   value={draftTitle}
-                  onChange={(e) => setDraftTitle(e.target.value)}
-                  className="w-full text-[15px] font-semibold text-text-primary bg-transparent focus:outline-none border-b border-transparent focus:border-border-strong pb-1"
-                  placeholder="请输入笔记标题..."
+                  onChange={(e) => setDraftTitle(e.target.value.slice(0, 20))}
+                  className="w-full rounded-lg border border-border-default bg-surface-subtle px-3 py-2.5 text-[15px] font-semibold text-text-primary outline-none transition-colors hover:border-border-strong focus:border-neutral-700 focus:bg-surface"
+                  placeholder="请输入笔记标题，最多20个字"
+                  aria-label="笔记标题，最多20个字"
                 />
               </div>
 
@@ -826,7 +903,6 @@ export function TaskDetailView({
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-[12px] font-semibold text-text-secondary flex items-center gap-1.5">
                     <span>笔记正文</span>
-                    <span className="text-[11px] font-normal text-text-tertiary">（划选文字或段落，AI 将只针对选中范围提供修改）</span>
                   </label>
                   {(selectionTarget === 'body_paragraph' || selectionTarget === 'body_all') && (
                     <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-900 text-white">
@@ -850,7 +926,7 @@ export function TaskDetailView({
               <div className="p-4 bg-surface rounded-xl border border-border-default space-y-2.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[12px] font-semibold text-text-secondary">
-                    话题标签（点击标签可通过 AI 调整）
+                    话题标签
                   </label>
                   <button
                     type="button"
@@ -928,9 +1004,6 @@ export function TaskDetailView({
                     <label className="text-[13px] font-semibold text-text-primary">
                       笔记素材与封面方案
                     </label>
-                    <span className="text-[11px] font-normal text-text-tertiary">
-                      （点击此模块，右侧将展开素材库推荐与选图）
-                    </span>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -1517,7 +1590,30 @@ export function TaskDetailView({
         </div>
 
         {/* Column 3: Task-Specific AI Coordination Hub */}
-        {task.operatorCategory === 'material' ? (
+        {isNoteWorkbench ? (
+          <ContentAiHub
+            task={task}
+            draftTitle={draftTitle}
+            setDraftTitle={setDraftTitle}
+            draftBody={draftBody}
+            setDraftBody={setDraftBody}
+            tags={tags}
+            setTags={setTags}
+            selectedTagIndex={selectedTagIndex}
+            setSelectedTagIndex={setSelectedTagIndex}
+            selectionTarget={selectionTarget}
+            setSelectionTarget={setSelectionTarget}
+            selectedTextExcerpt={selectedTextExcerpt}
+            setSelectedTextExcerpt={setSelectedTextExcerpt}
+            selectedCoverUrl={selectedCoverUrl}
+            setSelectedCoverUrl={setSelectedCoverUrl}
+            selectedMaterialAssets={selectedMaterialAssets}
+            setSelectedMaterialAssets={setSelectedMaterialAssets}
+            onOpenLibraryModal={() => setShowLibraryModal(true)}
+            onOpenCreateTaskModal={() => setShowCreateTaskModal(true)}
+            showToast={showToast}
+          />
+        ) : task.operatorCategory === 'material' ? (
           <MaterialAiHub
             task={task}
             onOpenReshootModal={(item, defaultReason) => {
@@ -1569,30 +1665,7 @@ export function TaskDetailView({
             }}
             showToast={showToast}
           />
-        ) : (
-          <ContentAiHub
-            task={task}
-            draftTitle={draftTitle}
-            setDraftTitle={setDraftTitle}
-            draftBody={draftBody}
-            setDraftBody={setDraftBody}
-            tags={tags}
-            setTags={setTags}
-            selectedTagIndex={selectedTagIndex}
-            setSelectedTagIndex={setSelectedTagIndex}
-            selectionTarget={selectionTarget}
-            setSelectionTarget={setSelectionTarget}
-            selectedTextExcerpt={selectedTextExcerpt}
-            setSelectedTextExcerpt={setSelectedTextExcerpt}
-            selectedCoverUrl={selectedCoverUrl}
-            setSelectedCoverUrl={setSelectedCoverUrl}
-            selectedMaterialAssets={selectedMaterialAssets}
-            setSelectedMaterialAssets={setSelectedMaterialAssets}
-            onOpenLibraryModal={() => setShowLibraryModal(true)}
-            onOpenCreateTaskModal={() => setShowCreateTaskModal(true)}
-            showToast={showToast}
-          />
-        )}
+        ) : null}
 
       </div>
 

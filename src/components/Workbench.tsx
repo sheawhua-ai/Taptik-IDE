@@ -328,11 +328,11 @@ export const Workbench: React.FC<WorkbenchProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-surface-1 overflow-hidden text-text-main">
+    <div className="flex-1 flex flex-col h-full bg-[#f6f6f6] overflow-hidden text-text-main">
       
       
       {/* Top Header with Tabs */}
-      <div className="h-[46px] border-b border-border-default flex items-end px-2 bg-page-bg shrink-0 z-20 overflow-x-auto custom-scrollbar">
+      <div className="h-[46px] border-b border-border-default flex items-end px-2 bg-[#f2f2f2] shrink-0 z-20 overflow-x-auto custom-scrollbar">
         {activeProjectId === 'project-b' && (
           <div className="flex items-center gap-1 mb-1.5 mr-2">
             <button
@@ -353,7 +353,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
             className={`group relative h-[36px] flex items-center gap-2 px-4 min-w-[120px] max-w-[200px] rounded-t-lg border-t border-x cursor-pointer transition-all ${activeTabId === 'workbench' ? 'bg-surface-1 border-border-default/80 text-text-main z-10' : 'bg-transparent border-transparent text-text-tertiary hover:bg-selected-bg/30'}`}
           >
             {activeTabId === 'workbench' && <div className="absolute -bottom-[1px] left-0 right-0 h-[1px] bg-surface-1 z-20"></div>}
-            <MessageSquare size={14} className={activeTabId === 'workbench' ? 'text-brand-logo' : ''} />
+            <MessageSquare size={14} className={activeTabId === 'workbench' ? 'text-neutral-800' : ''} />
             <span className="text-[13px] font-medium truncate">工作台</span>
           </div>
 
@@ -390,7 +390,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
 
 
       
-      <div className="flex-1 flex overflow-hidden relative bg-page-bg/30">
+      <div className="flex-1 flex overflow-hidden relative bg-[#f7f7f7]">
         {activeProjectId === 'project-b' && (
           <ProjectFilePanel 
             isOpen={filePanelOpen} 
@@ -425,7 +425,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }}
                 >
-                  <div className="w-2.5 h-[2px] bg-neutral-400 group-hover/item:w-4 group-hover/item:bg-[#DF4965] group-hover/item:-translate-x-1 transition-all rounded-full relative z-10" />
+                  <div className="w-2.5 h-[2px] bg-neutral-400 group-hover/item:w-4 group-hover/item:bg-neutral-800 group-hover/item:-translate-x-1 transition-all rounded-full relative z-10" />
                   
                   {/* Tooltip */}
                   <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-all bg-surface-1 border border-[#E5EAF1] shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-xl p-3 w-64 z-[100] pointer-events-none origin-left scale-95 group-hover/item:scale-100 duration-200">
@@ -463,14 +463,14 @@ export const Workbench: React.FC<WorkbenchProps> = ({
               )}
             </div>
           ) : isDragging && (
-            <div className="absolute inset-0 z-50 bg-btn-main/10 backdrop-blur-[2px] border-2 border-dashed border-primary-500 rounded-xl m-4 flex flex-col items-center justify-center pointer-events-none">
-              <div className="w-16 h-16 bg-surface-1 rounded-xl shadow-xl flex items-center justify-center text-brand-logo mb-4 animate-bounce">
+            <div className="absolute inset-0 z-50 bg-neutral-900/[0.04] backdrop-blur-[2px] border-2 border-dashed border-neutral-500 rounded-xl m-4 flex flex-col items-center justify-center pointer-events-none">
+              <div className="w-16 h-16 bg-surface-1 rounded-xl shadow-xl flex items-center justify-center text-neutral-700 mb-4 animate-bounce">
                 <Paperclip size={32} />
               </div>
-              <h3 className="text-xl font-semibold text-brand-logo tracking-tight">
+              <h3 className="text-xl font-semibold text-neutral-800 tracking-tight">
                 松开以上传文件
               </h3>
-              <p className="text-[13px] text-brand-logo/70 mt-2">
+              <p className="text-[13px] text-neutral-500 mt-2">
                 支持本地文件、文件夹拖拽上传
               </p>
             </div>
@@ -494,7 +494,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                     ? "系统检测到您为新入驻账号，建议先由「策略专家」为您进行深度的品牌诊断与受众画像对焦，建立精准的内容基座。"
                     : "您可以直接下达任务指令，或唤起垂直方向的专业智能体为您处理数据、策略或内容。"}
                   {activeProjectId === 'project-b' && (
-                    <span className="block mt-2 text-[#DF4965]/80">直接输入任务，或拖入文件和文件夹作为上下文。</span>
+                    <span className="block mt-2 text-neutral-500">直接输入任务，或拖入文件和文件夹作为上下文。</span>
                   )}
                 </p>
 
@@ -506,7 +506,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                         "你好，我是新入驻的商家，请帮我对焦品牌受众和产品卖点，建立出圈模型。",
                       );
                     }}
-                    className="px-8 py-3.5 bg-[#DF4965] text-white rounded-xl text-[14px] hover:bg-[#CC1E4A] transition-all flex items-center gap-2 active:scale-95"
+                    className="px-8 py-3.5 bg-neutral-950 text-white rounded-xl text-[14px] hover:bg-neutral-800 transition-all flex items-center gap-2 active:scale-95"
                   >
                     <Target size={18} /> 开启品牌深度诊断
                   </button>
@@ -538,9 +538,9 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                       )}
                       {msg.content && (
                         <div
-                          className={`text-left text-[14px] leading-relaxed inline-block ${msg.isCancelled ? "text-[#98A2B3]" : msg.role === "agent" ? "text-text-main" : "bg-[#DF4965] text-white px-5 py-3 rounded-xl rounded-tr-none shadow-sm"}`}
+                          className={`text-left text-[14px] leading-relaxed inline-block ${msg.isCancelled ? "text-[#98A2B3]" : msg.role === "agent" ? "text-text-main" : "bg-[#e9e9e9] text-neutral-900 px-5 py-3 rounded-2xl rounded-tr-md"}`}
                         >
-                          <div className={`prose prose-sm max-w-none ${msg.isCancelled ? "line-through opacity-70 prose-neutral" : msg.role === "agent" ? "prose-neutral" : "text-white prose-p:text-white prose-strong:text-white prose-a:text-white prose-headings:text-white"}`}>
+                          <div className={`prose prose-sm max-w-none ${msg.isCancelled ? "line-through opacity-70 prose-neutral" : "prose-neutral"}`}>
                             {msg.content}
                           </div>
                         </div>
@@ -566,7 +566,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                               onClick={() =>
                                 handleConfirmExecute(msg.id, msg.card!.cmd)
                               }
-                              className="px-6 py-2 bg-[#DF4965] text-white hover:bg-[#CC1E4A] rounded-xl text-[13px] font-medium transition-colors cursor-pointer"
+                              className="px-6 py-2 bg-neutral-950 text-white hover:bg-neutral-800 rounded-xl text-[13px] font-medium transition-colors cursor-pointer"
                             >
                               确认执行
                             </button>
@@ -617,7 +617,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                                         className="flex items-center gap-3"
                                       >
                                         <div
-                                          className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${step.status === "completed" ? "bg-[#2FA879]/10 text-[#2FA879]" : step.status === "active" ? "bg-[#DF4965] text-white" : "bg-[#F6F8FB] text-[#98A2B3]"}`}
+                                          className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${step.status === "completed" ? "bg-[#2FA879]/10 text-[#2FA879]" : step.status === "active" ? "bg-neutral-950 text-white" : "bg-[#F6F8FB] text-[#98A2B3]"}`}
                                         >
                                           {step.status === "completed" ? (
                                             <Check size={12} />
@@ -631,7 +631,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                                           )}
                                         </div>
                                         <span
-                                          className={`text-[13px] ${step.status === "completed" ? "text-text-main" : step.status === "active" ? "text-[#DF4965] font-medium" : "text-[#98A2B3]"}`}
+                                          className={`text-[13px] ${step.status === "completed" ? "text-text-main" : step.status === "active" ? "text-neutral-900 font-medium" : "text-[#98A2B3]"}`}
                                         >
                                           {step.title}
                                         </span>
@@ -659,13 +659,13 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                               <div className="divide-y divide-[#E5EAF1]">
                                 {msg.card.artifacts.map((artifact: any) => (
                                   <div key={artifact.id} className="p-3 hover:bg-[#F6F8FB] transition-colors flex items-center gap-3 group">
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${artifact.isNew ? 'bg-[#FFF2F5] text-[#DF4965]' : 'bg-[#F2F5F9] text-[#98A2B3]'}`}>
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${artifact.isNew ? 'bg-neutral-100 text-neutral-700' : 'bg-[#F2F5F9] text-[#98A2B3]'}`}>
                                       <File size={16} />
                                     </div>
                                     <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handleOpenFile(artifact)}>
                                       <div className="flex items-center gap-2 mb-0.5">
                                         <span className="text-[13px] font-medium text-text-main truncate">{artifact.name}</span>
-                                        {artifact.isNew && <span className="text-[10px] px-1.5 py-0.5 bg-[#FFF2F5] text-[#DF4965] rounded font-medium border border-[#FFE0E9]">新建</span>}
+                                        {artifact.isNew && <span className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-700 rounded font-medium border border-neutral-200">新建</span>}
                                         {artifact.isUpdated && <span className="text-[10px] px-1.5 py-0.5 bg-[#F6F8FB] text-text-secondary rounded font-medium border border-[#E5EAF1]">更新</span>}
                                       </div>
                                       <p className="text-[11px] text-[#98A2B3] truncate">{artifact.path} · {artifact.size}</p>
@@ -685,17 +685,17 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                               <div className="flex items-center justify-between mt-6 px-1">
                                 <h4 className="text-[12px] font-medium text-[#98A2B3]">接下来建议</h4>
                                 {msg.card.suggestions.length > 2 && (
-                                  <button className="text-[12px] text-text-secondary hover:text-[#DF4965] transition-colors flex items-center gap-1 cursor-pointer">
+                                  <button className="text-[12px] text-text-secondary hover:text-neutral-950 transition-colors flex items-center gap-1 cursor-pointer">
                                     更多建议 <ChevronRight size={12} />
                                   </button>
                                 )}
                               </div>
                               <div className="grid grid-cols-2 gap-3">
                                 {msg.card.suggestions.slice(0,2).map((sug: any) => (
-                                  <div key={sug.id} onClick={() => handleAddContext(sug)} className="bg-surface-1 border border-[#E5EAF1] hover:border-[#DF4965] hover:bg-[#FFF2F5] rounded-xl p-3 cursor-pointer transition-all group relative">
-                                    <h5 className="text-[13px] font-medium text-text-main mb-1 group-hover:text-[#DF4965] flex items-center justify-between">
+                                  <div key={sug.id} onClick={() => handleAddContext(sug)} className="bg-surface-1 border border-[#E5EAF1] hover:border-neutral-400 hover:bg-neutral-100 rounded-xl p-3 cursor-pointer transition-all group relative">
+                                    <h5 className="text-[13px] font-medium text-text-main mb-1 group-hover:text-neutral-950 flex items-center justify-between">
                                       {sug.title}
-                                      <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 text-[#DF4965] -translate-x-2 group-hover:translate-x-0 transition-all" />
+                                      <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 text-neutral-700 -translate-x-2 group-hover:translate-x-0 transition-all" />
                                     </h5>
                                     <p className="text-[12px] text-text-secondary line-clamp-1">{sug.desc}</p>
                                   </div>
@@ -715,7 +715,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
           </div>
 
           {/* Unified Input Console */}
-          <div className="shrink-0 pt-16 pb-4 px-10 bg-gradient-to-t from-white via-white/95 to-white relative z-20">
+          <div className="shrink-0 pt-12 pb-4 px-10 bg-gradient-to-t from-[#f7f7f7] via-[#f7f7f7]/95 to-transparent relative z-20">
             <div className="max-w-4xl mx-auto relative">
               {/* The Input Container */}
               <div className="relative z-50">
@@ -756,7 +756,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                                   textareaRef.current.focus();
                                 }
                               }}
-                              className="whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 bg-surface-1 border border-border-default shadow-sm text-text-secondary hover:text-brand-logo hover:border-primary-200 hover:bg-brand-light text-[13px] rounded-xl transition-all shrink-0"
+                              className="whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 bg-surface-1 border border-border-default shadow-sm text-text-secondary hover:text-neutral-950 hover:border-neutral-300 hover:bg-neutral-100 text-[13px] rounded-xl transition-all shrink-0"
                             >
                               <FileText
                                 size={14}
@@ -788,17 +788,19 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                   </>
                 )}
 
-                <div className="bg-surface-1 p-2 rounded-[24px] shadow-sm flex items-end gap-3 pr-3 border border-[#E5EAF1] focus-within:border-[#DF4965] focus-within:ring-1 focus-within:ring-[#DF4965] transition-all text-text-main">
+                <div className="bg-surface-1 p-2 rounded-[24px] shadow-[0_4px_18px_rgba(0,0,0,0.06)] flex items-end gap-3 pr-3 border border-neutral-300 focus-within:border-neutral-500 focus-within:ring-1 focus-within:ring-neutral-300 transition-all text-text-main">
                   {/* Universal Add Button */}
                   <div className="relative">
                     <button
+                      type="button"
                       onClick={() => {
                         setIsAttachMenuOpen(!isAttachMenuOpen);
                         setIsAgentSelectorOpen(false);
                         setIsCommandDirOpen(false);
                       }}
-                      className={`ml-1 w-10 h-10 flex items-center justify-center rounded-full transition-all ${isAttachMenuOpen ? "bg-[#FFF2F5] text-[#DF4965] rotate-45" : "text-[#98A2B3] hover:text-[#DF4965] hover:bg-[#FFF2F5]"}`}
+                      className={`ml-1 w-10 h-10 flex items-center justify-center rounded-full transition-all ${isAttachMenuOpen ? "bg-neutral-100 text-neutral-900 rotate-45" : "text-[#98A2B3] hover:text-neutral-900 hover:bg-neutral-100"}`}
                       title="添加"
+                      aria-label={isAttachMenuOpen ? "关闭添加菜单" : "添加文件、技能或智能体"}
                     >
                       <Plus
                         size={22}
@@ -821,7 +823,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                           >
                             <div className="px-3 py-1.5">
                               <button className="flex items-center gap-3 px-3 py-2.5 hover:bg-page-bg rounded-xl text-text-secondary hover:text-text-main transition-colors text-[13px] text-left w-full group">
-                                <div className="w-7 h-7 rounded-lg bg-hover-bg flex items-center justify-center text-text-tertiary group-hover:bg-brand-light group-hover:text-brand-logo transition-colors">
+                                <div className="w-7 h-7 rounded-lg bg-hover-bg flex items-center justify-center text-text-tertiary group-hover:bg-neutral-200 group-hover:text-neutral-900 transition-colors">
                                   <Folder size={14} />
                                 </div>
                                 文件和文件夹
@@ -1002,6 +1004,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => {
                       if (isProcessing) {
                         setIsProcessing(false);
@@ -1023,7 +1026,8 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                         if (activeProjectId === 'project-b') { setReferences((prev: any) => prev.filter((r: any) => r.pinned)); }
                       }
                     }}
-                    className="w-10 h-10 bg-[#DF4965] text-white rounded-[16px] flex items-center justify-center hover:bg-[#CC1E4A] transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                    className="w-10 h-10 bg-neutral-950 text-white rounded-[16px] flex items-center justify-center hover:bg-neutral-800 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                    aria-label={isProcessing ? "停止当前任务" : "发送消息"}
                   >
                     {isProcessing ? (
                       <div className="w-3.5 h-3.5 bg-surface-1 rounded-sm" />
@@ -1054,7 +1058,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                 >
                   <div className="flex items-center justify-between py-5 px-6 border-b border-neutral-50 bg-[#fafafa]">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-btn-main text-white rounded-[10px] flex items-center justify-center shadow-sm">
+                      <div className="w-8 h-8 bg-neutral-950 text-white rounded-[10px] flex items-center justify-center shadow-sm">
                         <Network size={14} />
                       </div>
                       <div>
@@ -1114,14 +1118,14 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                         {i < arr.length - 1 && (
                           <div className="absolute left-[7px] top-4 bottom-0 w-[1px]">
                             <div
-                              className={`w-full h-full ${step.status === "完成" ? "bg-btn-main" : "bg-hover-bg border-l-[1px] border-dashed border-border-default"}`}
+                              className={`w-full h-full ${step.status === "完成" ? "bg-neutral-700" : "bg-hover-bg border-l-[1px] border-dashed border-border-default"}`}
                             />
                           </div>
                         )}
 
                         <div className="mt-1 w-[15px] flex justify-center shrink-0 relative z-10">
                           <div
-                            className={`w-3 h-3 rounded-full flex items-center justify-center ${step.active ? "bg-btn-main shadow-[0_0_0_3px_rgba(var(--primary-100),1)]" : step.status === "完成" ? "bg-btn-main border border-neutral-700" : "bg-surface-1 border-2 border-border-default"}`}
+                            className={`w-3 h-3 rounded-full flex items-center justify-center ${step.active ? "bg-neutral-950 shadow-[0_0_0_3px_rgba(0,0,0,0.08)]" : step.status === "完成" ? "bg-neutral-700 border border-neutral-700" : "bg-surface-1 border-2 border-border-default"}`}
                           >
                             {step.active && (
                               <div className="w-1.5 h-1.5 bg-surface-1 rounded-full animate-pulse" />
@@ -1135,12 +1139,12 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <span
-                                className={`text-[12px] ${step.active ? "text-brand-logo" : "text-text-main"}`}
+                                className={`text-[12px] ${step.active ? "text-neutral-950" : "text-text-main"}`}
                               >
                                 {step.stage}
                               </span>
                               <span
-                                className={`text-[9px] px-1.5 py-0.5 rounded-sm ${step.active ? "bg-brand-light text-brand-logo" : step.status === "完成" ? "bg-hover-bg text-text-secondary" : "hidden"}`}
+                                className={`text-[9px] px-1.5 py-0.5 rounded-sm ${step.active ? "bg-neutral-100 text-neutral-800" : step.status === "完成" ? "bg-hover-bg text-text-secondary" : "hidden"}`}
                               >
                                 {step.status}
                               </span>
@@ -1161,12 +1165,12 @@ export const Workbench: React.FC<WorkbenchProps> = ({
             </AnimatePresence>
 
             <div
-              className={`h-[46px] flex items-center justify-between px-6 cursor-pointer hover:bg-page-bg transition-colors group ${bottomExpanded ? "bg-page-bg border-t-primary-500 border-t-2" : ""}`}
+              className={`h-[46px] flex items-center justify-between px-6 cursor-pointer hover:bg-neutral-50 transition-colors group ${bottomExpanded ? "bg-neutral-50 border-t-neutral-300 border-t" : ""}`}
               onClick={() => setBottomExpanded(!bottomExpanded)}
             >
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-2.5 py-1 bg-brand-light text-brand-logo rounded-lg text-[11px] ">
-                  <div className="w-2 h-2 rounded-full bg-btn-main animate-pulse" />
+                <div className="flex items-center gap-2 px-2.5 py-1 bg-neutral-100 text-neutral-700 rounded-lg text-[11px] ">
+                  <div className="w-2 h-2 rounded-full bg-neutral-700 animate-pulse" />
                   AI 正在运行
                 </div>
                 <div className="flex items-center gap-2 text-[13px] text-text-secondary">
@@ -1175,18 +1179,18 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[11px] text-text-tertiary group-hover:text-brand-logo transition-colors">
+                <span className="text-[11px] text-text-tertiary group-hover:text-neutral-900 transition-colors">
                   {bottomExpanded ? "收起工作流" : "展开工作流详细"}
                 </span>
                 {bottomExpanded ? (
                   <PanelRightClose
                     size={16}
-                    className="text-brand-logo rotate-90 transition-colors"
+                    className="text-neutral-700 rotate-90 transition-colors"
                   />
                 ) : (
                   <PanelLeftOpen
                     size={16}
-                    className="text-text-tertiary group-hover:text-brand-logo -rotate-90 transition-colors"
+                    className="text-text-tertiary group-hover:text-neutral-900 -rotate-90 transition-colors"
                   />
                 )}
               </div>

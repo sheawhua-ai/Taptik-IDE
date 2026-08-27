@@ -376,8 +376,8 @@ export const INITIAL_ASSETS: MaterialAsset[] = [
 
   {
     id: 'MAT-2026-PENDING-01',
-    name: '最新回传-体验官宠物倒粮倾泻画面',
-    url: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=600&auto=format&fit=crop&q=80',
+    name: '镜头1 · 幼犬进食盆场景高清特写',
+    url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop',
     aspectRatio: '3:4',
     fileType: 'image',
     fileSize: '3.9 MB',
@@ -389,12 +389,24 @@ export const INITIAL_ASSETS: MaterialAsset[] = [
     sourceType: 'task_upload',
     sourceLabel: '任务上传 (KOC回传)',
 
-    uploader: 'KOC-阿柴的日常',
-    uploadTime: '2026-08-20 22:15',
-    sourceProject: '幼犬换粮软便卡位项目',
+    uploader: '小红薯_汪汪队',
+    uploadTime: '2026-08-21 07:45',
+    sourceProject: '幼犬换粮搜索卡位第三轮',
 
-    tags: ['倒粮动态', '柴犬进食', '待确认', '细节实拍'],
-    vectorDescription: '柴犬在碗边期待倾倒宠粮的特写画面，主粮颗粒呈动态倾泻状态，画面生动有吸引力',
+    tags: ['幼犬进食', '真实体验', '待确认', '细节实拍'],
+    vectorDescription: '幼犬进食盆场景高清特写，展现狗狗食欲与盆中粮粒，画面自然真实。',
+
+    reviewTask: {
+      id: 'task-m1',
+      taskName: '验收幼犬换粮回传的3组拍摄素材',
+      projectId: 'p1',
+      projectName: '幼犬换粮搜索卡位第三轮',
+      noteId: 'ns2',
+      noteTitle: '我家金毛幼犬换粮体验，记录七天便便变化',
+      accountName: '小红薯_汪汪队',
+      requirement: '幼犬进食盆进食场景高清特写（展现狗狗食欲与盆中颗粒）',
+      returnedAt: '8月21日 7:45'
+    },
 
     performance: {
       hasBackendData: false,
@@ -411,12 +423,100 @@ export const INITIAL_ASSETS: MaterialAsset[] = [
       aiRecognition: {
         tag: '智能特征识别',
         status: 'pending_confirmation',
-        confidenceNotice: '提示：检测到包材局部遮挡与角落环境光较暗，待操盘手人工确认',
-        subject: '柴犬与粮碗',
+        confidenceNotice: '分辨率、无水印与光线预检通过，等待确认真实感与品牌适用性',
+        subject: '幼犬与进食盆',
         product: '极宠家·幼犬粮',
         scene: '家庭客厅',
         composition: '侧视近景',
-        lightingColor: '偏暗室内自然光'
+        lightingColor: '自然室内光'
+      }
+    }
+  },
+
+  {
+    id: 'MAT-2026-PENDING-02',
+    name: '镜头2 · 新旧粮颗粒对比实拍',
+    url: 'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=800&auto=format&fit=crop',
+    aspectRatio: '3:4',
+    fileType: 'image',
+    fileSize: '2.8 MB',
+    resolution: '2160x2880',
+    category: 'publish_material',
+    status: 'pending_acceptance',
+    materialUse: 'real_shot',
+    sourceType: 'task_upload',
+    sourceLabel: '任务上传 (KOC回传)',
+    uploader: '小红薯_汪汪队',
+    uploadTime: '2026-08-21 07:48',
+    sourceProject: '幼犬换粮搜索卡位第三轮',
+    tags: ['粮粒对比', '真实体验', '待确认', '细节实拍'],
+    vectorDescription: '新旧粮颗粒大小与颜色对比实拍，带有手部参照，细节清楚。',
+    reviewTask: {
+      id: 'task-m1',
+      taskName: '验收幼犬换粮回传的3组拍摄素材',
+      projectId: 'p1',
+      projectName: '幼犬换粮搜索卡位第三轮',
+      noteId: 'ns2',
+      noteTitle: '我家金毛幼犬换粮体验，记录七天便便变化',
+      accountName: '小红薯_汪汪队',
+      requirement: '新旧粮颗粒大小与颜色对比实拍图（附带手部或量杯参照）',
+      returnedAt: '8月21日 7:48'
+    },
+    performance: { hasBackendData: false, performanceType: 'none' },
+    acceptance: {
+      aiRecognition: {
+        tag: '智能特征识别',
+        status: 'pending_confirmation',
+        confidenceNotice: '颗粒纹理和对比关系预检通过，等待确认内容表达是否准确',
+        subject: '新旧粮颗粒',
+        product: '极宠家·幼犬粮',
+        scene: '家庭桌面',
+        composition: '对比构图',
+        lightingColor: '自然光'
+      }
+    }
+  },
+
+  {
+    id: 'MAT-2026-PENDING-03',
+    name: '镜头3 · 产品外包装正面特写',
+    url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&auto=format&fit=crop',
+    aspectRatio: '3:4',
+    fileType: 'image',
+    fileSize: '2.1 MB',
+    resolution: '1920x2560',
+    category: 'publish_material',
+    status: 'pending_acceptance',
+    materialUse: 'real_shot',
+    sourceType: 'task_upload',
+    sourceLabel: '任务上传 (KOC回传)',
+    uploader: '小红薯_汪汪队',
+    uploadTime: '2026-08-21 07:50',
+    sourceProject: '幼犬换粮搜索卡位第三轮',
+    tags: ['产品包装', '防伪标识', '待确认', '细节实拍'],
+    vectorDescription: '产品外包装与防伪标识正面特写，包装文字完整，适合正文说明。',
+    reviewTask: {
+      id: 'task-m1',
+      taskName: '验收幼犬换粮回传的3组拍摄素材',
+      projectId: 'p1',
+      projectName: '幼犬换粮搜索卡位第三轮',
+      noteId: 'ns2',
+      noteTitle: '我家金毛幼犬换粮体验，记录七天便便变化',
+      accountName: '小红薯_汪汪队',
+      requirement: '产品外包装与防伪标识正面特写',
+      returnedAt: '8月21日 7:50'
+    },
+    performance: { hasBackendData: false, performanceType: 'none' },
+    acceptance: {
+      aiRecognition: {
+        tag: '智能特征识别',
+        status: 'pending_confirmation',
+        confidenceNotice: '包装文字与防伪区域预检通过，等待确认品牌呈现',
+        subject: '产品外包装',
+        product: '极宠家·幼犬粮',
+        scene: '家庭桌面',
+        composition: '正面特写',
+        lightingColor: '柔和室内光'
       }
     }
   },
@@ -485,4 +585,3 @@ export const INITIAL_COLLECTION_TASKS = [
     ]
   }
 ];
-

@@ -125,6 +125,20 @@ export interface MaterialAsset {
   // Usage & Note Relation
   usageRelation?: UsageRelation;
 
+  // Returned shooting assets are reviewed as one task. The execution center
+  // only links to this task; review state is owned by the material center.
+  reviewTask?: {
+    id: string;
+    taskName: string;
+    projectId: string;
+    projectName: string;
+    noteId: string;
+    noteTitle: string;
+    accountName: string;
+    requirement: string;
+    returnedAt: string;
+  };
+
   // Performance
   performance: PerformanceMetrics;
 
@@ -188,4 +202,3 @@ export interface CollectionTask {
     positionLabel?: string;
   }>;
 }
-
