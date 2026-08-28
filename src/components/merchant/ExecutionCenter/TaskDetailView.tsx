@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ArrowLeft, CheckCircle2, AlertCircle, Clock, ExternalLink, 
   Send, User, Tag, Plus, Trash2, RotateCcw, AlertTriangle, 
-  ChevronDown, ChevronRight, FileText, Camera, Share2, 
+  ChevronDown, FileText, Camera, Share2,
   Sparkles, RefreshCw, Pin, MoreHorizontal, QrCode, Check,
   Eye, Image as ImageIcon, ShieldAlert, ArrowRight, CornerDownRight,
   Info, Maximize2, X, ShieldCheck, CheckCheck, Edit3, MessageSquare,
@@ -724,31 +724,16 @@ export function TaskDetailView({
 
       {/* Top Header Bar */}
       <div className="min-h-13 px-5 py-2.5 bg-surface border-b border-border-default flex items-center justify-between gap-4 shrink-0">
-        <div className="flex min-w-0 items-center gap-3">
-          {workspaceNavigation ?? (
-            <>
-              <button
-                type="button"
-                onClick={onBack}
-                className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors flex items-center gap-1 text-[12.5px]"
-              >
-                <ArrowLeft size={16} />
-                <span>返回执行中心</span>
-              </button>
-              <span className="text-border-strong">/</span>
-            </>
-          )}
-          <div className="min-w-0">
-            <div className="flex min-w-0 items-center gap-2 text-[11px] text-text-tertiary">
-              <span className="truncate">{task.projectName}</span>
-              <ChevronRight size={12} className="shrink-0" />
-              <span className="truncate">{task.noteTitle}</span>
-              <ChevronRight size={12} className="shrink-0" />
-              <span className="shrink-0">{task.targetAccount}</span>
-            </div>
-            <div className="mt-0.5 truncate text-[13px] font-semibold text-text-primary">{task.operatorActionSummary}</div>
-          </div>
-        </div>
+        {workspaceNavigation ?? (
+          <button
+            type="button"
+            onClick={onBack}
+            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors flex items-center gap-1 text-[12.5px]"
+          >
+            <ArrowLeft size={16} />
+            <span>返回执行中心</span>
+          </button>
+        )}
 
         <div className="flex items-center gap-2.5">
           <button
@@ -844,16 +829,28 @@ export function TaskDetailView({
         {/* Column 2: Center Editor / Inspector Area (Flex-1) */}
         <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-5 bg-canvas">
           
-          {/* AI 只在这里给出一条轻提示；完整写作依据统一放在右侧说明面板。 */}
+          {/* 当前任务只展示识别与操作所需信息；解释和判断依据按需展开。 */}
           <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-4 py-3">
             <div className="flex items-start gap-2.5">
               <Sparkles size={14} className="mt-0.5 shrink-0 text-[#a7475e]" />
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="text-[10.5px] font-semibold text-[#88394d]">AI 修改提示</span>
-                  <span className="text-[12.5px] font-semibold text-text-primary">{task.operatorActionSummary}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="text-[10.5px] font-semibold text-[#88394d]">待处理</span>
+                      <span className="text-[12.5px] font-semibold text-text-primary">{task.operatorActionSummary}</span>
+                    </div>
+                    <div className="mt-1 truncate text-[10px] text-text-tertiary">{task.projectName} · {task.noteTitle} · {task.targetAccount}</div>
+                  </div>
+                  <span className="shrink-0 text-[10px] text-text-tertiary">{task.deadline || '未设置截止'}</span>
                 </div>
-                <div className="mt-1 line-clamp-2 text-[10.5px] leading-5 text-text-secondary">{task.reasonForIntervention} · 截止 {task.deadline || '未设置'}</div>
+                <details className="mt-2 border-t border-[#efdfe3] pt-2 text-[10px] text-text-secondary">
+                  <summary className="cursor-pointer select-none font-medium text-[#88394d]">处理依据</summary>
+                  <div className="mt-2 space-y-1.5 leading-4">
+                    <p>{task.reasonForIntervention}</p>
+                    {task.confirmedFacts.slice(0, 3).map((fact, index) => <p key={`${task.id}-basis-${index}`}>· {fact}</p>)}
+                  </div>
+                </details>
               </div>
             </div>
           </div>

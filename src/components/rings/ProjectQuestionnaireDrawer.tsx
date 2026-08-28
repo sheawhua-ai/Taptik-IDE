@@ -223,7 +223,7 @@ export function ProjectQuestionnaireDrawer({
   }));
   const initialQuestions: QuestionnaireQuestion[] = packageFeedbackQuestions.length > 0
     ? packageFeedbackQuestions
-    : activeProject?.landingPageSettings?.questionnaireQuestions && 
+    : activeProject?.landingPageSettings?.questionnaireQuestions &&
     activeProject.landingPageSettings.questionnaireQuestions.length > 0
       ? activeProject.landingPageSettings.questionnaireQuestions
       : DEFAULT_QUESTIONNAIRE_QUESTIONS;

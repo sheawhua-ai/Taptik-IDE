@@ -1236,7 +1236,7 @@ export function ProjectCenter({
           onClose={() => {
             setShowProjectQuestionnaire(false);
             setFeedbackContentPackage(null);
-          }} 
+          }}
         />
       )}
 

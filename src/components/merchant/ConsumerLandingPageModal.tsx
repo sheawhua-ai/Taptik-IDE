@@ -173,8 +173,8 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                   <div className="h-[570px] bg-btn-main relative">
                     <img 
                       src={project?.landingPageSettings?.bannerUrl || "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop"}
-                      className="w-full h-full object-cover" 
-                      alt="活动海报" 
+                      className="w-full h-full object-cover"
+                      alt="活动海报"
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-4 pb-5 pt-24 text-white">
                       <div className="text-[10.5px] text-white/80">即将领取</div>

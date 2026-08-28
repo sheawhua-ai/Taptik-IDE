@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle, ArrowLeft, ArrowRight, Bot, Camera, Check,
-  CheckCircle2, ChevronRight, Clock, Info, Send, ShieldCheck, X
+  CheckCircle2, Clock, Info, Send, ShieldCheck, X
 } from 'lucide-react';
 import type { ExecutionAction } from '../../../data/unifiedStore';
 import type { ExecutionTask, LibraryMaterialItem, MaterialSubItem } from './types';
@@ -21,17 +21,6 @@ interface OperatorTaskWorkbenchProps {
 
 type WorkbenchMode = ExecutionAction | 'publish_confirm' | 'progress';
 
-const ACTION_LABELS: Record<WorkbenchMode, string> = {
-  edit_content: '确认内容',
-  replace_material: '选图 / 换图',
-  create_material_task: '创建素材任务',
-  view_material_task: '查看素材任务',
-  review_material: '验收素材',
-  handle_publish_error: '纠正异常',
-  publish_confirm: '确认发布结果',
-  progress: '查看执行进度'
-};
-
 function getWorkbenchMode(task: ExecutionTask, initialAction?: ExecutionAction): WorkbenchMode {
   if (initialAction) return initialAction;
   if (task.actionType) return task.actionType;
@@ -42,13 +31,6 @@ function getWorkbenchMode(task: ExecutionTask, initialAction?: ExecutionAction):
   }
   if (task.operatorCategory === 'publish') return 'publish_confirm';
   return 'handle_publish_error';
-}
-
-function formatCategory(task: ExecutionTask) {
-  if (task.operatorCategory === 'content') return '内容确认';
-  if (task.operatorCategory === 'material') return '素材处理';
-  if (task.operatorCategory === 'publish') return '发布任务';
-  return '异常纠偏';
 }
 
 function getAnomalyOptions(task: ExecutionTask) {
@@ -72,6 +54,7 @@ export function OperatorTaskWorkbench({
   onNextTask
 }: OperatorTaskWorkbenchProps) {
   const mode = getWorkbenchMode(task, initialAction);
+  const isMaterialFollowUp = task.anomalyType === 'material_reshoot_overdue';
   const [showContext, setShowContext] = useState(false);
   const [draftTitle, setDraftTitle] = useState(task.draftTitle || task.noteTitle || '');
   const [draftBody, setDraftBody] = useState(task.draftBody || '');
@@ -116,8 +99,18 @@ export function OperatorTaskWorkbench({
   const queue = categoryQueue.filter(item =>
     item.status !== '已完成' &&
     item.status !== '已取消' &&
+    (!isMaterialFollowUp || item.anomalyType === 'material_reshoot_overdue') &&
     (mode === 'progress' ? !item.isMeWaiting : item.isMeWaiting)
   );
+  const projectGroups = useMemo(() => {
+    const groups = new Map<string, { projectId: string; projectName: string; tasks: ExecutionTask[] }>();
+    queue.forEach(item => {
+      const current = groups.get(item.projectId);
+      if (current) current.tasks.push(item);
+      else groups.set(item.projectId, { projectId: item.projectId, projectName: item.projectName, tasks: [item] });
+    });
+    return Array.from(groups.values());
+  }, [queue]);
   const isComplete = task.status === '已完成';
 
   const showFeedback = (message: string) => {
@@ -365,9 +358,9 @@ export function OperatorTaskWorkbench({
 
   const renderAnomaly = () => (
     <div className="space-y-4 max-w-2xl">
-      <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
-        <div className="flex items-center gap-2 text-[12.5px] font-semibold text-rose-800"><AlertTriangle size={16} />当前异常</div>
-        <p className="mt-2 text-[12.5px] leading-5 text-rose-800">{task.anomalyReason || task.currentOccurrence}</p>
+      <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3 text-[12px] text-rose-800">
+        <AlertTriangle size={15} className="mt-0.5 shrink-0" />
+        <span className="line-clamp-2">{task.anomalyReason || task.currentOccurrence}</span>
       </div>
       <div className="space-y-2">
         {getAnomalyOptions(task).map(option => (
@@ -437,15 +430,9 @@ export function OperatorTaskWorkbench({
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col bg-canvas">
-      <header className="shrink-0 border-b border-border-default bg-surface-1 px-5 py-3.5">
+      <header className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-3">
-            {workspaceNavigation ?? <button onClick={onBack} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="返回执行中心"><ArrowLeft size={17} /></button>}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-[11.5px] text-text-tertiary"><span>{formatCategory(task)}</span><ChevronRight size={12} /><span>{task.projectName}</span></div>
-              <h1 className="mt-0.5 truncate text-[15px] font-semibold text-text-main">{ACTION_LABELS[mode]} · {task.noteTitle}</h1>
-            </div>
-          </div>
+          <div className="min-w-0">{workspaceNavigation ?? <button onClick={onBack} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="返回执行中心"><ArrowLeft size={17} /></button>}</div>
           <div className="flex items-center gap-2">
             {task.deadline && <span className="hidden md:flex items-center gap-1 text-[11.5px] text-text-tertiary"><Clock size={13} />{formatChineseDate(task.deadline, true) || task.deadline}</span>}
             <button onClick={() => setShowContext(!showContext)} className={`rounded-lg border px-3 py-1.5 text-[12px] font-medium flex items-center gap-1.5 ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default bg-surface-1 text-text-secondary'}`}><Info size={14} />{mode === 'progress' ? '任务详情' : '判断依据'}</button>
@@ -454,14 +441,26 @@ export function OperatorTaskWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="hidden w-64 shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 lg:block">
-          <div className="border-b border-border-default px-4 py-3 text-[11.5px] text-text-tertiary">{mode === 'progress' ? '同类执行任务' : '同类待处理'} · {queue.length} 项</div>
-          <div className="p-2 space-y-1">
-            {queue.map(item => (
-              <button key={item.id} onClick={() => onSelectTask(item)} className={`w-full rounded-lg p-3 text-left ${item.id === task.id ? 'bg-surface-subtle border border-border-default' : 'hover:bg-hover-bg border border-transparent'}`}>
-                <div className="line-clamp-2 text-[12px] font-medium text-text-main">{item.operatorActionSummary}</div>
-                <div className="mt-1 truncate text-[10.5px] text-text-tertiary">{item.targetAccount}{item.isBlocked ? ' · 阻断' : ''}</div>
-              </button>
+        <aside className="hidden w-[300px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 lg:block">
+          <div className="border-b border-border-default px-4 py-3 text-[11px] font-medium text-text-secondary">{mode === 'progress' ? '执行进展' : isMaterialFollowUp ? '待跟进素材任务' : '待处理发布任务'} <span className="ml-1 text-text-tertiary">{queue.length}</span></div>
+          <div className="space-y-3 p-2">
+            {projectGroups.map(group => (
+              <section key={group.projectId}>
+                <div className="flex items-center justify-between px-2 py-1 text-[10px] text-text-tertiary"><span className="truncate">{group.projectName}</span><span>{group.tasks.length}</span></div>
+                <div className="space-y-1">
+                  {group.tasks.map(item => (
+                    <button key={item.id} onClick={() => onSelectTask(item)} className={`w-full rounded-xl border p-3 text-left ${item.id === task.id ? 'border-neutral-900 bg-surface-subtle' : 'border-transparent hover:bg-hover-bg'}`}>
+                      <div className="flex items-center gap-1.5 text-[9.5px] text-text-tertiary">
+                        <span className="rounded-md bg-surface-1 px-1.5 py-0.5">{isMaterialFollowUp ? '素材补拍' : item.publishExecutorType === '内容包KOC发布' ? '笔记包' : '单篇笔记'}</span>
+                        {item.isBlocked ? <span className="text-amber-700">待介入</span> : null}
+                      </div>
+                      <div className="mt-1.5 line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{item.noteTitle}</div>
+                      <div className="mt-1 truncate text-[10px] text-text-secondary">{item.operatorActionSummary}</div>
+                      <div className="mt-2 flex items-center justify-between gap-2 text-[9.5px] text-text-tertiary"><span className="truncate">{item.targetAccount}</span><span className="shrink-0">{formatChineseDate(item.deadline, true) || item.deadline || '待排期'}</span></div>
+                    </button>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </aside>
@@ -484,16 +483,14 @@ export function OperatorTaskWorkbench({
                 <div className="mt-3 flex items-start gap-2 border-t border-border-default pt-3 text-[11.5px] text-text-tertiary"><ArrowRight size={13} className="mt-0.5 shrink-0" /><span>下一步：{task.nextStepAfterAction}</span></div>
               </section>
             ) : (
-              <section className="rounded-xl border border-border-default bg-surface-1 p-4">
+              <section className="rounded-xl border border-border-default bg-surface-1 px-4 py-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] font-medium text-text-tertiary">现在需要判断</div>
-                    <div className="mt-1 text-[14px] font-semibold text-text-main">{task.operatorActionSummary}</div>
-                    <div className="mt-1 text-[12px] text-text-secondary">{task.reasonForIntervention}</div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 text-[10px] text-text-tertiary"><span>{task.projectName}</span><span>·</span><span className="truncate">{task.noteTitle}</span><span>·</span><span>{task.targetAccount}</span></div>
+                    <div className="mt-1.5 text-[14px] font-semibold text-text-main">{task.operatorActionSummary}</div>
                   </div>
-                  <span className={`rounded-md px-2 py-1 text-[10.5px] font-medium ${task.isBlocked ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-surface-subtle text-text-secondary border border-border-default'}`}>{task.isBlocked ? '阻断后续流转' : '常规判断'}</span>
+                  <span className={`rounded-md px-2 py-1 text-[10px] font-medium ${task.isBlocked ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-surface-subtle text-text-secondary border border-border-default'}`}>{task.isBlocked ? '待介入' : '待处理'}</span>
                 </div>
-                <div className="mt-3 flex items-start gap-2 border-t border-border-default pt-3 text-[11.5px] text-text-tertiary"><ArrowRight size={13} className="mt-0.5 shrink-0" /><span>完成后：{task.nextStepAfterAction}</span></div>
               </section>
             )}
             {renderWorkbench()}
@@ -504,6 +501,11 @@ export function OperatorTaskWorkbench({
           <aside className="w-[340px] shrink-0 overflow-y-auto border-l border-border-default bg-surface-1 p-4 hidden md:block">
             <div className="flex items-center justify-between"><h2 className="text-[13px] font-semibold text-text-main">{mode === 'progress' ? '任务信息与记录' : '判断依据与协助'}</h2><button onClick={() => setShowContext(false)} className="p-1 text-text-tertiary"><X size={15} /></button></div>
             <div className="mt-4 space-y-4">
+              <section className="rounded-xl bg-surface-subtle p-3">
+                <div className="text-[11px] font-medium text-text-tertiary">介入原因</div>
+                <p className="mt-2 text-[11.5px] leading-5 text-text-secondary">{task.reasonForIntervention}</p>
+                <div className="mt-2 flex items-start gap-2 border-t border-border-default pt-2 text-[10.5px] text-text-tertiary"><ArrowRight size={12} className="mt-0.5 shrink-0" /><span>{task.nextStepAfterAction}</span></div>
+              </section>
               <section>
                 <div className="text-[11px] font-medium text-text-tertiary">系统已确认</div>
                 <div className="mt-2 space-y-2">{task.confirmedFacts.map((fact, index) => <div key={index} className="flex gap-2 text-[11.5px] leading-5 text-text-secondary"><CheckCircle2 size={13} className="mt-1 shrink-0 text-emerald-600" /><span>{fact}</span></div>)}</div>

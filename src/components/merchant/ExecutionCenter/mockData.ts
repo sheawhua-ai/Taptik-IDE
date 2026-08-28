@@ -304,6 +304,75 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     ]
   },
   {
+    id: 'task-m-project-p89',
+    title: '验收婚宴项目通用场景素材',
+    operatorCategory: 'material',
+    categoryLabel: '素材待办',
+    status: '待执行',
+    materialType: 'returned_shooting_asset',
+    projectId: 'p89',
+    projectName: '青岛酒店婚宴小红书运营方案',
+    noteTitle: '项目通用素材补充',
+    targetAccount: '宴会中心素材协作组',
+    accountType: '外部达人',
+    operatorActionSummary: '审核项目通用场景素材并决定是否进入素材中心',
+    reasonForIntervention: '执行组已回传宴会厅与菜品通用素材，需确认真实性和后续复用价值。',
+    deadline: '明天 16:00',
+    deadlineLabel: '即将到期',
+    isBlocked: false,
+    waitingParty: '操盘手',
+    waitingRole: 'operator',
+    isMeWaiting: true,
+    isTeamExecuting: false,
+    isSystemProcessing: false,
+    createdAt: '2026-08-21 09:20',
+    primaryActionLabel: '验收素材',
+    currentOccurrence: '素材协作组已回传项目级通用素材，AI已完成清晰度与水印检查。',
+    confirmedFacts: ['已回传宴会厅全景与主桌布置图', '图片分辨率及水印预检通过'],
+    nextStepAfterAction: '通过的素材进入项目素材池，可供后续笔记匹配；退回项继续原任务补拍。',
+    materialSubItems: [
+      {
+        id: 'sub-p89-project-1',
+        requirement: '宴会厅全景实拍（完整呈现舞台、桌型与空间层次）',
+        isRequired: true,
+        uploadedAssets: [{
+          id: 'ast-p89-project-1',
+          url: 'https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=800&auto=format&fit=crop',
+          type: 'image',
+          filename: 'banquet_hall.jpg',
+          uploadTime: '2026-08-21 09:10',
+          fileSize: '3.8 MB',
+          resolution: '3024 × 2268 px',
+          technicalCheck: { resolutionValid: true, noWatermark: true, lightingQuality: '良好', aspectRatio: '4:3', summary: '画面清晰，无水印，空间结构完整' }
+        }],
+        autoCheckResult: '客观预检通过：清晰度与画幅合规',
+        manualStatus: '待验收'
+      },
+      {
+        id: 'sub-p89-project-2',
+        requirement: '婚宴主桌布置与花艺细节实拍',
+        isRequired: true,
+        uploadedAssets: [{
+          id: 'ast-p89-project-2',
+          url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&auto=format&fit=crop',
+          type: 'image',
+          filename: 'wedding_table.jpg',
+          uploadTime: '2026-08-21 09:12',
+          fileSize: '3.1 MB',
+          resolution: '2400 × 1800 px',
+          technicalCheck: { resolutionValid: true, noWatermark: true, lightingQuality: '正常', aspectRatio: '4:3', summary: '主体清晰，无水印，色温正常' }
+        }],
+        autoCheckResult: '客观预检通过：主体清晰，色温正常',
+        manualStatus: '待验收'
+      }
+    ],
+    timelineEvents: [
+      { id: 'e1', time: '2026-08-20 15:00', actor: '操盘手', action: '下发项目通用素材任务' },
+      { id: 'e2', time: '2026-08-21 09:12', actor: '素材协作组', action: '回传2组场景素材' },
+      { id: 'e3', time: '2026-08-21 09:14', actor: 'AI质检引擎', action: '完成客观预检' }
+    ]
+  },
+  {
     id: 'task-m-match',
     title: '确认这组素材是否适用于笔记',
     operatorCategory: 'material',
@@ -556,6 +625,7 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
     noteTitle: '给金毛宝宝换粮成功！再也不用天天擦屁屁了',
     targetAccount: '体验官_萌宠阿宝',
     accountType: 'KOC',
+    publishExecutorType: '内容包KOC发布',
     operatorActionSummary: '催促发布、调整排期或更换内容包KOC',
     reasonForIntervention: '原定8月22日20:00前发布，当前已逾期且未收到发布链接，需要操盘手选择处置方式',
     deadline: '2026-08-22 20:00',
