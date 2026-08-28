@@ -35,12 +35,36 @@ function getWorkbenchMode(task: ExecutionTask, initialAction?: ExecutionAction):
 
 function getAnomalyOptions(task: ExecutionTask) {
   if (task.anomalyType === 'publish_overdue') {
-    return ['催促当前发布人', '更换发布人后继续', '调整发布排期', '本轮不再继续'];
+    return ['再次通知发布人', '重新发送笔记包', '更换发布人或账号', '调整发布时间', '补录已发布链接', '本轮不再继续'];
   }
   if (task.anomalyType === 'executor_account_unavailable') {
-    return ['更换执行人或账号后继续', '调整发布排期', '本轮不再继续'];
+    return ['更换发布人或账号', '等待账号恢复并调整排期', '重新发送登录与发布指引', '本轮不再继续'];
   }
-  return ['重新执行并保留当前方案', '更换执行人或账号后继续', '本轮不再继续'];
+  if (task.anomalyType === 'data_sync_auth_expired') {
+    return ['重新扫码授权', '补录已发布链接', '仅保留本地记录'];
+  }
+  if (task.anomalyType === 'material_reshoot_overdue') {
+    return ['再次通知执行人', '更换执行人', '调整补拍截止', '本轮不再继续'];
+  }
+  return ['再次通知执行人', '重新下发任务', '更换执行人', '本轮不再继续'];
+}
+
+function ManualPublishFlow({ task }: { task: ExecutionTask }) {
+  const steps = ['内容就绪', '已通知', '已领取', '待发布', '已回传'];
+  const currentIndex = task.returnedData?.publishUrl ? 4 : task.publishStage === '待发布' || task.anomalyType === 'publish_overdue' ? 3 : 2;
+  return (
+    <div className="mt-3 border-t border-border-default pt-3">
+      <div className="flex flex-wrap items-center gap-2 text-[10px]" aria-label="人工发布流程">
+        {steps.map((step, index) => (
+          <React.Fragment key={step}>
+            <span className={index === currentIndex ? 'font-semibold text-text-main' : index < currentIndex ? 'text-emerald-700' : 'text-text-tertiary'}>{step}</span>
+            {index < steps.length - 1 ? <span className="h-px w-7 bg-border-strong" /> : null}
+          </React.Fragment>
+        ))}
+      </div>
+      <p className="mt-2 text-[10.5px] text-text-tertiary">系统只负责发送笔记包、提醒、换人、改期和回传核验，不会代替人工发布。</p>
+    </div>
+  );
 }
 
 export function OperatorTaskWorkbench({
@@ -55,6 +79,7 @@ export function OperatorTaskWorkbench({
 }: OperatorTaskWorkbenchProps) {
   const mode = getWorkbenchMode(task, initialAction);
   const isMaterialFollowUp = task.anomalyType === 'material_reshoot_overdue';
+  const isPublishWorkbench = !isMaterialFollowUp && (task.operatorCategory === 'publish' || mode === 'publish_confirm' || mode === 'handle_publish_error');
   const [showContext, setShowContext] = useState(false);
   const [draftTitle, setDraftTitle] = useState(task.draftTitle || task.noteTitle || '');
   const [draftBody, setDraftBody] = useState(task.draftBody || '');
@@ -102,15 +127,6 @@ export function OperatorTaskWorkbench({
     (!isMaterialFollowUp || item.anomalyType === 'material_reshoot_overdue') &&
     (mode === 'progress' ? !item.isMeWaiting : item.isMeWaiting)
   );
-  const projectGroups = useMemo(() => {
-    const groups = new Map<string, { projectId: string; projectName: string; tasks: ExecutionTask[] }>();
-    queue.forEach(item => {
-      const current = groups.get(item.projectId);
-      if (current) current.tasks.push(item);
-      else groups.set(item.projectId, { projectId: item.projectId, projectName: item.projectName, tasks: [item] });
-    });
-    return Array.from(groups.values());
-  }, [queue]);
   const isComplete = task.status === '已完成';
 
   const showFeedback = (message: string) => {
@@ -140,6 +156,14 @@ export function OperatorTaskWorkbench({
 
   const resolveAnomaly = () => {
     const isPublishAnomaly = task.anomalyType === 'publish_overdue' || task.anomalyType === 'executor_account_unavailable';
+    if (resolution === '补录已发布链接') {
+      if (!publishUrl.trim()) {
+        showFeedback('请先填写小红书笔记链接');
+        return;
+      }
+      completeTask({ returnedData: { ...(task.returnedData || {}), publishUrl }, isAnomaly: false, isBlocked: false }, '已补录发布链接并进入数据回传');
+      return;
+    }
     if (!isPublishAnomaly) {
       completeTask({ anomalyReason: `${resolution}${resolutionNote ? `：${resolutionNote}` : ''}`, isAnomaly: false, isBlocked: false }, '已确认异常处理方案');
       return;
@@ -150,8 +174,8 @@ export function OperatorTaskWorkbench({
     const nextPublisher = changedPublisher ? replacementPublisher : task.targetAccount;
     const actionMessage = changedPublisher
       ? `已更换发布人：${nextPublisher}`
-      : resolution === '催促当前发布人'
-      ? `已催促当前发布人：${task.targetAccount}`
+      : resolution === '再次通知发布人'
+      ? `已再次通知发布人：${task.targetAccount}`
       : resolution;
 
     onUpdateTask({
@@ -380,10 +404,16 @@ export function OperatorTaskWorkbench({
           </select>
         </label>
       )}
+      {resolution === '补录已发布链接' ? (
+        <label className="block space-y-1.5 rounded-xl border border-border-default bg-surface-1 p-3">
+          <span className="text-[11.5px] font-medium text-text-secondary">已发布的小红书笔记链接</span>
+          <input value={publishUrl} onChange={event => setPublishUrl(event.target.value)} placeholder="粘贴链接后完成回传" className="w-full rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[12.5px] outline-none focus:border-border-strong" />
+        </label>
+      ) : null}
       <textarea value={resolutionNote} onChange={event => setResolutionNote(event.target.value)} rows={4} placeholder="补充处理说明（选填）" className="w-full rounded-xl border border-border-default bg-surface-1 px-3.5 py-3 text-[12.5px] outline-none" />
       <PrimaryAction
-        label={task.anomalyType === 'publish_overdue' ? '确认并恢复发布任务' : '确认处理方案'}
-        hint="只处理当前异常；如需改变后续运营逻辑，应返回方案中心进行专家定制。"
+        label={resolution === '补录已发布链接' ? '确认链接并完成回传' : task.anomalyType === 'publish_overdue' ? '确认并继续人工发布' : '确认处理方案'}
+        hint="操作会写入任务进程；后续仍由执行人手动完成小红书发布。"
         onClick={resolveAnomaly}
       />
     </div>
@@ -441,27 +471,24 @@ export function OperatorTaskWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="hidden w-[300px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 lg:block">
+        <aside className="hidden w-[270px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 lg:block">
           <div className="border-b border-border-default px-4 py-3 text-[11px] font-medium text-text-secondary">{mode === 'progress' ? '执行进展' : isMaterialFollowUp ? '待跟进素材任务' : '待处理发布任务'} <span className="ml-1 text-text-tertiary">{queue.length}</span></div>
-          <div className="space-y-3 p-2">
-            {projectGroups.map(group => (
-              <section key={group.projectId}>
-                <div className="flex items-center justify-between px-2 py-1 text-[10px] text-text-tertiary"><span className="truncate">{group.projectName}</span><span>{group.tasks.length}</span></div>
-                <div className="space-y-1">
-                  {group.tasks.map(item => (
-                    <button key={item.id} onClick={() => onSelectTask(item)} className={`w-full rounded-xl border p-3 text-left ${item.id === task.id ? 'border-neutral-900 bg-surface-subtle' : 'border-transparent hover:bg-hover-bg'}`}>
-                      <div className="flex items-center gap-1.5 text-[9.5px] text-text-tertiary">
-                        <span className="rounded-md bg-surface-1 px-1.5 py-0.5">{isMaterialFollowUp ? '素材补拍' : item.publishExecutorType === '内容包KOC发布' ? '笔记包' : '单篇笔记'}</span>
-                        {item.isBlocked ? <span className="text-amber-700">待介入</span> : null}
-                      </div>
-                      <div className="mt-1.5 line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{item.noteTitle}</div>
-                      <div className="mt-1 truncate text-[10px] text-text-secondary">{item.operatorActionSummary}</div>
-                      <div className="mt-2 flex items-center justify-between gap-2 text-[9.5px] text-text-tertiary"><span className="truncate">{item.targetAccount}</span><span className="shrink-0">{formatChineseDate(item.deadline, true) || item.deadline || '待排期'}</span></div>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            ))}
+          <div className="space-y-1 p-2">
+            {queue.map(item => {
+              const selected = item.id === task.id;
+              return (
+                <button key={item.id} onClick={() => onSelectTask(item)} className={`w-full rounded-lg p-2.5 text-left ${selected ? 'bg-surface-selected text-text-main' : 'text-text-secondary hover:bg-hover-bg'}`}>
+                  <div className="flex items-start gap-2">
+                    {selected ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" aria-label="当前选中" /> : <span className="w-2 shrink-0" />}
+                    <div className="line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{item.noteTitle}</div>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-2 pl-4 text-[9.5px] text-text-tertiary">
+                    <span className="truncate">{item.targetAccount}</span>
+                    <span className="shrink-0">{formatChineseDate(item.deadline, true) || item.deadline || '待排期'}</span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </aside>
 
@@ -481,6 +508,7 @@ export function OperatorTaskWorkbench({
                   </div>
                 </div>
                 <div className="mt-3 flex items-start gap-2 border-t border-border-default pt-3 text-[11.5px] text-text-tertiary"><ArrowRight size={13} className="mt-0.5 shrink-0" /><span>下一步：{task.nextStepAfterAction}</span></div>
+                {isPublishWorkbench ? <ManualPublishFlow task={task} /> : null}
               </section>
             ) : (
               <section className="rounded-xl border border-border-default bg-surface-1 px-4 py-3">
@@ -491,6 +519,7 @@ export function OperatorTaskWorkbench({
                   </div>
                   <span className={`rounded-md px-2 py-1 text-[10px] font-medium ${task.isBlocked ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-surface-subtle text-text-secondary border border-border-default'}`}>{task.isBlocked ? '待介入' : '待处理'}</span>
                 </div>
+                {isPublishWorkbench ? <ManualPublishFlow task={task} /> : null}
               </section>
             )}
             {renderWorkbench()}

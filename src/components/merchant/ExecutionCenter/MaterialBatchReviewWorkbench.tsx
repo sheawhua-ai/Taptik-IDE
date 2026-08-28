@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Check,
   CheckCircle2,
@@ -112,21 +112,8 @@ export function MaterialBatchReviewWorkbench({
   onAssetsAccepted,
   workspaceNavigation
 }: MaterialBatchReviewWorkbenchProps) {
-  const projectGroups = useMemo(() => {
-    const groups = new Map<string, ExecutionTask[]>();
-    tasks.forEach(task => groups.set(task.projectId, [...(groups.get(task.projectId) ?? []), task]));
-    return Array.from(groups.entries()).map(([projectId, projectTasks]) => ({
-      projectId,
-      projectName: projectTasks[0]?.projectName ?? '未命名项目',
-      tasks: projectTasks,
-      pendingAssets: projectTasks.reduce((sum, task) => sum + (task.materialSubItems ?? []).filter(item => item.manualStatus === '待验收').length, 0)
-    }));
-  }, [tasks]);
-
-  const [selectedProjectId, setSelectedProjectId] = useState(() => projectGroups[0]?.projectId ?? '');
-  const activeProject = projectGroups.find(group => group.projectId === selectedProjectId) ?? projectGroups[0];
-  const [selectedTaskId, setSelectedTaskId] = useState(() => activeProject?.tasks[0]?.id ?? '');
-  const activeTask = activeProject?.tasks.find(task => task.id === selectedTaskId) ?? activeProject?.tasks[0];
+  const [selectedTaskId, setSelectedTaskId] = useState(() => tasks[0]?.id ?? '');
+  const activeTask = tasks.find(task => task.id === selectedTaskId) ?? tasks[0];
 
   const allReviewItems = useMemo<ReviewItem[]>(() => tasks.flatMap(task => (
     (task.materialSubItems ?? []).map(subItem => ({ key: makeKey(task.id, subItem.id), task, subItem }))
@@ -139,9 +126,20 @@ export function MaterialBatchReviewWorkbench({
   const [sharedReason, setSharedReason] = useState(RESHOOT_REASONS[0]);
   const [replacementExecutor, setReplacementExecutor] = useState('保持原执行人');
   const [showContext, setShowContext] = useState(false);
+  const [showReshootPanel, setShowReshootPanel] = useState(false);
   const [showBatchOptimize, setShowBatchOptimize] = useState(false);
   const [optimizeAction, setOptimizeAction] = useState(OPTIMIZE_ACTIONS[0]);
   const [notice, setNotice] = useState<string | null>(null);
+  const taskIds = useMemo(() => tasks.map(task => task.id).join('|'), [tasks]);
+
+  useEffect(() => {
+    setSelectedTaskId(current => tasks.some(task => task.id === current) ? current : tasks[0]?.id ?? '');
+    setSelectedKeys(new Set());
+    setShowContext(false);
+    setShowReshootPanel(false);
+    setShowBatchOptimize(false);
+    setDecisions(current => Object.fromEntries(allReviewItems.map(item => [item.key, current[item.key] ?? getInitialDecision(item.subItem)])));
+  }, [allReviewItems, taskIds, tasks]);
 
   const counts = useMemo(() => reviewItems.reduce((result, item) => {
     const decision = decisions[item.key]?.decision ?? '待判断';
@@ -185,6 +183,20 @@ export function MaterialBatchReviewWorkbench({
       return next;
     });
     setSelectedKeys(new Set());
+  };
+
+  const openReshootPanel = () => {
+    if (selectedKeys.size === 0) {
+      setNotice('请先选择需要退回的素材。');
+      return;
+    }
+    setShowBatchOptimize(false);
+    setShowReshootPanel(true);
+  };
+
+  const confirmReshoot = () => {
+    applyToSelection('需补拍');
+    setShowReshootPanel(false);
   };
 
   const selectAiPassed = () => {
@@ -250,7 +262,7 @@ export function MaterialBatchReviewWorkbench({
       : `${counts.accepted} 张素材已通过并进入素材中心。`);
   };
 
-  if (!activeProject || !activeTask) {
+  if (!activeTask) {
     return (
       <div className="flex h-full min-h-0 flex-col bg-page-bg">
         <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5">{workspaceNavigation}</div>
@@ -266,7 +278,7 @@ export function MaterialBatchReviewWorkbench({
       <header className="flex shrink-0 items-center justify-between border-b border-border-default bg-surface-1 px-4 py-2.5">
         {workspaceNavigation}
         <div className="flex items-center gap-2 text-[10px] text-text-tertiary">
-          <span>{projectGroups.length} 个项目</span><span>·</span><span>{tasks.length} 项待审核</span>
+          <span>{tasks.length} 项待审核</span>
           {followUpTasks.length > 0 ? (
             <button type="button" onClick={() => onOpenFollowUp?.(followUpTasks[0])} className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 font-medium text-amber-800">待跟进 {followUpTasks.length}</button>
           ) : null}
@@ -274,39 +286,13 @@ export function MaterialBatchReviewWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="w-[220px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 p-2.5">
-          <div className="px-2 pb-2 text-[10px] font-medium text-text-tertiary">项目</div>
-          <div className="space-y-1">
-            {projectGroups.map(group => {
-              const selected = group.projectId === activeProject.projectId;
-              return (
-                <button
-                  key={group.projectId}
-                  type="button"
-                  onClick={() => {
-                    setSelectedProjectId(group.projectId);
-                    setSelectedTaskId(group.tasks[0]?.id ?? '');
-                    setSelectedKeys(new Set());
-                  }}
-                  className={`w-full rounded-lg p-3 text-left ${selected ? 'bg-surface-subtle ring-1 ring-border-default' : 'hover:bg-hover-bg'}`}
-                >
-                  <div className="line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{group.projectName}</div>
-                  <div className="mt-1.5 flex items-center justify-between text-[9.5px] text-text-tertiary">
-                    <span>{group.tasks.length} 个任务</span><span className={group.pendingAssets ? 'text-amber-700' : ''}>待审 {group.pendingAssets}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </aside>
-
-        <aside className="w-[290px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 p-2.5">
+        <aside className="w-[270px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 p-2.5">
           <div className="flex items-center justify-between px-2 pb-2">
             <span className="text-[10px] font-medium text-text-tertiary">素材任务</span>
-            <span className="text-[9.5px] text-text-tertiary">{activeProject.tasks.length} 项</span>
+            <span className="text-[9.5px] text-text-tertiary">{tasks.length} 项</span>
           </div>
           <div className="space-y-1.5">
-            {activeProject.tasks.map(task => {
+            {tasks.map(task => {
               const selected = task.id === activeTask.id;
               const requiredCount = task.materialSubItems?.length ?? 0;
               const submittedCount = getSubmittedCount(task);
@@ -318,16 +304,16 @@ export function MaterialBatchReviewWorkbench({
                     setSelectedTaskId(task.id);
                     setSelectedKeys(new Set());
                     setShowContext(false);
+                    setShowReshootPanel(false);
+                    setShowBatchOptimize(false);
                   }}
-                  className={`w-full rounded-xl border p-3 text-left ${selected ? 'border-neutral-900 bg-surface-subtle' : 'border-transparent hover:bg-hover-bg'}`}
+                  className={`w-full rounded-lg p-2.5 text-left ${selected ? 'bg-surface-selected text-text-main' : 'text-text-secondary hover:bg-hover-bg'}`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-surface-1 px-1.5 py-0.5 text-[9px] text-text-tertiary">{task.noteId ? '笔记素材' : '项目素材'}</span>
-                    <span className="ml-auto text-[9px] text-amber-700">待审核</span>
+                  <div className="flex items-start gap-2">
+                    {selected ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" aria-label="当前选中" /> : <span className="w-2 shrink-0" />}
+                    <div className="line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{task.title}</div>
                   </div>
-                  <div className="mt-1.5 line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{task.title}</div>
-                  {task.noteId ? <div className="mt-1 truncate text-[9.5px] text-text-tertiary">{task.noteTitle}</div> : null}
-                  <div className="mt-2 flex items-center justify-between text-[9.5px] text-text-tertiary">
+                  <div className="mt-2 flex items-center justify-between pl-4 text-[9.5px] text-text-tertiary">
                     <span className="flex min-w-0 items-center gap-1 truncate"><UserRound size={10} />{task.targetAccount}</span>
                     <span className="shrink-0">已交 {submittedCount}/{requiredCount}</span>
                   </div>
@@ -349,6 +335,14 @@ export function MaterialBatchReviewWorkbench({
                   <span>{activeTask.deadline || '未设置截止'}</span>
                 </div>
                 <h2 className="mt-1 truncate text-[14px] font-semibold text-text-main">{activeTask.title}</h2>
+                <div className="mt-2 flex items-center gap-1.5 text-[9.5px] text-text-tertiary" aria-label="素材任务流程">
+                  {['已下发', '已领取', '已回传', '待审核'].map((step, index) => (
+                    <React.Fragment key={step}>
+                      <span className={index === 3 ? 'font-semibold text-text-main' : 'text-emerald-700'}>{step}</span>
+                      {index < 3 ? <span className="h-px w-5 bg-border-strong" /> : null}
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
               <button type="button" onClick={() => setShowContext(current => !current)} className={`flex shrink-0 items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[10px] ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
                 任务详情 <ChevronDown size={11} className={showContext ? 'rotate-180' : ''} />
@@ -364,21 +358,32 @@ export function MaterialBatchReviewWorkbench({
 
           <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2">
             <div className="flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-[10px] text-text-tertiary">已选 {selectedKeys.size}</span>
+              <button type="button" onClick={() => setSelectedKeys(new Set(reviewItems.map(item => item.key)))} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">全选</button>
               <button type="button" onClick={selectAiPassed} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">选中预检通过</button>
               <button type="button" onClick={() => applyToSelection('已通过')} className="rounded-lg bg-neutral-950 px-2.5 py-1.5 text-[10px] font-medium text-white">批量通过</button>
-              <button type="button" onClick={() => applyToSelection('需补拍')} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">批量打回</button>
-              <button type="button" onClick={() => setShowBatchOptimize(current => !current)} className="flex items-center gap-1 rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg"><Sparkles size={11} />批量修改</button>
-              <select value={sharedReason} onChange={event => setSharedReason(event.target.value)} className="ml-auto rounded-lg border border-border-default bg-surface-1 px-2.5 py-1.5 text-[10px] text-text-secondary">
-                {RESHOOT_REASONS.map(reason => <option key={reason}>{reason}</option>)}
-              </select>
+              <button type="button" onClick={openReshootPanel} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">退回重拍</button>
+              <button type="button" onClick={() => { setShowBatchOptimize(current => !current); setShowReshootPanel(false); }} className="flex items-center gap-1 rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg"><Sparkles size={11} />批量优化</button>
             </div>
+            {showReshootPanel ? (
+              <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg bg-surface-subtle p-2">
+                <RotateCcw size={13} className="text-text-tertiary" />
+                <select value={sharedReason} onChange={event => setSharedReason(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[10px] text-text-secondary">
+                  {RESHOOT_REASONS.map(reason => <option key={reason}>{reason}</option>)}
+                </select>
+                <select value={replacementExecutor} onChange={event => setReplacementExecutor(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[10px] text-text-secondary">
+                  <option>保持原执行人</option><option>改派备用员工</option><option>改派备用KOC</option>
+                </select>
+                <button type="button" onClick={confirmReshoot} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[10px] text-white">确认退回要求</button>
+              </div>
+            ) : null}
             {showBatchOptimize ? (
               <div className="mt-2 flex items-center gap-2 rounded-lg bg-surface-subtle p-2">
                 <Layers3 size={13} className="text-text-tertiary" />
                 <select value={optimizeAction} onChange={event => setOptimizeAction(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[10px] text-text-secondary">
                   {OPTIMIZE_ACTIONS.map(action => <option key={action}>{action}</option>)}
                 </select>
-                <button type="button" onClick={submitBatchOptimize} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[10px] text-white">开始处理</button>
+                <button type="button" onClick={submitBatchOptimize} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[10px] text-white">加入处理</button>
               </div>
             ) : null}
           </div>
@@ -442,11 +447,7 @@ export function MaterialBatchReviewWorkbench({
                 <span className="flex items-center gap-1 text-rose-600"><RotateCcw size={12} />打回 {counts.reshoot}</span>
                 <span className="flex items-center gap-1 text-text-tertiary"><Clock3 size={12} />未判断 {counts.pending}</span>
               </div>
-              {counts.reshoot > 0 ? (
-                <select value={replacementExecutor} onChange={event => setReplacementExecutor(event.target.value)} className="ml-auto rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[10px] text-text-secondary">
-                  <option>保持原执行人</option><option>改派备用员工</option><option>改派备用KOC</option>
-                </select>
-              ) : <span className="ml-auto text-[9.5px] text-text-tertiary">审核结果提交后写回原任务</span>}
+              <span className="ml-auto text-[9.5px] text-text-tertiary">通过的素材入库；退回项沿原任务继续执行</span>
               <button type="button" onClick={submitReview} disabled={requiredPending} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[10.5px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />提交审核</button>
             </div>
           </footer>

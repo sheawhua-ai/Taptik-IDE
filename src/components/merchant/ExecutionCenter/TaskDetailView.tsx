@@ -30,31 +30,6 @@ interface TaskDetailViewProps {
   initialAction?: ExecutionAction;
 }
 
-type NoteQueueTab = 'all' | 'content' | 'material';
-
-const NOTE_QUEUE_TABS: { id: NoteQueueTab; label: string }[] = [
-  { id: 'all', label: '全部' },
-  { id: 'content', label: '内容修改' },
-  { id: 'material', label: '选图/换图' }
-];
-
-function getNoteQueueTab(task: ExecutionTask): Exclude<NoteQueueTab, 'all'> {
-  const materialAction = task.actionType === 'replace_material' || task.actionType === 'create_material_task';
-  const materialTask = task.materialType === 'matched_library_asset';
-  const materialCopy = /选图|换图|配图|素材库匹配|创建素材/.test(`${task.title}${task.operatorActionSummary}`);
-  return materialAction || materialTask || materialCopy ? 'material' : 'content';
-}
-
-function getNoteIssueLabels(task: ExecutionTask): string[] {
-  const labels: string[] = [];
-  if (getNoteQueueTab(task) === 'material') labels.push('素材');
-  if (task.complianceRisk || task.anomalyType === 'content_compliance_risk') labels.push('合规');
-  if (task.evidenceNeeded || /依据|来源|事实/.test(`${task.title}${task.reasonForIntervention}`)) labels.push('事实');
-  if (/口吻|人设/.test(`${task.title}${task.reasonForIntervention}`)) labels.push('口吻');
-  if (labels.length === 0) labels.push('内容');
-  return labels.slice(0, 2);
-}
-
 function getNoteQueueKey(task: ExecutionTask) {
   return task.noteId || task.id;
 }
@@ -203,21 +178,9 @@ export function TaskDetailView({
 
   // Toast feedback
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
-  const [noteQueueTab, setNoteQueueTab] = useState<NoteQueueTab>('all');
-
-  const noteQueueCounts = useMemo(() => {
-    const all = new Set(categoryQueue.map(getNoteQueueKey));
-    const content = new Set(categoryQueue.filter(item => getNoteQueueTab(item) === 'content').map(getNoteQueueKey));
-    const material = new Set(categoryQueue.filter(item => getNoteQueueTab(item) === 'material').map(getNoteQueueKey));
-    return { all: all.size, content: content.size, material: material.size };
-  }, [categoryQueue]);
-
   const visibleNoteQueue = useMemo(() => {
-    const candidates = noteQueueTab === 'all'
-      ? categoryQueue
-      : categoryQueue.filter(item => getNoteQueueTab(item) === noteQueueTab);
     const groups = new Map<string, ExecutionTask[]>();
-    candidates.forEach(item => {
+    categoryQueue.forEach(item => {
       const key = getNoteQueueKey(item);
       groups.set(key, [...(groups.get(key) || []), item]);
     });
@@ -228,11 +191,10 @@ export function TaskDetailView({
       const filteredItem = items[0];
       return {
         task: activeItem || contentItem || filteredItem,
-        displayTask: noteQueueTab === 'all' ? (contentItem || filteredItem) : filteredItem,
-        allTasks: sameNoteTasks
+        displayTask: contentItem || filteredItem
       };
     });
-  }, [categoryQueue, noteQueueTab, task.id]);
+  }, [categoryQueue, task.id]);
 
   useEffect(() => {
     // 同一类操作共用一个工作台；切换笔记时必须以新任务的数据重置，
@@ -761,37 +723,17 @@ export function TaskDetailView({
       <div className="flex-1 flex min-h-0 overflow-hidden">
         
         {/* Column 1: Left Queue Sidebar (240px) */}
-        <div className="w-[286px] border-r border-border-default bg-surface flex flex-col shrink-0">
+        <div className="w-[270px] border-r border-border-default bg-surface flex flex-col shrink-0">
           <div className="border-b border-border-subtle bg-surface px-3 py-3">
-            <div className="mb-2.5 flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <span className="text-[12px] font-semibold text-text-primary">待处理笔记</span>
               <span className="text-[10.5px] text-text-tertiary">{visibleNoteQueue.length} 项</span>
             </div>
-            <nav className="grid grid-cols-3 gap-1 rounded-lg bg-surface-subtle p-1" aria-label="笔记处理类型">
-              {NOTE_QUEUE_TABS.map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    setNoteQueueTab(tab.id);
-                    setSelectionTarget(tab.id === 'material' ? 'material_recommendation' : null);
-                  }}
-                  className={`rounded-md px-1.5 py-1.5 text-[10.5px] font-medium transition-colors ${
-                    noteQueueTab === tab.id
-                      ? 'bg-neutral-950 text-white shadow-sm'
-                      : 'text-text-secondary hover:bg-surface hover:text-text-primary'
-                  }`}
-                >
-                  {tab.label}<span className="ml-1 opacity-65">{noteQueueCounts[tab.id]}</span>
-                </button>
-              ))}
-            </nav>
           </div>
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {visibleNoteQueue.map(({ task: queueTask, displayTask, allTasks }) => {
+            {visibleNoteQueue.map(({ task: queueTask, displayTask }) => {
               const qTask = displayTask;
               const isCurrent = getNoteQueueKey(qTask) === getNoteQueueKey(task);
-              const issueLabels = Array.from(new Set(allTasks.flatMap(getNoteIssueLabels))).slice(0, 3);
               return (
                 <button
                   key={getNoteQueueKey(qTask)}
@@ -807,21 +749,15 @@ export function TaskDetailView({
                     {isCurrent ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" aria-label="当前选中" /> : <span className="w-2 shrink-0" />}
                     <div className="line-clamp-2 pr-1 text-[12px] font-semibold leading-[18px]">{qTask.noteTitle}</div>
                   </div>
-                  <div className="mt-1 line-clamp-1 text-[10.5px] font-normal text-text-secondary">{qTask.operatorActionSummary}</div>
-                  <div className="mt-2 flex flex-wrap items-center gap-1">
-                    {issueLabels.map(label => <span key={label} className="rounded border border-border-subtle bg-surface px-1.5 py-0.5 text-[9px] font-normal text-text-tertiary">{label}</span>)}
-                    {qTask.isBlocked ? <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[9px] font-medium text-amber-700">阻断</span> : null}
-                    {allTasks.length > 1 ? <span className="ml-auto text-[9px] font-medium text-text-secondary">{allTasks.length}项待处理</span> : null}
-                  </div>
-                  <div className="mt-2 flex items-center justify-between gap-2 text-[9.5px] font-normal text-text-tertiary">
-                    <span className="truncate">{qTask.projectName} · {qTask.targetAccount}</span>
+                  <div className="mt-2 flex items-center justify-between gap-2 pl-4 text-[9.5px] font-normal text-text-tertiary">
+                    <span className="truncate">{qTask.targetAccount}</span>
                     <span className={`shrink-0 ${qTask.deadlineLabel === '已逾期' ? 'font-medium text-rose-600' : ''}`}>{qTask.deadline || '未设置'}</span>
                   </div>
                 </button>
               );
             })}
             {visibleNoteQueue.length === 0 ? (
-              <div className="px-4 py-10 text-center text-[10.5px] leading-5 text-text-tertiary">当前类型没有待处理笔记</div>
+              <div className="px-4 py-10 text-center text-[10.5px] leading-5 text-text-tertiary">当前项目没有待处理笔记</div>
             ) : null}
           </div>
         </div>

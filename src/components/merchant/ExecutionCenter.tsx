@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Activity, CheckCircle2 } from 'lucide-react';
+import { Activity, Check, CheckCircle2, FolderKanban, Search, X } from 'lucide-react';
 import { useProjectStore } from '../../context/ProjectContext';
 import type { ExecutionAction } from '../../data/unifiedStore';
 import type { Note, Project } from '../../data/projectStore';
@@ -15,6 +15,49 @@ type DomainTab = 'content' | 'material' | 'publish';
 
 interface ExecutionCenterProps {
   onAssetsAccepted?: (assets: MaterialAsset[]) => void;
+}
+
+interface ProjectScope {
+  id: string;
+  name: string;
+  taskCount: number;
+}
+
+function ProjectScopePicker({ projects, value, onChange }: { projects: ProjectScope[]; value: string; onChange: (projectId: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const current = projects.find(project => project.id === value);
+  const visibleProjects = projects.filter(project => project.name.toLowerCase().includes(query.trim().toLowerCase()));
+
+  return (
+    <div className="relative ml-1">
+      <button type="button" onClick={() => setOpen(currentOpen => !currentOpen)} className={`flex max-w-[220px] items-center gap-1.5 rounded-md border px-2.5 py-1 text-[9.5px] font-medium ${open || value !== 'all' ? 'border-neutral-900 bg-surface-1 text-text-main' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
+        <FolderKanban size={11} /><span className="truncate">{current?.name || '全部项目'}</span>
+      </button>
+      {open ? (
+        <>
+          <button type="button" aria-label="关闭项目筛选" onClick={() => setOpen(false)} className="fixed inset-0 z-[270] cursor-default" />
+          <div className="absolute left-1/2 top-full z-[280] mt-2 w-[340px] -translate-x-1/2 rounded-xl border border-border-default bg-surface-1 p-2 shadow-dialog">
+            <div className="flex items-center gap-2 border-b border-border-default px-2 pb-2">
+              <Search size={13} className="text-text-tertiary" />
+              <input autoFocus value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索项目" className="min-w-0 flex-1 bg-transparent py-1 text-[11px] outline-none" />
+              {query ? <button type="button" onClick={() => setQuery('')} className="text-text-tertiary"><X size={12} /></button> : null}
+            </div>
+            <div className="mt-1 max-h-64 overflow-y-auto">
+              {[{ id: 'all', name: '全部项目', taskCount: projects.reduce((sum, project) => sum + project.taskCount, 0) }, ...visibleProjects].map(project => (
+                <button key={project.id} type="button" onClick={() => { onChange(project.id); setOpen(false); setQuery(''); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left hover:bg-hover-bg">
+                  <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-text-main">{project.name}</span>
+                  <span className="text-[9.5px] text-text-tertiary">{project.taskCount} 项</span>
+                  {value === project.id ? <Check size={12} className="text-text-main" /> : <span className="w-3" />}
+                </button>
+              ))}
+              {visibleProjects.length === 0 && query ? <div className="px-3 py-8 text-center text-[10px] text-text-tertiary">没有匹配项目</div> : null}
+            </div>
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
 }
 
 const domainLabel: Record<DomainTab, string> = {
@@ -123,14 +166,25 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [activeDirectAction, setActiveDirectAction] = useState<ExecutionAction | undefined>();
   const [progressOpen, setProgressOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState('all');
 
-  const actionTasks = useMemo(() => tasks.filter(belongsToAction), [tasks]);
+  const projects = useMemo<ProjectScope[]>(() => {
+    const grouped = new Map<string, ProjectScope>();
+    tasks.forEach(task => {
+      const current = grouped.get(task.projectId);
+      if (current) current.taskCount += 1;
+      else grouped.set(task.projectId, { id: task.projectId, name: task.projectName, taskCount: 1 });
+    });
+    return Array.from(grouped.values());
+  }, [tasks]);
+  const scopedTasks = useMemo(() => selectedProjectId === 'all' ? tasks : tasks.filter(task => task.projectId === selectedProjectId), [selectedProjectId, tasks]);
+  const actionTasks = useMemo(() => scopedTasks.filter(belongsToAction), [scopedTasks]);
   const counts = useMemo(() => ({
     content: new Set(actionTasks.filter(task => domainOf(task) === 'content').map(task => task.noteId || task.id)).size,
     material: actionTasks.filter(task => domainOf(task) === 'material').length,
     publish: actionTasks.filter(task => domainOf(task) === 'publish').length,
-    progress: tasks.filter(task => task.status !== '已完成' && task.status !== '已取消').length
-  }), [actionTasks, tasks]);
+    progress: scopedTasks.filter(task => task.status !== '已完成' && task.status !== '已取消').length
+  }), [actionTasks, scopedTasks]);
   const domainTasks = useMemo(() => actionTasks.filter(task => domainOf(task) === domain), [actionTasks, domain]);
   const presentationTasks = useMemo(() => {
     if (domain !== 'content') return domainTasks;
@@ -159,6 +213,7 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
 
   const openActionTask = (task: ExecutionTask, action?: ExecutionAction) => {
     const nextDomain = domainOf(task);
+    if (selectedProjectId !== 'all' && selectedProjectId !== task.projectId) setSelectedProjectId(task.projectId);
     setDomain(nextDomain);
     setSelectedTaskId(task.id);
     setActiveDirectAction(action);
@@ -285,6 +340,16 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
       >
         <Activity size={11} />任务进展 {counts.progress}
       </button>
+      <ProjectScopePicker
+        projects={projects}
+        value={selectedProjectId}
+        onChange={projectId => {
+          setSelectedProjectId(projectId);
+          setSelectedTaskId(null);
+          setActiveTaskId(null);
+          setActiveDirectAction(undefined);
+        }}
+      />
     </div>
   );
 
@@ -353,7 +418,7 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
       {workspace}
       <TaskProgressDrawer
         open={progressOpen}
-        tasks={tasks}
+        tasks={scopedTasks}
         onClose={() => setProgressOpen(false)}
         onGoToTask={task => {
           setProgressOpen(false);
