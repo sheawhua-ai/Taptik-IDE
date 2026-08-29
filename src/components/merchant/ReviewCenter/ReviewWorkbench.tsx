@@ -124,7 +124,7 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
   const showCrossPlanComparison = Boolean(currentTask && currentTask.mode === "multi" && (currentTask.includeCrossPlanComparison ?? true));
 
   if (!currentTask || !meta || !dataSummary) return (
-    <div className="relative flex h-full flex-1 overflow-hidden bg-surface-base">
+    <div className="workspace-shell review-workspace relative flex h-full flex-1 overflow-hidden bg-surface-base">
       <ReviewTaskList tasks={tasks} selectedTaskId="" onSelectTask={setSelectedTaskId} onOpenCreateModal={() => setIsCreateModalOpen(true)} onRequestDelete={setDeleteTaskId} onCloseSidebar={() => setIsSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} scopeFilter={scopeFilter} setScopeFilter={setScopeFilter} />
       <div className="flex flex-1 flex-col items-center justify-center bg-surface-subtle p-8 text-center"><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-1 text-text-tertiary shadow-sm"><Sparkles size={20} /></div><h2 className="mt-4 text-[15px] font-semibold text-text-main">还没有复盘记录</h2><p className="mt-1 text-[13px] text-text-tertiary">创建复盘后，最新报告会显示在这里。</p><button onClick={() => setIsCreateModalOpen(true)} className="mt-4 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-medium text-white">新建复盘</button></div>
       <CreateReviewTaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onCreateTask={(newTask) => { setTasks([newTask]); setSelectedTaskId(newTask.id); setIsCreateModalOpen(false); }} />
