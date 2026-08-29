@@ -115,7 +115,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
           <button
             type="button"
             onClick={() => alert('新建素材任务（跳转或打开表单）')}
-            className="px-3.5 py-2 bg-surface-1 hover:bg-page-bg text-text-main border border-border-default font-bold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
+            className="px-3.5 py-2 bg-surface-1 hover:bg-page-bg text-text-main border border-border-default font-bold text-[13px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
           >
             <Plus size={15} />
             <span>创建素材任务</span>
@@ -124,7 +124,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
           <button
             type="button"
             onClick={onOpenUploadModal}
-            className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
+            className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[13px] rounded-xl flex items-center gap-1.5 shadow-2xs transition-all active:scale-[0.98]"
           >
             <Upload size={15} />
             <span>上传素材</span>
@@ -195,7 +195,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
               }`}
             >
               <span>{getStatusLabel(status)}</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-neutral-200 text-text-main text-[11px] font-black">
+              <span className="px-1.5 py-0.5 rounded-full bg-neutral-200 text-text-main text-[13px] font-black">
                 {statusCounts[status as keyof typeof statusCounts] || 0}
               </span>
             </button>
@@ -203,7 +203,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <div className="text-[12.5px] font-bold text-text-tertiary hidden lg:block max-w-[200px] truncate" title={getFilterNaturalSummary()}>
+          <div className="text-[13px] font-bold text-text-tertiary hidden lg:block max-w-[200px] truncate" title={getFilterNaturalSummary()}>
             {getFilterNaturalSummary()}
           </div>
 
@@ -231,13 +231,13 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   <button
                     type="button"
                     onClick={resetFilters}
-                    className="text-[11.5px] font-bold text-brand-logo hover:underline"
+                    className="text-[13px] font-bold text-brand-logo hover:underline"
                   >
                     重置筛选
                   </button>
                 </div>
 
-                <div className="space-y-3 text-[12.5px]">
+                <div className="space-y-3 text-[13px]">
                   <div>
                     <label className="text-text-tertiary font-extrabold block mb-1">来源项目</label>
                     <select
@@ -300,7 +300,7 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowFilterPopover(false)}
-                    className="px-4 py-2 bg-btn-main text-white font-extrabold text-[12.5px] rounded-xl shadow-2xs"
+                    className="px-4 py-2 bg-btn-main text-white font-extrabold text-[13px] rounded-xl shadow-2xs"
                   >
                     确认筛选
                   </button>
@@ -312,14 +312,14 @@ export const MaterialHeader: React.FC<MaterialHeaderProps> = ({
       </div>
 
       {hasActiveFilters && (
-        <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-hover-bg/80 border border-border-default/80 text-[12.5px]">
+        <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-hover-bg/80 border border-border-default/80 text-[13px]">
           <span className="font-extrabold text-text-main">
             {getFilterNaturalSummary()}
           </span>
           <button
             type="button"
             onClick={resetFilters}
-            className="text-[12px] font-bold text-text-tertiary hover:text-text-main flex items-center gap-1"
+            className="text-[13px] font-bold text-text-tertiary hover:text-text-main flex items-center gap-1"
           >
             <X size={14} /> 清除全部筛选
           </button>

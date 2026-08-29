@@ -71,12 +71,12 @@ export const ShootingTaskProposalModal: React.FC<ShootingTaskProposalModalProps>
         <div className="p-6 overflow-y-auto space-y-5 text-[13px]">
           
           {/* Traceable Context Banner */}
-          <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg text-[12px] space-y-1">
+          <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg text-[13px] space-y-1">
             <div className="font-semibold text-text-primary flex items-center gap-1.5">
               <Camera size={14} className="text-text-secondary" />
               上下文链路追溯:
             </div>
-            <div className="text-text-secondary flex items-center gap-1 flex-wrap text-[11px]">
+            <div className="text-text-secondary flex items-center gap-1 flex-wrap text-[13px]">
               <span className="px-1.5 py-0.5 bg-surface border rounded">{projectName}</span>
               <ArrowRight size={12} className="text-text-tertiary" />
               <span className="px-1.5 py-0.5 bg-surface border rounded">v2.1体验测评打法</span>
@@ -90,21 +90,21 @@ export const ShootingTaskProposalModal: React.FC<ShootingTaskProposalModalProps>
           {/* Form Fields */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-text-tertiary text-[12px] block mb-1">关联项目与笔记</label>
+              <label className="text-text-tertiary text-[13px] block mb-1">关联项目与笔记</label>
               <input
                 type="text"
                 disabled
                 value={noteTitle}
-                className="w-full px-3 py-2 bg-surface-subtle border border-border-subtle rounded text-text-primary font-medium text-[12px]"
+                className="w-full px-3 py-2 bg-surface-subtle border border-border-subtle rounded text-text-primary font-medium text-[13px]"
               />
             </div>
 
             <div>
-              <label className="text-text-tertiary text-[12px] block mb-1">执行角色与人员</label>
+              <label className="text-text-tertiary text-[13px] block mb-1">执行角色与人员</label>
               <select
                 value={executorName}
                 onChange={(e) => setExecutorName(e.target.value)}
-                className="w-full px-3 py-2 bg-surface border border-border-default rounded text-text-primary text-[12px]"
+                className="w-full px-3 py-2 bg-surface border border-border-default rounded text-text-primary text-[13px]"
               >
                 <option value="张店长 (K11旗舰店)">门店员工 - 张店长 (K11旗舰店)</option>
                 <option value="李店长 (陆家嘴店)">门店员工 - 李店长 (陆家嘴店)</option>
@@ -114,12 +114,12 @@ export const ShootingTaskProposalModal: React.FC<ShootingTaskProposalModalProps>
           </div>
 
           <div>
-            <label className="text-text-tertiary text-[12px] block mb-1">最晚回传截止时间</label>
+            <label className="text-text-tertiary text-[13px] block mb-1">最晚回传截止时间</label>
             <input
               type="text"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="w-full px-3 py-2 bg-surface border border-border-default rounded text-text-primary text-[12px]"
+              className="w-full px-3 py-2 bg-surface border border-border-default rounded text-text-primary text-[13px]"
             />
           </div>
 
@@ -136,12 +136,12 @@ export const ShootingTaskProposalModal: React.FC<ShootingTaskProposalModalProps>
                     <div className="font-semibold text-text-primary text-[13px] flex items-center gap-1.5">
                       <span>{i + 1}. {req.name}</span>
                       {req.isCover && (
-                        <span className="px-1.5 py-0.2 rounded text-[10px] bg-surface-selected text-text-primary font-medium">
+                        <span className="px-1.5 py-0.2 rounded text-[13px] bg-surface-selected text-text-primary font-medium">
                           目标封面
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-text-secondary mt-0.5">{req.desc}</p>
+                    <p className="text-[13px] text-text-secondary mt-0.5">{req.desc}</p>
                   </div>
                 </div>
               ))}
@@ -152,21 +152,21 @@ export const ShootingTaskProposalModal: React.FC<ShootingTaskProposalModalProps>
 
         {/* Footer */}
         <div className="p-4 border-t border-border-default bg-surface-subtle flex items-center justify-between shrink-0">
-          <span className="text-[12px] text-text-tertiary">
+          <span className="text-[13px] text-text-tertiary">
             确认后，该拍摄任务将下发至【执行中心-素材执行】模块
           </span>
 
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-border-default hover:bg-surface-hover rounded text-[12px] font-medium text-text-primary"
+              className="px-4 py-2 border border-border-default hover:bg-surface-hover rounded text-[13px] font-medium text-text-primary"
             >
               取消
             </button>
 
             <button
               onClick={handleConfirmAndDispatch}
-              className="px-5 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded text-[12px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
+              className="px-5 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded text-[13px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
             >
               <CheckCircle2 size={15} />
               确认提案并下发至执行中心

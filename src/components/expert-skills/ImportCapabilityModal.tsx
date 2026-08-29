@@ -100,10 +100,10 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
 
         {/* Source selector */}
         <div className="space-y-2">
-          <label className="text-[12px] font-extrabold text-text-tertiary uppercase tracking-wider block">
+          <label className="text-[13px] font-extrabold text-text-tertiary uppercase tracking-wider block">
             选择导入来源类型：
           </label>
-          <div className="grid grid-cols-4 gap-2 text-[12px] font-extrabold">
+          <div className="grid grid-cols-4 gap-2 text-[13px] font-extrabold">
             <button
               onClick={() => setImportSource('zip')}
               className={`p-2.5 rounded-xl border text-center ${importSource === 'zip' ? 'border-neutral-900 bg-btn-main text-white' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
@@ -134,19 +134,19 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
         {/* Input area */}
         {importSource === 'git' ? (
           <div className="space-y-1">
-            <label className="text-[12px] font-bold text-text-secondary block">仓库地址：</label>
+            <label className="text-[13px] font-bold text-text-secondary block">仓库地址：</label>
             <input
               type="text"
               value={gitUrl}
               onChange={e => setGitUrl(e.target.value)}
-              className="w-full p-3 bg-page-bg border border-border-default rounded-xl text-[12.5px] font-bold"
+              className="w-full p-3 bg-page-bg border border-border-default rounded-xl text-[13px] font-bold"
             />
           </div>
         ) : (
           <div className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center space-y-2 bg-page-bg">
             <FolderArchive size={28} className="mx-auto text-text-tertiary" />
             <span className="text-[13px] font-extrabold text-text-main block">点击或拖拽文件到此处上传</span>
-            <span className="text-[11.5px] text-text-tertiary block">支持 .zip, .md, .json 格式的能力描述包</span>
+            <span className="text-[13px] text-text-tertiary block">支持 .zip, .md, .json 格式的能力描述包</span>
           </div>
         )}
 
@@ -165,7 +165,7 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
         {/* Check Results */}
         {checkPassed && safetyReport && (
           <div className="space-y-3 animate-in fade-in duration-150">
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-[12px]">
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-[13px]">
               <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-[13px]">
                 <CheckCircle2 size={16} className="text-emerald-600" />
                 <span>安全与依赖检查通过！无特权可执行脚本与冲突。</span>
@@ -180,11 +180,11 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
 
             {/* Installation Scope selector */}
             <div className="space-y-1">
-              <label className="text-[12px] font-extrabold text-text-secondary block">选择安装作用域：</label>
+              <label className="text-[13px] font-extrabold text-text-secondary block">选择安装作用域：</label>
               <select
                 value={selectedScope}
                 onChange={e => setSelectedScope(e.target.value as AppScope)}
-                className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold text-[12.5px]"
+                className="w-full p-2.5 bg-page-bg border border-border-default rounded-xl font-bold text-[13px]"
               >
                 <option value="merchant">当前商家 (皇家宠物食品)</option>
                 <option value="task">仅本次任务</option>
@@ -199,7 +199,7 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
         <div className="pt-2 flex items-center justify-end gap-2 border-t border-border-default">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-border-default text-text-secondary text-[12.5px] font-bold rounded-xl"
+            className="px-4 py-2 border border-border-default text-text-secondary text-[13px] font-bold rounded-xl"
           >
             取消
           </button>
@@ -207,7 +207,7 @@ export const ImportCapabilityModal: React.FC<ImportCapabilityModalProps> = ({
           {checkPassed && (
             <button
               onClick={handleInstallToLocal}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
+              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-[13px] font-extrabold rounded-xl shadow-2xs"
             >
               安装到本地 (默认已安装未启用)
             </button>

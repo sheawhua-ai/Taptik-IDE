@@ -6,7 +6,7 @@ import {
   Sparkles, RefreshCw, Pin, MoreHorizontal, QrCode, Check,
   Eye, Image as ImageIcon, ShieldAlert, ArrowRight, CornerDownRight,
   Info, Maximize2, X, ShieldCheck, CheckCheck, Edit3, MessageSquare,
-  Layers, Users, CheckSquare, Square, FolderPlus, DownloadCloud, Sparkle
+  Layers, Users, CheckSquare, Square, FolderPlus, DownloadCloud, Sparkle, Search
 } from 'lucide-react';
 import { 
   ExecutionTask, MaterialSubItem, SelectionAIProposal, SelectionTargetType, 
@@ -178,6 +178,7 @@ export function TaskDetailView({
 
   // Toast feedback
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [queueQuery, setQueueQuery] = useState('');
   const visibleNoteQueue = useMemo(() => {
     const groups = new Map<string, ExecutionTask[]>();
     categoryQueue.forEach(item => {
@@ -195,6 +196,15 @@ export function TaskDetailView({
       };
     });
   }, [categoryQueue, task.id]);
+  const filteredNoteQueue = useMemo(() => {
+    const query = queueQuery.trim().toLowerCase();
+    if (!query) return visibleNoteQueue;
+    return visibleNoteQueue.filter(({ displayTask }) =>
+      [displayTask.noteTitle, displayTask.targetAccount, displayTask.projectName]
+        .filter(Boolean)
+        .some(value => value!.toLowerCase().includes(query))
+    );
+  }, [queueQuery, visibleNoteQueue]);
 
   useEffect(() => {
     // 同一类操作共用一个工作台；切换笔记时必须以新任务的数据重置，
@@ -674,23 +684,23 @@ export function TaskDetailView({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-canvas overflow-hidden">
+    <div className="workspace-shell execution-workspace flex-1 flex flex-col h-full bg-canvas overflow-hidden">
       
       {/* Toast Feedback */}
       {feedbackMessage && (
-        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-neutral-900 text-white text-[12.5px] rounded-lg shadow-dialog flex items-center gap-2 animate-in fade-in duration-150">
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-neutral-900 text-white text-[13px] rounded-lg shadow-dialog flex items-center gap-2 animate-in fade-in duration-150">
           <CheckCircle2 size={15} className="text-emerald-400" />
           <span>{feedbackMessage}</span>
         </div>
       )}
 
       {/* Top Header Bar */}
-      <div className="min-h-13 px-5 py-2.5 bg-surface border-b border-border-default flex items-center justify-between gap-4 shrink-0">
+      <div className="workspace-header min-h-13 bg-surface border-b border-border-default flex items-center justify-between gap-4 shrink-0">
         {workspaceNavigation ?? (
           <button
             type="button"
             onClick={onBack}
-            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors flex items-center gap-1 text-[12.5px]"
+            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors flex items-center gap-1 text-[13px]"
           >
             <ArrowLeft size={16} />
             <span>返回执行中心</span>
@@ -701,7 +711,7 @@ export function TaskDetailView({
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="px-3 py-1.5 text-[12.5px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-default rounded-lg transition-colors"
+            className="px-3 py-1.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-default rounded-lg transition-colors"
           >
             保存草稿
           </button>
@@ -710,7 +720,7 @@ export function TaskDetailView({
             <button
               type="button"
               onClick={onNextTask}
-              className="px-3.5 py-1.5 text-[12.5px] font-medium text-text-primary bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-[13px] font-medium text-text-primary bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center gap-1.5"
             >
               <span>查看下一项</span>
               <ArrowRight size={14} className="text-text-secondary" />
@@ -722,16 +732,25 @@ export function TaskDetailView({
       {/* Main Content Area: 3-column Layout */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
         
-        {/* Column 1: Left Queue Sidebar (240px) */}
-        <div className="w-[270px] border-r border-border-default bg-surface flex flex-col shrink-0">
-          <div className="border-b border-border-subtle bg-surface px-3 py-3">
+        {/* Column 1: Left Queue Sidebar */}
+        <div className="workspace-sidebar w-[320px] border-r border-border-default bg-surface flex flex-col shrink-0">
+          <div className="workspace-sidebar-header border-b border-border-subtle bg-surface space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[12px] font-semibold text-text-primary">待处理笔记</span>
-              <span className="text-[10.5px] text-text-tertiary">{visibleNoteQueue.length} 项</span>
+              <h2 className="text-[15px] font-semibold text-text-main">待处理笔记</h2>
+              <span className="text-[13px] text-text-tertiary">{filteredNoteQueue.length} 项</span>
+            </div>
+            <div className="relative">
+              <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+              <input
+                value={queueQuery}
+                onChange={(event) => setQueueQuery(event.target.value)}
+                placeholder="搜索笔记或账号..."
+                className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+              />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {visibleNoteQueue.map(({ task: queueTask, displayTask }) => {
+          <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
+            {filteredNoteQueue.map(({ task: queueTask, displayTask }) => {
               const qTask = displayTask;
               const isCurrent = getNoteQueueKey(qTask) === getNoteQueueKey(task);
               return (
@@ -739,31 +758,29 @@ export function TaskDetailView({
                   key={getNoteQueueKey(qTask)}
                   type="button"
                   onClick={() => onSelectTask(queueTask)}
-                  className={`w-full text-left p-2.5 rounded-lg text-[12px] transition-all relative ${
+                  className={`w-full text-left px-4 py-3.5 transition-colors border-b border-border-subtle relative ${
                     isCurrent 
-                      ? 'bg-surface-selected text-text-primary font-medium' 
-                      : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
+                      ? 'bg-surface-subtle'
+                      : 'bg-transparent hover:bg-hover-bg text-text-main'
                   }`}
                 >
-                  <div className="flex items-start gap-2">
-                    {isCurrent ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" aria-label="当前选中" /> : <span className="w-2 shrink-0" />}
-                    <div className="line-clamp-2 pr-1 text-[12px] font-semibold leading-[18px]">{qTask.noteTitle}</div>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between gap-2 pl-4 text-[9.5px] font-normal text-text-tertiary">
+                  {isCurrent && <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-logo" />}
+                  <div className={`text-[13px] line-clamp-1 ${isCurrent ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>{qTask.noteTitle}</div>
+                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[13px] font-normal text-text-tertiary tabular-nums">
                     <span className="truncate">{qTask.targetAccount}</span>
                     <span className={`shrink-0 ${qTask.deadlineLabel === '已逾期' ? 'font-medium text-rose-600' : ''}`}>{qTask.deadline || '未设置'}</span>
                   </div>
                 </button>
               );
             })}
-            {visibleNoteQueue.length === 0 ? (
-              <div className="px-4 py-10 text-center text-[10.5px] leading-5 text-text-tertiary">当前项目没有待处理笔记</div>
+            {filteredNoteQueue.length === 0 ? (
+              <div className="px-4 py-10 text-center text-[13px] leading-5 text-text-tertiary">当前项目没有待处理笔记</div>
             ) : null}
           </div>
         </div>
 
         {/* Column 2: Center Editor / Inspector Area (Flex-1) */}
-        <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-5 bg-canvas">
+          <div className="workspace-stage flex-1 overflow-y-auto space-y-5 bg-canvas">
           
           {/* 当前任务只展示识别与操作所需信息；解释和判断依据按需展开。 */}
           <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-4 py-3">
@@ -773,14 +790,14 @@ export function TaskDetailView({
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <span className="text-[10.5px] font-semibold text-[#88394d]">待处理</span>
-                      <span className="text-[12.5px] font-semibold text-text-primary">{task.operatorActionSummary}</span>
+                      <span className="text-[13px] font-semibold text-[#88394d]">待处理</span>
+                      <span className="text-[13px] font-semibold text-text-primary">{task.operatorActionSummary}</span>
                     </div>
-                    <div className="mt-1 truncate text-[10px] text-text-tertiary">{task.projectName} · {task.noteTitle} · {task.targetAccount}</div>
+                    <div className="mt-1 truncate text-[13px] text-text-tertiary">{task.projectName} · {task.noteTitle} · {task.targetAccount}</div>
                   </div>
-                  <span className="shrink-0 text-[10px] text-text-tertiary">{task.deadline || '未设置截止'}</span>
+                  <span className="shrink-0 text-[13px] text-text-tertiary">{task.deadline || '未设置截止'}</span>
                 </div>
-                <details className="mt-2 border-t border-[#efdfe3] pt-2 text-[10px] text-text-secondary">
+                <details className="mt-2 border-t border-[#efdfe3] pt-2 text-[13px] text-text-secondary">
                   <summary className="cursor-pointer select-none font-medium text-[#88394d]">处理依据</summary>
                   <div className="mt-2 space-y-1.5 leading-4">
                     <p>{task.reasonForIntervention}</p>
@@ -805,12 +822,12 @@ export function TaskDetailView({
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-[12px] font-semibold text-text-secondary flex items-center gap-1.5">
+                  <label className="text-[13px] font-semibold text-text-secondary flex items-center gap-1.5">
                     <span>笔记标题</span>
                   </label>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[10.5px] ${draftTitle.length >= 20 ? 'font-medium text-amber-700' : 'text-text-tertiary'}`}>{draftTitle.length}/20 字</span>
-                    {selectionTarget === 'title' ? <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-900 text-white">正在修改标题</span> : <span className="text-[10.5px] text-text-tertiary">可直接编辑</span>}
+                    <span className={`text-[13px] ${draftTitle.length >= 20 ? 'font-medium text-amber-700' : 'text-text-tertiary'}`}>{draftTitle.length}/20 字</span>
+                    {selectionTarget === 'title' ? <span className="px-2 py-0.5 rounded text-[13px] font-medium bg-neutral-900 text-white">正在修改标题</span> : <span className="text-[13px] text-text-tertiary">可直接编辑</span>}
                   </div>
                 </div>
                 <input
@@ -834,11 +851,11 @@ export function TaskDetailView({
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-[12px] font-semibold text-text-secondary flex items-center gap-1.5">
+                  <label className="text-[13px] font-semibold text-text-secondary flex items-center gap-1.5">
                     <span>笔记正文</span>
                   </label>
                   {(selectionTarget === 'body_paragraph' || selectionTarget === 'body_all') && (
-                    <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-900 text-white">
+                    <span className="px-2 py-0.5 rounded text-[13px] font-medium bg-neutral-900 text-white">
                       {selectionTarget === 'body_paragraph' ? '已选中局部段落' : '正在修改整篇正文'}
                     </span>
                   )}
@@ -850,7 +867,7 @@ export function TaskDetailView({
                   className="w-full text-[13.5px] leading-relaxed text-text-primary bg-transparent focus:outline-none resize-none font-normal"
                   placeholder="请输入笔记正文..."
                 />
-                <div className="text-[11.5px] text-text-tertiary text-right pt-2 border-t border-border-subtle">
+                <div className="text-[13px] text-text-tertiary text-right pt-2 border-t border-border-subtle">
                   当前字数：{draftBody.length} 字
                 </div>
               </div>
@@ -858,13 +875,13 @@ export function TaskDetailView({
               {/* Tags Section */}
               <div className="p-4 bg-surface rounded-xl border border-border-default space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-[12px] font-semibold text-text-secondary">
+                  <label className="text-[13px] font-semibold text-text-secondary">
                     话题标签
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowAddTag(!showAddTag)}
-                    className="text-[11.5px] text-text-secondary hover:text-text-primary flex items-center gap-1 font-medium"
+                    className="text-[13px] text-text-secondary hover:text-text-primary flex items-center gap-1 font-medium"
                   >
                     <Plus size={13} />
                     <span>添加标签</span>
@@ -877,7 +894,7 @@ export function TaskDetailView({
                       key={idx}
                       type="button"
                       onClick={() => handleSelectTag(idx)}
-                      className={`px-3 py-1 rounded-md text-[12px] transition-all flex items-center gap-1.5 ${
+                      className={`px-3 py-1 rounded-md text-[13px] transition-all flex items-center gap-1.5 ${
                         selectedTagIndex === idx && selectionTarget === 'tags'
                           ? 'bg-neutral-900 text-white font-medium shadow-sm'
                           : 'bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default'
@@ -910,7 +927,7 @@ export function TaskDetailView({
                           }
                         }}
                         placeholder="输入新标签按回车"
-                        className="px-2.5 py-1 text-[12px] bg-surface border border-border-default rounded-md focus:outline-none focus:border-neutral-900 w-32"
+                        className="px-2.5 py-1 text-[13px] bg-surface border border-border-default rounded-md focus:outline-none focus:border-neutral-900 w-32"
                       />
                     </div>
                   )}
@@ -941,7 +958,7 @@ export function TaskDetailView({
 
                   <div className="flex items-center gap-2">
                     {selectionTarget === 'material_recommendation' && (
-                      <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-900 text-white">
+                      <span className="px-2 py-0.5 rounded text-[13px] font-medium bg-neutral-900 text-white">
                         右侧已展开素材推荐
                       </span>
                     )}
@@ -951,7 +968,7 @@ export function TaskDetailView({
                         e.stopPropagation();
                         setShowLibraryModal(true);
                       }}
-                      className="px-2.5 py-1 bg-surface-subtle hover:bg-surface-hover text-text-secondary hover:text-text-primary border border-border-default rounded-md text-[11.5px] font-medium transition-colors flex items-center gap-1"
+                      className="px-2.5 py-1 bg-surface-subtle hover:bg-surface-hover text-text-secondary hover:text-text-primary border border-border-default rounded-md text-[13px] font-medium transition-colors flex items-center gap-1"
                     >
                       <FolderPlus size={13} />
                       <span>素材库选图</span>
@@ -962,7 +979,7 @@ export function TaskDetailView({
                         e.stopPropagation();
                         setShowCreateTaskModal(true);
                       }}
-                      className="px-2.5 py-1 bg-surface-subtle hover:bg-surface-hover text-text-secondary hover:text-text-primary border border-border-default rounded-md text-[11.5px] font-medium transition-colors flex items-center gap-1"
+                      className="px-2.5 py-1 bg-surface-subtle hover:bg-surface-hover text-text-secondary hover:text-text-primary border border-border-default rounded-md text-[13px] font-medium transition-colors flex items-center gap-1"
                     >
                       <Plus size={13} />
                       <span>生成素材任务</span>
@@ -994,14 +1011,14 @@ export function TaskDetailView({
                       </button>
                     </div>
                     <div className="space-y-0.5 overflow-hidden">
-                      <div className="flex items-center gap-1 text-[10.5px] font-semibold text-rose-700">
+                      <div className="flex items-center gap-1 text-[13px] font-semibold text-rose-700">
                         <Sparkle size={11} />
                         <span>已选推荐封面</span>
                       </div>
-                      <div className="text-[12px] font-medium text-text-primary truncate">
+                      <div className="text-[13px] font-medium text-text-primary truncate">
                         点击右侧更换封面
                       </div>
-                      <div className="text-[11px] text-text-tertiary">
+                      <div className="text-[13px] text-text-tertiary">
                         自动适配 3:4 小红书大图
                       </div>
                     </div>
@@ -1010,7 +1027,7 @@ export function TaskDetailView({
                   {/* Selected Library Assets Summary */}
                   <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-default md:col-span-2 flex items-center justify-between">
                     <div className="space-y-1 overflow-hidden">
-                      <div className="text-[11.5px] font-medium text-text-secondary flex items-center gap-1.5">
+                      <div className="text-[13px] font-medium text-text-secondary flex items-center gap-1.5">
                         <span>已从素材中心选用</span>
                         <span className="font-semibold text-text-primary">({selectedMaterialAssets.length} 张)</span>
                       </div>
@@ -1024,14 +1041,14 @@ export function TaskDetailView({
                                 e.stopPropagation();
                                 handleToggleMaterialAsset(asset);
                               }}
-                              className="absolute inset-0 bg-rose-600/80 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center text-[9px] transition-opacity"
+                              className="absolute inset-0 bg-rose-600/80 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center text-[13px] transition-opacity"
                             >
                               <X size={10} />
                             </button>
                           </div>
                         ))}
                         {selectedMaterialAssets.length > 5 && (
-                          <div className="w-8 h-8 rounded bg-surface border border-border-default flex items-center justify-center text-[10px] text-text-tertiary shrink-0">
+                          <div className="w-8 h-8 rounded bg-surface border border-border-default flex items-center justify-center text-[13px] text-text-tertiary shrink-0">
                             +{selectedMaterialAssets.length - 5}
                           </div>
                         )}
@@ -1044,7 +1061,7 @@ export function TaskDetailView({
                         e.stopPropagation();
                         setShowLibraryModal(true);
                       }}
-                      className="text-[11.5px] text-text-secondary hover:text-text-primary font-medium shrink-0 ml-2"
+                      className="text-[13px] text-text-secondary hover:text-text-primary font-medium shrink-0 ml-2"
                     >
                       去选图 →
                     </button>
@@ -1056,10 +1073,10 @@ export function TaskDetailView({
                 <div className="pt-2 border-t border-border-subtle space-y-2">
                   
                   <div className="flex items-center justify-between">
-                    <div className="text-[12px] font-semibold text-text-primary flex items-center gap-2">
+                    <div className="text-[13px] font-semibold text-text-primary flex items-center gap-2">
                       <Camera size={13} className="text-text-secondary" />
                       <span>缺口拍摄任务 ({generatedMaterialTasks.length})</span>
-                      <span className="text-[11px] font-normal text-text-tertiary">
+                      <span className="text-[13px] font-normal text-text-tertiary">
                         若素材库不足可生成拍摄任务，勾选多项可合并派发给员工
                       </span>
                     </div>
@@ -1074,7 +1091,7 @@ export function TaskDetailView({
                             const allSelected = generatedMaterialTasks.filter(t => t.status === 'pending').every(t => t.selectedForBatch);
                             handleSelectAllPendingTasksForBatch(!allSelected);
                           }}
-                          className="text-[11px] text-text-secondary hover:text-text-primary flex items-center gap-1"
+                          className="text-[13px] text-text-secondary hover:text-text-primary flex items-center gap-1"
                         >
                           {generatedMaterialTasks.filter(t => t.status === 'pending').every(t => t.selectedForBatch) ? (
                             <CheckSquare size={12} className="text-text-primary" />
@@ -1091,7 +1108,7 @@ export function TaskDetailView({
                             e.stopPropagation();
                             setShowBatchSendModal(true);
                           }}
-                          className="px-2.5 py-1 bg-action-primary hover:bg-action-primary-hover text-white rounded text-[11px] font-semibold transition-colors disabled:opacity-40 flex items-center gap-1"
+                          className="px-2.5 py-1 bg-action-primary hover:bg-action-primary-hover text-white rounded text-[13px] font-semibold transition-colors disabled:opacity-40 flex items-center gap-1"
                         >
                           <Users size={11} />
                           <span>合并派发任务 ({generatedMaterialTasks.filter(t => t.selectedForBatch && t.status === 'pending').length})</span>
@@ -1103,7 +1120,7 @@ export function TaskDetailView({
                   {/* Tasks List */}
                   <div className="space-y-1.5">
                     {generatedMaterialTasks.length === 0 ? (
-                      <div className="p-3 text-center text-[12px] text-text-tertiary bg-surface-subtle rounded-lg border border-border-subtle">
+                      <div className="p-3 text-center text-[13px] text-text-tertiary bg-surface-subtle rounded-lg border border-border-subtle">
                         暂无拍摄缺口任务，素材均已从素材中心匹配完成。
                       </div>
                     ) : (
@@ -1114,7 +1131,7 @@ export function TaskDetailView({
                             e.stopPropagation();
                             if (t.status === 'pending') handleToggleTaskBatchSelect(t.id);
                           }}
-                          className={`p-2.5 rounded-lg border text-[12px] flex items-center justify-between transition-all ${
+                          className={`p-2.5 rounded-lg border text-[13px] flex items-center justify-between transition-all ${
                             t.status === 'sent'
                               ? 'bg-surface-subtle border-border-subtle text-text-secondary'
                               : t.selectedForBatch
@@ -1144,7 +1161,7 @@ export function TaskDetailView({
 
                             <div className="truncate">
                               <span className="font-medium text-text-primary mr-2">{t.requirement}</span>
-                              <span className="text-[11px] text-text-tertiary font-normal">
+                              <span className="text-[13px] text-text-tertiary font-normal">
                                 执行人：{t.assigneeName} ({t.assigneeRole}) · 截止：{t.deadline}
                               </span>
                             </div>
@@ -1152,11 +1169,11 @@ export function TaskDetailView({
 
                           <div className="flex items-center gap-2 shrink-0 ml-2">
                             {t.status === 'sent' ? (
-                              <span className="px-2 py-0.5 rounded text-[10.5px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              <span className="px-2 py-0.5 rounded text-[13px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
                                 已派发
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 rounded text-[10.5px] font-medium bg-amber-50 text-amber-800 border border-amber-200">
+                              <span className="px-2 py-0.5 rounded text-[13px] font-medium bg-amber-50 text-amber-800 border border-amber-200">
                                 待下发
                               </span>
                             )}
@@ -1184,7 +1201,7 @@ export function TaskDetailView({
 
               {/* Action Bar */}
               <div className="p-4 bg-surface-subtle border border-border-default rounded-xl flex items-center justify-between">
-                <div className="text-[12px] text-text-secondary">
+                <div className="text-[13px] text-text-secondary">
                   确认定稿将自动锁定文案与素材，并转入<strong>素材待办与发布核销</strong>流转。
                 </div>
                 <button
@@ -1214,12 +1231,12 @@ export function TaskDetailView({
                         <div className="text-[13px] font-semibold text-text-primary flex items-center gap-2">
                           <span>{item.requirement}</span>
                           {item.isRequired ? (
-                            <span className="px-1.5 py-0.5 rounded text-[10.5px] font-medium bg-neutral-100 text-neutral-700">必需镜头</span>
+                            <span className="px-1.5 py-0.5 rounded text-[13px] font-medium bg-neutral-100 text-neutral-700">必需镜头</span>
                           ) : (
-                            <span className="px-1.5 py-0.5 rounded text-[10.5px] font-medium bg-surface-subtle text-text-tertiary">可选镜头</span>
+                            <span className="px-1.5 py-0.5 rounded text-[13px] font-medium bg-surface-subtle text-text-tertiary">可选镜头</span>
                           )}
                         </div>
-                        <div className="text-[12px] text-emerald-700 mt-1 flex items-center gap-1">
+                        <div className="text-[13px] text-emerald-700 mt-1 flex items-center gap-1">
                           <ShieldCheck size={13} />
                           <span>{item.autoCheckResult}</span>
                         </div>
@@ -1227,12 +1244,12 @@ export function TaskDetailView({
 
                       <div className="flex items-center gap-2">
                         {item.manualStatus === '已通过' ? (
-                          <span className="px-2.5 py-1 rounded-md text-[12px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                          <span className="px-2.5 py-1 rounded-md text-[13px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
                             <CheckCircle2 size={13} className="text-emerald-600" />
                             已验收通过
                           </span>
                         ) : item.manualStatus === '需补拍' ? (
-                          <span className="px-2.5 py-1 rounded-md text-[12px] font-medium bg-rose-50 text-rose-800 border border-rose-200">
+                          <span className="px-2.5 py-1 rounded-md text-[13px] font-medium bg-rose-50 text-rose-800 border border-rose-200">
                             需补拍：{item.reshootReason || '要求重新拍摄'}
                           </span>
                         ) : (
@@ -1243,14 +1260,14 @@ export function TaskDetailView({
                                 setReshootTargetItem(item);
                                 setReshootInputReason('');
                               }}
-                              className="px-3 py-1.5 text-[12px] font-medium text-rose-700 hover:text-rose-800 hover:bg-rose-50 border border-rose-200 rounded-lg transition-colors"
+                              className="px-3 py-1.5 text-[13px] font-medium text-rose-700 hover:text-rose-800 hover:bg-rose-50 border border-rose-200 rounded-lg transition-colors"
                             >
                               要求补拍
                             </button>
                             <button
                               type="button"
                               onClick={() => handleAcceptMaterialSubItem(item.id)}
-                              className="px-3 py-1.5 text-[12px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors flex items-center gap-1"
+                              className="px-3 py-1.5 text-[13px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors flex items-center gap-1"
                             >
                               <Check size={13} />
                               <span>验收通过</span>
@@ -1273,11 +1290,11 @@ export function TaskDetailView({
                               <Maximize2 size={16} />
                             </div>
                           </div>
-                          <div className="flex-1 text-[11.5px] space-y-1 text-text-secondary">
+                          <div className="flex-1 text-[13px] space-y-1 text-text-secondary">
                             <div className="font-medium text-text-primary truncate">{asset.filename}</div>
                             <div>分辨率：{asset.resolution} · {asset.fileSize}</div>
                             <div>比例：{asset.technicalCheck.aspectRatio} · 光线：{asset.technicalCheck.lightingQuality}</div>
-                            <div className="text-text-tertiary text-[11px]">{asset.technicalCheck.summary}</div>
+                            <div className="text-text-tertiary text-[13px]">{asset.technicalCheck.summary}</div>
                           </div>
                         </div>
                       ))}
@@ -1289,7 +1306,7 @@ export function TaskDetailView({
 
               {/* Complete Material Acceptance Action Bar */}
               <div className="p-4 bg-surface-subtle border border-border-default rounded-xl flex items-center justify-between">
-                <div className="text-[12px] text-text-secondary">
+                <div className="text-[13px] text-text-secondary">
                   素材全部通过后，系统将自动生成<strong>员工手动发布任务</strong>并下发排期。
                 </div>
                 <button
@@ -1315,7 +1332,7 @@ export function TaskDetailView({
                   <AlertCircle size={16} className="text-amber-700" />
                   <span>回传结果待人工核销</span>
                 </div>
-                <div className="text-[12.5px] text-amber-800 leading-relaxed">
+                <div className="text-[13px] text-amber-800 leading-relaxed">
                   系统暂时无法确认该链接的公开状态，请根据执行者回传的链接或截图进行核销。
                 </div>
               </div>
@@ -1326,7 +1343,7 @@ export function TaskDetailView({
                   执行者回传凭证
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[12.5px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[13px]">
                   <div>
                     <span className="text-text-secondary">发布账号：</span>
                     <strong className="text-text-primary">{task.targetAccount}</strong>
@@ -1345,7 +1362,7 @@ export function TaskDetailView({
                       href={task.returnedData?.publishUrl} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="text-brand-700 hover:underline font-mono inline-flex items-center gap-1 text-[12px]"
+                      className="text-brand-700 hover:underline font-mono inline-flex items-center gap-1 text-[13px]"
                     >
                       <span>{task.returnedData?.publishUrl}</span>
                       <ExternalLink size={12} />
@@ -1356,7 +1373,7 @@ export function TaskDetailView({
                 {/* Screenshot preview */}
                 {task.returnedData?.screenshotUrl && (
                   <div className="pt-2 border-t border-border-subtle">
-                    <div className="text-[12px] font-medium text-text-secondary mb-2">发布截图回传：</div>
+                    <div className="text-[13px] font-medium text-text-secondary mb-2">发布截图回传：</div>
                     <div 
                       onClick={() => setPreviewImageUrl(task.returnedData?.screenshotUrl || null)}
                       className="w-32 h-44 rounded-lg border border-border-default overflow-hidden bg-black/5 cursor-pointer relative group"
@@ -1372,7 +1389,7 @@ export function TaskDetailView({
 
               {/* Confirm Publish & Archive Action Bar */}
               <div className="p-4 bg-surface-subtle border border-border-default rounded-xl flex items-center justify-between">
-                <div className="text-[12px] text-text-secondary">
+                <div className="text-[13px] text-text-secondary">
                   核销通过后，内容将正式归档并接入<strong>后效数据归集</strong>与复盘监控。
                 </div>
                 <button
@@ -1397,7 +1414,7 @@ export function TaskDetailView({
                   <AlertTriangle size={16} className="text-rose-600" />
                   <span>异常事实详情</span>
                 </div>
-                <div className="text-[12.5px] text-rose-800 leading-relaxed">
+                <div className="text-[13px] text-rose-800 leading-relaxed">
                   {task.currentOccurrence}
                 </div>
               </div>
@@ -1410,13 +1427,13 @@ export function TaskDetailView({
 
                 {task.anomalyType === 'data_sync_auth_expired' && (
                   <div className="space-y-3">
-                    <div className="text-[12.5px] text-text-secondary">
+                    <div className="text-[13px] text-text-secondary">
                       小红书创作者服务平台的数据读取授权会话已过期，需要重新扫码以恢复数据归集。
                     </div>
                     <button
                       type="button"
                       onClick={() => setShowQrModal(true)}
-                      className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[12.5px] font-semibold transition-colors flex items-center gap-2"
+                      className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[13px] font-semibold transition-colors flex items-center gap-2"
                     >
                       <QrCode size={15} />
                       <span>扫码更新数据授权</span>
@@ -1426,14 +1443,14 @@ export function TaskDetailView({
 
                 {task.anomalyType === 'executor_account_unavailable' && (
                   <div className="space-y-3">
-                    <div className="text-[12.5px] text-text-secondary">
+                    <div className="text-[13px] text-text-secondary">
                       原定执行人反馈账号受限，建议重新指派备用门店账号或由操盘手代发。
                     </div>
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
                         onClick={() => setShowReassignModal(true)}
-                        className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[12.5px] font-semibold transition-colors flex items-center gap-1.5"
+                        className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[13px] font-semibold transition-colors flex items-center gap-1.5"
                       >
                         <User size={15} />
                         <span>重新指派执行人</span>
@@ -1444,14 +1461,14 @@ export function TaskDetailView({
 
                 {task.anomalyType === 'material_reshoot_overdue' && (
                   <div className="space-y-3">
-                    <div className="text-[12.5px] text-text-secondary">
+                    <div className="text-[13px] text-text-secondary">
                       创作者逾期未回传暖光海参特写，可一键催促或更换备用KOC。
                     </div>
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
                         onClick={handleRemindExecutor}
-                        className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[12.5px] font-semibold transition-colors flex items-center gap-1.5"
+                        className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[13px] font-semibold transition-colors flex items-center gap-1.5"
                       >
                         <Send size={14} />
                         <span>发送催促提醒</span>
@@ -1459,7 +1476,7 @@ export function TaskDetailView({
                       <button
                         type="button"
                         onClick={() => setShowReassignModal(true)}
-                        className="px-3.5 py-2 text-[12.5px] font-medium text-text-primary bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors"
+                        className="px-3.5 py-2 text-[13px] font-medium text-text-primary bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors"
                       >
                         重新派发任务
                       </button>
@@ -1480,13 +1497,13 @@ export function TaskDetailView({
               <button
                 type="button"
                 onClick={() => setIsStrategyOpen(!isStrategyOpen)}
-                className="w-full px-4 py-3 text-left flex items-center justify-between text-[12.5px] font-medium text-text-secondary hover:text-text-primary transition-colors"
+                className="w-full px-4 py-3 text-left flex items-center justify-between text-[13px] font-medium text-text-secondary hover:text-text-primary transition-colors"
               >
                 <span>查看方案策略上下文</span>
                 <ChevronDown size={15} className={`transition-transform ${isStrategyOpen ? 'rotate-180' : ''}`} />
               </button>
               {isStrategyOpen && (
-                <div className="px-4 pb-4 pt-1 border-t border-border-subtle text-[12px] space-y-2 text-text-secondary bg-surface-subtle">
+                <div className="px-4 pb-4 pt-1 border-t border-border-subtle text-[13px] space-y-2 text-text-secondary bg-surface-subtle">
                   <div><strong>意图：</strong>{task.strategyContext?.intent || '通过科普建立信任'}</div>
                   <div><strong>人群：</strong>{task.strategyContext?.targetAudience || '幼犬初次养宠人群'}</div>
                   <div><strong>核心痛点：</strong>{task.strategyContext?.corePainPoint || '换粮软便'}</div>
@@ -1500,15 +1517,15 @@ export function TaskDetailView({
               <button
                 type="button"
                 onClick={() => setIsTimelineOpen(!isTimelineOpen)}
-                className="w-full px-4 py-3 text-left flex items-center justify-between text-[12.5px] font-medium text-text-secondary hover:text-text-primary transition-colors"
+                className="w-full px-4 py-3 text-left flex items-center justify-between text-[13px] font-medium text-text-secondary hover:text-text-primary transition-colors"
               >
                 <span>查看历史流转记录 ({task.timelineEvents.length})</span>
                 <ChevronDown size={15} className={`transition-transform ${isTimelineOpen ? 'rotate-180' : ''}`} />
               </button>
               {isTimelineOpen && (
-                <div className="px-4 pb-4 pt-2 border-t border-border-subtle text-[12px] space-y-2.5 bg-surface-subtle">
+                <div className="px-4 pb-4 pt-2 border-t border-border-subtle text-[13px] space-y-2.5 bg-surface-subtle">
                   {task.timelineEvents.map((evt) => (
-                    <div key={evt.id} className="flex items-start gap-2.5 text-[11.5px]">
+                    <div key={evt.id} className="flex items-start gap-2.5 text-[13px]">
                       <span className="text-text-tertiary shrink-0 font-mono">{evt.time}</span>
                       <strong className="text-text-primary shrink-0">{evt.actor}：</strong>
                       <span className="text-text-secondary">{evt.action}</span>
@@ -1612,24 +1629,24 @@ export function TaskDetailView({
                 <X size={16} />
               </button>
             </div>
-            <div className="text-[12.5px] text-text-secondary">
+            <div className="text-[13px] text-text-secondary">
               针对镜头：<strong>{reshootTargetItem.requirement}</strong>
             </div>
             <div className="space-y-1.5">
-              <label className="text-[12px] font-medium text-text-primary">补拍具体要求（将同步至执行人小程序）：</label>
+              <label className="text-[13px] font-medium text-text-primary">补拍具体要求（将同步至执行人小程序）：</label>
               <textarea
                 rows={3}
                 value={reshootInputReason}
                 onChange={(e) => setReshootInputReason(e.target.value)}
                 placeholder="例如：请开启暖光灯在正上方俯拍，保持主产品光泽感与包装完整..."
-                className="w-full px-3 py-2 text-[12.5px] bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900"
+                className="w-full px-3 py-2 text-[13px] bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900"
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setReshootTargetItem(null)}
-                className="px-3.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary rounded-lg"
+                className="px-3.5 py-1.5 text-[13px] text-text-secondary hover:text-text-primary rounded-lg"
               >
                 取消
               </button>
@@ -1637,7 +1654,7 @@ export function TaskDetailView({
                 type="button"
                 disabled={!reshootInputReason.trim()}
                 onClick={handleReshootSubmit}
-                className="px-4 py-1.5 text-[12px] font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg disabled:opacity-50"
+                className="px-4 py-1.5 text-[13px] font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg disabled:opacity-50"
               >
                 下发补拍要求
               </button>
@@ -1669,13 +1686,13 @@ export function TaskDetailView({
             <div className="w-48 h-48 mx-auto bg-surface-subtle border border-border-default rounded-xl flex items-center justify-center">
               <QrCode size={140} className="text-text-primary" />
             </div>
-            <div className="text-[12px] text-text-secondary">
+            <div className="text-[13px] text-text-secondary">
               请使用小红书 App 扫描上方二维码更新创作者服务平台数据读取授权。
             </div>
             <button
               type="button"
               onClick={handleVerifyQrSuccess}
-              className="w-full py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[12.5px] font-semibold transition-colors"
+              className="w-full py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[13px] font-semibold transition-colors"
             >
               已在手机端确认授权
             </button>
@@ -1693,7 +1710,7 @@ export function TaskDetailView({
                 <X size={16} />
               </button>
             </div>
-            <div className="space-y-2 text-[12.5px]">
+            <div className="space-y-2 text-[13px]">
               <label className="block text-text-secondary font-medium">选择接管人：</label>
               <select
                 value={reassignedAssignee}
@@ -1709,14 +1726,14 @@ export function TaskDetailView({
               <button
                 type="button"
                 onClick={() => setShowReassignModal(false)}
-                className="px-3.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary"
+                className="px-3.5 py-1.5 text-[13px] text-text-secondary hover:text-text-primary"
               >
                 取消
               </button>
               <button
                 type="button"
                 onClick={handleReassignExecutor}
-                className="px-4 py-1.5 text-[12px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg"
+                className="px-4 py-1.5 text-[13px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg"
               >
                 确认指派
               </button>
@@ -1732,7 +1749,7 @@ export function TaskDetailView({
             <div className="p-4 border-b border-border-default flex items-center justify-between">
               <div>
                 <h3 className="text-[15px] font-semibold text-text-primary">从素材中心选择素材与配图</h3>
-                <p className="text-[11.5px] text-text-tertiary mt-0.5">已为您智能筛选当前商品与关键词相关实拍素材</p>
+                <p className="text-[13px] text-text-tertiary mt-0.5">已为您智能筛选当前商品与关键词相关实拍素材</p>
               </div>
               <button onClick={() => setShowLibraryModal(false)} className="text-text-tertiary hover:text-text-primary p-1">
                 <X size={16} />
@@ -1756,19 +1773,19 @@ export function TaskDetailView({
                       <div className="aspect-square bg-neutral-100 relative">
                         <img src={item.url} alt={item.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                         {isCover && (
-                          <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-rose-600 text-white rounded text-[9px] font-bold">
+                          <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-rose-600 text-white rounded text-[13px] font-bold">
                             当前封面
                           </div>
                         )}
                         {isSelected && (
-                          <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px]">
+                          <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[13px]">
                             <Check size={11} />
                           </div>
                         )}
                       </div>
-                      <div className="p-2 bg-surface text-[11px] space-y-1">
+                      <div className="p-2 bg-surface text-[13px] space-y-1">
                         <div className="font-medium text-text-primary truncate">{item.title}</div>
-                        <div className="flex items-center justify-between text-[10px] text-text-tertiary">
+                        <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                           <span>{item.category}</span>
                           <span>{item.dimensions}</span>
                         </div>
@@ -1776,7 +1793,7 @@ export function TaskDetailView({
                           <button
                             type="button"
                             onClick={() => handleSelectMaterialCover(item)}
-                            className={`flex-1 py-1 rounded text-[10px] font-medium transition-colors ${
+                            className={`flex-1 py-1 rounded text-[13px] font-medium transition-colors ${
                               isCover ? 'bg-rose-50 text-rose-700 font-bold' : 'bg-surface-subtle hover:bg-surface-hover text-text-secondary'
                             }`}
                           >
@@ -1785,7 +1802,7 @@ export function TaskDetailView({
                           <button
                             type="button"
                             onClick={() => handleToggleMaterialAsset(item)}
-                            className={`flex-1 py-1 rounded text-[10px] font-medium transition-colors ${
+                            className={`flex-1 py-1 rounded text-[13px] font-medium transition-colors ${
                               isSelected ? 'bg-neutral-900 text-white' : 'bg-surface-subtle hover:bg-surface-hover text-text-secondary'
                             }`}
                           >
@@ -1800,13 +1817,13 @@ export function TaskDetailView({
             </div>
 
             <div className="p-4 border-t border-border-default bg-surface-subtle flex items-center justify-between">
-              <div className="text-[12px] text-text-secondary">
+              <div className="text-[13px] text-text-secondary">
                 已选用配图 <strong>{selectedMaterialAssets.length}</strong> 张 · 封面已设定
               </div>
               <button
                 type="button"
                 onClick={() => setShowLibraryModal(false)}
-                className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white text-[12.5px] font-semibold rounded-lg transition-colors"
+                className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg transition-colors"
               >
                 完成选择
               </button>
@@ -1822,16 +1839,16 @@ export function TaskDetailView({
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-[14px] font-semibold text-text-primary">生成素材拍摄任务</h3>
-                <p className="text-[11.5px] text-text-tertiary mt-0.5">下发缺口拍摄要求，支持多任务合并派发给员工</p>
+                <p className="text-[13px] text-text-tertiary mt-0.5">下发缺口拍摄要求，支持多任务合并派发给员工</p>
               </div>
               <button onClick={() => setShowCreateTaskModal(false)} className="text-text-tertiary hover:text-text-primary">
                 <X size={16} />
               </button>
             </div>
 
-            <div className="space-y-3 text-[12.5px]">
+            <div className="space-y-3 text-[13px]">
               <div>
-                <label className="block text-[12px] font-medium text-text-secondary mb-1">拍摄要求说明：</label>
+                <label className="block text-[13px] font-medium text-text-secondary mb-1">拍摄要求说明：</label>
                 <textarea
                   rows={3}
                   value={newTaskRequirement}
@@ -1843,11 +1860,11 @@ export function TaskDetailView({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-medium text-text-secondary mb-1">指派员工：</label>
+                  <label className="block text-[13px] font-medium text-text-secondary mb-1">指派员工：</label>
                   <select
                     value={newTaskAssignee}
                     onChange={(e) => setNewTaskAssignee(e.target.value)}
-                    className="w-full px-3 py-2 bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 text-[12.5px]"
+                    className="w-full px-3 py-2 bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 text-[13px]"
                   >
                     {MOCK_STAFF_MEMBERS.map((staff) => (
                       <option key={staff.id} value={staff.id}>
@@ -1858,12 +1875,12 @@ export function TaskDetailView({
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-text-secondary mb-1">截止日期：</label>
+                  <label className="block text-[13px] font-medium text-text-secondary mb-1">截止日期：</label>
                   <input
                     type="date"
                     value={newTaskDeadline}
                     onChange={(e) => setNewTaskDeadline(e.target.value)}
-                    className="w-full px-3 py-2 bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 text-[12.5px]"
+                    className="w-full px-3 py-2 bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 text-[13px]"
                   />
                 </div>
               </div>
@@ -1873,7 +1890,7 @@ export function TaskDetailView({
               <button
                 type="button"
                 onClick={() => setShowCreateTaskModal(false)}
-                className="px-3.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary"
+                className="px-3.5 py-1.5 text-[13px] text-text-secondary hover:text-text-primary"
               >
                 取消
               </button>
@@ -1881,7 +1898,7 @@ export function TaskDetailView({
                 type="button"
                 disabled={!newTaskRequirement.trim()}
                 onClick={handleCreateNewMaterialTask}
-                className="px-4 py-1.5 text-[12px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg disabled:opacity-50 transition-colors"
+                className="px-4 py-1.5 text-[13px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg disabled:opacity-50 transition-colors"
               >
                 生成任务
               </button>
@@ -1897,7 +1914,7 @@ export function TaskDetailView({
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-[14px] font-semibold text-text-primary">合并派发拍摄任务</h3>
-                <p className="text-[11.5px] text-text-tertiary mt-0.5">将勾选的多个拍摄需求打包合并后统一推送给指定员工</p>
+                <p className="text-[13px] text-text-tertiary mt-0.5">将勾选的多个拍摄需求打包合并后统一推送给指定员工</p>
               </div>
               <button onClick={() => setShowBatchSendModal(false)} className="text-text-tertiary hover:text-text-primary">
                 <X size={16} />
@@ -1905,11 +1922,11 @@ export function TaskDetailView({
             </div>
 
             <div className="space-y-3">
-              <div className="text-[12px] font-medium text-text-secondary">
+              <div className="text-[13px] font-medium text-text-secondary">
                 待合并的任务项 ({generatedMaterialTasks.filter(t => t.selectedForBatch && t.status === 'pending').length} 项)：
               </div>
 
-              <div className="max-h-48 overflow-y-auto space-y-1.5 bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[12px]">
+              <div className="max-h-48 overflow-y-auto space-y-1.5 bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px]">
                 {generatedMaterialTasks.filter(t => t.selectedForBatch && t.status === 'pending').map((t, idx) => (
                   <div key={t.id} className="flex items-start gap-2 text-text-primary">
                     <span className="text-text-tertiary font-mono">{idx + 1}.</span>
@@ -1919,11 +1936,11 @@ export function TaskDetailView({
               </div>
 
               <div>
-                <label className="block text-[12px] font-medium text-text-secondary mb-1">选择统一承接人：</label>
+                <label className="block text-[13px] font-medium text-text-secondary mb-1">选择统一承接人：</label>
                 <select
                   value={batchTargetStaff}
                   onChange={(e) => setBatchTargetStaff(e.target.value)}
-                  className="w-full px-3 py-2 bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 text-[12.5px]"
+                  className="w-full px-3 py-2 bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 text-[13px]"
                 >
                   {MOCK_STAFF_MEMBERS.map((staff) => (
                     <option key={staff.id} value={staff.id}>
@@ -1938,14 +1955,14 @@ export function TaskDetailView({
               <button
                 type="button"
                 onClick={() => setShowBatchSendModal(false)}
-                className="px-3.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary"
+                className="px-3.5 py-1.5 text-[13px] text-text-secondary hover:text-text-primary"
               >
                 取消
               </button>
               <button
                 type="button"
                 onClick={handleExecuteBatchMergeAndSend}
-                className="px-4 py-1.5 text-[12px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors"
+                className="px-4 py-1.5 text-[13px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors"
               >
                 确认合并并派发
               </button>

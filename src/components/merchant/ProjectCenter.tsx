@@ -311,7 +311,7 @@ export function ProjectCenter({
   ];
 
   return (
-    <div className="h-full w-full flex bg-page-bg text-text-main relative overflow-hidden font-sans">
+    <div className="workspace-shell project-workspace h-full w-full flex bg-page-bg text-text-main relative overflow-hidden font-sans">
       
       {/* LEFT: Collapsible Project List */}
       <AnimatePresence initial={false}>
@@ -321,9 +321,9 @@ export function ProjectCenter({
             animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden"
+            className="workspace-sidebar bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden"
           >
-            <div className="p-4 border-b border-border-default space-y-3 w-[320px] shrink-0">
+            <div className="workspace-sidebar-header border-b border-border-default space-y-3 w-[320px] shrink-0">
               <div className="flex justify-between items-center">
                 <h2 className="text-[15px] font-semibold text-text-main">方案列表</h2>
                 <div className="flex items-center gap-1">
@@ -351,7 +351,7 @@ export function ProjectCenter({
                   placeholder="搜索方案..." 
                   value={projectSearchQuery}
                   onChange={(e) => setProjectSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[12.5px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+                  className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
                 />
               </div>
 
@@ -360,7 +360,7 @@ export function ProjectCenter({
                   <button
                     key={status}
                     onClick={() => setProjectFilterStatus(status)}
-                    className={`px-2.5 py-1 text-[11px] rounded-md font-medium transition-colors ${
+                    className={`px-2.5 py-1 text-[13px] rounded-md font-medium transition-colors ${
                       projectFilterStatus === status 
                         ? "bg-btn-main text-white" 
                         : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
@@ -397,12 +397,12 @@ export function ProjectCenter({
                     <div className={`text-[13px] line-clamp-1 ${isSelected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>
                       {proj.name}
                     </div>
-                    <div className="mt-1 flex items-center gap-1.5 text-[11px] text-text-tertiary tabular-nums">
+                    <div className="mt-1 flex items-center gap-1.5 text-[13px] text-text-tertiary tabular-nums">
                       <span>{formatChineseDate(proj.startDate)}</span>
                       <span>—</span>
                       <span>{formatChineseDate(proj.endDate)}</span>
                     </div>
-                    <div className="mt-2 flex items-center gap-2 text-[11px] min-w-0">
+                    <div className="mt-2 flex items-center gap-2 text-[13px] min-w-0">
                       <span className={`shrink-0 rounded-md px-1.5 py-0.5 font-medium ${
                         lifecycleState.tone === "running" ? "bg-info-light text-info" :
                         "bg-surface-selected text-text-secondary"
@@ -415,7 +415,7 @@ export function ProjectCenter({
                 );
               })}
               {filteredProjects.length === 0 && (
-                <div className="px-5 py-10 text-center text-[12px] text-text-tertiary">
+                <div className="px-5 py-10 text-center text-[13px] text-text-tertiary">
                   当前筛选下没有方案
                 </div>
               )}
@@ -425,10 +425,10 @@ export function ProjectCenter({
       </AnimatePresence>
 
       {/* RIGHT: Main Project Workspace */}
-      <div className="flex-1 flex flex-col min-w-0 bg-page-bg overflow-hidden">
+      <div className="project-workspace-main flex-1 flex flex-col min-w-0 bg-page-bg overflow-hidden">
         
         {/* Header Bar */}
-        <div className="bg-surface-1 border-b border-border-default shrink-0 px-6 py-3 flex items-start justify-between">
+        <div className="workspace-header bg-surface-1 border-b border-border-default shrink-0 flex items-start justify-between">
           <div className="flex items-start gap-3.5">
             {!isSidebarOpen && (
               <button 
@@ -442,7 +442,7 @@ export function ProjectCenter({
             <div>
               <div className="flex items-center gap-2.5 mb-1">
                 <h1 className="text-[17px] font-semibold text-text-main">{currentProject.name}</h1>
-                <span className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${
+                <span className={`rounded-md px-2 py-0.5 text-[13px] font-medium ${
                   currentLifecycleState.tone === "running" ? "bg-info-light text-info" :
                   "bg-surface-selected text-text-secondary"
                 }`}>
@@ -450,7 +450,7 @@ export function ProjectCenter({
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 text-[12px] text-text-secondary">
+              <div className="flex items-center gap-3 text-[13px] text-text-secondary">
                 <span className="flex items-center gap-1.5"><Calendar size={13} className="text-text-tertiary" /> {formatChineseDate(currentProject.startDate)} 至 {formatChineseDate(currentProject.endDate)}</span>
                 <span className="text-border-strong">|</span>
                 <span className="truncate max-w-[min(48vw,680px)] text-text-tertiary" title={currentProject.goal}>
@@ -473,7 +473,7 @@ export function ProjectCenter({
               {showMoreMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
-                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1.5 text-[12.5px]">
+                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1.5 text-[13px]">
                     <button 
                       className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium" 
                       onClick={() => {
@@ -531,7 +531,7 @@ export function ProjectCenter({
             ))}
           </div>
 
-          <div className="flex items-center gap-2 text-[11.5px] text-text-tertiary">
+          <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
             <span>更新时间：{lastUpdatedText}</span>
           </div>
         </div>
@@ -550,29 +550,29 @@ export function ProjectCenter({
                   <section className="rounded-xl border border-blue-200 bg-blue-50/60 p-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <div className="flex items-center gap-2 text-[11px] font-medium text-blue-700">
+                        <div className="flex items-center gap-2 text-[13px] font-medium text-blue-700">
                           <Layers size={14} />行业默认起盘模板
                         </div>
                         <h3 className="mt-1.5 text-[14px] font-semibold text-blue-950">{industryDefaults.workflowName}</h3>
-                        <div className="mt-1 text-[11px] text-blue-800">
+                        <div className="mt-1 text-[13px] text-blue-800">
                           {industryProfile.primaryName}
                           {industryProfile.secondaryNames.length > 0 ? ` · ${industryProfile.secondaryNames.join("、")}` : ""}
                           {industryProfile.tertiaryNames.length > 0 ? ` · ${industryProfile.tertiaryNames.join("、")}` : ""}
                         </div>
                       </div>
-                      <button onClick={() => setActiveWorkbench("create_project")} className="rounded-lg bg-blue-700 px-3.5 py-2 text-[11.5px] font-medium text-white hover:bg-blue-800">
+                      <button onClick={() => setActiveWorkbench("create_project")} className="rounded-lg bg-blue-700 px-3.5 py-2 text-[13px] font-medium text-white hover:bg-blue-800">
                         使用模板创建方案
                       </button>
                     </div>
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {industryDefaults.workflowSteps.map((step, index) => (
                         <React.Fragment key={step}>
-                          <span className="rounded-md border border-blue-100 bg-white/80 px-2 py-1 text-[10.5px] text-blue-900">{index + 1}. {step}</span>
+                          <span className="rounded-md border border-blue-100 bg-white/80 px-2 py-1 text-[13px] text-blue-900">{index + 1}. {step}</span>
                           {index < industryDefaults.workflowSteps.length - 1 && <ArrowRight size={11} className="text-blue-300" />}
                         </React.Fragment>
                       ))}
                     </div>
-                    <div className="mt-3 grid gap-2 border-t border-blue-100 pt-3 text-[10.5px] sm:grid-cols-3">
+                    <div className="mt-3 grid gap-2 border-t border-blue-100 pt-3 text-[13px] sm:grid-cols-3">
                       <div><span className="text-blue-600">方案模板：</span><span className="text-blue-950">{industryDefaults.planTemplates.join("、")}</span></div>
                       <div><span className="text-blue-600">内容模板：</span><span className="text-blue-950">{industryDefaults.contentTemplates.join("、")}</span></div>
                       <div><span className="text-blue-600">账号角色：</span><span className="text-blue-950">{industryDefaults.accountRoles.join("、")}</span></div>
@@ -588,36 +588,36 @@ export function ProjectCenter({
                       <h3 className="flex items-center gap-2 text-[14px] font-semibold text-text-main">
                         <Target size={16} className="text-text-secondary" />
                         当前运营逻辑
-                        <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[11px] font-medium text-text-secondary">
+                        <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[13px] font-medium text-text-secondary">
                           V{activeStrategyVersion?.version || 1}
                         </span>
                       </h3>
-                      <div className="mt-1 text-[11px] text-text-tertiary">
+                      <div className="mt-1 text-[13px] text-text-tertiary">
                         {activeStrategyVersion?.source === "expert_adjustment" ? "专家定制版本" : activeStrategyVersion?.source === "review_applied" ? "复盘建议应用版本" : "首次方案生成版本"}
                         {activeStrategyVersion?.effectiveFrom ? ` · ${formatChineseDate(activeStrategyVersion.effectiveFrom, true)} 起生效` : ""}
                       </div>
                     </div>
-                    <button onClick={() => setShowStrategyCustomization(true)} className="rounded-lg bg-btn-main px-3 py-1.5 text-[12px] font-medium text-white hover:bg-btn-main-hover">
+                    <button onClick={() => setShowStrategyCustomization(true)} className="rounded-lg bg-btn-main px-3 py-1.5 text-[13px] font-medium text-white hover:bg-btn-main-hover">
                       专家定制
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-3 text-[12.5px] md:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-3 text-[13px] md:grid-cols-3">
                     <div className="space-y-1 rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">核心问题</div>
+                      <div className="text-[13px] text-text-tertiary">核心问题</div>
                       <div className="font-medium leading-relaxed text-text-main">{activeStrategy.coreProblem || currentProject.goal}</div>
                     </div>
                     <div className="space-y-1 rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">内容方法</div>
+                      <div className="text-[13px] text-text-tertiary">内容方法</div>
                       <div className="font-medium leading-relaxed text-text-main">{activeStrategy.solutionSummary || "尚未配置"}</div>
                     </div>
                     <div className="space-y-1 rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">验证目标</div>
+                      <div className="text-[13px] text-text-tertiary">验证目标</div>
                       <div className="font-medium leading-relaxed text-text-main">{activeStrategy.verifyHypothesis || "尚未配置"}</div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border border-border-default px-3.5 py-3 text-[11.5px]">
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border border-border-default px-3.5 py-3 text-[13px]">
                     <span className="text-text-tertiary">发布计划结构</span>
                     {(["品牌主号", "店长号/KOS", "KOC"] as const).map(accountType => (
                       <span key={accountType} className="text-text-secondary">
@@ -637,41 +637,41 @@ export function ProjectCenter({
                         <BarChart2 size={16} className="text-text-secondary" />
                         发布后数据回传
                       </h3>
-                      <p className="mt-1 text-[11px] text-text-tertiary">只展示已经由接口回传的数据，不以计划值代替结果。</p>
+                      <p className="mt-1 text-[13px] text-text-tertiary">只展示已经由接口回传的数据，不以计划值代替结果。</p>
                     </div>
-                    {latestKeywordSnapshots[0] && <span className="text-[11px] text-text-tertiary">搜索快照：{formatChineseDate(latestKeywordSnapshots[0].capturedAt, true)}</span>}
+                    {latestKeywordSnapshots[0] && <span className="text-[13px] text-text-tertiary">搜索快照：{formatChineseDate(latestKeywordSnapshots[0].capturedAt, true)}</span>}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                     <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">已发布笔记</div>
+                      <div className="text-[13px] text-text-tertiary">已发布笔记</div>
                       <div className="mt-1 text-[20px] font-semibold tabular-nums text-text-main">{projectPublishedNotes.length} 篇</div>
-                      <div className="mt-0.5 text-[11px] text-text-tertiary">已取得平台 ID {searchableNotes.length} 篇</div>
+                      <div className="mt-0.5 text-[13px] text-text-tertiary">已取得平台 ID {searchableNotes.length} 篇</div>
                     </div>
                     <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">笔记数据回传</div>
+                      <div className="text-[13px] text-text-tertiary">笔记数据回传</div>
                       <div className="mt-1 text-[20px] font-semibold tabular-nums text-text-main">{notesWithPerformance.size}/{projectPublishedNotes.length}</div>
-                      <div className="mt-0.5 text-[11px] text-text-tertiary">互动与咨询数据</div>
+                      <div className="mt-0.5 text-[13px] text-text-tertiary">互动与咨询数据</div>
                     </div>
                     <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">有效咨询</div>
+                      <div className="text-[13px] text-text-tertiary">有效咨询</div>
                       <div className={`mt-1 text-[20px] font-semibold tabular-nums ${notesWithPerformance.size ? "text-emerald-700" : "text-text-tertiary"}`}>
                         {notesWithPerformance.size ? `${effectiveConsultations} 条` : "待回传"}
                       </div>
-                      <div className="mt-0.5 text-[11px] text-text-tertiary">属于发布后的笔记数据</div>
+                      <div className="mt-0.5 text-[13px] text-text-tertiary">属于发布后的笔记数据</div>
                     </div>
                     <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5">
-                      <div className="text-[11.5px] text-text-tertiary">关键词收录与排名</div>
+                      <div className="text-[13px] text-text-tertiary">关键词收录与排名</div>
                       <div className="mt-1 text-[20px] font-semibold tabular-nums text-text-main">
                         {latestKeywordSnapshots.length === 0 ? "待采集" : `${indexedPublishedNoteIds.size}/${searchableNotes.length} 篇`}
                       </div>
-                      <div className="mt-0.5 truncate text-[11px] text-text-tertiary" title={bestSearchMatch?.keyword}>
+                      <div className="mt-0.5 truncate text-[13px] text-text-tertiary" title={bestSearchMatch?.keyword}>
                         {bestSearchMatch ? `最佳第 ${bestSearchMatch.rank} 位 · ${bestSearchMatch.keyword}` : searchableNotes.length ? "本次搜索结果未匹配到笔记 ID" : "发布并取得笔记 ID 后开始搜索"}
                       </div>
                     </div>
                   </div>
 
-                  <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5 text-[12px] text-text-secondary">
+                  <div className="rounded-lg border border-border-default bg-surface-subtle p-3.5 text-[13px] text-text-secondary">
                     <div className="flex items-start gap-2">
                       <Search size={15} className="mt-0.5 shrink-0 text-text-tertiary" />
                       <div className="leading-relaxed">
@@ -692,21 +692,21 @@ export function ProjectCenter({
                   {latestReviewProposal ? (
                     <div className="flex items-start justify-between gap-5 rounded-lg border border-border-default bg-surface-subtle p-3.5">
                       <div>
-                        <div className="flex items-center gap-2 text-[12.5px] font-medium text-text-main">
+                        <div className="flex items-center gap-2 text-[13px] font-medium text-text-main">
                           复盘调整建议
-                          <span className={`rounded px-1.5 py-0.5 text-[10.5px] ${latestReviewProposal.status === "pending" ? "bg-warning-light text-warning" : "bg-success-light text-success"}`}>
+                          <span className={`rounded px-1.5 py-0.5 text-[13px] ${latestReviewProposal.status === "pending" ? "bg-warning-light text-warning" : "bg-success-light text-success"}`}>
                             {latestReviewProposal.status === "pending" ? "待确认，尚未生效" : "已生成新策略版本"}
                           </span>
                         </div>
-                        <p className="mt-1.5 text-[12px] leading-relaxed text-text-secondary">{latestReviewProposal.summary}</p>
-                        <p className="mt-1 text-[11px] text-text-tertiary">即使应用，也只影响之后生成的笔记；历史内容继续绑定原版本。</p>
+                        <p className="mt-1.5 text-[13px] leading-relaxed text-text-secondary">{latestReviewProposal.summary}</p>
+                        <p className="mt-1 text-[13px] text-text-tertiary">即使应用，也只影响之后生成的笔记；历史内容继续绑定原版本。</p>
                       </div>
-                      <button onClick={() => setWorkflowTab?.("review")} className="shrink-0 rounded-lg border border-border-default bg-surface-1 px-3 py-1.5 text-[11.5px] font-medium text-text-main hover:bg-hover-bg">
+                      <button onClick={() => setWorkflowTab?.("review")} className="shrink-0 rounded-lg border border-border-default bg-surface-1 px-3 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">
                         查看复盘
                       </button>
                     </div>
                   ) : (
-                    <div className="rounded-lg bg-surface-subtle p-3.5 text-[12px] text-text-tertiary">当前还没有可影响后续策略的复盘建议。</div>
+                    <div className="rounded-lg bg-surface-subtle p-3.5 text-[13px] text-text-tertiary">当前还没有可影响后续策略的复盘建议。</div>
                   )}
                 </div>
 
@@ -727,9 +727,9 @@ export function ProjectCenter({
                     <div>
                       <div className="text-[13px] font-semibold text-text-main flex items-center gap-2">
                         <span>素材协作</span>
-                        <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-medium rounded-md">有任务等待确认</span>
+                        <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[13px] font-medium rounded-md">有任务等待确认</span>
                       </div>
-                      <div className="text-[11.5px] text-text-secondary mt-0.5">
+                      <div className="text-[13px] text-text-secondary mt-0.5">
                         3项任务进行中 · 5件素材已回传
                       </div>
                     </div>
@@ -738,13 +738,13 @@ export function ProjectCenter({
                   <div className="flex items-center gap-2.5">
                     <button
                       onClick={() => setShowAssetsDrawer(true)}
-                      className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors cursor-pointer"
+                      className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg transition-colors cursor-pointer"
                     >
                       查看素材
                     </button>
                     <button
                       onClick={() => setShowDispatchModal(true)}
-                      className="px-3.5 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[12px] font-medium transition-colors shadow-xs cursor-pointer"
+                      className="px-3.5 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[13px] font-medium transition-colors shadow-xs cursor-pointer"
                     >
                       下发素材任务
                     </button>
@@ -759,7 +759,7 @@ export function ProjectCenter({
                     <div className="flex items-center bg-surface-subtle p-1 rounded-lg border border-border-default">
                       <button
                         onClick={() => setContentSubView("by_note")}
-                        className={`px-3.5 py-1.5 rounded-md text-[12.5px] font-medium transition-all ${
+                        className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all ${
                           contentSubView === "by_note"
                             ? "bg-surface-1 text-text-main shadow-xs"
                             : "text-text-tertiary hover:text-text-main"
@@ -769,7 +769,7 @@ export function ProjectCenter({
                       </button>
                       <button
                         onClick={() => setContentSubView("by_account")}
-                        className={`px-3.5 py-1.5 rounded-md text-[12.5px] font-medium transition-all ${
+                        className={`px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-all ${
                           contentSubView === "by_account"
                             ? "bg-surface-1 text-text-main shadow-xs"
                             : "text-text-tertiary hover:text-text-main"
@@ -788,14 +788,14 @@ export function ProjectCenter({
                           placeholder="搜索标题、账号或类型..." 
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-8 pr-3 py-1.5 w-[200px] bg-surface-subtle border border-border-default rounded-lg text-[12.5px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+                          className="pl-8 pr-3 py-1.5 w-[200px] bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
                         />
                       </div>
 
                       {/* Single Dark Primary Button for Content Tab */}
                       <button
                         onClick={() => setShowImportSelect(true)}
-                        className="px-3.5 py-1.5 bg-btn-main text-white rounded-lg text-[12.5px] font-medium hover:bg-btn-main-hover transition-colors flex items-center gap-1"
+                        className="px-3.5 py-1.5 bg-btn-main text-white rounded-lg text-[13px] font-medium hover:bg-btn-main-hover transition-colors flex items-center gap-1"
                       >
                         <Plus size={13} /> 新建内容
                       </button>
@@ -817,14 +817,14 @@ export function ProjectCenter({
                         <button
                           key={item.label}
                           onClick={() => setStatusFilter(item.filter)}
-                          className={`px-3 py-1 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 ${
+                          className={`px-3 py-1 rounded-lg text-[13px] font-medium transition-all flex items-center gap-1.5 ${
                             statusFilter === item.filter
                               ? "bg-btn-main text-white"
                               : "bg-surface-subtle hover:bg-hover-bg text-text-secondary border border-border-default"
                           }`}
                         >
                           <span>{item.label}</span>
-                          <span className={`px-1.5 py-0.2 rounded text-[10.5px] ${
+                          <span className={`px-1.5 py-0.2 rounded text-[13px] ${
                             statusFilter === item.filter
                               ? "bg-surface-1/20 text-white"
                               : item.isAlert
@@ -846,7 +846,7 @@ export function ProjectCenter({
                       <div className="bg-surface-1 rounded-xl p-12 border border-border-default text-center space-y-2">
                         <FileText size={32} className="mx-auto text-neutral-300" />
                         <h4 className="text-[14px] font-semibold text-text-main">未找到匹配的内容笔记</h4>
-                        <p className="text-[12px] text-text-tertiary">请尝试更换筛选条件或新建内容</p>
+                        <p className="text-[13px] text-text-tertiary">请尝试更换筛选条件或新建内容</p>
                       </div>
                     ) : (
                       filteredNotes.map((note) => {
@@ -870,24 +870,24 @@ export function ProjectCenter({
                                     {note.title || note.contentDirection || "未命名任务"}
                                   </h4>
 
-                                  <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[11px] font-normal rounded shrink-0">
+                                  <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[13px] font-normal rounded shrink-0">
                                     {note.type || "品牌号"}
                                   </span>
 
                                   {isPkg && (
-                                    <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[11px] font-normal rounded shrink-0">
+                                    <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[13px] font-normal rounded shrink-0">
                                       消费者笔记包
                                     </span>
                                   )}
 
                                   {hasConsumerAnswers && !isPkg && (
-                                    <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[11px] font-normal rounded shrink-0">
+                                    <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[13px] font-normal rounded shrink-0">
                                       已填问卷
                                     </span>
                                   )}
                                 </div>
 
-                                <div className="text-[12px] text-text-tertiary flex items-center gap-3">
+                                <div className="text-[13px] text-text-tertiary flex items-center gap-3">
                                   <span>账号：<span className="font-normal text-text-secondary">{note.account || note.participant || "特唯普官方旗舰店"}</span></span>
                                   <span>·</span>
                                   <span>发布计划：{note.plannedDate ? formatChineseDate(note.plannedDate) : "排期中"}</span>
@@ -901,7 +901,7 @@ export function ProjectCenter({
                               </div>
 
                               <div className="flex shrink-0 items-center gap-2">
-                                <span className={`px-2.5 py-0.5 rounded text-[11.5px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
+                                <span className={`px-2.5 py-0.5 rounded text-[13px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
                                   {readiness.readyToPublish && note.publishStatus === "未安排" ? "已进入待发池" : uStatus}
                                 </span>
                                 {primaryAction && (
@@ -911,7 +911,7 @@ export function ProjectCenter({
                                       event.stopPropagation();
                                       openNoteOperation(note, primaryAction.action, "note_list");
                                     }}
-                                    className={`rounded-lg px-3 py-1.5 text-[11.5px] font-medium transition-colors ${
+                                    className={`rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors ${
                                       primaryAction.tone === "danger"
                                         ? "border border-danger-light bg-danger-light text-danger hover:opacity-85"
                                         : primaryAction.tone === "primary"
@@ -943,7 +943,7 @@ export function ProjectCenter({
                           <Users size={16} className="text-text-secondary" />
                           自有可控账号矩阵
                         </h4>
-                        <span className="text-[12px] text-text-tertiary">共 {controlledAccounts.length} 个账号</span>
+                        <span className="text-[13px] text-text-tertiary">共 {controlledAccounts.length} 个账号</span>
                       </div>
 
                       <div className="space-y-3">
@@ -960,11 +960,11 @@ export function ProjectCenter({
                                 <div className="space-y-0.5">
                                   <div className="flex items-center gap-2">
                                     <h5 className="text-[14px] font-semibold text-text-main">{acc.name}</h5>
-                                    <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[11px] font-normal rounded">
+                                    <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[13px] font-normal rounded">
                                       {acc.type}
                                     </span>
                                   </div>
-                                  <p className="text-[12px] text-text-tertiary font-normal">人设定位: {acc.persona}</p>
+                                  <p className="text-[13px] text-text-tertiary font-normal">人设定位: {acc.persona}</p>
                                 </div>
 
                                 <div className="flex items-center gap-2">
@@ -975,7 +975,7 @@ export function ProjectCenter({
                                       persona: acc.persona,
                                       notes: acc.notes
                                     })}
-                                    className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors"
+                                    className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg transition-colors"
                                   >
                                     发布队列 ({acc.notes.length})
                                   </button>
@@ -993,46 +993,46 @@ export function ProjectCenter({
                               </div>
 
                               {/* Quantitative Status Counters */}
-                              <div className="flex items-center gap-4 text-center text-[12px] pt-1">
+                              <div className="flex items-center gap-4 text-center text-[13px] pt-1">
                                 <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.planCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.planCount}</span>
-                                  <span className="text-text-secondary text-[12px]">篇规划</span>
+                                  <span className="text-text-secondary text-[13px]">篇规划</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.publishedCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.publishedCount}</span>
-                                  <span className="text-text-secondary text-[12px]">篇已发布</span>
+                                  <span className="text-text-secondary text-[13px]">篇已发布</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.queueCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.queueCount}</span>
-                                  <span className="text-text-secondary text-[12px]">篇排队中</span>
+                                  <span className="text-text-secondary text-[13px]">篇排队中</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.waitingExecCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.waitingExecCount}</span>
-                                  <span className="text-text-secondary text-[12px]">篇待执行</span>
+                                  <span className="text-text-secondary text-[13px]">篇待执行</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.observingCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.observingCount}</span>
-                                  <span className="text-text-secondary text-[12px]">观察中</span>
+                                  <span className="text-text-secondary text-[13px]">观察中</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.exceptionCount === 0 ? "text-text-tertiary" : "text-danger"}`}>{acc.exceptionCount}</span>
-                                  <span className="text-text-secondary text-[12px]">异常</span>
+                                  <span className="text-text-secondary text-[13px]">异常</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
                                 <div className="flex items-baseline gap-1">
-                                  <span className="text-text-secondary text-[12px]">下次发布：{formatChineseDate(acc.nextPlannedDate, true)}</span>
+                                  <span className="text-text-secondary text-[13px]">下次发布：{formatChineseDate(acc.nextPlannedDate, true)}</span>
                                 </div>
                               </div>
 
                               {/* Expanded Recent 3 items */}
                               {isExpanded && recentNotes.length > 0 && (
                                 <div className="space-y-2 pt-2 border-t border-border-default">
-                                  <div className="text-[12px] font-medium text-text-tertiary">近期发布队列：</div>
+                                  <div className="text-[13px] font-medium text-text-tertiary">近期发布队列：</div>
                                   <div className="space-y-2">
                                     {recentNotes.map((note) => {
                                       const uStatus = getUnifiedBusinessStatus(note);
@@ -1041,14 +1041,14 @@ export function ProjectCenter({
                                         <div
                                           key={note.id}
                                           onClick={() => setActiveNoteDetail(note)}
-                                          className="p-2.5 bg-surface-subtle hover:bg-hover-bg rounded-lg border border-border-default flex items-center justify-between text-[12.5px] cursor-pointer transition-colors group"
+                                          className="p-2.5 bg-surface-subtle hover:bg-hover-bg rounded-lg border border-border-default flex items-center justify-between text-[13px] cursor-pointer transition-colors group"
                                         >
                                           <div className="flex items-center gap-2 truncate max-w-[500px]">
                                             <span className="font-medium text-text-main truncate group-hover:text-text-main">{note.title || "未命名笔记"}</span>
-                                            <span className="text-[11.5px] text-text-tertiary">（{formatChineseDate(note.plannedDate)}）</span>
+                                            <span className="text-[13px] text-text-tertiary">（{formatChineseDate(note.plannedDate)}）</span>
                                           </div>
 
-                                          <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${style.bg} ${style.text} ${style.border}`}>
+                                          <span className={`px-2 py-0.5 rounded text-[13px] font-medium border ${style.bg} ${style.text} ${style.border}`}>
                                             {uStatus}
                                           </span>
                                         </div>
@@ -1070,7 +1070,7 @@ export function ProjectCenter({
                           <Package size={16} className="text-text-secondary" />
                           消费者发布池 (按内容包聚合)
                         </h4>
-                        <span className="text-[12px] text-text-tertiary">不进入固定账号排期 · 动态招募履约</span>
+                        <span className="text-[13px] text-text-tertiary">不进入固定账号排期 · 动态招募履约</span>
                       </div>
 
                       <div className="space-y-3">
@@ -1083,11 +1083,11 @@ export function ProjectCenter({
                               <div className="space-y-0.5">
                                 <div className="flex items-center gap-2">
                                   <h5 className="text-[14px] font-semibold text-text-main">{pkg.name}</h5>
-                                  <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary text-[11px] font-normal rounded border border-border-default">
+                                  <span className="px-2 py-0.5 bg-surface-subtle text-text-secondary text-[13px] font-normal rounded border border-border-default">
                                     {pkg.type}
                                   </span>
                                 </div>
-                                <p className="text-[12px] text-text-tertiary font-normal">
+                                <p className="text-[13px] text-text-tertiary font-normal">
                                   有效期至: {pkg.validUntil} · 问卷已启用
                                 </p>
                               </div>
@@ -1095,7 +1095,7 @@ export function ProjectCenter({
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => setShowLandingPage(true)}
-                                  className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors"
+                                  className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg transition-colors"
                                 >
                                   落地页推广
                                 </button>
@@ -1104,7 +1104,7 @@ export function ProjectCenter({
                                     const target = allNotes.find(n => n.isNotePackage) || allNotes.find(n => n.title?.includes("内容包") || n.title?.includes("笔记包")) || pkg.notes[0];
                                     if (target) setActiveNoteDetail(target);
                                   }}
-                                  className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors"
+                                  className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg transition-colors"
                                 >
                                   查看内容要求
                                 </button>
@@ -1112,37 +1112,37 @@ export function ProjectCenter({
                             </div>
 
                             {/* Aggregated Funnel Counters */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 text-center text-[12px]">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 text-center text-[13px]">
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">招募目标</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">招募目标</div>
                                 <div className="font-semibold tabular-nums text-text-main mt-0.5">{pkg.planSlots} 人</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">已领取</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">已领取</div>
                                 <div className="font-semibold tabular-nums text-text-main mt-0.5">{pkg.claimed} 人</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">已填问卷</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">已填问卷</div>
                                 <div className="font-semibold tabular-nums text-text-main mt-0.5">{pkg.questionnaireFilled} 人</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">已生成笔记</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">已生成笔记</div>
                                 <div className="font-semibold tabular-nums text-text-main mt-0.5">{pkg.notesGenerated} 篇</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">照片质检通过</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">照片质检通过</div>
                                 <div className="font-semibold tabular-nums text-emerald-700 mt-0.5">{pkg.photosPassed} 组</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">已发布小红书</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">已发布小红书</div>
                                 <div className="font-semibold tabular-nums text-text-main mt-0.5">{pkg.published} 篇</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">未完成履约</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">未完成履约</div>
                                 <div className="font-semibold tabular-nums text-text-main mt-0.5">{pkg.incomplete} 人</div>
                               </div>
                               <div className="p-2 bg-surface-subtle rounded-lg border border-border-default">
-                                <div className="text-text-tertiary text-[11px] font-normal">待人工跟进</div>
+                                <div className="text-text-tertiary text-[13px] font-normal">待人工跟进</div>
                                 <div className={`font-semibold tabular-nums mt-0.5 ${pkg.needContactCount > 0 ? "text-danger" : "text-text-tertiary"}`}>
                                   {pkg.needContactCount} 人
                                 </div>
@@ -1255,11 +1255,11 @@ export function ProjectCenter({
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-[16px] font-semibold text-text-main">方案已归集素材</h2>
-                  <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-medium rounded-md">
+                  <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[13px] font-medium rounded-md">
                     5件已回传
                   </span>
                 </div>
-                <div className="text-[12px] text-text-tertiary mt-0.5 truncate max-w-[480px]">
+                <div className="text-[13px] text-text-tertiary mt-0.5 truncate max-w-[480px]">
                   {currentProject.name}
                 </div>
               </div>
@@ -1328,20 +1328,20 @@ export function ProjectCenter({
                       className="relative h-36 bg-surface-subtle overflow-hidden cursor-pointer"
                     >
                       <img src={asset.url} alt={asset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 text-white text-[10px] font-bold rounded-md backdrop-blur-xs flex items-center gap-1">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 text-white text-[13px] font-bold rounded-md backdrop-blur-xs flex items-center gap-1">
                         {asset.category === 'video' ? <Video size={10} /> : <ImageIcon size={10} />}
                         {asset.category === 'video' ? '视频' : '照片'}
                       </span>
-                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-md shadow-xs">
+                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-500 text-white text-[13px] font-bold rounded-md shadow-xs">
                         {asset.aiStatus}
                       </span>
                     </div>
                     <div className="p-3 flex-1 flex flex-col justify-between">
                       <div>
-                        <div className="text-[12.5px] font-semibold text-text-main truncate mb-0.5">{asset.title}</div>
-                        <div className="text-[11px] text-text-tertiary truncate">关联: {asset.noteRef}</div>
+                        <div className="text-[13px] font-semibold text-text-main truncate mb-0.5">{asset.title}</div>
+                        <div className="text-[13px] text-text-tertiary truncate">关联: {asset.noteRef}</div>
                       </div>
-                      <div className="pt-2 mt-2 border-t border-border-default flex items-center justify-between text-[11px] text-text-secondary">
+                      <div className="pt-2 mt-2 border-t border-border-default flex items-center justify-between text-[13px] text-text-secondary">
                         <span>{asset.uploader}</span>
                         <span>{asset.time}</span>
                       </div>
@@ -1368,14 +1368,14 @@ export function ProjectCenter({
             </div>
             <div>
               <h3 className="text-[15px] font-semibold text-text-main">归档项目确认</h3>
-              <p className="text-[12.5px] text-text-secondary mt-1.5 leading-relaxed font-normal">
+              <p className="text-[13px] text-text-secondary mt-1.5 leading-relaxed font-normal">
                 确认归档“<span className="font-medium text-text-main">{currentProject.name}</span>”吗？归档后项目数据与笔记将被安全保留。
               </p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setShowArchiveConfirm(false)}
-                className="px-4 py-2 border border-border-default text-text-secondary hover:bg-surface-subtle rounded-lg text-[12.5px] font-medium transition-colors"
+                className="px-4 py-2 border border-border-default text-text-secondary hover:bg-surface-subtle rounded-lg text-[13px] font-medium transition-colors"
               >
                 取消
               </button>
@@ -1384,7 +1384,7 @@ export function ProjectCenter({
                   updateProject(currentProject.id, { status: "已结束" });
                   setShowArchiveConfirm(false);
                 }}
-                className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[12.5px] font-medium transition-colors"
+                className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[13px] font-medium transition-colors"
               >
                 确认归档
               </button>
@@ -1404,15 +1404,15 @@ export function ProjectCenter({
               </h3>
               <button onClick={() => setShowOperationLogs(false)} className="text-text-tertiary hover:text-text-secondary"><X size={16}/></button>
             </div>
-            <div className="p-4 max-h-[400px] overflow-y-auto space-y-2.5 text-[12.5px]">
+            <div className="p-4 max-h-[400px] overflow-y-auto space-y-2.5 text-[13px]">
               {currentProject.operationLogs.map((log) => (
                 <div key={log.id} className="p-3 bg-surface-subtle rounded-lg border border-border-default space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-text-main">{log.action}</span>
-                    <span className="text-[11px] text-text-tertiary">{formatChineseDate(log.timestamp, true)}</span>
+                    <span className="text-[13px] text-text-tertiary">{formatChineseDate(log.timestamp, true)}</span>
                   </div>
-                  <div className="text-text-secondary text-[12px] font-normal">{log.detail}</div>
-                  <div className="text-[11px] text-text-tertiary">操作人: {log.operator}</div>
+                  <div className="text-text-secondary text-[13px] font-normal">{log.detail}</div>
+                  <div className="text-[13px] text-text-tertiary">操作人: {log.operator}</div>
                 </div>
               ))}
             </div>
@@ -1428,7 +1428,7 @@ export function ProjectCenter({
             <div className="p-4 border-b border-border-default flex justify-between items-center bg-surface-subtle">
               <div>
                 <h3 className="font-semibold text-[15px] text-text-main">新建内容或笔记</h3>
-                <p className="text-[12px] text-text-secondary mt-0.5">请选择新建或导入内容的方式</p>
+                <p className="text-[13px] text-text-secondary mt-0.5">请选择新建或导入内容的方式</p>
               </div>
               <button onClick={() => setShowImportSelect(false)} className="text-text-tertiary hover:text-text-secondary p-1 rounded-lg hover:bg-hover-bg"><X size={16}/></button>
             </div>
@@ -1444,9 +1444,9 @@ export function ProjectCenter({
                 <div className="flex-1">
                   <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
                     <span>批量导入 Excel / CSV</span>
-                    <span className="text-[11px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">批量解析</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">批量解析</span>
                   </div>
-                  <div className="text-[12px] text-text-tertiary mt-0.5 font-normal">上传表格文件，批量解析提取笔记标题与发布计划</div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">上传表格文件，批量解析提取笔记标题与发布计划</div>
                 </div>
               </button>
 
@@ -1460,9 +1460,9 @@ export function ProjectCenter({
                 <div className="flex-1">
                   <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
                     <span>关联飞书多维表格</span>
-                    <span className="text-[11px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">云端同步</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">云端同步</span>
                   </div>
-                  <div className="text-[12px] text-text-tertiary mt-0.5 font-normal">粘贴表格 URL，自动导入并同步笔记任务</div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">粘贴表格 URL，自动导入并同步笔记任务</div>
                 </div>
               </button>
 
@@ -1476,9 +1476,9 @@ export function ProjectCenter({
                 <div className="flex-1">
                   <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
                     <span>批量生成笔记</span>
-                    <span className="text-[11px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">方案起草</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">方案起草</span>
                   </div>
-                  <div className="text-[12px] text-text-tertiary mt-0.5 font-normal">根据项目方案与资料库，批量起草多篇笔记</div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">根据项目方案与资料库，批量起草多篇笔记</div>
                 </div>
               </button>
 
@@ -1492,9 +1492,9 @@ export function ProjectCenter({
                 <div className="flex-1">
                   <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
                     <span>手动新建单篇笔记</span>
-                    <span className="text-[11px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">单篇</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">单篇</span>
                   </div>
-                  <div className="text-[12px] text-text-tertiary mt-0.5 font-normal">手动填写标题、选择账号与设定发布排期</div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">手动填写标题、选择账号与设定发布排期</div>
                 </div>
               </button>
             </div>

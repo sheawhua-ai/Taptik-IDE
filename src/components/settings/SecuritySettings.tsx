@@ -8,7 +8,7 @@ export const SecuritySettings = () => {
  return (
  <div className="flex flex-col h-full space-y-6">
  <div className="flex justify-end mb-2">
- <div className="px-4 py-1.5 bg-hover-bg rounded-full text-[12px] text-text-secondary border border-border-default/50 shadow-sm">
+ <div className="px-4 py-1.5 bg-hover-bg rounded-full text-[13px] text-text-secondary border border-border-default/50 shadow-sm">
  安全能力由本地运行时提供
  </div>
  </div>
@@ -24,7 +24,7 @@ export const SecuritySettings = () => {
  <span className="text-[15px] text-text-main">沙箱安全</span>
  </div>
  <div className="flex items-center gap-3">
- <span className="w-5 h-5 rounded-full border border-border-default flex items-center justify-center text-[12px] text-text-tertiary bg-surface-1">?</span>
+ <span className="w-5 h-5 rounded-full border border-border-default flex items-center justify-center text-[13px] text-text-tertiary bg-surface-1">?</span>
  <button 
  onClick={() => setSandboxEnabled(!sandboxEnabled)}
  className={`relative w-11 h-6 rounded-full transition-colors ${sandboxEnabled ? 'bg-btn-main' : 'bg-neutral-300'}`}
@@ -44,7 +44,7 @@ export const SecuritySettings = () => {
  </div>
  <div className="text-left py-0.5">
  <div className="text-[14px] text-text-main mb-0.5">文件安全</div>
- <div className="text-[12px] text-text-tertiary leading-snug">为沙箱拦截后的文件夹路径配置白名单和黑名单</div>
+ <div className="text-[13px] text-text-tertiary leading-snug">为沙箱拦截后的文件夹路径配置白名单和黑名单</div>
  </div>
  </div>
  <ChevronRight size={16} className="text-neutral-300 group-hover:text-text-tertiary" />
@@ -57,7 +57,7 @@ export const SecuritySettings = () => {
  </div>
  <div className="text-left py-0.5">
  <div className="text-[14px] text-text-main mb-0.5">命令安全</div>
- <div className="text-[12px] text-text-tertiary leading-snug">为命令前缀配置询问和放行名单</div>
+ <div className="text-[13px] text-text-tertiary leading-snug">为命令前缀配置询问和放行名单</div>
  </div>
  </div>
  <ChevronRight size={16} className="text-neutral-300 group-hover:text-text-tertiary" />
@@ -70,7 +70,7 @@ export const SecuritySettings = () => {
  </div>
  <div className="text-left py-0.5">
  <div className="text-[14px] text-text-main mb-0.5">网络安全</div>
- <div className="text-[12px] text-text-tertiary leading-snug">控制 URL 访问与沙箱网络名规则</div>
+ <div className="text-[13px] text-text-tertiary leading-snug">控制 URL 访问与沙箱网络名规则</div>
  </div>
  </div>
  <ChevronRight size={16} className="text-neutral-300 group-hover:text-text-tertiary" />
@@ -96,9 +96,9 @@ export const SecuritySettings = () => {
  <div className="flex-1">
  <div className="flex items-center justify-between mb-1">
  <span className="text-[14px] text-text-main">安全网关</span>
- <span className="px-2 py-0.5 bg-hover-bg text-text-main rounded text-[11px] border border-border-default">已开启</span>
+ <span className="px-2 py-0.5 bg-hover-bg text-text-main rounded text-[13px] border border-border-default">已开启</span>
  </div>
- <div className="text-[12px] text-text-tertiary">工作空间出入流量统一经过安全网关安全处理</div>
+ <div className="text-[13px] text-text-tertiary">工作空间出入流量统一经过安全网关安全处理</div>
  </div>
  </div>
 
@@ -107,9 +107,9 @@ export const SecuritySettings = () => {
  <div className="flex-1">
  <div className="flex items-center justify-between mb-1">
  <span className="text-[14px] text-text-main">传输加密</span>
- <span className="px-2 py-0.5 bg-hover-bg text-text-main rounded text-[11px] border border-border-default">已开启</span>
+ <span className="px-2 py-0.5 bg-hover-bg text-text-main rounded text-[13px] border border-border-default">已开启</span>
  </div>
- <div className="text-[12px] text-text-tertiary">本地与云端通信使用端到端加密通道</div>
+ <div className="text-[13px] text-text-tertiary">本地与云端通信使用端到端加密通道</div>
  </div>
  </div>
  </div>
@@ -125,7 +125,7 @@ export const SecuritySettings = () => {
  </div>
  <div>
  <h4 className="text-[15px] font-semibold text-text-main mb-1">系统级工具</h4>
- <p className="text-[12px] text-text-tertiary">WSL、wmic、sc、reg、schtasks 等系统级工具可绕过沙箱限制，请谨慎启用</p>
+ <p className="text-[13px] text-text-tertiary">WSL、wmic、sc、reg、schtasks 等系统级工具可绕过沙箱限制，请谨慎启用</p>
  </div>
  </div>
  <select className="border border-border-default bg-surface-1 px-4 py-2 rounded-lg text-[13px] text-text-secondary outline-none focus:border-primary-500 shadow-sm cursor-pointer min-w-[100px]">
@@ -143,7 +143,7 @@ export const SecuritySettings = () => {
  </div>
  <div>
  <h4 className="text-[15px] font-semibold text-text-main mb-0.5">内置运行时</h4>
- <p className="text-[12px] text-text-tertiary">允许使用随包提供的 Node.js、Python 和 Git Bash 工具</p>
+ <p className="text-[13px] text-text-tertiary">允许使用随包提供的 Node.js、Python 和 Git Bash 工具</p>
  </div>
  </div>
  <button 
@@ -155,7 +155,7 @@ export const SecuritySettings = () => {
  </div>
  
  <table className="w-full text-left text-[13px]">
- <thead className="bg-page-bg text-text-tertiary text-[12px]">
+ <thead className="bg-page-bg text-text-tertiary text-[13px]">
  <tr>
  <th className=" py-3 px-6 w-1/4">工具</th>
  <th className=" py-3 px-6 w-1/2">说明</th>

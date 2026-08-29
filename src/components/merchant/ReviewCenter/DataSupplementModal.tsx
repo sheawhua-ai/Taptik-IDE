@@ -44,7 +44,7 @@ export function DataSupplementModal({ isOpen, onClose, onSuccess }: DataSuppleme
           </button>
         </div>
 
-        <div className="p-5 space-y-4 text-[12.5px]">
+        <div className="p-5 space-y-4 text-[13px]">
           <div className="p-3 bg-red-50 text-red-800 rounded-xl border border-red-200 leading-relaxed">
             <span className="font-semibold block mb-0.5">检测到异常：青岛万象城体验店授权失效</span>
             小红书专业号接口返回 Token Expired (401)，导致近 15 天评论与私信互动明细无法拉取。
@@ -66,7 +66,7 @@ export function DataSupplementModal({ isOpen, onClose, onSuccess }: DataSuppleme
                   <Link2 size={14} className="text-btn-main" />
                   <span>一键刷新授权</span>
                 </div>
-                <p className="text-[11.5px] text-text-tertiary">快速换取新令牌并自动重试</p>
+                <p className="text-[13px] text-text-tertiary">快速换取新令牌并自动重试</p>
               </button>
 
               <button
@@ -82,7 +82,7 @@ export function DataSupplementModal({ isOpen, onClose, onSuccess }: DataSuppleme
                   <Upload size={14} className="text-btn-main" />
                   <span>上传 Excel 补齐</span>
                 </div>
-                <p className="text-[11.5px] text-text-tertiary">导入线下导出的数据表</p>
+                <p className="text-[13px] text-text-tertiary">导入线下导出的数据表</p>
               </button>
             </div>
           </div>
@@ -91,14 +91,14 @@ export function DataSupplementModal({ isOpen, onClose, onSuccess }: DataSuppleme
         <div className="p-4 border-t border-border-default flex items-center justify-end gap-2 bg-surface-subtle">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
+            className="px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
           >
             稍后处理
           </button>
           <button
             onClick={handleFix}
             disabled={isSubmitting}
-            className="px-4 py-2 text-[12.5px] font-medium text-white bg-btn-main hover:bg-btn-main-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 text-[13px] font-medium text-white bg-btn-main hover:bg-btn-main-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
           >
             {isSubmitting ? (
               <>

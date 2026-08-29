@@ -65,11 +65,11 @@ export function ConsumerModeDrawer({
               <h2 className="text-[16px] font-extrabold text-text-main">
                 调整消费者KOC分发模式
               </h2>
-              <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold rounded-md">
+              <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[13px] font-bold rounded-md">
                 KOC真实体验内容包
               </span>
             </div>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
+            <p className="text-[13px] text-text-tertiary mt-0.5">
               设置体验官招募规模、问卷事实采集、拍摄要求与观察周期
             </p>
           </div>
@@ -83,7 +83,7 @@ export function ConsumerModeDrawer({
 
         {/* Real-time Summary Card */}
         <div className="p-4 bg-emerald-50/70 border-b border-emerald-200/80 shrink-0">
-          <div className="text-[11.5px] font-bold text-emerald-800 flex items-center gap-1.5 mb-1">
+          <div className="text-[13px] font-bold text-emerald-800 flex items-center gap-1.5 mb-1">
             <Sparkles size={14} className="text-emerald-600" />
             <span>当前消费者分发规则预览</span>
           </div>
@@ -102,7 +102,7 @@ export function ConsumerModeDrawer({
                 <Users size={16} className="text-text-tertiary" />
                 预计招募体验官/KOC人数
               </span>
-              <span className="text-[12px] text-text-tertiary font-normal">生成对应数量内容包占位</span>
+              <span className="text-[13px] text-text-tertiary font-normal">生成对应数量内容包占位</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export function ConsumerModeDrawer({
                   key={cnt}
                   type="button"
                   onClick={() => setConfig(prev => ({ ...prev, recruitmentCount: cnt }))}
-                  className={`px-3 py-1 rounded-lg text-[12px] font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg text-[13px] font-bold transition-all ${
                     config.recruitmentCount === cnt
                       ? "bg-btn-main text-white"
                       : "bg-hover-bg hover:bg-selected-bg text-text-secondary"
@@ -148,7 +148,7 @@ export function ConsumerModeDrawer({
             </div>
 
             {/* Fixed 1 package notice */}
-            <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 flex items-center justify-between text-[12px]">
+            <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 flex items-center justify-between text-[13px]">
               <div className="flex items-center gap-2 text-text-secondary">
                 <Lock size={14} className="text-text-tertiary" />
                 <span>每人领取内容包数量</span>
@@ -167,7 +167,7 @@ export function ConsumerModeDrawer({
                   <HelpCircle size={16} className="text-text-tertiary" />
                   是否填写项目问卷
                 </div>
-                <div className="text-[11.5px] text-text-tertiary">
+                <div className="text-[13px] text-text-tertiary">
                   收集参与者真实换粮背景、排便前后对比及使用感受
                 </div>
               </div>
@@ -180,7 +180,7 @@ export function ConsumerModeDrawer({
             </div>
 
             {config.hasQuestionnaire && (
-              <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-3 text-[12px]">
+              <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-3 text-[13px]">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-text-main">
                     已包含 {config.questionnaireQuestions?.length || 4} 道结构化问卷题目
@@ -203,7 +203,7 @@ export function ConsumerModeDrawer({
                           {idx + 1}. {q.title}
                         </div>
                         {q.options && (
-                          <div className="text-[11px] text-text-tertiary pl-2">
+                          <div className="text-[13px] text-text-tertiary pl-2">
                             选项：{q.options.join(" / ")}
                           </div>
                         )}
@@ -212,7 +212,7 @@ export function ConsumerModeDrawer({
                   </div>
                 )}
 
-                <div className="text-text-tertiary text-[11.5px] flex items-center gap-1.5">
+                <div className="text-text-tertiary text-[13px] flex items-center gap-1.5">
                   <ShieldCheck size={14} className="text-emerald-600 shrink-0" />
                   <span>问卷与笔记包强绑定：填写后系统将自动基于问卷答案生成个性化体验笔记。</span>
                 </div>
@@ -228,7 +228,7 @@ export function ConsumerModeDrawer({
                   <Camera size={16} className="text-text-tertiary" />
                   是否需要现场拍照
                 </div>
-                <div className="text-[11.5px] text-text-tertiary">
+                <div className="text-[13px] text-text-tertiary">
                   要求消费者上传真实拍摄的现场体验照片或宠物吃粮照片
                 </div>
               </div>
@@ -241,7 +241,7 @@ export function ConsumerModeDrawer({
             </div>
 
             {config.needPhotos && (
-              <div className="p-3 bg-page-bg rounded-xl border border-border-default space-y-2 text-[12px]">
+              <div className="p-3 bg-page-bg rounded-xl border border-border-default space-y-2 text-[13px]">
                 <div className="font-bold text-text-main">拍照张数与要求：</div>
                 <div className="flex flex-wrap gap-2">
                   {["2—4张现场照片", "3—6张高清实拍图", "1段开袋视频 + 2张照片"].map(opt => (
@@ -249,7 +249,7 @@ export function ConsumerModeDrawer({
                       key={opt}
                       type="button"
                       onClick={() => setConfig(prev => ({ ...prev, photoCountRange: opt }))}
-                      className={`px-3 py-1.5 rounded-lg font-bold text-[11.5px] transition-all ${
+                      className={`px-3 py-1.5 rounded-lg font-bold text-[13px] transition-all ${
                         config.photoCountRange === opt
                           ? "bg-btn-main text-white shadow-2xs"
                           : "bg-surface-1 border border-border-default text-text-secondary hover:bg-hover-bg"
@@ -266,39 +266,39 @@ export function ConsumerModeDrawer({
           {/* 4. Validity & Observation Period */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-surface-1 rounded-xl p-4 border border-border-default shadow-2xs space-y-2">
-              <div className="font-bold text-text-main flex items-center gap-1.5 text-[12.5px]">
+              <div className="font-bold text-text-main flex items-center gap-1.5 text-[13px]">
                 <Clock size={15} className="text-text-tertiary" />
                 内容包领取有效期
               </div>
               <select
                 value={config.claimValidityDays}
                 onChange={(e) => setConfig(prev => ({ ...prev, claimValidityDays: parseInt(e.target.value) || 7 }))}
-                className="w-full p-2 bg-page-bg border border-neutral-300 rounded-xl font-bold text-text-main outline-none text-[12.5px]"
+                className="w-full p-2 bg-page-bg border border-neutral-300 rounded-xl font-bold text-text-main outline-none text-[13px]"
               >
                 <option value={3}>3 天 (超期自动释放)</option>
                 <option value={5}>5 天</option>
                 <option value={7}>7 天 (推荐)</option>
                 <option value={14}>14 天</option>
               </select>
-              <span className="text-[11px] text-text-tertiary block">逾期未领将自动回收入池</span>
+              <span className="text-[13px] text-text-tertiary block">逾期未领将自动回收入池</span>
             </div>
 
             <div className="bg-surface-1 rounded-xl p-4 border border-border-default shadow-2xs space-y-2">
-              <div className="font-bold text-text-main flex items-center gap-1.5 text-[12.5px]">
+              <div className="font-bold text-text-main flex items-center gap-1.5 text-[13px]">
                 <Eye size={15} className="text-text-tertiary" />
                 发布后观察周期
               </div>
               <select
                 value={config.observationDays}
                 onChange={(e) => setConfig(prev => ({ ...prev, observationDays: parseInt(e.target.value) || 7 }))}
-                className="w-full p-2 bg-page-bg border border-neutral-300 rounded-xl font-bold text-text-main outline-none text-[12.5px]"
+                className="w-full p-2 bg-page-bg border border-neutral-300 rounded-xl font-bold text-text-main outline-none text-[13px]"
               >
                 <option value={7}>7 天 (推荐)</option>
                 <option value={14}>14 天</option>
                 <option value={21}>21 天</option>
                 <option value={30}>30 天</option>
               </select>
-              <span className="text-[11px] text-text-tertiary block">用于数据回传与异常预警</span>
+              <span className="text-[13px] text-text-tertiary block">用于数据回传与异常预警</span>
             </div>
           </div>
 
@@ -309,7 +309,7 @@ export function ConsumerModeDrawer({
                 <Bell size={16} className="text-text-tertiary" />
                 启用服务号提醒与打卡激励
               </div>
-              <div className="text-[11.5px] text-text-tertiary">
+              <div className="text-[13px] text-text-tertiary">
                 通过微信服务号自动推送到期提醒、发文指导与核销奖励
               </div>
             </div>

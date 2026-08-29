@@ -29,22 +29,22 @@ export function CompetitorObservation() {
           <div className="flex items-center gap-6">
             <div className="flex flex-col">
               <span className="text-[24px] font-bold text-text-main">3</span>
-              <span className="text-[12px] text-text-tertiary font-medium">观察主题</span>
+              <span className="text-[13px] text-text-tertiary font-medium">观察主题</span>
             </div>
             <div className="w-px h-8 bg-neutral-200"></div>
             <div className="flex flex-col">
               <span className="text-[24px] font-bold text-text-main">13</span>
-              <span className="text-[12px] text-text-tertiary font-medium">监测笔记</span>
+              <span className="text-[13px] text-text-tertiary font-medium">监测笔记</span>
             </div>
             <div className="w-px h-8 bg-neutral-200"></div>
             <div className="flex flex-col">
               <span className="text-[24px] font-bold text-text-main">51</span>
-              <span className="text-[12px] text-text-tertiary font-medium">新增评论</span>
+              <span className="text-[13px] text-text-tertiary font-medium">新增评论</span>
             </div>
             <div className="w-px h-8 bg-neutral-200"></div>
             <div className="flex flex-col">
               <span className="text-[24px] font-bold text-brand-logo">18</span>
-              <span className="text-[12px] text-text-tertiary font-medium">有效需求</span>
+              <span className="text-[13px] text-text-tertiary font-medium">有效需求</span>
             </div>
           </div>
           <button 
@@ -54,7 +54,7 @@ export function CompetitorObservation() {
             <Plus size={16} /> 添加观察对象
           </button>
         </div>
-        <div className="flex items-center gap-4 text-[12px] text-text-tertiary">
+        <div className="flex items-center gap-4 text-[13px] text-text-tertiary">
           <span className="flex items-center gap-1"><Clock size={14} /> 最近扫描：10分钟前</span>
           <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded"><CheckCircle2 size={14} /> 电脑在线时自动扫描</span>
         </div>
@@ -75,7 +75,7 @@ export function CompetitorObservation() {
                 className={`p-3 rounded-xl cursor-pointer transition-colors ${activeTopic === t.id ? 'bg-brand-light border border-primary-100' : 'hover:bg-page-bg border border-transparent'}`}
               >
                 <div className="text-[14px] font-bold text-text-main mb-1">{t.name}</div>
-                <div className="text-[12px] text-text-tertiary flex items-center justify-between">
+                <div className="text-[13px] text-text-tertiary flex items-center justify-between">
                   <span>{t.notesCount} 篇笔记</span>
                   <span className="text-brand-logo font-medium">+{t.newComments} 评论</span>
                 </div>
@@ -98,22 +98,22 @@ export function CompetitorObservation() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-hover-bg text-text-secondary rounded text-[11px] font-bold">{n.brand}</span>
-                    <span className="text-[12px] text-text-tertiary">{n.author}</span>
+                    <span className="px-2 py-0.5 bg-hover-bg text-text-secondary rounded text-[13px] font-bold">{n.brand}</span>
+                    <span className="text-[13px] text-text-tertiary">{n.author}</span>
                   </div>
-                  <span className="text-[11px] text-text-tertiary flex items-center gap-1"><Clock size={12} /> {n.time}</span>
+                  <span className="text-[13px] text-text-tertiary flex items-center gap-1"><Clock size={12} /> {n.time}</span>
                 </div>
                 <h4 className="text-[15px] font-bold text-text-main mb-3">{n.title}</h4>
                 <div className="bg-page-bg rounded-xl p-3 mb-4">
-                  <div className="text-[12px] font-bold text-text-tertiary mb-1">高频痛点/问题</div>
+                  <div className="text-[13px] font-bold text-text-tertiary mb-1">高频痛点/问题</div>
                   <div className="text-[13px] text-text-secondary">{n.painPoints}</div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-[12px]">
+                  <div className="flex items-center gap-3 text-[13px]">
                     <span className="text-text-tertiary">新增评论 <strong className="text-text-main">{n.comments}</strong></span>
                     <span className="text-brand-logo">有效需求 <strong>{n.valid}</strong></span>
                   </div>
-                  <button className="text-[12px] font-bold text-brand-logo flex items-center gap-1 group">
+                  <button className="text-[13px] font-bold text-brand-logo flex items-center gap-1 group">
                     查看评论洞察 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 </div>
@@ -135,19 +135,19 @@ export function CompetitorObservation() {
               
               <div className="flex-1 overflow-y-auto p-5 space-y-6">
                 <div>
-                  <h4 className="text-[12px] font-bold text-text-tertiary uppercase tracking-wider mb-3">高频问题与提及比例</h4>
+                  <h4 className="text-[13px] font-bold text-text-tertiary uppercase tracking-wider mb-3">高频问题与提及比例</h4>
                   <div className="text-[15px] font-bold text-text-main">{notes.find(n => n.id === activeNote)?.insights.frequency}</div>
                 </div>
                 
                 <div>
-                  <h4 className="text-[12px] font-bold text-text-tertiary uppercase tracking-wider mb-3">语义分类</h4>
+                  <h4 className="text-[13px] font-bold text-text-tertiary uppercase tracking-wider mb-3">语义分类</h4>
                   <div className="inline-block px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-[13px] font-bold">
                     {notes.find(n => n.id === activeNote)?.insights.category}
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-[12px] font-bold text-text-tertiary uppercase tracking-wider mb-3">用户原话样例</h4>
+                  <h4 className="text-[13px] font-bold text-text-tertiary uppercase tracking-wider mb-3">用户原话样例</h4>
                   <div className="bg-page-bg rounded-xl p-4 border border-border-default space-y-3">
                     <p className="text-[13px] text-text-secondary italic">"我家狗吃这个怎么总是软便啊？"</p>
                     <p className="text-[13px] text-text-secondary italic">"按比例换的，还是拉稀，无语了。"</p>
@@ -155,7 +155,7 @@ export function CompetitorObservation() {
                 </div>
                 
                 <div>
-                  <h4 className="text-[12px] font-bold text-text-tertiary uppercase tracking-wider mb-3">内容机会 (AI判定)</h4>
+                  <h4 className="text-[13px] font-bold text-text-tertiary uppercase tracking-wider mb-3">内容机会 (AI判定)</h4>
                   <div className="bg-brand-light rounded-xl p-4 border border-primary-100 text-[13px] text-primary-900 font-medium">
                     {notes.find(n => n.id === activeNote)?.insights.opportunity}
                   </div>
@@ -164,7 +164,7 @@ export function CompetitorObservation() {
                 <div className="pt-4 border-t border-border-default">
                    <div className="flex items-center justify-between mb-4">
                      <span className="text-[13px] font-bold text-text-main">可承接评论</span>
-                     <span className="px-2 py-0.5 bg-rose-50 text-danger rounded text-[12px] font-bold">{notes.find(n => n.id === activeNote)?.insights.interceptable} 条</span>
+                     <span className="px-2 py-0.5 bg-rose-50 text-danger rounded text-[13px] font-bold">{notes.find(n => n.id === activeNote)?.insights.interceptable} 条</span>
                    </div>
                 </div>
               </div>
@@ -181,7 +181,7 @@ export function CompetitorObservation() {
                     查看截流机会
                   </button>
                 </div>
-                <button className="w-full text-center text-[12px] font-bold text-text-tertiary hover:text-text-secondary py-1">
+                <button className="w-full text-center text-[13px] font-bold text-text-tertiary hover:text-text-secondary py-1">
                   暂不采用
                 </button>
               </div>
@@ -229,7 +229,7 @@ export function CompetitorObservation() {
                     className="w-full border border-border-default rounded-xl p-3 text-[14px] text-text-main focus:outline-none focus:border-primary-500 resize-none h-24"
                     placeholder="在此粘贴小红书笔记链接..."
                   />
-                  <div className="mt-2 text-[12px] text-text-tertiary flex items-center gap-1">
+                  <div className="mt-2 text-[13px] text-text-tertiary flex items-center gap-1">
                     <Sparkles size={12} className="text-brand-logo" />
                     系统将自动识别标题、作者与所属竞品
                   </div>

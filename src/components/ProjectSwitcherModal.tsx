@@ -130,18 +130,18 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                   <div>
                     <div className="flex items-center gap-2">
                       <h2 className="text-[18px] font-semibold text-text-main tracking-tight">切换商家</h2>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-surface-subtle border border-border-default text-text-secondary">
+                      <span className="text-[13px] px-2 py-0.5 rounded-full bg-surface-subtle border border-border-default text-text-secondary">
                         共 {allProjects.length} 家
                       </span>
                     </div>
-                    <p className="text-[12px] text-text-tertiary mt-0.5">管理与切换旗下各品牌商家账户、经营状态与归档记录</p>
+                    <p className="text-[13px] text-text-tertiary mt-0.5">管理与切换旗下各品牌商家账户、经营状态与归档记录</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-2.5">
                   <button 
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 bg-btn-main text-white rounded-xl text-[12.5px] font-medium hover:opacity-90 transition-all shadow-sm active:scale-95"
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-btn-main text-white rounded-xl text-[13px] font-medium hover:opacity-90 transition-all shadow-sm active:scale-95"
                   >
                     <Plus size={15} />
                     新增商家
@@ -179,25 +179,25 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                 <div className="flex items-center p-1 bg-hover-bg/70 rounded-xl border border-border-default/50">
                   <button 
                     onClick={() => setActiveTab('all')} 
-                    className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${activeTab === 'all' ? 'bg-surface-1 text-text-main shadow-xs' : 'text-text-tertiary hover:text-text-secondary'}`}
+                    className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${activeTab === 'all' ? 'bg-surface-1 text-text-main shadow-xs' : 'text-text-tertiary hover:text-text-secondary'}`}
                   >
                     全部 ({allProjects.length - archivedCount})
                   </button>
                   <button 
                     onClick={() => setActiveTab('active')} 
-                    className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${activeTab === 'active' ? 'bg-surface-1 text-text-main shadow-xs' : 'text-text-tertiary hover:text-text-secondary'}`}
+                    className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${activeTab === 'active' ? 'bg-surface-1 text-text-main shadow-xs' : 'text-text-tertiary hover:text-text-secondary'}`}
                   >
                     服务中 ({activeCount})
                   </button>
                   <button 
                     onClick={() => setActiveTab('pending')} 
-                    className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${activeTab === 'pending' ? 'bg-surface-1 text-text-main shadow-xs' : 'text-text-tertiary hover:text-text-secondary'}`}
+                    className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${activeTab === 'pending' ? 'bg-surface-1 text-text-main shadow-xs' : 'text-text-tertiary hover:text-text-secondary'}`}
                   >
                     待冷启 ({pendingCount})
                   </button>
                   <button 
                     onClick={() => setActiveTab('archived')} 
-                    className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 ${activeTab === 'archived' ? 'bg-surface-1 text-amber-700 shadow-xs font-semibold' : 'text-text-tertiary hover:text-text-secondary'}`}
+                    className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all flex items-center gap-1.5 ${activeTab === 'archived' ? 'bg-surface-1 text-amber-700 shadow-xs font-semibold' : 'text-text-tertiary hover:text-text-secondary'}`}
                   >
                     <Archive size={12} className={activeTab === 'archived' ? 'text-amber-600' : 'text-text-tertiary'} />
                     <span>已归档 ({archivedCount})</span>
@@ -209,7 +209,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
             {/* List Area */}
             <div className="flex-1 min-h-[340px] max-h-[58vh] overflow-y-auto custom-scrollbar bg-surface-1">
               <div className="flex flex-col">
-                <div className="grid grid-cols-12 gap-4 px-8 py-3 text-[11px] text-text-tertiary font-medium uppercase tracking-wider border-b border-border-default bg-surface-1 sticky top-0 z-10 w-full">
+                <div className="grid grid-cols-12 gap-4 px-8 py-3 text-[13px] text-text-tertiary font-medium uppercase tracking-wider border-b border-border-default bg-surface-1 sticky top-0 z-10 w-full">
                   <div className="col-span-4 lg:col-span-5">商家名称与属性</div>
                   <div className="col-span-4 lg:col-span-3">核心业务状态</div>
                   <div className="col-span-2 lg:col-span-2">完善度 / 状态</div>
@@ -256,12 +256,12 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                               {proj.name}
                             </h3>
                             {isActive && !isArchived && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary-100 text-brand-logo font-bold tracking-wider shrink-0">
+                              <span className="text-[13px] px-1.5 py-0.5 rounded bg-primary-100 text-brand-logo font-bold tracking-wider shrink-0">
                                 当前使用
                               </span>
                             )}
                             {isArchived && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium shrink-0 flex items-center gap-1">
+                              <span className="text-[13px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium shrink-0 flex items-center gap-1">
                                 <Archive size={10} />
                                 已归档
                               </span>
@@ -269,12 +269,12 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                           </div>
                           <div className="flex items-center gap-1 flex-wrap">
                             {proj.tags?.map((tag: string) => (
-                              <span key={tag} className="text-[10.5px] px-1.5 py-0.5 bg-hover-bg text-text-tertiary rounded truncate max-w-[90px]">
+                              <span key={tag} className="text-[13px] px-1.5 py-0.5 bg-hover-bg text-text-tertiary rounded truncate max-w-[90px]">
                                 {tag}
                               </span>
                             ))}
                             {isArchived && proj.archivedAt && (
-                              <span className="text-[10.5px] text-text-tertiary ml-1">
+                              <span className="text-[13px] text-text-tertiary ml-1">
                                 归档于 {proj.archivedAt}
                               </span>
                             )}
@@ -285,20 +285,20 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                       {/* Col 2: Stats */}
                       <div className="col-span-4 lg:col-span-3 flex items-center gap-2.5 min-w-0">
                         {isArchived ? (
-                          <div className="text-[12px] text-text-tertiary">
+                          <div className="text-[13px] text-text-tertiary">
                             自动化与矩阵分发已暂停
                           </div>
                         ) : (
                           <>
                             <div className="flex items-center gap-1 bg-page-bg px-2.5 py-1 rounded-lg border border-border-default shrink-0">
                               <BarChart2 size={11} className="text-text-tertiary" />
-                              <span className="text-[12px] font-medium text-text-secondary">{proj.stats?.pendingContent || 0}</span>
-                              <span className="text-[10px] text-text-tertiary">篇待发</span>
+                              <span className="text-[13px] font-medium text-text-secondary">{proj.stats?.pendingContent || 0}</span>
+                              <span className="text-[13px] text-text-tertiary">篇待发</span>
                             </div>
                             <div className="flex items-center gap-1 bg-page-bg px-2.5 py-1 rounded-lg border border-border-default shrink-0">
                               <AlertCircle size={11} className="text-text-tertiary" />
-                              <span className="text-[12px] font-medium text-text-secondary">{proj.stats?.pendingLeads || 0}</span>
-                              <span className="text-[10px] text-text-tertiary">条待回</span>
+                              <span className="text-[13px] font-medium text-text-secondary">{proj.stats?.pendingLeads || 0}</span>
+                              <span className="text-[13px] text-text-tertiary">条待回</span>
                             </div>
                           </>
                         )}
@@ -307,20 +307,20 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                       {/* Col 3: Status */}
                       <div className="col-span-2 lg:col-span-2 flex items-center min-w-0">
                         {isArchived ? (
-                          <span className="text-[11.5px] text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          <span className="text-[13px] text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                             业务已封存
                           </span>
                         ) : proj.stats?.profileCompleteness === 100 ? (
                           <div className="flex items-center gap-1.5 px-2 py-1 bg-hover-bg rounded-md shrink-0">
                             <CheckCircle2 size={12} className="text-emerald-600" />
-                            <span className="text-[11px] text-text-main font-medium">已完善</span>
+                            <span className="text-[13px] text-text-main font-medium">已完善</span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2 shrink-0">
                             <div className="w-12 h-1.5 bg-hover-bg rounded-full overflow-hidden shrink-0">
                               <div className="h-full bg-brand-500 rounded-full" style={{ width: `${proj.stats?.profileCompleteness || 0}%` }} />
                             </div>
-                            <span className="text-[11px] text-text-tertiary">{proj.stats?.profileCompleteness || 0}%</span>
+                            <span className="text-[13px] text-text-tertiary">{proj.stats?.profileCompleteness || 0}%</span>
                           </div>
                         )}
                       </div>
@@ -331,7 +331,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                           <button
                             type="button"
                             onClick={(e) => handleRestoreMerchant(e, proj)}
-                            className="px-2.5 py-1.5 bg-surface-1 border border-border-default hover:border-brand-500 hover:text-brand-600 text-text-secondary rounded-lg text-[11.5px] font-medium transition-colors flex items-center gap-1 shadow-2xs"
+                            className="px-2.5 py-1.5 bg-surface-1 border border-border-default hover:border-brand-500 hover:text-brand-600 text-text-secondary rounded-lg text-[13px] font-medium transition-colors flex items-center gap-1 shadow-2xs"
                             title="恢复商家到服务列表"
                           >
                             <RotateCcw size={12} />
@@ -345,7 +345,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                                 e.stopPropagation();
                                 setProjectToArchive(proj);
                               }}
-                              className="opacity-0 group-hover:opacity-100 px-2 py-1 bg-surface-1 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 border border-border-default text-text-tertiary rounded-lg text-[11px] font-medium transition-all flex items-center gap-1"
+                              className="opacity-0 group-hover:opacity-100 px-2 py-1 bg-surface-1 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 border border-border-default text-text-tertiary rounded-lg text-[13px] font-medium transition-all flex items-center gap-1"
                               title="归档此商家"
                             >
                               <Archive size={12} />
@@ -372,7 +372,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                   <div className="py-16 flex flex-col items-center justify-center text-text-tertiary">
                     <Search size={32} className="mb-3 opacity-40" />
                     <p className="text-[13.5px] font-medium">没有找到符合条件的商家</p>
-                    <p className="text-[12px] text-text-tertiary mt-1">请尝试切换状态筛选或修改搜索词</p>
+                    <p className="text-[13px] text-text-tertiary mt-1">请尝试切换状态筛选或修改搜索词</p>
                   </div>
                 )}
               </div>
@@ -407,7 +407,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                   <h3 className="text-[16px] font-bold text-text-main">
                     确认归档商家「{projectToArchive.name}」？
                   </h3>
-                  <p className="text-[12px] text-text-secondary mt-1">
+                  <p className="text-[13px] text-text-secondary mt-1">
                     归档后将封存该商家的经营状态，请仔细核对以下业务影响。
                   </p>
                 </div>
@@ -419,14 +419,14 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                 </button>
               </div>
 
-              <div className="p-6 space-y-4 text-[12.5px]">
+              <div className="p-6 space-y-4 text-[13px]">
                 {/* Active Merchant Special Warning */}
                 {projectToArchive.id === activeProjectId && (
                   <div className="p-3 bg-amber-100/70 border border-amber-300/80 rounded-xl flex items-start gap-2.5 text-amber-900">
                     <ShieldAlert size={16} className="text-amber-700 shrink-0 mt-0.5" />
                     <div>
-                      <strong className="block text-[12.5px] font-bold">正在归档当前激活中的商家</strong>
-                      <span className="text-[11.5px] text-amber-800 leading-relaxed mt-0.5 block">
+                      <strong className="block text-[13px] font-bold">正在归档当前激活中的商家</strong>
+                      <span className="text-[13px] text-amber-800 leading-relaxed mt-0.5 block">
                         确认后系统将自动为您切换至旗下其他服务中的商家，您随时可在「已归档」列表中重新恢复该商家。
                       </span>
                     </div>
@@ -435,7 +435,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
 
                 {/* Impact details */}
                 <div className="bg-surface-subtle p-3.5 rounded-xl border border-border-subtle space-y-2.5">
-                  <div className="text-[12px] font-semibold text-text-main">归档影响说明：</div>
+                  <div className="text-[13px] font-semibold text-text-main">归档影响说明：</div>
                   
                   <div className="flex items-start gap-2 text-text-secondary">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0 mt-1.5" />
@@ -453,7 +453,7 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
                   </div>
                 </div>
 
-                <div className="text-[11.5px] text-text-tertiary flex items-center gap-1.5">
+                <div className="text-[13px] text-text-tertiary flex items-center gap-1.5">
                   <Info size={13} className="shrink-0" />
                   <span>已归档的商家可在商家切换弹窗的「已归档」标签页随时一键恢复。</span>
                 </div>

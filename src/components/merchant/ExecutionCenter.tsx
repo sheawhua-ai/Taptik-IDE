@@ -31,7 +31,7 @@ function ProjectScopePicker({ projects, value, onChange }: { projects: ProjectSc
 
   return (
     <div className="relative ml-1">
-      <button type="button" onClick={() => setOpen(currentOpen => !currentOpen)} className={`flex max-w-[220px] items-center gap-1.5 rounded-md border px-2.5 py-1 text-[9.5px] font-medium ${open || value !== 'all' ? 'border-neutral-900 bg-surface-1 text-text-main' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
+      <button type="button" onClick={() => setOpen(currentOpen => !currentOpen)} className={`flex max-w-[220px] items-center gap-1.5 rounded-md border px-2.5 py-1 text-[13px] font-medium ${open || value !== 'all' ? 'border-neutral-900 bg-surface-1 text-text-main' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
         <FolderKanban size={11} /><span className="truncate">{current?.name || '全部项目'}</span>
       </button>
       {open ? (
@@ -40,18 +40,18 @@ function ProjectScopePicker({ projects, value, onChange }: { projects: ProjectSc
           <div className="absolute left-1/2 top-full z-[280] mt-2 w-[340px] -translate-x-1/2 rounded-xl border border-border-default bg-surface-1 p-2 shadow-dialog">
             <div className="flex items-center gap-2 border-b border-border-default px-2 pb-2">
               <Search size={13} className="text-text-tertiary" />
-              <input autoFocus value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索项目" className="min-w-0 flex-1 bg-transparent py-1 text-[11px] outline-none" />
+              <input autoFocus value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索项目" className="min-w-0 flex-1 bg-transparent py-1 text-[13px] outline-none" />
               {query ? <button type="button" onClick={() => setQuery('')} className="text-text-tertiary"><X size={12} /></button> : null}
             </div>
             <div className="mt-1 max-h-64 overflow-y-auto">
               {[{ id: 'all', name: '全部项目', taskCount: projects.reduce((sum, project) => sum + project.taskCount, 0) }, ...visibleProjects].map(project => (
                 <button key={project.id} type="button" onClick={() => { onChange(project.id); setOpen(false); setQuery(''); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left hover:bg-hover-bg">
-                  <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-text-main">{project.name}</span>
-                  <span className="text-[9.5px] text-text-tertiary">{project.taskCount} 项</span>
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-text-main">{project.name}</span>
+                  <span className="text-[13px] text-text-tertiary">{project.taskCount} 项</span>
                   {value === project.id ? <Check size={12} className="text-text-main" /> : <span className="w-3" />}
                 </button>
               ))}
-              {visibleProjects.length === 0 && query ? <div className="px-3 py-8 text-center text-[10px] text-text-tertiary">没有匹配项目</div> : null}
+              {visibleProjects.length === 0 && query ? <div className="px-3 py-8 text-center text-[13px] text-text-tertiary">没有匹配项目</div> : null}
             </div>
           </div>
         </>
@@ -327,7 +327,7 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
             key={tab}
             type="button"
             onClick={() => switchDomain(tab)}
-            className={`rounded-md px-2 py-1 text-[10px] font-medium transition-colors ${domain === tab ? 'bg-neutral-950 text-white shadow-sm' : 'text-text-secondary hover:bg-surface-1 hover:text-text-main'}`}
+            className={`rounded-md px-2 py-1 text-[13px] font-medium transition-colors ${domain === tab ? 'bg-neutral-950 text-white shadow-sm' : 'text-text-secondary hover:bg-surface-1 hover:text-text-main'}`}
           >
             {domainLabel[tab]} <span className="opacity-65">{counts[tab]}</span>
           </button>
@@ -336,7 +336,7 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
       <button
         type="button"
         onClick={() => setProgressOpen(true)}
-        className="flex items-center gap-1 rounded-md px-2 py-1 text-[9.5px] text-text-tertiary hover:bg-hover-bg hover:text-text-main"
+        className="flex items-center gap-1 rounded-md px-2 py-1 text-[13px] text-text-tertiary hover:bg-hover-bg hover:text-text-main"
       >
         <Activity size={11} />任务进展 {counts.progress}
       </button>
@@ -366,7 +366,7 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
           <div>
             <CheckCircle2 size={30} className="mx-auto text-emerald-500" />
             <div className="mt-3 text-[13px] font-semibold text-text-main">当前没有需要处理的事项</div>
-            <p className="mt-1 text-[10px] text-text-tertiary">领取、执行和历史记录可在任务进展中查看。</p>
+            <p className="mt-1 text-[13px] text-text-tertiary">领取、执行和历史记录可在任务进展中查看。</p>
           </div>
         </div>
       </div>

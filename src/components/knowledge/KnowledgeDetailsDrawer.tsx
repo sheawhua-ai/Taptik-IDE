@@ -19,14 +19,14 @@ export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetai
         <div className="flex justify-between items-start p-6 border-b border-border-default">
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
+              <span className={`px-2.5 py-1 rounded-md text-[13px] font-medium ${
                     item.type === '商家事实' ? 'bg-hover-bg text-text-main' :
                     item.type === '规则与禁区' ? 'bg-red-50 text-red-700' :
                     'bg-indigo-50 text-indigo-700'
                   }`}>
                 {item.type}
               </span>
-              <span className={`flex items-center text-xs font-medium ${
+              <span className={`flex items-center text-[13px] font-medium ${
                 item.state === '正常' ? 'text-emerald-600' : 
                 item.state === '待确认' ? 'text-amber-600' : 'text-text-tertiary'
               }`}>
@@ -104,7 +104,7 @@ export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetai
                 <span>被 Agent 调用次数</span>
                 <span className="font-semibold text-text-main">{item.usageCount || 0} 次</span>
               </div>
-              <div className="flex items-center justify-between text-xs text-text-tertiary">
+              <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                 <span>最近调用：{item.updateTime}</span>
               </div>
             </div>

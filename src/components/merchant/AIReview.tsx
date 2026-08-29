@@ -111,7 +111,7 @@ export function AIReview() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-[120] bg-neutral-900 text-white px-4 py-2.5 rounded-lg shadow-dialog text-[12.5px] flex items-center gap-2 border border-neutral-700"
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[120] bg-neutral-900 text-white px-4 py-2.5 rounded-lg shadow-dialog text-[13px] flex items-center gap-2 border border-neutral-700"
           >
             <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
             <span>{appliedProposalToast}</span>
@@ -126,12 +126,12 @@ export function AIReview() {
             <div className="flex items-center gap-2.5">
               <h1 className="text-[18px] font-bold text-text-primary tracking-tight">复盘与报告</h1>
               {isMultiProjectMode && (
-                <span className="px-2 py-0.5 bg-brand-50 border border-brand-100 text-brand-700 text-[11px] font-semibold rounded-md">
+                <span className="px-2 py-0.5 bg-brand-50 border border-brand-100 text-brand-700 text-[13px] font-semibold rounded-md">
                   多项目对比模式
                 </span>
               )}
             </div>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
+            <p className="text-[13px] text-text-tertiary mt-0.5">
               聚合项目、笔记、账号与搜索数据，形成可追溯的阶段复盘和商家报告。
             </p>
           </div>
@@ -140,7 +140,7 @@ export function AIReview() {
             <button
               onClick={handleRefreshData}
               disabled={isRefreshingData}
-              className="px-3 py-1.5 bg-surface-subtle hover:bg-surface-hover border border-border-default text-text-secondary text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 bg-surface-subtle hover:bg-surface-hover border border-border-default text-text-secondary text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
             >
               <RefreshCw size={13} className={isRefreshingData ? "animate-spin" : ""} />
               <span>{isRefreshingData ? "同步中..." : "刷新数据"}</span>
@@ -151,7 +151,7 @@ export function AIReview() {
                 setActiveTab('reports');
                 setShowNewReportModal(true);
               }}
-              className="px-3.5 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[12px] font-semibold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+              className="px-3.5 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
             >
               <FileText size={14} />
               <span>生成商家报告</span>
@@ -160,7 +160,7 @@ export function AIReview() {
         </div>
 
         {/* Unified Filter Controls Row */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border-subtle text-[12px]">
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border-subtle text-[13px]">
           {/* Project Selector */}
           <div className="flex items-center bg-surface-subtle border border-border-default rounded-lg px-2.5 py-1 gap-1.5">
             <Building2 size={13} className="text-text-tertiary" />
@@ -176,7 +176,7 @@ export function AIReview() {
                 </option>
               ))}
             </select>
-            <label className="ml-2 pl-2 border-l border-border-default flex items-center gap-1 text-[11px] text-text-tertiary cursor-pointer hover:text-text-primary">
+            <label className="ml-2 pl-2 border-l border-border-default flex items-center gap-1 text-[13px] text-text-tertiary cursor-pointer hover:text-text-primary">
               <input
                 type="checkbox"
                 checked={isMultiProjectMode}
@@ -229,7 +229,7 @@ export function AIReview() {
           <div className="relative ml-auto">
             <button
               onClick={() => setIsCoveragePopoverOpen(!isCoveragePopoverOpen)}
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-surface border border-border-default hover:border-border-strong rounded-lg text-[11.5px] font-medium text-text-secondary transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-surface border border-border-default hover:border-border-strong rounded-lg text-[13px] font-medium text-text-secondary transition-colors"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>数据覆盖率: <strong>{MOCK_DATA_COVERAGE.coverageRate}%</strong></span>
@@ -241,10 +241,10 @@ export function AIReview() {
             {isCoveragePopoverOpen && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setIsCoveragePopoverOpen(false)} />
-                <div className="absolute right-0 top-full mt-1.5 w-80 bg-surface border border-border-default rounded-xl shadow-float z-40 p-3.5 text-[12px] space-y-2.5">
+                <div className="absolute right-0 top-full mt-1.5 w-80 bg-surface border border-border-default rounded-xl shadow-float z-40 p-3.5 text-[13px] space-y-2.5">
                   <div className="flex items-center justify-between pb-2 border-b border-border-subtle font-semibold text-text-primary">
                     <span>数据覆盖率与同步状态</span>
-                    <span className="text-[11px] text-text-tertiary">上次同步: {MOCK_DATA_COVERAGE.lastSyncTime}</span>
+                    <span className="text-[13px] text-text-tertiary">上次同步: {MOCK_DATA_COVERAGE.lastSyncTime}</span>
                   </div>
 
                   <div className="space-y-2">
@@ -252,18 +252,18 @@ export function AIReview() {
                       <div key={i} className="p-2 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
                         <div className="flex items-center justify-between font-medium">
                           <span className="text-text-primary">{src.name}</span>
-                          <span className={`text-[10.5px] px-1.5 py-0.5 rounded font-bold ${
+                          <span className={`text-[13px] px-1.5 py-0.5 rounded font-bold ${
                             src.status === 'connected' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
                           }`}>
                             {src.status === 'connected' ? '正常同步' : '部分接入'}
                           </span>
                         </div>
-                        <p className="text-[11px] text-text-tertiary">{src.coverageNote}</p>
+                        <p className="text-[13px] text-text-tertiary">{src.coverageNote}</p>
                       </div>
                     ))}
                   </div>
 
-                  <div className="pt-2 border-t border-border-subtle text-[11px] text-text-tertiary space-y-1">
+                  <div className="pt-2 border-t border-border-subtle text-[13px] text-text-tertiary space-y-1">
                     <p className="flex items-center gap-1 text-amber-700 font-medium">
                       <AlertCircle size={12} /> 未同步字段: {MOCK_DATA_COVERAGE.missingFields.join("，")}
                     </p>
@@ -301,7 +301,7 @@ export function AIReview() {
           >
             <Layers size={15} />
             <span>内容表现</span>
-            <span className="ml-0.5 px-1.5 py-0.2 bg-surface-subtle text-text-secondary rounded text-[11px] font-mono">
+            <span className="ml-0.5 px-1.5 py-0.2 bg-surface-subtle text-text-secondary rounded text-[13px] font-mono">
               {MOCK_NOTES_LIST.length}
             </span>
           </button>
@@ -316,7 +316,7 @@ export function AIReview() {
           >
             <Search size={15} />
             <span>搜索占位</span>
-            <span className="ml-0.5 px-1.5 py-0.2 bg-surface-subtle text-text-secondary rounded text-[11px] font-mono">
+            <span className="ml-0.5 px-1.5 py-0.2 bg-surface-subtle text-text-secondary rounded text-[13px] font-mono">
               {MOCK_SEARCH_SNAPSHOTS.length}
             </span>
           </button>
@@ -331,18 +331,18 @@ export function AIReview() {
           >
             <FileText size={15} />
             <span>报告中心</span>
-            <span className="ml-0.5 px-1.5 py-0.2 bg-surface-subtle text-text-secondary rounded text-[11px] font-mono">
+            <span className="ml-0.5 px-1.5 py-0.2 bg-surface-subtle text-text-secondary rounded text-[13px] font-mono">
               {MOCK_REPORTS_LIST.length}
             </span>
           </button>
         </div>
 
         {/* Laigu DM Data test toggle */}
-        <div className="flex items-center gap-2 text-[11.5px] text-text-tertiary border-l border-border-subtle pl-4 py-2">
+        <div className="flex items-center gap-2 text-[13px] text-text-tertiary border-l border-border-subtle pl-4 py-2">
           <span>来鼓私信模拟:</span>
           <button
             onClick={() => setLaiguEnabled(!laiguEnabled)}
-            className={`px-2 py-0.5 rounded text-[10.5px] font-medium transition-colors ${
+            className={`px-2 py-0.5 rounded text-[13px] font-medium transition-colors ${
               laiguEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-neutral-200 text-text-tertiary'
             }`}
           >
@@ -360,7 +360,7 @@ export function AIReview() {
             {/* Top Stage Key Takeaway Banner */}
             <div className="bg-surface border border-border-default rounded-xl p-4 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-rose-500">
               <div className="space-y-1">
-                <div className="flex items-center gap-2 text-[11.5px] text-text-tertiary">
+                <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
                   <span className="px-2 py-0.5 bg-rose-50 text-rose-700 font-bold rounded">阶段核心发现</span>
                   <span>来自小红书 18 篇笔记及搜索卡位快照分析</span>
                 </div>
@@ -371,13 +371,13 @@ export function AIReview() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setSelectedEvidenceConclusion(MOCK_STAGE_CONCLUSIONS[0])}
-                  className="px-3 py-1.5 bg-surface-subtle hover:bg-surface-hover border border-border-default text-text-secondary text-[12px] font-medium rounded-lg transition-colors"
+                  className="px-3 py-1.5 bg-surface-subtle hover:bg-surface-hover border border-border-default text-text-secondary text-[13px] font-medium rounded-lg transition-colors"
                 >
                   查看数据依据
                 </button>
                 <button
                   onClick={() => setSelectedStrategyDiff(MOCK_STAGE_CONCLUSIONS[0])}
-                  className="px-3.5 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[12px] font-semibold rounded-lg transition-colors"
+                  className="px-3.5 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg transition-colors"
                 >
                   生成调整提案
                 </button>
@@ -388,15 +388,15 @@ export function AIReview() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Card 1: Note Publishing & Sync */}
               <div className="bg-surface p-4 rounded-xl border border-border-default shadow-sm space-y-2">
-                <div className="flex items-center justify-between text-[12px] text-text-tertiary">
+                <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                   <span>实际发布笔记数</span>
-                  <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10.5px] font-bold">已就绪 100%</span>
+                  <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[13px] font-bold">已就绪 100%</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-[26px] font-extrabold text-text-primary tabular-nums">20</span>
-                  <span className="text-[12px] text-text-tertiary">篇</span>
+                  <span className="text-[13px] text-text-tertiary">篇</span>
                 </div>
-                <div className="pt-2 border-t border-border-subtle text-[11.5px] text-text-secondary flex justify-between">
+                <div className="pt-2 border-t border-border-subtle text-[13px] text-text-secondary flex justify-between">
                   <span>已同步数据: <strong>18 篇</strong></span>
                   <span className="text-emerald-600 font-semibold">90.0% 覆盖率</span>
                 </div>
@@ -404,17 +404,17 @@ export function AIReview() {
 
               {/* Card 2: Platform Exposure & Reads */}
               <div className="bg-surface p-4 rounded-xl border border-border-default shadow-sm space-y-2">
-                <div className="flex items-center justify-between text-[12px] text-text-tertiary">
+                <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                   <span>平台实际总曝光 / 阅读</span>
-                  <span className="text-emerald-600 font-semibold text-[11px] flex items-center gap-0.5">
+                  <span className="text-emerald-600 font-semibold text-[13px] flex items-center gap-0.5">
                     <TrendingUp size={12} /> +24.5%
                   </span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-[26px] font-extrabold text-text-primary tabular-nums">285,400</span>
-                  <span className="text-[12px] text-text-tertiary">曝光</span>
+                  <span className="text-[13px] text-text-tertiary">曝光</span>
                 </div>
-                <div className="pt-2 border-t border-border-subtle text-[11.5px] text-text-secondary flex justify-between">
+                <div className="pt-2 border-t border-border-subtle text-[13px] text-text-secondary flex justify-between">
                   <span>实际阅读: <strong>38,200</strong></span>
                   <span className="text-text-tertiary">阅读率 13.4%</span>
                 </div>
@@ -422,17 +422,17 @@ export function AIReview() {
 
               {/* Card 3: Total Interactions */}
               <div className="bg-surface p-4 rounded-xl border border-border-default shadow-sm space-y-2">
-                <div className="flex items-center justify-between text-[12px] text-text-tertiary">
+                <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                   <span>核心互动量 (赞/藏/评)</span>
-                  <span className="text-emerald-600 font-semibold text-[11px] flex items-center gap-0.5">
+                  <span className="text-emerald-600 font-semibold text-[13px] flex items-center gap-0.5">
                     <TrendingUp size={12} /> +31.0%
                   </span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-[26px] font-extrabold text-text-primary tabular-nums">4,850</span>
-                  <span className="text-[12px] text-text-tertiary">次</span>
+                  <span className="text-[13px] text-text-tertiary">次</span>
                 </div>
-                <div className="pt-2 border-t border-border-subtle text-[11.5px] text-text-secondary flex justify-between">
+                <div className="pt-2 border-t border-border-subtle text-[13px] text-text-secondary flex justify-between">
                   <span>点赞 2.1k · 收藏 1.8k</span>
                   <span className="font-semibold text-text-primary">评论 610</span>
                 </div>
@@ -440,28 +440,28 @@ export function AIReview() {
 
               {/* Card 4: Inquiries & DM (or Fallback if not connected) */}
               <div className="bg-surface p-4 rounded-xl border border-border-default shadow-sm space-y-2">
-                <div className="flex items-center justify-between text-[12px] text-text-tertiary">
+                <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                   <span>私信与咨询指标 (来鼓)</span>
                   {laiguEnabled ? (
-                    <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10.5px] font-bold">已连线</span>
+                    <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[13px] font-bold">已连线</span>
                   ) : (
-                    <span className="px-1.5 py-0.5 bg-neutral-100 text-text-tertiary rounded text-[10.5px]">未开通</span>
+                    <span className="px-1.5 py-0.5 bg-neutral-100 text-text-tertiary rounded text-[13px]">未开通</span>
                   )}
                 </div>
                 {laiguEnabled ? (
                   <>
                     <div className="flex items-baseline gap-2">
                       <span className="text-[26px] font-extrabold text-text-primary tabular-nums">142</span>
-                      <span className="text-[12px] text-text-tertiary">组私信</span>
+                      <span className="text-[13px] text-text-tertiary">组私信</span>
                     </div>
-                    <div className="pt-2 border-t border-border-subtle text-[11.5px] text-text-secondary flex justify-between">
+                    <div className="pt-2 border-t border-border-subtle text-[13px] text-text-secondary flex justify-between">
                       <span>有效咨询: <strong>86 组</strong></span>
                       <span className="text-emerald-600 font-semibold">首响 2.4min</span>
                     </div>
                   </>
                 ) : (
                   <div className="py-1">
-                    <div className="text-[12px] text-text-tertiary bg-surface-subtle p-2 rounded border border-border-subtle">
+                    <div className="text-[13px] text-text-tertiary bg-surface-subtle p-2 rounded border border-border-subtle">
                       当前账号未开通私信数据服务。评论区包含 18 条高价值意向留言。
                     </div>
                   </div>
@@ -474,11 +474,11 @@ export function AIReview() {
               <div className="flex items-center justify-between border-b border-border-default pb-3">
                 <div>
                   <h2 className="text-[15px] font-semibold text-text-primary">阶段复盘结论与操盘提案</h2>
-                  <p className="text-[12px] text-text-tertiary mt-0.5">
+                  <p className="text-[13px] text-text-tertiary mt-0.5">
                     基于可追溯事实整理。点击“生成调整提案”可对比策略改动，确认后仅应用于下一个周期，绝不直接改动正在运行的项目。
                   </p>
                 </div>
-                <span className="text-[11.5px] text-text-tertiary font-mono">
+                <span className="text-[13px] text-text-tertiary font-mono">
                   需判断事项: {MOCK_STAGE_CONCLUSIONS.length} 项
                 </span>
               </div>
@@ -492,7 +492,7 @@ export function AIReview() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                          className={`px-2 py-0.5 rounded text-[13px] font-bold ${
                             conclusion.type === 'proven'
                               ? 'bg-emerald-100 text-emerald-800'
                               : conclusion.type === 'suggested'
@@ -509,7 +509,7 @@ export function AIReview() {
                         <button
                           type="button"
                           onClick={() => setSelectedEvidenceConclusion(conclusion)}
-                          className="px-2.5 py-1 bg-surface border border-border-default hover:border-border-strong text-text-secondary text-[11.5px] font-medium rounded transition-colors"
+                          className="px-2.5 py-1 bg-surface border border-border-default hover:border-border-strong text-text-secondary text-[13px] font-medium rounded transition-colors"
                         >
                           查看依据 ({conclusion.relatedNotes.length}篇)
                         </button>
@@ -521,7 +521,7 @@ export function AIReview() {
                               setAppliedProposalToast(`已确认沿用阶段经验：【${conclusion.title}】`);
                               setTimeout(() => setAppliedProposalToast(null), 4000);
                             }}
-                            className="px-3 py-1 bg-action-primary hover:bg-action-primary-hover text-white text-[11.5px] font-semibold rounded transition-colors"
+                            className="px-3 py-1 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded transition-colors"
                           >
                             确认沿用
                           </button>
@@ -531,7 +531,7 @@ export function AIReview() {
                           <button
                             type="button"
                             onClick={() => setSelectedStrategyDiff(conclusion)}
-                            className="px-3 py-1 bg-action-primary hover:bg-action-primary-hover text-white text-[11.5px] font-semibold rounded transition-colors"
+                            className="px-3 py-1 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded transition-colors"
                           >
                             生成调整提案
                           </button>
@@ -544,7 +544,7 @@ export function AIReview() {
                               setAppliedProposalToast(`已将“挑食测试包”加入下轮验证需求中。`);
                               setTimeout(() => setAppliedProposalToast(null), 4000);
                             }}
-                            className="px-3 py-1 bg-surface border border-border-default hover:bg-surface-hover text-text-primary text-[11.5px] font-semibold rounded transition-colors"
+                            className="px-3 py-1 bg-surface border border-border-default hover:bg-surface-hover text-text-primary text-[13px] font-semibold rounded transition-colors"
                           >
                             加入下轮验证
                           </button>
@@ -552,17 +552,17 @@ export function AIReview() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[12px]">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[13px]">
                       <div className="p-2.5 bg-surface rounded border border-border-subtle">
-                        <span className="text-text-tertiary block text-[11px] mb-0.5">证据摘要:</span>
+                        <span className="text-text-tertiary block text-[13px] mb-0.5">证据摘要:</span>
                         <span className="text-text-secondary">{conclusion.evidenceSummary}</span>
                       </div>
                       <div className="p-2.5 bg-surface rounded border border-border-subtle">
-                        <span className="text-text-tertiary block text-[11px] mb-0.5">建议动作:</span>
+                        <span className="text-text-tertiary block text-[13px] mb-0.5">建议动作:</span>
                         <span className="text-text-primary font-medium">{conclusion.suggestedAction}</span>
                       </div>
                       <div className="p-2.5 bg-surface rounded border border-border-subtle">
-                        <span className="text-text-tertiary block text-[11px] mb-0.5">影响对象:</span>
+                        <span className="text-text-tertiary block text-[13px] mb-0.5">影响对象:</span>
                         <span className="text-text-secondary">{conclusion.impactObject}</span>
                       </div>
                     </div>
@@ -581,12 +581,12 @@ export function AIReview() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-default pb-3">
                 <div>
                   <h2 className="text-[15px] font-semibold text-text-primary">单篇笔记表现与归因 (最小分析单元)</h2>
-                  <p className="text-[12px] text-text-tertiary mt-0.5">
+                  <p className="text-[13px] text-text-tertiary mt-0.5">
                     每篇笔记数据均来自小红书创作者后台真实同步，支持按角色、主题与关键词筛选下钻。
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[12px] text-text-tertiary">共 {MOCK_NOTES_LIST.length} 篇归因笔记</span>
+                  <span className="text-[13px] text-text-tertiary">共 {MOCK_NOTES_LIST.length} 篇归因笔记</span>
                 </div>
               </div>
 
@@ -599,7 +599,7 @@ export function AIReview() {
                     onClick={() => setSelectedNoteDetail(note)}
                   >
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between text-[11px]">
+                      <div className="flex items-center justify-between text-[13px]">
                         <span className="px-1.5 py-0.5 bg-surface border border-border-default text-text-secondary font-medium rounded">
                           {note.accountRole} · {note.accountName}
                         </span>
@@ -624,7 +624,7 @@ export function AIReview() {
                           <h3 className="text-[13px] font-semibold text-text-primary line-clamp-2 leading-snug group-hover:text-rose-600 transition-colors">
                             {note.title}
                           </h3>
-                          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-text-tertiary">
+                          <div className="mt-1 flex items-center gap-1.5 text-[13px] text-text-tertiary">
                             <span>主题: {note.topic}</span>
                             <span>·</span>
                             <span>{note.format}</span>
@@ -636,7 +636,7 @@ export function AIReview() {
                     </div>
 
                     {/* Performance metrics row */}
-                    <div className="pt-2 border-t border-border-subtle grid grid-cols-4 gap-1 text-center text-[11px]">
+                    <div className="pt-2 border-t border-border-subtle grid grid-cols-4 gap-1 text-center text-[13px]">
                       <div>
                         <span className="text-text-tertiary block">曝光</span>
                         <strong className="text-text-primary font-mono">{(note.impressions / 1000).toFixed(1)}k</strong>
@@ -664,14 +664,14 @@ export function AIReview() {
               <div className="flex items-center justify-between border-b border-border-default pb-3">
                 <div>
                   <h2 className="text-[15px] font-semibold text-text-primary">账号矩阵贡献汇总</h2>
-                  <p className="text-[12px] text-text-tertiary mt-0.5">各发布账号在当前项目下的发布篇数、曝光与转化明细。</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">各发布账号在当前项目下的发布篇数、曝光与转化明细。</p>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-[12.5px]">
+                <table className="w-full text-left text-[13px]">
                   <thead>
-                    <tr className="border-b border-border-default bg-surface-subtle text-text-secondary font-medium text-[11.5px]">
+                    <tr className="border-b border-border-default bg-surface-subtle text-text-secondary font-medium text-[13px]">
                       <th className="py-2.5 px-3">账号名称</th>
                       <th className="py-2.5 px-3">矩阵角色</th>
                       <th className="py-2.5 px-3">发稿篇数</th>
@@ -693,7 +693,7 @@ export function AIReview() {
                         <td className="py-2.5 px-3 font-mono font-bold text-rose-600">{acc.dmLeads} 条</td>
                         <td className="py-2.5 px-3 text-text-secondary max-w-xs truncate">{acc.topNoteTitle}</td>
                         <td className="py-2.5 px-3">
-                          <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold ${
+                          <span className={`px-2 py-0.5 rounded text-[13px] font-bold ${
                             acc.laiguStatus === 'connected' ? 'bg-emerald-50 text-emerald-700' : 'bg-neutral-100 text-text-tertiary'
                           }`}>
                             {acc.laiguStatus === 'connected' ? '已接入来鼓' : '未授权私信'}
@@ -712,7 +712,7 @@ export function AIReview() {
         {activeTab === 'search' && (
           <div className="space-y-6 max-w-7xl mx-auto">
             {/* Search Positioning Disclaimer Banner */}
-            <div className="p-3.5 bg-blue-50 border border-blue-100 rounded-xl text-[12px] text-blue-900 flex items-start gap-2.5">
+            <div className="p-3.5 bg-blue-50 border border-blue-100 rounded-xl text-[13px] text-blue-900 flex items-start gap-2.5">
               <Info size={16} className="text-blue-600 shrink-0 mt-0.5" />
               <div className="space-y-0.5">
                 <span className="font-semibold">关于搜索占位数据的说明:</span>
@@ -727,17 +727,17 @@ export function AIReview() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-default pb-3">
                 <div>
                   <h2 className="text-[15px] font-semibold text-text-primary">关键词搜索结果快照 (最新期)</h2>
-                  <p className="text-[12px] text-text-tertiary mt-0.5">采集源：小红书 App 搜索 Top 50 结果快照，每日 09:00 定时抓取。</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">采集源：小红书 App 搜索 Top 50 结果快照，每日 09:00 定时抓取。</p>
                 </div>
-                <div className="text-[12px] text-text-tertiary">
+                <div className="text-[13px] text-text-tertiary">
                   监控词数: <strong>{MOCK_SEARCH_SNAPSHOTS.length}</strong> 个
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-[12.5px]">
+                <table className="w-full text-left text-[13px]">
                   <thead>
-                    <tr className="border-b border-border-default bg-surface-subtle text-text-secondary font-medium text-[11.5px]">
+                    <tr className="border-b border-border-default bg-surface-subtle text-text-secondary font-medium text-[13px]">
                       <th className="py-2.5 px-3">核心关键词</th>
                       <th className="py-2.5 px-3">快照采集时间</th>
                       <th className="py-2.5 px-3">采集范围</th>
@@ -752,15 +752,15 @@ export function AIReview() {
                     {MOCK_SEARCH_SNAPSHOTS.map((snap) => (
                       <tr key={snap.id} className="hover:bg-surface-subtle transition-colors">
                         <td className="py-3 px-3 font-semibold text-text-primary">{snap.keyword}</td>
-                        <td className="py-3 px-3 text-text-secondary text-[11.5px]">{snap.lastCapturedAt}</td>
-                        <td className="py-3 px-3 text-text-tertiary text-[11.5px]">{snap.captureScope}</td>
+                        <td className="py-3 px-3 text-text-secondary text-[13px]">{snap.lastCapturedAt}</td>
+                        <td className="py-3 px-3 text-text-tertiary text-[13px]">{snap.captureScope}</td>
                         <td className="py-3 px-3 font-mono font-bold text-text-primary">{snap.projectNoteCount} 篇</td>
                         <td className="py-3 px-3">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {snap.rankPositions.map((pos, idx) => (
                               <span
                                 key={idx}
-                                className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                                className={`px-2 py-0.5 rounded text-[13px] font-bold ${
                                   pos.rank <= 3
                                     ? 'bg-rose-100 text-rose-800'
                                     : pos.rank <= 10
@@ -780,11 +780,11 @@ export function AIReview() {
                         </td>
                         <td className="py-3 px-3">
                           {snap.isStable ? (
-                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10.5px] font-bold border border-emerald-200">
+                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[13px] font-bold border border-emerald-200">
                               持续卡位 (2期+)
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 bg-neutral-100 text-text-tertiary rounded text-[10.5px]">
+                            <span className="px-2 py-0.5 bg-neutral-100 text-text-tertiary rounded text-[13px]">
                               最新上榜
                             </span>
                           )}
@@ -793,7 +793,7 @@ export function AIReview() {
                           <button
                             type="button"
                             onClick={() => setSelectedSnapshotDetail(snap)}
-                            className="px-2.5 py-1 bg-surface border border-border-default hover:border-border-strong text-text-secondary hover:text-text-primary rounded text-[11.5px] transition-colors"
+                            className="px-2.5 py-1 bg-surface border border-border-default hover:border-border-strong text-text-secondary hover:text-text-primary rounded text-[13px] transition-colors"
                           >
                             查看快照详情
                           </button>
@@ -814,14 +814,14 @@ export function AIReview() {
             <div className="bg-surface border border-border-default rounded-xl p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-[16px] font-semibold text-text-primary">商家报告中心</h2>
-                <p className="text-[12px] text-text-tertiary mt-0.5">
+                <p className="text-[13px] text-text-tertiary mt-0.5">
                   基于结构化事实与 Agent 辅助生成可读 HTML 商家报告，支持在线预览、自然语言修改与版本管理。
                 </p>
               </div>
 
               <button
                 onClick={() => setShowNewReportModal(true)}
-                className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white text-[12.5px] font-semibold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+                className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
               >
                 <Plus size={15} />
                 <span>新建商家报告</span>
@@ -832,7 +832,7 @@ export function AIReview() {
             <div className="bg-surface border border-border-default rounded-xl p-5 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-3">
                 <h3 className="text-[14px] font-semibold text-text-primary">已生成的报告与草稿 ({MOCK_REPORTS_LIST.length})</h3>
-                <span className="text-[11.5px] text-text-tertiary">所有报告版本确认后生成快照，不受后续后台数据更新影响</span>
+                <span className="text-[13px] text-text-tertiary">所有报告版本确认后生成快照，不受后续后台数据更新影响</span>
               </div>
 
               <div className="space-y-3">
@@ -843,22 +843,22 @@ export function AIReview() {
                   >
                     <div className="space-y-1.5 flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold ${
+                        <span className={`px-2 py-0.5 rounded text-[13px] font-bold ${
                           rep.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-neutral-200 text-text-secondary'
                         }`}>
                           {rep.status === 'published' ? '已生成不可变快照' : '草稿版本'}
                         </span>
-                        <span className="text-[11px] text-text-tertiary font-mono">{rep.version}</span>
-                        <span className="text-[11px] text-text-tertiary">· {rep.createdAt}</span>
+                        <span className="text-[13px] text-text-tertiary font-mono">{rep.version}</span>
+                        <span className="text-[13px] text-text-tertiary">· {rep.createdAt}</span>
                       </div>
                       <h4 className="text-[14px] font-semibold text-text-primary truncate">{rep.title}</h4>
-                      <p className="text-[12px] text-text-tertiary line-clamp-1">{rep.executiveSummary}</p>
+                      <p className="text-[13px] text-text-tertiary line-clamp-1">{rep.executiveSummary}</p>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => setPreviewReport(rep)}
-                        className="px-3 py-1.5 bg-surface border border-border-default hover:border-border-strong text-text-primary text-[12px] font-medium rounded-lg flex items-center gap-1 transition-colors"
+                        className="px-3 py-1.5 bg-surface border border-border-default hover:border-border-strong text-text-primary text-[13px] font-medium rounded-lg flex items-center gap-1 transition-colors"
                       >
                         <Eye size={13} />
                         <span>预览报告</span>
@@ -866,7 +866,7 @@ export function AIReview() {
 
                       <button
                         onClick={() => setShareReportModalItem(rep)}
-                        className="px-3 py-1.5 bg-surface border border-border-default hover:border-border-strong text-text-secondary text-[12px] font-medium rounded-lg flex items-center gap-1 transition-colors"
+                        className="px-3 py-1.5 bg-surface border border-border-default hover:border-border-strong text-text-secondary text-[13px] font-medium rounded-lg flex items-center gap-1 transition-colors"
                       >
                         <Share2 size={13} />
                         <span>分享</span>
@@ -874,7 +874,7 @@ export function AIReview() {
 
                       <button
                         onClick={() => setHistoryVersionModal(rep)}
-                        className="px-2.5 py-1.5 bg-surface-subtle border border-border-default text-text-tertiary hover:text-text-primary rounded-lg text-[12px]"
+                        className="px-2.5 py-1.5 bg-surface-subtle border border-border-default text-text-tertiary hover:text-text-primary rounded-lg text-[13px]"
                         title="历史版本对比"
                       >
                         <History size={13} />
@@ -897,22 +897,22 @@ export function AIReview() {
               <div className="p-4 border-b border-border-default flex items-center justify-between">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-primary">单篇笔记归因与明细数据</h3>
-                  <p className="text-[11.5px] text-text-tertiary mt-0.5">笔记 ID: {selectedNoteDetail.id} · 来源: 小红书创作者后台接口</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">笔记 ID: {selectedNoteDetail.id} · 来源: 小红书创作者后台接口</p>
                 </div>
                 <button onClick={() => setSelectedNoteDetail(null)} className="text-text-tertiary hover:text-text-primary p-1">
                   <X size={16} />
                 </button>
               </div>
 
-              <div className="p-5 overflow-y-auto space-y-4 text-[12.5px]">
+              <div className="p-5 overflow-y-auto space-y-4 text-[13px]">
                 <div className="flex gap-4 p-3 bg-surface-subtle rounded-lg border border-border-subtle">
                   <img src={selectedNoteDetail.coverUrl} alt={selectedNoteDetail.title} className="w-20 h-20 rounded object-cover border border-border-subtle shrink-0" />
                   <div className="space-y-1">
                     <h4 className="font-semibold text-text-primary text-[14px] leading-snug">{selectedNoteDetail.title}</h4>
-                    <div className="text-[11.5px] text-text-tertiary">
+                    <div className="text-[13px] text-text-tertiary">
                       发布账号: <strong>{selectedNoteDetail.accountName}</strong> ({selectedNoteDetail.accountRole})
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-text-tertiary pt-1">
+                    <div className="flex items-center gap-2 text-[13px] text-text-tertiary pt-1">
                       <span>主题: {selectedNoteDetail.topic}</span>
                       <span>·</span>
                       <span>格式: {selectedNoteDetail.format}</span>
@@ -924,19 +924,19 @@ export function AIReview() {
 
                 <div className="grid grid-cols-4 gap-3 text-center">
                   <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle">
-                    <span className="text-[11px] text-text-tertiary block">曝光量</span>
+                    <span className="text-[13px] text-text-tertiary block">曝光量</span>
                     <strong className="text-[16px] text-text-primary font-mono">{selectedNoteDetail.impressions}</strong>
                   </div>
                   <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle">
-                    <span className="text-[11px] text-text-tertiary block">阅读量</span>
+                    <span className="text-[13px] text-text-tertiary block">阅读量</span>
                     <strong className="text-[16px] text-text-primary font-mono">{selectedNoteDetail.reads}</strong>
                   </div>
                   <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle">
-                    <span className="text-[11px] text-text-tertiary block">互动量 (赞/藏/评)</span>
+                    <span className="text-[13px] text-text-tertiary block">互动量 (赞/藏/评)</span>
                     <strong className="text-[16px] text-text-primary font-mono">{selectedNoteDetail.interactions}</strong>
                   </div>
                   <div className="p-3 bg-rose-50 rounded-lg border border-rose-100">
-                    <span className="text-[11px] text-rose-700 block">私信/咨询线索</span>
+                    <span className="text-[13px] text-rose-700 block">私信/咨询线索</span>
                     <strong className="text-[16px] text-rose-700 font-mono font-extrabold">{selectedNoteDetail.dmLeads} 条</strong>
                   </div>
                 </div>
@@ -945,14 +945,14 @@ export function AIReview() {
                   <span className="font-medium text-text-primary block">关联搜索关键词:</span>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {selectedNoteDetail.keywords.map((kw, idx) => (
-                      <span key={idx} className="px-2 py-0.5 bg-surface border border-border-default rounded text-[11px] text-text-secondary">
+                      <span key={idx} className="px-2 py-0.5 bg-surface border border-border-default rounded text-[13px] text-text-secondary">
                         #{kw}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="text-[11.5px] text-text-tertiary flex items-center justify-between border-t border-border-subtle pt-3">
+                <div className="text-[13px] text-text-tertiary flex items-center justify-between border-t border-border-subtle pt-3">
                   <span>数据真实性状态: <strong>{selectedNoteDetail.dataQuality}</strong></span>
                   <span>可追溯原始链接已关联</span>
                 </div>
@@ -962,7 +962,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setSelectedNoteDetail(null)}
-                  className="px-4 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[12px] font-semibold rounded-lg"
+                  className="px-4 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg"
                 >
                   关闭
                 </button>
@@ -980,18 +980,18 @@ export function AIReview() {
               <div className="p-4 border-b border-border-default flex items-center justify-between">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-primary">结论数据依据与归因列表</h3>
-                  <p className="text-[11.5px] text-text-tertiary mt-0.5">包含底层关联笔记、互动数据与搜索快照证据</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">包含底层关联笔记、互动数据与搜索快照证据</p>
                 </div>
                 <button onClick={() => setSelectedEvidenceConclusion(null)} className="text-text-tertiary hover:text-text-primary p-1">
                   <X size={16} />
                 </button>
               </div>
 
-              <div className="p-5 overflow-y-auto space-y-4 text-[12.5px]">
+              <div className="p-5 overflow-y-auto space-y-4 text-[13px]">
                 <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
-                  <span className="text-[11px] font-bold text-text-tertiary block">复盘结论:</span>
+                  <span className="text-[13px] font-bold text-text-tertiary block">复盘结论:</span>
                   <p className="font-semibold text-text-primary">{selectedEvidenceConclusion.title}</p>
-                  <p className="text-[11.5px] text-text-tertiary pt-1">覆盖范围: {selectedEvidenceConclusion.coverageScope}</p>
+                  <p className="text-[13px] text-text-tertiary pt-1">覆盖范围: {selectedEvidenceConclusion.coverageScope}</p>
                 </div>
 
                 <div className="space-y-2">
@@ -1002,10 +1002,10 @@ export function AIReview() {
                         <img src={note.coverUrl} alt={note.title} className="w-10 h-10 rounded object-cover shrink-0" />
                         <div className="min-w-0">
                           <p className="font-medium text-text-primary truncate text-[13px]">{note.title}</p>
-                          <p className="text-[11px] text-text-tertiary">{note.accountName} · 曝光 {note.impressions} · 互动 {note.interactions}</p>
+                          <p className="text-[13px] text-text-tertiary">{note.accountName} · 曝光 {note.impressions} · 互动 {note.interactions}</p>
                         </div>
                       </div>
-                      <span className="font-mono font-bold text-rose-600 shrink-0 text-[12px]">{note.dmLeads} 条私信</span>
+                      <span className="font-mono font-bold text-rose-600 shrink-0 text-[13px]">{note.dmLeads} 条私信</span>
                     </div>
                   ))}
                 </div>
@@ -1015,7 +1015,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setSelectedEvidenceConclusion(null)}
-                  className="px-4 py-1.5 bg-action-primary text-white text-[12px] font-semibold rounded-lg"
+                  className="px-4 py-1.5 bg-action-primary text-white text-[13px] font-semibold rounded-lg"
                 >
                   确认返回
                 </button>
@@ -1033,46 +1033,46 @@ export function AIReview() {
               <div className="p-4 border-b border-border-default flex items-center justify-between">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-primary">生成下一周期策略修改提案 (Diff 对比)</h3>
-                  <p className="text-[11.5px] text-text-tertiary mt-0.5">改动仅生成修改提案，须由您确认后才在下一周期生效，不影响运行中项目</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">改动仅生成修改提案，须由您确认后才在下一周期生效，不影响运行中项目</p>
                 </div>
                 <button onClick={() => setSelectedStrategyDiff(null)} className="text-text-tertiary hover:text-text-primary p-1">
                   <X size={16} />
                 </button>
               </div>
 
-              <div className="p-5 overflow-y-auto space-y-4 text-[12.5px]">
+              <div className="p-5 overflow-y-auto space-y-4 text-[13px]">
                 {/* Diff Side by Side */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-3.5 bg-rose-50 border border-rose-100 rounded-lg space-y-1">
-                    <span className="text-[11px] font-bold text-rose-700 block">当前运行打法 (v2.1)</span>
+                    <span className="text-[13px] font-bold text-rose-700 block">当前运行打法 (v2.1)</span>
                     <p className="text-text-primary font-medium">{selectedStrategyDiff.strategyDiff.currentStrategy}</p>
                   </div>
                   <div className="p-3.5 bg-emerald-50 border border-emerald-100 rounded-lg space-y-1">
-                    <span className="text-[11px] font-bold text-emerald-700 block">建议调整打法 (v2.2 提案)</span>
+                    <span className="text-[13px] font-bold text-emerald-700 block">建议调整打法 (v2.2 提案)</span>
                     <p className="text-text-primary font-medium">{selectedStrategyDiff.strategyDiff.suggestedStrategy}</p>
                   </div>
                 </div>
 
                 <div className="space-y-2 p-3.5 bg-surface-subtle rounded-lg border border-border-subtle">
                   <div>
-                    <span className="text-text-tertiary text-[11px] block">修改理由:</span>
+                    <span className="text-text-tertiary text-[13px] block">修改理由:</span>
                     <span className="text-text-primary">{selectedStrategyDiff.strategyDiff.reason}</span>
                   </div>
                   <div>
-                    <span className="text-text-tertiary text-[11px] block">数据依据:</span>
+                    <span className="text-text-tertiary text-[13px] block">数据依据:</span>
                     <span className="text-text-secondary">{selectedStrategyDiff.strategyDiff.dataEvidence}</span>
                   </div>
                   <div>
-                    <span className="text-text-tertiary text-[11px] block">影响对象:</span>
+                    <span className="text-text-tertiary text-[13px] block">影响对象:</span>
                     <span className="text-text-secondary">{selectedStrategyDiff.strategyDiff.impactedScope}</span>
                   </div>
                   <div>
-                    <span className="text-text-tertiary text-[11px] block">生效周期:</span>
+                    <span className="text-text-tertiary text-[13px] block">生效周期:</span>
                     <span className="text-emerald-700 font-semibold">{selectedStrategyDiff.strategyDiff.effectivePeriod}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-amber-50 border border-amber-100 text-amber-800 rounded-lg text-[11.5px] flex items-center gap-2">
+                <div className="p-3 bg-amber-50 border border-amber-100 text-amber-800 rounded-lg text-[13px] flex items-center gap-2">
                   <Info size={14} className="shrink-0" />
                   <span>本修改提案将被记录在项目策略版本库中，且随时支持撤销与还原。</span>
                 </div>
@@ -1082,14 +1082,14 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setSelectedStrategyDiff(null)}
-                  className="px-3.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary"
+                  className="px-3.5 py-1.5 text-[13px] text-text-secondary hover:text-text-primary"
                 >
                   放弃修改
                 </button>
                 <button
                   type="button"
                   onClick={() => handleConfirmStrategyProposal(selectedStrategyDiff)}
-                  className="px-4 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[12px] font-semibold rounded-lg"
+                  className="px-4 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg"
                 >
                   确认将提案应用到下一周期打法
                 </button>
@@ -1107,16 +1107,16 @@ export function AIReview() {
               <div className="p-4 border-b border-border-default flex items-center justify-between">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-primary">搜索结果快照明细: #{selectedSnapshotDetail.keyword}</h3>
-                  <p className="text-[11.5px] text-text-tertiary mt-0.5">采集时间: {selectedSnapshotDetail.lastCapturedAt}</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">采集时间: {selectedSnapshotDetail.lastCapturedAt}</p>
                 </div>
                 <button onClick={() => setSelectedSnapshotDetail(null)} className="text-text-tertiary hover:text-text-primary p-1">
                   <X size={16} />
                 </button>
               </div>
 
-              <div className="p-5 overflow-y-auto space-y-4 text-[12.5px]">
+              <div className="p-5 overflow-y-auto space-y-4 text-[13px]">
                 <div className="p-3 bg-surface-subtle rounded-lg border border-border-subtle space-y-1">
-                  <span className="text-[11px] text-text-tertiary block">采集环境说明:</span>
+                  <span className="text-[13px] text-text-tertiary block">采集环境说明:</span>
                   <p className="text-text-secondary">小红书 App 最新推荐与搜索算法，关键词“{selectedSnapshotDetail.keyword}”前 50 位快照。</p>
                 </div>
 
@@ -1126,10 +1126,10 @@ export function AIReview() {
                     <div key={idx} className="p-3 bg-surface border border-border-default rounded-lg flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-[11px] font-bold rounded">第 #{item.rank} 位</span>
+                          <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-[13px] font-bold rounded">第 #{item.rank} 位</span>
                           <span className="font-medium text-text-primary">{item.noteTitle}</span>
                         </div>
-                        <span className="text-[11px] text-text-tertiary mt-1 block">发布账号: {item.accountName}</span>
+                        <span className="text-[13px] text-text-tertiary mt-1 block">发布账号: {item.accountName}</span>
                       </div>
                     </div>
                   ))}
@@ -1140,7 +1140,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setSelectedSnapshotDetail(null)}
-                  className="px-4 py-1.5 bg-action-primary text-white text-[12px] font-semibold rounded-lg"
+                  className="px-4 py-1.5 bg-action-primary text-white text-[13px] font-semibold rounded-lg"
                 >
                   关闭
                 </button>
@@ -1161,14 +1161,14 @@ export function AIReview() {
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                   <div>
                     <h3 className="text-[14px] font-semibold">商家报告独立预览 (客户视角 HTML 渲染)</h3>
-                    <p className="text-[11px] text-neutral-400">版本: {previewReport.version} · 不含内部工程结构与日志</p>
+                    <p className="text-[13px] text-neutral-400">版本: {previewReport.version} · 不含内部工程结构与日志</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => window.print()}
-                    className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[12px] rounded-lg flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[13px] rounded-lg flex items-center gap-1 transition-colors"
                   >
                     <Printer size={13} />
                     <span>打印/导出 PDF</span>
@@ -1177,7 +1177,7 @@ export function AIReview() {
                     onClick={() => {
                       setShareReportModalItem(previewReport);
                     }}
-                    className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[12px] rounded-lg flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[13px] rounded-lg flex items-center gap-1 transition-colors"
                   >
                     <Share2 size={13} />
                     <span>生成分享链接</span>
@@ -1194,7 +1194,7 @@ export function AIReview() {
                 <input
                   type="text"
                   placeholder="用自然语言要求 AI 修改此报告... (如: 将结论第二条语气修改得更平实，并强调曝光对比)"
-                  className="flex-1 bg-white border border-[#E0E4E8] rounded-lg px-3 py-1.5 text-[12.5px] focus:outline-none focus:border-neutral-900"
+                  className="flex-1 bg-white border border-[#E0E4E8] rounded-lg px-3 py-1.5 text-[13px] focus:outline-none focus:border-neutral-900"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       alert("AI 助手已接收修改要求，更新报告 Diff 渲染中...");
@@ -1204,7 +1204,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => alert("AI 助手已接收修改要求，更新报告 Diff 渲染中...")}
-                  className="px-3 py-1.5 bg-action-primary text-white text-[12px] font-semibold rounded-lg flex items-center gap-1"
+                  className="px-3 py-1.5 bg-action-primary text-white text-[13px] font-semibold rounded-lg flex items-center gap-1"
                 >
                   <Send size={12} />
                   <span>应用调整</span>
@@ -1215,12 +1215,12 @@ export function AIReview() {
               <div className="flex-1 p-8 lg:p-12 overflow-y-auto space-y-8 bg-[#FFFFFF] max-w-3xl mx-auto w-full text-[13px] leading-relaxed">
                 {/* Document Title Header */}
                 <div className="border-b-2 border-neutral-900 pb-6 space-y-2">
-                  <div className="flex items-center justify-between text-[11.5px] text-neutral-500 uppercase tracking-wider font-semibold">
+                  <div className="flex items-center justify-between text-[13px] text-neutral-500 uppercase tracking-wider font-semibold">
                     <span>TapTik 品牌运营复盘报告</span>
                     <span>覆盖率: {previewReport.coverageRate}%</span>
                   </div>
                   <h1 className="text-[22px] font-bold text-neutral-900 leading-tight">{previewReport.title}</h1>
-                  <div className="flex flex-wrap items-center gap-4 text-[12px] text-neutral-600 pt-2">
+                  <div className="flex flex-wrap items-center gap-4 text-[13px] text-neutral-600 pt-2">
                     <span>项目: <strong>{previewReport.projectName}</strong></span>
                     <span>周期: {previewReport.dateRange}</span>
                     <span>接收方: {previewReport.recipientRole}</span>
@@ -1244,15 +1244,15 @@ export function AIReview() {
                   </h2>
                   <div className="grid grid-cols-3 gap-3 text-center">
                     <div className="p-3 bg-[#F8F9FA] border border-[#EDF0F2] rounded-lg">
-                      <span className="text-[11px] text-neutral-500 block">实际发稿量</span>
+                      <span className="text-[13px] text-neutral-500 block">实际发稿量</span>
                       <strong className="text-[18px] text-neutral-900 font-mono">20 篇</strong>
                     </div>
                     <div className="p-3 bg-[#F8F9FA] border border-[#EDF0F2] rounded-lg">
-                      <span className="text-[11px] text-neutral-500 block">平台曝光量</span>
+                      <span className="text-[13px] text-neutral-500 block">平台曝光量</span>
                       <strong className="text-[18px] text-neutral-900 font-mono">285,400</strong>
                     </div>
                     <div className="p-3 bg-[#F8F9FA] border border-[#EDF0F2] rounded-lg">
-                      <span className="text-[11px] text-neutral-500 block">总互动量 (赞/藏/评)</span>
+                      <span className="text-[13px] text-neutral-500 block">总互动量 (赞/藏/评)</span>
                       <strong className="text-[18px] text-neutral-900 font-mono">4,850</strong>
                     </div>
                   </div>
@@ -1266,7 +1266,7 @@ export function AIReview() {
                   <div className="space-y-2">
                     {previewReport.keyTakeaways.map((point, idx) => (
                       <div key={idx} className="flex items-start gap-2.5 text-neutral-800">
-                        <span className="w-5 h-5 rounded-full bg-neutral-100 text-neutral-700 flex items-center justify-center font-mono font-bold text-[11px] shrink-0 mt-0.5">
+                        <span className="w-5 h-5 rounded-full bg-neutral-100 text-neutral-700 flex items-center justify-center font-mono font-bold text-[13px] shrink-0 mt-0.5">
                           {idx + 1}
                         </span>
                         <p>{point}</p>
@@ -1276,7 +1276,7 @@ export function AIReview() {
                 </div>
 
                 {/* Section 4: Data Sources Disclaimer */}
-                <div className="pt-6 border-t border-[#EDF0F2] text-[11px] text-neutral-500 space-y-1">
+                <div className="pt-6 border-t border-[#EDF0F2] text-[13px] text-neutral-500 space-y-1">
                   <p className="font-semibold text-neutral-700">数据口径与来源说明:</p>
                   <p>1. 笔记曝光与互动量来自小红书创作者后台官方接口数据同步。</p>
                   <p>2. 搜索卡位为在指定时间和采集环境下的搜索结果快照。</p>
@@ -1286,14 +1286,14 @@ export function AIReview() {
 
               {/* Report Preview Footer */}
               <div className="bg-[#F8F9FA] border-t border-[#E0E4E8] p-4 px-6 flex items-center justify-between shrink-0">
-                <span className="text-[12px] text-neutral-500">TapTik HTML 商家报告引擎 v2.0</span>
+                <span className="text-[13px] text-neutral-500">TapTik HTML 商家报告引擎 v2.0</span>
                 <button
                   onClick={() => {
                     setPreviewReport(null);
                     setAppliedProposalToast("报告已锁定保存！");
                     setTimeout(() => setAppliedProposalToast(null), 3000);
                   }}
-                  className="px-5 py-2 bg-action-primary text-white text-[12.5px] font-semibold rounded-lg hover:bg-action-primary-hover transition-colors"
+                  className="px-5 py-2 bg-action-primary text-white text-[13px] font-semibold rounded-lg hover:bg-action-primary-hover transition-colors"
                 >
                   确认锁存版本
                 </button>
@@ -1315,17 +1315,17 @@ export function AIReview() {
                 </button>
               </div>
 
-              <div className="space-y-3 text-[12.5px]">
+              <div className="space-y-3 text-[13px]">
                 <div>
-                  <label className="block text-[12px] font-medium text-text-secondary mb-1">专属访问链接:</label>
-                  <div className="flex items-center gap-1 bg-surface-subtle border border-border-default rounded-lg p-2 font-mono text-[11.5px] text-text-primary">
+                  <label className="block text-[13px] font-medium text-text-secondary mb-1">专属访问链接:</label>
+                  <div className="flex items-center gap-1 bg-surface-subtle border border-border-default rounded-lg p-2 font-mono text-[13px] text-text-primary">
                     <span className="truncate flex-1">https://taptik.com/report/share/v1_8a9f2</span>
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText("https://taptik.com/report/share/v1_8a9f2");
                         alert("分享链接已复制到剪贴板！");
                       }}
-                      className="px-2 py-1 bg-surface border border-border-default rounded hover:bg-surface-hover text-text-secondary font-sans text-[11px]"
+                      className="px-2 py-1 bg-surface border border-border-default rounded hover:bg-surface-hover text-text-secondary font-sans text-[13px]"
                     >
                       复制
                     </button>
@@ -1334,16 +1334,16 @@ export function AIReview() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[12px] font-medium text-text-secondary mb-1">有效期:</label>
-                    <select className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded-lg text-[12px]">
+                    <label className="block text-[13px] font-medium text-text-secondary mb-1">有效期:</label>
+                    <select className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded-lg text-[13px]">
                       <option value="7">7 天有效</option>
                       <option value="30">30 天有效</option>
                       <option value="permanent">永久有效</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[12px] font-medium text-text-secondary mb-1">权限设置:</label>
-                    <select className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded-lg text-[12px]">
+                    <label className="block text-[13px] font-medium text-text-secondary mb-1">权限设置:</label>
+                    <select className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded-lg text-[13px]">
                       <option value="public">无需密码公开访问</option>
                       <option value="password">需要访问密码</option>
                     </select>
@@ -1355,7 +1355,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setShareReportModalItem(null)}
-                  className="px-4 py-1.5 bg-action-primary text-white text-[12px] font-semibold rounded-lg"
+                  className="px-4 py-1.5 bg-action-primary text-white text-[13px] font-semibold rounded-lg"
                 >
                   完成
                 </button>
@@ -1377,20 +1377,20 @@ export function AIReview() {
                 </button>
               </div>
 
-              <div className="space-y-2 text-[12.5px] max-h-60 overflow-y-auto">
+              <div className="space-y-2 text-[13px] max-h-60 overflow-y-auto">
                 <div className="p-3 bg-surface-subtle border border-border-default rounded-lg flex items-center justify-between">
                   <div>
                     <div className="font-semibold text-text-primary">v1.0 (最新快照)</div>
-                    <div className="text-[11px] text-text-tertiary">2026-08-21 10:00 · 操盘手手动锁存</div>
+                    <div className="text-[13px] text-text-tertiary">2026-08-21 10:00 · 操盘手手动锁存</div>
                   </div>
-                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10.5px] font-bold rounded">当前在线</span>
+                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[13px] font-bold rounded">当前在线</span>
                 </div>
                 <div className="p-3 bg-surface border border-border-subtle rounded-lg flex items-center justify-between text-text-secondary">
                   <div>
                     <div className="font-medium">v0.2 (系统生成草稿)</div>
-                    <div className="text-[11px] text-text-tertiary">2026-08-20 18:30 · 包含初版意见</div>
+                    <div className="text-[13px] text-text-tertiary">2026-08-20 18:30 · 包含初版意见</div>
                   </div>
-                  <button onClick={() => alert("还原至 v0.2 草稿")} className="text-[11.5px] text-text-primary hover:underline">
+                  <button onClick={() => alert("还原至 v0.2 草稿")} className="text-[13px] text-text-primary hover:underline">
                     查看草稿
                   </button>
                 </div>
@@ -1400,7 +1400,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setHistoryVersionModal(null)}
-                  className="px-4 py-1.5 bg-action-primary text-white text-[12px] font-semibold rounded-lg"
+                  className="px-4 py-1.5 bg-action-primary text-white text-[13px] font-semibold rounded-lg"
                 >
                   关闭
                 </button>
@@ -1418,17 +1418,17 @@ export function AIReview() {
               <div className="flex items-center justify-between border-b border-border-default pb-3">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-primary">新建商家运营报告</h3>
-                  <p className="text-[11.5px] text-text-tertiary mt-0.5">选择统计范围与配置章节，智能汇总生成报告草稿</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">选择统计范围与配置章节，智能汇总生成报告草稿</p>
                 </div>
                 <button onClick={() => setShowNewReportModal(false)} className="text-text-tertiary hover:text-text-primary">
                   <X size={16} />
                 </button>
               </div>
 
-              <div className="space-y-3 text-[12.5px]">
+              <div className="space-y-3 text-[13px]">
                 <div>
-                  <label className="block text-[12px] font-medium text-text-secondary mb-1">项目范围:</label>
-                  <select className="w-full px-3 py-1.5 bg-surface border border-border-default rounded-lg text-[12.5px]">
+                  <label className="block text-[13px] font-medium text-text-secondary mb-1">项目范围:</label>
+                  <select className="w-full px-3 py-1.5 bg-surface border border-border-default rounded-lg text-[13px]">
                     <option value="p1">幼犬换粮软便卡位项目 (v2.1体验测评打法)</option>
                     <option value="p2">猫粮肠胃敏感科普项目 (v1.4打法)</option>
                   </select>
@@ -1436,12 +1436,12 @@ export function AIReview() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[12px] font-medium text-text-secondary mb-1">时间周期:</label>
-                    <input type="text" defaultValue="2026-08-01 ~ 2026-08-20" className="w-full px-3 py-1.5 bg-surface border border-border-default rounded-lg text-[12px]" />
+                    <label className="block text-[13px] font-medium text-text-secondary mb-1">时间周期:</label>
+                    <input type="text" defaultValue="2026-08-01 ~ 2026-08-20" className="w-full px-3 py-1.5 bg-surface border border-border-default rounded-lg text-[13px]" />
                   </div>
                   <div>
-                    <label className="block text-[12px] font-medium text-text-secondary mb-1">接收对象:</label>
-                    <select className="w-full px-3 py-1.5 bg-surface border border-border-default rounded-lg text-[12.5px]">
+                    <label className="block text-[13px] font-medium text-text-secondary mb-1">接收对象:</label>
+                    <select className="w-full px-3 py-1.5 bg-surface border border-border-default rounded-lg text-[13px]">
                       <option value="merchant">商家决策层</option>
                       <option value="team">运营项目组</option>
                     </select>
@@ -1449,8 +1449,8 @@ export function AIReview() {
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-text-secondary mb-1">包含章节配置:</label>
-                  <div className="grid grid-cols-2 gap-2 p-3 bg-surface-subtle border border-border-subtle rounded-lg text-[11.5px]">
+                  <label className="block text-[13px] font-medium text-text-secondary mb-1">包含章节配置:</label>
+                  <div className="grid grid-cols-2 gap-2 p-3 bg-surface-subtle border border-border-subtle rounded-lg text-[13px]">
                     <label className="flex items-center gap-1.5">
                       <input type="checkbox" defaultChecked className="rounded text-neutral-900" />
                       <span>项目与统计范围</span>
@@ -1483,7 +1483,7 @@ export function AIReview() {
                 <button
                   type="button"
                   onClick={() => setShowNewReportModal(false)}
-                  className="px-3.5 py-1.5 text-[12px] text-text-secondary"
+                  className="px-3.5 py-1.5 text-[13px] text-text-secondary"
                 >
                   取消
                 </button>
@@ -1493,7 +1493,7 @@ export function AIReview() {
                     setShowNewReportModal(false);
                     setPreviewReport(MOCK_REPORTS_LIST[0]);
                   }}
-                  className="px-4 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[12px] font-semibold rounded-lg flex items-center gap-1"
+                  className="px-4 py-1.5 bg-action-primary hover:bg-action-primary-hover text-white text-[13px] font-semibold rounded-lg flex items-center gap-1"
                 >
                   <Sparkles size={13} />
                   <span>生成并预览报告</span>

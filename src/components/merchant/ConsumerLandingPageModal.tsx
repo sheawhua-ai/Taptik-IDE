@@ -120,7 +120,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
               消费者领取内容包后，用约 10 秒提交真实体验反馈。反馈与该内容包、当前方案版本绑定，并据此生成消费者视角的个人笔记。
             </p>
 
-            <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-2.5 text-[12.5px]">
+            <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-2.5 text-[13px]">
               <div className="font-bold text-text-main">全流程自动化闭环：</div>
               <div className="space-y-2 text-text-secondary">
                 <div className="flex items-center gap-2">
@@ -156,10 +156,10 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
           <div className="w-[360px] h-[680px] bg-surface-1 rounded-[38px] shadow-2xl border-[10px] border-neutral-900 overflow-hidden relative flex flex-col">
             
             {/* Status bar */}
-            <div className="h-6 w-full bg-surface-1 flex justify-between items-center px-6 text-[11px] font-bold text-text-main shrink-0">
+            <div className="h-6 w-full bg-surface-1 flex justify-between items-center px-6 text-[13px] font-bold text-text-main shrink-0">
               <span>09:41</span>
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px]">5G</span>
+                <span className="text-[13px]">5G</span>
                 <div className="w-4 h-2.5 bg-btn-main rounded-[2px]" />
               </div>
             </div>
@@ -177,9 +177,9 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                       alt="活动海报"
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-4 pb-5 pt-24 text-white">
-                      <div className="text-[10.5px] text-white/80">即将领取</div>
+                      <div className="text-[13px] text-white/80">即将领取</div>
                       <div className="mt-1 text-[15px] font-bold line-clamp-2">{contentPackage?.title || contentPackage?.contentDirection || "消费者真实体验内容包"}</div>
-                      <div className="mt-1.5 text-[11px] leading-relaxed text-white/80">
+                      <div className="mt-1.5 text-[13px] leading-relaxed text-white/80">
                         领取后提交 3 个真实体验选择，反馈将与内容包绑定并生成你的个人笔记。
                       </div>
                     </div>
@@ -202,15 +202,15 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                   <div className="bg-surface-1 rounded-xl p-4 border border-border-default shadow-2xs space-y-1">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-extrabold text-[15px] text-text-main">真实体验反馈</h3>
-                      <span className="rounded bg-surface-subtle px-2 py-0.5 text-[10px] text-text-tertiary">约 10 秒</span>
+                      <span className="rounded bg-surface-subtle px-2 py-0.5 text-[13px] text-text-tertiary">约 10 秒</span>
                     </div>
-                    <p className="text-[11.5px] text-text-tertiary">反馈 V{feedbackVersion} · 已绑定当前内容包，仅用于生成你的真实体验笔记</p>
+                    <p className="text-[13px] text-text-tertiary">反馈 V{feedbackVersion} · 已绑定当前内容包，仅用于生成你的真实体验笔记</p>
                   </div>
 
                   {/* Q1 */}
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-2">
-                    <div className="text-[12.5px] font-bold text-text-main">1. 狗狗现在多大？</div>
-                    <div className="grid grid-cols-3 gap-2 text-[12px]">
+                    <div className="text-[13px] font-bold text-text-main">1. 狗狗现在多大？</div>
+                    <div className="grid grid-cols-3 gap-2 text-[13px]">
                       {["0-3个月", "3-6个月", "6个月以上"].map((item) => (
                         <button
                           key={item}
@@ -229,8 +229,8 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
 
                   {/* Q2 */}
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-2">
-                    <div className="text-[12.5px] font-bold text-text-main">2. 体验前最困扰什么？</div>
-                    <div className="grid grid-cols-2 gap-2 text-[12px]">
+                    <div className="text-[13px] font-bold text-text-main">2. 体验前最困扰什么？</div>
+                    <div className="grid grid-cols-2 gap-2 text-[13px]">
                       {["软便/拉稀", "挑食不爱吃", "泪痕严重", "太瘦不长肉"].map((item) => (
                         <button
                           key={item}
@@ -249,8 +249,8 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
 
                   {/* Q3 */}
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-2">
-                    <div className="text-[12.5px] font-bold text-text-main">3. 这次最真实的变化？</div>
-                    <div className="grid grid-cols-2 gap-2 text-[12px]">
+                    <div className="text-[13px] font-bold text-text-main">3. 这次最真实的变化？</div>
+                    <div className="grid grid-cols-2 gap-2 text-[13px]">
                       {["便便更成型", "胃口变好了", "状态更稳定", "暂时没明显变化"].map((item) => (
                         <button
                           key={item}
@@ -286,7 +286,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                   <h3 className="font-extrabold text-[16px] text-text-main">
                     AI 正在根据你的真实反馈生成体验笔记...
                   </h3>
-                  <p className="text-[12px] text-text-tertiary max-w-[260px]">
+                  <p className="text-[13px] text-text-tertiary max-w-[260px]">
                     已提炼：{answers.petAge}幼犬 · 解决{answers.problem}痛点 · 采用真实亲测口吻
                   </p>
                 </div>
@@ -295,21 +295,21 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
               {/* STEP 4: 笔记确认与微调 */}
               {step === "note_confirm" && (
                 <div className="p-4 space-y-3.5 pb-20 text-[13px]">
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-[12px] font-bold">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-[13px] font-bold">
                     <CheckCircle2 size={16} className="shrink-0" />
                     已为您生成专属换粮测评笔记！
                   </div>
 
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2">
-                    <label className="text-[12px] font-bold text-text-secondary">推荐标题</label>
-                    <div className="p-2.5 bg-page-bg rounded-xl text-[12.5px] font-bold text-text-main border border-border-default">
+                    <label className="text-[13px] font-bold text-text-secondary">推荐标题</label>
+                    <div className="p-2.5 bg-page-bg rounded-xl text-[13px] font-bold text-text-main border border-border-default">
                       {title}
                     </div>
                   </div>
 
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2">
-                    <label className="text-[12px] font-bold text-text-secondary">笔记正文</label>
-                    <div className="p-2.5 bg-page-bg rounded-xl text-[11.5px] text-text-main leading-relaxed border border-border-default whitespace-pre-line max-h-48 overflow-y-auto">
+                    <label className="text-[13px] font-bold text-text-secondary">笔记正文</label>
+                    <div className="p-2.5 bg-page-bg rounded-xl text-[13px] text-text-main leading-relaxed border border-border-default whitespace-pre-line max-h-48 overflow-y-auto">
                       {body}
                     </div>
                   </div>
@@ -329,7 +329,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
               {(step === "photos" || step === "photo_retry") && (
                 <div className="p-4 space-y-3.5 pb-20 text-[13px]">
                   {step === "photo_retry" && (
-                    <div className="p-3 bg-rose-50 border border-danger-light rounded-xl text-danger text-[12px] font-medium space-y-1">
+                    <div className="p-3 bg-rose-50 border border-danger-light rounded-xl text-danger text-[13px] font-medium space-y-1">
                       <div className="font-bold flex items-center gap-1.5">
                         <AlertCircle size={14} className="text-danger" />
                         AI 场景质检未通过
@@ -340,14 +340,14 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
 
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-2">
                     <div className="font-bold text-text-main text-[13.5px]">拍摄要求</div>
-                    <div className="text-[12px] text-text-secondary space-y-1 bg-page-bg p-2.5 rounded-xl border border-border-default">
+                    <div className="text-[13px] text-text-secondary space-y-1 bg-page-bg p-2.5 rounded-xl border border-border-default">
                       <div><strong>场景 1 (必拍):</strong> 狗狗进食特写或与粮袋合影 (1-2张)</div>
                       <div><strong>场景 2 (选拍):</strong> 狗狗精神饱满生活照 (1张)</div>
                     </div>
                   </div>
 
                   <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default shadow-2xs space-y-3">
-                    <div className="flex items-center justify-between text-[12px] font-bold text-text-secondary">
+                    <div className="flex items-center justify-between text-[13px] font-bold text-text-secondary">
                       <span>已选照片 ({photos.length})</span>
                       <button
                         onClick={() => setPhotos([...photos, "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop"])}
@@ -384,7 +384,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                   <h3 className="font-extrabold text-[15px] text-text-main">
                     AI 正在质检照片合规性...
                   </h3>
-                  <p className="text-[12px] text-text-tertiary">
+                  <p className="text-[13px] text-text-tertiary">
                     检测产品包装、吃食场景与光线清晰度
                   </p>
                 </div>
@@ -393,43 +393,43 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
               {/* STEP 7: 复制与发布 */}
               {step === "publish" && (
                 <div className="p-4 space-y-3.5 pb-20 text-[13px]">
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-[12px] font-bold flex items-center gap-2">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-[13px] font-bold flex items-center gap-2">
                     <CheckCircle2 size={16} />
                     照片质检通过！请复制内容前往小红书发布
                   </div>
 
                   {/* Copy Title */}
                   <div className="bg-surface-1 rounded-xl p-3 border border-border-default space-y-2">
-                    <div className="flex justify-between items-center text-[12px]">
+                    <div className="flex justify-between items-center text-[13px]">
                       <span className="font-bold text-text-secondary">1. 复制标题</span>
                       <button
                         onClick={() => handleCopy(title, "title")}
-                        className={`px-3 py-1 rounded-lg text-[11.5px] font-bold ${
+                        className={`px-3 py-1 rounded-lg text-[13px] font-bold ${
                           copiedTitle ? "bg-emerald-600 text-white" : "bg-btn-main text-white"
                         }`}
                       >
                         {copiedTitle ? "已复制" : "复制标题"}
                       </button>
                     </div>
-                    <div className="text-[12px] text-text-main font-bold bg-page-bg p-2 rounded-lg truncate">
+                    <div className="text-[13px] text-text-main font-bold bg-page-bg p-2 rounded-lg truncate">
                       {title}
                     </div>
                   </div>
 
                   {/* Copy Body */}
                   <div className="bg-surface-1 rounded-xl p-3 border border-border-default space-y-2">
-                    <div className="flex justify-between items-center text-[12px]">
+                    <div className="flex justify-between items-center text-[13px]">
                       <span className="font-bold text-text-secondary">2. 复制正文</span>
                       <button
                         onClick={() => handleCopy(body, "body")}
-                        className={`px-3 py-1 rounded-lg text-[11.5px] font-bold ${
+                        className={`px-3 py-1 rounded-lg text-[13px] font-bold ${
                           copiedBody ? "bg-emerald-600 text-white" : "bg-btn-main text-white"
                         }`}
                       >
                         {copiedBody ? "已复制" : "复制正文"}
                       </button>
                     </div>
-                    <div className="text-[11.5px] text-text-secondary bg-page-bg p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-line">
+                    <div className="text-[13px] text-text-secondary bg-page-bg p-2 rounded-lg max-h-24 overflow-y-auto whitespace-pre-line">
                       {body}
                     </div>
                   </div>
@@ -455,7 +455,7 @@ export function ConsumerLandingPageModal({ project, onClose }: Props) {
                     <h3 className="font-extrabold text-[17px] text-text-main">
                       发布成功并自动识别！
                     </h3>
-                    <p className="text-[12px] text-text-tertiary max-w-[260px]">
+                    <p className="text-[13px] text-text-tertiary max-w-[260px]">
                       系统已绑定小红书笔记并生成观察任务，专属 50 元优惠券与礼包已发放至您的账户！
                     </p>
                   </div>

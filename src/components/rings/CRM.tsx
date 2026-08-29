@@ -25,15 +25,15 @@ export const CRM: React.FC = () => {
  </div>
  <div>
  <h2 className="text-[17px] font-semibold text-text-main tracking-tight">私域承接与 CRM</h2>
- <p className="text-[11px] text-text-tertiary">线索全生命周期管理，打通笔记到成交的最后一公里</p>
+ <p className="text-[13px] text-text-tertiary">线索全生命周期管理，打通笔记到成交的最后一公里</p>
  </div>
  </div>
  
  <div className="flex items-center gap-3">
- <button className="px-4 py-2 bg-page-bg text-text-secondary rounded-xl text-[12px] hover:bg-hover-bg transition-all border border-border-default flex items-center gap-2">
+ <button className="px-4 py-2 bg-page-bg text-text-secondary rounded-xl text-[13px] hover:bg-hover-bg transition-all border border-border-default flex items-center gap-2">
  <FileText size={16}/> 留资表单配置
  </button>
- <button className="px-6 py-2 bg-btn-main text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 hover:bg-btn-main hover:tranneutral-y-[-1px] transition-all flex items-center gap-2">
+ <button className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] shadow-lg shadow-neutral-200 hover:bg-btn-main hover:tranneutral-y-[-1px] transition-all flex items-center gap-2">
  <UserPlus size={16}/> 手动录入线索
  </button>
  </div>
@@ -50,10 +50,10 @@ export const CRM: React.FC = () => {
  { label: '成交金额 (GMV)', value: '¥58k', trend: '+12%', color: 'text-brand-logo' },
  ].map((kpi, idx) => (
  <div key={idx} className="bg-surface-1 p-6 rounded-[32px] border border-border-default shadow-sm group hover:scale-[1.02] transition-all">
- <p className="text-[11px] text-text-tertiary uppercase tracking-widest mb-3">{kpi.label}</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-widest mb-3">{kpi.label}</p>
  <div className="flex items-end justify-between">
  <span className={`text-3xl tracking-tighter ${kpi.color}`}>{kpi.value}</span>
- <span className={`text-[10px] px-1.5 py-0.5 rounded ${kpi.trend === 'Critical' ? 'bg-brand-light text-brand-logo' : 'bg-hover-bg text-text-main'}`}>{kpi.trend === 'Critical' ? '紧迫' : kpi.trend}</span>
+ <span className={`text-[13px] px-1.5 py-0.5 rounded ${kpi.trend === 'Critical' ? 'bg-brand-light text-brand-logo' : 'bg-hover-bg text-text-main'}`}>{kpi.trend === 'Critical' ? '紧迫' : kpi.trend}</span>
  </div>
  </div>
  ))}
@@ -75,7 +75,7 @@ export const CRM: React.FC = () => {
  className={`px-6 py-2.5 rounded-xl text-[13px] transition-all flex items-center gap-3 ${pipelineTab === tab.id ? 'bg-btn-main text-white shadow-lg' : 'text-text-tertiary hover:text-text-secondary'}`}
  >
  {tab.name}
- <span className={`px-2 py-0.5 rounded-lg text-[10px] ${pipelineTab === tab.id ? 'bg-surface-1/20 text-white' : 'bg-hover-bg text-text-tertiary'}`}>{tab.count}</span>
+ <span className={`px-2 py-0.5 rounded-lg text-[13px] ${pipelineTab === tab.id ? 'bg-surface-1/20 text-white' : 'bg-hover-bg text-text-tertiary'}`}>{tab.count}</span>
  </button>
  ))}
  </div>
@@ -85,7 +85,7 @@ export const CRM: React.FC = () => {
  <Search size={16} className="absolute left-3 top-1/2 -tranneutral-y-1/2 text-text-tertiary" />
  <input 
  placeholder="搜索姓名、手机号..."
- className="pl-10 pr-4 py-2 bg-surface-1 border border-border-default rounded-xl text-[12px] outline-none focus:border-primary-500 transition-all w-64"
+ className="pl-10 pr-4 py-2 bg-surface-1 border border-border-default rounded-xl text-[13px] outline-none focus:border-primary-500 transition-all w-64"
  />
  </div>
  <button className="p-2 border border-border-default rounded-xl hover:bg-surface-1 transition-all text-text-tertiary"><Filter size={18}/></button>
@@ -102,25 +102,25 @@ export const CRM: React.FC = () => {
  <div className="flex-1 grid grid-cols-4 gap-8">
  <div>
  <h4 className="text-[15px] font-semibold text-text-main mb-1">{lead.name}</h4>
- <p className="text-[12px] text-text-tertiary flex items-center gap-1"><Phone size={12}/> {lead.phone}</p>
+ <p className="text-[13px] text-text-tertiary flex items-center gap-1"><Phone size={12}/> {lead.phone}</p>
  </div>
  
  <div>
- <p className="text-[10px] text-text-tertiary uppercase tracking-widest mb-1">意向维度</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-widest mb-1">意向维度</p>
  <div className="flex flex-wrap gap-1">
- <span className="px-2 py-0.5 bg-brand-light text-brand-logo text-[10px] rounded border border-primary-100">{lead.product}</span>
- <span className="px-2 py-0.5 bg-page-bg text-text-tertiary text-[10px] rounded border border-border-default">{lead.budget}</span>
+ <span className="px-2 py-0.5 bg-brand-light text-brand-logo text-[13px] rounded border border-primary-100">{lead.product}</span>
+ <span className="px-2 py-0.5 bg-page-bg text-text-tertiary text-[13px] rounded border border-border-default">{lead.budget}</span>
  </div>
  </div>
 
  <div>
- <p className="text-[10px] text-text-tertiary uppercase tracking-widest mb-1">来源笔记</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-widest mb-1">来源笔记</p>
  <p className="text-[13px] text-text-secondary truncate max-w-[150px]">{lead.source}</p>
  </div>
 
  <div className="flex items-center gap-6">
  <div className="text-right flex-1">
- <p className="text-[10px] text-text-tertiary uppercase tracking-widest mb-1">停留时长</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-widest mb-1">停留时长</p>
  <p className="text-[14px] text-text-main">{lead.time}</p>
  </div>
  {lead.status === 'new' && (
@@ -132,7 +132,7 @@ export const CRM: React.FC = () => {
  </div>
  
  <div className="flex gap-2">
- <button className="px-6 py-2.5 bg-btn-main text-white rounded-xl text-[12px] hover:bg-btn-main transition-all opacity-0 group-hover:opacity-100 tranneutral-x-4 group-hover:tranneutral-x-0">
+ <button className="px-6 py-2.5 bg-btn-main text-white rounded-xl text-[13px] hover:bg-btn-main transition-all opacity-0 group-hover:opacity-100 tranneutral-x-4 group-hover:tranneutral-x-0">
  立即联系
  </button>
  <button className="p-2.5 hover:bg-page-bg rounded-xl text-text-tertiary transition-all"><MoreVertical size={20}/></button>
@@ -142,7 +142,7 @@ export const CRM: React.FC = () => {
  </div>
  
  <div className="p-6 border-t border-neutral-50 bg-page-bg/20 text-center">
- <p className="text-[11px] text-neutral-300 uppercase tracking-widest">流程终点 • 显示 12 条记录</p>
+ <p className="text-[13px] text-neutral-300 uppercase tracking-widest">流程终点 • 显示 12 条记录</p>
  </div>
  </div>
  </div>

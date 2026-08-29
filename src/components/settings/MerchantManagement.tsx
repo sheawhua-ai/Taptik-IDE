@@ -41,7 +41,7 @@ export const MerchantManagement = () => {
  </div>
 
  <div className="flex-1 bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden flex flex-col">
- <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-page-bg/80 border-b border-border-default text-[12px] text-text-tertiary uppercase tracking-widest sticky top-0">
+ <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-page-bg/80 border-b border-border-default text-[13px] text-text-tertiary uppercase tracking-widest sticky top-0">
  <div className="col-span-5">商家信息</div>
  <div className="col-span-3">负责人（账号）</div>
  <div className="col-span-2">状态</div>
@@ -57,22 +57,22 @@ export const MerchantManagement = () => {
  </div>
  <div className="min-w-0">
  <h4 className="text-[14px] font-semibold text-text-main truncate">{merchant.name}</h4>
- <p className="text-[12px] text-text-tertiary font-medium truncate mt-0.5">创建于 {merchant.createdAt}</p>
+ <p className="text-[13px] text-text-tertiary font-medium truncate mt-0.5">创建于 {merchant.createdAt}</p>
  </div>
  </div>
  <div className="col-span-3 flex flex-col min-w-0">
  <div className="flex items-center gap-1.5 text-[13px] text-text-secondary truncate">
  <User size={14} className="text-text-tertiary" /> {merchant.username}
  </div>
- <div className="text-[12px] text-text-tertiary font-medium mt-0.5">{merchant.phone}</div>
+ <div className="text-[13px] text-text-tertiary font-medium mt-0.5">{merchant.phone}</div>
  </div>
  <div className="col-span-2">
  {merchant.status === 'active' ? (
- <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-hover-bg text-text-main text-[11px] ">
+ <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-hover-bg text-text-main text-[13px] ">
  <ShieldCheck size={12} /> 正常运营
  </span>
  ) : (
- <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-hover-bg text-warning-600 text-[11px] ">
+ <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-hover-bg text-warning-600 text-[13px] ">
  冷启建设中
  </span>
  )}

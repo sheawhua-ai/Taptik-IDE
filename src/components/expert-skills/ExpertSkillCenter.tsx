@@ -96,7 +96,7 @@ export const ExpertSkillCenter: React.FC = () => {
                 技能中心
               </h1>
             </div>
-            <p className="text-[12px] text-text-secondary mt-0.5">
+            <p className="text-[13px] text-text-secondary mt-0.5">
               为当前商家添加 AI 自动调用的运营技能 · 支持自动化排期与能力拓展
             </p>
           </div>
@@ -105,7 +105,7 @@ export const ExpertSkillCenter: React.FC = () => {
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={() => setShowAddSkillModal(true)}
-              className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12.5px] font-medium transition-all active:scale-95 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-medium transition-all active:scale-95 flex items-center gap-1.5 shadow-2xs cursor-pointer"
             >
               <Plus size={15} /> 添加技能
             </button>
@@ -132,7 +132,7 @@ export const ExpertSkillCenter: React.FC = () => {
                 >
                   <span>{tab.label}</span>
                   {tab.count !== undefined && (
-                    <span className={`px-1.5 py-0.5 rounded-full text-[11px] leading-none transition-colors ${
+                    <span className={`px-1.5 py-0.5 rounded-full text-[13px] leading-none transition-colors ${
                       isActive
                         ? 'bg-neutral-900 text-white font-medium'
                         : 'bg-surface-1 text-text-tertiary border border-border-default'
@@ -212,7 +212,7 @@ export const ExpertSkillCenter: React.FC = () => {
             <div className="flex items-center justify-between border-b border-border-default pb-3">
               <div>
                 <h3 className="text-[16px] font-black text-text-main">技能管理与添加</h3>
-                <p className="text-[12px] font-bold text-text-tertiary mt-0.5">选择技能添加方式或高级开发管理</p>
+                <p className="text-[13px] font-bold text-text-tertiary mt-0.5">选择技能添加方式或高级开发管理</p>
               </div>
               <button onClick={() => setShowAddSkillModal(false)} className="p-1 text-text-tertiary hover:text-text-main">
                 <X size={18} />
@@ -229,7 +229,7 @@ export const ExpertSkillCenter: React.FC = () => {
               >
                 <div>
                   <span className="font-black text-text-main text-[14px] block group-hover:text-black">从技能市场添加</span>
-                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">浏览已构建的爆款创作、评论筛选及关键词技能</span>
+                  <span className="text-[13px] text-text-tertiary font-bold block mt-0.5">浏览已构建的爆款创作、评论筛选及关键词技能</span>
                 </div>
                 <Wrench size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>
@@ -243,7 +243,7 @@ export const ExpertSkillCenter: React.FC = () => {
               >
                 <div>
                   <span className="font-black text-text-main text-[14px] block group-hover:text-black">导入技能规范包</span>
-                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">上传外部 ZIP 压缩包或 JSON 配置文件</span>
+                  <span className="text-[13px] text-text-tertiary font-bold block mt-0.5">上传外部 ZIP 压缩包或 JSON 配置文件</span>
                 </div>
                 <Upload size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>
@@ -257,7 +257,7 @@ export const ExpertSkillCenter: React.FC = () => {
               >
                 <div>
                   <span className="font-black text-text-main text-[14px] block group-hover:text-black">创建自定义技能</span>
-                  <span className="text-[12px] text-text-tertiary font-bold block mt-0.5">自定义 AI Agent 执行动作、提示词与脚本逻辑</span>
+                  <span className="text-[13px] text-text-tertiary font-bold block mt-0.5">自定义 AI Agent 执行动作、提示词与脚本逻辑</span>
                 </div>
                 <Plus size={18} className="text-text-tertiary group-hover:text-text-main shrink-0" />
               </button>

@@ -495,7 +495,7 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
             </div>
             <div>
               <h3 className="text-[15px] font-bold text-text-main">导出复盘报告</h3>
-              <p className="text-[11.5px] text-text-tertiary">
+              <p className="text-[13px] text-text-tertiary">
                 仅导出报告主体，适合对外分享与归档
               </p>
             </div>
@@ -510,12 +510,12 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
 
         {/* Content */}
         <div className="p-5 space-y-4">
-          <div className="flex items-start gap-2 rounded-xl border border-blue-100 bg-blue-50 p-3 text-[11.5px] leading-5 text-blue-900">
+          <div className="flex items-start gap-2 rounded-xl border border-blue-100 bg-blue-50 p-3 text-[13px] leading-5 text-blue-900">
             <ShieldCheck size={15} className="mt-0.5 shrink-0" />
             <span>包含结论、图表、数据表与行动建议；不包含 AI 分析过程、Agent 日志和内部判断依据。</span>
           </div>
           <div className="space-y-3">
-            <label className="text-[12.5px] font-semibold text-text-secondary block">
+            <label className="text-[13px] font-semibold text-text-secondary block">
               选择导出格式
             </label>
 
@@ -541,11 +541,11 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
               <div className="flex-1 space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[13.5px] font-bold text-text-main">导出为 HTML 报告</span>
-                  <span className="px-1.5 py-0.2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold rounded">
+                  <span className="px-1.5 py-0.2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[13px] font-bold rounded">
                     推荐 · 默认
                   </span>
                 </div>
-                <p className="text-[11.5px] text-text-tertiary leading-relaxed">
+                <p className="text-[13px] text-text-tertiary leading-relaxed">
                   保留完整视觉样式、图表与排版，无需安装特定软件，双击即可在任何浏览器中打开或直接微信/邮件发送分享。
                 </p>
               </div>
@@ -573,11 +573,11 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
               <div className="flex-1 space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[13.5px] font-bold text-text-main">下载 PDF 报告</span>
-                  <span className="px-1.5 py-0.2 bg-surface-subtle text-text-secondary border border-border-default text-[10px] font-medium rounded">
+                  <span className="px-1.5 py-0.2 bg-surface-subtle text-text-secondary border border-border-default text-[13px] font-medium rounded">
                     适合打印与归档
                   </span>
                 </div>
-                <p className="text-[11.5px] text-text-tertiary leading-relaxed">
+                <p className="text-[13px] text-text-tertiary leading-relaxed">
                   采用针对 A4 打印优化的固定分页排版，避免图表与卡片跨页截断，适合管理层汇报、团队培训与归档。
                 </p>
               </div>
@@ -588,18 +588,18 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
             <label className="flex cursor-pointer items-start gap-3 border-b border-border-subtle p-3.5">
               <input type="checkbox" checked={includeSourceData} onChange={event => setIncludeSourceData(event.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-neutral-950" />
               <Table2 size={15} className="mt-0.5 shrink-0 text-emerald-700" />
-              <span className="min-w-0"><span className="block text-[12px] font-semibold text-text-main">同时导出源数据 Excel</span><span className="mt-0.5 block text-[10.5px] leading-5 text-text-tertiary">包含复盘概览、指标明细、方案范围、优化动作和数据口径，可继续筛选与分析。</span></span>
+              <span className="min-w-0"><span className="block text-[13px] font-semibold text-text-main">同时导出源数据 Excel</span><span className="mt-0.5 block text-[13px] leading-5 text-text-tertiary">包含复盘概览、指标明细、方案范围、优化动作和数据口径，可继续筛选与分析。</span></span>
             </label>
             <label className="flex cursor-pointer items-start gap-3 p-3.5">
               <input type="checkbox" checked={saveToProjectDirectory} onChange={event => setSaveToProjectDirectory(event.target.checked)} className="mt-0.5 h-4 w-4 rounded accent-neutral-950" />
               <FolderOpen size={15} className="mt-0.5 shrink-0 text-blue-700" />
-              <span className="min-w-0"><span className="block text-[12px] font-semibold text-text-main">保存到项目目录</span><span className="mt-0.5 block text-[10.5px] leading-5 text-text-tertiary">首次导出时选择当前项目文件夹；不勾选则使用浏览器下载目录。</span></span>
+              <span className="min-w-0"><span className="block text-[13px] font-semibold text-text-main">保存到项目目录</span><span className="mt-0.5 block text-[13px] leading-5 text-text-tertiary">首次导出时选择当前项目文件夹；不勾选则使用浏览器下载目录。</span></span>
             </label>
           </div>
 
           {/* Success Message Banner */}
           {successMsg && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-[12px] text-emerald-800 flex items-center gap-2">
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-[13px] text-emerald-800 flex items-center gap-2">
               <CheckCircle2 size={15} className="shrink-0 text-emerald-600" />
               <span>{successMsg}</span>
             </div>
@@ -608,20 +608,20 @@ export function ExportReportModal({ task, isOpen, onClose }: ExportReportModalPr
 
         {/* Footer */}
         <div className="p-4 border-t border-border-default flex items-center justify-between bg-surface-subtle">
-          <span className="text-[11.5px] text-text-tertiary">
+          <span className="text-[13px] text-text-tertiary">
             报告主体 · 可附源数据 Excel · 不含 AI 过程
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-3.5 py-2 text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
+              className="px-3.5 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
             >
               取消
             </button>
             <button
               onClick={exportType === "html" ? handleExportHTML : handleExportPDF}
               disabled={downloading}
-              className="px-4 py-2 text-[12.5px] font-medium text-white bg-btn-main hover:bg-btn-main-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="px-4 py-2 text-[13px] font-medium text-white bg-btn-main hover:bg-btn-main-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               {downloading ? (
                 <span>正在生成...</span>

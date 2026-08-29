@@ -51,8 +51,8 @@ export const PersonalizationSettings = () => {
  placeholder='例如："每次回答我之前都说 ok，再接后续内容"'
  />
  <div className="flex justify-between items-center mt-2 group px-2">
- <div className="text-[12px] text-text-tertiary">这些指令会应用于你的所有对话</div>
- <div className="text-[12px] text-text-tertiary">0 / 1500</div>
+ <div className="text-[13px] text-text-tertiary">这些指令会应用于你的所有对话</div>
+ <div className="text-[13px] text-text-tertiary">0 / 1500</div>
  </div>
  </div>
 

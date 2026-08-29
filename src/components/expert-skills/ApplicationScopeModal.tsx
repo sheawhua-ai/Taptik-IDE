@@ -83,14 +83,14 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
         </div>
 
         {/* Item Header */}
-        <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 flex items-center justify-between text-[12.5px]">
+        <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 flex items-center justify-between text-[13px]">
           <span className="font-extrabold text-text-main">{item.name}</span>
           <span className="text-text-tertiary font-bold">当前授权: {item.appScope}</span>
         </div>
 
         {/* Scope Options */}
         <div className="space-y-2.5">
-          <label className="text-[12px] font-extrabold text-text-tertiary uppercase tracking-wider block">
+          <label className="text-[13px] font-extrabold text-text-tertiary uppercase tracking-wider block">
             选择授权级别：
           </label>
 
@@ -99,7 +99,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
               <label
                 key={opt.id}
                 onClick={() => !opt.disabled && handleSelectOption(opt.id)}
-                className={`p-3.5 rounded-xl border text-[12.5px] block cursor-pointer transition-all ${
+                className={`p-3.5 rounded-xl border text-[13px] block cursor-pointer transition-all ${
                   opt.disabled
                     ? 'opacity-50 bg-hover-bg border-border-default cursor-not-allowed'
                     : selectedScope === opt.id
@@ -120,7 +120,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
                     <span className="text-[13.5px] font-extrabold">{opt.title}</span>
                   </div>
 
-                  <span className={`px-2 py-0.5 rounded text-[10.5px] font-extrabold ${
+                  <span className={`px-2 py-0.5 rounded text-[13px] font-extrabold ${
                     opt.risk === 'high'
                       ? 'bg-rose-100 text-danger'
                       : opt.risk === 'medium'
@@ -130,7 +130,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
                     {opt.risk === 'high' ? '高风险' : opt.risk === 'medium' ? '中度授权' : '低风险'}
                   </span>
                 </div>
-                <p className="text-[11.5px] text-text-tertiary font-normal mt-1.5 pl-5">
+                <p className="text-[13px] text-text-tertiary font-normal mt-1.5 pl-5">
                   {opt.disabled ? '当前页面不在具体项目上下文中，该选项不可用。' : opt.desc}
                 </p>
               </label>
@@ -140,7 +140,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
 
         {/* Secondary Warning for Cross-Merchant "全部商家" */}
         {showSecondaryWarning && (
-          <div className="p-3.5 bg-rose-50 border border-danger-light rounded-xl space-y-1.5 text-[12px] animate-in fade-in duration-150">
+          <div className="p-3.5 bg-rose-50 border border-danger-light rounded-xl space-y-1.5 text-[13px] animate-in fade-in duration-150">
             <div className="flex items-center gap-1.5 text-rose-900 font-extrabold">
               <AlertTriangle size={15} /> 跨商家高权限警示
             </div>
@@ -151,7 +151,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
         )}
 
         {/* Explicit Authorization Boundary Checklist */}
-        <div className="p-3.5 bg-page-bg rounded-xl border border-border-default text-[11.5px] space-y-1 text-text-secondary">
+        <div className="p-3.5 bg-page-bg rounded-xl border border-border-default text-[13px] space-y-1 text-text-secondary">
           <div className="font-extrabold text-text-main mb-1">该授权级别的执行边界：</div>
           <div>• 读取资料：受限于当前授权范围内的公开文档与知识库</div>
           <div>• 写入允许：所有外部写入操作（创建待办、写入知识）均须人工确认</div>
@@ -162,7 +162,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
         <div className="pt-2 flex items-center justify-end gap-2 border-t border-border-default">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-border-default text-text-secondary text-[12.5px] font-bold rounded-xl hover:bg-page-bg"
+            className="px-4 py-2 border border-border-default text-text-secondary text-[13px] font-bold rounded-xl hover:bg-page-bg"
           >
             取消
           </button>
@@ -171,7 +171,7 @@ export const ApplicationScopeModal: React.FC<ApplicationScopeModalProps> = ({
               onConfirmScope(selectedScope);
               onClose();
             }}
-            className="px-5 py-2 bg-btn-main text-white text-[12.5px] font-extrabold rounded-xl hover:bg-btn-main-hover shadow-2xs"
+            className="px-5 py-2 bg-btn-main text-white text-[13px] font-extrabold rounded-xl hover:bg-btn-main-hover shadow-2xs"
           >
             确认更新授权
           </button>

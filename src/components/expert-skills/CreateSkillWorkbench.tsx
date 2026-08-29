@@ -120,7 +120,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
             </div>
             <div>
               <h2 className="text-[17px] font-extrabold">新建技能工作台 (契约 & 本地测试)</h2>
-              <p className="text-[11.5px] text-text-tertiary">导入/描述 → 生成技能契约 → 本地测试验证 → 启用</p>
+              <p className="text-[13px] text-text-tertiary">导入/描述 → 生成技能契约 → 本地测试验证 → 启用</p>
             </div>
           </div>
 
@@ -130,19 +130,19 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
         </div>
 
         {/* Step Indicator */}
-        <div className="bg-hover-bg border-b border-border-default p-3 px-6 flex items-center justify-between text-[12.5px] font-extrabold">
+        <div className="bg-hover-bg border-b border-border-default p-3 px-6 flex items-center justify-between text-[13px] font-extrabold">
           <div className={`flex items-center gap-2 ${activeStep >= 1 ? 'text-blue-700' : 'text-text-tertiary'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 1 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>1</span>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[13px] ${activeStep >= 1 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>1</span>
             <span>选择来源与要求</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
           <div className={`flex items-center gap-2 ${activeStep >= 2 ? 'text-blue-700' : 'text-text-tertiary'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 2 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>2</span>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[13px] ${activeStep >= 2 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>2</span>
             <span>编辑技能契约</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
           <div className={`flex items-center gap-2 ${activeStep >= 3 ? 'text-blue-700' : 'text-text-tertiary'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${activeStep >= 3 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>3</span>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[13px] ${activeStep >= 3 ? 'bg-blue-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>3</span>
             <span>运行本地测试并启用</span>
           </div>
         </div>
@@ -157,25 +157,25 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <button
                     onClick={() => setSelectedSourceType('mine')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'mine' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
+                    className={`p-3 rounded-xl border text-[13px] font-extrabold text-left transition-all ${selectedSourceType === 'mine' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     自然语言描述 / 自建
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('external')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'external' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
+                    className={`p-3 rounded-xl border text-[13px] font-extrabold text-left transition-all ${selectedSourceType === 'external' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     导入外部能力包 (SOP/JSON)
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('from_exp')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_exp' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
+                    className={`p-3 rounded-xl border text-[13px] font-extrabold text-left transition-all ${selectedSourceType === 'from_exp' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     从操盘手经验升级
                   </button>
                   <button
                     onClick={() => setSelectedSourceType('from_project')}
-                    className={`p-3 rounded-xl border text-[12px] font-extrabold text-left transition-all ${selectedSourceType === 'from_project' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
+                    className={`p-3 rounded-xl border text-[13px] font-extrabold text-left transition-all ${selectedSourceType === 'from_project' ? 'border-blue-600 bg-blue-50 text-blue-900' : 'border-border-default text-text-secondary hover:bg-page-bg'}`}
                   >
                     从项目流程沉淀
                   </button>
@@ -188,7 +188,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
                   rows={4}
                   value={sourceInputText}
                   onChange={e => setSourceInputText(e.target.value)}
-                  className="w-full p-3 bg-page-bg border border-border-default rounded-xl text-[12.5px] font-medium"
+                  className="w-full p-3 bg-page-bg border border-border-default rounded-xl text-[13px] font-medium"
                 />
               </div>
             </div>
@@ -253,8 +253,8 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
               </div>
 
               <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 space-y-2">
-                <span className="font-extrabold text-text-main block text-[12px]">权限与数据边界设置：</span>
-                <div className="flex items-center gap-6 text-[12px] font-extrabold text-text-secondary">
+                <span className="font-extrabold text-text-main block text-[13px]">权限与数据边界设置：</span>
+                <div className="flex items-center gap-6 text-[13px] font-extrabold text-text-secondary">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
@@ -288,7 +288,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
                   rows={2}
                   value={testInput}
                   onChange={e => setTestInput(e.target.value)}
-                  className="w-full p-3 bg-surface-1 border border-blue-200 rounded-xl text-[12.5px] font-medium"
+                  className="w-full p-3 bg-surface-1 border border-blue-200 rounded-xl text-[13px] font-medium"
                 />
               </div>
 
@@ -307,7 +307,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
                     <CheckCircle2 size={18} className="text-emerald-600" />
                     <span>测试通过！已生成符合格式要求的结构化 JSON 清单。</span>
                   </div>
-                  <pre className="p-3 bg-btn-main text-emerald-300 rounded-xl text-[11px] font-mono overflow-x-auto">
+                  <pre className="p-3 bg-btn-main text-emerald-300 rounded-xl text-[13px] font-mono overflow-x-auto">
                     {testOutputResult}
                   </pre>
                 </div>
@@ -323,7 +323,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
               if (activeStep > 1) setActiveStep((activeStep - 1) as any);
               else onClose();
             }}
-            className="px-4 py-2 border border-neutral-300 text-text-secondary text-[12.5px] font-bold rounded-xl"
+            className="px-4 py-2 border border-neutral-300 text-text-secondary text-[13px] font-bold rounded-xl"
           >
             {activeStep === 1 ? '取消' : '上一步'}
           </button>
@@ -331,7 +331,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
           {activeStep === 1 && (
             <button
               onClick={handleParseContract}
-              className="px-6 py-2 bg-blue-700 hover:bg-blue-600 text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
+              className="px-6 py-2 bg-blue-700 hover:bg-blue-600 text-white text-[13px] font-extrabold rounded-xl shadow-2xs"
             >
               解析结构并生成契约
             </button>
@@ -340,7 +340,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
           {activeStep === 2 && (
             <button
               onClick={handleGoToTest}
-              className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
+              className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[13px] font-extrabold rounded-xl shadow-2xs"
             >
               去运行本地测试
             </button>
@@ -350,7 +350,7 @@ export const CreateSkillWorkbench: React.FC<CreateSkillWorkbenchProps> = ({
             <button
               onClick={handleCompleteAndSave}
               disabled={!testPassed}
-              className={`px-6 py-2 text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs ${
+              className={`px-6 py-2 text-white text-[13px] font-extrabold rounded-xl shadow-2xs ${
                 testPassed ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-neutral-300 cursor-not-allowed'
               }`}
             >

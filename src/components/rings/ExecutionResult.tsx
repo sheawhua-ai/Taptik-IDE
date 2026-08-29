@@ -157,7 +157,7 @@ export function ExecutionResult() {
                     >
                       <div className="p-4 border-b border-border-default bg-page-bg">
                         <h3 className="text-[14px] font-bold text-text-main mb-1">自动任务队列</h3>
-                        <p className="text-[12px] text-text-tertiary leading-relaxed">
+                        <p className="text-[13px] text-text-tertiary leading-relaxed">
                           配置各模块的自动刷新频率。自动任务需要在系统登录状态时启用，且会消耗 Token。
                         </p>
                       </div>
@@ -168,7 +168,7 @@ export function ExecutionResult() {
                             <select
                               value={autoRefreshConfig[module]}
                               onChange={(e) => setAutoRefreshConfig(prev => ({ ...prev, [module]: e.target.value }))}
-                              className="text-[12px] border-border-default rounded-md py-1 px-2 bg-surface-1 text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary-500"
+                              className="text-[13px] border-border-default rounded-md py-1 px-2 bg-surface-1 text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary-500"
                             >
                               <option value="never">不自动刷新</option>
                               <option value="15m">每 15 分钟</option>
@@ -194,7 +194,7 @@ export function ExecutionResult() {
               >
                 <RefreshCw size={16} className={isGlobalRefreshing ? "animate-spin" : ""} />
               </button>
-              <div className={`absolute top-full right-0 mt-2 whitespace-nowrap bg-btn-main text-white text-[12px] px-3 py-1.5 rounded-lg pointer-events-none transition-opacity z-50 ${isGlobalRefreshing || globalRefreshMessage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+              <div className={`absolute top-full right-0 mt-2 whitespace-nowrap bg-btn-main text-white text-[13px] px-3 py-1.5 rounded-lg pointer-events-none transition-opacity z-50 ${isGlobalRefreshing || globalRefreshMessage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                 {isGlobalRefreshing ? '事项智能体巡查中...' :
                  globalRefreshMessage ? globalRefreshMessage :
                  isOnCooldown ? '冷却中' : '刷新执行事项'}
@@ -226,7 +226,7 @@ export function ExecutionResult() {
                     {task.moduleName === '回传验收' && <CheckCircle2 size={16} className="text-emerald-500" />}
                     <span className="text-[14px] font-bold text-text-main">{task.moduleName}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] text-text-tertiary">
+                  <div className="flex items-center gap-1 text-[13px] text-text-tertiary">
                     <Clock size={12} />
                     <span>刚刚更新</span>
                   </div>
@@ -236,7 +236,7 @@ export function ExecutionResult() {
                <div className="flex-1 flex flex-col">
                   <h3 className="text-[18px] font-bold text-text-main mb-4">{task.importantResult}</h3>
                   
-                  <div className="flex items-center gap-2 text-[12px] mb-4 flex-wrap">
+                  <div className="flex items-center gap-2 text-[13px] mb-4 flex-wrap">
                     {task.moduleName === '发布调度' ? (
                       <>
                         <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">待发布 12</span>
@@ -265,7 +265,7 @@ export function ExecutionResult() {
                   </div>
                   
                   <div className="mt-auto pt-4 border-t border-neutral-50">
-                    <div className="flex items-start gap-2 text-[12px] text-primary-700 bg-brand-light p-3 rounded-lg">
+                    <div className="flex items-start gap-2 text-[13px] text-primary-700 bg-brand-light p-3 rounded-lg">
                       <Sparkles size={14} className="shrink-0 mt-0.5" />
                       <span>{task.aiWork}</span>
                     </div>
@@ -367,29 +367,29 @@ export function ExecutionResult() {
 
                 <div className="pr-20">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[12px] font-bold text-text-secondary px-2 py-0.5 bg-hover-bg rounded border border-border-default">
+                    <span className="text-[13px] font-bold text-text-secondary px-2 py-0.5 bg-hover-bg rounded border border-border-default">
                       {selectedTask.moduleName}
                     </span>
-                    <span className="text-[12px] text-text-tertiary font-medium flex items-center gap-1 mr-4">
+                    <span className="text-[13px] text-text-tertiary font-medium flex items-center gap-1 mr-4">
                       <FolderOpen size={14} /> 涉及项目：{selectedTask.projectsDesc}
                     </span>
                     <div className="flex items-center gap-2">
                       {selectedTask.moduleName === '发布调度' ? (
                         <>
-                          <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">待发布 (12)</span>
-                          <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg text-[12px] font-bold border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors">等待手机发布 (3)</span>
-                          <span className="px-2 py-1 bg-rose-50 text-danger rounded-lg text-[12px] font-bold border border-danger-light cursor-pointer hover:bg-danger-light transition-colors">发布失败 (2)</span>
-                          <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">账号需关注 (1)</span>
+                          <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[13px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">待发布 (12)</span>
+                          <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg text-[13px] font-bold border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors">等待手机发布 (3)</span>
+                          <span className="px-2 py-1 bg-rose-50 text-danger rounded-lg text-[13px] font-bold border border-danger-light cursor-pointer hover:bg-danger-light transition-colors">发布失败 (2)</span>
+                          <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[13px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">账号需关注 (1)</span>
                         </>
                       ) : (
                         <>
-                          <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[12px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">
+                          <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-[13px] font-bold border border-emerald-200 cursor-pointer hover:bg-emerald-100 transition-colors">
                             {selectedTask.moduleName === '互动承接' ? '待处理' : '快速确认'} ({selectedTask.statusQuick})
                           </span>
-                          <span className="px-2 py-1 bg-rose-50 text-danger rounded-lg text-[12px] font-bold border border-danger-light cursor-pointer hover:bg-danger-light transition-colors">
+                          <span className="px-2 py-1 bg-rose-50 text-danger rounded-lg text-[13px] font-bold border border-danger-light cursor-pointer hover:bg-danger-light transition-colors">
                             {selectedTask.moduleName === '互动承接' ? '待核实' : '需要处理'} ({selectedTask.statusAction})
                           </span>
-                          <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[12px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">
+                          <span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg text-[13px] font-bold border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors">
                             {selectedTask.moduleName === '互动承接' ? '24h待跟进' : '等待推进'} ({selectedTask.statusWait})
                           </span>
                         </>
@@ -456,7 +456,7 @@ export function ExecutionResult() {
                              {[1, 2].map(i => (
                                 <div key={i} className="aspect-square bg-hover-bg rounded-xl border border-border-default flex items-center justify-center relative overflow-hidden group">
                                    <ImageIcon className="text-neutral-300" size={32} />
-                                   <div className="absolute top-2 left-2 px-2 py-1 bg-surface-1/90 backdrop-blur rounded text-[10px] font-bold shadow-sm">图库提取</div>
+                                   <div className="absolute top-2 left-2 px-2 py-1 bg-surface-1/90 backdrop-blur rounded text-[13px] font-bold shadow-sm">图库提取</div>
                                 </div>
                              ))}
                           </div>
@@ -514,7 +514,7 @@ export function ExecutionResult() {
                               <button 
                                 key={tag} 
                                 onClick={() => setAgentInput(tag)}
-                                className="px-3 py-1.5 bg-surface-1 border border-border-default hover:border-primary-300 hover:bg-brand-light text-text-secondary rounded-lg text-[12px] transition-colors"
+                                className="px-3 py-1.5 bg-surface-1 border border-border-default hover:border-primary-300 hover:bg-brand-light text-text-secondary rounded-lg text-[13px] transition-colors"
                               >
                                 {tag}
                               </button>

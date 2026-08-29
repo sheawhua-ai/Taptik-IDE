@@ -218,7 +218,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
                 素材中心
               </h2>
             </div>
-            <p className="text-[12px] text-text-secondary mt-0.5">
+            <p className="text-[13px] text-text-secondary mt-0.5">
               统一管理小红书内容生产素材 · 记录使用与关联关系 · 关联创作者后台数据 · 支撑自动化检索与特征分类
             </p>
           </div>
@@ -228,7 +228,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             {/* Secondary Link to Execution Center Tasks */}
             <button
               onClick={() => setShowShootingTaskModal(true)}
-              className="px-3.5 py-2 bg-surface-1 hover:bg-hover-bg text-text-main border border-border-default rounded-xl text-[12.5px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              className="px-3.5 py-2 bg-surface-1 hover:bg-hover-bg text-text-main border border-border-default rounded-xl text-[13px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
               title="素材不足时，发起拍摄任务提案并下发至执行中心"
             >
               <Camera size={14} className="text-text-secondary" />
@@ -241,7 +241,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
                 setIsBatchMode(!isBatchMode);
                 if (isBatchMode) setSelectedAssetIds([]);
               }}
-              className={`px-3.5 py-2 border rounded-xl text-[12.5px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer ${
+              className={`px-3.5 py-2 border rounded-xl text-[13px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer ${
                 isBatchMode
                   ? 'bg-btn-main text-white border-neutral-900'
                   : 'bg-surface-1 hover:bg-hover-bg text-text-main border-border-default'
@@ -254,7 +254,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             {/* Primary Action: Upload */}
             <button
               onClick={() => setShowUploadModal(true)}
-              className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12.5px] font-medium transition-all active:scale-95 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-medium transition-all active:scale-95 flex items-center gap-1.5 shadow-2xs cursor-pointer"
             >
               <Plus size={15} />
               上传素材
@@ -284,7 +284,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
                   }`}
                 >
                   <span>{tab.label}</span>
-                  <span className={`px-1.5 py-0.5 rounded-full text-[11px] leading-none transition-colors ${
+                  <span className={`px-1.5 py-0.5 rounded-full text-[13px] leading-none transition-colors ${
                     isActive
                       ? 'bg-neutral-900 text-white font-medium'
                       : 'bg-surface-1 text-text-tertiary border border-border-default'
@@ -303,7 +303,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             })}
           </div>
 
-          <div className="text-[12px] text-text-tertiary hidden lg:block">
+          <div className="text-[13px] text-text-tertiary hidden lg:block">
             共 {filteredAssets.length} 项素材
           </div>
         </div>
@@ -324,7 +324,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
               placeholder="搜索素材名称、ID、标签、描述或关联项目..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary focus:outline-none focus:border-border-strong"
+              className="w-full pl-9 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded text-[13px] text-text-primary focus:outline-none focus:border-border-strong"
             />
             {searchQuery && (
               <button
@@ -342,7 +342,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             <select
               value={selectedMaterialUse}
               onChange={(e) => setSelectedMaterialUse(e.target.value)}
-              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary font-medium"
+              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[13px] text-text-primary font-medium"
             >
               <option value="all">所有用途</option>
               <option value="cover">封面图</option>
@@ -359,7 +359,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             <select
               value={selectedSourceType}
               onChange={(e) => setSelectedSourceType(e.target.value)}
-              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary font-medium"
+              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[13px] text-text-primary font-medium"
             >
               <option value="all">所有来源</option>
               <option value="merchant">操盘手上传</option>
@@ -370,7 +370,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             <select
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
-              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[12px] text-text-primary font-medium"
+              className="px-2.5 py-1.5 bg-surface-subtle border border-border-default rounded text-[13px] text-text-primary font-medium"
             >
               <option value="all">所有关联项目</option>
               <option value="幼犬换粮软便卡位项目">幼犬换粮软便卡位项目</option>
@@ -389,7 +389,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
                   setSelectedPerformanceFilter('all');
                   setSearchQuery('');
                 }}
-                className="px-2.5 py-1.5 text-[12px] text-text-secondary hover:text-text-primary font-medium hover:underline flex items-center gap-1"
+                className="px-2.5 py-1.5 text-[13px] text-text-secondary hover:text-text-primary font-medium hover:underline flex items-center gap-1"
               >
                 <RotateCw size={12} />
                 重置筛选
@@ -406,7 +406,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={handleSelectAllFiltered}
-              className="text-[12px] font-semibold text-text-primary flex items-center gap-1.5 hover:underline"
+              className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5 hover:underline"
             >
               <input
                 type="checkbox"
@@ -417,7 +417,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
               全选当前页 ({filteredAssets.length} 项)
             </button>
             <span className="text-border-strong">|</span>
-            <span className="text-[12px] text-text-secondary">
+            <span className="text-[13px] text-text-secondary">
               已选中 <strong className="text-text-primary font-semibold">{selectedAssetIds.length}</strong> 项素材
             </span>
           </div>
@@ -426,7 +426,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             <button
               disabled={selectedAssetIds.length === 0}
               onClick={() => setShowBatchTagModal(true)}
-              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[12px] font-medium transition-colors flex items-center gap-1"
+              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[13px] font-medium transition-colors flex items-center gap-1"
             >
               <Tag size={13} />
               批量打标签
@@ -435,7 +435,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             <button
               disabled={selectedAssetIds.length === 0}
               onClick={handleBatchSetAvailable}
-              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[12px] font-medium transition-colors flex items-center gap-1"
+              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[13px] font-medium transition-colors flex items-center gap-1"
             >
               <Check size={13} />
               批量标记为可用
@@ -444,7 +444,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
             <button
               disabled={selectedAssetIds.length === 0}
               onClick={handleBatchArchive}
-              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[12px] font-medium transition-colors flex items-center gap-1"
+              className="px-3 py-1.5 bg-surface hover:bg-surface-hover disabled:opacity-50 text-text-primary border border-border-default rounded text-[13px] font-medium transition-colors flex items-center gap-1"
             >
               <Archive size={13} />
               批量归档
@@ -471,7 +471,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
         <div className="bg-surface p-12 rounded-lg border border-border-default text-center text-text-tertiary space-y-2">
           <FolderOpen size={40} className="mx-auto text-text-tertiary stroke-1" />
           <p className="text-[14px] font-semibold text-text-primary">当前筛选下暂无匹配素材</p>
-          <p className="text-[12px] text-text-secondary">
+          <p className="text-[13px] text-text-secondary">
             可尝试调整顶部筛选条件或搜索关键词，或使用【上传素材】添加新素材。
           </p>
         </div>
@@ -485,7 +485,7 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
               <Tag size={16} />
               批量添加标签
             </h3>
-            <p className="text-[12px] text-text-secondary">
+            <p className="text-[13px] text-text-secondary">
               将为已选中的 {selectedAssetIds.length} 项素材追加以下标签：
             </p>
             <input
@@ -493,18 +493,18 @@ export const MaterialCenterMain: React.FC<MaterialCenterMainProps> = ({
               placeholder="输入标签，多个用逗号隔开 (如：促销活动, 柴犬, 门店探店)"
               value={batchTagsInput}
               onChange={(e) => setBatchTagsInput(e.target.value)}
-              className="w-full px-3 py-2 bg-surface border border-border-default rounded text-[12px] focus:outline-none focus:border-border-strong"
+              className="w-full px-3 py-2 bg-surface border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
             />
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setShowBatchTagModal(false)}
-                className="px-3 py-1.5 border border-border-default rounded text-[12px] text-text-primary"
+                className="px-3 py-1.5 border border-border-default rounded text-[13px] text-text-primary"
               >
                 取消
               </button>
               <button
                 onClick={handleApplyBatchTags}
-                className="px-4 py-1.5 bg-action-primary text-white rounded text-[12px] font-semibold"
+                className="px-4 py-1.5 bg-action-primary text-white rounded text-[13px] font-semibold"
               >
                 确认应用
               </button>

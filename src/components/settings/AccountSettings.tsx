@@ -22,7 +22,7 @@ export const AccountSettings = () => {
  <div className="bg-page-bg border border-border-default rounded-xl p-6 relative overflow-hidden">
  <div className="flex items-center justify-between mb-8 relative z-10">
  <h4 className="text-[16px] font-semibold text-text-main">体验版</h4>
- <button className="px-4 py-1.5 bg-btn-main text-white rounded-full text-[12px] hover:bg-btn-main transition-colors">
+ <button className="px-4 py-1.5 bg-btn-main text-white rounded-full text-[13px] hover:bg-btn-main transition-colors">
  升级
  </button>
  </div>
@@ -31,7 +31,7 @@ export const AccountSettings = () => {
  <div className="flex items-center gap-2">
  <span className="text-[20px] text-text-tertiary">✨</span>
  <span className="text-[14px] text-text-secondary">Credits</span>
- <button className="text-[12px] text-text-tertiary hover:text-text-main bg-surface-1 border border-border-default px-2 py-0.5 rounded ml-2">查看明细</button>
+ <button className="text-[13px] text-text-tertiary hover:text-text-main bg-surface-1 border border-border-default px-2 py-0.5 rounded ml-2">查看明细</button>
  </div>
  <div className="text-[14px] text-text-tertiary font-medium">
  累计剩余: <span className="text-[20px] text-text-main ml-1">3,180.51</span>
@@ -42,12 +42,12 @@ export const AccountSettings = () => {
  <div className="flex justify-between items-start">
  <div>
  <div className="text-[14px] text-text-main mb-1">TapTik 体验套餐</div>
- <div className="text-[12px] text-text-tertiary space-y-0.5">
+ <div className="text-[13px] text-text-tertiary space-y-0.5">
  <div>到期日期: 2034-09-11</div>
  <div>下次刷新日期: 2026-07-01</div>
  </div>
  </div>
- <div className="text-right text-[12px] text-text-tertiary space-y-0.5">
+ <div className="text-right text-[13px] text-text-tertiary space-y-0.5">
  <div>总量: 500</div>
  <div>剩余: <span className=" text-text-main">430.51</span></div>
  </div>
@@ -56,12 +56,12 @@ export const AccountSettings = () => {
  <div className="flex justify-between items-start">
  <div>
  <div className="text-[14px] text-text-main mb-1">TapTik 活动套餐</div>
- <div className="text-[12px] text-text-tertiary space-y-0.5">
+ <div className="text-[13px] text-text-tertiary space-y-0.5">
  <div>到期日期: 2026-07-11</div>
  <div>下次刷新日期: 2026-07-11</div>
  </div>
  </div>
- <div className="text-right text-[12px] text-text-tertiary space-y-0.5">
+ <div className="text-right text-[13px] text-text-tertiary space-y-0.5">
  <div>总量: 2,000</div>
  <div>剩余: <span className=" text-text-main">2,000</span></div>
  </div>
@@ -70,12 +70,12 @@ export const AccountSettings = () => {
  <div className="flex justify-between items-start">
  <div>
  <div className="text-[14px] text-text-main mb-1">TapTik 活动套餐</div>
- <div className="text-[12px] text-text-tertiary space-y-0.5">
+ <div className="text-[13px] text-text-tertiary space-y-0.5">
  <div>到期日期: 2026-07-11</div>
  <div>下次刷新日期: 2026-07-11</div>
  </div>
  </div>
- <div className="text-right text-[12px] text-text-tertiary space-y-0.5">
+ <div className="text-right text-[13px] text-text-tertiary space-y-0.5">
  <div>总量: 150</div>
  <div>剩余: <span className=" text-text-main">150</span></div>
  </div>

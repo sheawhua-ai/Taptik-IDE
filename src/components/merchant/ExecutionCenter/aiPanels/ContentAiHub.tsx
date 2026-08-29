@@ -218,7 +218,7 @@ export function ContentAiHub({
       {/* Header */}
       <div className="p-3.5 border-b border-border-default bg-surface-subtle flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center text-[11px] font-bold">
+          <div className="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center text-[13px] font-bold">
             <Sparkles size={13} />
           </div>
           <div>
@@ -235,7 +235,7 @@ export function ContentAiHub({
                 ? '素材中心匹配与推荐'
                 : 'AI 写作说明'}
             </div>
-            <div className="text-[11px] text-text-tertiary">
+            <div className="text-[13px] text-text-tertiary">
               {selectionTarget === 'material_recommendation'
                 ? '已自动匹配素材库可用资产'
                 : selectionTarget ? '仅对当前选中范围生效' : '框架、人设、事实与判断'}
@@ -250,7 +250,7 @@ export function ContentAiHub({
               setSelectionTarget(null);
               setActiveAIProposal(null);
             }}
-            className="text-[11px] text-text-tertiary hover:text-text-primary"
+            className="text-[13px] text-text-tertiary hover:text-text-primary"
           >
             取消选择
           </button>
@@ -258,47 +258,47 @@ export function ContentAiHub({
       </div>
 
       {/* Body Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[12.5px]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[13px]">
         
         {/* When No Selection */}
         {!selectionTarget && (
           <div className="space-y-4 pt-1">
-            <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-3.5 py-3 text-[11px] leading-5 text-[#743548]">
+            <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-3.5 py-3 text-[13px] leading-5 text-[#743548]">
               <div className="flex items-center gap-1.5 font-semibold"><ShieldCheck size={13} />本次 AI 判断</div>
               <p className="mt-1.5 text-text-secondary">{task.reasonForIntervention}</p>
               {task.complianceRisk ? <p className="mt-1 font-medium text-[#88394d]">风险提示：{task.complianceRisk}</p> : null}
             </div>
 
             <section className="space-y-2">
-              <div className="text-[11px] font-medium text-text-tertiary">内容框架</div>
+              <div className="text-[13px] font-medium text-text-tertiary">内容框架</div>
               <div className="flex flex-wrap items-center gap-1.5">
-                {writingFramework.map((item, index) => <React.Fragment key={item}><span className="rounded-md bg-surface-subtle px-2 py-1 text-[10.5px] font-medium text-text-primary">{item}</span>{index < writingFramework.length - 1 ? <ArrowRight size={11} className="text-text-tertiary" /> : null}</React.Fragment>)}
+                {writingFramework.map((item, index) => <React.Fragment key={item}><span className="rounded-md bg-surface-subtle px-2 py-1 text-[13px] font-medium text-text-primary">{item}</span>{index < writingFramework.length - 1 ? <ArrowRight size={11} className="text-text-tertiary" /> : null}</React.Fragment>)}
               </div>
             </section>
 
             <section className="rounded-xl border border-border-default bg-surface px-3 py-2.5">
-              <div className="text-[10.5px] font-medium text-text-tertiary">账号人设</div>
-              <div className="mt-1 text-[11.5px] font-medium leading-5 text-text-primary">{task.targetAccount}</div>
-              <p className="mt-0.5 text-[10.5px] leading-5 text-text-secondary">{accountPersona}</p>
+              <div className="text-[13px] font-medium text-text-tertiary">账号人设</div>
+              <div className="mt-1 text-[13px] font-medium leading-5 text-text-primary">{task.targetAccount}</div>
+              <p className="mt-0.5 text-[13px] leading-5 text-text-secondary">{accountPersona}</p>
             </section>
 
             <section className="space-y-2">
-              <div className="flex items-center justify-between"><span className="text-[11px] font-medium text-text-tertiary">采用的事实</span><span className="text-[9.5px] text-text-tertiary">{factItems.length} 项</span></div>
+              <div className="flex items-center justify-between"><span className="text-[13px] font-medium text-text-tertiary">采用的事实</span><span className="text-[13px] text-text-tertiary">{factItems.length} 项</span></div>
               <div className="space-y-1.5">
-                {factItems.map((fact, index) => <div key={`${task.id}-fact-${index}`} className="flex items-start gap-2 rounded-lg bg-surface-subtle px-2.5 py-2 text-[10.5px] leading-4 text-text-secondary"><CheckCheck size={12} className="mt-0.5 shrink-0 text-emerald-600" /><span>{fact}</span></div>)}
+                {factItems.map((fact, index) => <div key={`${task.id}-fact-${index}`} className="flex items-start gap-2 rounded-lg bg-surface-subtle px-2.5 py-2 text-[13px] leading-4 text-text-secondary"><CheckCheck size={12} className="mt-0.5 shrink-0 text-emerald-600" /><span>{fact}</span></div>)}
               </div>
             </section>
 
             <section className="rounded-xl border border-border-default px-3 py-2.5">
-              <div className="text-[10.5px] font-medium text-text-tertiary">方案约束</div>
-              <div className="mt-1 space-y-1 text-[10.5px] leading-4 text-text-secondary">
+              <div className="text-[13px] font-medium text-text-tertiary">方案约束</div>
+              <div className="mt-1 space-y-1 text-[13px] leading-4 text-text-secondary">
                 <p><strong className="font-medium text-text-primary">目标：</strong>{task.strategyContext?.intent || '建立专业信任并承接互动'}</p>
                 <p><strong className="font-medium text-text-primary">人群：</strong>{task.strategyContext?.targetAudience || '当前方案目标消费者'}</p>
                 <p><strong className="font-medium text-text-primary">关键词：</strong>{task.strategyContext?.searchKeywords?.join('、') || task.tags?.slice(0, 3).join('、') || '随方案词簇生成'}</p>
               </div>
             </section>
 
-            <div className="rounded-lg bg-surface-subtle px-3 py-2 text-[10.5px] leading-4 text-text-tertiary">
+            <div className="rounded-lg bg-surface-subtle px-3 py-2 text-[13px] leading-4 text-text-tertiary">
               点击中间的标题、正文、标签或素材区域后，这里会切换为对应修改操作。
             </div>
           </div>
@@ -312,11 +312,11 @@ export function ContentAiHub({
             {selectionTarget === 'material_recommendation' ? (
               <div className="space-y-4">
                 <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg space-y-1">
-                  <div className="text-[11.5px] font-semibold text-text-primary flex items-center justify-between">
+                  <div className="text-[13px] font-semibold text-text-primary flex items-center justify-between">
                     <span>智能匹配素材资产</span>
-                    <span className="text-[10.5px] text-emerald-700 font-medium">已关联方案词簇</span>
+                    <span className="text-[13px] text-emerald-700 font-medium">已关联方案词簇</span>
                   </div>
-                  <div className="text-[11px] text-text-secondary leading-relaxed">
+                  <div className="text-[13px] text-text-secondary leading-relaxed">
                     系统根据<strong>{task.projectName}</strong>已从素材中心调取可用实拍与封面。
                   </div>
                 </div>
@@ -324,11 +324,11 @@ export function ContentAiHub({
                 {/* Recommended Covers Section */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <div className="text-[11.5px] font-semibold text-text-primary flex items-center gap-1.5">
+                    <div className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5">
                       <Sparkle size={12} className="text-rose-600" />
                       <span>推荐高点击封面</span>
                     </div>
-                    <span className="text-[10.5px] text-text-tertiary">点击立即切换</span>
+                    <span className="text-[13px] text-text-tertiary">点击立即切换</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
@@ -350,18 +350,18 @@ export function ContentAiHub({
                             referrerPolicy="no-referrer"
                           />
                           {selectedCoverUrl === coverItem.url && (
-                            <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-neutral-900 text-white text-[9.5px] font-medium flex items-center gap-0.5 shadow-sm">
+                            <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-neutral-900 text-white text-[13px] font-medium flex items-center gap-0.5 shadow-sm">
                               <Check size={10} />
                               <span>当前封面</span>
                             </div>
                           )}
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-medium transition-opacity">
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[13px] font-medium transition-opacity">
                             设为封面
                           </div>
                         </div>
-                        <div className="p-1.5 bg-surface text-[11px]">
+                        <div className="p-1.5 bg-surface text-[13px]">
                           <div className="truncate font-medium text-text-primary">{coverItem.title}</div>
-                          <div className="text-[10px] text-text-tertiary truncate">{coverItem.tags.join(' · ')}</div>
+                          <div className="text-[13px] text-text-tertiary truncate">{coverItem.tags.join(' · ')}</div>
                         </div>
                       </div>
                     ))}
@@ -371,14 +371,14 @@ export function ContentAiHub({
                 {/* Recommended Body Images */}
                 <div className="space-y-2 pt-2 border-t border-border-subtle">
                   <div className="flex items-center justify-between">
-                    <div className="text-[11.5px] font-semibold text-text-primary flex items-center gap-1.5">
+                    <div className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5">
                       <FolderPlus size={12} className="text-text-secondary" />
                       <span>推荐正文配图</span>
                     </div>
                     <button
                       type="button"
                       onClick={onOpenLibraryModal}
-                      className="text-[11px] text-text-secondary hover:text-text-primary font-medium"
+                      className="text-[13px] text-text-secondary hover:text-text-primary font-medium"
                     >
                       素材库 →
                     </button>
@@ -391,7 +391,7 @@ export function ContentAiHub({
                         <div
                           key={item.id}
                           onClick={() => handleToggleMaterialAsset(item)}
-                          className={`p-2 rounded-lg border text-[11.5px] flex items-center justify-between cursor-pointer transition-all ${
+                          className={`p-2 rounded-lg border text-[13px] flex items-center justify-between cursor-pointer transition-all ${
                             isSelected
                               ? 'bg-neutral-50 border-neutral-900 ring-1 ring-neutral-900/10'
                               : 'bg-surface hover:bg-surface-hover border-border-default'
@@ -406,12 +406,12 @@ export function ContentAiHub({
                             />
                             <div className="truncate">
                               <div className="font-medium text-text-primary truncate">{item.title}</div>
-                              <div className="text-[10.5px] text-text-tertiary truncate">{item.category} · {item.tags.slice(0, 2).join(' ')}</div>
+                              <div className="text-[13px] text-text-tertiary truncate">{item.category} · {item.tags.slice(0, 2).join(' ')}</div>
                             </div>
                           </div>
                           <button
                             type="button"
-                            className={`px-2 py-0.5 rounded text-[10.5px] font-medium shrink-0 ml-2 transition-colors ${
+                            className={`px-2 py-0.5 rounded text-[13px] font-medium shrink-0 ml-2 transition-colors ${
                               isSelected
                                 ? 'bg-neutral-900 text-white'
                                 : 'bg-surface-subtle text-text-secondary hover:text-text-primary border border-border-default'
@@ -430,7 +430,7 @@ export function ContentAiHub({
                   <button
                     type="button"
                     onClick={onOpenCreateTaskModal}
-                    className="w-full py-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-default rounded-lg text-[12px] font-medium transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-surface hover:bg-surface-hover text-text-primary border border-border-default rounded-lg text-[13px] font-medium transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Plus size={13} />
                     <span>生成素材补拍任务</span>
@@ -441,36 +441,36 @@ export function ContentAiHub({
               <>
                 {/* Selected Excerpt Preview */}
                 <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg space-y-1">
-                  <div className="text-[11px] font-semibold text-text-tertiary">选中的原文：</div>
-                  <div className="text-[12px] text-text-primary line-clamp-3 leading-snug">
+                  <div className="text-[13px] font-semibold text-text-tertiary">选中的原文：</div>
+                  <div className="text-[13px] text-text-primary line-clamp-3 leading-snug">
                     "{selectedTextExcerpt}"
                   </div>
                 </div>
 
                 {/* Quick Prompts */}
                 <div className="space-y-1.5">
-                  <div className="text-[11px] font-medium text-text-tertiary">快捷修改要求：</div>
+                  <div className="text-[13px] font-medium text-text-tertiary">快捷修改要求：</div>
                   <div className="flex flex-wrap gap-1.5">
                     {selectionTarget === 'title' && (
                       <>
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('更口语化，突出软便痛点')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           更口语化
                         </button>
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('强化新手避坑情绪')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           强化避坑情绪
                         </button>
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('缩短字数')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           缩短字数
                         </button>
@@ -482,21 +482,21 @@ export function ContentAiHub({
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('删除功效承诺，替换为合规说明')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           删除功效承诺
                         </button>
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('更符合店长顾问口吻')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           店长口吻
                         </button>
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('保留原意并缩短')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           精炼段落
                         </button>
@@ -508,14 +508,14 @@ export function ContentAiHub({
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('从项目关键词词簇补充')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           从词簇补充
                         </button>
                         <button
                           type="button"
                           onClick={() => handleGenerateAIProposal('替换为精准长尾词')}
-                          className="px-2.5 py-1 text-[11.5px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
+                          className="px-2.5 py-1 text-[13px] bg-surface-subtle hover:bg-surface-hover text-text-secondary border border-border-default rounded-md transition-colors"
                         >
                           替换长尾词
                         </button>
@@ -535,13 +535,13 @@ export function ContentAiHub({
                         if (e.key === 'Enter') handleGenerateAIProposal();
                       }}
                       placeholder="输入自然语言修改要求..."
-                      className="w-full px-3 py-2 text-[12px] bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 pr-14"
+                      className="w-full px-3 py-2 text-[13px] bg-surface border border-border-default rounded-lg focus:outline-none focus:border-neutral-900 pr-14"
                     />
                     <button
                       type="button"
                       disabled={isAIGenerating}
                       onClick={() => handleGenerateAIProposal()}
-                      className="absolute right-1.5 top-1.5 px-2.5 py-1 bg-action-primary text-white text-[11.5px] font-semibold rounded-md hover:bg-action-primary-hover disabled:opacity-50 transition-colors"
+                      className="absolute right-1.5 top-1.5 px-2.5 py-1 bg-action-primary text-white text-[13px] font-semibold rounded-md hover:bg-action-primary-hover disabled:opacity-50 transition-colors"
                     >
                       {isAIGenerating ? '生成中...' : '生成'}
                     </button>
@@ -551,23 +551,23 @@ export function ContentAiHub({
                 {/* AI Diff Proposal Result */}
                 {activeAIProposal && (
                   <div className="p-3 bg-surface border border-neutral-900/20 rounded-xl space-y-2.5 shadow-sm animate-in fade-in duration-150">
-                    <div className="text-[12px] font-semibold text-text-primary flex items-center justify-between">
+                    <div className="text-[13px] font-semibold text-text-primary flex items-center justify-between">
                       <span>修改建议 (Diff)</span>
-                      <span className="text-[10.5px] text-emerald-700 font-medium">已生成</span>
+                      <span className="text-[13px] text-emerald-700 font-medium">已生成</span>
                     </div>
 
-                    <div className="space-y-1.5 text-[12px]">
+                    <div className="space-y-1.5 text-[13px]">
                       <div className="p-2 bg-rose-50/60 border border-rose-200/60 rounded text-rose-900">
-                        <span className="text-[10.5px] font-bold text-rose-700 block">修改前：</span>
+                        <span className="text-[13px] font-bold text-rose-700 block">修改前：</span>
                         <span>{activeAIProposal.originalText}</span>
                       </div>
                       <div className="p-2 bg-emerald-50/60 border border-emerald-200/60 rounded text-emerald-900">
-                        <span className="text-[10.5px] font-bold text-emerald-700 block">修改后：</span>
+                        <span className="text-[13px] font-bold text-emerald-700 block">修改后：</span>
                         <span>{activeAIProposal.suggestedText}</span>
                       </div>
                     </div>
 
-                    <div className="text-[11.5px] text-text-secondary space-y-0.5">
+                    <div className="text-[13px] text-text-secondary space-y-0.5">
                       <div><strong>理由：</strong>{activeAIProposal.reason}</div>
                       <div className="text-text-tertiary"><strong>影响范围：</strong>{activeAIProposal.impactScope}</div>
                     </div>
@@ -576,14 +576,14 @@ export function ContentAiHub({
                       <button
                         type="button"
                         onClick={handleDiscardAIProposal}
-                        className="px-3 py-1.5 text-[11.5px] text-text-secondary hover:text-text-primary rounded-lg border border-border-default transition-colors"
+                        className="px-3 py-1.5 text-[13px] text-text-secondary hover:text-text-primary rounded-lg border border-border-default transition-colors"
                       >
                         保留原文
                       </button>
                       <button
                         type="button"
                         onClick={handleApplyAIProposal}
-                        className="px-3.5 py-1.5 text-[11.5px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors shadow-sm"
+                        className="px-3.5 py-1.5 text-[13px] font-semibold text-white bg-action-primary hover:bg-action-primary-hover rounded-lg transition-colors shadow-sm"
                       >
                         应用到选中内容
                       </button>

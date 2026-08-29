@@ -44,13 +44,13 @@ export function AccountQueueDrawer({
               <h2 className="text-[16px] font-semibold text-text-main">
                 账号发布队列
               </h2>
-              <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-normal rounded">
+              <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[13px] font-normal rounded">
                 {accountType}
               </span>
             </div>
             <div className="text-[13px] font-medium text-text-main mt-1 flex items-center gap-2">
               {accountName}
-              <span className="text-[11.5px] font-normal text-text-tertiary">· {persona}</span>
+              <span className="text-[13px] font-normal text-text-tertiary">· {persona}</span>
             </div>
           </div>
           <button 
@@ -63,7 +63,7 @@ export function AccountQueueDrawer({
 
         {/* List Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          <div className="flex items-center justify-between text-[12.5px] text-text-tertiary px-1">
+          <div className="flex items-center justify-between text-[13px] text-text-tertiary px-1">
             <span>共规划 {notes.length} 篇发布任务</span>
             <span>按排期时间排序</span>
           </div>
@@ -82,12 +82,12 @@ export function AccountQueueDrawer({
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1 flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[11.5px] font-medium text-text-tertiary tabular-nums">#{index + 1}</span>
+                        <span className="text-[13px] font-medium text-text-tertiary tabular-nums">#{index + 1}</span>
                         <h4 className="text-[13.5px] font-semibold text-text-main truncate">
                           {note.title || note.contentDirection || "未命名任务"}
                         </h4>
                       </div>
-                      <div className="text-[11.5px] text-text-tertiary flex items-center gap-3">
+                      <div className="text-[13px] text-text-tertiary flex items-center gap-3">
                         <span className="flex items-center gap-1">
                           <Calendar size={12} />
                           计划发布: {note.plannedDate || "排期中"}
@@ -96,13 +96,13 @@ export function AccountQueueDrawer({
                       </div>
                     </div>
 
-                    <span className={`px-2.5 py-0.5 rounded text-[11.5px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
+                    <span className={`px-2.5 py-0.5 rounded text-[13px] font-medium border shrink-0 ${style.bg} ${style.text} ${style.border}`}>
                       {uStatus}
                     </span>
                   </div>
 
                   {/* Fact line */}
-                  <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-default text-[12px] flex items-center justify-between text-text-secondary">
+                  <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-default text-[13px] flex items-center justify-between text-text-secondary">
                     <div className="flex items-center gap-4">
                       <span>
                         小红书笔记ID: {hasRedNoteId ? "已回传并建立观察" : "等待外部发布与识别"}
@@ -112,14 +112,14 @@ export function AccountQueueDrawer({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onSelectNote(note)}
-                        className="px-2.5 py-1 bg-surface-1 border border-border-default rounded-md text-[11.5px] font-medium text-text-secondary hover:bg-hover-bg transition-colors"
+                        className="px-2.5 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] font-medium text-text-secondary hover:bg-hover-bg transition-colors"
                       >
                         详情
                       </button>
                       {uStatus === "异常" && onOpenExecutionCenter && (
                         <button
                           onClick={onOpenExecutionCenter}
-                          className="px-2.5 py-1 bg-btn-main text-white rounded-md text-[11.5px] font-medium hover:bg-btn-main-hover transition-colors"
+                          className="px-2.5 py-1 bg-btn-main text-white rounded-md text-[13px] font-medium hover:bg-btn-main-hover transition-colors"
                         >
                           去处理
                         </button>

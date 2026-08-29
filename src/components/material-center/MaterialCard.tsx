@@ -37,31 +37,31 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
     switch (asset.status) {
       case 'pending_acceptance':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[13px] font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
             <Clock size={11} /> 待验收
           </span>
         );
       case 'available':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[13px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
             <CheckCircle2 size={11} /> 可用
           </span>
         );
       case 'reserved':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-200/60">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[13px] font-medium bg-blue-50 text-blue-700 border border-blue-200/60">
             已预留
           </span>
         );
       case 'used':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-text-secondary border border-border-default">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[13px] font-medium bg-surface-subtle text-text-secondary border border-border-default">
             已使用
           </span>
         );
       case 'archived':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-100 text-text-disabled border border-border-subtle">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[13px] font-medium bg-neutral-100 text-text-disabled border border-border-subtle">
             已归档
           </span>
         );
@@ -74,11 +74,11 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
   const renderPerformanceBadge = () => {
     if (asset.performance.performanceType === 'owned_account_creator_api' && asset.performance.creatorBackend) {
       return (
-        <div className="mt-2 text-[11px] px-2 py-1 bg-surface-subtle border border-border-subtle rounded text-text-secondary flex items-center justify-between">
+        <div className="mt-2 text-[13px] px-2 py-1 bg-surface-subtle border border-border-subtle rounded text-text-secondary flex items-center justify-between">
           <span className="truncate text-text-primary font-medium">
             封面表现: <strong className="text-emerald-700 font-semibold">{asset.performance.creatorBackend.coverClickRate}% 点击率</strong>
           </span>
-          <span className="text-[10px] text-text-tertiary shrink-0 ml-1">
+          <span className="text-[13px] text-text-tertiary shrink-0 ml-1">
             ({(asset.performance.creatorBackend.exposure / 10000).toFixed(1)}万曝光)
           </span>
         </div>
@@ -87,10 +87,10 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
 
     if (asset.performance.performanceType === 'koc_public_captured' && asset.performance.kocMetrics) {
       return (
-        <div className="mt-2 text-[11px] px-2 py-1 bg-amber-50/70 border border-amber-200/50 rounded text-amber-800 flex items-center justify-between">
+        <div className="mt-2 text-[13px] px-2 py-1 bg-amber-50/70 border border-amber-200/50 rounded text-amber-800 flex items-center justify-between">
           <span className="font-medium text-amber-900">无后台点击数据 (KOC)</span>
           {asset.performance.kocMetrics.publicInteractions && (
-            <span className="text-[10px] text-amber-700 shrink-0">
+            <span className="text-[13px] text-amber-700 shrink-0">
               点赞 {asset.performance.kocMetrics.publicInteractions.likes}
             </span>
           )}
@@ -99,7 +99,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
     }
 
     return (
-      <div className="mt-2 text-[11px] px-2 py-1 bg-surface-subtle/50 border border-border-subtle/80 rounded text-text-tertiary truncate">
+      <div className="mt-2 text-[13px] px-2 py-1 bg-surface-subtle/50 border border-border-subtle/80 rounded text-text-tertiary truncate">
         未发布 / 无表现数据
       </div>
     );
@@ -156,7 +156,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
 
         {/* Top Badges overlay */}
         <div className={`absolute top-2 flex items-center gap-1.5 flex-wrap max-w-[80%] ${isBatchMode || isSelected ? 'left-8' : 'left-2'}`}>
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-black/70 text-white backdrop-blur-sm">
+          <span className="px-1.5 py-0.5 rounded text-[13px] font-medium bg-black/70 text-white backdrop-blur-sm">
             {getUseLabel(asset.materialUse)}
           </span>
         </div>
@@ -176,7 +176,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
 
           {/* Vector Description (1-sentence feature description) */}
           {asset.vectorDescription && (
-            <p className="text-[11px] text-text-secondary line-clamp-2 leading-snug mb-2 bg-surface-subtle p-1.5 rounded border border-border-subtle">
+            <p className="text-[13px] text-text-secondary line-clamp-2 leading-snug mb-2 bg-surface-subtle p-1.5 rounded border border-border-subtle">
               <span className="text-text-tertiary font-medium">特征描述: </span>
               {asset.vectorDescription}
             </p>
@@ -189,7 +189,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
               {asset.tags.map((t, idx) => (
                 <span
                   key={idx}
-                  className="px-1.5 py-0.2 rounded text-[10px] bg-surface-subtle border border-border-subtle text-text-secondary"
+                  className="px-1.5 py-0.2 rounded text-[13px] bg-surface-subtle border border-border-subtle text-text-secondary"
                 >
                   {t}
                 </span>
@@ -198,7 +198,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
           )}
 
           {/* Source & Relation Meta */}
-          <div className="space-y-1 text-[11px] text-text-secondary">
+          <div className="space-y-1 text-[13px] text-text-secondary">
             <div className="flex items-center justify-between">
               <span className="text-text-tertiary">来源:</span>
               <span className="text-text-primary font-medium truncate max-w-[140px]">
@@ -235,7 +235,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
               e.stopPropagation();
               onOpenDetail(asset);
             }}
-            className="w-full py-1.5 px-2 bg-surface-subtle hover:bg-surface-hover text-text-primary text-[12px] font-medium rounded border border-border-default transition-colors flex items-center justify-center gap-1"
+            className="w-full py-1.5 px-2 bg-surface-subtle hover:bg-surface-hover text-text-primary text-[13px] font-medium rounded border border-border-default transition-colors flex items-center justify-center gap-1"
           >
             <Eye size={13} />
             查看素材详情

@@ -16,11 +16,11 @@ export function ReviewHistoryTab({ task, onSwitchVersion }: ReviewHistoryTabProp
         <div className="flex items-center justify-between border-b border-border-subtle pb-3 mb-4">
           <div>
             <h3 className="text-[15px] font-semibold text-text-main">版本流转与历史记录</h3>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
+            <p className="text-[13px] text-text-tertiary mt-0.5">
               记录每次重新分析、操盘手编辑与执行确认的版本快照，支持随时回看与版本比对
             </p>
           </div>
-          <span className="text-[12px] text-text-tertiary">
+          <span className="text-[13px] text-text-tertiary">
             累计 {historyVersions.length} 个版本记录
           </span>
         </div>
@@ -54,7 +54,7 @@ export function ReviewHistoryTab({ task, onSwitchVersion }: ReviewHistoryTabProp
                     <div className="flex items-center gap-2">
                       <span className="text-[14px] font-semibold text-text-main">{ver.versionName}</span>
                       <span
-                        className={`px-1.5 py-0.5 text-[10.5px] font-medium rounded ${
+                        className={`px-1.5 py-0.5 text-[13px] font-medium rounded ${
                           isActive
                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                             : "bg-neutral-100 text-text-tertiary border border-neutral-200"
@@ -64,7 +64,7 @@ export function ReviewHistoryTab({ task, onSwitchVersion }: ReviewHistoryTabProp
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-[12px] text-text-tertiary">
+                    <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
                       <span className="flex items-center gap-1">
                         <Clock size={12} /> {ver.createdAt}
                       </span>
@@ -75,11 +75,11 @@ export function ReviewHistoryTab({ task, onSwitchVersion }: ReviewHistoryTabProp
                     </div>
                   </div>
 
-                  <p className="text-[12.5px] text-text-secondary leading-relaxed bg-surface-1 p-3 rounded-lg border border-border-subtle">
+                  <p className="text-[13px] text-text-secondary leading-relaxed bg-surface-1 p-3 rounded-lg border border-border-subtle">
                     {ver.summarySnapshot}
                   </p>
 
-                  <div className="flex items-center justify-between pt-1 text-[11.5px]">
+                  <div className="flex items-center justify-between pt-1 text-[13px]">
                     <span className="text-text-tertiary">
                       <strong className="text-text-secondary">数据截至时间：</strong> {ver.dataCutoff}
                     </span>

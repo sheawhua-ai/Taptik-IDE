@@ -37,7 +37,7 @@ export const AgentSelector: React.FC<AgentSelectorProps> = ({ isOpen, onClose, a
  className="absolute bottom-full left-0 mb-4 w-[320px] bg-surface-1 rounded-xl shadow-2xl border border-border-default flex flex-col z-50 overflow-hidden"
  >
  <div className="p-3 border-b border-border-default flex items-center justify-between bg-page-bg shrink-0">
- <h3 className="text-[12px] font-semibold text-text-main ml-1">切换执行模型</h3>
+ <h3 className="text-[13px] font-semibold text-text-main ml-1">切换执行模型</h3>
  <button onClick={onClose} className="p-1 hover:bg-selected-bg rounded-lg text-text-tertiary transition-colors">
  <X size={14} />
  </button>
@@ -64,7 +64,7 @@ export const AgentSelector: React.FC<AgentSelectorProps> = ({ isOpen, onClose, a
  <div className="p-2 border-t border-border-default bg-page-bg">
  <button 
  onClick={() => { onOpenMarket(); onClose(); }} 
- className="w-full py-2.5 rounded-xl text-[12px] text-text-tertiary hover:text-text-main hover:bg-selected-bg/50 transition-colors flex items-center justify-center gap-2"
+ className="w-full py-2.5 rounded-xl text-[13px] text-text-tertiary hover:text-text-main hover:bg-selected-bg/50 transition-colors flex items-center justify-center gap-2"
  >
  <ShoppingCart size={14} /> 前往技能中心
  </button>

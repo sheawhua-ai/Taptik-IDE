@@ -74,7 +74,7 @@ export const SearchTasksModal: React.FC<SearchTasksModalProps> = ({ isOpen, onCl
  <span className="text-[14px] text-text-secondary truncate max-w-[400px]">
  {item.title}
  </span>
- <div className="flex items-center gap-2 text-[12px] text-text-tertiary group-hover:text-text-tertiary font-mono">
+ <div className="flex items-center gap-2 text-[13px] text-text-tertiary group-hover:text-text-tertiary font-mono">
  <item.icon size={14} className="shrink-0" strokeWidth={1.5} />
  <span className="truncate">{item.time}</span>
  </div>

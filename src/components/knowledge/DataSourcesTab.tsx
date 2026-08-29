@@ -12,7 +12,7 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
       {/* List */}
       <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-page-bg/80 text-xs text-text-tertiary border-b border-border-default uppercase tracking-wider">
+          <thead className="bg-page-bg/80 text-[13px] text-text-tertiary border-b border-border-default uppercase tracking-wider">
             <tr>
               <th className="px-5 py-3 font-medium">来源名称</th>
               <th className="px-5 py-3 font-medium">所属设备/位置</th>
@@ -34,10 +34,10 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
                       <FileText className="w-4 h-4 text-text-tertiary mr-2 shrink-0" />
                     )}
                     <span className="font-medium text-text-main truncate max-w-[200px]">{source.name}</span>
-                    <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-hover-bg text-text-tertiary">{source.type}</span>
+                    <span className="ml-2 px-1.5 py-0.5 rounded text-[13px] bg-hover-bg text-text-tertiary">{source.type}</span>
                   </div>
                   {source.exceptionReason && (
-                    <div className="text-xs text-danger mt-1">{source.exceptionReason}</div>
+                    <div className="text-[13px] text-danger mt-1">{source.exceptionReason}</div>
                   )}
                 </td>
                 <td className="px-5 py-4 text-text-secondary">{source.deviceOrLocation}</td>

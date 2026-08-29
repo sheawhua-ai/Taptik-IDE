@@ -190,13 +190,13 @@ export const ProjectReview: React.FC = () => {
             <h1 className="text-[20px] font-bold text-text-main tracking-tight">
               AI复盘
             </h1>
-            <span className="text-[12px] text-text-tertiary font-normal">
+            <span className="text-[13px] text-text-tertiary font-normal">
               AI 持续分析运行项目、历史样本与互动归因，主持运营决策会。
             </span>
           </div>
 
           {/* Active Scope Small Indicator */}
-          <div className="mt-2 text-[11px] font-mono font-medium text-text-tertiary bg-hover-bg px-3 py-1 rounded-lg border border-border-default/60 inline-flex items-center gap-2">
+          <div className="mt-2 text-[13px] font-mono font-medium text-text-tertiary bg-hover-bg px-3 py-1 rounded-lg border border-border-default/60 inline-flex items-center gap-2">
             <Filter size={12} className="text-brand-logo" />
             <span>{activeScope}</span>
           </div>
@@ -227,13 +227,13 @@ export const ProjectReview: React.FC = () => {
               <h2 className="text-[15px] font-bold text-text-main leading-snug">
                 我已经分析了当前项目和历史记录，本轮只有 <strong className="text-brand-logo text-[17px]">3</strong> 件事值得你判断：
               </h2>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
+              <p className="text-[13px] text-text-tertiary mt-0.5">
                 无需扫描繁杂报表，直接聚焦下轮关键决策。
               </p>
             </div>
           </div>
 
-          <div className="text-[11px] text-text-tertiary font-medium shrink-0">
+          <div className="text-[13px] text-text-tertiary font-medium shrink-0">
             自动排除无显著统计差异的 24 组例行数据
           </div>
         </div>
@@ -255,10 +255,10 @@ export const ProjectReview: React.FC = () => {
                 <div className="space-y-3">
                   {/* Category Header Badge */}
                   <div className="flex items-center justify-between">
-                    <span className={`px-2.5 py-0.5 text-[11px] font-bold rounded-md border ${catBadge}`}>
+                    <span className={`px-2.5 py-0.5 text-[13px] font-bold rounded-md border ${catBadge}`}>
                       【{card.category}】决策
                     </span>
-                    <span className="text-[11px] text-text-tertiary font-mono">
+                    <span className="text-[13px] text-text-tertiary font-mono">
                       {card.id}
                     </span>
                   </div>
@@ -269,25 +269,25 @@ export const ProjectReview: React.FC = () => {
                   </h3>
 
                   {/* 为什么值得关注 */}
-                  <div className="p-3 bg-page-bg/80 rounded-xl border border-border-default text-[12px] text-text-secondary leading-relaxed">
+                  <div className="p-3 bg-page-bg/80 rounded-xl border border-border-default text-[13px] text-text-secondary leading-relaxed">
                     <strong className="text-text-main block mb-0.5">为什么值得关注：</strong>
                     {card.whyCare}
                   </div>
 
                   {/* 关键依据摘要 */}
-                  <div className="text-[12px] text-text-secondary leading-relaxed space-y-1">
+                  <div className="text-[13px] text-text-secondary leading-relaxed space-y-1">
                     <strong className="text-text-main block">关键依据摘要：</strong>
                     <p>{card.evidenceSummary}</p>
                   </div>
 
                   {/* 可能存在的其他解释 */}
-                  <div className="text-[11px] text-text-tertiary bg-page-bg p-2.5 rounded-lg border border-border-default leading-relaxed">
+                  <div className="text-[13px] text-text-tertiary bg-page-bg p-2.5 rounded-lg border border-border-default leading-relaxed">
                     <strong className="text-text-secondary block mb-0.5">可能存在的其他解释：</strong>
                     {card.alternativeExplanation}
                   </div>
 
                   {/* AI 建议动作 */}
-                  <div className="text-[12px] text-primary-900 font-bold bg-brand-light/60 p-2.5 rounded-xl border border-primary-100/80">
+                  <div className="text-[13px] text-primary-900 font-bold bg-brand-light/60 p-2.5 rounded-xl border border-primary-100/80">
                     💡 AI建议：{card.aiSuggestedAction}
                   </div>
                 </div>
@@ -296,12 +296,12 @@ export const ProjectReview: React.FC = () => {
                 <div className="pt-3 border-t border-border-default space-y-2">
                   <button
                     onClick={() => alert(`执行【${card.primaryButtonText}】动作！`)}
-                    className="w-full py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12px] font-bold transition-all shadow-sm text-center"
+                    className="w-full py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-bold transition-all shadow-sm text-center"
                   >
                     {card.primaryButtonText}
                   </button>
 
-                  <div className="flex items-center justify-between text-[11px] px-1 pt-1">
+                  <div className="flex items-center justify-between text-[13px] px-1 pt-1">
                     <button
                       onClick={() => setSelectedEvidence(card)}
                       className="text-text-tertiary hover:text-text-main font-bold flex items-center gap-1 transition-colors"
@@ -333,7 +333,7 @@ export const ProjectReview: React.FC = () => {
             <span>AI 发现 2 处潜在干扰因素，回答后将直接精细化调整决策卡结论：</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[12px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[13px]">
             {/* Question 1 */}
             <div className="p-3.5 bg-page-bg rounded-xl border border-border-default/80 space-y-2">
               <div className="font-bold text-text-main">
@@ -344,7 +344,7 @@ export const ProjectReview: React.FC = () => {
                   <button
                     key={opt}
                     onClick={() => handleAnswerQ1(opt)}
-                    className={`px-3 py-1 rounded-lg font-bold text-[11px] border transition-all ${
+                    className={`px-3 py-1 rounded-lg font-bold text-[13px] border transition-all ${
                       q1Answer === opt
                         ? "bg-btn-main text-white border-neutral-900 shadow-sm"
                         : "bg-surface-1 text-text-secondary border-border-default hover:bg-hover-bg"
@@ -355,7 +355,7 @@ export const ProjectReview: React.FC = () => {
                 ))}
               </div>
               {q1Answer && (
-                <div className="text-[11px] text-emerald-700 font-medium">
+                <div className="text-[13px] text-emerald-700 font-medium">
                   ✓ 已选择“{q1Answer}”，相关决策卡【继续】已更新排除投流干扰。
                 </div>
               )}
@@ -371,7 +371,7 @@ export const ProjectReview: React.FC = () => {
                   <button
                     key={opt}
                     onClick={() => handleAnswerQ2(opt)}
-                    className={`px-3 py-1 rounded-lg font-bold text-[11px] border transition-all ${
+                    className={`px-3 py-1 rounded-lg font-bold text-[13px] border transition-all ${
                       q2Answer === opt
                         ? "bg-btn-main text-white border-neutral-900 shadow-sm"
                         : "bg-surface-1 text-text-secondary border-border-default hover:bg-hover-bg"
@@ -382,7 +382,7 @@ export const ProjectReview: React.FC = () => {
                 ))}
               </div>
               {q2Answer && (
-                <div className="text-[11px] text-emerald-700 font-medium">
+                <div className="text-[13px] text-emerald-700 font-medium">
                   ✓ 已选择“{q2Answer}”，相关决策卡【调整】已更新对照归因。
                 </div>
               )}
@@ -393,7 +393,7 @@ export const ProjectReview: React.FC = () => {
         {/* ========================================================= */}
         {/* EXPERIENCE DISTILLATION BANNER (经验沉淀)                 */}
         {/* ========================================================= */}
-        <div className="bg-brand-light/60 border border-primary-100 rounded-xl p-4 flex items-center justify-between text-[12px]">
+        <div className="bg-brand-light/60 border border-primary-100 rounded-xl p-4 flex items-center justify-between text-[13px]">
           <div className="flex items-center gap-2 text-primary-950 font-bold">
             <Award size={16} className="text-brand-logo" />
             <span>💡 该结论已在 12 个样本中重复验证，是否保存为【商家知识】或蒸馏为【Skill】？</span>
@@ -405,7 +405,7 @@ export const ProjectReview: React.FC = () => {
                 setDistilledStatus("knowledge");
                 alert("已保存为商家知识！可在【商家知识库】中查看与引用。");
               }}
-              className={`px-3.5 py-1.5 rounded-xl font-bold transition-all text-[11px] ${
+              className={`px-3.5 py-1.5 rounded-xl font-bold transition-all text-[13px] ${
                 distilledStatus === "knowledge"
                   ? "bg-emerald-700 text-white"
                   : "bg-surface-1 text-text-main border border-border-default hover:bg-page-bg"
@@ -419,7 +419,7 @@ export const ProjectReview: React.FC = () => {
                 setDistilledStatus("skill");
                 alert("已蒸馏为 SOP Skill！后续项目创建时将自动注入此 SOP。");
               }}
-              className={`px-3.5 py-1.5 rounded-xl font-bold transition-all text-[11px] ${
+              className={`px-3.5 py-1.5 rounded-xl font-bold transition-all text-[13px] ${
                 distilledStatus === "skill"
                   ? "bg-emerald-700 text-white"
                   : "bg-btn-main text-white hover:bg-btn-main-hover"
@@ -432,8 +432,8 @@ export const ProjectReview: React.FC = () => {
 
         {/* Chat log preview if user talked */}
         {coWorkingLogs.length > 0 && (
-          <div className="bg-surface-1 border border-border-default rounded-xl p-4 space-y-2 text-[12px]">
-            <div className="font-bold text-text-tertiary text-[10px] uppercase tracking-wider mb-1">
+          <div className="bg-surface-1 border border-border-default rounded-xl p-4 space-y-2 text-[13px]">
+            <div className="font-bold text-text-tertiary text-[13px] uppercase tracking-wider mb-1">
               自然语言协同讨论记录
             </div>
             {coWorkingLogs.map((log, i) => (
@@ -450,7 +450,7 @@ export const ProjectReview: React.FC = () => {
       {/* ========================================================= */}
       <div className="p-4 border-t border-border-default bg-surface-1 shrink-0 space-y-2">
         {/* Quick Filter Tag Chips */}
-        <div className="flex items-center gap-2 text-[11px] overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 text-[13px] overflow-x-auto pb-1">
           <span className="text-text-tertiary font-bold shrink-0">快捷协同指令:</span>
           {[
             "只看未投流笔记", "排除A03账号", "只比较发布后7天", "不参考外部样本"
@@ -515,7 +515,7 @@ export const ProjectReview: React.FC = () => {
                 </div>
 
                 {/* Sample Notes List */}
-                <div className="space-y-2 text-[12px]">
+                <div className="space-y-2 text-[13px]">
                   <div className="font-bold text-text-main">
                     引入数据样本 ({selectedEvidence.evidenceData.sampleNotesCount} 篇笔记)：
                   </div>
@@ -523,7 +523,7 @@ export const ProjectReview: React.FC = () => {
                     {selectedEvidence.evidenceData.notesList.map((nt, i) => (
                       <div key={i} className="p-3 bg-page-bg border border-border-default/80 rounded-xl space-y-1">
                         <div className="font-bold text-text-main">{nt.title}</div>
-                        <div className="flex items-center justify-between text-[10px] text-text-tertiary">
+                        <div className="flex items-center justify-between text-[13px] text-text-tertiary">
                           <span>{nt.source} ({nt.publishTime})</span>
                           <span className="font-bold text-primary-700">{nt.engagement}</span>
                         </div>
@@ -533,7 +533,7 @@ export const ProjectReview: React.FC = () => {
                 </div>
 
                 {/* Comment Text Samples */}
-                <div className="space-y-2 text-[12px]">
+                <div className="space-y-2 text-[13px]">
                   <div className="font-bold text-text-main">用户真实评论采样：</div>
                   <div className="space-y-1">
                     {selectedEvidence.evidenceData.commentSamples.map((cm, i) => (
@@ -545,11 +545,11 @@ export const ProjectReview: React.FC = () => {
                 </div>
 
                 {/* Material Sources */}
-                <div className="space-y-2 text-[12px]">
+                <div className="space-y-2 text-[13px]">
                   <div className="font-bold text-text-main">关联素材资产来源：</div>
                   <div className="space-y-1">
                     {selectedEvidence.evidenceData.materialSources.map((ms, i) => (
-                      <div key={i} className="p-2 bg-hover-bg rounded-lg text-text-main font-medium text-[11px]">
+                      <div key={i} className="p-2 bg-hover-bg rounded-lg text-text-main font-medium text-[13px]">
                         • {ms}
                       </div>
                     ))}
@@ -557,9 +557,9 @@ export const ProjectReview: React.FC = () => {
                 </div>
 
                 {/* Confounding Factors */}
-                <div className="space-y-2 text-[12px]">
+                <div className="space-y-2 text-[13px]">
                   <div className="font-bold text-text-main text-amber-800">潜在混淆因素说明：</div>
-                  <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-[11px]">
+                  <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-[13px]">
                     {selectedEvidence.evidenceData.confoundingFactors.join("；")}
                   </div>
                 </div>
@@ -569,7 +569,7 @@ export const ProjectReview: React.FC = () => {
               <div className="pt-4 border-t border-border-default mt-4">
                 <button
                   onClick={() => setShowDetailedDataModal(true)}
-                  className="w-full py-2.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[12px] rounded-xl transition-colors shadow-sm"
+                  className="w-full py-2.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold text-[13px] rounded-xl transition-colors shadow-sm"
                 >
                   查看详细数据
                 </button>
@@ -596,7 +596,7 @@ export const ProjectReview: React.FC = () => {
                 <button onClick={() => setShowDetailedDataModal(false)}><X size={18} className="text-text-tertiary" /></button>
               </div>
 
-              <div className="space-y-3 text-[12px]">
+              <div className="space-y-3 text-[13px]">
                 <div className="p-4 bg-page-bg rounded-xl border border-border-default grid grid-cols-3 gap-3 text-center">
                   <div>
                     <span className="text-text-tertiary block mb-1">总曝光样本</span>
@@ -620,7 +620,7 @@ export const ProjectReview: React.FC = () => {
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => setShowDetailedDataModal(false)}
-                  className="px-5 py-2 bg-btn-main text-white text-[12px] font-bold rounded-xl"
+                  className="px-5 py-2 bg-btn-main text-white text-[13px] font-bold rounded-xl"
                 >
                   关闭
                 </button>
@@ -650,7 +650,7 @@ export const ProjectReview: React.FC = () => {
                 <button onClick={() => setShowAdjustmentDraftModal(false)}><X size={18} className="text-text-tertiary" /></button>
               </div>
 
-              <div className="flex-1 overflow-y-auto space-y-3 text-[12px] pr-1">
+              <div className="flex-1 overflow-y-auto space-y-3 text-[13px] pr-1">
                 <div className="p-3 bg-page-bg rounded-xl border border-border-default">
                   <strong className="text-text-main block mb-1">1. 建议保留的内容方向：</strong>
                   <p className="text-text-secondary">【第一人称 KOS 店长粮种实拍 + 软便防范】，生产权重提升至 60%。</p>
@@ -675,7 +675,7 @@ export const ProjectReview: React.FC = () => {
               <div className="pt-3 border-t border-border-default flex items-center justify-between shrink-0">
                 <button
                   onClick={() => setShowAdjustmentDraftModal(false)}
-                  className="px-4 py-2 border border-border-default text-text-secondary rounded-xl text-[12px] font-bold"
+                  className="px-4 py-2 border border-border-default text-text-secondary rounded-xl text-[13px] font-bold"
                 >
                   暂存为草稿
                 </button>
@@ -685,7 +685,7 @@ export const ProjectReview: React.FC = () => {
                     alert("项目调整草案已通过！已更新项目计划并同步至【方案中心】。");
                     setShowAdjustmentDraftModal(false);
                   }}
-                  className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12px] font-bold transition-colors shadow-sm"
+                  className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-bold transition-colors shadow-sm"
                 >
                   确认发布新版本项目计划
                 </button>

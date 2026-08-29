@@ -127,7 +127,7 @@ export const SkillHome: React.FC<SkillHomeProps> = ({
                       <h3 className="text-[15px] font-black text-text-main group-hover:text-black">
                         {skill.name}
                       </h3>
-                      <span className="text-[11px] font-bold text-text-tertiary block mt-0.5">
+                      <span className="text-[13px] font-bold text-text-tertiary block mt-0.5">
                         {skill.source === 'official' ? '官方' : '自定义'}
                       </span>
                     </div>
@@ -135,27 +135,27 @@ export const SkillHome: React.FC<SkillHomeProps> = ({
                 </div>
 
                 {/* Capability Description (max 2 lines) */}
-                <p className="text-[12.5px] font-bold text-text-secondary line-clamp-2 leading-relaxed">
+                <p className="text-[13px] font-bold text-text-secondary line-clamp-2 leading-relaxed">
                   {skill.oneSentenceDesc}
                 </p>
               </div>
 
               {/* Footer status / button */}
               <div className="pt-3 border-t border-border-default flex items-center justify-between">
-                <span className="text-[11.5px] font-bold text-text-tertiary">
+                <span className="text-[13px] font-bold text-text-tertiary">
                   {skill.source === 'official' ? '官方能力' : '团队扩展'}
                 </span>
 
                 {isBuiltIn ? (
-                  <span className="text-[11.5px] font-extrabold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-xl">
+                  <span className="text-[13px] font-extrabold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-xl">
                     系统内置
                   </span>
                 ) : needsConfig ? (
-                  <span className="text-[11.5px] font-extrabold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
+                  <span className="text-[13px] font-extrabold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
                     需配置
                   </span>
                 ) : isEnabled ? (
-                  <span className="text-[11.5px] font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl flex items-center gap-1 border border-emerald-200/80">
+                  <span className="text-[13px] font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl flex items-center gap-1 border border-emerald-200/80">
                     <Check size={13} /> 已启用
                   </span>
                 ) : (
@@ -164,7 +164,7 @@ export const SkillHome: React.FC<SkillHomeProps> = ({
                       e.stopPropagation();
                       onInstallSkill?.(skill);
                     }}
-                    className="px-3.5 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[12px] font-extrabold flex items-center gap-1 shadow-2xs transition-all active:scale-95"
+                    className="px-3.5 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-extrabold flex items-center gap-1 shadow-2xs transition-all active:scale-95"
                   >
                     <Plus size={14} /> ＋ 添加
                   </button>

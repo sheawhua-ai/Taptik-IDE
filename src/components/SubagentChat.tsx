@@ -74,7 +74,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
         
         {/* 当前上下文 */}
         <div className="flex flex-col gap-3">
-          <div className="text-[12px] font-bold text-text-secondary flex items-center gap-1.5">
+          <div className="text-[13px] font-bold text-text-secondary flex items-center gap-1.5">
             当前上下文
           </div>
           <div className="p-4 bg-page-bg border border-border-default rounded-xl text-[13px] text-text-main leading-relaxed">
@@ -84,7 +84,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
 
         {/* AI 协作建议 */}
         <div className="flex flex-col gap-3">
-          <div className="text-[12px] font-bold text-text-secondary flex items-center gap-2">
+          <div className="text-[13px] font-bold text-text-secondary flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-brand-logo" />
             AI 协作建议
           </div>
@@ -109,7 +109,7 @@ export const SubagentChat: React.FC<SubagentChatProps> = ({
 
         {/* 最近执行动作 */}
         <div className="flex flex-col gap-3 mt-4">
-          <div className="text-[12px] font-bold text-text-secondary flex items-center gap-1.5">
+          <div className="text-[13px] font-bold text-text-secondary flex items-center gap-1.5">
             <History size={14} />
             最近执行动作
           </div>

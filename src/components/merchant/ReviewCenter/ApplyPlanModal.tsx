@@ -48,7 +48,7 @@ export function ApplyPlanModal({
         {/* Header */}
         <div className="p-5 border-b border-border-default flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-bold rounded">
+            <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[13px] font-bold rounded">
               纳入项目方案
             </span>
             <h3 className="text-[15px] font-semibold text-text-main truncate max-w-[300px]">
@@ -64,7 +64,7 @@ export function ApplyPlanModal({
         </div>
 
         {/* Body Content */}
-        <div className="p-5 space-y-4 text-[12.5px] overflow-y-auto max-h-[70vh] custom-scrollbar">
+        <div className="p-5 space-y-4 text-[13px] overflow-y-auto max-h-[70vh] custom-scrollbar">
           {/* 建议依据 */}
           <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-1.5">
             <span className="font-semibold text-text-main block">建议依据</span>
@@ -73,7 +73,7 @@ export function ApplyPlanModal({
 
           {/* 预期影响 */}
           <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-1">
-            <span className="font-semibold text-btn-main text-[11.5px] block">预期影响与收益</span>
+            <span className="font-semibold text-btn-main text-[13px] block">预期影响与收益</span>
             <p className="text-text-main font-medium">{action.expectedGain}</p>
           </div>
 
@@ -86,7 +86,7 @@ export function ApplyPlanModal({
                   key={idx}
                   className="p-2.5 bg-surface-1 rounded-lg border border-border-default flex items-center gap-2.5 text-text-secondary"
                 >
-                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[13px] font-bold flex items-center justify-center shrink-0">
                     {idx + 1}
                   </span>
                   <span>{step}</span>
@@ -120,7 +120,7 @@ export function ApplyPlanModal({
                     className="accent-btn-main"
                   />
                 </div>
-                <span className="text-[11.5px] text-text-tertiary">
+                <span className="text-[13px] text-text-tertiary">
                   自动将该建议沉淀并创建为下一期执行方案
                 </span>
               </label>
@@ -146,7 +146,7 @@ export function ApplyPlanModal({
                     className="accent-btn-main"
                   />
                 </div>
-                <span className="text-[11.5px] text-text-tertiary">
+                <span className="text-[13px] text-text-tertiary">
                   追加至当前项目已规划的在编方案
                 </span>
               </label>
@@ -157,7 +157,7 @@ export function ApplyPlanModal({
                 <select
                   value={existingPlanId}
                   onChange={(e) => setExistingPlanId(e.target.value)}
-                  className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-xl text-[12.5px] text-text-main outline-none focus:border-btn-main transition-colors"
+                  className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-xl text-[13px] text-text-main outline-none focus:border-btn-main transition-colors"
                 >
                   {existingPlans.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -174,13 +174,13 @@ export function ApplyPlanModal({
         <div className="p-4 border-t border-border-default flex items-center justify-end gap-2 bg-surface-subtle">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
+            className="px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
           >
             取消
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 text-[12.5px] font-medium rounded-xl transition-colors flex items-center gap-1.5 bg-btn-main text-white hover:bg-btn-main-hover shadow-2xs"
+            className="px-4 py-2 text-[13px] font-medium rounded-xl transition-colors flex items-center gap-1.5 bg-btn-main text-white hover:bg-btn-main-hover shadow-2xs"
           >
             <Check size={13} />
             <span>确认纳入方案</span>

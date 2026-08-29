@@ -310,7 +310,7 @@ export function DialogueWorkbench({
                   {/* Suggested Chips below message */}
                   {turn.suggestedChips && turn.suggestedChips.length > 0 && (
                     <div className="space-y-1.5 pt-1">
-                      <span className="text-[11px] text-text-tertiary block px-1">
+                      <span className="text-[13px] text-text-tertiary block px-1">
                         点击可快速补充或选择：
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -319,7 +319,7 @@ export function DialogueWorkbench({
                             key={cIdx}
                             type="button"
                             onClick={() => handleSelectChip(chip)}
-                            className="px-3 py-1.5 bg-surface-1 hover:bg-surface-hover hover:border-border-strong border border-border-default rounded-md text-[12px] text-text-secondary hover:text-text-primary transition-colors text-left flex items-center gap-1.5 shadow-2xs"
+                            className="px-3 py-1.5 bg-surface-1 hover:bg-surface-hover hover:border-border-strong border border-border-default rounded-md text-[13px] text-text-secondary hover:text-text-primary transition-colors text-left flex items-center gap-1.5 shadow-2xs"
                           >
                             <CornerDownRight size={12} className="text-text-tertiary shrink-0" />
                             <span>{chip.text}</span>
@@ -340,7 +340,7 @@ export function DialogueWorkbench({
               <div className="w-8 h-8 rounded-lg bg-neutral-900 text-white flex items-center justify-center shrink-0">
                 <Bot size={16} />
               </div>
-              <div className="p-3.5 bg-surface-1 border border-border-default rounded-xl shadow-xs text-text-secondary flex items-center gap-2 text-[12.5px]">
+              <div className="p-3.5 bg-surface-1 border border-border-default rounded-xl shadow-xs text-text-secondary flex items-center gap-2 text-[13px]">
                 <Loader2 size={15} className="animate-spin text-text-tertiary" />
                 <span>Agent 正在结合 12 份质检报告与 5 个账号画像装配运营打法...</span>
               </div>
@@ -371,13 +371,13 @@ export function DialogueWorkbench({
             <button
               type="submit"
               disabled={!inputText.trim()}
-              className="h-10 px-4 bg-action-primary hover:bg-action-primary-hover disabled:bg-neutral-200 disabled:text-neutral-400 text-white rounded-lg text-[12.5px] font-semibold transition-colors flex items-center gap-1.5 shrink-0 shadow-sm"
+              className="h-10 px-4 bg-action-primary hover:bg-action-primary-hover disabled:bg-neutral-200 disabled:text-neutral-400 text-white rounded-lg text-[13px] font-semibold transition-colors flex items-center gap-1.5 shrink-0 shadow-sm"
             >
               <Send size={14} />
               <span>发送</span>
             </button>
           </form>
-          <div className="flex items-center justify-between text-[11px] text-text-tertiary mt-2 px-1">
+          <div className="flex items-center justify-between text-[13px] text-text-tertiary mt-2 px-1">
             <span>支持自然语言输入目标、调整篇数、修改排期或调整素材标准</span>
             <span>按 Enter 发送</span>
           </div>

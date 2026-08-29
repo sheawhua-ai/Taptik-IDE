@@ -32,11 +32,11 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
               <h2 className="text-[16px] font-semibold text-text-main">
                 方案详情
               </h2>
-              <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[11px] font-medium rounded-md">
+              <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[13px] font-medium rounded-md">
                 方案配置
               </span>
             </div>
-            <div className="text-[12px] text-text-tertiary mt-0.5 truncate max-w-[420px]">
+            <div className="text-[13px] text-text-tertiary mt-0.5 truncate max-w-[420px]">
               {project.name}
             </div>
           </div>
@@ -59,14 +59,14 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
             
             <div className="space-y-3 text-[13px]">
               <div>
-                <div className="text-[12px] text-text-tertiary font-normal mb-1">解决的核心问题</div>
+                <div className="text-[13px] text-text-tertiary font-normal mb-1">解决的核心问题</div>
                 <div className="font-medium text-text-main bg-surface-subtle p-3 rounded-lg border border-border-default leading-relaxed">
                   {protocol?.coreProblem || project.goal || "验证真实换粮过程与店长专业解答能否增加有效问题评论与搜索咨询，建立幼犬换粮搜索卡位。"}
                 </div>
               </div>
 
               <div>
-                <div className="text-[12px] text-text-tertiary font-normal mb-1">目标受众与客群</div>
+                <div className="text-[13px] text-text-tertiary font-normal mb-1">目标受众与客群</div>
                 <div className="text-text-secondary bg-surface-subtle p-3 rounded-lg border border-border-default leading-relaxed">
                   {protocol?.targetAudience || "3-6个月幼犬初次换粮且对软便、挑食焦虑的精致宠主与新手养宠人群"}
                 </div>
@@ -83,7 +83,7 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
             
             <div className="space-y-3 text-[13px]">
               <div>
-                <div className="text-[12px] text-text-tertiary font-normal mb-1">内容方法概要</div>
+                <div className="text-[13px] text-text-tertiary font-normal mb-1">内容方法概要</div>
                 <div className="text-text-main bg-surface-subtle p-3 rounded-lg border border-border-default leading-relaxed">
                   {protocol?.solutionSummary || "KOC真实体验测评 + 店长号专业科普指导 + 品牌号承接与评论区私信引导"}
                 </div>
@@ -91,13 +91,13 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
 
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="bg-surface-subtle p-3 rounded-lg border border-border-default">
-                  <div className="text-[11.5px] text-text-tertiary font-normal">计划总篇数</div>
+                  <div className="text-[13px] text-text-tertiary font-normal">计划总篇数</div>
                   <div className="text-[15px] font-semibold text-text-main mt-0.5 tabular-nums">
                     {project.notes?.length || 20} 篇
                   </div>
                 </div>
                 <div className="bg-surface-subtle p-3 rounded-lg border border-border-default">
-                  <div className="text-[11.5px] text-text-tertiary font-normal">默认观察周期</div>
+                  <div className="text-[13px] text-text-tertiary font-normal">默认观察周期</div>
                   <div className="text-[15px] font-semibold text-text-main mt-0.5 tabular-nums">
                     发布后 14 天
                   </div>
@@ -105,8 +105,8 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
               </div>
 
               <div>
-                <div className="text-[12px] text-text-tertiary font-normal mb-1.5">发布主体结构</div>
-                <div className="space-y-2 text-[12px]">
+                <div className="text-[13px] text-text-tertiary font-normal mb-1.5">发布主体结构</div>
+                <div className="space-y-2 text-[13px]">
                   <div className="flex items-center justify-between p-2.5 bg-surface-subtle rounded-lg border border-border-default">
                     <span className="font-normal text-text-secondary">品牌官方号</span>
                     <span className="font-medium text-text-main">2 篇 · 信任承接与官方答疑</span>
@@ -133,7 +133,7 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
 
             <div className="space-y-3 text-[13px]">
               <div>
-                <div className="text-[12px] text-text-tertiary font-normal mb-1">预期策略目标</div>
+                <div className="text-[13px] text-text-tertiary font-normal mb-1">预期策略目标</div>
                 <div className="text-text-main bg-surface-subtle p-3 rounded-lg border border-border-default leading-relaxed">
                   {protocol?.verifyHypothesis || "在幼犬换粮搜索词下，通过真实痛点KOC测评与店长科普能够显著提升有效咨询与收藏率。"}
                 </div>
@@ -141,15 +141,15 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 bg-surface-subtle rounded-lg border border-border-default">
-                  <div className="text-[11.5px] font-medium text-text-main mb-1">继续推进条件</div>
-                  <div className="text-[12px] text-text-secondary leading-relaxed">
+                  <div className="text-[13px] font-medium text-text-main mb-1">继续推进条件</div>
+                  <div className="text-[13px] text-text-secondary leading-relaxed">
                     {protocol?.continueCondition || "有效评论数 > 20% 且搜索卡位进入前10"}
                   </div>
                 </div>
 
                 <div className="p-3 bg-surface-subtle rounded-lg border border-border-default">
-                  <div className="text-[11.5px] font-medium text-text-main mb-1">调整或暂停条件</div>
-                  <div className="text-[12px] text-text-secondary leading-relaxed">
+                  <div className="text-[13px] font-medium text-text-main mb-1">调整或暂停条件</div>
+                  <div className="text-[13px] text-text-secondary leading-relaxed">
                     {protocol?.stopCondition || "连续5篇互动率 < 1.5% 或出现合规争议"}
                   </div>
                 </div>
@@ -164,7 +164,7 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
               执行边界与合规要求
             </h3>
 
-            <div className="space-y-2.5 text-[12.5px]">
+            <div className="space-y-2.5 text-[13px]">
               <div className="p-3 bg-surface-subtle rounded-lg border border-border-default">
                 <div className="font-medium text-text-main mb-1">禁止用语</div>
                 <div className="text-text-secondary leading-relaxed">

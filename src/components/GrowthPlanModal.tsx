@@ -71,7 +71,7 @@ export const GrowthPlanModal: React.FC<GrowthPlanModalProps> = ({ isOpen, onClos
  </div>
  <div className="w-48 h-48 bg-page-bg rounded-xl border-2 border-dashed border-border-default flex flex-col items-center justify-center text-text-tertiary p-4 relative group cursor-pointer hover:border-primary-300 hover:bg-brand-light transition-colors">
  <QrCode size={48} className="mb-2 text-neutral-300 group-hover:text-primary-400 transition-colors" />
- <span className="text-[12px] text-center">专属邀请二维码<br/>将在生成后显示</span>
+ <span className="text-[13px] text-center">专属邀请二维码<br/>将在生成后显示</span>
  <div className="absolute inset-0 bg-surface-1/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
  <button className="px-4 py-2 bg-btn-main text-white rounded-lg text-[13px] shadow-lg shadow-primary-500/30 flex items-center gap-2">
  <Download size={14} /> 保存图片
@@ -87,7 +87,7 @@ export const GrowthPlanModal: React.FC<GrowthPlanModalProps> = ({ isOpen, onClos
  </div>
  <div className="w-48 h-48 bg-page-bg rounded-xl border-2 border-dashed border-border-default flex flex-col items-center justify-center text-text-tertiary p-4 relative group cursor-pointer hover:border-primary-300 hover:bg-brand-light transition-colors">
  <QrCode size={48} className="mb-2 text-neutral-300 group-hover:text-primary-400 transition-colors" />
- <span className="text-[12px] text-center">专属邀请二维码<br/>将在生成后显示</span>
+ <span className="text-[13px] text-center">专属邀请二维码<br/>将在生成后显示</span>
  <div className="absolute inset-0 bg-surface-1/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
  <button className="px-4 py-2 bg-btn-main text-white rounded-lg text-[13px] shadow-lg shadow-primary-500/30 flex items-center gap-2">
  <Download size={14} /> 保存图片
@@ -99,7 +99,7 @@ export const GrowthPlanModal: React.FC<GrowthPlanModalProps> = ({ isOpen, onClos
 
  <div className="w-full mt-8 space-y-3">
  <div className="flex gap-2">
- <div className="flex-1 h-11 bg-page-bg border border-border-default rounded-xl flex items-center px-4 font-mono text-[12px] text-text-tertiary overflow-hidden text-ellipsis whitespace-nowrap">
+ <div className="flex-1 h-11 bg-page-bg border border-border-default rounded-xl flex items-center px-4 font-mono text-[13px] text-text-tertiary overflow-hidden text-ellipsis whitespace-nowrap">
  https://taptik.com/invite/{activeTab === 'merchant' ? 'm' : 'p'}/E28A9F
  </div>
  <button className="h-11 px-4 bg-hover-bg text-text-secondary rounded-xl text-[13px] hover:bg-selected-bg transition-colors flex items-center gap-2 shrink-0">

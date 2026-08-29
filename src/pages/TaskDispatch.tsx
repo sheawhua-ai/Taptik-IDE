@@ -43,7 +43,7 @@ export default function TaskDispatch() {
       <section className="bg-surface-1 border border-border-default rounded-xl p-8 shadow-sm">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-[16px] font-bold text-text-main">新客引流标准流水线 (Pipeline)</h2>
-          <span className="text-[12px] bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold">运行进度: 40%</span>
+          <span className="text-[13px] bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold">运行进度: 40%</span>
         </div>
 
         <div className="flex items-center gap-2 relative">
@@ -64,7 +64,7 @@ export default function TaskDispatch() {
                 
                 <div className="text-center">
                   <div className="text-[13px] font-bold text-text-main mb-1">{node.title}</div>
-                  <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
+                  <div className={`text-[13px] font-bold px-2 py-0.5 rounded-full inline-block ${
                     node.type === 'ai' ? 'bg-indigo-50 text-indigo-600' :
                     node.type === 'human' ? 'bg-amber-50 text-amber-600' :
                     'bg-hover-bg text-text-secondary'
@@ -110,7 +110,7 @@ export default function TaskDispatch() {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
             </span>
             <h3 className="text-white font-bold">当前卡点：素材审核与指派</h3>
-            <span className="bg-neutral-800 text-text-tertiary text-[12px] px-2 py-0.5 rounded">节点 3/5</span>
+            <span className="bg-neutral-800 text-text-tertiary text-[13px] px-2 py-0.5 rounded">节点 3/5</span>
           </div>
         </div>
         
@@ -128,18 +128,18 @@ export default function TaskDispatch() {
               <div key={item} className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-sm group hover:border-indigo-300 transition-colors">
                 <div className="aspect-video bg-hover-bg rounded-lg mb-4 relative overflow-hidden flex items-center justify-center text-text-tertiary">
                   <Camera size={32} />
-                  <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-sm">门店回传</div>
+                  <div className="absolute top-2 left-2 bg-black/60 text-white text-[13px] px-2 py-0.5 rounded backdrop-blur-sm">门店回传</div>
                 </div>
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <div className="font-bold text-text-main text-[14px] mb-1">初夏防晒大作战素材</div>
-                    <div className="text-[12px] text-text-tertiary">提报人: 杭州西湖店 - 李四</div>
+                    <div className="text-[13px] text-text-tertiary">提报人: 杭州西湖店 - 李四</div>
                   </div>
                   <MoreHorizontal size={16} className="text-text-tertiary cursor-pointer" />
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex-1 py-1.5 border border-danger-light text-danger bg-rose-50 text-[12px] font-bold rounded hover:bg-danger-light">打回修改</button>
-                  <button className="flex-1 py-1.5 bg-btn-main text-white text-[12px] font-bold rounded hover:bg-btn-main-hover">审核通过</button>
+                  <button className="flex-1 py-1.5 border border-danger-light text-danger bg-rose-50 text-[13px] font-bold rounded hover:bg-danger-light">打回修改</button>
+                  <button className="flex-1 py-1.5 bg-btn-main text-white text-[13px] font-bold rounded hover:bg-btn-main-hover">审核通过</button>
                 </div>
               </div>
             ))}

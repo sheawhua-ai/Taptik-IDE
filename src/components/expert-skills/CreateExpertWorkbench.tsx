@@ -150,7 +150,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
             </div>
             <div>
               <h2 className="text-[17px] font-extrabold">新建专家工作台 (3 阶段流程)</h2>
-              <p className="text-[11.5px] text-text-tertiary">描述需求 → 生成专家契约 → 本地演练并启用</p>
+              <p className="text-[13px] text-text-tertiary">描述需求 → 生成专家契约 → 本地演练并启用</p>
             </div>
           </div>
 
@@ -160,19 +160,19 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
         </div>
 
         {/* Step Indicator */}
-        <div className="bg-hover-bg border-b border-border-default p-3 px-6 flex items-center justify-between text-[12.5px] font-extrabold">
+        <div className="bg-hover-bg border-b border-border-default p-3 px-6 flex items-center justify-between text-[13px] font-extrabold">
           <div className={`flex items-center gap-2 ${currentStage >= 1 ? 'text-purple-700' : 'text-text-tertiary'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 1 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>1</span>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[13px] ${currentStage >= 1 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>1</span>
             <span>描述专家需求</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
           <div className={`flex items-center gap-2 ${currentStage >= 2 ? 'text-purple-700' : 'text-text-tertiary'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 2 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>2</span>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[13px] ${currentStage >= 2 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>2</span>
             <span>确认专家契约</span>
           </div>
           <ArrowRight size={14} className="text-neutral-300" />
           <div className={`flex items-center gap-2 ${currentStage >= 3 ? 'text-purple-700' : 'text-text-tertiary'}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${currentStage >= 3 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>3</span>
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[13px] ${currentStage >= 3 ? 'bg-purple-700 text-white' : 'bg-neutral-200 text-text-secondary'}`}>3</span>
             <span>本地演练与启用</span>
           </div>
         </div>
@@ -196,7 +196,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
                 <label className="font-extrabold text-text-main block">导入参考资料 / 知识库 (可选)：</label>
                 <div className="space-y-1.5">
                   {selectedDocs.map((doc, i) => (
-                    <div key={i} className="p-2.5 bg-page-bg border border-border-default rounded-xl flex items-center justify-between text-[12px] font-bold text-text-secondary">
+                    <div key={i} className="p-2.5 bg-page-bg border border-border-default rounded-xl flex items-center justify-between text-[13px] font-bold text-text-secondary">
                       <span>📄 {doc}</span>
                       <button onClick={() => setSelectedDocs(selectedDocs.filter((_, idx) => idx !== i))} className="text-text-tertiary hover:text-danger">
                         <Trash2 size={14} />
@@ -247,16 +247,16 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1.5">
-                  <span className="font-extrabold text-emerald-900 block text-[12px]">可以完成什么：</span>
+                  <span className="font-extrabold text-emerald-900 block text-[13px]">可以完成什么：</span>
                   {whatItCanDo.map((item, i) => (
-                    <div key={i} className="text-[12px] text-emerald-950 font-medium">• {item}</div>
+                    <div key={i} className="text-[13px] text-emerald-950 font-medium">• {item}</div>
                   ))}
                 </div>
 
                 <div className="p-3.5 bg-rose-50 rounded-xl border border-danger-light space-y-1.5">
-                  <span className="font-extrabold text-rose-900 block text-[12px]">不会自动做什么：</span>
+                  <span className="font-extrabold text-rose-900 block text-[13px]">不会自动做什么：</span>
                   {whatItWontDoAuto.map((item, i) => (
-                    <div key={i} className="text-[12px] text-rose-950 font-medium">• {item}</div>
+                    <div key={i} className="text-[13px] text-rose-950 font-medium">• {item}</div>
                   ))}
                 </div>
               </div>
@@ -272,7 +272,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
                   rows={3}
                   value={drillInput}
                   onChange={e => setDrillInput(e.target.value)}
-                  className="w-full p-3 bg-surface-1 border border-purple-200 rounded-xl text-[12.5px] font-medium"
+                  className="w-full p-3 bg-surface-1 border border-purple-200 rounded-xl text-[13px] font-medium"
                 />
               </div>
 
@@ -286,7 +286,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
               </button>
 
               {drillPassed && (
-                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-[12.5px] animate-in fade-in duration-150">
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-[13px] animate-in fade-in duration-150">
                   <div className="flex items-center gap-2 text-emerald-900 font-extrabold text-[14px]">
                     <CheckCircle2 size={18} className="text-emerald-600" />
                     <span>本地演练通过！专家理解一致且触发了设置的人工确认点。</span>
@@ -307,7 +307,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
               if (currentStage > 1) setCurrentStage((currentStage - 1) as any);
               else onClose();
             }}
-            className="px-4 py-2 border border-neutral-300 text-text-secondary text-[12.5px] font-bold rounded-xl"
+            className="px-4 py-2 border border-neutral-300 text-text-secondary text-[13px] font-bold rounded-xl"
           >
             {currentStage === 1 ? '取消' : '上一步'}
           </button>
@@ -316,7 +316,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
             <button
               onClick={handleGenerateCharter}
               disabled={isGeneratingCharter}
-              className="px-6 py-2 bg-purple-700 hover:bg-purple-600 text-white text-[12.5px] font-extrabold rounded-xl flex items-center gap-1.5 shadow-2xs"
+              className="px-6 py-2 bg-purple-700 hover:bg-purple-600 text-white text-[13px] font-extrabold rounded-xl flex items-center gap-1.5 shadow-2xs"
             >
               {isGeneratingCharter ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
               <span>生成专家方案</span>
@@ -326,7 +326,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
           {currentStage === 2 && (
             <button
               onClick={handleStartDrillStage}
-              className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs"
+              className="px-6 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[13px] font-extrabold rounded-xl shadow-2xs"
             >
               进入本地演练
             </button>
@@ -336,7 +336,7 @@ export const CreateExpertWorkbench: React.FC<CreateExpertWorkbenchProps> = ({
             <button
               onClick={handleCompleteAndEnable}
               disabled={!drillPassed}
-              className={`px-6 py-2 text-white text-[12.5px] font-extrabold rounded-xl shadow-2xs ${
+              className={`px-6 py-2 text-white text-[13px] font-extrabold rounded-xl shadow-2xs ${
                 drillPassed ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-neutral-300 cursor-not-allowed'
               }`}
             >

@@ -25,7 +25,7 @@ export function StrategyProtocol({ project }: { project: any }) {
             <div key={item.id} className="p-4 bg-surface-2 rounded-xl border border-border-default flex justify-between items-center">
                <div>
                  <div className="text-[14px] font-bold text-text-main mb-1">{item.fact}</div>
-                 <div className="text-[12px] text-text-tertiary flex items-center gap-4">
+                 <div className="text-[13px] text-text-tertiary flex items-center gap-4">
                    <span>更新于 {item.updated}</span>
                    {item.expired && <span className="text-danger">已过期</span>}
                  </div>
@@ -46,29 +46,29 @@ export function StrategyProtocol({ project }: { project: any }) {
           <div className="p-4 bg-surface-2 rounded-xl border border-border-default">
              <div className="grid grid-cols-2 gap-4 mb-4">
                <div>
-                 <div className="text-[12px] text-text-tertiary mb-1">假设</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">假设</div>
                  <div className="text-[14px] font-bold text-text-main">放大“真实换粮软便”场景的KOC内容，能提升搜素结果的点击和线索转化</div>
                </div>
                <div>
-                 <div className="text-[12px] text-text-tertiary mb-1">采用原因</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">采用原因</div>
                  <div className="text-[14px] font-medium text-text-secondary">竞品该词包下多为官方宣发，缺乏真实测评</div>
                </div>
              </div>
              <div className="grid grid-cols-4 gap-4 pt-4 border-t border-border-default">
                <div>
-                 <div className="text-[12px] text-text-tertiary mb-1">验证方法</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">验证方法</div>
                  <div className="text-[13px] font-bold">搜索卡位 + KOC铺量</div>
                </div>
                <div>
-                 <div className="text-[12px] text-text-tertiary mb-1">样本量 / 窗口期</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">样本量 / 窗口期</div>
                  <div className="text-[13px] font-bold">20篇 / 发布后7天</div>
                </div>
                <div>
-                 <div className="text-[12px] text-text-tertiary mb-1">继续条件</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">继续条件</div>
                  <div className="text-[13px] font-bold text-emerald-600">有效评论数提升 &gt; 20%</div>
                </div>
                <div>
-                 <div className="text-[12px] text-text-tertiary mb-1">停止或调整条件</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">停止或调整条件</div>
                  <div className="text-[13px] font-bold text-danger">无明显转化且互动率低</div>
                </div>
              </div>
@@ -125,7 +125,7 @@ export function StrategyProtocol({ project }: { project: any }) {
                     <div key={i} className="p-4 bg-surface-1 rounded-xl border border-border-default">
                       <div className="flex justify-between items-start mb-3">
                         <div className="font-bold text-[14px]">{cap.node}</div>
-                        <div className={`text-[11px] px-2 py-0.5 rounded-full ${cap.auto === '自动执行' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                        <div className={`text-[13px] px-2 py-0.5 rounded-full ${cap.auto === '自动执行' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                           {cap.auto}
                         </div>
                       </div>
@@ -133,8 +133,8 @@ export function StrategyProtocol({ project }: { project: any }) {
                         <span className="font-medium">使用能力:</span> {cap.skill || cap.tool} ({cap.type})
                       </div>
                       <div className="flex gap-2 mt-4">
-                        <button className="text-[12px] px-3 py-1.5 bg-hover-bg hover:bg-selected-bg rounded font-medium">更换能力</button>
-                        <button className="text-[12px] px-3 py-1.5 bg-hover-bg hover:bg-selected-bg rounded font-medium">转为人工</button>
+                        <button className="text-[13px] px-3 py-1.5 bg-hover-bg hover:bg-selected-bg rounded font-medium">更换能力</button>
+                        <button className="text-[13px] px-3 py-1.5 bg-hover-bg hover:bg-selected-bg rounded font-medium">转为人工</button>
                       </div>
                     </div>
                   ))}

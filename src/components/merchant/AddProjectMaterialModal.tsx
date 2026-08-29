@@ -52,7 +52,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 text-[12px] text-text-secondary leading-relaxed flex items-start gap-1.5">
+          <div className="p-3 bg-page-bg rounded-xl border border-border-default/80 text-[13px] text-text-secondary leading-relaxed flex items-start gap-1.5">
             <Info size={14} className="text-text-tertiary shrink-0 mt-0.5" />
             <div>
               提示：项目级素材要求独立于具体笔记，即使项目尚未生成笔记也可以提前派发与拍摄收集。
@@ -60,7 +60,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-text-secondary mb-1">
+            <label className="block text-[13px] font-bold text-text-secondary mb-1">
               素材要求内容 <span className="text-brand-logo">*</span>
             </label>
             <textarea
@@ -74,7 +74,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-text-tertiary mb-1.5">
+            <label className="block text-[13px] font-bold text-text-tertiary mb-1.5">
               快速填入常见项目素材要求
             </label>
             <div className="space-y-1.5">
@@ -83,7 +83,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
                   key={idx}
                   type="button"
                   onClick={() => setReqs(preset)}
-                  className="w-full text-left p-2 rounded-lg bg-page-bg hover:bg-hover-bg text-[11px] font-medium text-text-secondary transition-colors border border-border-default/60 truncate"
+                  className="w-full text-left p-2 rounded-lg bg-page-bg hover:bg-hover-bg text-[13px] font-medium text-text-secondary transition-colors border border-border-default/60 truncate"
                 >
                   + {preset}
                 </button>
@@ -92,7 +92,7 @@ export function AddProjectMaterialModal({ project, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-text-secondary mb-1">
+            <label className="block text-[13px] font-bold text-text-secondary mb-1">
               素材负责/派发执行人
             </label>
             <input 

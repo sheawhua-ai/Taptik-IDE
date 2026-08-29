@@ -155,7 +155,7 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
               <h3 className="text-[15px] font-semibold text-text-primary tracking-tight">
                 AI 制作封面工作台
               </h3>
-              <p className="text-[11px] text-text-tertiary">
+              <p className="text-[13px] text-text-tertiary">
                 Agent 协同工作流：自动装载项目打法、品牌 VI、禁用词库与爆款封面历史
               </p>
             </div>
@@ -177,11 +177,11 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
             
             {/* Auto-Loaded Agent Context */}
             <div className="space-y-2">
-              <span className="text-[11px] font-semibold text-text-tertiary uppercase tracking-wider block">
+              <span className="text-[13px] font-semibold text-text-tertiary uppercase tracking-wider block">
                 Agent 自动关联上下文
               </span>
 
-              <div className="p-3 bg-surface border border-border-subtle rounded-lg text-[12px] space-y-1.5">
+              <div className="p-3 bg-surface border border-border-subtle rounded-lg text-[13px] space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-text-tertiary">商家与项目:</span>
                   <span className="font-medium text-text-primary">极宠家 · 幼犬换粮软便卡位</span>
@@ -204,19 +204,19 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
             {/* Parent Material Info if deriving */}
             {parentMaterial ? (
               <div className="space-y-2">
-                <span className="text-[11px] font-semibold text-text-tertiary uppercase tracking-wider block">
+                <span className="text-[13px] font-semibold text-text-tertiary uppercase tracking-wider block">
                   母素材 (衍生源)
                 </span>
                 <div className="p-2.5 bg-surface border border-border-subtle rounded-lg flex items-center gap-3">
                   <img src={parentMaterial.url} alt="Parent" className="w-12 h-12 object-cover rounded border border-border-subtle shrink-0" />
-                  <div className="min-w-0 flex-1 text-[12px]">
+                  <div className="min-w-0 flex-1 text-[13px]">
                     <span className="font-semibold text-text-primary truncate block">{parentMaterial.name}</span>
-                    <span className="text-[11px] text-text-tertiary">{parentMaterial.id} · {parentMaterial.aspectRatio}</span>
+                    <span className="text-[13px] text-text-tertiary">{parentMaterial.id} · {parentMaterial.aspectRatio}</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-3 bg-blue-50/60 border border-blue-200/60 rounded-lg text-[12px] text-blue-900 space-y-1">
+              <div className="p-3 bg-blue-50/60 border border-blue-200/60 rounded-lg text-[13px] text-blue-900 space-y-1">
                 <strong className="block font-semibold">可用素材池联动:</strong>
                 Agent 已扫描素材库中 {availableMaterials.length} 个可用元件与实拍素材，将优先调用做背景融合与扩图。
               </div>
@@ -224,9 +224,9 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
 
             {/* Natural Language Instruction Area */}
             <div className="flex-1 flex flex-col space-y-2 pt-2 border-t border-border-subtle">
-              <label className="text-[12px] font-semibold text-text-primary flex items-center justify-between">
+              <label className="text-[13px] font-semibold text-text-primary flex items-center justify-between">
                 <span>自然语言协同指令</span>
-                <span className="text-[11px] text-text-tertiary font-normal">支持直接写制作要求</span>
+                <span className="text-[13px] text-text-tertiary font-normal">支持直接写制作要求</span>
               </label>
 
               <textarea
@@ -266,7 +266,7 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
                   <Bot size={16} className="text-text-primary" />
                   Agent 生成的候选方案 ({candidates.length})
                 </h4>
-                <span className="text-[11px] text-text-tertiary">
+                <span className="text-[13px] text-text-tertiary">
                   确认后生成独立素材ID，放入【待验收】池，不覆盖原始素材
                 </span>
               </div>
@@ -289,7 +289,7 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
                         {/* Preview Image */}
                         <div className="aspect-[3/4] bg-surface-subtle rounded overflow-hidden relative mb-3 border border-border-subtle">
                           <img src={cand.url} alt={cand.title} className="w-full h-full object-cover" />
-                          <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] bg-black/70 text-white font-medium">
+                          <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[13px] bg-black/70 text-white font-medium">
                             {cand.service}
                           </span>
                           {isSelected && (
@@ -303,13 +303,13 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
                         <h5 className="text-[13px] font-semibold text-text-primary mb-1">
                           {cand.title}
                         </h5>
-                        <p className="text-[11px] text-text-secondary leading-normal mb-2">
+                        <p className="text-[13px] text-text-secondary leading-normal mb-2">
                           {cand.modificationSummary}
                         </p>
                       </div>
 
                       {/* Rationale */}
-                      <div className="p-2 bg-surface-subtle rounded border border-border-subtle text-[11px] text-text-tertiary">
+                      <div className="p-2 bg-surface-subtle rounded border border-border-subtle text-[13px] text-text-tertiary">
                         <strong className="text-text-primary">适用理由: </strong> {cand.reason}
                       </div>
                     </div>
@@ -320,7 +320,7 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
 
             {/* Confirmation Footer */}
             <div className="pt-4 border-t border-border-default flex items-center justify-between mt-6">
-              <div className="text-[12px] text-text-secondary flex items-center gap-1.5">
+              <div className="text-[13px] text-text-secondary flex items-center gap-1.5">
                 <Info size={14} className="text-text-tertiary shrink-0" />
                 <span>
                   当前选中候选 #{candidates[selectedCandidateIndex]?.id}，确定保存后建立父子谱系
@@ -330,14 +330,14 @@ export const AICoverStudioModal: React.FC<AICoverStudioModalProps> = ({
               <div className="flex items-center gap-3">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 border border-border-default hover:bg-surface-hover rounded text-[12px] font-medium text-text-primary"
+                  className="px-4 py-2 border border-border-default hover:bg-surface-hover rounded text-[13px] font-medium text-text-primary"
                 >
                   取消
                 </button>
 
                 <button
                   onClick={handleConfirmCandidate}
-                  className="px-5 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded text-[12px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
+                  className="px-5 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded text-[13px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
                 >
                   <CheckCircle2 size={15} />
                   确认选择并保存为新素材

@@ -55,7 +55,7 @@ export function MerchantMemoryHeader({
             <ChevronRight size={14} className="text-text-tertiary group-hover:text-text-secondary transition-colors" />
             
             {isConnectionError && (
-              <span className="ml-2 px-2 py-0.5 bg-red-50 text-danger border border-red-100 text-[11px] font-bold rounded-md">
+              <span className="ml-2 px-2 py-0.5 bg-red-50 text-danger border border-red-100 text-[13px] font-bold rounded-md">
                 商家资料未完整连接
               </span>
             )}

@@ -25,7 +25,7 @@ export const TaskList: React.FC = () => {
  <div className="flex items-center justify-between mb-8">
  <div>
  <h2 className="text-[20px] font-semibold text-text-main tracking-tight">素材任务队列</h2>
- <p className="text-[12px] text-text-tertiary uppercase tracking-wider mt-1">Batch Processing & Asset Tasks</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-wider mt-1">Batch Processing & Asset Tasks</p>
  </div>
  <button className="px-6 py-2.5 bg-btn-main text-white rounded-xl text-[13px] shadow-lg shadow-primary-500/20 hover:bg-btn-main-hover transition-all flex items-center gap-2">
  <Plus size={18}/> 新建任务
@@ -46,11 +46,11 @@ export const TaskList: React.FC = () => {
  </div>
  
  <h3 className="text-[16px] font-semibold text-text-main mb-2">{task.name}</h3>
- <p className="text-[11px] text-text-tertiary uppercase tracking-widest mb-6">Task ID: {task.id}</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-widest mb-6">Task ID: {task.id}</p>
 
  <div className="space-y-4">
  <div>
- <div className="flex justify-between items-center text-[12px] mb-2">
+ <div className="flex justify-between items-center text-[13px] mb-2">
  <span className="text-text-tertiary">执行进度</span>
  <span className="text-text-main">{task.progress}%</span>
  </div>
@@ -65,7 +65,7 @@ export const TaskList: React.FC = () => {
  <div className="flex items-center justify-between pt-4 border-t border-neutral-50">
  <div className="flex items-center gap-2">
  <Clock size={14} className="text-neutral-300"/>
- <span className="text-[11px] text-text-tertiary">{task.createdAt}</span>
+ <span className="text-[13px] text-text-tertiary">{task.createdAt}</span>
  </div>
  <div className="flex items-center gap-2">
  {task.status === 'running' ? (
@@ -73,7 +73,7 @@ export const TaskList: React.FC = () => {
  ) : task.status === 'paused' ? (
  <button className="p-2 bg-btn-main text-white rounded-lg hover:scale-110 transition-transform"><Play size={14}/></button>
  ) : (
- <div className="flex items-center gap-1 text-text-main text-[12px] "><CheckCircle2 size={14}/> 已完成</div>
+ <div className="flex items-center gap-1 text-text-main text-[13px] "><CheckCircle2 size={14}/> 已完成</div>
  )}
  </div>
  </div>

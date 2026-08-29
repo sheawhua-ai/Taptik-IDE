@@ -99,7 +99,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
         {/* Drawer Header */}
         <div className="h-14 px-5 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-subtle">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[12px] font-semibold text-text-tertiary uppercase tracking-wider shrink-0">
+            <span className="text-[13px] font-semibold text-text-tertiary uppercase tracking-wider shrink-0">
               {asset.id}
             </span>
             <span className="text-border-strong shrink-0">|</span>
@@ -136,7 +136,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
               )}
             </div>
 
-            <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-text-secondary text-center pt-2 border-t border-border-subtle">
+            <div className="mt-3 grid grid-cols-4 gap-2 text-[13px] text-text-secondary text-center pt-2 border-t border-border-subtle">
               <div>
                 <span className="text-text-tertiary block">比例</span>
                 <span className="font-medium text-text-primary">{asset.aspectRatio}</span>
@@ -166,14 +166,14 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
               {!isEditingMetadata ? (
                 <button
                   onClick={() => setIsEditingMetadata(true)}
-                  className="text-text-secondary hover:text-text-primary text-[11px] flex items-center gap-1"
+                  className="text-text-secondary hover:text-text-primary text-[13px] flex items-center gap-1"
                 >
                   <Edit2 size={12} /> 编辑
                 </button>
               ) : (
                 <button
                   onClick={handleSaveMetadata}
-                  className="text-emerald-700 hover:text-emerald-800 font-semibold text-[11px] flex items-center gap-1"
+                  className="text-emerald-700 hover:text-emerald-800 font-semibold text-[13px] flex items-center gap-1"
                 >
                   <Check size={12} /> 保存
                 </button>
@@ -181,7 +181,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
             </div>
 
             {isEditingMetadata ? (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-3 text-[12px]">
+              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-3 text-[13px]">
                 <div>
                   <label className="text-text-tertiary block mb-1 font-medium">画面描述:</label>
                   <textarea
@@ -189,7 +189,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                     value={vectorDescription}
                     onChange={(e) => setVectorDescription(e.target.value)}
                     placeholder="描述画面的核心特征，例如：浅黄色包装袋直立放置，右下角包含柴犬吃粮画面..."
-                    className="w-full p-2 bg-surface border border-border-default rounded text-[12px] focus:outline-none focus:border-border-strong"
+                    className="w-full p-2 bg-surface border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
                   />
                 </div>
                 <div>
@@ -199,12 +199,12 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                     value={tagsInput}
                     onChange={(e) => setTagsInput(e.target.value)}
                     placeholder="如：主粮, 柴犬, 3D抠图"
-                    className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded text-[12px] focus:outline-none focus:border-border-strong"
+                    className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
                   />
                 </div>
               </div>
             ) : (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-2.5 text-[12px]">
+              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-2.5 text-[13px]">
                 <div>
                   <span className="text-text-tertiary block mb-0.5">画面描述:</span>
                   <p className="text-text-primary font-medium bg-surface p-2 rounded border border-border-subtle leading-relaxed">
@@ -216,7 +216,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                   <div className="flex flex-wrap gap-1">
                     {existingManualTags.length > 0 ? (
                       existingManualTags.map((t, idx) => (
-                        <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface border border-border-default rounded text-[11px] text-text-primary font-medium">
+                        <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface border border-border-default rounded text-[13px] text-text-primary font-medium">
                           <Tag size={10} className="text-text-tertiary" /> {t}
                         </span>
                       ))
@@ -229,9 +229,9 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                   <span className="text-text-tertiary block mb-1">AI自动标签:</span>
                   <div className="flex flex-wrap gap-1">
                     {automaticTags.length > 0 ? automaticTags.slice(0, 8).map(tagName => (
-                      <span key={tagName} className="rounded bg-surface px-2 py-0.5 text-[10px] text-text-secondary">{tagName}</span>
+                      <span key={tagName} className="rounded bg-surface px-2 py-0.5 text-[13px] text-text-secondary">{tagName}</span>
                     )) : <span className="text-text-tertiary italic">暂无自动标签</span>}
-                    {automaticTags.length > 8 ? <span className="px-1 py-0.5 text-[10px] text-text-tertiary">+{automaticTags.length - 8}</span> : null}
+                    {automaticTags.length > 8 ? <span className="px-1 py-0.5 text-[13px] text-text-tertiary">+{automaticTags.length - 8}</span> : null}
                   </div>
                 </div>
               </div>
@@ -245,7 +245,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
               基础与状态信息
             </h4>
 
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[12px]">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px]">
               <div>
                 <span className="text-text-tertiary">素材分类:</span>{' '}
                 <span className="font-medium text-text-primary">
@@ -277,7 +277,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
             </h4>
 
             {asset.usageRelation ? (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[12px] space-y-1.5">
+              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px] space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-text-tertiary">关联项目:</span>
                   <span className="font-medium text-text-primary">{asset.usageRelation.projectName}</span>
@@ -298,7 +298,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                 </div>
               </div>
             ) : (
-              <div className="text-[12px] text-text-tertiary bg-surface-subtle p-3 rounded-lg border border-border-subtle">
+              <div className="text-[13px] text-text-tertiary bg-surface-subtle p-3 rounded-lg border border-border-subtle">
                 当前素材暂未绑定或预留给任何笔记草稿，处于【可用】池。
               </div>
             )}
@@ -312,27 +312,27 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
             </h4>
 
             {asset.performance.performanceType === 'owned_account_creator_api' && asset.performance.creatorBackend ? (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[12px] space-y-2.5">
+              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px] space-y-2.5">
                 <div className="grid grid-cols-4 gap-2 text-center bg-surface p-2 rounded border border-border-subtle">
                   <div>
-                    <span className="text-text-tertiary text-[10px] block">曝光数</span>
+                    <span className="text-text-tertiary text-[13px] block">曝光数</span>
                     <span className="font-semibold text-text-primary text-[13px]">{asset.performance.creatorBackend.exposure.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-text-tertiary text-[10px] block">阅读数</span>
+                    <span className="text-text-tertiary text-[13px] block">阅读数</span>
                     <span className="font-semibold text-text-primary text-[13px]">{asset.performance.creatorBackend.reads.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-text-tertiary text-[10px] block">互动数</span>
+                    <span className="text-text-tertiary text-[13px] block">互动数</span>
                     <span className="font-semibold text-text-primary text-[13px]">{asset.performance.creatorBackend.interactions.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-text-tertiary text-[10px] block">封面点击率</span>
+                    <span className="text-text-tertiary text-[13px] block">封面点击率</span>
                     <span className="font-semibold text-emerald-700 text-[13px]">{asset.performance.creatorBackend.coverClickRate}%</span>
                   </div>
                 </div>
 
-                <div className="space-y-1 text-[11px] text-text-secondary pt-1 border-t border-border-subtle">
+                <div className="space-y-1 text-[13px] text-text-secondary pt-1 border-t border-border-subtle">
                   <div className="flex justify-between">
                     <span className="text-text-tertiary">后台原始指标名称:</span>
                     <span className="text-text-primary">{asset.performance.creatorBackend.originalMetricName}</span>
@@ -348,7 +348,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                 </div>
               </div>
             ) : (
-              <div className="text-[12px] text-text-tertiary bg-surface-subtle p-3 rounded-lg border border-border-subtle">
+              <div className="text-[13px] text-text-tertiary bg-surface-subtle p-3 rounded-lg border border-border-subtle">
                 暂无创作者后台关联数据 (素材未发布或非关联封面)
               </div>
             )}
@@ -361,26 +361,26 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                 <FileCheck size={14} className="text-text-secondary" />
                 系统识别信息
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] bg-surface border border-border-default text-text-secondary font-medium">
+              <span className="px-1.5 py-0.5 rounded text-[13px] bg-surface border border-border-default text-text-secondary font-medium">
                 {asset.acceptance.aiRecognition.tag}
               </span>
             </h4>
 
             {/* Editable Recognition Box */}
-            <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[12px] space-y-2">
+            <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px] space-y-2">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-text-primary">视觉元素提取:</span>
                 {!isEditingRecognition ? (
                   <button
                     onClick={() => setIsEditingRecognition(true)}
-                    className="text-text-secondary hover:text-text-primary text-[11px] flex items-center gap-1"
+                    className="text-text-secondary hover:text-text-primary text-[13px] flex items-center gap-1"
                   >
                     <Edit2 size={12} /> 编辑修正
                   </button>
                 ) : (
                   <button
                     onClick={handleSaveRecognitionEdit}
-                    className="text-emerald-700 hover:text-emerald-800 font-semibold text-[11px] flex items-center gap-1"
+                    className="text-emerald-700 hover:text-emerald-800 font-semibold text-[13px] flex items-center gap-1"
                   >
                     <Check size={12} /> 保存修正
                   </button>
@@ -388,14 +388,14 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
               </div>
 
               {isEditingRecognition ? (
-                <div className="space-y-2 text-[11px]">
+                <div className="space-y-2 text-[13px]">
                   <div>
                     <label className="text-text-tertiary block mb-0.5">主体描述:</label>
                     <input
                       type="text"
                       value={aiSubject}
                       onChange={(e) => setAiSubject(e.target.value)}
-                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[11px]"
+                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[13px]"
                     />
                   </div>
                   <div>
@@ -404,7 +404,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                       type="text"
                       value={aiProduct}
                       onChange={(e) => setAiProduct(e.target.value)}
-                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[11px]"
+                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[13px]"
                     />
                   </div>
                   <div>
@@ -413,12 +413,12 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                       type="text"
                       value={aiScene}
                       onChange={(e) => setAiScene(e.target.value)}
-                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[11px]"
+                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[13px]"
                     />
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px] text-text-secondary">
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[13px] text-text-secondary">
                   <div><span className="text-text-tertiary">画面主体:</span> {asset.acceptance.aiRecognition.subject}</div>
                   <div><span className="text-text-tertiary">关联产品:</span> {asset.acceptance.aiRecognition.product}</div>
                   <div><span className="text-text-tertiary">场景:</span> {asset.acceptance.aiRecognition.scene}</div>
@@ -434,7 +434,7 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
         <div className="p-4 border-t border-border-default bg-surface-subtle flex items-center justify-end shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-border-default bg-surface hover:bg-surface-hover rounded text-[12px] font-medium text-text-primary"
+            className="px-4 py-2 border border-border-default bg-surface hover:bg-surface-hover rounded text-[13px] font-medium text-text-primary"
           >
             关闭详情
           </button>

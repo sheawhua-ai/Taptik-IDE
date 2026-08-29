@@ -781,7 +781,7 @@ export default function App() {
         return (
           <span
             key={index}
-            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded text-[12px] ${role === "user" ? "bg-btn-main text-white border border-primary-700" : "bg-brand-light text-brand-logo"}`}
+            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded text-[13px] ${role === "user" ? "bg-btn-main text-white border border-primary-700" : "bg-brand-light text-brand-logo"}`}
           >
             <Component size={12} /> {part.substring(1)}
           </span>
@@ -794,7 +794,7 @@ export default function App() {
         return (
           <span
             key={index}
-            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-[4px] text-[12px] border ${role === "user" ? "bg-neutral-800 text-neutral-200 border-neutral-700" : "bg-hover-bg text-text-secondary border-border-default"}`}
+            className={`inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded-[4px] text-[13px] border ${role === "user" ? "bg-neutral-800 text-neutral-200 border-neutral-700" : "bg-hover-bg text-text-secondary border-border-default"}`}
           >
             {icon} {part.slice(3, -1)}
           </span>
@@ -821,12 +821,12 @@ export default function App() {
                     <h4 className="text-[16px] font-semibold text-text-main tracking-tight">
                       🔔 助手决策建议
                     </h4>
-                    <p className="text-[10px] text-text-tertiary font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
+                    <p className="text-[13px] text-text-tertiary font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
                       关键优化动作
                     </p>
                   </div>
                 </div>
-                <div className="px-3 py-1.5 bg-btn-main text-white text-[10px] rounded-xl uppercase tracking-widest shadow-sm">
+                <div className="px-3 py-1.5 bg-btn-main text-white text-[13px] rounded-xl uppercase tracking-widest shadow-sm">
                   付费技能
                 </div>
               </div>
@@ -841,7 +841,7 @@ export default function App() {
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col gap-1 p-4 bg-page-bg rounded-xl border border-border-default/50 shadow-inner">
-                    <span className="text-text-tertiary text-[10px] uppercase tracking-tighter">
+                    <span className="text-text-tertiary text-[13px] uppercase tracking-tighter">
                       💰 费用详情
                     </span>
                     <span className="text-text-main font-mono text-[13px]">
@@ -849,7 +849,7 @@ export default function App() {
                     </span>
                   </div>
                   <div className="flex flex-col gap-1 p-4 bg-brand-light rounded-xl border border-primary-100 shadow-inner">
-                    <span className="text-text-tertiary text-[10px] uppercase tracking-tighter">
+                    <span className="text-text-tertiary text-[13px] uppercase tracking-tighter">
                       📈 预计提升
                     </span>
                     <span className="text-brand-logo font-mono text-[13px]">
@@ -908,12 +908,12 @@ export default function App() {
                     <h4 className="text-[16px] font-semibold text-text-main tracking-tight">
                       🔔 助手执行建议
                     </h4>
-                    <p className="text-[10px] text-text-tertiary font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
+                    <p className="text-[13px] text-text-tertiary font-extrabold uppercase tracking-widest mt-0.5 opacity-70">
                       社区资源推荐
                     </p>
                   </div>
                 </div>
-                <div className="px-3 py-1.5 bg-success-50 text-success-500 text-[10px] rounded-xl border border-success-100 uppercase tracking-widest shadow-sm">
+                <div className="px-3 py-1.5 bg-success-50 text-success-500 text-[13px] rounded-xl border border-success-100 uppercase tracking-widest shadow-sm">
                   🆓 免费
                 </div>
               </div>
@@ -930,7 +930,7 @@ export default function App() {
                   </span>{" "}
                   成熟可选资产。
                 </p>
-                <div className="flex items-center gap-3 text-text-tertiary text-[12px] bg-page-bg w-fit px-3 py-1.5 rounded-lg border border-border-default">
+                <div className="flex items-center gap-3 text-text-tertiary text-[13px] bg-page-bg w-fit px-3 py-1.5 rounded-lg border border-border-default">
                   <Zap size={14} className="text-warning-500 fill-current" />
                   <span>📈 预期原创度提升 {benefit}</span>
                 </div>
@@ -985,7 +985,7 @@ export default function App() {
                 />
               </div>
               <div className="p-3 max-h-[400px] overflow-y-auto custom-scrollbar">
-                <div className="px-3 py-2 text-[10px] text-text-tertiary uppercase tracking-widest">
+                <div className="px-3 py-2 text-[13px] text-text-tertiary uppercase tracking-widest">
                   快捷任务
                 </div>
                 <div className="space-y-1">
@@ -1017,7 +1017,7 @@ export default function App() {
                         <div className="text-[14px] text-text-main">
                           {item.label}
                         </div>
-                        <div className="text-[11px] text-text-tertiary font-medium">
+                        <div className="text-[13px] text-text-tertiary font-medium">
                           {item.sub}
                         </div>
                       </div>
@@ -1076,7 +1076,7 @@ export default function App() {
               <h1 className="text-[17px] font-semibold tracking-tight text-text-main uppercase mt-0.5">
                 TapTik
               </h1>
-              <span className="text-[11px] text-text-tertiary font-mono tracking-tight mt-1 ml-0.5">
+              <span className="text-[13px] text-text-tertiary font-mono tracking-tight mt-1 ml-0.5">
                 v1.5.7
               </span>
             </div>
@@ -1125,7 +1125,7 @@ export default function App() {
                         onClick={() => setIsTasksFilterDropdownOpen(false)}
                       />
                       <div className="absolute right-0 top-full mt-2 w-56 bg-surface-1 rounded-xl shadow-xl border border-border-default z-[101] py-2">
-                        <div className="px-3 py-1.5 text-[12px] text-text-tertiary ">
+                        <div className="px-3 py-1.5 text-[13px] text-text-tertiary ">
                           筛选状态
                         </div>
                         {[
@@ -1151,7 +1151,7 @@ export default function App() {
                           </button>
                         ))}
                         <div className="w-full h-px bg-border-default my-2" />
-                        <div className="px-3 py-1.5 text-[12px] text-text-tertiary ">
+                        <div className="px-3 py-1.5 text-[13px] text-text-tertiary ">
                           筛选时间
                         </div>
                         {["全部时间", "今天", "最近 7 天", "最近 30 天"].map(
@@ -1201,7 +1201,7 @@ export default function App() {
               className={`flex items-center gap-3 w-full justify-center ${isGlobalNavCollapsed ? "" : "justify-start"}`}
             >
               <div
-                className="w-5 h-5 rounded flex items-center justify-center text-[10px] shadow-sm shrink-0"
+                className="w-5 h-5 rounded flex items-center justify-center text-[13px] shadow-sm shrink-0"
                 style={{
                   backgroundColor: activeProject.color,
                   color: activeProject.textColor,
@@ -1217,7 +1217,7 @@ export default function App() {
             </div>
             {!isGlobalNavCollapsed && (
               <div className="flex items-center gap-1.5 min-w-[32px] shrink-0">
-                <span className="text-[10px] text-text-tertiary bg-border-default px-1.5 py-0.5 rounded">
+                <span className="text-[13px] text-text-tertiary bg-border-default px-1.5 py-0.5 rounded">
                   ⌘K
                 </span>
                 <ChevronDown size={14} className="text-text-tertiary shrink-0" />
@@ -1272,7 +1272,7 @@ export default function App() {
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between group cursor-pointer hover:bg-border-default rounded-md py-1" onClick={() => setIsChatSpaceExpanded(!isChatSpaceExpanded)}>
-                    <span className="text-[12px] text-text-secondary font-medium px-2 flex items-center gap-1">
+                    <span className="text-[13px] text-text-secondary font-medium px-2 flex items-center gap-1">
                       {isChatSpaceExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />} 对话空间
                     </span>
                     <button
@@ -1377,7 +1377,7 @@ export default function App() {
                             <div
                               className={`w-1.5 h-1.5 rounded-full shrink-0 ${i === 0 ? "bg-slate-300" : "bg-slate-200"}`}
                             />
-                            <span className="text-[12px] truncate">
+                            <span className="text-[13px] truncate">
                               {session.title}
                             </span>
                           </div>
@@ -1401,7 +1401,7 @@ export default function App() {
                             {/* Session Menu Dropdown */}
                             {activeSessionMenuId === session.id && (
                               <div className="absolute right-0 top-full mt-1 w-48 bg-surface-1 rounded-xl shadow-xl border border-slate-200 z-[100] flex flex-col py-1.5 session-menu-container">
-                                <div className="px-4 py-1.5 text-[11px] font-bold text-text-tertiary tracking-wider">沉淀为...</div>
+                                <div className="px-4 py-1.5 text-[13px] font-bold text-text-tertiary tracking-wider">沉淀为...</div>
                                 <button className="px-4 py-2 text-[13px] text-text-main hover:bg-hover-bg transition-colors text-left w-full flex items-center gap-2">
                                   <Database size={14} className="text-text-tertiary" /> 商家记忆
                                 </button>
@@ -1513,7 +1513,7 @@ export default function App() {
                       <User size={16} />
                       体验版
                     </div>
-                    <span className="px-3 py-1 bg-btn-main text-white hover:bg-btn-main-hover transition-colors text-[11px] rounded-lg cursor-pointer">
+                    <span className="px-3 py-1 bg-btn-main text-white hover:bg-btn-main-hover transition-colors text-[13px] rounded-lg cursor-pointer">
                       升级
                     </span>
                   </div>
@@ -1524,10 +1524,10 @@ export default function App() {
                         <div className="w-4 h-4 flex items-center justify-center shrink-0">
                           <Logo className="w-full h-full rounded-sm" />
                         </div>
-                        <span className="text-[12px] tracking-tight">
+                        <span className="text-[13px] tracking-tight">
                           Taptik 探索站
                         </span>
-                        <span className="ml-auto text-[10px] bg-surface-1/20 px-1.5 py-0.5 rounded-md text-white">
+                        <span className="ml-auto text-[13px] bg-surface-1/20 px-1.5 py-0.5 rounded-md text-white">
                           2期·今日结束
                         </span>
                       </div>
@@ -1535,15 +1535,15 @@ export default function App() {
                         <div className="text-[13px] mb-2 text-text-main">
                           本期: 资料库 乐享知识库
                         </div>
-                        <div className="text-[11px] text-text-tertiary space-y-0.5 mb-3">
+                        <div className="text-[13px] text-text-tertiary space-y-0.5 mb-3">
                           <p>每日可领 150 通用积分</p>
                           <p>本期已领 4 天 · 累计 600 通用积分</p>
                         </div>
                         <div className="flex gap-2">
-                          <button className="flex-1 bg-hover-bg text-text-tertiary text-[12px] py-1.5 rounded-lg border border-transparent cursor-not-allowed">
+                          <button className="flex-1 bg-hover-bg text-text-tertiary text-[13px] py-1.5 rounded-lg border border-transparent cursor-not-allowed">
                             今日已领
                           </button>
-                          <button className="flex-1 bg-red-50 text-danger border border-red-200 hover:bg-red-100 hover:border-red-300 text-[12px] py-1.5 rounded-lg transition-colors">
+                          <button className="flex-1 bg-red-50 text-danger border border-red-200 hover:bg-red-100 hover:border-red-300 text-[13px] py-1.5 rounded-lg transition-colors">
                             体验乐享 →
                           </button>
                         </div>
@@ -1567,7 +1567,7 @@ export default function App() {
                         {userRole === "merchant" ? "积分余额" : "收益中心"}
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="text-[12px] text-text-tertiary">
+                        <span className="text-[13px] text-text-tertiary">
                           {userRole === "merchant" ? "3,056.44" : "¥ 12,500.00"}
                         </span>
                         <ChevronRight size={14} className="text-text-tertiary" />
@@ -1588,7 +1588,7 @@ export default function App() {
                         成长计划
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="text-[12px] text-text-tertiary"></span>
+                        <span className="text-[13px] text-text-tertiary"></span>
                         <ChevronRight size={14} className="text-text-tertiary" />
                       </div>
                     </button>
@@ -1615,10 +1615,10 @@ export default function App() {
                         外观
                       </div>
                       <div className="flex items-center bg-hover-bg p-0.5 rounded-lg border border-border-default">
-                        <button className="px-3 py-1 text-[11px] bg-surface-1 shadow-sm rounded-md text-text-main">
+                        <button className="px-3 py-1 text-[13px] bg-surface-1 shadow-sm rounded-md text-text-main">
                           浅色
                         </button>
-                        <button className="px-3 py-1 text-[11px] text-text-tertiary hover:text-text-secondary">
+                        <button className="px-3 py-1 text-[13px] text-text-tertiary hover:text-text-secondary">
                           深色
                         </button>
                       </div>
@@ -2014,7 +2014,7 @@ export default function App() {
                         <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           显示语言
                         </h4>
-                        <p className="text-[12px] text-text-tertiary">
+                        <p className="text-[13px] text-text-tertiary">
                           设置应用程序界面的显示语言。
                         </p>
                       </div>
@@ -2031,7 +2031,7 @@ export default function App() {
                         </h4>
                       </div>
                       <div className="flex items-center gap-4 px-2">
-                        <span className="text-[12px] text-text-tertiary">小</span>
+                        <span className="text-[13px] text-text-tertiary">小</span>
                         <input
                           type="range"
                           min="0"
@@ -2048,7 +2048,7 @@ export default function App() {
                         <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           简洁模式
                         </h4>
-                        <p className="text-[12px] text-text-tertiary mt-1">
+                        <p className="text-[13px] text-text-tertiary mt-1">
                           开启后将简化对话界面显示，隐藏部分装饰元素。
                         </p>
                       </div>
@@ -2062,7 +2062,7 @@ export default function App() {
                         <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           发送消息
                         </h4>
-                        <p className="text-[12px] text-text-tertiary mt-1">
+                        <p className="text-[13px] text-text-tertiary mt-1">
                           设置聊天输入框中发送消息的快捷键。
                         </p>
                       </div>
@@ -2077,7 +2077,7 @@ export default function App() {
                         <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           技能自动更新
                         </h4>
-                        <p className="text-[12px] text-text-tertiary mt-1">
+                        <p className="text-[13px] text-text-tertiary mt-1">
                           开启后将自动更新已安装的技能为最新版本，不会更新你在
                           TapTik 中编辑过的技能。
                         </p>
@@ -2092,7 +2092,7 @@ export default function App() {
                         <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           非高风险技能自动安装
                         </h4>
-                        <p className="text-[12px] text-text-tertiary mt-1 max-w-[400px]">
+                        <p className="text-[13px] text-text-tertiary mt-1 max-w-[400px]">
                           上传技能后仍会显示安全检测过程；检测结果为非高风险时自动继续安装，高风险始终需要手动确认。
                         </p>
                       </div>
@@ -2106,7 +2106,7 @@ export default function App() {
                         <h4 className="text-[14px] font-semibold text-text-main mb-1">
                           锁屏远程
                         </h4>
-                        <p className="text-[12px] text-text-tertiary mt-1">
+                        <p className="text-[13px] text-text-tertiary mt-1">
                           开启后即使在锁屏状态下，电脑也不会进入休眠，屏幕也不会自动关闭，方便通过手机远程操控和保持自动化任务持续运行。
                         </p>
                       </div>

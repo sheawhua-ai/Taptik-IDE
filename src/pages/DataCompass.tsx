@@ -94,7 +94,7 @@ export default function DataCompass() {
                 <Bell size={18} className="text-indigo-500" />
                 智能 巡检预警与建议
               </h3>
-              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 text-[11px] font-bold rounded-full">
+              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 text-[13px] font-bold rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> 实时监控中
               </span>
             </div>
@@ -117,9 +117,9 @@ export default function DataCompass() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-[14px] font-bold text-text-main mb-1">{alert.title}</h4>
-                      <p className="text-[12px] text-text-tertiary leading-relaxed mb-3">{alert.desc}</p>
+                      <p className="text-[13px] text-text-tertiary leading-relaxed mb-3">{alert.desc}</p>
                       
-                      <button className={`text-[12px] font-bold flex items-center gap-1 transition-colors ${alert.color} hover:opacity-80`}>
+                      <button className={`text-[13px] font-bold flex items-center gap-1 transition-colors ${alert.color} hover:opacity-80`}>
                         {alert.action} <ArrowRight size={14} />
                       </button>
                     </div>
@@ -128,7 +128,7 @@ export default function DataCompass() {
               ))}
             </div>
             
-            <div className="mt-6 pt-4 border-t border-border-default flex items-center justify-between text-[12px] text-text-tertiary">
+            <div className="mt-6 pt-4 border-t border-border-default flex items-center justify-between text-[13px] text-text-tertiary">
               <span>今日已自动处理 14 个异常</span>
               <a href="#" className="hover:text-text-main transition-colors">查看巡检日志</a>
             </div>
@@ -143,7 +143,7 @@ export default function DataCompass() {
             <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm">
               <div className="text-[13px] text-text-tertiary font-medium mb-2">本月累计曝光 (小红书)</div>
               <div className="text-[32px] font-black text-text-main mb-2">2.4M</div>
-              <div className="flex items-center gap-2 text-[12px]">
+              <div className="flex items-center gap-2 text-[13px]">
                 <span className="flex items-center text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">
                   <TrendingUp size={12} className="mr-1" /> +12.5%
                 </span>
@@ -153,7 +153,7 @@ export default function DataCompass() {
             <div className="bg-surface-1 border border-border-default rounded-xl p-6 shadow-sm relative overflow-hidden">
               <div className="text-[13px] text-text-tertiary font-medium mb-2">整体 CPA (客资成本)</div>
               <div className="text-[32px] font-black text-text-main mb-2">¥42.5</div>
-              <div className="flex items-center gap-2 text-[12px]">
+              <div className="flex items-center gap-2 text-[13px]">
                 <span className="flex items-center text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">
                   <TrendingUp size={12} className="mr-1 rotate-180" /> -8.2%
                 </span>
@@ -165,7 +165,7 @@ export default function DataCompass() {
               <div className="relative z-10">
                 <div className="text-[13px] text-indigo-200 font-medium mb-2">预估最终 ROI</div>
                 <div className="text-[32px] font-black text-white mb-2">1:3.2</div>
-                <div className="flex items-center gap-2 text-[12px]">
+                <div className="flex items-center gap-2 text-[13px]">
                   <span className="flex items-center text-indigo-200">
                     基于当前引流加粉转化率预测
                   </span>
@@ -195,9 +195,9 @@ export default function DataCompass() {
                   </p>
                 </div>
                 <div className="bg-surface-1 border border-border-default p-4 rounded-lg">
-                  <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
-                  <p className="text-[12px] text-text-secondary mb-3">一键将本周五待发布的 5 篇图文转为混剪视频，并调整下周内容矩阵比例。</p>
-                  <button className="w-full bg-btn-main text-white text-[12px] font-bold py-2 rounded-md hover:bg-btn-main-hover transition-colors">
+                  <h5 className="text-[13px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
+                  <p className="text-[13px] text-text-secondary mb-3">一键将本周五待发布的 5 篇图文转为混剪视频，并调整下周内容矩阵比例。</p>
+                  <button className="w-full bg-btn-main text-white text-[13px] font-bold py-2 rounded-md hover:bg-btn-main-hover transition-colors">
                     应用比例调整
                   </button>
                 </div>
@@ -215,9 +215,9 @@ export default function DataCompass() {
                   </p>
                 </div>
                 <div className="bg-surface-1 border border-border-default p-4 rounded-lg">
-                  <h5 className="text-[12px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
-                  <p className="text-[12px] text-text-secondary mb-3">调用知识库一键替换草稿箱中 12 篇相关笔记的核心痛点词与 SEO 标签。</p>
-                  <button className="w-full bg-surface-1 border border-border-default text-text-secondary text-[12px] font-bold py-2 rounded-md hover:bg-page-bg transition-colors flex justify-center items-center gap-1">
+                  <h5 className="text-[13px] font-bold text-indigo-600 mb-2 flex items-center gap-1"><Zap size={14} /> 智能 建议执行动作</h5>
+                  <p className="text-[13px] text-text-secondary mb-3">调用知识库一键替换草稿箱中 12 篇相关笔记的核心痛点词与 SEO 标签。</p>
+                  <button className="w-full bg-surface-1 border border-border-default text-text-secondary text-[13px] font-bold py-2 rounded-md hover:bg-page-bg transition-colors flex justify-center items-center gap-1">
                     批量修改标签 <ChevronRight size={14} />
                   </button>
                 </div>
@@ -259,7 +259,7 @@ export default function DataCompass() {
                 <img src={comp.avatar} alt={comp.name} className="w-10 h-10 rounded-full object-cover border border-border-default" />
                 <div>
                   <h4 className="text-[13px] font-bold text-text-main">{comp.name}</h4>
-                  <p className="text-[11px] text-text-tertiary mt-0.5">粉丝 {comp.fans} · 笔记 {comp.notes}</p>
+                  <p className="text-[13px] text-text-tertiary mt-0.5">粉丝 {comp.fans} · 笔记 {comp.notes}</p>
                 </div>
               </div>
             ))}
@@ -273,7 +273,7 @@ export default function DataCompass() {
               </h4>
               <div className="relative">
                 <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" />
-                <input type="text" placeholder="搜索评论关键词..." className="pl-8 pr-3 py-1.5 text-[12px] rounded-lg border border-border-default focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 w-48" />
+                <input type="text" placeholder="搜索评论关键词..." className="pl-8 pr-3 py-1.5 text-[13px] rounded-lg border border-border-default focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 w-48" />
               </div>
             </div>
             
@@ -282,13 +282,13 @@ export default function DataCompass() {
                 <div key={comment.id} className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-[10px]">
+                      <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-[13px]">
                         {comment.user.charAt(0)}
                       </div>
                       <span className="text-[13px] font-bold text-text-main">{comment.user}</span>
-                      <span className="text-[11px] text-text-tertiary">{comment.time}</span>
+                      <span className="text-[13px] text-text-tertiary">{comment.time}</span>
                     </div>
-                    <span className="text-[10px] font-bold bg-rose-50 text-danger px-2 py-0.5 rounded-full border border-danger-light">
+                    <span className="text-[13px] font-bold bg-rose-50 text-danger px-2 py-0.5 rounded-full border border-danger-light">
                       {comment.intent}
                     </span>
                   </div>
@@ -299,7 +299,7 @@ export default function DataCompass() {
                   
                   <div className="flex items-start gap-2 mb-4">
                     <Sparkles size={14} className="text-indigo-500 shrink-0 mt-0.5" />
-                    <p className="text-[12px] text-indigo-900/80 leading-relaxed font-medium">
+                    <p className="text-[13px] text-indigo-900/80 leading-relaxed font-medium">
                       智能 洞察：{comment.aiSummary}
                     </p>
                   </div>
@@ -307,7 +307,7 @@ export default function DataCompass() {
                   <div className="flex justify-end pt-3 border-t border-border-default">
                     <button 
                       onClick={() => setShowReplyModal(true)}
-                      className="text-[12px] font-bold flex items-center gap-1.5 text-white bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors shadow-sm"
+                      className="text-[13px] font-bold flex items-center gap-1.5 text-white bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors shadow-sm"
                     >
                       <MessageSquare size={14} /> 生成评论回复并指派
                     </button>
@@ -355,7 +355,7 @@ export default function DataCompass() {
                     defaultValue="集美，干皮最怕搓泥啦！推荐你试试我们家的次抛精华，特别添加了玻尿酸成分，质地像水一样，吸收超级快，后续上妆也完全不会搓泥哦～ 现在双十一还有试用装，可以先拍下试试呢！"
                   />
                   <div className="flex justify-end mt-2 gap-2">
-                    <button className="text-[12px] text-indigo-600 font-medium hover:text-indigo-800 flex items-center gap-1"><Zap size={12} /> 换个语气</button>
+                    <button className="text-[13px] text-indigo-600 font-medium hover:text-indigo-800 flex items-center gap-1"><Zap size={12} /> 换个语气</button>
                   </div>
                 </div>
 

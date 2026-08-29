@@ -739,7 +739,7 @@ export const AccountAssets: React.FC = () => {
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            className="fixed top-4 right-8 z-50 bg-action-primary text-white text-xs px-3.5 py-2 rounded-md shadow-float flex items-center gap-2"
+            className="fixed top-4 right-8 z-50 bg-action-primary text-white text-[13px] px-3.5 py-2 rounded-md shadow-float flex items-center gap-2"
           >
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>{toastMessage}</span>
@@ -756,11 +756,11 @@ export const AccountAssets: React.FC = () => {
             <h1 className="text-[18px] font-semibold text-text-primary leading-tight">
               账号资产
             </h1>
-            <span className="text-xs font-normal text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded">
+            <span className="text-[13px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded">
               共 {accounts.length} 个账号
             </span>
           </div>
-          <p className="text-xs text-text-secondary mt-1">
+          <p className="text-[13px] text-text-secondary mt-1">
             统一维护品牌官方号、矩阵号、员工KOS及公开监控账号，管理项目关联与数据更新。
           </p>
         </div>
@@ -769,14 +769,14 @@ export const AccountAssets: React.FC = () => {
         <div className="relative">
           <button
             onClick={() => setShowAddAccountMenu(!showAddAccountMenu)}
-            className="h-9 px-4 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1.5 shadow-xs transition-colors"
+            className="h-9 px-4 text-[13px] font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1.5 shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>添加账号</span>
           </button>
 
           {showAddAccountMenu && (
-            <div className="absolute right-0 top-10 z-30 w-48 bg-surface border border-border-default rounded-md shadow-float py-1 text-xs text-left">
+            <div className="absolute right-0 top-10 z-30 w-48 bg-surface border border-border-default rounded-md shadow-float py-1 text-[13px] text-left">
               <button
                 onClick={() => {
                   setShowAddAccountMenu(false);
@@ -792,7 +792,7 @@ export const AccountAssets: React.FC = () => {
                 <QrCode className="w-4 h-4 text-text-secondary" />
                 <div>
                   <div className="font-medium">接入可运营账号</div>
-                  <div className="text-[10px] text-text-tertiary">扫码登录创作者服务平台</div>
+                  <div className="text-[13px] text-text-tertiary">扫码登录创作者服务平台</div>
                 </div>
               </button>
               <button
@@ -809,7 +809,7 @@ export const AccountAssets: React.FC = () => {
                 <Globe className="w-4 h-4 text-text-secondary" />
                 <div>
                   <div className="font-medium">添加公开监控账号</div>
-                  <div className="text-[10px] text-text-tertiary">通过主页链接抓取公开数据</div>
+                  <div className="text-[13px] text-text-tertiary">通过主页链接抓取公开数据</div>
                 </div>
               </button>
             </div>
@@ -830,7 +830,7 @@ export const AccountAssets: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索账号昵称、ID或负责人..."
-              className="w-full h-8 pl-8 pr-3 text-xs bg-surface border border-border-default rounded-md text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-strong focus:ring-1 focus:ring-border-strong transition-all"
+              className="w-full h-8 pl-8 pr-3 text-[13px] bg-surface border border-border-default rounded-md text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-strong focus:ring-1 focus:ring-border-strong transition-all"
             />
             {searchQuery && (
               <button
@@ -846,7 +846,7 @@ export const AccountAssets: React.FC = () => {
           <select
             value={filterAccountRelation}
             onChange={(e) => setFilterAccountRelation(e.target.value)}
-            className="h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
+            className="h-8 px-2.5 text-[13px] bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
           >
             <option value="all">全部账号类型</option>
             <option value="自有账号">自有账号</option>
@@ -858,7 +858,7 @@ export const AccountAssets: React.FC = () => {
           <select
             value={filterDataSyncStatus}
             onChange={(e) => setFilterDataSyncStatus(e.target.value)}
-            className="h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
+            className="h-8 px-2.5 text-[13px] bg-surface border border-border-default rounded-md text-text-secondary focus:outline-none focus:border-border-strong"
           >
             <option value="all">全部数据状态</option>
             <option value="synced">正常 (已更新)</option>
@@ -870,7 +870,7 @@ export const AccountAssets: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowMoreFiltersDropdown(!showMoreFiltersDropdown)}
-              className={`h-8 px-3 text-xs bg-surface border rounded-md flex items-center gap-1.5 transition-colors ${
+              className={`h-8 px-3 text-[13px] bg-surface border rounded-md flex items-center gap-1.5 transition-colors ${
                 filterBusinessRole !== "all" 
                   ? "border-brand-500 text-brand-700 bg-brand-50/50" 
                   : "border-border-default text-text-secondary hover:text-text-primary"
@@ -881,7 +881,7 @@ export const AccountAssets: React.FC = () => {
             </button>
 
             {showMoreFiltersDropdown && (
-              <div className="absolute left-0 top-9 z-35 w-56 bg-surface border border-border-default rounded-md shadow-float p-3 text-xs space-y-3">
+              <div className="absolute left-0 top-9 z-35 w-56 bg-surface border border-border-default rounded-md shadow-float p-3 text-[13px] space-y-3">
                 <div className="flex items-center justify-between border-b border-border-default pb-2">
                   <span className="font-semibold text-text-primary">更多筛选条件</span>
                   <button
@@ -893,11 +893,11 @@ export const AccountAssets: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-text-tertiary mb-1">账号定位</label>
+                  <label className="block text-[13px] text-text-tertiary mb-1">账号定位</label>
                   <select
                     value={filterBusinessRole}
                     onChange={(e) => setFilterBusinessRole(e.target.value)}
-                    className="w-full h-8 px-2 text-xs bg-surface border border-border-default rounded-md text-text-primary"
+                    className="w-full h-8 px-2 text-[13px] bg-surface border border-border-default rounded-md text-text-primary"
                   >
                     <option value="all">全部账号定位</option>
                     <option value="品牌官方号">品牌官方号</option>
@@ -915,7 +915,7 @@ export const AccountAssets: React.FC = () => {
                       setFilterBusinessRole("all");
                       setShowMoreFiltersDropdown(false);
                     }}
-                    className="text-[11px] text-text-secondary hover:text-text-primary"
+                    className="text-[13px] text-text-secondary hover:text-text-primary"
                   >
                     清空筛选
                   </button>
@@ -933,7 +933,7 @@ export const AccountAssets: React.FC = () => {
                 setFilterBusinessRole("all");
                 setFilterDataSyncStatus("all");
               }}
-              className="h-8 px-2 text-xs text-text-tertiary hover:text-text-primary flex items-center gap-1"
+              className="h-8 px-2 text-[13px] text-text-tertiary hover:text-text-primary flex items-center gap-1"
             >
               <RefreshCw className="w-3 h-3" />
               <span>重置</span>
@@ -948,7 +948,7 @@ export const AccountAssets: React.FC = () => {
       <div className="flex-1 overflow-auto bg-surface">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-border-default bg-surface-subtle text-[12px] font-medium text-text-secondary select-none">
+            <tr className="border-b border-border-default bg-surface-subtle text-[13px] font-medium text-text-secondary select-none">
               <th className="py-2.5 px-6 font-medium">账号</th>
               <th className="py-2.5 px-4 font-medium">账号定位</th>
               <th className="py-2.5 px-4 font-medium">负责人</th>
@@ -956,14 +956,14 @@ export const AccountAssets: React.FC = () => {
               <th className="py-2.5 px-6 font-medium text-right">操作</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border-subtle text-xs">
+          <tbody className="divide-y divide-border-subtle text-[13px]">
             {sortedAndFilteredAccounts.length === 0 ? (
               <tr>
                 <td colSpan={5} className="py-16 text-center text-text-tertiary">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <User className="w-8 h-8 text-neutral-300 stroke-[1.5]" />
                     <p className="text-sm text-text-secondary">未找到匹配的账号资产</p>
-                    <p className="text-xs text-text-tertiary">请尝试调整筛选条件或点击上方按钮添加新账号</p>
+                    <p className="text-[13px] text-text-tertiary">请尝试调整筛选条件或点击上方按钮添加新账号</p>
                   </div>
                 </td>
               </tr>
@@ -975,12 +975,12 @@ export const AccountAssets: React.FC = () => {
                 // Determine connection badge
                 const getConnectionBadge = () => {
                   if (acc.accountRelation === "公开监控") {
-                    return <span className="text-[11px] font-medium text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs whitespace-nowrap">公开监控</span>;
+                    return <span className="text-[13px] font-medium text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs whitespace-nowrap">公开监控</span>;
                   }
                   if (isAbnormal) {
-                    return <span className="text-[11px] font-medium text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded-xs whitespace-nowrap">授权失效</span>;
+                    return <span className="text-[13px] font-medium text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded-xs whitespace-nowrap">授权失效</span>;
                   }
-                  return <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs whitespace-nowrap">可运营</span>;
+                  return <span className="text-[13px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-xs whitespace-nowrap">可运营</span>;
                 };
 
                 return (
@@ -1008,13 +1008,13 @@ export const AccountAssets: React.FC = () => {
                               {acc.nickname}
                             </span>
                             {acc.platformVerify && acc.platformVerify !== "无认证" && (
-                              <span className="text-[11px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs whitespace-nowrap">
+                              <span className="text-[13px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs whitespace-nowrap">
                                 {acc.platformVerify}
                               </span>
                             )}
                             {getConnectionBadge()}
                           </div>
-                          <div className="text-[11px] text-text-tertiary truncate font-mono mt-0.5">
+                          <div className="text-[13px] text-text-tertiary truncate font-mono mt-0.5">
                             ID: {acc.xhsId}
                           </div>
                         </div>
@@ -1023,7 +1023,7 @@ export const AccountAssets: React.FC = () => {
 
                     {/* 2. 账号定位 */}
                     <td className="py-3 px-4">
-                      <span className="inline-flex items-center text-xs font-normal text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded-md whitespace-nowrap">
+                      <span className="inline-flex items-center text-[13px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded-md whitespace-nowrap">
                         {acc.businessRole}
                       </span>
                     </td>
@@ -1032,7 +1032,7 @@ export const AccountAssets: React.FC = () => {
                     <td className="py-3 px-4">
                       <div className="text-text-primary font-normal">{acc.owner}</div>
                       {acc.ownerDept && (
-                        <div className="text-[11px] text-text-tertiary">{acc.ownerDept}</div>
+                        <div className="text-[13px] text-text-tertiary">{acc.ownerDept}</div>
                       )}
                     </td>
 
@@ -1041,13 +1041,13 @@ export const AccountAssets: React.FC = () => {
                       {isAbnormal ? (
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-rose-600 font-medium">授权失效</span>
-                            <span className="text-xs text-text-tertiary">3天前停止更新</span>
+                            <span className="text-[13px] text-rose-600 font-medium">授权失效</span>
+                            <span className="text-[13px] text-text-tertiary">3天前停止更新</span>
                           </div>
                           <div className="mt-0.5">
                             <button
                               onClick={(e) => handleTriggerRelogin(acc, e)}
-                              className="text-[11px] font-medium text-rose-600 hover:underline"
+                              className="text-[13px] font-medium text-rose-600 hover:underline"
                             >
                               重新登录
                             </button>
@@ -1056,20 +1056,20 @@ export const AccountAssets: React.FC = () => {
                       ) : acc.accountRelation === "公开监控" ? (
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-text-primary font-medium">正常</span>
-                            <span className="text-xs text-text-secondary">{acc.lastUpdatedRelative}更新</span>
+                            <span className="text-[13px] text-text-primary font-medium">正常</span>
+                            <span className="text-[13px] text-text-secondary">{acc.lastUpdatedRelative}更新</span>
                           </div>
-                          <div className="text-[11px] text-text-tertiary mt-0.5">
+                          <div className="text-[13px] text-text-tertiary mt-0.5">
                             来源：公开主页
                           </div>
                         </div>
                       ) : (
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-text-primary font-medium">正常</span>
-                            <span className="text-xs text-text-secondary">{acc.lastUpdatedRelative}更新</span>
+                            <span className="text-[13px] text-text-primary font-medium">正常</span>
+                            <span className="text-[13px] text-text-secondary">{acc.lastUpdatedRelative}更新</span>
                           </div>
-                          <div className="text-[11px] text-text-tertiary mt-0.5">
+                          <div className="text-[13px] text-text-tertiary mt-0.5">
                             来源：创作者中心
                           </div>
                         </div>
@@ -1083,7 +1083,7 @@ export const AccountAssets: React.FC = () => {
                         {isAbnormal && (
                           <button
                             onClick={(e) => handleTriggerRelogin(acc, e)}
-                            className="h-7 px-2.5 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md flex items-center gap-1 transition-colors"
+                            className="h-7 px-2.5 text-[13px] font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md flex items-center gap-1 transition-colors"
                           >
                             <RefreshCw className="w-3 h-3 text-amber-700" />
                             <span>重新登录</span>
@@ -1097,7 +1097,7 @@ export const AccountAssets: React.FC = () => {
                               setSelectedAccountId(acc.id);
                               setDrawerTab("overview");
                             }}
-                            className="h-7 px-2.5 text-xs font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
+                            className="h-7 px-2.5 text-[13px] font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
                           >
                             <span>查看账号</span>
                           </button>
@@ -1110,7 +1110,7 @@ export const AccountAssets: React.FC = () => {
                               setSelectedAccountId(acc.id);
                               setDrawerTab("performance");
                             }}
-                            className="h-7 px-2.5 text-xs font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
+                            className="h-7 px-2.5 text-[13px] font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
                           >
                             <span>查看数据</span>
                           </button>
@@ -1131,7 +1131,7 @@ export const AccountAssets: React.FC = () => {
 
                           {activeMenuId === acc.id && (
                             <div 
-                              className="absolute right-0 top-8 z-30 w-40 bg-surface border border-border-default rounded-md shadow-float py-1 text-xs text-left"
+                              className="absolute right-0 top-8 z-30 w-40 bg-surface border border-border-default rounded-md shadow-float py-1 text-[13px] text-left"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {acc.accountRelation === "自有账号" ? (
@@ -1224,7 +1224,7 @@ export const AccountAssets: React.FC = () => {
               {/* Drawer Top Header */}
               <div className="px-6 py-4 border-b border-border-default bg-surface-1 shrink-0">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
+                  <span className="text-[13px] font-medium text-text-secondary flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-text-tertiary" />
                     账号详情与配置
                   </span>
@@ -1250,12 +1250,12 @@ export const AccountAssets: React.FC = () => {
                           {selectedAccount.nickname}
                         </h2>
                         {selectedAccount.platformVerify && selectedAccount.platformVerify !== "无认证" && (
-                          <span className="text-[11px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs">
+                          <span className="text-[13px] font-normal text-text-secondary bg-surface-subtle border border-border-default px-1.5 py-0.2 rounded-xs">
                             {selectedAccount.platformVerify}
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-text-tertiary font-mono mt-0.5">
+                      <div className="text-[13px] text-text-tertiary font-mono mt-0.5">
                         ID: {selectedAccount.xhsId}
                       </div>
                     </div>
@@ -1266,7 +1266,7 @@ export const AccountAssets: React.FC = () => {
                     {selectedAccount.accountRelation === "自有账号" ? (
                       <button
                         onClick={(e) => handleOpenCreator(selectedAccount, e)}
-                        className="h-8 px-3 text-xs font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1.5 transition-colors"
+                        className="h-8 px-3 text-[13px] font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1.5 transition-colors"
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-text-secondary" />
                         <span>打开创作者中心</span>
@@ -1274,7 +1274,7 @@ export const AccountAssets: React.FC = () => {
                     ) : (
                       <button
                         onClick={(e) => handleOpenProfile(selectedAccount, e)}
-                        className="h-8 px-3 text-xs font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1.5 transition-colors"
+                        className="h-8 px-3 text-[13px] font-medium text-text-primary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1.5 transition-colors"
                       >
                         <Globe className="w-3.5 h-3.5 text-text-secondary" />
                         <span>打开主页</span>
@@ -1287,7 +1287,7 @@ export const AccountAssets: React.FC = () => {
                 <div className="flex items-center gap-6 mt-5 border-b border-border-default -mb-4">
                   <button
                     onClick={() => setDrawerTab("overview")}
-                    className={`pb-2.5 text-xs font-medium border-b-2 transition-colors ${
+                    className={`pb-2.5 text-[13px] font-medium border-b-2 transition-colors ${
                       drawerTab === "overview"
                         ? "text-text-primary border-brand-500"
                         : "text-text-secondary border-transparent hover:text-text-primary"
@@ -1297,7 +1297,7 @@ export const AccountAssets: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setDrawerTab("performance")}
-                    className={`pb-2.5 text-xs font-medium border-b-2 transition-colors ${
+                    className={`pb-2.5 text-[13px] font-medium border-b-2 transition-colors ${
                       drawerTab === "performance"
                         ? "text-text-primary border-brand-500"
                         : "text-text-secondary border-transparent hover:text-text-primary"
@@ -1307,7 +1307,7 @@ export const AccountAssets: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setDrawerTab("settings")}
-                    className={`pb-2.5 text-xs font-medium border-b-2 transition-colors ${
+                    className={`pb-2.5 text-[13px] font-medium border-b-2 transition-colors ${
                       drawerTab === "settings"
                         ? "text-text-primary border-brand-500"
                         : "text-text-secondary border-transparent hover:text-text-primary"
@@ -1324,32 +1324,32 @@ export const AccountAssets: React.FC = () => {
                 {/* TAB 1: 账号概览 */}
                 {/* -------------------------------------- */}
                 {drawerTab === "overview" && (
-                  <div className="space-y-6 text-xs">
+                  <div className="space-y-6 text-[13px]">
                     {/* Basic Operational Attributes Grid */}
                     <div>
-                      <h3 className="text-xs font-medium text-text-secondary mb-3">内部配置</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary mb-3">内部配置</h3>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary block">账号定位</span>
-                          <span className="text-xs font-medium text-text-primary mt-1 block">
+                          <span className="text-[13px] text-text-tertiary block">账号定位</span>
+                          <span className="text-[13px] font-medium text-text-primary mt-1 block">
                             {selectedAccount.businessRole}
                           </span>
                         </div>
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary block">负责人</span>
-                          <span className="text-xs font-medium text-text-primary mt-1 block">
+                          <span className="text-[13px] text-text-tertiary block">负责人</span>
+                          <span className="text-[13px] font-medium text-text-primary mt-1 block">
                             {selectedAccount.owner} {selectedAccount.ownerDept && `(${selectedAccount.ownerDept})`}
                           </span>
                         </div>
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary block">账号关系</span>
-                          <span className="text-xs font-medium text-text-primary mt-1 block">
+                          <span className="text-[13px] text-text-tertiary block">账号关系</span>
+                          <span className="text-[13px] font-medium text-text-primary mt-1 block">
                             {selectedAccount.accountRelation}
                           </span>
                         </div>
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary block">数据同步通道</span>
-                          <span className="text-xs font-medium text-text-primary mt-1 block truncate" title={selectedAccount.dataSource}>
+                          <span className="text-[13px] text-text-tertiary block">数据同步通道</span>
+                          <span className="text-[13px] font-medium text-text-primary mt-1 block truncate" title={selectedAccount.dataSource}>
                             {selectedAccount.dataSource}
                           </span>
                         </div>
@@ -1358,31 +1358,31 @@ export const AccountAssets: React.FC = () => {
 
                     {/* Project Usage Summary Card */}
                     <div>
-                      <h3 className="text-xs font-medium text-text-secondary mb-3">使用情况</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary mb-3">使用情况</h3>
                       <div className="p-3.5 bg-surface-subtle border border-border-default rounded-md flex items-center justify-between">
                         <div>
-                          <span className="text-[11px] text-text-tertiary block">关联项目</span>
-                          <span className="text-xs font-medium text-text-primary mt-1 block">
+                          <span className="text-[13px] text-text-tertiary block">关联项目</span>
+                          <span className="text-[13px] font-medium text-text-primary mt-1 block">
                             使用项目：{selectedAccount.projects.filter(p => p.isActive).length}个&nbsp;&nbsp;&nbsp;&nbsp;{selectedAccount.projects.filter(p => p.isActive).map(p => p.projectName).join("、")}
                           </span>
                         </div>
-                        <span className="text-xs text-text-secondary font-medium">查看</span>
+                        <span className="text-[13px] text-text-secondary font-medium">查看</span>
                       </div>
                     </div>
 
                     {/* Persona & Boundaries */}
                     <div>
-                      <h3 className="text-xs font-medium text-text-secondary mb-3">人设定位与内容边界</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary mb-3">人设定位与内容边界</h3>
                       <div className="space-y-3">
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary font-medium block">人设定位摘要</span>
-                          <p className="text-xs text-text-primary mt-1.5 leading-relaxed">
+                          <span className="text-[13px] text-text-tertiary font-medium block">人设定位摘要</span>
+                          <p className="text-[13px] text-text-primary mt-1.5 leading-relaxed">
                             {selectedAccount.persona || "暂未配置人设定位"}
                           </p>
                         </div>
                         <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                          <span className="text-[11px] text-text-tertiary font-medium block">内容合规与发布边界</span>
-                          <p className="text-xs text-text-primary mt-1.5 leading-relaxed">
+                          <span className="text-[13px] text-text-tertiary font-medium block">内容合规与发布边界</span>
+                          <p className="text-[13px] text-text-primary mt-1.5 leading-relaxed">
                             {selectedAccount.contentBoundaries || "暂未配置内容边界"}
                           </p>
                         </div>
@@ -1395,26 +1395,26 @@ export const AccountAssets: React.FC = () => {
                 {/* TAB 2: 数据表现 */}
                 {/* -------------------------------------- */}
                 {drawerTab === "performance" && (
-                  <div className="space-y-6 text-xs">
+                  <div className="space-y-6 text-[13px]">
                     {/* Data Provenance & Last Sync Header */}
                     <div className="p-3.5 bg-surface-subtle border border-border-default rounded-md">
                       <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-medium text-text-secondary flex items-center gap-1.5">
+                        <span className="text-[13px] font-medium text-text-secondary flex items-center gap-1.5">
                           <Database className="w-3.5 h-3.5 text-text-tertiary" />
                           数据状态与通道
                         </span>
-                        <span className="text-[11px] text-text-tertiary">
+                        <span className="text-[13px] text-text-tertiary">
                           统计周期: <strong className="text-text-primary font-medium">{selectedAccount.dataStatsPeriod}</strong>
                         </span>
                       </div>
-                      <div className="text-xs font-medium text-text-primary mt-1">
+                      <div className="text-[13px] font-medium text-text-primary mt-1">
                         {selectedAccount.dataSource}
                       </div>
-                      <div className="text-[11px] text-text-tertiary mt-2 flex items-center justify-between pt-2 border-t border-border-subtle">
+                      <div className="text-[13px] text-text-tertiary mt-2 flex items-center justify-between pt-2 border-t border-border-subtle">
                         <span>最近更新: {selectedAccount.lastDataUpdatedAt} ({selectedAccount.lastUpdatedRelative})</span>
                         <button
                           onClick={(e) => handleSyncAccount(selectedAccount.id, e)}
-                          className="text-text-secondary hover:text-text-primary flex items-center gap-1 text-[11px] font-medium"
+                          className="text-text-secondary hover:text-text-primary flex items-center gap-1 text-[13px] font-medium"
                         >
                           <RefreshCw className="w-3 h-3" />
                           <span>立即同步</span>
@@ -1425,34 +1425,34 @@ export const AccountAssets: React.FC = () => {
                     {/* Snapshot Metrics Grid */}
                     {selectedAccount.snapshot && (
                       <div>
-                        <h3 className="text-xs font-medium text-text-secondary mb-3">核心互动与账号表现</h3>
+                        <h3 className="text-[13px] font-medium text-text-secondary mb-3">核心互动与账号表现</h3>
                         <div className="grid grid-cols-3 gap-2.5">
                           <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                            <span className="text-[11px] text-text-tertiary block">总粉丝数</span>
+                            <span className="text-[13px] text-text-tertiary block">总粉丝数</span>
                             <span className="text-[16px] font-medium text-text-primary mt-1 block">
                               {selectedAccount.snapshot.followersCount.toLocaleString()}
                             </span>
-                            <span className="text-[10px] text-emerald-700 mt-0.5 block">
+                            <span className="text-[13px] text-emerald-700 mt-0.5 block">
                               7日增粉 +{selectedAccount.snapshot.followersDelta7d}
                             </span>
                           </div>
 
                           <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                            <span className="text-[11px] text-text-tertiary block">笔记总数</span>
+                            <span className="text-[13px] text-text-tertiary block">笔记总数</span>
                             <span className="text-[16px] font-medium text-text-primary mt-1 block">
                               {selectedAccount.snapshot.notesCount} 篇
                             </span>
-                            <span className="text-[10px] text-text-tertiary mt-0.5 block">
+                            <span className="text-[13px] text-text-tertiary mt-0.5 block">
                               {selectedAccount.snapshot.postFrequency}
                             </span>
                           </div>
 
                           <div className="p-3 bg-surface-subtle border border-border-default rounded-md">
-                            <span className="text-[11px] text-text-tertiary block">总互动量</span>
+                            <span className="text-[13px] text-text-tertiary block">总互动量</span>
                             <span className="text-[16px] font-medium text-text-primary mt-1 block">
                               {(selectedAccount.snapshot.totalInteractions / 10000).toFixed(1)}w
                             </span>
-                            <span className="text-[10px] text-text-tertiary mt-0.5 block">
+                            <span className="text-[13px] text-text-tertiary mt-0.5 block">
                               赞藏与评论汇总
                             </span>
                           </div>
@@ -1462,7 +1462,7 @@ export const AccountAssets: React.FC = () => {
 
                     {/* Recent Notes List */}
                     <div>
-                      <h3 className="text-xs font-medium text-text-secondary mb-3">近期代表笔记表现</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary mb-3">近期代表笔记表现</h3>
                       <div className="space-y-2.5">
                         {selectedAccount.recentNotes.length === 0 ? (
                           <div className="py-6 text-center text-text-tertiary border border-dashed border-border-default rounded-md">
@@ -1475,16 +1475,16 @@ export const AccountAssets: React.FC = () => {
                               className="p-3 bg-surface-subtle border border-border-default rounded-md space-y-2"
                             >
                               <div className="flex items-start justify-between gap-2">
-                                <span className="text-xs font-medium text-text-primary line-clamp-2">
+                                <span className="text-[13px] font-medium text-text-primary line-clamp-2">
                                   {note.title}
                                 </span>
                                 {note.isTopPerformance && (
-                                  <span className="text-[10px] text-brand-700 bg-brand-50 border border-brand-100 px-1.5 py-0.2 rounded-xs shrink-0">
+                                  <span className="text-[13px] text-brand-700 bg-brand-50 border border-brand-100 px-1.5 py-0.2 rounded-xs shrink-0">
                                     TOP爆文
                                   </span>
                                 )}
                               </div>
-                              <div className="flex items-center justify-between text-[11px] text-text-tertiary pt-1 border-t border-border-subtle">
+                              <div className="flex items-center justify-between text-[13px] text-text-tertiary pt-1 border-t border-border-subtle">
                                 <span>发布于 {note.pubDate} · {note.topicTag}</span>
                                 <div className="flex items-center gap-3 text-text-secondary">
                                   <span>赞 {note.likes}</span>
@@ -1500,12 +1500,12 @@ export const AccountAssets: React.FC = () => {
 
                     {/* Sync Logs */}
                     <div>
-                      <h3 className="text-xs font-medium text-text-secondary mb-3">同步任务日志</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary mb-3">同步任务日志</h3>
                       <div className="space-y-2 max-h-48 overflow-y-auto">
                         {selectedAccount.syncLogs.map((log) => (
                           <div
                             key={log.id}
-                            className="p-2.5 bg-surface-subtle border border-border-subtle rounded-md text-[11px] flex items-start justify-between gap-2"
+                            className="p-2.5 bg-surface-subtle border border-border-subtle rounded-md text-[13px] flex items-start justify-between gap-2"
                           >
                             <div>
                               <span className="text-text-primary block">{log.message}</span>
@@ -1525,13 +1525,13 @@ export const AccountAssets: React.FC = () => {
                 {/* TAB 3: 属性设置 */}
                 {/* -------------------------------------- */}
                 {drawerTab === "settings" && (
-                  <div className="space-y-6 text-xs">
+                  <div className="space-y-6 text-[13px]">
                     {/* Edit Form */}
                     <div className="space-y-4">
-                      <h3 className="text-xs font-medium text-text-secondary">内部运营配置</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary">内部运营配置</h3>
                       
                       <div>
-                        <label className="block text-[11px] text-text-tertiary mb-1">内部运营角色</label>
+                        <label className="block text-[13px] text-text-tertiary mb-1">内部运营角色</label>
                         <select
                           value={selectedAccount.businessRole}
                           onChange={(e) => {
@@ -1543,7 +1543,7 @@ export const AccountAssets: React.FC = () => {
                             );
                             showToast("运营角色已更新");
                           }}
-                          className="w-full h-8 px-2.5 text-xs bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong"
+                          className="w-full h-8 px-2.5 text-[13px] bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong"
                         >
                           <option value="品牌官方号">品牌官方号</option>
                           <option value="自有矩阵号">自有矩阵号</option>
@@ -1555,7 +1555,7 @@ export const AccountAssets: React.FC = () => {
                       </div>
 
                       <div>
-                        <label className="block text-[11px] text-text-tertiary mb-1">负责人与归属部门</label>
+                        <label className="block text-[13px] text-text-tertiary mb-1">负责人与归属部门</label>
                         <input
                           type="text"
                           defaultValue={`${selectedAccount.owner} ${selectedAccount.ownerDept ? `(${selectedAccount.ownerDept})` : ""}`}
@@ -1568,12 +1568,12 @@ export const AccountAssets: React.FC = () => {
                             );
                             showToast("负责人已更新");
                           }}
-                          className="w-full h-8 px-3 text-xs bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong"
+                          className="w-full h-8 px-3 text-[13px] bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] text-text-tertiary mb-1">人设定位摘要</label>
+                        <label className="block text-[13px] text-text-tertiary mb-1">人设定位摘要</label>
                         <textarea
                           rows={3}
                           defaultValue={selectedAccount.persona}
@@ -1586,12 +1586,12 @@ export const AccountAssets: React.FC = () => {
                             );
                             showToast("人设定位已更新");
                           }}
-                          className="w-full p-2.5 text-xs bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong resize-none"
+                          className="w-full p-2.5 text-[13px] bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong resize-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] text-text-tertiary mb-1">内容合规与发布边界</label>
+                        <label className="block text-[13px] text-text-tertiary mb-1">内容合规与发布边界</label>
                         <textarea
                           rows={3}
                           defaultValue={selectedAccount.contentBoundaries}
@@ -1604,26 +1604,26 @@ export const AccountAssets: React.FC = () => {
                             );
                             showToast("内容边界已更新");
                           }}
-                          className="w-full p-2.5 text-xs bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong resize-none"
+                          className="w-full p-2.5 text-[13px] bg-surface border border-border-default rounded-md text-text-primary focus:outline-none focus:border-border-strong resize-none"
                         />
                       </div>
                     </div>
 
                     {/* Session & Connection Management */}
                     <div className="pt-4 border-t border-border-default space-y-3">
-                      <h3 className="text-xs font-medium text-text-secondary">登录会话与账号管理</h3>
+                      <h3 className="text-[13px] font-medium text-text-secondary">登录会话与账号管理</h3>
                       
                       {selectedAccount.accountRelation === "自有账号" && (
                         <div className="flex items-center justify-between p-3 bg-surface-subtle border border-border-default rounded-md">
                           <div>
                             <span className="font-medium text-text-primary block">创作者服务平台会话</span>
-                            <span className="text-[11px] text-text-tertiary mt-0.5 block">
+                            <span className="text-[13px] text-text-tertiary mt-0.5 block">
                               到期时间: {selectedAccount.sessionExpiresAt || "永久有效"}
                             </span>
                           </div>
                           <button
                             onClick={(e) => handleTriggerRelogin(selectedAccount, e)}
-                            className="h-7 px-2.5 text-xs font-medium text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
+                            className="h-7 px-2.5 text-[13px] font-medium text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md flex items-center gap-1 transition-colors"
                           >
                             <RefreshCw className="w-3 h-3" />
                             <span>重新扫码</span>
@@ -1634,7 +1634,7 @@ export const AccountAssets: React.FC = () => {
                       <div className="flex items-center justify-between p-3 bg-rose-50/50 border border-rose-100 rounded-md">
                         <div>
                           <span className="font-medium text-rose-900 block">移除该账号</span>
-                          <span className="text-[11px] text-rose-700/80 mt-0.5 block">
+                          <span className="text-[13px] text-rose-700/80 mt-0.5 block">
                             停止数据同步与项目关联，保留历史已归集指标。
                           </span>
                         </div>
@@ -1644,7 +1644,7 @@ export const AccountAssets: React.FC = () => {
                             setSelectedAccountId(null);
                             showToast(`已移除账号「${selectedAccount.nickname}」`);
                           }}
-                          className="h-7 px-2.5 text-xs font-medium text-rose-700 bg-white hover:bg-rose-50 border border-rose-200 rounded-md transition-colors"
+                          className="h-7 px-2.5 text-[13px] font-medium text-rose-700 bg-white hover:bg-rose-50 border border-rose-200 rounded-md transition-colors"
                         >
                           移除账号
                         </button>
@@ -1688,11 +1688,11 @@ export const AccountAssets: React.FC = () => {
                     <h3 className="text-[16px] font-semibold text-text-primary">
                       {modalMode === "scan_creator" ? "扫码登录创作者中心" : "添加公开监控账号"}
                     </h3>
-                    <span className="text-xs text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded-sm">
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded-sm">
                       {modalMode === "scan_creator" ? `步骤 ${scanStep} / 3` : `步骤 ${publicStep} / 2`}
                     </span>
                   </div>
-                  <p className="text-xs text-text-secondary mt-0.5">
+                  <p className="text-[13px] text-text-secondary mt-0.5">
                     {modalMode === "scan_creator"
                       ? "小红书创作者服务平台官方安全登录，支持内容发布与全量数据同步"
                       : "通过公开主页链接添加外部达人或竞品观察账号，无需登录凭据"}
@@ -1721,9 +1721,9 @@ export const AccountAssets: React.FC = () => {
                 >
                   <div className="flex items-center gap-2">
                     <QrCode className="w-4 h-4 text-text-primary" />
-                    <span className="text-xs font-semibold text-text-primary">扫码登录创作者中心</span>
+                    <span className="text-[13px] font-semibold text-text-primary">扫码登录创作者中心</span>
                   </div>
-                  <p className="text-[11px] text-text-tertiary mt-1">
+                  <p className="text-[13px] text-text-tertiary mt-1">
                     适用于品牌官方号、自有矩阵号及员工KOS
                   </p>
                 </button>
@@ -1741,9 +1741,9 @@ export const AccountAssets: React.FC = () => {
                 >
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-text-primary" />
-                    <span className="text-xs font-semibold text-text-primary">添加公开监控账号 (免登录)</span>
+                    <span className="text-[13px] font-semibold text-text-primary">添加公开监控账号 (免登录)</span>
                   </div>
-                  <p className="text-[11px] text-text-tertiary mt-1">
+                  <p className="text-[13px] text-text-tertiary mt-1">
                     适用于外部合作达人、素人KOC及竞品观察
                   </p>
                 </button>
@@ -1759,7 +1759,7 @@ export const AccountAssets: React.FC = () => {
                     {/* Step 1: 扫码登录 */}
                     {scanStep === 1 && (
                       <div className="flex flex-col items-center justify-center py-4 text-center">
-                        <p className="text-xs text-text-secondary mb-4">
+                        <p className="text-[13px] text-text-secondary mb-4">
                           打开小红书 App 扫描下方二维码，登录创作者服务平台 (creator.xiaohongshu.com)
                         </p>
 
@@ -1768,10 +1768,10 @@ export const AccountAssets: React.FC = () => {
                           {qrStatus === "expired" ? (
                             <div className="w-44 h-44 bg-surface-subtle rounded-md flex flex-col items-center justify-center gap-2 p-4">
                               <AlertCircle className="w-8 h-8 text-amber-600" />
-                              <span className="text-xs text-text-secondary font-medium">二维码已失效</span>
+                              <span className="text-[13px] text-text-secondary font-medium">二维码已失效</span>
                               <button
                                 onClick={handleRefreshQr}
-                                className="mt-1 px-2.5 py-1 text-xs text-text-primary bg-white border border-border-default rounded-md hover:bg-surface-hover flex items-center gap-1"
+                                className="mt-1 px-2.5 py-1 text-[13px] text-text-primary bg-white border border-border-default rounded-md hover:bg-surface-hover flex items-center gap-1"
                               >
                                 <RefreshCw className={`w-3 h-3 ${isRefreshingQr ? "animate-spin" : ""}`} />
                                 <span>刷新二维码</span>
@@ -1780,8 +1780,8 @@ export const AccountAssets: React.FC = () => {
                           ) : qrStatus === "success" ? (
                             <div className="w-44 h-44 bg-emerald-50 rounded-md flex flex-col items-center justify-center gap-2 p-4 text-emerald-800">
                               <CheckCircle2 className="w-10 h-10 text-emerald-600" />
-                              <span className="text-xs font-semibold">扫码确认成功</span>
-                              <span className="text-[11px] text-emerald-700">正在验证会话有效性...</span>
+                              <span className="text-[13px] font-semibold">扫码确认成功</span>
+                              <span className="text-[13px] text-emerald-700">正在验证会话有效性...</span>
                             </div>
                           ) : (
                             <div 
@@ -1796,14 +1796,14 @@ export const AccountAssets: React.FC = () => {
                               {/* Hover overlay hint */}
                               <div className="absolute inset-0 bg-neutral-900/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity p-2 text-center">
                                 <Check className="w-6 h-6 mb-1 text-emerald-400" />
-                                <span className="text-xs font-medium">确认扫码登录</span>
+                                <span className="text-[13px] font-medium">确认扫码登录</span>
                               </div>
                             </div>
                           )}
 
                           {/* QR Countdown & Actions */}
                           {qrStatus === "waiting" && (
-                            <div className="flex items-center justify-between w-full mt-3 text-[11px] text-text-tertiary">
+                            <div className="flex items-center justify-between w-full mt-3 text-[13px] text-text-tertiary">
                               <span>有效时间: {qrCountdown} 秒</span>
                               <button
                                 onClick={handleRefreshQr}
@@ -1816,7 +1816,7 @@ export const AccountAssets: React.FC = () => {
                           )}
                         </div>
 
-                        <div className="mt-4 flex items-center gap-1.5 text-xs text-text-tertiary">
+                        <div className="mt-4 flex items-center gap-1.5 text-[13px] text-text-tertiary">
                           <Shield className="w-3.5 h-3.5 text-text-tertiary" />
                           <span>仅建立创作者数据中心与内容发布接口安全会话，不保存小红书登录密码</span>
                         </div>
@@ -1827,7 +1827,7 @@ export const AccountAssets: React.FC = () => {
                     {scanStep === 2 && detectedAccount && (
                       <div className="space-y-5">
                         <div className="p-4 bg-surface-subtle border border-border-default rounded-md">
-                          <div className="text-[11px] text-text-tertiary mb-2 font-medium">识别到的平台身份</div>
+                          <div className="text-[13px] text-text-tertiary mb-2 font-medium">识别到的平台身份</div>
                           <div className="flex items-center gap-3">
                             <img
                               src={detectedAccount.avatar}
@@ -1840,12 +1840,12 @@ export const AccountAssets: React.FC = () => {
                                   {detectedAccount.nickname}
                                 </span>
                                 {detectedAccount.platformVerify && (
-                                  <span className="text-[11px] text-text-secondary bg-white border border-border-default px-1.5 py-0.2 rounded-xs">
+                                  <span className="text-[13px] text-text-secondary bg-white border border-border-default px-1.5 py-0.2 rounded-xs">
                                     {detectedAccount.platformVerify}
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-text-tertiary font-mono mt-0.5">
+                              <div className="text-[13px] text-text-tertiary font-mono mt-0.5">
                                 ID: {detectedAccount.xhsId}
                               </div>
                             </div>
@@ -1854,8 +1854,8 @@ export const AccountAssets: React.FC = () => {
 
                         {/* Verified Capabilities */}
                         <div>
-                          <div className="text-xs font-medium text-text-secondary mb-2">已就绪的创作者平台能力</div>
-                          <div className="grid grid-cols-2 gap-2.5 text-xs">
+                          <div className="text-[13px] font-medium text-text-secondary mb-2">已就绪的创作者平台能力</div>
+                          <div className="grid grid-cols-2 gap-2.5 text-[13px]">
                             <div className="p-2.5 bg-surface-subtle border border-border-default rounded-md flex items-center gap-2">
                               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                               <span className="text-text-primary">图文与视频直接发布</span>
@@ -1879,10 +1879,10 @@ export const AccountAssets: React.FC = () => {
 
                     {/* Step 3: 配置运营属性与项目范围 */}
                     {scanStep === 3 && (
-                      <div className="space-y-4 text-xs">
+                      <div className="space-y-4 text-[13px]">
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-[11px] text-text-tertiary mb-1">内部运营角色</label>
+                            <label className="block text-[13px] text-text-tertiary mb-1">内部运营角色</label>
                             <select
                               value={formBusinessRole}
                               onChange={(e) => setFormBusinessRole(e.target.value as BusinessRole)}
@@ -1896,7 +1896,7 @@ export const AccountAssets: React.FC = () => {
                           </div>
 
                           <div>
-                            <label className="block text-[11px] text-text-tertiary mb-1">负责人</label>
+                            <label className="block text-[13px] text-text-tertiary mb-1">负责人</label>
                             <input
                               type="text"
                               value={formOwner}
@@ -1908,39 +1908,39 @@ export const AccountAssets: React.FC = () => {
                         </div>
 
                         <div className="p-3.5 bg-surface-subtle border border-border-default rounded-md space-y-3">
-                          <span className="text-[11px] font-medium text-text-secondary block">初始关联项目设置</span>
+                          <span className="text-[13px] font-medium text-text-secondary block">初始关联项目设置</span>
                           <div className="grid grid-cols-2 gap-2.5">
                             <div>
-                              <label className="block text-[10px] text-text-tertiary mb-1">所属项目</label>
+                              <label className="block text-[13px] text-text-tertiary mb-1">所属项目</label>
                               <select
                                 value={formProjectName}
                                 onChange={(e) => setFormProjectName(e.target.value)}
-                                className="w-full h-7 px-2 text-xs bg-white border border-border-default rounded-md"
+                                className="w-full h-7 px-2 text-[13px] bg-white border border-border-default rounded-md"
                               >
                                 <option value="宠粮新客运营">宠粮新客运营</option>
                                 <option value="全域品牌心智">全域品牌心智</option>
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[10px] text-text-tertiary mb-1">项目角色</label>
+                              <label className="block text-[13px] text-text-tertiary mb-1">项目角色</label>
                               <input
                                 type="text"
                                 value={formProjectRole}
                                 onChange={(e) => setFormProjectRole(e.target.value)}
-                                className="w-full h-7 px-2 text-xs bg-white border border-border-default rounded-md"
+                                className="w-full h-7 px-2 text-[13px] bg-white border border-border-default rounded-md"
                               />
                             </div>
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-[11px] text-text-tertiary mb-1">人设定位摘要 (选填)</label>
+                          <label className="block text-[13px] text-text-tertiary mb-1">人设定位摘要 (选填)</label>
                           <textarea
                             rows={2}
                             value={formPersona}
                             onChange={(e) => setFormPersona(e.target.value)}
                             placeholder="描述该账号在平台上的主要定位、目标人群与语气风格..."
-                            className="w-full p-2 text-xs bg-surface border border-border-default rounded-md resize-none"
+                            className="w-full p-2 text-[13px] bg-surface border border-border-default rounded-md resize-none"
                           />
                         </div>
                       </div>
@@ -1952,12 +1952,12 @@ export const AccountAssets: React.FC = () => {
                 {/* TRACK 2: 添加公开监控账号 */}
                 {/* ==================================================== */}
                 {modalMode === "add_public" && (
-                  <div className="space-y-5 text-xs">
+                  <div className="space-y-5 text-[13px]">
                     {/* Step 1: 输入主页链接 */}
                     {publicStep === 1 && (
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-xs font-medium text-text-primary mb-1">
+                          <label className="block text-[13px] font-medium text-text-primary mb-1">
                             小红书主页链接 或 小红书号
                           </label>
                           <div className="flex items-center gap-2">
@@ -1966,12 +1966,12 @@ export const AccountAssets: React.FC = () => {
                               value={inputPublicUrl}
                               onChange={(e) => setInputPublicUrl(e.target.value)}
                               placeholder="粘贴小红书主页链接 (https://www.xiaohongshu.com/user/profile/...) 或输入小红书号"
-                              className="flex-1 h-9 px-3 text-xs bg-surface border border-border-default rounded-md text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-strong"
+                              className="flex-1 h-9 px-3 text-[13px] bg-surface border border-border-default rounded-md text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-border-strong"
                             />
                             <button
                               onClick={handleIdentifyPublicAccount}
                               disabled={!inputPublicUrl.trim() || isIdentifyingPublic}
-                              className="h-9 px-3.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover disabled:opacity-50 rounded-md flex items-center gap-1.5 transition-colors"
+                              className="h-9 px-3.5 text-[13px] font-medium text-white bg-action-primary hover:bg-action-primary-hover disabled:opacity-50 rounded-md flex items-center gap-1.5 transition-colors"
                             >
                               <Search className={`w-3.5 h-3.5 ${isIdentifyingPublic ? "animate-spin" : ""}`} />
                               <span>{isIdentifyingPublic ? "识别中..." : "识别公开主页"}</span>
@@ -1979,7 +1979,7 @@ export const AccountAssets: React.FC = () => {
                           </div>
                         </div>
 
-                        <div className="p-3 bg-surface-subtle border border-border-default rounded-md text-[11px] text-text-tertiary space-y-1">
+                        <div className="p-3 bg-surface-subtle border border-border-default rounded-md text-[13px] text-text-tertiary space-y-1">
                           <span className="font-medium text-text-secondary block">示例输入：</span>
                           <p>1. https://www.xiaohongshu.com/user/profile/oscar_golden_family</p>
                           <p>2. oscar_golden_family</p>
@@ -1991,7 +1991,7 @@ export const AccountAssets: React.FC = () => {
                     {publicStep === 2 && detectedAccount && (
                       <div className="space-y-4">
                         <div className="p-4 bg-surface-subtle border border-border-default rounded-md">
-                          <div className="text-[11px] text-text-tertiary mb-2 font-medium">识别到的公开主页</div>
+                          <div className="text-[13px] text-text-tertiary mb-2 font-medium">识别到的公开主页</div>
                           <div className="flex items-center gap-3">
                             <img
                               src={detectedAccount.avatar}
@@ -2004,12 +2004,12 @@ export const AccountAssets: React.FC = () => {
                                   {detectedAccount.nickname}
                                 </span>
                                 {detectedAccount.platformVerify && (
-                                  <span className="text-[11px] text-text-secondary bg-white border border-border-default px-1.5 py-0.2 rounded-xs">
+                                  <span className="text-[13px] text-text-secondary bg-white border border-border-default px-1.5 py-0.2 rounded-xs">
                                     {detectedAccount.platformVerify}
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-text-tertiary font-mono mt-0.5">
+                              <div className="text-[13px] text-text-tertiary font-mono mt-0.5">
                                 ID: {detectedAccount.xhsId}
                               </div>
                             </div>
@@ -2018,7 +2018,7 @@ export const AccountAssets: React.FC = () => {
 
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-[11px] text-text-tertiary mb-1">内部运营角色</label>
+                            <label className="block text-[13px] text-text-tertiary mb-1">内部运营角色</label>
                             <select
                               value={formBusinessRole}
                               onChange={(e) => setFormBusinessRole(e.target.value as BusinessRole)}
@@ -2031,7 +2031,7 @@ export const AccountAssets: React.FC = () => {
                           </div>
 
                           <div>
-                            <label className="block text-[11px] text-text-tertiary mb-1">负责人</label>
+                            <label className="block text-[13px] text-text-tertiary mb-1">负责人</label>
                             <input
                               type="text"
                               value={formOwner}
@@ -2042,26 +2042,26 @@ export const AccountAssets: React.FC = () => {
                         </div>
 
                         <div className="p-3.5 bg-surface-subtle border border-border-default rounded-md space-y-2.5">
-                          <span className="text-[11px] font-medium text-text-secondary block">初始关联项目</span>
+                          <span className="text-[13px] font-medium text-text-secondary block">初始关联项目</span>
                           <div className="grid grid-cols-2 gap-2.5">
                             <div>
-                              <label className="block text-[10px] text-text-tertiary mb-1">所属项目</label>
+                              <label className="block text-[13px] text-text-tertiary mb-1">所属项目</label>
                               <select
                                 value={formProjectName}
                                 onChange={(e) => setFormProjectName(e.target.value)}
-                                className="w-full h-7 px-2 text-xs bg-white border border-border-default rounded-md"
+                                className="w-full h-7 px-2 text-[13px] bg-white border border-border-default rounded-md"
                               >
                                 <option value="宠粮新客运营">宠粮新客运营</option>
                                 <option value="全域品牌心智">全域品牌心智</option>
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[10px] text-text-tertiary mb-1">项目角色</label>
+                              <label className="block text-[13px] text-text-tertiary mb-1">项目角色</label>
                               <input
                                 type="text"
                                 value={formProjectRole}
                                 onChange={(e) => setFormProjectRole(e.target.value)}
-                                className="w-full h-7 px-2 text-xs bg-white border border-border-default rounded-md"
+                                className="w-full h-7 px-2 text-[13px] bg-white border border-border-default rounded-md"
                               />
                             </div>
                           </div>
@@ -2084,7 +2084,7 @@ export const AccountAssets: React.FC = () => {
                       else setShowAddModal(false);
                     }
                   }}
-                  className="h-8 px-3 text-xs text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md transition-colors"
+                  className="h-8 px-3 text-[13px] text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md transition-colors"
                 >
                   {((modalMode === "scan_creator" && scanStep === 1) || (modalMode === "add_public" && publicStep === 1)) ? "取消" : "上一步"}
                 </button>
@@ -2093,7 +2093,7 @@ export const AccountAssets: React.FC = () => {
                   {modalMode === "scan_creator" && scanStep === 1 && (
                     <button
                       onClick={handleSimulateScanSuccess}
-                      className="h-8 px-3 text-xs text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md"
+                      className="h-8 px-3 text-[13px] text-text-secondary bg-surface hover:bg-surface-hover border border-border-default rounded-md"
                     >
                       检测登录状态
                     </button>
@@ -2102,7 +2102,7 @@ export const AccountAssets: React.FC = () => {
                   {modalMode === "scan_creator" && scanStep === 2 && (
                     <button
                       onClick={() => setScanStep(3)}
-                      className="h-8 px-3.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1"
+                      className="h-8 px-3.5 text-[13px] font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1"
                     >
                       <span>下一步: 完善运营配置</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -2112,7 +2112,7 @@ export const AccountAssets: React.FC = () => {
                   {modalMode === "scan_creator" && scanStep === 3 && (
                     <button
                       onClick={handleFinishAddAccount}
-                      className="h-8 px-3.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1"
+                      className="h-8 px-3.5 text-[13px] font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1"
                     >
                       <Check className="w-3.5 h-3.5" />
                       <span>保存并同步数据</span>
@@ -2122,7 +2122,7 @@ export const AccountAssets: React.FC = () => {
                   {modalMode === "add_public" && publicStep === 2 && (
                     <button
                       onClick={handleFinishAddAccount}
-                      className="h-8 px-3.5 text-xs font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1"
+                      className="h-8 px-3.5 text-[13px] font-medium text-white bg-action-primary hover:bg-action-primary-hover rounded-md flex items-center gap-1"
                     >
                       <Check className="w-3.5 h-3.5" />
                       <span>确认添加监控</span>

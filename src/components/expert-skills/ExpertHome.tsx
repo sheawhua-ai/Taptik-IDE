@@ -126,7 +126,7 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary text-[12px] font-extrabold"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-secondary text-[13px] font-extrabold"
             >
               清空
             </button>
@@ -136,14 +136,14 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
         {/* 12 Operational Process Categories (Requirement 3) */}
         <div className="space-y-2.5 pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-[12px] font-extrabold text-text-tertiary uppercase tracking-wider">
+            <span className="text-[13px] font-extrabold text-text-tertiary uppercase tracking-wider">
               运营流程分类
             </span>
 
             {/* Daily Tasks Toggle */}
             <button
               onClick={() => setShowDailyFilter(!showDailyFilter)}
-              className="text-[12px] font-extrabold text-text-secondary hover:text-text-main flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-hover-bg hover:bg-selected-bg/70 transition-all"
+              className="text-[13px] font-extrabold text-text-secondary hover:text-text-main flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-hover-bg hover:bg-selected-bg/70 transition-all"
             >
               <Filter size={13} />
               <span>日常任务筛选</span>
@@ -156,7 +156,7 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3.5 py-1.5 rounded-xl text-[12.5px] font-extrabold whitespace-nowrap transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl text-[13px] font-extrabold whitespace-nowrap transition-all ${
                   selectedCategory === cat.id
                     ? 'bg-btn-main text-white shadow-2xs'
                     : 'bg-hover-bg/80 text-text-secondary hover:bg-selected-bg/80 hover:text-text-main'
@@ -170,12 +170,12 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
           {/* Secondary Daily Task Sub-Filter */}
           {showDailyFilter && (
             <div className="pt-2.5 border-t border-border-default flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar animate-in fade-in duration-150">
-              <span className="text-[11px] font-extrabold text-text-tertiary shrink-0">日常类型：</span>
+              <span className="text-[13px] font-extrabold text-text-tertiary shrink-0">日常类型：</span>
               {dailyTasks.map(task => (
                 <button
                   key={task.id}
                   onClick={() => setSelectedDailyTask(task.id)}
-                  className={`px-2.5 py-1 rounded-lg text-[11.5px] font-bold whitespace-nowrap transition-all ${
+                  className={`px-2.5 py-1 rounded-lg text-[13px] font-bold whitespace-nowrap transition-all ${
                     selectedDailyTask === task.id
                       ? 'bg-neutral-800 text-white'
                       : 'bg-page-bg text-text-secondary hover:bg-hover-bg border border-border-default/60'
@@ -210,13 +210,13 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
                       <h3 className="text-[16px] font-extrabold text-text-main">
                         {expert.name}
                       </h3>
-                      <span className="text-[11px] font-bold text-text-tertiary">
+                      <span className="text-[13px] font-bold text-text-tertiary">
                         {categories.find(c => c.id === expert.scenarioStage)?.label || '运营能力'}
                       </span>
                     </div>
                   </div>
 
-                  <span className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${statusInfo.style}`}>
+                  <span className={`px-2.5 py-1 rounded-full text-[13px] font-extrabold border ${statusInfo.style}`}>
                     {statusInfo.label}
                   </span>
                 </div>
@@ -227,7 +227,7 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
                     {expert.businessTask}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-text-tertiary pt-1">
+                  <div className="flex flex-wrap items-center gap-1.5 text-[13px] text-text-tertiary pt-1">
                     <span className="px-2 py-0.5 bg-hover-bg text-text-secondary rounded font-bold">
                       授权: {scopeLabels[expert.appScope]}
                     </span>
@@ -247,8 +247,8 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
                 </div>
 
                 {/* Last Task Result */}
-                <div className="bg-page-bg p-3 rounded-xl border border-border-default text-[12px] space-y-1">
-                  <span className="text-text-tertiary font-extrabold block text-[10.5px]">最近任务结果:</span>
+                <div className="bg-page-bg p-3 rounded-xl border border-border-default text-[13px] space-y-1">
+                  <span className="text-text-tertiary font-extrabold block text-[13px]">最近任务结果:</span>
                   <p className="text-text-secondary font-medium line-clamp-2">
                     {expert.lastRunResult || '暂无最近任务记录'}
                   </p>
@@ -266,7 +266,7 @@ export const ExpertHome: React.FC<ExpertHomeProps> = ({
                 </button>
 
                 {/* Secondary Actions */}
-                <div className="flex items-center justify-between text-[11.5px] text-text-tertiary font-extrabold pt-1">
+                <div className="flex items-center justify-between text-[13px] text-text-tertiary font-extrabold pt-1">
                   <button
                     onClick={() => onOpenDetail(expert)}
                     className="hover:text-text-main transition-colors"

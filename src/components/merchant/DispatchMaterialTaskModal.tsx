@@ -84,7 +84,7 @@ export function DispatchMaterialTaskModal({ project, onClose }: Props) {
 
           {/* Assignee selection (exact match with user image) */}
           <div>
-            <label className="block text-[12px] font-medium text-text-secondary mb-2.5">
+            <label className="block text-[13px] font-medium text-text-secondary mb-2.5">
               下发对象（不选则下发全部员工）
             </label>
             <div className="flex flex-wrap items-center gap-3">

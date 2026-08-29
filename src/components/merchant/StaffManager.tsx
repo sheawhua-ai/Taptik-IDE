@@ -42,7 +42,7 @@ export const StaffManager: React.FC = () => {
  <div className="flex items-center justify-between mb-8">
  <div>
  <h2 className="text-[20px] font-semibold text-text-main tracking-tight">员工权限管理</h2>
- <p className="text-[12px] text-text-tertiary uppercase tracking-wider mt-1">员工访问与角色控制</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-wider mt-1">员工访问与角色控制</p>
  </div>
  <button className="px-6 py-2.5 bg-btn-main text-white rounded-xl text-[13px] shadow-xl hover:bg-btn-main-hover transition-all flex items-center gap-2">
  <Plus size={18}/> 邀约员工
@@ -60,8 +60,8 @@ export const StaffManager: React.FC = () => {
  />
  </div>
  <div className="flex items-center gap-2">
- <span className="text-[12px] text-text-tertiary">过滤角色:</span>
- <select className="bg-page-bg border border-border-default text-[12px] rounded-lg px-2 py-1 outline-none">
+ <span className="text-[13px] text-text-tertiary">过滤角色:</span>
+ <select className="bg-page-bg border border-border-default text-[13px] rounded-lg px-2 py-1 outline-none">
  <option>全部</option>
  <option>管理员</option>
  <option>运营</option>
@@ -71,7 +71,7 @@ export const StaffManager: React.FC = () => {
  
  <table className="w-full text-left">
  <thead>
- <tr className="bg-page-bg text-[11px] text-text-tertiary uppercase tracking-widest">
+ <tr className="bg-page-bg text-[13px] text-text-tertiary uppercase tracking-widest">
  <th className="px-8 py-4">员工</th>
  <th className="px-8 py-4">联系方式</th>
  <th className="px-8 py-4">权限角色</th>
@@ -94,11 +94,11 @@ export const StaffManager: React.FC = () => {
  <td className="px-8 py-5">
  <div className="flex flex-col">
  <span className="text-[13px] text-text-secondary flex items-center gap-1.5"><Mail size={12}/> {staff.email}</span>
- <span className="text-[11px] text-text-tertiary flex items-center gap-1.5 mt-0.5"><Phone size={12}/> {staff.phone}</span>
+ <span className="text-[13px] text-text-tertiary flex items-center gap-1.5 mt-0.5"><Phone size={12}/> {staff.phone}</span>
  </div>
  </td>
  <td className="px-8 py-5">
- <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] uppercase tracking-tight ${
+ <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[13px] uppercase tracking-tight ${
  staff.role === 'admin' ? 'bg-brand-light text-brand-logo' : 'bg-hover-bg text-text-tertiary'
  }`}>
  {staff.role === 'admin' ? <ShieldCheck size={12}/> : <User size={12}/>}

@@ -253,7 +253,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
             ) : (
               Object.entries(groupedPending).map(([groupName, groupNotes]: [string, any]) => (
               <div key={groupName}>
-                <div className="text-[11px] font-bold text-text-tertiary mb-2 px-1">{groupName}</div>
+                <div className="text-[13px] font-bold text-text-tertiary mb-2 px-1">{groupName}</div>
                 <div className="space-y-1.5">
                   {groupNotes.map(n => (
                     <div 
@@ -266,12 +266,12 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       }`}
                     >
                       <div className={`text-[13px] font-bold mb-1 truncate ${activeNoteId === n.id ? 'text-primary-900' : 'text-text-main'}`}>{n.title}</div>
-                      <div className="text-[11px] text-text-tertiary mb-2">{n.accountName}</div>
+                      <div className="text-[13px] text-text-tertiary mb-2">{n.accountName}</div>
                       <div className="flex items-center justify-between">
-                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${n.status === '需处理' ? 'bg-primary-100 text-primary-700' : 'bg-hover-bg text-text-secondary'}`}>
+                         <span className={`px-1.5 py-0.5 rounded text-[13px] font-bold ${n.status === '需处理' ? 'bg-primary-100 text-primary-700' : 'bg-hover-bg text-text-secondary'}`}>
                            {n.status}
                          </span>
-                         {n.mainIssue !== '无' && <span className="text-[10px] text-brand-logo font-medium">{n.mainIssue}</span>}
+                         {n.mainIssue !== '无' && <span className="text-[13px] text-brand-logo font-medium">{n.mainIssue}</span>}
                       </div>
                     </div>
                   ))}
@@ -354,7 +354,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       >
                         <img src={img.url} alt="" className="w-full h-full object-cover" />
                         {idx === 0 && (
-                          <div className="absolute top-1 left-1 bg-black/40 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded shadow-sm">
+                          <div className="absolute top-1 left-1 bg-black/40 backdrop-blur-sm text-white text-[13px] px-1.5 py-0.5 rounded shadow-sm">
                             首图
                           </div>
                         )}
@@ -416,7 +416,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       <AlertOctagon size={14} className="text-brand-logo shrink-0 mt-0.5" />
                       <div>
                         <div className="text-[13px] font-bold text-primary-900 mb-1">系统提示：{activeNote.mainIssue}</div>
-                        <div className="text-[12px] text-primary-700">
+                        <div className="text-[13px] text-primary-700">
                           发现可能的问题点，请点击对应区域查看详情并处理。
                         </div>
                       </div>
@@ -428,7 +428,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
             
             {activeArea === 'title' && (
               <div className="space-y-4">
-                <div className="text-[12px] text-text-tertiary mb-2">AI 建议标题：</div>
+                <div className="text-[13px] text-text-tertiary mb-2">AI 建议标题：</div>
                 <div className="space-y-2">
                   <div className="p-3 border border-border-default hover:border-primary-400 bg-page-bg hover:bg-brand-light rounded-xl cursor-pointer transition-colors text-[13px] text-text-main">
                     换粮软便必看！新手养狗不踩坑指南
@@ -448,7 +448,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       <div>
                         <div className="text-[14px] font-bold text-primary-900 mb-2">事实没有来源支撑</div>
                         <div className="text-[13px] text-primary-800 mb-3">文中可能存在过度承诺。</div>
-                        <button className="text-[12px] font-bold text-primary-700 bg-surface-1 px-3 py-1.5 rounded-lg border border-primary-200 hover:bg-brand-light transition-colors">
+                        <button className="text-[13px] font-bold text-primary-700 bg-surface-1 px-3 py-1.5 rounded-lg border border-primary-200 hover:bg-brand-light transition-colors">
                           查看依据详情
                         </button>
                       </div>
@@ -467,7 +467,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
             {activeArea === 'content' && textSelection && (
               <div className="space-y-4">
                 <div className="bg-page-bg border border-border-default p-3 rounded-xl">
-                  <div className="text-[11px] font-bold text-text-tertiary mb-1">已选中文本：</div>
+                  <div className="text-[13px] font-bold text-text-tertiary mb-1">已选中文本：</div>
                   <div className="text-[13px] text-text-main leading-relaxed line-clamp-3">
                     "{textSelection.text}"
                   </div>
@@ -489,7 +489,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                 
                 {localEditResult && (
                   <div className="mt-6 pt-6 border-t border-border-default">
-                    <div className="text-[12px] font-bold text-text-tertiary mb-2">AI 修改建议：</div>
+                    <div className="text-[13px] font-bold text-text-tertiary mb-2">AI 修改建议：</div>
                     <div className="bg-surface-1 border border-primary-200 p-3 rounded-xl mb-3 shadow-sm">
                       <div className="text-[13px] text-text-main">{localEditResult.text}</div>
                     </div>
@@ -503,7 +503,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
             
             {activeArea === 'tags' && (
               <div className="space-y-4">
-                <div className="text-[12px] text-text-tertiary mb-2">AI 推荐话题：</div>
+                <div className="text-[13px] text-text-tertiary mb-2">AI 推荐话题：</div>
                 <div className="flex flex-col gap-2">
                   <button onClick={() => addTag('科学喂养')} className="px-3 py-2 border border-border-default bg-page-bg text-text-secondary rounded-xl text-[13px] hover:bg-brand-light hover:border-primary-200 hover:text-primary-700 transition-colors text-left flex items-center justify-between">
                     <span>#科学喂养</span>
@@ -606,7 +606,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                       <div className="w-10 h-10 bg-hover-bg rounded-lg flex items-center justify-center shrink-0"><FileText size={16} className="text-text-tertiary" /></div>
                       <div>
                         <div className="text-[13px] font-bold text-text-main">产品功能手册_2024.pdf</div>
-                        <div className="text-[11px] text-text-tertiary">提供事实支撑</div>
+                        <div className="text-[13px] text-text-tertiary">提供事实支撑</div>
                       </div>
                     </div>
                   </div>
@@ -631,7 +631,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                     <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center shrink-0 border-2 border-white shadow-sm text-brand-logo"><User size={14} /></div>
                     <div>
                       <div className="text-[13px] font-bold text-text-main mb-0.5">人类审查员 修改了标题</div>
-                      <div className="text-[11px] text-text-tertiary mb-2">今天 14:30</div>
+                      <div className="text-[13px] text-text-tertiary mb-2">今天 14:30</div>
                       <div className="bg-page-bg p-3 rounded-xl border border-border-default text-[13px] text-text-secondary line-through mb-1">原：太棒了！这款新品超出预期</div>
                       <div className="bg-brand-light p-3 rounded-xl border border-primary-200 text-[13px] text-primary-900 font-medium">新：绝了！这款新品真的超出预期</div>
                     </div>
@@ -640,7 +640,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                     <div className="w-8 h-8 rounded-full bg-btn-main flex items-center justify-center shrink-0 border-2 border-white shadow-sm text-white"><Zap size={14} /></div>
                     <div>
                       <div className="text-[13px] font-bold text-text-main mb-0.5">AI 助手 (GPT) 调整了配图排版</div>
-                      <div className="text-[11px] text-text-tertiary mb-2">今天 14:15</div>
+                      <div className="text-[13px] text-text-tertiary mb-2">今天 14:15</div>
                       <div className="bg-page-bg p-3 rounded-xl border border-border-default text-[13px] text-text-secondary">
                         应用了 "首图加文字" 模板
                       </div>
@@ -650,7 +650,7 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                     <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center shrink-0 border-2 border-white shadow-sm text-text-secondary"><Check size={14} /></div>
                     <div>
                       <div className="text-[13px] font-bold text-text-main mb-0.5">笔记初稿生成</div>
-                      <div className="text-[11px] text-text-tertiary mb-2">今天 14:00</div>
+                      <div className="text-[13px] text-text-tertiary mb-2">今天 14:00</div>
                     </div>
                   </div>
                 </div>
@@ -710,11 +710,11 @@ export function ContentReviewWorkbench({ onClose }: { onClose: () => void }) {
                   <div className="grid grid-cols-2 gap-3">
                     <button className="p-4 border-2 border-primary-500 bg-brand-light/60 rounded-xl text-left">
                       <div className="text-[14px] font-bold text-primary-900 mb-1">封面大字</div>
-                      <div className="text-[11px] text-primary-700">提取标题自动排版，适合首图</div>
+                      <div className="text-[13px] text-primary-700">提取标题自动排版，适合首图</div>
                     </button>
                     <button className="p-4 border border-border-default bg-page-bg hover:bg-hover-bg rounded-xl text-left transition-colors">
                       <div className="text-[14px] font-bold text-text-main mb-1">拍立得边框</div>
-                      <div className="text-[11px] text-text-tertiary">添加复古边框和手写体说明</div>
+                      <div className="text-[13px] text-text-tertiary">添加复古边框和手写体说明</div>
                     </button>
                   </div>
                 </div>

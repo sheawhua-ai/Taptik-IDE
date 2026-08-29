@@ -89,19 +89,19 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
           </div>
           <div>
             <h2 className="text-[17px] font-semibold text-text-main tracking-tight">账号与分发</h2>
-            <p className="text-[11px] text-text-tertiary mt-0.5">监控全域发文账号健康度大盘，跟进运营人员待发排期与通告流水</p>
+            <p className="text-[13px] text-text-tertiary mt-0.5">监控全域发文账号健康度大盘，跟进运营人员待发排期与通告流水</p>
           </div>
         </div>
         <div className="flex items-center gap-2 bg-hover-bg p-1.5 rounded-xl">
           <button 
             onClick={() => setViewMode('dashboard')}
-            className={`px-5 py-2.5 rounded-xl text-[12px] font-medium transition-all ${viewMode === 'dashboard' ? 'bg-surface-1 shadow-xl text-text-main border border-border-default/50' : 'text-text-tertiary hover:text-text-main'}`}
+            className={`px-5 py-2.5 rounded-xl text-[13px] font-medium transition-all ${viewMode === 'dashboard' ? 'bg-surface-1 shadow-xl text-text-main border border-border-default/50' : 'text-text-tertiary hover:text-text-main'}`}
           >
             账号概览
           </button>
           <button 
             onClick={() => setViewMode('queue')}
-            className={`px-5 py-2.5 rounded-xl text-[12px] font-medium transition-all ${viewMode === 'queue' ? 'bg-surface-1 shadow-xl text-text-main border border-border-default/50' : 'text-text-tertiary hover:text-text-main'}`}
+            className={`px-5 py-2.5 rounded-xl text-[13px] font-medium transition-all ${viewMode === 'queue' ? 'bg-surface-1 shadow-xl text-text-main border border-border-default/50' : 'text-text-tertiary hover:text-text-main'}`}
           >
             分发排期
           </button>
@@ -120,35 +120,35 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                   onClick={() => setShowAccountBreakdown(!showAccountBreakdown)}
                 >
                   <div className="flex flex-col gap-2">
-                    <div className="text-[12px] text-text-tertiary flex items-center justify-between">
+                    <div className="text-[13px] text-text-tertiary flex items-center justify-between">
                       <span className="flex items-center gap-1.5"><Users size={14}/> 账号总数</span>
-                      <span className="text-[10px] bg-page-bg px-1.5 py-0.5 rounded text-text-tertiary">{showAccountBreakdown ? '点击收起' : '点击展开'}</span>
+                      <span className="text-[13px] bg-page-bg px-1.5 py-0.5 rounded text-text-tertiary">{showAccountBreakdown ? '点击收起' : '点击展开'}</span>
                     </div>
                     <div className="flex items-end gap-2">
                       <span className="text-3xl font-semibold text-text-main">42</span>
-                      <span className="text-[11px] text-text-main bg-hover-bg px-1.5 py-0.5 rounded pb-1">个</span>
+                      <span className="text-[13px] text-text-main bg-hover-bg px-1.5 py-0.5 rounded pb-1">个</span>
                     </div>
                   </div>
                   
                   {showAccountBreakdown && (
                     <div className="mt-4 pt-4 border-t border-border-default flex flex-col gap-2">
-                      <div className="flex justify-between items-center text-[11px]">
+                      <div className="flex justify-between items-center text-[13px]">
                         <span className="text-text-tertiary">品牌专业号</span>
                         <span className="font-medium text-text-main">8 个</span>
                       </div>
-                      <div className="flex justify-between items-center text-[11px]">
+                      <div className="flex justify-between items-center text-[13px]">
                         <span className="text-text-tertiary">KOS员工号</span>
                         <span className="font-medium text-text-main">12 个</span>
                       </div>
-                      <div className="flex justify-between items-center text-[11px]">
+                      <div className="flex justify-between items-center text-[13px]">
                         <span className="text-text-tertiary">邀约达人号</span>
                         <span className="font-medium text-text-main">5 个</span>
                       </div>
-                      <div className="flex justify-between items-center text-[11px]">
+                      <div className="flex justify-between items-center text-[13px]">
                         <span className="text-text-tertiary">社群素人号</span>
                         <span className="font-medium text-text-main">10 个</span>
                       </div>
-                      <div className="flex justify-between items-center text-[11px]">
+                      <div className="flex justify-between items-center text-[13px]">
                         <span className="text-text-tertiary">客户素人号</span>
                         <span className="font-medium text-text-main">7 个</span>
                       </div>
@@ -156,24 +156,24 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                   )}
                 </div>
                 <div className="bg-surface-1 p-5 rounded-[20px] border border-border-default shadow-sm flex flex-col justify-between">
-                  <div className="text-[12px] text-text-tertiary mb-2 flex items-center gap-1.5"><History size={14}/> 30天活跃发文数</div>
+                  <div className="text-[13px] text-text-tertiary mb-2 flex items-center gap-1.5"><History size={14}/> 30天活跃发文数</div>
                   <div className="flex items-end gap-2">
                     <span className="text-3xl font-semibold text-text-main">215</span>
-                    <span className="text-[11px] text-text-tertiary bg-page-bg px-1.5 py-0.5 rounded pb-1">篇</span>
+                    <span className="text-[13px] text-text-tertiary bg-page-bg px-1.5 py-0.5 rounded pb-1">篇</span>
                   </div>
                 </div>
                 <div className="bg-surface-1 p-5 rounded-[20px] border border-border-default shadow-sm flex flex-col justify-between">
-                  <div className="text-[12px] text-text-tertiary mb-2 flex items-center gap-1.5"><Calendar size={14}/> 今日待发布排期</div>
+                  <div className="text-[13px] text-text-tertiary mb-2 flex items-center gap-1.5"><Calendar size={14}/> 今日待发布排期</div>
                   <div className="flex items-end gap-2">
                     <span className="text-3xl font-semibold text-brand-logo">12</span>
-                    <span className="text-[11px] text-brand-logo bg-brand-light px-1.5 py-0.5 rounded pb-1">条</span>
+                    <span className="text-[13px] text-brand-logo bg-brand-light px-1.5 py-0.5 rounded pb-1">条</span>
                   </div>
                 </div>
                 <div className="bg-surface-1 p-5 rounded-[20px] border border-primary-100 bg-brand-light/30 flex flex-col justify-between">
-                  <div className="text-[12px] text-brand-logo mb-2 flex items-center gap-1.5"><AlertCircle size={14}/> 异常/限流账号</div>
+                  <div className="text-[13px] text-brand-logo mb-2 flex items-center gap-1.5"><AlertCircle size={14}/> 异常/限流账号</div>
                   <div className="flex items-end gap-2">
                     <span className="text-3xl font-semibold text-brand-logo">1</span>
-                    <span className="text-[11px] text-brand-logo bg-primary-100 px-1.5 py-0.5 rounded pb-1">个</span>
+                    <span className="text-[13px] text-brand-logo bg-primary-100 px-1.5 py-0.5 rounded pb-1">个</span>
                   </div>
                 </div>
               </div>
@@ -182,7 +182,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
               <div className="space-y-4">
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-[15px] font-semibold text-text-main">入网账号流水</h3>
-                  <div className="text-[12px] text-text-tertiary flex gap-4">
+                  <div className="text-[13px] text-text-tertiary flex gap-4">
                     <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-btn-main"></div> 正常运行</span>
                     <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-neutral-400 text-brand-logo"></div> 异常或限流</span>
                   </div>
@@ -201,8 +201,8 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                               <div className={`w-2 h-2 rounded-full ${acc.health === 'good' ? 'bg-btn-main' : acc.health === 'warning' ? 'bg-btn-main' : 'bg-btn-main'}`} />
                             </div>
                             <div className="flex items-center gap-1.5 mt-1">
-                              <span className="text-[10px] text-text-tertiary bg-hover-bg px-1.5 py-0.5 rounded">{acc.type}</span>
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded ${acc.loginStatus === 'managed' ? 'text-brand-logo bg-brand-light' : 'text-brand-logo bg-brand-light'}`}>
+                              <span className="text-[13px] text-text-tertiary bg-hover-bg px-1.5 py-0.5 rounded">{acc.type}</span>
+                              <span className={`text-[13px] px-1.5 py-0.5 rounded ${acc.loginStatus === 'managed' ? 'text-brand-logo bg-brand-light' : 'text-brand-logo bg-brand-light'}`}>
                                 {acc.loginStatus === 'managed' ? 'PC/App静默挂载' : '云端监控'}
                               </span>
                             </div>
@@ -210,7 +210,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         </div>
                         <div className="text-right">
                           <div className="text-[14px] font-semibold text-text-main">{acc.followers}</div>
-                          <div className="text-[11px] text-text-tertiary">粉丝量</div>
+                          <div className="text-[13px] text-text-tertiary">粉丝量</div>
                         </div>
                       </div>
 
@@ -219,26 +219,26 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         <div className="space-y-4">
                           <div className="grid grid-cols-3 gap-2 p-3 bg-page-bg rounded-xl">
                             <div>
-                              <div className="text-[10px] text-text-tertiary mb-1">聚光消耗</div>
+                              <div className="text-[13px] text-text-tertiary mb-1">聚光消耗</div>
                               <div className="text-[13px] font-medium text-text-main">{acc.juguangData?.cost || '-'}</div>
                             </div>
                             <div>
-                              <div className="text-[10px] text-text-tertiary mb-1">聚光ROI</div>
+                              <div className="text-[13px] text-text-tertiary mb-1">聚光ROI</div>
                               <div className="text-[13px] font-medium text-text-main">{acc.juguangData?.roi || '-'}</div>
                             </div>
                             <div>
-                              <div className="text-[10px] text-text-tertiary mb-1">笔记赞藏</div>
+                              <div className="text-[13px] text-text-tertiary mb-1">笔记赞藏</div>
                               <div className="text-[13px] font-medium text-text-main">{acc.noteStats?.likes || '-'}</div>
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <div className="text-[11px] text-text-tertiary font-medium px-1 flex items-center justify-between">
+                            <div className="text-[13px] text-text-tertiary font-medium px-1 flex items-center justify-between">
                               <span>近期高频笔记</span>
                               <span className="text-brand-logo cursor-pointer hover:underline">查看后台数据</span>
                             </div>
                             <div className="space-y-1.5">
-                              <div className="text-[12px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate">· 夏日通勤防晒实测第1篇 <span className="text-text-tertiary ml-1">12w阅读</span></div>
-                              <div className="text-[12px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate">· 带妆一整天持妆防晒组合 <span className="text-text-tertiary ml-1">8.4w阅读</span></div>
+                              <div className="text-[13px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate">· 夏日通勤防晒实测第1篇 <span className="text-text-tertiary ml-1">12w阅读</span></div>
+                              <div className="text-[13px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate">· 带妆一整天持妆防晒组合 <span className="text-text-tertiary ml-1">8.4w阅读</span></div>
                             </div>
                           </div>
                         </div>
@@ -246,28 +246,28 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                         <div className="space-y-4">
                           <div className="grid grid-cols-3 gap-2 p-3 bg-brand-light/50 rounded-xl border border-primary-100/50">
                             <div>
-                              <div className="text-[10px] text-primary-400 mb-1">预计粉丝增速</div>
+                              <div className="text-[13px] text-primary-400 mb-1">预计粉丝增速</div>
                               <div className={`text-[13px] font-medium ${acc.monitoringData?.growthRate?.includes('+') ? 'text-text-main' : 'text-brand-logo'}`}>{acc.monitoringData?.growthRate || '-'}</div>
                             </div>
                             <div>
-                              <div className="text-[10px] text-primary-400 mb-1">赞藏互动率</div>
+                              <div className="text-[13px] text-primary-400 mb-1">赞藏互动率</div>
                               <div className="text-[13px] font-medium text-primary-700">{acc.monitoringData?.engagementRate || '-'}</div>
                             </div>
                             <div>
-                              <div className="text-[10px] text-primary-400 mb-1">品牌词提及</div>
+                              <div className="text-[13px] text-primary-400 mb-1">品牌词提及</div>
                               <div className="text-[13px] font-medium text-primary-700">{acc.monitoringData?.brandMentions || 0}次</div>
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <div className="text-[11px] text-text-tertiary font-medium px-1">监控笔记动态</div>
+                            <div className="text-[13px] text-text-tertiary font-medium px-1">监控笔记动态</div>
                             <div className="space-y-1.5">
-                              <div className="text-[12px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate flex items-center justify-between">
+                              <div className="text-[13px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate flex items-center justify-between">
                                 <span className="truncate">· 测评了10款宠物零食，推荐...</span>
-                                <span className="text-brand-logo text-[10px] bg-brand-light px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
+                                <span className="text-brand-logo text-[13px] bg-brand-light px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
                               </div>
-                              <div className="text-[12px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate flex items-center justify-between">
+                              <div className="text-[13px] text-text-secondary bg-surface-1 border border-border-default rounded-lg p-2 truncate flex items-center justify-between">
                                 <span className="truncate">· 铲屎官必看的换粮指南</span>
-                                <span className="text-brand-logo text-[10px] bg-brand-light px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
+                                <span className="text-brand-logo text-[13px] bg-brand-light px-1.5 py-0.5 rounded shrink-0">云端监控中</span>
                               </div>
                             </div>
                           </div>
@@ -276,11 +276,11 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                       
                       {/* Footer actions */}
                       <div className="mt-4 pt-4 border-t border-border-default flex items-center justify-between">
-                        <div className="flex items-center gap-4 text-[11px] text-text-tertiary">
+                        <div className="flex items-center gap-4 text-[13px] text-text-tertiary">
                           <span className="flex items-center gap-1"><History size={12}/> 状态: <span className="text-text-secondary">{acc.status}</span></span>
                           <span className="flex items-center gap-1"><Calendar size={12}/> 今日待发: <span className="text-text-secondary">{acc.todayTasks}</span></span>
                         </div>
-                        <button className="text-[12px] px-3 py-1.5 bg-btn-main text-white rounded-lg hover:bg-btn-main-hover transition-colors">
+                        <button className="text-[13px] px-3 py-1.5 bg-btn-main text-white rounded-lg hover:bg-btn-main-hover transition-colors">
                           账号详情
                         </button>
                       </div>
@@ -297,10 +297,10 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                     <img src={task.image} alt={task.title} className="w-16 h-16 rounded-xl object-cover" />
                     <div className="flex flex-col gap-1.5 overflow-hidden w-full">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${task.status === '已完成发文' ? 'bg-hover-bg text-text-main' : 'bg-brand-light text-brand-logo'}`}>{task.status}</span>
+                        <span className={`text-[13px] px-1.5 py-0.5 rounded ${task.status === '已完成发文' ? 'bg-hover-bg text-text-main' : 'bg-brand-light text-brand-logo'}`}>{task.status}</span>
                         <h4 className="text-[15px] font-semibold text-text-main truncate">{task.title}</h4>
                       </div>
-                      <div className="flex gap-4 text-[12px] text-text-tertiary">
+                      <div className="flex gap-4 text-[13px] text-text-tertiary">
                         <span className="flex items-center gap-1"><User size={12}/> 分发给: {task.assignTo}</span>
                         <span className="flex items-center gap-1"><Calendar size={12}/> 取单排期: {task.expectedTime}</span>
                       </div>
@@ -310,10 +310,10 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
                   <div className="flex items-center gap-3 shrink-0 ml-8">
                     {task.status === '等待发文' ? (
                       <>
-                        <button onClick={() => setShowQrCode(task.id)} className="px-4 py-2 bg-page-bg text-text-secondary border border-border-default hover:bg-hover-bg rounded-xl text-[12px] font-medium flex items-center gap-1.5 transition-colors">
+                        <button onClick={() => setShowQrCode(task.id)} className="px-4 py-2 bg-page-bg text-text-secondary border border-border-default hover:bg-hover-bg rounded-xl text-[13px] font-medium flex items-center gap-1.5 transition-colors">
                           <Smartphone size={14} /> 扫码取原件发文
                         </button>
-                        <button className="px-4 py-2 border border-border-default text-text-secondary hover:bg-page-bg rounded-xl text-[12px] font-medium flex items-center gap-1.5 transition-colors">
+                        <button className="px-4 py-2 border border-border-default text-text-secondary hover:bg-page-bg rounded-xl text-[13px] font-medium flex items-center gap-1.5 transition-colors">
                           <CheckCircle2 size={14} /> 标记为已发布
                         </button>
                       </>
@@ -337,7 +337,7 @@ export const ContentProduction: React.FC<{ hasData?: boolean }> = ({ hasData = t
               <QrCode size={24} />
             </div>
             <h3 className="text-[16px] font-semibold text-text-main mb-1">手机扫码提取物料</h3>
-            <p className="text-[12px] text-text-tertiary text-center leading-relaxed mb-6">
+            <p className="text-[13px] text-text-tertiary text-center leading-relaxed mb-6">
               打开微信/相机扫描下方二维码<br/>一键提取图文组合至手机相册和剪贴板
             </p>
             <div className="w-[200px] h-[200px] bg-surface-1 border border-border-default rounded-[16px] flex items-center justify-center shadow-inner mb-6">

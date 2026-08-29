@@ -151,7 +151,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                     <label className="block text-sm font-semibold text-text-main flex items-center">
                       包含哪些知识
                     </label>
-                    <p className="text-xs text-text-tertiary mt-1">描述这个板块应收录哪些知识。</p>
+                    <p className="text-[13px] text-text-tertiary mt-1">描述这个板块应收录哪些知识。</p>
                   </div>
                   <div className="flex flex-wrap gap-2 mb-3 items-center">
                     {activeCategory.includes.map((tag, idx) => (
@@ -191,7 +191,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
                     <label className="block text-sm font-semibold text-text-main flex items-center">
                       影响哪些业务
                     </label>
-                    <p className="text-xs text-text-tertiary mt-1">描述 AI 应在什么业务场景使用本板块。</p>
+                    <p className="text-[13px] text-text-tertiary mt-1">描述 AI 应在什么业务场景使用本板块。</p>
                   </div>
                   <div className="flex flex-wrap gap-2 items-center">
                     {activeCategory.affects.map((tag, idx) => (

@@ -40,9 +40,9 @@ export const ReplaceSkillModal: React.FC<ReplaceSkillModalProps> = ({
           </button>
         </div>
 
-        <div className="space-y-4 text-[12px]">
+        <div className="space-y-4 text-[13px]">
           <div className="p-3 bg-page-bg rounded-xl border border-border-default">
-            <span className="font-extrabold text-text-tertiary block text-[10px]">原已有技能:</span>
+            <span className="font-extrabold text-text-tertiary block text-[13px]">原已有技能:</span>
             <span className="font-extrabold text-text-main text-[13px]">{skillToReplace.name}</span>
           </div>
 
@@ -73,10 +73,10 @@ export const ReplaceSkillModal: React.FC<ReplaceSkillModalProps> = ({
         </div>
 
         <div className="pt-3 border-t border-border-default flex items-center justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 border border-border-default font-bold text-[12px] rounded-xl">
+          <button onClick={onClose} className="px-4 py-2 border border-border-default font-bold text-[13px] rounded-xl">
             取消
           </button>
-          <button onClick={handleConfirm} className="px-5 py-2 bg-btn-main text-white font-extrabold text-[12px] rounded-xl">
+          <button onClick={handleConfirm} className="px-5 py-2 bg-btn-main text-white font-extrabold text-[13px] rounded-xl">
             确认替换技能
           </button>
         </div>

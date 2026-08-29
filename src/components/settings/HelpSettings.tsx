@@ -68,10 +68,10 @@ export const HelpSettings = () => {
  className="w-full flex-1 bg-transparent p-4 outline-none text-[14px] text-text-secondary resize-none placeholder:text-text-tertiary"
  />
  <div className="p-3 flex items-center justify-between border-t border-border-default bg-page-bg">
- <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-[12px] text-text-secondary hover:bg-page-bg transition-colors hover:border-neutral-300">
+ <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-1 border border-border-default rounded-lg text-[13px] text-text-secondary hover:bg-page-bg transition-colors hover:border-neutral-300">
  <ImageIcon size={14} /> 上传图片 (0/4)
  </button>
- <span className="text-[12px] text-text-tertiary ">{feedbackText.length}/300</span>
+ <span className="text-[13px] text-text-tertiary ">{feedbackText.length}/300</span>
  </div>
  </div>
 
@@ -90,7 +90,7 @@ export const HelpSettings = () => {
  </svg>
  </div>
  </div>
- <span className="text-[12px] text-text-tertiary leading-snug">
+ <span className="text-[13px] text-text-tertiary leading-snug">
  上传日志，仅用于排查问题，可能包含对话记录、设备信息等数据。详情请查阅 <a href="#" className="text-[#a3dbcd] hover:underline underline-offset-2">隐私保护声明</a> 
  </span>
  </label>

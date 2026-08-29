@@ -53,7 +53,7 @@ export function NoteEditor({ onSelectionChange, replacementCommand }: NoteEditor
       
       <div className="space-y-4 flex-1 overflow-y-auto pr-2 pb-4">
         <div>
-          <label className="block text-[12px] font-bold text-text-tertiary mb-1">标题</label>
+          <label className="block text-[13px] font-bold text-text-tertiary mb-1">标题</label>
           <input 
             type="text" 
             value={noteTitle}
@@ -63,7 +63,7 @@ export function NoteEditor({ onSelectionChange, replacementCommand }: NoteEditor
         </div>
         
         <div className="flex-1 flex flex-col relative min-h-[250px]">
-          <label className="block text-[12px] font-bold text-text-tertiary mb-1">正文 (划选文字可在右侧使用 AI 修改)</label>
+          <label className="block text-[13px] font-bold text-text-tertiary mb-1">正文 (划选文字可在右侧使用 AI 修改)</label>
           <textarea 
             ref={textareaRef}
             value={noteBody}
@@ -74,7 +74,7 @@ export function NoteEditor({ onSelectionChange, replacementCommand }: NoteEditor
         </div>
         
         <div>
-          <label className="block text-[12px] font-bold text-text-tertiary mb-1">话题</label>
+          <label className="block text-[13px] font-bold text-text-tertiary mb-1">话题</label>
           <input 
             type="text" 
             value={noteTopics}

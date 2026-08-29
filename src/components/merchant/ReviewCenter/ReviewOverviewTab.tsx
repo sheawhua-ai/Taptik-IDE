@@ -155,12 +155,12 @@ export function ReviewOverviewTab({
       <section className="bg-gradient-to-r from-surface-subtle via-surface-1 to-surface-subtle p-5 rounded-2xl border border-border-default shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-btn-main text-white text-[11px] font-bold rounded">
+            <span className="px-2 py-0.5 bg-btn-main text-white text-[13px] font-bold rounded">
               经营结论
             </span>
             <h2 className="text-[15px] font-bold text-text-main">本次复盘核心定论</h2>
           </div>
-          <span className="text-[12px] text-text-tertiary">
+          <span className="text-[13px] text-text-tertiary">
             {analysisDetails?.summary?.timeWindow || task.dateRange.label} · 覆盖 {task.projectNames.join("、")}
           </span>
         </div>
@@ -171,7 +171,7 @@ export function ReviewOverviewTab({
               ? `${coreConclusions.overallPerformance.title}。${coreConclusions.mainIssue.title}。`
               : "Q2 会员增长主要来自三亚店的专业答疑与实测内容，但青岛、杭州在 20:00—24:00 夜间咨询承接上存在明显流失。"}
           </p>
-          <div className="flex flex-wrap items-center gap-2 text-[12px]">
+          <div className="flex flex-wrap items-center gap-2 text-[13px]">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-medium">
               <TrendingUp size={12} />
               <span>增长极：三亚店实测答疑（核销率 22.4%）</span>
@@ -197,7 +197,7 @@ export function ReviewOverviewTab({
             <div className="w-2 h-4 bg-btn-main rounded-full" />
             <h3 className="text-[15px] font-semibold text-text-main tracking-tight">核心经营指标</h3>
           </div>
-          <span className="text-[12px] text-text-tertiary">较上一周期环比基准</span>
+          <span className="text-[13px] text-text-tertiary">较上一周期环比基准</span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -206,7 +206,7 @@ export function ReviewOverviewTab({
               key={idx}
               className="bg-surface-1 p-3.5 rounded-xl border border-border-default shadow-xs flex flex-col justify-between space-y-2 hover:border-border-strong transition-colors"
             >
-              <span className="text-[11.5px] font-medium text-text-tertiary truncate">
+              <span className="text-[13px] font-medium text-text-tertiary truncate">
                 {m.label}
               </span>
               <div>
@@ -215,19 +215,19 @@ export function ReviewOverviewTab({
                 </div>
                 <div className="flex items-center gap-1.5 mt-1">
                   <span
-                    className={`inline-flex items-center gap-0.5 text-[11px] font-bold px-1 py-0.2 rounded ${
+                    className={`inline-flex items-center gap-0.5 text-[13px] font-bold px-1 py-0.2 rounded ${
                       m.isGood ? "text-emerald-700 bg-emerald-50" : "text-red-700 bg-red-50"
                     }`}
                   >
                     {m.isGood ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
                     <span>{m.change}</span>
                   </span>
-                  <span className="text-[10.5px] text-text-tertiary font-mono">
+                  <span className="text-[13px] text-text-tertiary font-mono">
                     前值 {m.before}
                   </span>
                 </div>
               </div>
-              <p className="text-[10.5px] text-text-secondary leading-tight pt-1.5 border-t border-border-subtle line-clamp-1">
+              <p className="text-[13px] text-text-secondary leading-tight pt-1.5 border-t border-border-subtle line-clamp-1">
                 {m.note}
               </p>
             </div>
@@ -244,7 +244,7 @@ export function ReviewOverviewTab({
             <div className="w-2 h-4 bg-btn-main rounded-full" />
             <h3 className="text-[15px] font-semibold text-text-main tracking-tight">关键驱动因素</h3>
           </div>
-          <span className="text-[12px] text-text-tertiary">3 大核心原因解析与分析依据直达</span>
+          <span className="text-[13px] text-text-tertiary">3 大核心原因解析与分析依据直达</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
@@ -255,10 +255,10 @@ export function ReviewOverviewTab({
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-text-tertiary">
+                  <span className="text-[13px] font-bold text-text-tertiary">
                     {driver.title}
                   </span>
-                  <span className={`px-1.5 py-0.5 text-[10.5px] font-semibold rounded border ${driver.tagColor}`}>
+                  <span className={`px-1.5 py-0.5 text-[13px] font-semibold rounded border ${driver.tagColor}`}>
                     {driver.tag}
                   </span>
                 </div>
@@ -267,7 +267,7 @@ export function ReviewOverviewTab({
                   {driver.headline}
                 </h4>
 
-                <p className="text-[12px] text-text-secondary leading-relaxed line-clamp-4">
+                <p className="text-[13px] text-text-secondary leading-relaxed line-clamp-4">
                   {driver.description}
                 </p>
               </div>
@@ -283,7 +283,7 @@ export function ReviewOverviewTab({
                       });
                     }
                   }}
-                  className="text-[12px] text-btn-main hover:text-btn-main-hover font-semibold flex items-center gap-1 group py-1"
+                  className="text-[13px] text-btn-main hover:text-btn-main-hover font-semibold flex items-center gap-1 group py-1"
                 >
                   <span>{driver.actionLabel}</span>
                   <ChevronRight size={13} className="transition-transform group-hover:translate-x-0.5" />
@@ -304,11 +304,11 @@ export function ReviewOverviewTab({
               <div className="w-2 h-4 bg-emerald-600 rounded-full" />
               <h3 className="text-[15px] font-semibold text-text-main tracking-tight">后续迭代建议</h3>
             </div>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
+            <p className="text-[13px] text-text-tertiary mt-0.5">
               基于本次复盘结果，将有效经验和优化方向应用到下一期方案或后续笔记。
             </p>
           </div>
-          <span className="text-[12px] text-text-tertiary font-medium">
+          <span className="text-[13px] text-text-tertiary font-medium">
             已应用 ({appliedCount}/{suggestedActions.length})
           </span>
         </div>
@@ -328,7 +328,7 @@ export function ReviewOverviewTab({
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`px-1.5 py-0.5 text-[10.5px] font-bold rounded ${
+                        className={`px-1.5 py-0.5 text-[13px] font-bold rounded ${
                           isP0
                             ? "bg-red-50 text-red-700 border border-red-200"
                             : "bg-blue-50 text-blue-700 border border-blue-200"
@@ -336,16 +336,16 @@ export function ReviewOverviewTab({
                       >
                         {action.priority} 优先级
                       </span>
-                      <span className="px-1.5 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[10.5px] rounded">
+                      <span className="px-1.5 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[13px] rounded">
                         {action.category}
                       </span>
-                      <span className="px-1.5 py-0.5 bg-neutral-100 text-text-tertiary border border-neutral-200 text-[10px] rounded">
+                      <span className="px-1.5 py-0.5 bg-neutral-100 text-text-tertiary border border-neutral-200 text-[13px] rounded">
                         {isPlan ? "流程 / 策略" : "内容 / 选题"}
                       </span>
                     </div>
 
                     {isApplied && (
-                      <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
+                      <span className="text-[13px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-medium">
                         <Check size={11} strokeWidth={2.5} />
                         <span>{action.appliedDestinationLabel}</span>
                       </span>
@@ -356,11 +356,11 @@ export function ReviewOverviewTab({
                     {action.title}
                   </h4>
 
-                  <p className="text-[12px] text-text-secondary leading-relaxed">
+                  <p className="text-[13px] text-text-secondary leading-relaxed">
                     <span className="text-text-tertiary font-medium">目标：</span>{action.target}
                   </p>
 
-                  <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-subtle text-[11.5px] text-text-secondary">
+                  <div className="p-2.5 bg-surface-subtle rounded-lg border border-border-subtle text-[13px] text-text-secondary">
                     <span className="font-semibold text-btn-main">预期收益：</span>
                     <span>{action.expectedGain}</span>
                   </div>
@@ -369,7 +369,7 @@ export function ReviewOverviewTab({
                 <div className="pt-2 border-t border-border-subtle flex items-center justify-between gap-2">
                   <button
                     onClick={() => onActionDetail(action)}
-                    className="text-[12px] text-text-secondary hover:text-text-main font-medium flex items-center gap-1"
+                    className="text-[13px] text-text-secondary hover:text-text-main font-medium flex items-center gap-1"
                   >
                     <span>查看落地方式</span>
                     <ChevronRight size={13} />
@@ -381,7 +381,7 @@ export function ReviewOverviewTab({
                         onApplyAction(action);
                       }
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs ${
+                    className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-colors flex items-center gap-1.5 shadow-2xs ${
                       isApplied
                         ? "bg-surface-subtle text-text-secondary border border-border-default hover:bg-hover-bg"
                         : "bg-btn-main text-white hover:bg-btn-main-hover"
@@ -415,7 +415,7 @@ export function ReviewOverviewTab({
             <AlertTriangle size={16} className="text-red-600" />
             <h3 className="text-[14px] font-semibold text-text-main">风险和待关注问题</h3>
           </div>
-          <span className="text-[12px] text-text-tertiary">
+          <span className="text-[13px] text-text-tertiary">
             提示可能影响业务判断与经营指标的异常
           </span>
         </div>
@@ -429,7 +429,7 @@ export function ReviewOverviewTab({
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`px-2 py-0.5 text-[11px] font-bold rounded ${
+                      className={`px-2 py-0.5 text-[13px] font-bold rounded ${
                         isHigh
                           ? "bg-red-100 text-red-700 border border-red-200"
                           : isMed
@@ -452,14 +452,14 @@ export function ReviewOverviewTab({
                         });
                       }
                     }}
-                    className="text-[11.5px] text-btn-main hover:text-btn-main-hover font-medium flex items-center gap-0.5"
+                    className="text-[13px] text-btn-main hover:text-btn-main-hover font-medium flex items-center gap-0.5"
                   >
                     <span>{risk.actionText}</span>
                     <ChevronRight size={12} />
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[12px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[13px]">
                   <div className="p-2.5 bg-surface-1 rounded-lg border border-border-subtle text-text-secondary leading-relaxed">
                     <span className="font-medium text-text-tertiary block mb-0.5">异常详情：</span>
                     {risk.description}

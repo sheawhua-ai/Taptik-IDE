@@ -47,7 +47,7 @@ export function VersionHistoryDrawer({
                   </div>
                   <div>
                     <h3 className="text-[15px] font-bold text-text-main">版本历史快照</h3>
-                    <p className="text-[11.5px] text-text-tertiary">
+                    <p className="text-[13px] text-text-tertiary">
                       共 {historyVersions.length} 个历史生成与调整版本
                     </p>
                   </div>
@@ -93,7 +93,7 @@ export function VersionHistoryDrawer({
                                 {ver.versionName}
                               </span>
                               <span
-                                className={`px-1.5 py-0.2 text-[10px] font-bold rounded ${
+                                className={`px-1.5 py-0.2 text-[13px] font-bold rounded ${
                                   isActive
                                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                     : "bg-neutral-100 text-text-tertiary border border-neutral-200"
@@ -103,17 +103,17 @@ export function VersionHistoryDrawer({
                               </span>
                             </div>
 
-                            <div className="flex items-center gap-1 text-[11px] text-text-tertiary">
+                            <div className="flex items-center gap-1 text-[13px] text-text-tertiary">
                               <Clock size={11} />
                               <span>{ver.createdAt}</span>
                             </div>
                           </div>
 
-                          <p className="text-[12px] text-text-secondary leading-relaxed bg-surface-subtle p-2.5 rounded-lg border border-border-subtle">
+                          <p className="text-[13px] text-text-secondary leading-relaxed bg-surface-subtle p-2.5 rounded-lg border border-border-subtle">
                             {ver.summarySnapshot}
                           </p>
 
-                          <div className="flex items-center justify-between pt-1 text-[11px]">
+                          <div className="flex items-center justify-between pt-1 text-[13px]">
                             <span className="text-text-tertiary">
                               由 <strong className="text-text-secondary">{ver.createdBy}</strong> 生成
                             </span>
@@ -144,7 +144,7 @@ export function VersionHistoryDrawer({
               </div>
 
               {/* Footer */}
-              <div className="p-4 border-t border-border-default bg-surface-1 flex items-center justify-between text-[11.5px] text-text-tertiary">
+              <div className="p-4 border-t border-border-default bg-surface-1 flex items-center justify-between text-[13px] text-text-tertiary">
                 <span>点击“恢复此版本”可即时回滚报告数据</span>
                 <button
                   onClick={onClose}

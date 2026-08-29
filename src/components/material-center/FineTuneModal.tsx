@@ -50,7 +50,7 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
             </div>
             <div>
               <h3 className="text-[17px] font-black">激活微调与复用（生成衍生版）</h3>
-              <span className="text-[11px] font-bold text-neutral-300">
+              <span className="text-[13px] font-bold text-neutral-300">
                 已使用爆款素材无法直接重发，通过微调生成全生命周期新素材
               </span>
             </div>
@@ -69,8 +69,8 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
           {/* 原素材与真实发布反馈卡片 (Section 11.1) */}
           <div className="p-4 rounded-xl bg-page-bg border border-border-default/80 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11.5px] font-extrabold text-text-tertiary">原“已使用”素材基础档案</span>
-              <span className="px-2 py-0.5 rounded bg-neutral-200 text-text-secondary text-[11px] font-bold">
+              <span className="text-[13px] font-extrabold text-text-tertiary">原“已使用”素材基础档案</span>
+              <span className="px-2 py-0.5 rounded bg-neutral-200 text-text-secondary text-[13px] font-bold">
                 原发布不能重复占用
               </span>
             </div>
@@ -86,17 +86,17 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
                 <p className="text-[13px] font-bold text-text-main line-clamp-2">
                   {parentAsset.oneSentenceUnderstanding}
                 </p>
-                <div className="text-[11.5px] text-text-tertiary font-medium">
+                <div className="text-[13px] text-text-tertiary font-medium">
                   来源项目：{parentAsset.sourceProject}
                 </div>
                 {/* 数据依据展示 */}
                 {parentAsset.usageRecords.length > 0 && parentAsset.usageRecords[0].performanceData ? (
-                  <div className="p-2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-[11.5px] font-bold flex items-center gap-1.5">
+                  <div className="p-2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-[13px] font-bold flex items-center gap-1.5">
                     <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
                     <span>系统依据：使用该素材的笔记【{parentAsset.usageRecords[0].noteTitle}】互动与收藏率显著优于类目均值，建议制作新视觉版本。</span>
                   </div>
                 ) : (
-                  <div className="p-2 bg-blue-50 text-blue-800 border border-blue-200 rounded-xl text-[11.5px] font-bold flex items-center gap-1.5">
+                  <div className="p-2 bg-blue-50 text-blue-800 border border-blue-200 rounded-xl text-[13px] font-bold flex items-center gap-1.5">
                     <Sparkles size={13} className="text-blue-600 shrink-0" />
                     <span>系统依据：基于核心场景转化率，操盘手主动选择微调复用当前视觉主体。</span>
                   </div>
@@ -116,7 +116,7 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
                   key={opt}
                   type="button"
                   onClick={() => setSelectedMod(opt)}
-                  className={`p-3 rounded-xl border text-left text-[12.5px] font-bold transition-all flex items-start gap-2 ${
+                  className={`p-3 rounded-xl border text-left text-[13px] font-bold transition-all flex items-start gap-2 ${
                     selectedMod === opt
                       ? 'bg-btn-main text-white border-neutral-900 shadow-2xs'
                       : 'bg-surface-1 hover:bg-page-bg text-text-main border-border-default'
@@ -134,7 +134,7 @@ export const FineTuneModal: React.FC<FineTuneModalProps> = ({
           </div>
 
           {/* 规则声明 (Section 11.3) */}
-          <div className="p-3.5 bg-hover-bg/80 rounded-xl text-text-secondary text-[12px] space-y-1">
+          <div className="p-3.5 bg-hover-bg/80 rounded-xl text-text-secondary text-[13px] space-y-1">
             <div className="font-extrabold text-text-main">微调后衍生资产规则</div>
             <p>
               1. 原素材保持“已使用”状态；微调生成的衍生版会进入完整AI上传分析流水线，生成全自动【一句话理解】及视觉/文本语义向量。

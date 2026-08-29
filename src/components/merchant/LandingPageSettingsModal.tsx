@@ -105,7 +105,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                 <QrCode size={18} className="text-text-secondary" />
                 落地页推广设置
               </h2>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
+              <p className="text-[13px] text-text-tertiary mt-0.5">
                 用一张海报承载内容包信息，并配置领取后的轻量体验反馈与访客登录方式。
               </p>
             </div>
@@ -127,7 +127,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               <div className="bg-surface-1 rounded-xl border border-border-default p-5 space-y-3.5">
                 <div>
                   <h3 className="text-[14px] font-semibold text-text-main">1. 内容包体验反馈</h3>
-                  <p className="text-[12px] text-text-tertiary mt-0.5">
+                  <p className="text-[13px] text-text-tertiary mt-0.5">
                     消费者领取内容包后，用约 10 秒反馈真实体验；反馈只生成该消费者的笔记，并绑定领取时的方案版本。
                   </p>
                 </div>
@@ -138,10 +138,10 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                       <FileText size={16} className="text-text-secondary" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-[12.5px] font-semibold text-text-main truncate">
+                      <div className="text-[13px] font-semibold text-text-main truncate">
                         {contentPackage?.title || "当前方案内容包"}
                       </div>
-                      <div className="text-[11.5px] text-text-tertiary mt-0.5">
+                      <div className="text-[13px] text-text-tertiary mt-0.5">
                         体验反馈 V{contentPackage?.packageSpec?.feedbackVersion || 1} · {questions.length} 项 · 约 10 秒
                       </div>
                     </div>
@@ -149,7 +149,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                   <button
                     type="button"
                     onClick={() => setShowQuestionnaireDrawer(true)}
-                    className="px-3.5 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shrink-0"
+                    className="px-3.5 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shrink-0"
                   >
                     <Edit3 size={13} className="text-text-secondary" />
                     <span>编辑体验反馈</span>
@@ -161,7 +161,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               <div className="bg-surface-1 rounded-xl border border-border-default p-5 space-y-3.5">
                 <div>
                   <h3 className="text-[14px] font-semibold text-text-main">2. 访客登录方式</h3>
-                  <p className="text-[12px] text-text-tertiary mt-0.5">
+                  <p className="text-[13px] text-text-tertiary mt-0.5">
                     设置访客进入源平台落地页后的身份验证方式。
                   </p>
                 </div>
@@ -182,7 +182,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                         <CheckCircle2 size={16} className="text-text-main" />
                       )}
                     </div>
-                    <p className="text-[12px] text-text-secondary leading-relaxed">
+                    <p className="text-[13px] text-text-secondary leading-relaxed">
                       访客可直接进入投稿流程，无需执行登录或账号绑定。
                     </p>
                   </div>
@@ -202,7 +202,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                         <CheckCircle2 size={16} className="text-text-main" />
                       )}
                     </div>
-                    <p className="text-[12px] text-text-secondary leading-relaxed">
+                    <p className="text-[13px] text-text-secondary leading-relaxed">
                       访客需先完成微信授权，发布后记录对应微信与联系人信息。
                     </p>
                   </div>
@@ -214,7 +214,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                 <div className="flex items-center justify-between gap-2">
                   <div>
                     <h3 className="text-[14px] font-semibold text-text-main">3. 落地页海报</h3>
-                    <p className="text-[12px] text-text-tertiary mt-0.5">
+                    <p className="text-[13px] text-text-tertiary mt-0.5">
                       展示在移动端落地页顶部，建议采用 9:16 比例视觉素材。
                     </p>
                   </div>
@@ -229,7 +229,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shrink-0"
+                    className="px-3 py-1.5 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors shrink-0"
                   >
                     <UploadCloud size={14} className="text-text-secondary" />
                     <span>上传自定义图片</span>
@@ -242,7 +242,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     <img src={bannerUrl} alt="Poster" className="w-full h-full object-cover" />
                     <div 
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute inset-0 bg-btn-main/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 cursor-pointer p-2 text-center text-white text-[11px]"
+                      className="absolute inset-0 bg-btn-main/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 cursor-pointer p-2 text-center text-white text-[13px]"
                     >
                       <UploadCloud size={18} />
                       <span>更换海报</span>
@@ -251,7 +251,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
                   {/* Preset Banner Selector */}
                   <div className="flex-1 space-y-2">
-                    <label className="block text-[11.5px] font-medium text-text-secondary">
+                    <label className="block text-[13px] font-medium text-text-secondary">
                       或选用官方预设风格海报：
                     </label>
                     <div className="grid grid-cols-4 gap-2">
@@ -264,7 +264,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                           }`}
                         >
                           <img src={p.url} alt={p.name} className="w-full h-full object-cover" />
-                          <span className="absolute bottom-0 inset-x-0 bg-btn-main/80 text-white text-[9.5px] text-center py-0.5 font-normal">
+                          <span className="absolute bottom-0 inset-x-0 bg-btn-main/80 text-white text-[13px] text-center py-0.5 font-normal">
                             {p.name}
                           </span>
                         </div>
@@ -281,12 +281,12 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-[14px] font-semibold text-text-main">源平台落地页</h3>
-                  <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary rounded text-[11px] font-normal">
+                  <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary rounded text-[13px] font-normal">
                     已生成
                   </span>
                 </div>
 
-                <div className="text-[12.5px] font-medium text-text-main line-clamp-2 mb-4">
+                <div className="text-[13px] font-medium text-text-main line-clamp-2 mb-4">
                   {project.name}
                 </div>
 
@@ -312,7 +312,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
                     </svg>
                   </div>
 
-                  <div className="w-full flex items-center justify-between gap-1.5 bg-surface-1 border border-border-default rounded-md px-2.5 py-1.5 mb-2 text-[11px] font-mono text-text-secondary">
+                  <div className="w-full flex items-center justify-between gap-1.5 bg-surface-1 border border-border-default rounded-md px-2.5 py-1.5 mb-2 text-[13px] font-mono text-text-secondary">
                     <span className="truncate">{landingPageUrl}</span>
                     <button 
                       onClick={handleCopy}
@@ -324,7 +324,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
                   <button
                     onClick={handleCopy}
-                    className="w-full py-2 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main rounded-md text-[12px] font-medium transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main rounded-md text-[13px] font-medium transition-colors flex items-center justify-center gap-1.5"
                   >
                     <Download size={14} className="text-text-secondary" />
                     <span>下载二维码</span>
@@ -336,7 +336,7 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
               <div className="pt-3 border-t border-border-default">
                 <button
                   onClick={() => setShowConsumerPreview(true)}
-                  className="w-full py-2 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main font-medium rounded-lg text-[12px] transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main font-medium rounded-lg text-[13px] transition-colors flex items-center justify-center gap-1.5"
                 >
                   <Smartphone size={14} className="text-text-secondary" />
                   <span>预览消费者落地页</span>
@@ -348,19 +348,19 @@ export function LandingPageSettingsModal({ project, onClose }: Props) {
 
           {/* Footer Bar */}
           <div className="px-6 py-4 border-t border-border-default flex items-center justify-between bg-surface-1 shrink-0">
-            <span className="text-[12px] text-text-tertiary">
+            <span className="text-[13px] text-text-tertiary">
               设置完成后，扫描二维码即可实时预览并体验消费者视角投稿。
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={onClose}
-                className="px-4 py-2 border border-border-default rounded-lg text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg transition-colors"
+                className="px-4 py-2 border border-border-default rounded-lg text-[13px] font-medium text-text-secondary hover:bg-hover-bg transition-colors"
               >
                 取消
               </button>
               <button
                 onClick={handleSave}
-                className="px-5 py-2 bg-btn-main text-white rounded-lg text-[12.5px] font-medium hover:bg-btn-main-hover transition-colors"
+                className="px-5 py-2 bg-btn-main text-white rounded-lg text-[13px] font-medium hover:bg-btn-main-hover transition-colors"
               >
                 保存设置
               </button>

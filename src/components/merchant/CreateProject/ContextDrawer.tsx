@@ -163,7 +163,7 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
             <h2 className="text-[16px] font-bold text-text-primary">
               AI 携带的上下文资料
             </h2>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
+            <p className="text-[13px] text-text-tertiary mt-0.5">
               可勾选或排除特定资料，AI 生成方案时将仅引用已包含的背景上下文
             </p>
           </div>
@@ -176,7 +176,7 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
         </div>
 
         {/* Overview Stats Line */}
-        <div className="px-5 py-3 bg-surface-subtle border-b border-border-default flex items-center justify-between text-[12px]">
+        <div className="px-5 py-3 bg-surface-subtle border-b border-border-default flex items-center justify-between text-[13px]">
           <span className="text-text-secondary font-medium">当前将携带：</span>
           <div className="flex items-center gap-2 text-text-primary font-medium">
             <span className="px-2 py-0.5 bg-white border border-border-default rounded">1 个商家</span>
@@ -196,14 +196,14 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
                 <Building2 size={15} className="text-text-secondary" />
                 当前商家
               </span>
-              <span className="text-[11px] font-normal text-text-tertiary">默认全局带入</span>
+              <span className="text-[13px] font-normal text-text-tertiary">默认全局带入</span>
             </div>
             <div className="p-3.5 bg-surface-subtle border border-border-default rounded-lg flex items-center justify-between">
               <div>
                 <div className="font-semibold text-text-primary">{localState.merchant.name}</div>
-                <div className="text-[12px] text-text-secondary mt-0.5">{localState.merchant.category}</div>
+                <div className="text-[13px] text-text-secondary mt-0.5">{localState.merchant.category}</div>
               </div>
-              <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+              <span className="text-[13px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
                 已带入
               </span>
             </div>
@@ -236,15 +236,15 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
                       <div className="font-medium text-text-primary flex items-center gap-1.5">
                         {p.name}
                         {p.isMain && (
-                          <span className="text-[10.5px] font-normal px-1.5 py-0.2 bg-neutral-100 text-text-secondary border border-neutral-200 rounded">
+                          <span className="text-[13px] font-normal px-1.5 py-0.2 bg-neutral-100 text-text-secondary border border-neutral-200 rounded">
                             主推
                           </span>
                         )}
                       </div>
-                      <div className="text-[12px] text-text-tertiary mt-0.5">{p.specs}</div>
+                      <div className="text-[13px] text-text-tertiary mt-0.5">{p.specs}</div>
                     </div>
                   </div>
-                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                  <span className={`text-[13px] font-medium px-2 py-0.5 rounded ${
                     p.included ? "bg-neutral-100 text-text-secondary" : "text-text-disabled"
                   }`}>
                     {p.included ? "已包含" : "已排除"}
@@ -279,12 +279,12 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
                     />
                     <div>
                       <div className="font-medium text-text-primary">{acc.name}</div>
-                      <div className="text-[11.5px] text-text-tertiary mt-0.2">
+                      <div className="text-[13px] text-text-tertiary mt-0.2">
                         {acc.type} · 粉丝 {acc.fans}
                       </div>
                     </div>
                   </div>
-                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                  <span className={`text-[13px] font-medium px-2 py-0.5 rounded ${
                     acc.included ? "bg-neutral-100 text-text-secondary" : "text-text-disabled"
                   }`}>
                     {acc.included ? "已包含" : "已排除"}
@@ -306,7 +306,7 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
               {localState.docs.map(doc => (
                 <label
                   key={doc.id}
-                  className={`flex items-center justify-between p-2.5 rounded-lg border text-[12px] cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between p-2.5 rounded-lg border text-[13px] cursor-pointer transition-colors ${
                     doc.included ? "bg-white border-border-default hover:border-neutral-400" : "bg-surface-subtle/70 border-border-subtle opacity-60"
                   }`}
                 >
@@ -319,7 +319,7 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
                     />
                     <span className="font-medium text-text-primary truncate">{doc.title}</span>
                   </div>
-                  <span className="text-[11px] text-text-tertiary shrink-0">{doc.type}</span>
+                  <span className="text-[13px] text-text-tertiary shrink-0">{doc.type}</span>
                 </label>
               ))}
             </div>
@@ -350,12 +350,12 @@ export function ContextDrawer({ contextState, onSave, onClose }: ContextDrawerPr
                     />
                     <div>
                       <div className="font-medium text-text-primary">{h.title}</div>
-                      <div className="text-[12px] text-text-secondary mt-0.5">
+                      <div className="text-[13px] text-text-secondary mt-0.5">
                         周期 {h.period} · {h.result}
                       </div>
                     </div>
                   </div>
-                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                  <span className={`text-[13px] font-medium px-2 py-0.5 rounded ${
                     h.included ? "bg-neutral-100 text-text-secondary" : "text-text-disabled"
                   }`}>
                     {h.included ? "已包含" : "已排除"}

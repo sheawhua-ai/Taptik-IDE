@@ -7,6 +7,7 @@ import {
   Image as ImageIcon,
   Layers3,
   RotateCcw,
+  Search,
   Send,
   Sparkles,
   UserRound
@@ -113,7 +114,15 @@ export function MaterialBatchReviewWorkbench({
   workspaceNavigation
 }: MaterialBatchReviewWorkbenchProps) {
   const [selectedTaskId, setSelectedTaskId] = useState(() => tasks[0]?.id ?? '');
+  const [taskQuery, setTaskQuery] = useState('');
   const activeTask = tasks.find(task => task.id === selectedTaskId) ?? tasks[0];
+  const visibleTasks = useMemo(() => {
+    const query = taskQuery.trim().toLowerCase();
+    if (!query) return tasks;
+    return tasks.filter(task => [task.title, task.targetAccount, task.projectName]
+      .filter(Boolean)
+      .some(value => value!.toLowerCase().includes(query)));
+  }, [taskQuery, tasks]);
 
   const allReviewItems = useMemo<ReviewItem[]>(() => tasks.flatMap(task => (
     (task.materialSubItems ?? []).map(subItem => ({ key: makeKey(task.id, subItem.id), task, subItem }))
@@ -264,20 +273,20 @@ export function MaterialBatchReviewWorkbench({
 
   if (!activeTask) {
     return (
-      <div className="flex h-full min-h-0 flex-col bg-page-bg">
+      <div className="workspace-shell execution-workspace flex h-full min-h-0 flex-col bg-page-bg">
         <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5">{workspaceNavigation}</div>
         <div className="flex flex-1 items-center justify-center text-center">
-          <div><CheckCircle2 size={28} className="mx-auto text-emerald-500" /><div className="mt-3 text-[12px] font-medium text-text-main">没有待审核素材任务</div></div>
+          <div><CheckCircle2 size={28} className="mx-auto text-emerald-500" /><div className="mt-3 text-[13px] font-medium text-text-main">没有待审核素材任务</div></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-page-bg">
-      <header className="flex shrink-0 items-center justify-between border-b border-border-default bg-surface-1 px-4 py-2.5">
+    <div className="workspace-shell execution-workspace flex h-full min-h-0 flex-col bg-page-bg">
+      <header className="workspace-header flex shrink-0 items-center justify-between border-b border-border-default bg-surface-1">
         {workspaceNavigation}
-        <div className="flex items-center gap-2 text-[10px] text-text-tertiary">
+        <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
           <span>{tasks.length} 项待审核</span>
           {followUpTasks.length > 0 ? (
             <button type="button" onClick={() => onOpenFollowUp?.(followUpTasks[0])} className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 font-medium text-amber-800">待跟进 {followUpTasks.length}</button>
@@ -286,13 +295,19 @@ export function MaterialBatchReviewWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="w-[270px] shrink-0 overflow-y-auto border-r border-border-default bg-surface-1 p-2.5">
-          <div className="flex items-center justify-between px-2 pb-2">
-            <span className="text-[10px] font-medium text-text-tertiary">素材任务</span>
-            <span className="text-[9.5px] text-text-tertiary">{tasks.length} 项</span>
+        <aside className="workspace-sidebar w-[320px] shrink-0 overflow-hidden border-r border-border-default bg-surface-1 flex flex-col">
+          <div className="workspace-sidebar-header space-y-3 border-b border-border-default">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[15px] font-semibold text-text-main">素材任务</h2>
+              <span className="text-[13px] text-text-tertiary">{visibleTasks.length} 项</span>
+            </div>
+            <div className="relative">
+              <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+              <input value={taskQuery} onChange={(event) => setTaskQuery(event.target.value)} placeholder="搜索任务或账号..." className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors" />
+            </div>
           </div>
-          <div className="space-y-1.5">
-            {tasks.map(task => {
+          <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
+            {visibleTasks.map(task => {
               const selected = task.id === activeTask.id;
               const requiredCount = task.materialSubItems?.length ?? 0;
               const submittedCount = getSubmittedCount(task);
@@ -307,13 +322,11 @@ export function MaterialBatchReviewWorkbench({
                     setShowReshootPanel(false);
                     setShowBatchOptimize(false);
                   }}
-                  className={`w-full rounded-lg p-2.5 text-left ${selected ? 'bg-surface-selected text-text-main' : 'text-text-secondary hover:bg-hover-bg'}`}
+                  className={`w-full text-left px-4 py-3.5 transition-colors border-b border-border-subtle relative ${selected ? 'bg-surface-subtle' : 'bg-transparent hover:bg-hover-bg text-text-main'}`}
                 >
-                  <div className="flex items-start gap-2">
-                    {selected ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-500" aria-label="当前选中" /> : <span className="w-2 shrink-0" />}
-                    <div className="line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{task.title}</div>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between pl-4 text-[9.5px] text-text-tertiary">
+                  {selected && <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-logo" />}
+                  <div className={`text-[13px] line-clamp-1 ${selected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>{task.title}</div>
+                  <div className="mt-1.5 flex items-center justify-between text-[13px] text-text-tertiary tabular-nums">
                     <span className="flex min-w-0 items-center gap-1 truncate"><UserRound size={10} />{task.targetAccount}</span>
                     <span className="shrink-0">已交 {submittedCount}/{requiredCount}</span>
                   </div>
@@ -327,7 +340,7 @@ export function MaterialBatchReviewWorkbench({
           <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-3">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="flex items-center gap-2 text-[9.5px] text-text-tertiary">
+                <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
                   <span>{activeTask.noteId ? '笔记素材任务' : '项目级素材任务'}</span>
                   <span>·</span>
                   <span className="truncate">{activeTask.targetAccount}</span>
@@ -335,7 +348,7 @@ export function MaterialBatchReviewWorkbench({
                   <span>{activeTask.deadline || '未设置截止'}</span>
                 </div>
                 <h2 className="mt-1 truncate text-[14px] font-semibold text-text-main">{activeTask.title}</h2>
-                <div className="mt-2 flex items-center gap-1.5 text-[9.5px] text-text-tertiary" aria-label="素材任务流程">
+                <div className="mt-2 flex items-center gap-1.5 text-[13px] text-text-tertiary" aria-label="素材任务流程">
                   {['已下发', '已领取', '已回传', '待审核'].map((step, index) => (
                     <React.Fragment key={step}>
                       <span className={index === 3 ? 'font-semibold text-text-main' : 'text-emerald-700'}>{step}</span>
@@ -344,12 +357,12 @@ export function MaterialBatchReviewWorkbench({
                   ))}
                 </div>
               </div>
-              <button type="button" onClick={() => setShowContext(current => !current)} className={`flex shrink-0 items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[10px] ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
+              <button type="button" onClick={() => setShowContext(current => !current)} className={`flex shrink-0 items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[13px] ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
                 任务详情 <ChevronDown size={11} className={showContext ? 'rotate-180' : ''} />
               </button>
             </div>
             {showContext ? (
-              <div className="mt-3 grid gap-2 rounded-lg bg-surface-subtle p-3 text-[10px] leading-4 text-text-secondary md:grid-cols-2">
+              <div className="mt-3 grid gap-2 rounded-lg bg-surface-subtle p-3 text-[13px] leading-4 text-text-secondary md:grid-cols-2">
                 <div><span className="text-text-tertiary">处理依据：</span>{activeTask.reasonForIntervention}</div>
                 <div><span className="text-text-tertiary">下一步：</span>{activeTask.nextStepAfterAction}</div>
               </div>
@@ -358,32 +371,32 @@ export function MaterialBatchReviewWorkbench({
 
           <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-[10px] text-text-tertiary">已选 {selectedKeys.size}</span>
-              <button type="button" onClick={() => setSelectedKeys(new Set(reviewItems.map(item => item.key)))} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">全选</button>
-              <button type="button" onClick={selectAiPassed} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">选中预检通过</button>
-              <button type="button" onClick={() => applyToSelection('已通过')} className="rounded-lg bg-neutral-950 px-2.5 py-1.5 text-[10px] font-medium text-white">批量通过</button>
-              <button type="button" onClick={openReshootPanel} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg">退回重拍</button>
-              <button type="button" onClick={() => { setShowBatchOptimize(current => !current); setShowReshootPanel(false); }} className="flex items-center gap-1 rounded-lg border border-border-default px-2.5 py-1.5 text-[10px] font-medium text-text-main hover:bg-hover-bg"><Sparkles size={11} />批量优化</button>
+              <span className="mr-1 text-[13px] text-text-tertiary">已选 {selectedKeys.size}</span>
+              <button type="button" onClick={() => setSelectedKeys(new Set(reviewItems.map(item => item.key)))} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">全选</button>
+              <button type="button" onClick={selectAiPassed} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">选中预检通过</button>
+              <button type="button" onClick={() => applyToSelection('已通过')} className="rounded-lg bg-neutral-950 px-2.5 py-1.5 text-[13px] font-medium text-white">批量通过</button>
+              <button type="button" onClick={openReshootPanel} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">退回重拍</button>
+              <button type="button" onClick={() => { setShowBatchOptimize(current => !current); setShowReshootPanel(false); }} className="flex items-center gap-1 rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg"><Sparkles size={11} />批量优化</button>
             </div>
             {showReshootPanel ? (
               <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg bg-surface-subtle p-2">
                 <RotateCcw size={13} className="text-text-tertiary" />
-                <select value={sharedReason} onChange={event => setSharedReason(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[10px] text-text-secondary">
+                <select value={sharedReason} onChange={event => setSharedReason(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[13px] text-text-secondary">
                   {RESHOOT_REASONS.map(reason => <option key={reason}>{reason}</option>)}
                 </select>
-                <select value={replacementExecutor} onChange={event => setReplacementExecutor(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[10px] text-text-secondary">
+                <select value={replacementExecutor} onChange={event => setReplacementExecutor(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[13px] text-text-secondary">
                   <option>保持原执行人</option><option>改派备用员工</option><option>改派备用KOC</option>
                 </select>
-                <button type="button" onClick={confirmReshoot} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[10px] text-white">确认退回要求</button>
+                <button type="button" onClick={confirmReshoot} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[13px] text-white">确认退回要求</button>
               </div>
             ) : null}
             {showBatchOptimize ? (
               <div className="mt-2 flex items-center gap-2 rounded-lg bg-surface-subtle p-2">
                 <Layers3 size={13} className="text-text-tertiary" />
-                <select value={optimizeAction} onChange={event => setOptimizeAction(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[10px] text-text-secondary">
+                <select value={optimizeAction} onChange={event => setOptimizeAction(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[13px] text-text-secondary">
                   {OPTIMIZE_ACTIONS.map(action => <option key={action}>{action}</option>)}
                 </select>
-                <button type="button" onClick={submitBatchOptimize} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[10px] text-white">加入处理</button>
+                <button type="button" onClick={submitBatchOptimize} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[13px] text-white">加入处理</button>
               </div>
             ) : null}
           </div>
@@ -417,22 +430,22 @@ export function MaterialBatchReviewWorkbench({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className={`rounded-md px-2 py-1 text-[9px] ${aiPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{aiPassed ? '预检通过' : '重点检查'}</span>
-                          <span className="ml-auto text-[9px] text-text-tertiary">{uploaded?.resolution || '待回传'}</span>
+                          <span className={`rounded-md px-2 py-1 text-[13px] ${aiPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{aiPassed ? '预检通过' : '重点检查'}</span>
+                          <span className="ml-auto text-[13px] text-text-tertiary">{uploaded?.resolution || '待回传'}</span>
                         </div>
-                        <h3 className="mt-2 line-clamp-2 text-[11.5px] font-semibold leading-5 text-text-main">{item.subItem.requirement}</h3>
-                        <details className="mt-1 text-[9.5px] text-text-tertiary" onClick={event => event.stopPropagation()}>
+                        <h3 className="mt-2 line-clamp-2 text-[13px] font-semibold leading-5 text-text-main">{item.subItem.requirement}</h3>
+                        <details className="mt-1 text-[13px] text-text-tertiary" onClick={event => event.stopPropagation()}>
                           <summary className="cursor-pointer select-none">预检详情</summary>
                           <p className="mt-1 leading-4">{item.subItem.autoCheckResult}</p>
                         </details>
                         <div className="mt-2 flex gap-2">
-                          <button type="button" onClick={event => { event.stopPropagation(); updateDecision(item.key, { decision: '已通过', reason: '' }); }} className={`rounded-lg px-2.5 py-1.5 text-[10px] font-medium ${draft.decision === '已通过' ? 'bg-neutral-950 text-white' : 'border border-border-default text-text-secondary'}`}>通过</button>
-                          <button type="button" onClick={event => { event.stopPropagation(); updateDecision(item.key, { decision: '需补拍', reason: draft.reason || sharedReason }); }} className={`rounded-lg px-2.5 py-1.5 text-[10px] font-medium ${draft.decision === '需补拍' ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200' : 'border border-border-default text-text-secondary'}`}>打回</button>
+                          <button type="button" onClick={event => { event.stopPropagation(); updateDecision(item.key, { decision: '已通过', reason: '' }); }} className={`rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '已通过' ? 'bg-neutral-950 text-white' : 'border border-border-default text-text-secondary'}`}>通过</button>
+                          <button type="button" onClick={event => { event.stopPropagation(); updateDecision(item.key, { decision: '需补拍', reason: draft.reason || sharedReason }); }} className={`rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '需补拍' ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200' : 'border border-border-default text-text-secondary'}`}>打回</button>
                         </div>
                       </div>
                     </div>
                     {draft.decision === '需补拍' ? (
-                      <input value={draft.reason} onClick={event => event.stopPropagation()} onChange={event => updateDecision(item.key, { reason: event.target.value })} placeholder="补充重拍要求" className="mt-2 w-full rounded-lg border border-border-default px-3 py-2 text-[10px] outline-none focus:border-border-strong" />
+                      <input value={draft.reason} onClick={event => event.stopPropagation()} onChange={event => updateDecision(item.key, { reason: event.target.value })} placeholder="补充重拍要求" className="mt-2 w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none focus:border-border-strong" />
                     ) : null}
                   </article>
                 );
@@ -442,19 +455,19 @@ export function MaterialBatchReviewWorkbench({
 
           <footer className="shrink-0 border-t border-border-default bg-surface-1 px-4 py-2 shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-3 text-[10px]">
+              <div className="flex items-center gap-3 text-[13px]">
                 <span className="flex items-center gap-1 text-emerald-700"><CheckCircle2 size={12} />通过 {counts.accepted}</span>
                 <span className="flex items-center gap-1 text-rose-600"><RotateCcw size={12} />打回 {counts.reshoot}</span>
                 <span className="flex items-center gap-1 text-text-tertiary"><Clock3 size={12} />未判断 {counts.pending}</span>
               </div>
-              <span className="ml-auto text-[9.5px] text-text-tertiary">通过的素材入库；退回项沿原任务继续执行</span>
-              <button type="button" onClick={submitReview} disabled={requiredPending} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[10.5px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />提交审核</button>
+              <span className="ml-auto text-[13px] text-text-tertiary">通过的素材入库；退回项沿原任务继续执行</span>
+              <button type="button" onClick={submitReview} disabled={requiredPending} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />提交审核</button>
             </div>
           </footer>
         </main>
       </div>
 
-      {notice ? <div className="fixed bottom-6 left-1/2 z-[300] -translate-x-1/2 rounded-xl bg-neutral-950 px-4 py-2.5 text-[10.5px] text-white shadow-xl">{notice}</div> : null}
+      {notice ? <div className="fixed bottom-6 left-1/2 z-[300] -translate-x-1/2 rounded-xl bg-neutral-950 px-4 py-2.5 text-[13px] text-white shadow-xl">{notice}</div> : null}
     </div>
   );
 }

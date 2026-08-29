@@ -430,7 +430,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                   {/* Tooltip */}
                   <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-all bg-surface-1 border border-[#E5EAF1] shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-xl p-3 w-64 z-[100] pointer-events-none origin-left scale-95 group-hover/item:scale-100 duration-200">
                     <div className="absolute top-1/2 -translate-y-1/2 -left-1.5 w-3 h-3 bg-surface-1 border-l border-b border-[#E5EAF1] rotate-45" />
-                    <p className="text-[12px] text-text-main line-clamp-3 leading-relaxed relative z-10">
+                    <p className="text-[13px] text-text-main line-clamp-3 leading-relaxed relative z-10">
                       {msg.content || "快捷指令"}
                     </p>
                   </div>
@@ -557,7 +557,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                           </div>
 
                           <div className="mb-5 bg-[#F6F8FB] p-3 rounded-xl border border-[#E5EAF1]">
-                            <h4 className="text-[12px] font-medium text-text-secondary mb-1">执行影响</h4>
+                            <h4 className="text-[13px] font-medium text-text-secondary mb-1">执行影响</h4>
                             <p className="text-[13px] text-text-main">{msg.card.recommendedDestination}</p>
                           </div>
 
@@ -593,7 +593,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                               </span>
                             </div>
                             <div className="flex items-center gap-1 text-[#98A2B3] hover:text-text-secondary">
-                              <span className="text-[12px]">展开详情</span>
+                              <span className="text-[13px]">展开详情</span>
                               <ChevronDown
                                 size={14}
                                 className={`transition-transform ${msg.card.isExpanded ? "rotate-180" : ""}`}
@@ -665,10 +665,10 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                                     <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handleOpenFile(artifact)}>
                                       <div className="flex items-center gap-2 mb-0.5">
                                         <span className="text-[13px] font-medium text-text-main truncate">{artifact.name}</span>
-                                        {artifact.isNew && <span className="text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-700 rounded font-medium border border-neutral-200">新建</span>}
-                                        {artifact.isUpdated && <span className="text-[10px] px-1.5 py-0.5 bg-[#F6F8FB] text-text-secondary rounded font-medium border border-[#E5EAF1]">更新</span>}
+                                        {artifact.isNew && <span className="text-[13px] px-1.5 py-0.5 bg-neutral-100 text-neutral-700 rounded font-medium border border-neutral-200">新建</span>}
+                                        {artifact.isUpdated && <span className="text-[13px] px-1.5 py-0.5 bg-[#F6F8FB] text-text-secondary rounded font-medium border border-[#E5EAF1]">更新</span>}
                                       </div>
-                                      <p className="text-[11px] text-[#98A2B3] truncate">{artifact.path} · {artifact.size}</p>
+                                      <p className="text-[13px] text-[#98A2B3] truncate">{artifact.path} · {artifact.size}</p>
                                     </div>
                                     <button className="w-8 h-8 rounded-lg flex items-center justify-center text-[#98A2B3] hover:text-text-main hover:bg-[#E5EAF1] opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
                                       <Search size={14} />
@@ -683,9 +683,9 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                           {msg.card.suggestions && msg.card.suggestions.length > 0 && (
                             <div className="space-y-2">
                               <div className="flex items-center justify-between mt-6 px-1">
-                                <h4 className="text-[12px] font-medium text-[#98A2B3]">接下来建议</h4>
+                                <h4 className="text-[13px] font-medium text-[#98A2B3]">接下来建议</h4>
                                 {msg.card.suggestions.length > 2 && (
-                                  <button className="text-[12px] text-text-secondary hover:text-neutral-950 transition-colors flex items-center gap-1 cursor-pointer">
+                                  <button className="text-[13px] text-text-secondary hover:text-neutral-950 transition-colors flex items-center gap-1 cursor-pointer">
                                     更多建议 <ChevronRight size={12} />
                                   </button>
                                 )}
@@ -697,7 +697,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                                       {sug.title}
                                       <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 text-neutral-700 -translate-x-2 group-hover:translate-x-0 transition-all" />
                                     </h5>
-                                    <p className="text-[12px] text-text-secondary line-clamp-1">{sug.desc}</p>
+                                    <p className="text-[13px] text-text-secondary line-clamp-1">{sug.desc}</p>
                                   </div>
                                 ))}
                               </div>
@@ -833,7 +833,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                             <div className="h-px bg-hover-bg w-full" />
 
                             <div className="px-3 py-2">
-                              <div className="text-[11px] text-text-tertiary font-medium px-2 mb-1">
+                              <div className="text-[13px] text-text-tertiary font-medium px-2 mb-1">
                                 智能体
                               </div>
                               {AVAILABLE_AGENTS.slice(0, 3).map((agent) => (
@@ -857,7 +857,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                             <div className="h-px bg-hover-bg w-full" />
 
                             <div className="px-3 py-2">
-                              <div className="text-[11px] text-text-tertiary font-medium px-2 mb-1">
+                              <div className="text-[13px] text-text-tertiary font-medium px-2 mb-1">
                                 技能
                               </div>
                               {[
@@ -912,7 +912,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                                   setActiveNav("skills");
                                   setIsAttachMenuOpen(false);
                                 }}
-                                className="flex items-center justify-between px-3 py-2.5 bg-page-bg hover:bg-hover-bg rounded-xl text-text-secondary hover:text-text-main transition-colors text-[12px] w-full group"
+                                className="flex items-center justify-between px-3 py-2.5 bg-page-bg hover:bg-hover-bg rounded-xl text-text-secondary hover:text-text-main transition-colors text-[13px] w-full group"
                               >
                                 <span>前往技能和专家市场</span>
                                 <ArrowUpRight
@@ -932,7 +932,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                     {activeProjectId === 'project-b' && references.length > 0 && (
                       <div className="flex flex-wrap gap-2 px-3 pt-2 pb-1 bg-surface-1 max-h-[100px] overflow-y-auto">
                         {references.slice(0, 3).map(ref => (
-                          <div key={ref.id} className="group relative flex items-center gap-1.5 bg-transparent border border-[#E5EAF1] text-text-main pl-2 pr-1 py-1 rounded-md text-[12px] shadow-sm cursor-pointer hover:bg-[#F6F8FB] transition-colors">
+                          <div key={ref.id} className="group relative flex items-center gap-1.5 bg-transparent border border-[#E5EAF1] text-text-main pl-2 pr-1 py-1 rounded-md text-[13px] shadow-sm cursor-pointer hover:bg-[#F6F8FB] transition-colors">
                             {ref.type === 'folder' ? <Folder size={12} className="text-[#98A2B3]"/> : <File size={12} className="text-[#98A2B3]"/>}
                             <span>{ref.name}</span>
                             <button 
@@ -947,7 +947,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                           </div>
                         ))}
                         {references.length > 3 && (
-                          <div className="flex items-center justify-center bg-transparent border border-[#E5EAF1] text-text-secondary px-2 py-1 rounded-md text-[12px] shadow-sm cursor-pointer">
+                          <div className="flex items-center justify-center bg-transparent border border-[#E5EAF1] text-text-secondary px-2 py-1 rounded-md text-[13px] shadow-sm cursor-pointer">
                             +{references.length - 3}
                           </div>
                         )}
@@ -956,7 +956,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
 
                     {selectedShortcut && (
                       <div className="flex mb-1 ml-2 mt-1">
-                        <div className="flex items-center gap-1.5 bg-transparent text-text-main border border-[#E5EAF1] px-2.5 py-1 rounded-md text-[12px] shadow-sm shrink-0">
+                        <div className="flex items-center gap-1.5 bg-transparent text-text-main border border-[#E5EAF1] px-2.5 py-1 rounded-md text-[13px] shadow-sm shrink-0">
                           <PieChart size={14} className="text-[#98A2B3]" />
                           <span>{selectedShortcut.name}</span>
                           <button
@@ -1065,7 +1065,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                         <h3 className="text-[14px] font-semibold text-text-main tracking-tight">
                           全自动编排列
                         </h3>
-                        <div className="text-[11px] text-text-tertiary mt-0.5 tracking-wide">
+                        <div className="text-[13px] text-text-tertiary mt-0.5 tracking-wide">
                           任务执行链路
                         </div>
                       </div>
@@ -1139,21 +1139,21 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <span
-                                className={`text-[12px] ${step.active ? "text-neutral-950" : "text-text-main"}`}
+                                className={`text-[13px] ${step.active ? "text-neutral-950" : "text-text-main"}`}
                               >
                                 {step.stage}
                               </span>
                               <span
-                                className={`text-[9px] px-1.5 py-0.5 rounded-sm ${step.active ? "bg-neutral-100 text-neutral-800" : step.status === "完成" ? "bg-hover-bg text-text-secondary" : "hidden"}`}
+                                className={`text-[13px] px-1.5 py-0.5 rounded-sm ${step.active ? "bg-neutral-100 text-neutral-800" : step.status === "完成" ? "bg-hover-bg text-text-secondary" : "hidden"}`}
                               >
                                 {step.status}
                               </span>
                             </div>
-                            <span className="text-[10px] text-text-tertiary font-mono tracking-tight">
+                            <span className="text-[13px] text-text-tertiary font-mono tracking-tight">
                               {step.time}
                             </span>
                           </div>
-                          <p className="text-[11px] font-medium text-text-tertiary mt-1 leading-snug break-all line-clamp-2">
+                          <p className="text-[13px] font-medium text-text-tertiary mt-1 leading-snug break-all line-clamp-2">
                             {step.detail}
                           </p>
                         </div>
@@ -1169,7 +1169,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
               onClick={() => setBottomExpanded(!bottomExpanded)}
             >
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-2.5 py-1 bg-neutral-100 text-neutral-700 rounded-lg text-[11px] ">
+                <div className="flex items-center gap-2 px-2.5 py-1 bg-neutral-100 text-neutral-700 rounded-lg text-[13px] ">
                   <div className="w-2 h-2 rounded-full bg-neutral-700 animate-pulse" />
                   AI 正在运行
                 </div>
@@ -1179,7 +1179,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[11px] text-text-tertiary group-hover:text-neutral-900 transition-colors">
+                <span className="text-[13px] text-text-tertiary group-hover:text-neutral-900 transition-colors">
                   {bottomExpanded ? "收起工作流" : "展开工作流详细"}
                 </span>
                 {bottomExpanded ? (
@@ -1251,7 +1251,7 @@ export const Workbench: React.FC<WorkbenchProps> = ({
             <p className="text-[14px]">
               {openedTabs.find(t => t.id === activeTabId)?.name || '未找到文件'}
             </p>
-            <p className="text-[12px] mt-2">（文件预览区域，可接入外部编辑器或表格组件）</p>
+            <p className="text-[13px] mt-2">（文件预览区域，可接入外部编辑器或表格组件）</p>
           </div>
         )}
       </div>

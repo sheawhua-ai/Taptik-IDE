@@ -20,8 +20,8 @@ export const Billing: React.FC = () => {
  </div>
  <div className="relative z-10">
  <div className="flex items-center gap-3 mb-6">
- <div className="px-3 py-1 bg-btn-main rounded-lg text-[10px] uppercase tracking-widest leading-none text-white">充值钱包</div>
- <span className="text-text-tertiary text-[11px] ">当前所属账户</span>
+ <div className="px-3 py-1 bg-btn-main rounded-lg text-[13px] uppercase tracking-widest leading-none text-white">充值钱包</div>
+ <span className="text-text-tertiary text-[13px] ">当前所属账户</span>
  </div>
  <div className="flex items-baseline gap-3 mb-2">
  <span className="text-5xl tracking-tighter">4,720.00</span>
@@ -37,7 +37,7 @@ export const Billing: React.FC = () => {
  
  <div className="lg:col-span-4 bg-page-bg border border-border-default rounded-[32px] p-8 flex flex-col justify-between shadow-sm">
  <div>
- <div className="flex items-center gap-2 text-text-tertiary text-[11px] uppercase tracking-widest mb-6">
+ <div className="flex items-center gap-2 text-text-tertiary text-[13px] uppercase tracking-widest mb-6">
  <CreditCard size={14} /> 订阅状态
  </div>
  <div className="mb-4">
@@ -45,7 +45,7 @@ export const Billing: React.FC = () => {
  <p className="text-[13px] text-text-tertiary mt-2">¥ 3,990 / 年</p>
  </div>
  <div className="space-y-3 mt-6">
- <div className="flex items-center gap-2 text-[12px] text-text-main bg-hover-bg px-3 py-2 rounded-xl border border-success-100/50">
+ <div className="flex items-center gap-2 text-[13px] text-text-main bg-hover-bg px-3 py-2 rounded-xl border border-success-100/50">
  <Activity size={14} /> 生效中 (剩余 342 天)
  </div>
  </div>
@@ -61,7 +61,7 @@ export const Billing: React.FC = () => {
  <h2 className="text-lg font-semibold text-text-main tracking-tight">消耗流水细分</h2>
  <p className="text-[13px] text-text-tertiary ">每日 00:00 自动校对 AI 执行日志并清结算</p>
  </div>
- <button className="text-[12px] text-text-tertiary border border-border-default bg-neutral-0 hover:bg-page-bg px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
+ <button className="text-[13px] text-text-tertiary border border-border-default bg-neutral-0 hover:bg-page-bg px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
  <Download size={14}/> 导出报表
  </button>
  </div>
@@ -74,20 +74,20 @@ export const Billing: React.FC = () => {
  ].map((row, i) => (
  <div key={i} className="bg-neutral-0 border border-border-default rounded-[24px] p-5 flex items-center justify-between hover:border-primary-500/20 hover:bg-brand-light/20 transition-all group shadow-sm">
  <div className="flex items-center gap-6 flex-1">
- <div className="text-[11px] font-mono text-text-tertiary bg-page-bg px-2 py-1 rounded-md">{row.date}</div>
+ <div className="text-[13px] font-mono text-text-tertiary bg-page-bg px-2 py-1 rounded-md">{row.date}</div>
  <div className="flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-page-bg flex items-center justify-center text-text-tertiary group-hover:bg-neutral-0 group-hover:text-brand-logo transition-colors border border-transparent group-hover:border-border-default">
  <Database size={18} />
  </div>
  <div>
  <h4 className="text-[14px] font-semibold text-text-main leading-tight">{row.project}</h4>
- <p className="text-[12px] text-text-tertiary mt-0.5">{row.type} · <span className="text-brand-logo/70">{row.detail}</span></p>
+ <p className="text-[13px] text-text-tertiary mt-0.5">{row.type} · <span className="text-brand-logo/70">{row.detail}</span></p>
  </div>
  </div>
  </div>
  <div className="flex items-center gap-8">
  <div className="text-right">
- <div className="text-[11px] text-neutral-300 uppercase tracking-tighter mb-0.5">执行引擎</div>
+ <div className="text-[13px] text-neutral-300 uppercase tracking-tighter mb-0.5">执行引擎</div>
  <div className="text-[13px] text-text-secondary">{row.engine}</div>
  </div>
  <div className="w-20 text-right text-lg text-brand-logo tracking-tighter">

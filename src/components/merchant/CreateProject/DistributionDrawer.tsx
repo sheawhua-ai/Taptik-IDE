@@ -366,19 +366,19 @@ export function DistributionDrawer({
                 <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                   自有账号矩阵方案审阅与调整
                 </h2>
-                <span className="px-2.5 py-0.5 bg-hover-bg border border-border-default text-text-main text-[11.5px] font-bold rounded-lg flex items-center gap-1.5">
+                <span className="px-2.5 py-0.5 bg-hover-bg border border-border-default text-text-main text-[13px] font-bold rounded-lg flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                   {currentVersion} · 方案已确认
                 </span>
               </div>
-              <p className="text-[12px] text-text-tertiary mt-0.5">
+              <p className="text-[13px] text-text-tertiary mt-0.5">
                 直接选择账号或节点，使用自然语言下发指令；确认提案后将同步增量更新工作任务
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[12px] text-text-tertiary">最近更新：{lastUpdated}</span>
+            <span className="text-[13px] text-text-tertiary">最近更新：{lastUpdated}</span>
             <button
               onClick={onClose}
               className="p-2 text-text-tertiary hover:text-text-main rounded-xl hover:bg-hover-bg transition-colors"
@@ -408,7 +408,7 @@ export function DistributionDrawer({
               </div>
             </div>
 
-            <div className="text-[12px] text-text-tertiary font-medium">
+            <div className="text-[13px] text-text-tertiary font-medium">
               点击下方账号卡片或排期可直接指定调整对象
             </div>
           </div>
@@ -423,7 +423,7 @@ export function DistributionDrawer({
               <button
                 type="button"
                 onClick={() => setShowBasisDetail(!showBasisDetail)}
-                className="text-[12px] font-bold text-text-secondary hover:text-black flex items-center gap-1 bg-hover-bg px-3 py-1.5 rounded-lg transition-colors border border-border-default/80"
+                className="text-[13px] font-bold text-text-secondary hover:text-black flex items-center gap-1 bg-hover-bg px-3 py-1.5 rounded-lg transition-colors border border-border-default/80"
               >
                 <span>基于账号定位、历史表现和任务负载生成</span>
                 {showBasisDetail ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -443,8 +443,8 @@ export function DistributionDrawer({
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden pt-1"
                 >
-                  <div className="p-4 bg-hover-bg/80 border border-border-default rounded-xl space-y-3 text-[12px] text-text-secondary">
-                    <div className="font-bold text-text-main text-[12.5px] border-b border-border-default pb-2 flex items-center gap-2">
+                  <div className="p-4 bg-hover-bg/80 border border-border-default rounded-xl space-y-3 text-[13px] text-text-secondary">
+                    <div className="font-bold text-text-main text-[13px] border-b border-border-default pb-2 flex items-center gap-2">
                       <BookOpen size={15} />
                       完整 AI 方案生成依据与规则设定：
                     </div>
@@ -487,7 +487,7 @@ export function DistributionDrawer({
                 <ShieldCheck size={16} className="text-text-main" />
                 <span className="text-[14px] font-extrabold text-text-main">账号角色与分工入口</span>
               </div>
-              <span className="text-[11.5px] text-text-tertiary font-medium">
+              <span className="text-[13px] text-text-tertiary font-medium">
                 点击任意卡片选中为修改对象，底栏指令区将自动携带上下文
               </span>
             </div>
@@ -506,7 +506,7 @@ export function DistributionDrawer({
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                       selectedContext.id === "brand_1" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       品牌主号
@@ -515,18 +515,18 @@ export function DistributionDrawer({
                       特唯普品牌官方号
                     </h3>
                   </div>
-                  <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
+                  <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
                     selectedContext.id === "brand_1" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     6 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "brand_1" ? "text-neutral-300" : "text-text-secondary"}`}>
+                <div className={`text-[13px] space-y-1 leading-snug ${selectedContext.id === "brand_1" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 原理解释 / 产品标准</div>
                   <div><strong>词簇：</strong> #宠物除臭 #宠物环境清洁</div>
                   <div><strong>节奏：</strong> 每 2~3 天发布 1 篇</div>
-                  <div className="pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="pt-1 text-[13px] font-bold text-emerald-600 dark:text-emerald-400">
                     关联 8 个工作任务
                   </div>
                 </div>
@@ -543,7 +543,7 @@ export function DistributionDrawer({
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                       selectedContext.id === "brand_2" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       品牌主号
@@ -552,18 +552,18 @@ export function DistributionDrawer({
                       特唯普健康宠物馆
                     </h3>
                   </div>
-                  <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
+                  <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
                     selectedContext.id === "brand_2" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     2 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "brand_2" ? "text-neutral-300" : "text-text-secondary"}`}>
+                <div className={`text-[13px] space-y-1 leading-snug ${selectedContext.id === "brand_2" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 养宠指南 / 权威问答</div>
                   <div><strong>词簇：</strong> #幼犬除味技巧 #宠物环境清洁</div>
                   <div><strong>节奏：</strong> 每周 1 篇</div>
-                  <div className="pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="pt-1 text-[13px] font-bold text-emerald-600 dark:text-emerald-400">
                     关联 3 个工作任务
                   </div>
                 </div>
@@ -580,7 +580,7 @@ export function DistributionDrawer({
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                       selectedContext.id === "store_1" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       门店号
@@ -589,18 +589,18 @@ export function DistributionDrawer({
                       店长号_陆家嘴旗舰店
                     </h3>
                   </div>
-                  <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
+                  <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
                     selectedContext.id === "store_1" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     4 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "store_1" ? "text-neutral-300" : "text-text-secondary"}`}>
+                <div className={`text-[13px] space-y-1 leading-snug ${selectedContext.id === "store_1" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 到店攻略 / 线下活动</div>
                   <div><strong>词簇：</strong> #猫砂除味 #上海宠物用品店</div>
                   <div><strong>节奏：</strong> 每周 2 篇</div>
-                  <div className="pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="pt-1 text-[13px] font-bold text-emerald-600 dark:text-emerald-400">
                     关联 5 个工作任务
                   </div>
                 </div>
@@ -617,7 +617,7 @@ export function DistributionDrawer({
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                       selectedContext.id === "store_2" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       门店号
@@ -626,18 +626,18 @@ export function DistributionDrawer({
                       店长号_徐家汇概念店
                     </h3>
                   </div>
-                  <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
+                  <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
                     selectedContext.id === "store_2" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     2 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "store_2" ? "text-neutral-300" : "text-text-secondary"}`}>
+                <div className={`text-[13px] space-y-1 leading-snug ${selectedContext.id === "store_2" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 顾客解答 / 本地服务</div>
                   <div><strong>词簇：</strong> #宠物除臭 #猫砂除味</div>
                   <div><strong>节奏：</strong> 每周 1 篇</div>
-                  <div className="pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="pt-1 text-[13px] font-bold text-emerald-600 dark:text-emerald-400">
                     关联 3 个工作任务
                   </div>
                 </div>
@@ -654,7 +654,7 @@ export function DistributionDrawer({
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded ${
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                       selectedContext.id === "kos_1" ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                     }`}>
                       KOS员工号
@@ -663,18 +663,18 @@ export function DistributionDrawer({
                       KOS_小张 (徐家汇店)
                     </h3>
                   </div>
-                  <span className={`px-2.5 py-1 text-[11px] font-extrabold rounded-lg ${
+                  <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
                     selectedContext.id === "kos_1" ? "bg-surface-1 text-text-main" : "bg-btn-main text-white"
                   }`}>
                     4 篇
                   </span>
                 </div>
 
-                <div className={`text-[11.5px] space-y-1 leading-snug ${selectedContext.id === "kos_1" ? "text-neutral-300" : "text-text-secondary"}`}>
+                <div className={`text-[13px] space-y-1 leading-snug ${selectedContext.id === "kos_1" ? "text-neutral-300" : "text-text-secondary"}`}>
                   <div><strong>角色：</strong> 真实使用 / 痛点避坑</div>
                   <div><strong>词簇：</strong> #猫砂除味 #宠物除臭</div>
                   <div><strong>节奏：</strong> 每周 2 篇</div>
-                  <div className="pt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="pt-1 text-[13px] font-bold text-emerald-600 dark:text-emerald-400">
                     关联 5 个工作任务
                   </div>
                 </div>
@@ -692,7 +692,7 @@ export function DistributionDrawer({
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3.5 text-[12px]">
+            <div className="grid grid-cols-3 gap-3.5 text-[13px]">
               <div
                 onClick={() => handleSelectKeyword("宠物除臭", 6)}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer space-y-1.5 ${
@@ -703,7 +703,7 @@ export function DistributionDrawer({
               >
                 <div className="font-extrabold flex justify-between items-center text-[13px]">
                   <span>#宠物除臭</span>
-                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
+                  <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                     selectedContext.id === "宠物除臭" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-text-main"
                   }`}>
                     6 篇覆盖
@@ -727,7 +727,7 @@ export function DistributionDrawer({
               >
                 <div className="font-extrabold flex justify-between items-center text-[13px]">
                   <span>#猫砂除味</span>
-                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
+                  <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                     selectedContext.id === "猫砂除味" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-text-main"
                   }`}>
                     5 篇覆盖
@@ -751,7 +751,7 @@ export function DistributionDrawer({
               >
                 <div className="font-extrabold flex justify-between items-center text-[13px]">
                   <span>#上海宠物用品店</span>
-                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
+                  <span className={`text-[13px] font-bold px-2 py-0.5 rounded ${
                     selectedContext.id === "上海宠物用品店" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-text-main"
                   }`}>
                     3 篇覆盖
@@ -774,7 +774,7 @@ export function DistributionDrawer({
                 <Calendar size={16} className="text-text-main" />
                 <span className="text-[14px] font-extrabold text-text-main">14天矩阵错峰发布节奏 (Timeline)</span>
               </div>
-              <span className="text-[11.5px] text-text-tertiary">点击任意排期笔记带入底栏上下文</span>
+              <span className="text-[13px] text-text-tertiary">点击任意排期笔记带入底栏上下文</span>
             </div>
 
             <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
@@ -791,21 +791,21 @@ export function DistributionDrawer({
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={`w-16 text-center font-bold text-[12px] py-1 rounded-md shrink-0 ${
+                      <span className={`w-16 text-center font-bold text-[13px] py-1 rounded-md shrink-0 ${
                         isSelected ? "bg-neutral-800 text-white" : "bg-hover-bg text-text-secondary"
                       }`}>
                         Day {note.day}
                       </span>
                       <div>
-                        <div className={`text-[12.5px] font-bold flex items-center gap-2 ${isSelected ? "text-white" : "text-text-main"}`}>
+                        <div className={`text-[13px] font-bold flex items-center gap-2 ${isSelected ? "text-white" : "text-text-main"}`}>
                           <span>{note.title}</span>
-                          <span className={`px-2 py-0.2 text-[10.5px] font-semibold rounded ${
+                          <span className={`px-2 py-0.2 text-[13px] font-semibold rounded ${
                             isSelected ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                           }`}>
                             #{note.keywordCluster}
                           </span>
                         </div>
-                        <div className={`text-[11px] mt-0.5 ${isSelected ? "text-neutral-300" : "text-text-tertiary"}`}>
+                        <div className={`text-[13px] mt-0.5 ${isSelected ? "text-neutral-300" : "text-text-tertiary"}`}>
                           {note.accountName} · {note.dateStr} · 角色：{note.assignedRole}
                         </div>
                       </div>
@@ -813,7 +813,7 @@ export function DistributionDrawer({
 
                     <div className="shrink-0">
                       {note.status === "executing" ? (
-                        <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg border flex items-center gap-1 ${
+                        <span className={`px-2.5 py-1 text-[13px] font-bold rounded-lg border flex items-center gap-1 ${
                           isSelected
                             ? "bg-neutral-800 text-emerald-400 border-neutral-700"
                             : "bg-hover-bg text-text-main border-border-default"
@@ -821,7 +821,7 @@ export function DistributionDrawer({
                           <Clock size={12} /> 执行中
                         </span>
                       ) : (
-                        <span className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${
+                        <span className={`px-2.5 py-1 text-[13px] font-medium rounded-lg ${
                           isSelected ? "bg-neutral-800 text-neutral-300" : "bg-hover-bg text-text-secondary"
                         }`}>
                           未开始
@@ -855,28 +855,28 @@ export function DistributionDrawer({
                     <Sparkles size={16} className="text-amber-300 animate-pulse" />
                     <span>AI 变更计算提案 ({proposal.versionLabel})</span>
                   </div>
-                  <span className="text-[11.5px] text-text-tertiary font-medium">
+                  <span className="text-[13px] text-text-tertiary font-medium">
                     {proposal.overallImpact}
                   </span>
                 </div>
 
-                <p className="text-[12px] text-neutral-300 font-medium leading-relaxed">
+                <p className="text-[13px] text-neutral-300 font-medium leading-relaxed">
                   {proposal.description}
                 </p>
 
                 {/* Diffs List */}
                 <div className="space-y-2">
                   {proposal.diffs.map((diff, index) => (
-                    <div key={index} className="p-3 bg-neutral-800/90 border border-neutral-700/80 rounded-xl space-y-1 text-[12px]">
+                    <div key={index} className="p-3 bg-neutral-800/90 border border-neutral-700/80 rounded-xl space-y-1 text-[13px]">
                       <div className="flex justify-between items-center font-bold text-white">
                         <span>{diff.entity}</span>
                         {diff.tag && (
-                          <span className="text-[10.5px] font-medium bg-neutral-700 px-2 py-0.5 rounded text-neutral-300">
+                          <span className="text-[13px] font-medium bg-neutral-700 px-2 py-0.5 rounded text-neutral-300">
                             {diff.tag}
                           </span>
                         )}
                       </div>
-                      <div className="grid grid-cols-2 gap-2 text-[11.5px] pt-1">
+                      <div className="grid grid-cols-2 gap-2 text-[13px] pt-1">
                         <div className="text-text-tertiary">
                           <strong className="text-text-tertiary">修改前：</strong>{diff.before}
                         </div>
@@ -890,19 +890,19 @@ export function DistributionDrawer({
 
                 {/* Conflict Alert Warning If Present */}
                 {proposal.taskImpact.hasConflict && (
-                  <div className="p-3 bg-amber-950/80 border border-amber-700/80 rounded-xl text-[12px] text-amber-200 space-y-1.5">
+                  <div className="p-3 bg-amber-950/80 border border-amber-700/80 rounded-xl text-[13px] text-amber-200 space-y-1.5">
                     <div className="flex items-center gap-1.5 font-bold text-amber-300">
                       <AlertCircle size={15} />
                       <span>检测到工作任务执行冲突：</span>
                     </div>
-                    <p className="text-[11.5px] leading-relaxed text-amber-100">
+                    <p className="text-[13px] leading-relaxed text-amber-100">
                       {proposal.taskImpact.conflictDetails}
                     </p>
                     <div className="flex gap-2 pt-1">
                       <button
                         type="button"
                         onClick={() => setShowConflictModal(true)}
-                        className="px-2.5 py-1 bg-amber-800 hover:bg-amber-700 text-amber-100 text-[11px] font-bold rounded-lg transition-colors"
+                        className="px-2.5 py-1 bg-amber-800 hover:bg-amber-700 text-amber-100 text-[13px] font-bold rounded-lg transition-colors"
                       >
                         查看冲突详情
                       </button>
@@ -912,14 +912,14 @@ export function DistributionDrawer({
 
                 {/* Proposal Action Buttons */}
                 <div className="flex items-center justify-between pt-1 border-t border-neutral-800">
-                  <div className="text-[11.5px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     确认后将更新方案版本，并以增量补丁方式更新关联工作任务
                   </div>
                   <div className="flex items-center gap-2.5">
                     <button
                       type="button"
                       onClick={handleRejectProposal}
-                      className="px-3 py-2 text-text-tertiary hover:text-white text-[12px] font-medium transition-colors"
+                      className="px-3 py-2 text-text-tertiary hover:text-white text-[13px] font-medium transition-colors"
                     >
                       放弃本次提案
                     </button>
@@ -929,14 +929,14 @@ export function DistributionDrawer({
                         const textarea = document.getElementById("ai-instruction-input");
                         if (textarea) textarea.focus();
                       }}
-                      className="px-3.5 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-[12px] rounded-xl transition-colors border border-neutral-700"
+                      className="px-3.5 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-[13px] rounded-xl transition-colors border border-neutral-700"
                     >
                       继续告诉AI修改
                     </button>
                     <button
                       type="button"
                       onClick={handleApplyProposal}
-                      className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-main font-extrabold text-[12px] rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
+                      className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-main font-extrabold text-[13px] rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
                     >
                       <Check size={15} /> 确认应用提案
                     </button>
@@ -947,12 +947,12 @@ export function DistributionDrawer({
           </AnimatePresence>
 
           {/* Context Tag Header */}
-          <div className="flex items-center justify-between text-[12px]">
+          <div className="flex items-center justify-between text-[13px]">
             <div className="flex items-center gap-2">
               <span className="text-text-tertiary font-medium">本次携带上下文:</span>
               <span className="px-3 py-1 bg-btn-main text-white font-bold rounded-lg flex items-center gap-2 shadow-2xs">
                 <span>{selectedContext.name}</span>
-                <span className="text-[11px] text-neutral-300 font-normal">
+                <span className="text-[13px] text-neutral-300 font-normal">
                   (关联 {selectedContext.notesCount} 篇笔记 · {selectedContext.tasksCount} 个任务 · {currentVersion})
                 </span>
                 {selectedContext.type !== "global" && (
@@ -967,7 +967,7 @@ export function DistributionDrawer({
               </span>
             </div>
 
-            <span className="text-text-tertiary text-[11.5px]">
+            <span className="text-text-tertiary text-[13px]">
               服务端自动组装账号定位、搜索趋势与关联任务状态
             </span>
           </div>
@@ -986,7 +986,7 @@ export function DistributionDrawer({
                 placeholder='告诉AI你希望如何调整，例如：“品牌号减少2篇，把体验内容分给KOS，核心品类词仍由品牌号负责。”'
                 className="w-full h-11 px-4 pr-12 bg-page-bg border border-border-default rounded-xl text-[13px] text-text-main focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:bg-surface-1 transition-all placeholder:text-text-tertiary"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-text-tertiary bg-neutral-200/60 px-1.5 py-0.5 rounded">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] font-bold text-text-tertiary bg-neutral-200/60 px-1.5 py-0.5 rounded">
                 ↵ Enter
               </span>
             </div>
@@ -1021,7 +1021,7 @@ export function DistributionDrawer({
             </button>
           </div>
 
-          <div className="text-[11px] text-text-tertiary pl-1">
+          <div className="text-[13px] text-text-tertiary pl-1">
             AI会读取关联账号、笔记、关键词、排期和任务状态；确认提案前不会修改当前方案。
           </div>
         </div>
@@ -1047,11 +1047,11 @@ export function DistributionDrawer({
                 </button>
               </div>
 
-              <div className="space-y-3 text-[12.5px] text-text-secondary leading-relaxed">
+              <div className="space-y-3 text-[13px] text-text-secondary leading-relaxed">
                 <p className="font-semibold text-text-main">
                   发现 1 项关联工作任务已进入执行流程，不可静默覆盖：
                 </p>
-                <div className="p-3 bg-page-bg rounded-xl border border-border-default space-y-1 font-mono text-[11.5px]">
+                <div className="p-3 bg-page-bg rounded-xl border border-border-default space-y-1 font-mono text-[13px]">
                   <div><strong>任务编号：</strong> TASK-20260819-011</div>
                   <div><strong>绑定账号：</strong> 店长号_徐家汇概念店</div>
                   <div><strong>当前状态：</strong> 素材拍摄与文案撰写中</div>
@@ -1065,7 +1065,7 @@ export function DistributionDrawer({
               <div className="flex justify-end gap-2 pt-2 border-t border-border-default">
                 <button
                   onClick={() => setShowConflictModal(false)}
-                  className="px-4 py-2 bg-btn-main text-white font-bold text-[12px] rounded-xl"
+                  className="px-4 py-2 bg-btn-main text-white font-bold text-[13px] rounded-xl"
                 >
                   知道并返回
                 </button>

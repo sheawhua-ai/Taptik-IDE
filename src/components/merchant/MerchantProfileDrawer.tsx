@@ -50,7 +50,7 @@ export function MerchantProfileDrawer({
                 </div>
                 <div>
                   <h2 className="text-[16px] font-bold text-text-main">商家画像与资产</h2>
-                  <div className="text-[12px] text-text-tertiary font-medium flex items-center gap-1.5 mt-0.5">
+                  <div className="text-[13px] text-text-tertiary font-medium flex items-center gap-1.5 mt-0.5">
                     <Store size={12} /> {projectName}
                   </div>
                 </div>
@@ -82,30 +82,30 @@ export function MerchantProfileDrawer({
                   <div className="absolute inset-0 bg-surface-1/20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent)' }}></div>
                 </div>
               </div>
-              <p className="text-[12px] text-text-tertiary leading-relaxed mb-4">
+              <p className="text-[13px] text-text-tertiary leading-relaxed mb-4">
                 商家画像由知识库自动抽取生成。当前仍有部分信息未对齐，补充后将进一步提升策略生成的准确性。
               </p>
               
               <div className="space-y-3">
                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-text-tertiary">品牌心智</span>
+                    <span className="text-[13px] font-bold text-text-tertiary">品牌心智</span>
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">专业严谨</span>
-                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">配方透明</span>
-                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">新手友好</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] text-text-secondary font-medium">专业严谨</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] text-text-secondary font-medium">配方透明</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] text-text-secondary font-medium">新手友好</span>
                     </div>
                  </div>
                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-text-tertiary">核心受众</span>
+                    <span className="text-[13px] font-bold text-text-tertiary">核心受众</span>
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">精致养宠女性</span>
-                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">成分党</span>
-                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[12px] text-text-secondary font-medium">高客单价</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] text-text-secondary font-medium">精致养宠女性</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] text-text-secondary font-medium">成分党</span>
+                      <span className="px-2 py-1 bg-surface-1 border border-border-default rounded-md text-[13px] text-text-secondary font-medium">高客单价</span>
                     </div>
                  </div>
                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-text-tertiary">主推品优势</span>
-                    <p className="text-[12px] text-text-main font-medium bg-surface-1 p-2.5 rounded-lg border border-border-default">
+                    <span className="text-[13px] font-bold text-text-tertiary">主推品优势</span>
+                    <p className="text-[13px] text-text-main font-medium bg-surface-1 p-2.5 rounded-lg border border-border-default">
                       80%鲜肉含量，0谷物添加，特别添加益生菌呵护幼犬玻璃胃。
                     </p>
                  </div>
@@ -119,7 +119,7 @@ export function MerchantProfileDrawer({
                   <AlertCircle size={16} className="text-brand-logo" />
                   关键资产待补齐
                 </h3>
-                <span className="text-[11px] font-medium bg-hover-bg text-text-tertiary px-2 py-0.5 rounded-md">
+                <span className="text-[13px] font-medium bg-hover-bg text-text-tertiary px-2 py-0.5 rounded-md">
                   4 项建议
                 </span>
               </div>
@@ -128,24 +128,24 @@ export function MerchantProfileDrawer({
                 {missingItems.map((item, idx) => (
                   <div key={item.id} className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-sm hover:border-neutral-300 transition-colors">
                     <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[12px] font-bold text-text-tertiary shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[13px] font-bold text-text-tertiary shrink-0 mt-0.5">
                         {idx + 1}
                       </div>
                       <div className="flex-1">
                         <h4 className="text-[14px] font-bold text-text-main mb-1">{item.text}</h4>
-                        <p className="text-[12px] text-text-tertiary mb-3">{item.desc}</p>
+                        <p className="text-[13px] text-text-tertiary mb-3">{item.desc}</p>
                         
                         <div className="bg-page-bg p-2.5 rounded-lg border border-border-default mb-3">
-                          <div className="text-[11px] font-bold text-text-tertiary mb-1 flex items-center gap-1">
+                          <div className="text-[13px] font-bold text-text-tertiary mb-1 flex items-center gap-1">
                             <Search size={12} /> 知识库状态索引
                           </div>
-                          <div className="text-[12px] text-text-secondary font-medium">
+                          <div className="text-[13px] text-text-secondary font-medium">
                             {item.sourceDoc}
                           </div>
                         </div>
                         
                         <button 
-                          className="w-full text-[12px] font-bold text-text-secondary bg-hover-bg hover:bg-selected-bg px-3 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
+                          className="w-full text-[13px] font-bold text-text-secondary bg-hover-bg hover:bg-selected-bg px-3 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
                           onClick={() => {
                             window.dispatchEvent(new CustomEvent('switch-to-knowledge'));
                             onClose();

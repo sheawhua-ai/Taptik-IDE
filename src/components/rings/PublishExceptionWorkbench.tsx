@@ -401,10 +401,10 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
           <div>
             <div className="flex items-center gap-2.5">
               <h1 className="text-[16px] font-semibold text-text-main">发布任务处理</h1>
-              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-hover-bg text-text-secondary border border-border-default">
+              <span className="px-2.5 py-0.5 rounded-md text-[13px] font-medium bg-hover-bg text-text-secondary border border-border-default">
                 {activeTask.publishType}
               </span>
-              <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-medium border ${
+              <span className={`px-2.5 py-0.5 rounded-md text-[13px] font-medium border ${
                 activeTask.statusBadge.includes('已人工确认')
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : activeTask.statusBadge.includes('等待人工')
@@ -415,7 +415,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               </span>
             </div>
             
-            <div className="text-[12px] text-text-tertiary flex items-center gap-3 mt-0.5 font-normal">
+            <div className="text-[13px] text-text-tertiary flex items-center gap-3 mt-0.5 font-normal">
               <span className="font-medium text-text-secondary truncate max-w-[280px]">笔记：{activeTask.noteTitle}</span>
               <span>·</span>
               <span className="truncate max-w-[180px]">账号：{activeTask.targetAccount}</span>
@@ -433,7 +433,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setShowNoteDrawer(true)}
-            className="px-3.5 py-1.5 rounded-lg border border-border-default bg-surface-1 hover:bg-hover-bg text-text-secondary text-[12.5px] font-medium transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-1.5 rounded-lg border border-border-default bg-surface-1 hover:bg-hover-bg text-text-secondary text-[13px] font-medium transition-colors flex items-center gap-1.5"
           >
             <Eye size={14} className="text-text-tertiary" />
             <span>查看笔记/素材</span>
@@ -466,14 +466,14 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                 <button
                   key={cat}
                   onClick={() => setActiveCategoryTab(cat)}
-                  className={`flex-1 py-1.5 px-2 rounded-lg text-[12px] font-medium transition-colors flex flex-col items-center justify-center gap-0.5 ${
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-[13px] font-medium transition-colors flex flex-col items-center justify-center gap-0.5 ${
                     isActive 
                       ? 'bg-btn-main text-white' 
                       : 'text-text-secondary hover:bg-hover-bg'
                   }`}
                 >
                   <span>{cat}</span>
-                  <span className={`text-[10px] px-1.5 rounded-full ${isActive ? 'bg-surface-1/20 text-white' : 'bg-surface-1 text-text-tertiary border border-border-default'}`}>
+                  <span className={`text-[13px] px-1.5 rounded-full ${isActive ? 'bg-surface-1/20 text-white' : 'bg-surface-1 text-text-tertiary border border-border-default'}`}>
                     {count}
                   </span>
                 </button>
@@ -496,7 +496,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                         : 'bg-surface-1 border-border-default hover:border-neutral-300 hover:bg-hover-bg text-text-main'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-[11px] mb-1.5">
+                    <div className="flex items-center justify-between text-[13px] mb-1.5">
                       <span className="px-2 py-0.5 rounded font-medium bg-hover-bg text-text-secondary border border-border-default">
                         {item.publishType}
                       </span>
@@ -509,11 +509,11 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                       {item.noteTitle}
                     </div>
 
-                    <div className="text-[11.5px] truncate mb-2 text-text-tertiary font-normal">
+                    <div className="text-[13px] truncate mb-2 text-text-tertiary font-normal">
                       账号：{item.targetAccount}
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-dashed border-border-default">
+                    <div className="flex items-center justify-between text-[13px] pt-1.5 border-t border-dashed border-border-default">
                       <span className="text-text-secondary font-normal">
                         {item.publisherName}
                       </span>
@@ -546,7 +546,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                 <ShieldAlert size={20} />
               </div>
               <div>
-                <div className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">处理判定建议</div>
+                <div className="text-[13px] font-medium text-text-tertiary uppercase tracking-wider">处理判定建议</div>
                 <div className="text-[13.5px] font-medium text-text-main mt-0.5">{activeTask.manualJudgement}</div>
               </div>
             </div>
@@ -555,7 +555,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               {activeTask.primaryActionLabel && (
                 <button
                   onClick={handleExecutePrimaryAction}
-                  className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[12.5px] font-medium transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[13px] font-medium transition-colors flex items-center gap-1.5"
                 >
                   <span>{activeTask.primaryActionLabel}</span>
                   <ChevronRight size={14} />
@@ -565,7 +565,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               {activeTask.category !== '已完成' ? (
                 <button
                   onClick={() => setShowManualConfirmModal(true)}
-                  className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-main border border-border-default rounded-lg text-[12.5px] font-medium transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-main border border-border-default rounded-lg text-[13px] font-medium transition-colors flex items-center gap-1.5"
                 >
                   <CheckSquare size={14} className="text-text-secondary" />
                   <span>人工确认已发布</span>
@@ -573,7 +573,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               ) : (
                 <button
                   onClick={() => setShowRevokeModal(true)}
-                  className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-danger border border-danger/30 rounded-lg text-[12.5px] font-medium transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-danger border border-danger/30 rounded-lg text-[13px] font-medium transition-colors flex items-center gap-1.5"
                 >
                   <RotateCcw size={14} />
                   <span>撤销人工确认</span>
@@ -582,7 +582,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
               <button
                 onClick={() => setShowDiagnosisDrawer(true)}
-                className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-secondary border border-border-default rounded-lg text-[12.5px] font-medium transition-colors flex items-center gap-1.5"
+                className="px-4 py-2 bg-surface-1 hover:bg-hover-bg text-text-secondary border border-border-default rounded-lg text-[13px] font-medium transition-colors flex items-center gap-1.5"
               >
                 <Activity size={14} className="text-text-secondary" />
                 <span>诊断与操作</span>
@@ -598,9 +598,9 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                   <CheckCircle2 size={16} className="text-emerald-700" />
                   <span className="text-[13.5px] font-medium text-emerald-900">人工确认审核记录</span>
                 </div>
-                <span className="text-[11.5px] text-emerald-800 font-normal">{activeTask.auditLog.timestamp}</span>
+                <span className="text-[13px] text-emerald-800 font-normal">{activeTask.auditLog.timestamp}</span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[12px] pt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[13px] pt-1">
                 <div>
                   <span className="text-emerald-800/80 font-normal">审核人：</span>
                   <span className="text-emerald-950 font-medium">{activeTask.auditLog.operator}</span>
@@ -635,7 +635,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                   发布全流程进度 ({currentFlowNodes.length} 个节点)
                 </h3>
               </div>
-              <span className="text-[12px] text-text-tertiary font-normal">
+              <span className="text-[13px] text-text-tertiary font-normal">
                 当前停留在第 <span className="text-text-main font-medium">{activeTask.currentStepIndex + 1}</span> 节点：
                 <span className="text-text-main font-medium ml-1">{currentFlowNodes[activeTask.currentStepIndex]}</span>
               </span>
@@ -678,7 +678,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                           <RefreshCw size={13} className="animate-spin" />
                         )
                       ) : (
-                        <span className="text-[12px] font-normal">{idx + 1}</span>
+                        <span className="text-[13px] font-normal">{idx + 1}</span>
                       )}
                     </div>
 
@@ -692,7 +692,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                             {nodeName}
                           </h4>
                           {isCurrent && (
-                            <span className={`px-2 py-0.5 rounded text-[11px] font-medium ${
+                            <span className={`px-2 py-0.5 rounded text-[13px] font-medium ${
                               isFailedVerificationNode 
                                 ? 'bg-amber-100 text-amber-800' 
                                 : 'bg-hover-bg text-text-main border border-border-default'
@@ -701,14 +701,14 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                             </span>
                           )}
                           {isDone && (
-                            <span className="text-[11px] text-emerald-700 font-normal flex items-center gap-0.5">
+                            <span className="text-[13px] text-emerald-700 font-normal flex items-center gap-0.5">
                               已完成
                             </span>
                           )}
                         </div>
 
                         {isDone && (
-                          <span className="text-[11px] text-text-tertiary font-normal">节点已通过</span>
+                          <span className="text-[13px] text-text-tertiary font-normal">节点已通过</span>
                         )}
                       </div>
 
@@ -726,10 +726,10 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                           {/* Confirmed facts */}
                           <div className="space-y-1.5">
-                            <div className="text-[11px] font-medium text-text-tertiary uppercase tracking-wider">已确认事实</div>
+                            <div className="text-[13px] font-medium text-text-tertiary uppercase tracking-wider">已确认事实</div>
                             <div className="space-y-1 bg-surface-1 p-3 rounded-lg border border-border-default">
                               {activeTask.confirmedFacts.map((fact, fIdx) => (
-                                <div key={fIdx} className="text-[12px] text-text-main flex items-start gap-1.5 font-normal">
+                                <div key={fIdx} className="text-[13px] text-text-main flex items-start gap-1.5 font-normal">
                                   <span className="text-text-tertiary shrink-0">•</span>
                                   <span>{fact}</span>
                                 </div>
@@ -738,7 +738,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                           </div>
 
                           {/* Block reason & Next System action */}
-                          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border-default text-[12px]">
+                          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border-default text-[13px]">
                             <div>
                               <span className="text-text-tertiary font-normal block mb-0.5">阻塞原因</span>
                               <span className={`font-medium ${activeTask.blockReason === '无' ? 'text-emerald-700' : 'text-danger'}`}>
@@ -786,7 +786,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               <div className="p-5 border-b border-border-default flex items-center justify-between">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-main">关联笔记与素材详情</h3>
-                  <p className="text-[12px] text-text-tertiary font-normal">用于跟进和比对的小红书图文信息</p>
+                  <p className="text-[13px] text-text-tertiary font-normal">用于跟进和比对的小红书图文信息</p>
                 </div>
                 <button 
                   onClick={() => setShowNoteDrawer(false)}
@@ -798,19 +798,19 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-5 text-text-main">
                 <div className="space-y-1">
-                  <div className="text-[11px] font-medium text-text-tertiary">笔记标题</div>
+                  <div className="text-[13px] font-medium text-text-tertiary">笔记标题</div>
                   <div className="text-[14.5px] font-medium text-text-main">{activeTask.noteSnapshot.title}</div>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="text-[11px] font-medium text-text-tertiary">正文文案</div>
+                  <div className="text-[13px] font-medium text-text-tertiary">正文文案</div>
                   <div className="p-4 bg-surface-2 border border-border-default rounded-xl text-[13px] leading-relaxed text-text-main whitespace-pre-wrap font-normal">
                     {activeTask.noteSnapshot.body}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-[11px] font-medium text-text-tertiary">关联素材图册</div>
+                  <div className="text-[13px] font-medium text-text-tertiary">关联素材图册</div>
                   <div className="grid grid-cols-2 gap-3">
                     {activeTask.noteSnapshot.images.map((img, i) => (
                       <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border-default bg-hover-bg">
@@ -822,10 +822,10 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                 <div className="p-4 bg-surface-2 border border-border-default rounded-xl flex items-center justify-between">
                   <div>
-                    <div className="text-[11px] text-text-secondary font-medium">素材审核状态</div>
+                    <div className="text-[13px] text-text-secondary font-medium">素材审核状态</div>
                     <div className="text-[13px] font-medium text-text-main">{activeTask.noteSnapshot.materialStatus}</div>
                   </div>
-                  <span className="px-2.5 py-1 bg-surface-1 border border-border-default text-text-main text-[11px] font-medium rounded">已校验</span>
+                  <span className="px-2.5 py-1 bg-surface-1 border border-border-default text-text-main text-[13px] font-medium rounded">已校验</span>
                 </div>
               </div>
             </motion.div>
@@ -853,7 +853,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               <div className="p-5 border-b border-border-default flex items-center justify-between">
                 <div>
                   <h3 className="text-[15px] font-semibold text-text-main">完整自动化与操作日志</h3>
-                  <p className="text-[12px] text-text-tertiary font-normal">用于排查与追溯系统重试过程</p>
+                  <p className="text-[13px] text-text-tertiary font-normal">用于排查与追溯系统重试过程</p>
                 </div>
                 <button 
                   onClick={() => setShowLogsDrawer(false)}
@@ -863,7 +863,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 font-mono text-[12px]">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 font-mono text-[13px]">
                 <div className="p-3.5 bg-surface-2 text-text-main rounded-xl space-y-1.5 border border-border-default">
                   <div className="text-emerald-700 font-semibold">[15:30:12] SYSTEM_POLL</div>
                   <div>发起小红书平台 API 接口轮询...</div>
@@ -874,7 +874,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                   <div className="text-amber-700 font-semibold">[15:30:15] VISIBILITY_CHECK</div>
                   <div>尝试抓取小红书 Web 页面快照 (第3次)...</div>
                   <div className="text-danger">Error: 404 Page not accessible or require login session</div>
-                  <div className="text-text-secondary text-[11px]">Action: 达到最大重试次数 (3)，停止自动轮询，流转至等待人工核实</div>
+                  <div className="text-text-secondary text-[13px]">Action: 达到最大重试次数 (3)，停止自动轮询，流转至等待人工核实</div>
                 </div>
 
                 <div className="p-3.5 bg-surface-2 text-text-main rounded-xl space-y-1 border border-border-default">
@@ -920,7 +920,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               <div className="space-y-4 text-[13px]">
                 {/* 1. 确认依据 */}
                 <div className="space-y-1.5">
-                  <label className="text-[12.5px] font-medium text-text-main block">
+                  <label className="text-[13px] font-medium text-text-main block">
                     1. 确认依据 <span className="text-danger">*</span>
                   </label>
                   <select
@@ -938,7 +938,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                 {/* 2. 补充URL (条件展示) */}
                 {manualConfirmBasis === '补充小红书笔记URL' && (
                   <div className="space-y-1.5">
-                    <label className="text-[12.5px] font-medium text-text-main block">
+                    <label className="text-[13px] font-medium text-text-main block">
                       小红书笔记真实链接 (URL) <span className="text-danger">*</span>
                     </label>
                     <input
@@ -953,7 +953,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                 {/* 3. 操作说明 */}
                 <div className="space-y-1.5">
-                  <label className="text-[12.5px] font-medium text-text-main block">
+                  <label className="text-[13px] font-medium text-text-main block">
                     2. 操作说明与判定理由
                   </label>
                   <textarea
@@ -961,20 +961,20 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                     placeholder="请输入操作说明（如：已在小红书 App 端搜索确认该笔记已公开展示并可互动）..."
                     value={manualExplanation}
                     onChange={e => setManualExplanation(e.target.value)}
-                    className="w-full p-2.5 bg-surface-2 border border-border-default rounded-lg text-[12.5px] outline-none focus:border-neutral-900"
+                    className="w-full p-2.5 bg-surface-2 border border-border-default rounded-lg text-[13px] outline-none focus:border-neutral-900"
                   />
                 </div>
 
                 {/* 4. 可选截图凭证 */}
                 <div className="space-y-1.5">
-                  <label className="text-[12.5px] font-medium text-text-main block">
+                  <label className="text-[13px] font-medium text-text-main block">
                     3. 截图凭据（可选）
                   </label>
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={() => setManualScreenshotAttached(!manualScreenshotAttached)}
-                      className={`px-3 py-2 rounded-lg border text-[12px] font-medium flex items-center gap-1.5 transition-colors ${
+                      className={`px-3 py-2 rounded-lg border text-[13px] font-medium flex items-center gap-1.5 transition-colors ${
                         manualScreenshotAttached
                           ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                           : 'bg-surface-2 hover:bg-hover-bg text-text-secondary border-border-default'
@@ -987,7 +987,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                       <button
                         type="button"
                         onClick={() => setManualScreenshotAttached(false)}
-                        className="text-[12px] text-danger hover:underline"
+                        className="text-[13px] text-danger hover:underline"
                       >
                         移除
                       </button>
@@ -997,8 +997,8 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                 {/* 5. 影响范围说明 */}
                 <div className="p-3.5 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
-                  <div className="text-[11.5px] font-medium text-text-tertiary">操作影响范围与后续流转：</div>
-                  <ul className="text-[12px] text-text-secondary space-y-1 list-disc pl-4 font-normal">
+                  <div className="text-[13px] font-medium text-text-tertiary">操作影响范围与后续流转：</div>
+                  <ul className="text-[13px] text-text-secondary space-y-1 list-disc pl-4 font-normal">
                     <li>将跳过后续自动识别轮询，把该笔记状态直接更新为【数据观察中】；</li>
                     <li>系统自动触发 7 天数据归集与搜索卡位追踪（每 2 小时更新）；</li>
                     <li>计入项目整体发布完成率，并记录本次操作人与判定依据进入审计流；</li>
@@ -1015,7 +1015,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                       onChange={e => setHasDoubleConfirmed(e.target.checked)}
                       className="mt-0.5 accent-neutral-900"
                     />
-                    <span className="text-[12.5px] text-text-main font-medium">
+                    <span className="text-[13px] text-text-main font-medium">
                       我已核对上述发布凭据与公网可见性，确认此判定并记录审计流
                     </span>
                   </label>
@@ -1121,7 +1121,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               <div className="flex-1 overflow-y-auto p-5 space-y-5">
                 {/* Block 1: Current Judgement */}
                 <div className="bg-surface-2 rounded-xl p-4 border border-border-default space-y-1.5">
-                  <div className="text-[11px] font-medium text-text-tertiary uppercase">1. 当前判断</div>
+                  <div className="text-[13px] font-medium text-text-tertiary uppercase">1. 当前判断</div>
                   <div className="text-[13px] text-text-main font-medium leading-relaxed">
                     {activeTask.diagnosisJudgement}
                   </div>
@@ -1129,10 +1129,10 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                 {/* Block 2: Evidence List */}
                 <div className="bg-surface-2 rounded-xl p-4 border border-border-default space-y-2">
-                  <div className="text-[11px] font-medium text-text-tertiary uppercase">2. 判断依据</div>
+                  <div className="text-[13px] font-medium text-text-tertiary uppercase">2. 判断依据</div>
                   <div className="space-y-1.5">
                     {activeTask.diagnosisEvidence.map((ev, i) => (
-                      <div key={i} className="text-[12.5px] text-text-secondary flex items-start gap-2 font-normal">
+                      <div key={i} className="text-[13px] text-text-secondary flex items-start gap-2 font-normal">
                         <span className="text-text-tertiary">•</span>
                         <span>{ev}</span>
                       </div>
@@ -1142,7 +1142,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                 {/* Block 3: System Next Step */}
                 <div className="bg-surface-2 rounded-xl p-4 border border-border-default space-y-1.5">
-                  <div className="text-[11px] font-medium text-text-tertiary uppercase">3. 系统下一步及预计时间</div>
+                  <div className="text-[13px] font-medium text-text-tertiary uppercase">3. 系统下一步及预计时间</div>
                   <div className="text-[13px] text-text-main font-normal leading-relaxed">
                     {activeTask.diagnosisNextStep}
                   </div>
@@ -1150,7 +1150,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
 
                 {/* Block 4: Executable Actions */}
                 <div className="bg-surface-2 rounded-xl p-4 border border-border-default space-y-2.5">
-                  <div className="text-[11px] font-medium text-text-tertiary uppercase">4. 可执行快捷操作</div>
+                  <div className="text-[13px] font-medium text-text-tertiary uppercase">4. 可执行快捷操作</div>
                   <div className="space-y-2">
                     {activeTask.secondaryActions.map((act, i) => (
                       <button
@@ -1164,7 +1164,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
                             triggerToast(`已执行操作：${act}`);
                           }
                         }}
-                        className="w-full text-left px-3.5 py-2.5 rounded-lg bg-surface-1 border border-border-default hover:border-neutral-400 text-[12.5px] font-medium text-text-main transition-colors flex items-center justify-between"
+                        className="w-full text-left px-3.5 py-2.5 rounded-lg bg-surface-1 border border-border-default hover:border-neutral-400 text-[13px] font-medium text-text-main transition-colors flex items-center justify-between"
                       >
                         <span>{act}</span>
                         <ChevronRight size={14} className="text-text-tertiary" />
@@ -1178,7 +1178,7 @@ export const PublishExceptionWorkbench: React.FC<PublishExceptionWorkbenchProps>
               <div className="p-4 border-t border-border-default bg-surface-2">
                 <button
                   onClick={() => { setShowDiagnosisDrawer(false); setShowLogsDrawer(true); }}
-                  className="w-full py-2.5 bg-surface-1 border border-border-default hover:border-neutral-400 rounded-lg text-[12.5px] font-medium text-text-secondary transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 bg-surface-1 border border-border-default hover:border-neutral-400 rounded-lg text-[13px] font-medium text-text-secondary transition-colors flex items-center justify-center gap-1.5"
                 >
                   <FileText size={15} className="text-text-tertiary" />
                   <span>查看完整自动化与操作日志</span>

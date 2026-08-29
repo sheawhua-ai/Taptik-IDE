@@ -36,7 +36,7 @@ export const CustomerConfigDrawer: React.FC<{
               <div className="w-[1px] h-4 bg-neutral-300"></div>
               <span className="text-[14px] text-text-secondary">真实客户发布{planAmount}篇</span>
               <div className="w-[1px] h-4 bg-neutral-300"></div>
-              <span className="text-[12px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">待确认</span>
+              <span className="text-[13px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">待确认</span>
             </div>
             <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-main transition-colors">
               <X size={20} />
@@ -58,7 +58,7 @@ export const CustomerConfigDrawer: React.FC<{
                     <button 
                       key={t.id}
                       onClick={() => setActiveTab(t.id as any)}
-                      className={`px-3 py-1.5 text-[12px] rounded-full font-medium transition-colors ${activeTab === t.id ? 'bg-primary-600 text-white' : 'bg-hover-bg text-text-secondary hover:bg-selected-bg'}`}
+                      className={`px-3 py-1.5 text-[13px] rounded-full font-medium transition-colors ${activeTab === t.id ? 'bg-primary-600 text-white' : 'bg-hover-bg text-text-secondary hover:bg-selected-bg'}`}
                     >
                       {t.label}
                     </button>
@@ -72,7 +72,7 @@ export const CustomerConfigDrawer: React.FC<{
                   
                   <div className="bg-primary-600 text-white p-6 pb-8 text-center shrink-0">
                     <h2 className="text-[18px] font-bold mb-1">幼犬换粮体验官</h2>
-                    <p className="text-[12px] opacity-80">回答问题 · 自动生成笔记 · 发布领奖</p>
+                    <p className="text-[13px] opacity-80">回答问题 · 自动生成笔记 · 发布领奖</p>
                   </div>
                   
                   <div className="flex-1 bg-page-bg p-4 -mt-4 rounded-t-2xl overflow-y-auto custom-scrollbar">
@@ -121,7 +121,7 @@ export const CustomerConfigDrawer: React.FC<{
                     <div className="space-y-4">
                       <div className="p-4 border border-border-default rounded-xl bg-page-bg shadow-sm">
                         <div className="text-[13px] font-bold text-text-main mb-2">动态问题 (共4个)</div>
-                        <ul className="list-disc list-inside text-[12px] text-text-secondary space-y-1">
+                        <ul className="list-disc list-inside text-[13px] text-text-secondary space-y-1">
                           <li>狗狗年龄与品种</li>
                           <li>换粮前的核心痛点</li>
                           <li>使用本品后的排便情况</li>
@@ -132,12 +132,12 @@ export const CustomerConfigDrawer: React.FC<{
                       <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 border border-border-default rounded-xl bg-page-bg shadow-sm">
                           <div className="text-[13px] font-bold text-text-main mb-2">领取规则</div>
-                          <div className="text-[12px] text-text-secondary">每人1次 · 同产品排他 · 活动有效7天</div>
+                          <div className="text-[13px] text-text-secondary">每人1次 · 同产品排他 · 活动有效7天</div>
                         </div>
 
                         <div className="p-4 border border-border-default rounded-xl bg-page-bg shadow-sm">
                           <div className="text-[13px] font-bold text-text-main mb-2">奖励条件</div>
-                          <div className="text-[12px] text-text-secondary">完成问答及发布后奖励。不强制好评。</div>
+                          <div className="text-[13px] text-text-secondary">完成问答及发布后奖励。不强制好评。</div>
                         </div>
                       </div>
 
@@ -145,7 +145,7 @@ export const CustomerConfigDrawer: React.FC<{
                         <div className="flex items-center justify-between mb-3 text-[13px] font-bold text-text-main">
                           <span>笔记包生成逻辑</span>
                         </div>
-                        <div className="flex items-center justify-between text-[12px] text-text-secondary bg-surface-1 p-3 rounded-lg border border-border-default">
+                        <div className="flex items-center justify-between text-[13px] text-text-secondary bg-surface-1 p-3 rounded-lg border border-border-default">
                           <span>画像提取</span>
                           <ArrowRight size={14} className="text-neutral-300 mx-1" />
                           <span>匹配切入点</span>
@@ -170,8 +170,8 @@ export const CustomerConfigDrawer: React.FC<{
                         <p>{aiDiff}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-blue-600 text-white rounded-md font-bold text-[12px] hover:bg-blue-700 transition-colors">应用修改</button>
-                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-surface-1 border border-blue-200 text-blue-700 rounded-md font-bold text-[12px] hover:bg-blue-50 transition-colors">撤销</button>
+                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-blue-600 text-white rounded-md font-bold text-[13px] hover:bg-blue-700 transition-colors">应用修改</button>
+                        <button onClick={() => setAiDiff('')} className="px-3 py-1.5 bg-surface-1 border border-blue-200 text-blue-700 rounded-md font-bold text-[13px] hover:bg-blue-50 transition-colors">撤销</button>
                       </div>
                     </div>
                   )}

@@ -52,14 +52,14 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
               >
                 {/* Single-Sentence Prompt Line */}
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <span className={`shrink-0 px-2 py-0.5 rounded-md text-[11px] font-black ${
+                  <span className={`shrink-0 px-2 py-0.5 rounded-md text-[13px] font-black ${
                     rec.type === 'expert' ? 'bg-purple-100 text-purple-900' : 'bg-blue-100 text-blue-900'
                   }`}>
                     {rec.type === 'expert' ? '推荐专家' : '推荐技能'} · {rec.targetName}
                   </span>
 
                   {/* One sentence tip */}
-                  <p className="text-[12.5px] font-bold text-text-main truncate">
+                  <p className="text-[13px] font-bold text-text-main truncate">
                     <span className="text-amber-800 font-extrabold mr-1">提示：</span>
                     {rec.triggerFact}
                   </p>
@@ -67,20 +67,20 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
-                  <span className={`px-2 py-0.5 rounded-full text-[10.5px] font-extrabold border ${prepStatusStyles}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[13px] font-extrabold border ${prepStatusStyles}`}>
                     {rec.prepStatus}
                   </span>
 
                   <button
                     onClick={() => setInspectingRec(rec)}
-                    className="px-3 py-1 bg-amber-100/90 hover:bg-amber-200 text-amber-900 font-extrabold text-[12px] rounded-lg transition-all flex items-center gap-1"
+                    className="px-3 py-1 bg-amber-100/90 hover:bg-amber-200 text-amber-900 font-extrabold text-[13px] rounded-lg transition-all flex items-center gap-1"
                   >
                     <Info size={13} /> 详情
                   </button>
 
                   <button
                     onClick={() => onAddToMerchant(rec)}
-                    className="px-3 py-1 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[12px] rounded-lg shadow-2xs transition-all flex items-center gap-1"
+                    className="px-3 py-1 bg-btn-main hover:bg-btn-main-hover text-white font-extrabold text-[13px] rounded-lg shadow-2xs transition-all flex items-center gap-1"
                   >
                     <Plus size={13} /> 加入商家
                   </button>
@@ -107,7 +107,7 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
             <div className="flex items-start justify-between border-b border-border-default pb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
+                  <span className={`px-2 py-0.5 rounded-md text-[13px] font-black ${
                     inspectingRec.type === 'expert' ? 'bg-purple-100 text-purple-900' : 'bg-blue-100 text-blue-900'
                   }`}>
                     {inspectingRec.type === 'expert' ? '推荐专家' : '推荐技能'}
@@ -115,11 +115,11 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
                   <h3 className="text-[18px] font-black text-text-main">
                     {inspectingRec.targetName}
                   </h3>
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  <span className="px-2.5 py-0.5 rounded-full text-[13px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200">
                     {inspectingRec.prepStatus}
                   </span>
                 </div>
-                <p className="text-[12px] font-bold text-text-tertiary">
+                <p className="text-[13px] font-bold text-text-tertiary">
                   基于皇家宠物食品近期资料库、项目进展与待办问题智能诊断
                 </p>
               </div>
@@ -133,14 +133,14 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
             <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
               {/* 1. 发现背景与触发事实 */}
               <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-xl space-y-1.5">
-                <span className="text-[12px] font-black text-amber-900 block flex items-center gap-1.5">
+                <span className="text-[13px] font-black text-amber-900 block flex items-center gap-1.5">
                   <Sparkles size={14} className="text-amber-600" /> 1. 推荐触发背景与事实：
                 </span>
                 <p className="text-[13px] font-extrabold text-text-main">
                   {inspectingRec.triggerFact}
                 </p>
                 {inspectingRec.confirmedFacts.length > 0 && (
-                  <ul className="text-[12px] font-medium text-text-secondary space-y-0.5 pt-1">
+                  <ul className="text-[13px] font-medium text-text-secondary space-y-0.5 pt-1">
                     {inspectingRec.confirmedFacts.map((fact, idx) => (
                       <li key={idx}>• {fact}</li>
                     ))}
@@ -150,7 +150,7 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
 
               {/* 2. 解决的商业与运营问题 */}
               <div className="p-4 bg-page-bg border border-border-default/80 rounded-xl space-y-1">
-                <span className="text-[12px] font-black text-text-main block">
+                <span className="text-[13px] font-black text-text-main block">
                   2. 可以解决的实际运营问题：
                 </span>
                 <p className="text-[13px] font-bold text-text-secondary leading-relaxed">
@@ -160,10 +160,10 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
 
               {/* 3. 所需输入资料与配置 */}
               <div className="p-4 bg-blue-50/40 border border-blue-100 rounded-xl space-y-1">
-                <span className="text-[12px] font-black text-blue-900 block">
+                <span className="text-[13px] font-black text-blue-900 block">
                   3. 项目与能力调用所需输入资料：
                 </span>
-                <ul className="text-[12.5px] font-bold text-text-secondary space-y-1">
+                <ul className="text-[13px] font-bold text-text-secondary space-y-1">
                   {inspectingRec.requiredDocsAndConfigs.map((doc, idx) => (
                     <li key={idx}>• {doc}</li>
                   ))}
@@ -172,10 +172,10 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
 
               {/* 4. 人工确认节点 */}
               <div className="p-4 bg-purple-50/40 border border-purple-100 rounded-xl space-y-1">
-                <span className="text-[12px] font-black text-purple-900 block">
+                <span className="text-[13px] font-black text-purple-900 block">
                   4. 全程保留的人工确认节点：
                 </span>
-                <ul className="text-[12.5px] font-bold text-text-secondary space-y-1">
+                <ul className="text-[13px] font-bold text-text-secondary space-y-1">
                   {inspectingRec.manualConfirmPoints.map((pt, idx) => (
                     <li key={idx}>• {pt}</li>
                   ))}
@@ -184,7 +184,7 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
 
               {/* 5. 诊断推断与缺口 */}
               {(inspectingRec.systemInferences || inspectingRec.missingInfo) && (
-                <div className="p-4 bg-page-bg border border-border-default/80 rounded-xl space-y-2 text-[12px]">
+                <div className="p-4 bg-page-bg border border-border-default/80 rounded-xl space-y-2 text-[13px]">
                   <span className="text-text-main font-black block">5. 深度诊断推断与缺口标定：</span>
                   {inspectingRec.systemInferences && (
                     <div>
@@ -209,7 +209,7 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
                   onOpenDetail(inspectingRec);
                   setInspectingRec(null);
                 }}
-                className="px-4 py-2 bg-hover-bg hover:bg-selected-bg text-text-main text-[12.5px] font-extrabold rounded-xl transition-all flex items-center gap-1.5"
+                className="px-4 py-2 bg-hover-bg hover:bg-selected-bg text-text-main text-[13px] font-extrabold rounded-xl transition-all flex items-center gap-1.5"
               >
                 <Eye size={15} /> 查看能力抽屉
               </button>
@@ -220,7 +220,7 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
                     onRunOnce(inspectingRec);
                     setInspectingRec(null);
                   }}
-                  className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 text-[12.5px] font-extrabold rounded-xl transition-all flex items-center gap-1.5"
+                  className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 text-[13px] font-extrabold rounded-xl transition-all flex items-center gap-1.5"
                 >
                   <Play size={15} /> 工作台试运行
                 </button>
@@ -230,7 +230,7 @@ export const MerchantRecommendationSection: React.FC<MerchantRecommendationSecti
                     onAddToMerchant(inspectingRec);
                     setInspectingRec(null);
                   }}
-                  className="px-5 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[12.5px] font-black rounded-xl shadow-2xs transition-all flex items-center gap-1.5"
+                  className="px-5 py-2 bg-btn-main hover:bg-btn-main-hover text-white text-[13px] font-black rounded-xl shadow-2xs transition-all flex items-center gap-1.5"
                 >
                   <Plus size={15} /> 加入皇家宠物食品
                 </button>

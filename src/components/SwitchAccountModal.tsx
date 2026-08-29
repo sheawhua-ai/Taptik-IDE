@@ -160,9 +160,9 @@ export const SwitchAccountModal: React.FC<SwitchAccountModalProps> = ({
  <div className="flex items-center gap-1.5 mb-1">
  <span className="text-[14px] text-text-main truncate">{acc.label}</span>
  </div>
- <div className="text-[12px] text-text-tertiary truncate flex items-center gap-2">
+ <div className="text-[13px] text-text-tertiary truncate flex items-center gap-2">
  {acc.industry && (
- <span className="shrink-0 bg-hover-bg text-text-secondary px-1.5 rounded-md text-[11px] ">{acc.industry}</span>
+ <span className="shrink-0 bg-hover-bg text-text-secondary px-1.5 rounded-md text-[13px] ">{acc.industry}</span>
  )}
  <span className="truncate">{acc.desc}</span>
  </div>

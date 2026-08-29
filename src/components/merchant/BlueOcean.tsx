@@ -23,7 +23,7 @@ export function BlueOcean() {
           <div className="bg-surface-1 border border-border-default rounded-xl overflow-hidden shadow-sm">
              <div className="p-4 border-b border-border-default flex justify-between items-center">
                <h3 className="text-[15px] font-bold text-text-main">本周高潜力蓝海词</h3>
-               <button className="flex items-center gap-1.5 text-[12px] font-bold text-text-tertiary hover:text-text-main"><Filter size={14} /> 筛选</button>
+               <button className="flex items-center gap-1.5 text-[13px] font-bold text-text-tertiary hover:text-text-main"><Filter size={14} /> 筛选</button>
              </div>
              <table className="w-full text-left text-[13px]">
                <thead className="bg-page-bg text-text-tertiary border-b border-border-default">

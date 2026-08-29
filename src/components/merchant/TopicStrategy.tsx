@@ -16,7 +16,7 @@ export function TopicStrategy() {
                {["#新手养狗", "#幼犬肠胃调理", "#狗狗神仙好物", "#双11囤货清单"].map((t, i) => (
                  <div key={i} className="bg-surface-1 border border-border-default p-4 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-shadow">
                    <div className="text-[14px] font-bold text-brand-logo mb-2">{t}</div>
-                   <div className="text-[12px] text-text-tertiary">关联项目：2 个</div>
+                   <div className="text-[13px] text-text-tertiary">关联项目：2 个</div>
                  </div>
                ))}
              </div>
@@ -36,7 +36,7 @@ export function TopicStrategy() {
                     <div>
                       <h4 className="text-[15px] font-bold text-text-main mb-1">{t.title}</h4>
                       <p className="text-[13px] text-text-tertiary mb-3">{t.desc}</p>
-                      <button className="text-[12px] font-bold text-text-main border border-border-default px-3 py-1.5 rounded-lg hover:bg-page-bg">套用此策略</button>
+                      <button className="text-[13px] font-bold text-text-main border border-border-default px-3 py-1.5 rounded-lg hover:bg-page-bg">套用此策略</button>
                     </div>
                  </div>
                ))}

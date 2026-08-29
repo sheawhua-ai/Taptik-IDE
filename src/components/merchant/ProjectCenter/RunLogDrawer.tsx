@@ -38,7 +38,7 @@ export function RunLogDrawer({ onClose }: { onClose: () => void }) {
                    {log.type === 'user' && <User size={10} className="text-white" />}
                    {log.type === 'system' && <GitBranch size={10} className="text-white" />}
                  </div>
-                 <div className="text-[12px] text-text-tertiary mb-1">{log.time}</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">{log.time}</div>
                  <div className="text-[13px] text-text-main leading-relaxed bg-surface-1 p-3 rounded-lg border border-border-default ">
                    {log.text}
                  </div>

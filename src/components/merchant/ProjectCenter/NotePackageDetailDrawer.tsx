@@ -47,11 +47,11 @@ export function NotePackageDetailDrawer({
               <h2 className="text-[16px] font-semibold text-text-main">
                 {note.title || "消费者体验测评内容包"}
               </h2>
-              <span className="px-2 py-0.5 bg-surface-2 text-text-secondary text-[11px] font-normal rounded border border-border-default">
+              <span className="px-2 py-0.5 bg-surface-2 text-text-secondary text-[13px] font-normal rounded border border-border-default">
                 消费者KOC · 笔记包
               </span>
             </div>
-            <div className="flex items-center gap-3 text-[12px] text-text-tertiary">
+            <div className="flex items-center gap-3 text-[13px] text-text-tertiary">
               <span>招募进度: <span className="font-semibold text-text-main tabular-nums">{claimedCount}</span> / <span className="tabular-nums">{totalCount}</span> 人已领取</span>
               <span>·</span>
               <span>体验反馈: <span className="font-medium text-emerald-700">{isQuestionnaireEnabled ? "已配置" : "未配置"}</span></span>
@@ -99,7 +99,7 @@ export function NotePackageDetailDrawer({
           {activeTab === "reqs" && (
             <div className="space-y-4 text-[13px]">
               {/* Dynamic Note banner */}
-              <div className="p-3.5 bg-surface-2 rounded-xl border border-border-default text-text-secondary text-[12.5px] leading-relaxed flex items-start gap-2.5">
+              <div className="p-3.5 bg-surface-2 rounded-xl border border-border-default text-text-secondary text-[13px] leading-relaxed flex items-start gap-2.5">
                 <FileText size={16} className="text-text-secondary shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-text-main font-medium">动态即时生成说明：</strong> 本内容包不是固定模板复制。消费者领取后提交真实体验反馈，反馈与该内容包及当前方案版本绑定，再生成消费者视角的个人笔记。
@@ -117,7 +117,7 @@ export function NotePackageDetailDrawer({
               {/* Forbidden terms */}
               <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-2">
                 <h4 className="font-semibold text-text-main text-[13.5px]">禁止表达与合规红线</h4>
-                <p className="text-danger leading-relaxed bg-danger-light p-3 rounded-lg border border-danger-light font-normal text-[12.5px]">
+                <p className="text-danger leading-relaxed bg-danger-light p-3 rounded-lg border border-danger-light font-normal text-[13px]">
                   严禁出现“100%不拉稀”、“处方药级疗效”、“包治百病”等绝对化或医疗化词汇；严禁拉踩其他宠粮品牌。
                 </p>
               </div>
@@ -125,29 +125,29 @@ export function NotePackageDetailDrawer({
               {/* Angles & Tone */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-1">
-                  <span className="text-[11.5px] text-text-tertiary font-normal">内容角度范围</span>
-                  <div className="font-medium text-text-main text-[12.5px]">
+                  <span className="text-[13px] text-text-tertiary font-normal">内容角度范围</span>
+                  <div className="font-medium text-text-main text-[13px]">
                     换粮避坑测评 / 幼犬成长记录 / 软便改善分享
                   </div>
                 </div>
 
                 <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-1">
-                  <span className="text-[11.5px] text-text-tertiary font-normal">建议语气与风格</span>
-                  <div className="font-medium text-text-main text-[12.5px]">
+                  <span className="text-[13px] text-text-tertiary font-normal">建议语气与风格</span>
+                  <div className="font-medium text-text-main text-[13px]">
                     真实亲切、高口语化、生活感强、真诚种草
                   </div>
                 </div>
 
                 <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-1">
-                  <span className="text-[11.5px] text-text-tertiary font-normal">建议字数范围</span>
-                  <div className="font-medium text-text-main text-[12.5px]">
+                  <span className="text-[13px] text-text-tertiary font-normal">建议字数范围</span>
+                  <div className="font-medium text-text-main text-[13px]">
                     250 - 450 字 (小红书精炼图文)
                   </div>
                 </div>
 
                 <div className="bg-surface-1 rounded-xl p-3.5 border border-border-default space-y-1">
-                  <span className="text-[11.5px] text-text-tertiary font-normal">推荐话题与标签</span>
-                  <div className="font-medium text-text-main text-[12.5px]">
+                  <span className="text-[13px] text-text-tertiary font-normal">推荐话题与标签</span>
+                  <div className="font-medium text-text-main text-[13px]">
                     #幼犬换粮 #养狗避坑 #狗狗软便 #特唯普
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export function NotePackageDetailDrawer({
           {/* TAB 2: 体验反馈 */}
           {activeTab === "questionnaire" && (
             <div className="space-y-4 text-[13px]">
-              <div className="p-3.5 bg-hover-bg/70 rounded-xl border border-border-default text-[12.5px] text-text-secondary leading-relaxed">
+              <div className="p-3.5 bg-hover-bg/70 rounded-xl border border-border-default text-[13px] text-text-secondary leading-relaxed">
                 <strong className="text-text-main font-medium">体验反馈作用：</strong> 消费者领取内容包后，用约 10 秒提交真实体验。反馈只影响这位消费者生成的笔记，不会修改内容包本身或其他消费者的内容。
               </div>
 
@@ -168,13 +168,13 @@ export function NotePackageDetailDrawer({
                     <h4 className="font-semibold text-text-main text-[13.5px]">
                       内容包体验反馈 V{note.packageSpec?.feedbackVersion || 1}
                     </h4>
-                    <span className="text-[11.5px] text-text-tertiary">共 {note.packageSpec?.feedbackQuestions?.length || 3} 题 · 约 10 秒完成</span>
+                    <span className="text-[13px] text-text-tertiary">共 {note.packageSpec?.feedbackQuestions?.length || 3} 题 · 约 10 秒完成</span>
                   </div>
 
                   {onEditQuestionnaire && (
                     <button
                       onClick={onEditQuestionnaire}
-                      className="px-3 py-1.5 bg-btn-main text-white rounded-lg text-[12px] font-medium hover:bg-btn-main-hover transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-btn-main text-white rounded-lg text-[13px] font-medium hover:bg-btn-main-hover transition-colors flex items-center gap-1.5"
                     >
                       <Edit3 size={13} /> 编辑体验反馈
                     </button>
@@ -189,8 +189,8 @@ export function NotePackageDetailDrawer({
                     { id: "experience", prompt: "这次最真实的变化？", options: ["便便更成型", "胃口变好了", "暂时没明显变化"], contentField: "experience" as const }
                   ]).map((question, index) => (
                     <div key={question.id} className="p-3 bg-surface-2 rounded-lg border border-border-default space-y-1.5">
-                      <div className="font-medium text-text-main text-[12.5px]">{index + 1}. {question.prompt}</div>
-                      <div className="text-[11.5px] text-text-tertiary pl-3">{question.options.join(" / ")}</div>
+                      <div className="font-medium text-text-main text-[13px]">{index + 1}. {question.prompt}</div>
+                      <div className="text-[13px] text-text-tertiary pl-3">{question.options.join(" / ")}</div>
                     </div>
                   ))}
                 </div>
@@ -201,7 +201,7 @@ export function NotePackageDetailDrawer({
           {/* TAB 3: 照片拍摄要求 */}
           {activeTab === "photos" && (
             <div className="space-y-4 text-[13px]">
-              <div className="text-[12.5px] text-text-secondary">
+              <div className="text-[13px] text-text-secondary">
                 消费者仅需上传真实照片（仅限静态照片），系统在提交后自动进行场景合规质检。
               </div>
 
@@ -209,19 +209,19 @@ export function NotePackageDetailDrawer({
               <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-btn-main text-white text-[11px] font-medium flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-md bg-btn-main text-white text-[13px] font-medium flex items-center justify-center">
                       1
                     </div>
                     <h4 className="font-semibold text-text-main text-[13.5px]">
                       场景一：狗狗进食中与粮袋实景
                     </h4>
                   </div>
-                  <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium rounded border border-emerald-200">
+                  <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[13px] font-medium rounded border border-emerald-200">
                     必拍 · 1-2 张
                   </span>
                 </div>
 
-                <div className="space-y-2 text-[12px]">
+                <div className="space-y-2 text-[13px]">
                   <div className="p-2.5 bg-surface-2 rounded-lg border border-border-default text-text-secondary leading-relaxed">
                     <strong className="text-text-main font-medium">拍摄说明：</strong> 拍摄自然光线下狗狗吃粮的特写或半身照，画面中需露出产品包装袋一角或食盆。
                   </div>
@@ -235,19 +235,19 @@ export function NotePackageDetailDrawer({
               <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-btn-main text-white text-[11px] font-medium flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-md bg-btn-main text-white text-[13px] font-medium flex items-center justify-center">
                       2
                     </div>
                     <h4 className="font-semibold text-text-main text-[13.5px]">
                       场景二：狗狗精神面貌或生活全身照
                     </h4>
                   </div>
-                  <span className="px-2 py-0.5 bg-hover-bg text-text-secondary text-[11px] font-medium rounded">
+                  <span className="px-2 py-0.5 bg-hover-bg text-text-secondary text-[13px] font-medium rounded">
                     选拍 · 1 张
                   </span>
                 </div>
 
-                <div className="space-y-2 text-[12px]">
+                <div className="space-y-2 text-[13px]">
                   <div className="p-2.5 bg-surface-2 rounded-lg border border-border-default text-text-secondary leading-relaxed">
                     <strong className="text-text-main font-medium">拍摄说明：</strong> 狗狗精神饱满的生活照、玩耍照或便便成型后的打码对比，体现换粮成果。
                   </div>
@@ -265,7 +265,7 @@ export function NotePackageDetailDrawer({
               <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-3">
                 <h4 className="font-semibold text-text-main text-[13.5px]">执行时限与奖励规则</h4>
                 
-                <div className="grid grid-cols-2 gap-3 text-[12px]">
+                <div className="grid grid-cols-2 gap-3 text-[13px]">
                   <div className="p-3 bg-surface-2 rounded-lg border border-border-default">
                     <div className="text-text-tertiary font-normal">领取有效期</div>
                     <div className="font-semibold text-text-main mt-0.5">扫码后 48 小时内</div>
@@ -287,7 +287,7 @@ export function NotePackageDetailDrawer({
 
               <div className="bg-surface-1 rounded-xl p-4 border border-border-default space-y-3">
                 <h4 className="font-semibold text-text-main text-[13.5px]">发布识别与提醒机制</h4>
-                <div className="space-y-2.5 text-[12.5px] text-text-secondary">
+                <div className="space-y-2.5 text-[13px] text-text-secondary">
                   <div className="flex items-start gap-2">
                     <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
                     <span><strong className="text-text-main font-medium">自动识别：</strong> 消费者在小红书App发布后无需手动粘贴笔记链接，系统将在 5-15 分钟内自动识别小红书笔记ID并绑定。</span>
@@ -305,7 +305,7 @@ export function NotePackageDetailDrawer({
 
         {/* Footer */}
         <div className="p-4 border-t border-border-default bg-surface-1 flex justify-between items-center shrink-0">
-          <div className="text-[12px] text-text-tertiary">
+          <div className="text-[13px] text-text-tertiary">
             ID: {note.id || "pkg_placeholder"}
           </div>
           <button

@@ -62,7 +62,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <div className="flex items-center justify-between mb-8">
  <div>
  <h2 className="text-[20px] font-semibold text-text-main tracking-tight">素材管理中心</h2>
- <p className="text-[12px] text-text-tertiary uppercase tracking-wider mt-1">素材储存库与媒体库</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-wider mt-1">素材储存库与媒体库</p>
  </div>
  <div className="flex items-center gap-3">
  <div className="flex bg-neutral-0 p-1 rounded-xl border border-border-default shadow-sm">
@@ -84,11 +84,11 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-btn-main text-white' : 'text-text-tertiary hover:text-text-main'}`}><List size={18}/></button>
  </div>
  <div className="h-4 w-px bg-neutral-200 mx-2" />
- <button className="px-5 py-2 bg-btn-main text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 flex items-center gap-2 hover:bg-btn-main transition-all">
+ <button className="px-5 py-2 bg-btn-main text-white rounded-xl text-[13px] shadow-lg shadow-neutral-200 flex items-center gap-2 hover:bg-btn-main transition-all">
  <Plus size={16}/> 上传素材
  </button>
  </div>
- <span className="text-[11px] text-text-tertiary uppercase tracking-widest">全局资产库</span>
+ <span className="text-[13px] text-text-tertiary uppercase tracking-widest">全局资产库</span>
  </div>
  )}
 
@@ -108,7 +108,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <button 
  key={type}
  onClick={() => setSelectedType(type)}
- className={`px-4 py-2 rounded-xl text-[12px] capitalize transition-all ${selectedType === type ? 'bg-btn-main text-white shadow-lg shadow-neutral-200' : 'bg-neutral-0 border border-border-default text-text-tertiary hover:bg-page-bg'}`}
+ className={`px-4 py-2 rounded-xl text-[13px] capitalize transition-all ${selectedType === type ? 'bg-btn-main text-white shadow-lg shadow-neutral-200' : 'bg-neutral-0 border border-border-default text-text-tertiary hover:bg-page-bg'}`}
  >
  {type === 'all' ? '全部' : type === 'image' ? '图片' : type === 'video' ? '视频' : type === 'document' ? '文档' : type}
  </button>
@@ -141,12 +141,12 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
 
  <div className="absolute top-4 left-4">
  {asset.status === 'processing' && (
- <div className="px-3 py-1 bg-neutral-400 text-white text-[10px] rounded-lg flex items-center gap-1.5 shadow-lg">
+ <div className="px-3 py-1 bg-neutral-400 text-white text-[13px] rounded-lg flex items-center gap-1.5 shadow-lg">
  <Clock size={12} className="animate-spin" /> 处理中
  </div>
  )}
  {asset.status === 'ready' && (
- <div className="px-3 py-1 bg-btn-main text-white text-[10px] rounded-lg flex items-center gap-1.5 shadow-lg">
+ <div className="px-3 py-1 bg-btn-main text-white text-[13px] rounded-lg flex items-center gap-1.5 shadow-lg">
  <CheckCircle2 size={12} /> 就绪
  </div>
  )}
@@ -155,10 +155,10 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <div className="p-5">
  <h3 className="text-[14px] font-semibold text-text-main truncate mb-1">{asset.name}</h3>
  <div className="flex items-center justify-between">
- <span className="text-[11px] text-text-tertiary">{asset.size}</span>
+ <span className="text-[13px] text-text-tertiary">{asset.size}</span>
  <div className="flex gap-1">
  {asset.tags.slice(0, 2).map(tag => (
- <span key={tag} className="text-[9px] text-brand-logo bg-brand-light px-1.5 py-0.5 rounded">#{tag}</span>
+ <span key={tag} className="text-[13px] text-brand-logo bg-brand-light px-1.5 py-0.5 rounded">#{tag}</span>
  ))}
  </div>
  </div>
@@ -170,7 +170,7 @@ export const AssetManager: React.FC<{ embedded?: boolean }> = ({ embedded }) => 
  <div className="bg-neutral-0 rounded-[32px] border border-border-default shadow-sm overflow-hidden">
  <table className="w-full text-left">
  <thead>
- <tr className="bg-page-bg text-[11px] text-text-tertiary uppercase tracking-widest">
+ <tr className="bg-page-bg text-[13px] text-text-tertiary uppercase tracking-widest">
  <th className="px-8 py-4">预览</th>
  <th className="px-8 py-4">素材名称</th>
  <th className="px-8 py-4">类型</th>

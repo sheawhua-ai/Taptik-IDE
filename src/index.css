@@ -1,8 +1,11 @@
 @import "tailwindcss";
+@import "./styles/workspace.css";
 
 @theme {
   --font-sans: Inter, "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-size-ui: 14px;
+  --font-size-content: 13px;
 
   /* TapTik Design System 2.0 Tokens */
   /* Neutral Colors */
@@ -83,8 +86,18 @@
 
 body {
   font-family: var(--font-sans);
+  font-size: var(--font-size-ui);
+  line-height: 1.5;
   background-color: var(--color-canvas);
   color: var(--color-text-primary);
+}
+
+/* Typography baseline: controls are IDE-sized at 14px; static content uses 13px. */
+button,
+input,
+select,
+textarea {
+  font-size: var(--font-size-ui) !important;
 }
 
 /* Custom Scrollbar */

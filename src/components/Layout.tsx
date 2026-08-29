@@ -18,7 +18,7 @@ export default function Layout() {
  </div>
  <div>
  <h1 className="text-sm font-semibold uppercase tracking-widest text-text-main">智策系统</h1>
- <p className="text-[10px] text-on-surface-variant font-medium">企业级架构师</p>
+ <p className="text-[13px] text-on-surface-variant font-medium">企业级架构师</p>
  </div>
  </div>
  </div>
@@ -81,7 +81,7 @@ export default function Layout() {
  <div className="flex items-center gap-8">
  <div className="relative group">
  <span className="material-symbols-outlined absolute left-3 top-1/2 -tranneutral-y-1/2 text-text-tertiary text-[18px]">search</span>
- <input type="text" className="bg-surface-container-low border-none rounded-full pl-9 pr-4 py-1.5 text-xs w-64 focus:ring-1 focus:ring-secondary/30 transition-all outline-none" placeholder="全域内容检索..." />
+ <input type="text" className="bg-surface-container-low border-none rounded-full pl-9 pr-4 py-1.5 text-[13px] w-64 focus:ring-1 focus:ring-secondary/30 transition-all outline-none" placeholder="全域内容检索..." />
  </div>
  
  <nav className="hidden md:flex items-center gap-6">
@@ -92,7 +92,7 @@ export default function Layout() {
  </div>
 
  <div className="flex items-center gap-4">
- <button className="text-xs px-3 py-1.5 rounded-full bg-surface-container-highest hover:bg-surface-container-high transition-colors">财务工具</button>
+ <button className="text-[13px] px-3 py-1.5 rounded-full bg-surface-container-highest hover:bg-surface-container-high transition-colors">财务工具</button>
  <div className="flex items-center gap-2">
  <button className="p-1.5 text-text-tertiary hover:bg-hover-bg rounded-full transition-colors"><span className="material-symbols-outlined text-[20px]">notifications</span></button>
  <button className="p-1.5 text-text-tertiary hover:bg-hover-bg rounded-full transition-colors"><span className="material-symbols-outlined text-[20px]">help</span></button>

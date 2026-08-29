@@ -70,7 +70,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  ].map((plan, idx) => (
  <div key={idx} className={`relative p-6 rounded-xl border-2 transition-all cursor-pointer ${plan.recommend ? 'border-primary-500 bg-brand-light/30' : 'border-border-default bg-surface-1 hover:border-border-default'}`}>
  {plan.recommend && (
- <div className="absolute -top-3.5 left-1/2 -tranneutral-x-1/2 px-3 py-1 bg-btn-main text-white text-[11px] rounded-full shadow-sm">
+ <div className="absolute -top-3.5 left-1/2 -tranneutral-x-1/2 px-3 py-1 bg-btn-main text-white text-[13px] rounded-full shadow-sm">
  推荐套餐
  </div>
  )}
@@ -78,7 +78,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  {formatCredits(plan.credits)} <span className="text-[14px]">Cr</span>
  </div>
  {plan.bonus > 0 && (
- <div className="text-[12px] text-brand-logo text-center mb-4">
+ <div className="text-[13px] text-brand-logo text-center mb-4">
  加赠 {formatCredits(plan.bonus)} Cr
  </div>
  )}
@@ -86,7 +86,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  <button className={`w-full py-2.5 rounded-xl text-[14px] transition-colors ${plan.recommend ? 'bg-btn-main text-white hover:bg-btn-main-hover' : 'bg-hover-bg text-text-secondary hover:bg-selected-bg'}`}>
  {formatRMB(plan.price)}
  </button>
- <div className="text-center text-[10px] text-text-tertiary mt-3 font-mono">
+ <div className="text-center text-[13px] text-text-tertiary mt-3 font-mono">
  折算率 1:{((plan.credits + plan.bonus) / plan.price).toFixed(1)}
  </div>
  </div>
@@ -107,7 +107,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  </div>
  <div>
  <div className="text-[14px] text-text-main">{sh.title}</div>
- <div className="text-[12px] text-text-tertiary">{sh.time}</div>
+ <div className="text-[13px] text-text-tertiary">{sh.time}</div>
  </div>
  </div>
  <div className="text-right">
@@ -115,7 +115,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  {sh.amount > 0 ? '+' : ''}{sh.amount} Cr
  </div>
  {sh.amount < 0 && (
- <div className="text-[11px] text-text-tertiary font-mono">≈ {formatRMB(Math.abs(sh.amount) / 10)}</div>
+ <div className="text-[13px] text-text-tertiary font-mono">≈ {formatRMB(Math.abs(sh.amount) / 10)}</div>
  )}
  </div>
  </div>
@@ -184,7 +184,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  </div>
  <div>
  <div className="text-[14px] text-text-main">{sh.title}</div>
- <div className="text-[12px] text-text-tertiary flex gap-2">
+ <div className="text-[13px] text-text-tertiary flex gap-2">
  <span>{sh.time}</span>
  <span className="text-text-main bg-hover-bg px-1.5 rounded">{sh.status}</span>
  </div>
@@ -203,7 +203,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  <div className="p-6 bg-page-bg rounded-xl border border-border-default flex items-center justify-between">
  <div>
  <div className="text-[14px] text-text-main mb-1">提现至对公账户</div>
- <div className="text-[12px] text-text-tertiary">尾号 8892 · 中国工商银行</div>
+ <div className="text-[13px] text-text-tertiary">尾号 8892 · 中国工商银行</div>
  </div>
  <button className="text-[13px] text-brand-logo hover:text-brand-logo">修改</button>
  </div>
@@ -220,7 +220,7 @@ export const FinancePanelModal: React.FC<FinancePanelModalProps> = ({
  </div>
  <div>
  <div className="text-[14px] text-text-main">{sh.title}</div>
- <div className="text-[12px] text-text-tertiary flex gap-2">
+ <div className="text-[13px] text-text-tertiary flex gap-2">
  <span>{sh.time}</span>
  <span className="text-text-secondary bg-hover-bg px-1.5 rounded">{sh.status}</span>
  </div>

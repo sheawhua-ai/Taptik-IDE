@@ -68,14 +68,14 @@ export function MaterialAiHub({
       {/* Header */}
       <div className="p-3.5 border-b border-border-default bg-surface-subtle flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center text-[11px] font-bold">
+          <div className="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center text-[13px] font-bold">
             <Camera size={13} />
           </div>
           <div>
             <div className="text-[13px] font-semibold text-text-primary">
               视觉质检与拍摄 AI 协调
             </div>
-            <div className="text-[11px] text-text-tertiary">
+            <div className="text-[13px] text-text-tertiary">
               多维画质质检 · 智能补拍话术
             </div>
           </div>
@@ -83,14 +83,14 @@ export function MaterialAiHub({
       </div>
 
       {/* Body Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[12.5px]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-[13px]">
         
         {/* Item Selector Tabs (if multiple items) */}
         {subItems.length > 0 && (
           <div className="space-y-1.5">
-            <div className="text-[11.5px] font-semibold text-text-secondary flex items-center justify-between">
+            <div className="text-[13px] font-semibold text-text-secondary flex items-center justify-between">
               <span>当前诊断镜头：</span>
-              <span className="text-[10.5px] text-text-tertiary">共 {subItems.length} 个镜头</span>
+              <span className="text-[13px] text-text-tertiary">共 {subItems.length} 个镜头</span>
             </div>
             <div className="flex gap-1 overflow-x-auto pb-1">
               {subItems.map((item, idx) => (
@@ -98,7 +98,7 @@ export function MaterialAiHub({
                   key={item.id}
                   type="button"
                   onClick={() => setSelectedItemIndex(idx)}
-                  className={`px-2.5 py-1 text-[11px] rounded-md transition-colors truncate max-w-[120px] shrink-0 ${
+                  className={`px-2.5 py-1 text-[13px] rounded-md transition-colors truncate max-w-[120px] shrink-0 ${
                     selectedItemIndex === idx
                       ? 'bg-neutral-900 text-white font-medium shadow-sm'
                       : 'bg-surface-subtle text-text-secondary hover:bg-surface-hover border border-border-default'
@@ -114,16 +114,16 @@ export function MaterialAiHub({
         {/* 1. AI Objective Vision Diagnostics Card */}
         <div className="p-3.5 bg-surface-subtle border border-border-subtle rounded-xl space-y-3">
           <div className="flex items-center justify-between">
-            <div className="text-[12px] font-semibold text-text-primary flex items-center gap-1.5">
+            <div className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-emerald-600" />
               <span>AI 视觉质检分析</span>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10.5px] font-medium bg-emerald-100 text-emerald-800">
+            <span className="px-2 py-0.5 rounded text-[13px] font-medium bg-emerald-100 text-emerald-800">
               综合评分 96 分
             </span>
           </div>
 
-          <div className="space-y-2 text-[11.5px]">
+          <div className="space-y-2 text-[13px]">
             <div className="flex items-center justify-between">
               <span className="text-text-secondary">主体清晰度：</span>
               <span className="font-medium text-text-primary">主体突出 (98% 达标)</span>
@@ -145,7 +145,7 @@ export function MaterialAiHub({
             </div>
           </div>
 
-          <div className="p-2 bg-surface rounded-lg border border-border-subtle text-[11px] text-text-secondary leading-relaxed flex items-start gap-1.5">
+          <div className="p-2 bg-surface rounded-lg border border-border-subtle text-[13px] text-text-secondary leading-relaxed flex items-start gap-1.5">
             <Lightbulb size={13} className="text-amber-600 shrink-0 mt-0.5" />
             <div>
               <strong>AI 建议：</strong>画面整体符合小红书爆款图文调性，适宜作为正文首图或步骤对比图。
@@ -156,20 +156,20 @@ export function MaterialAiHub({
         {/* 2. AI Reshoot Directive Generator */}
         <div className="p-3.5 bg-surface rounded-xl border border-border-default space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <div className="text-[12px] font-semibold text-text-primary flex items-center gap-1.5">
+            <div className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5">
               <Sparkles size={13} className="text-amber-600" />
               <span>生成精准补拍指令</span>
             </div>
-            <span className="text-[10.5px] text-text-tertiary">一键填入下发</span>
+            <span className="text-[13px] text-text-tertiary">一键填入下发</span>
           </div>
 
           <div className="space-y-1.5">
-            <div className="text-[11px] text-text-tertiary">快捷针对性问题方向：</div>
+            <div className="text-[13px] text-text-tertiary">快捷针对性问题方向：</div>
             <div className="grid grid-cols-2 gap-1.5">
               <button
                 type="button"
                 onClick={() => handleGenerateCustomDirective('lighting')}
-                className={`px-2 py-1.5 text-[11px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
+                className={`px-2 py-1.5 text-[13px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
                   reshootFocus === 'lighting'
                     ? 'bg-neutral-900 text-white border-neutral-900'
                     : 'bg-surface-subtle text-text-secondary hover:bg-surface-hover border-border-default'
@@ -181,7 +181,7 @@ export function MaterialAiHub({
               <button
                 type="button"
                 onClick={() => handleGenerateCustomDirective('angle')}
-                className={`px-2 py-1.5 text-[11px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
+                className={`px-2 py-1.5 text-[13px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
                   reshootFocus === 'angle'
                     ? 'bg-neutral-900 text-white border-neutral-900'
                     : 'bg-surface-subtle text-text-secondary hover:bg-surface-hover border-border-default'
@@ -193,7 +193,7 @@ export function MaterialAiHub({
               <button
                 type="button"
                 onClick={() => handleGenerateCustomDirective('focus')}
-                className={`px-2 py-1.5 text-[11px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
+                className={`px-2 py-1.5 text-[13px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
                   reshootFocus === 'focus'
                     ? 'bg-neutral-900 text-white border-neutral-900'
                     : 'bg-surface-subtle text-text-secondary hover:bg-surface-hover border-border-default'
@@ -205,7 +205,7 @@ export function MaterialAiHub({
               <button
                 type="button"
                 onClick={() => handleGenerateCustomDirective('background')}
-                className={`px-2 py-1.5 text-[11px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
+                className={`px-2 py-1.5 text-[13px] rounded-lg border text-left transition-colors flex items-center gap-1.5 ${
                   reshootFocus === 'background'
                     ? 'bg-neutral-900 text-white border-neutral-900'
                     : 'bg-surface-subtle text-text-secondary hover:bg-surface-hover border-border-default'
@@ -219,7 +219,7 @@ export function MaterialAiHub({
 
           {/* Generated prompt box */}
           <div className="p-2.5 bg-surface-subtle border border-border-subtle rounded-lg space-y-2">
-            <div className="text-[11.5px] text-text-primary leading-relaxed">
+            <div className="text-[13px] text-text-primary leading-relaxed">
               "{generatedPrompt}"
             </div>
             
@@ -227,7 +227,7 @@ export function MaterialAiHub({
               <button
                 type="button"
                 onClick={() => copyToClipboard(generatedPrompt, '补拍要求已复制到剪贴板')}
-                className="text-[11px] text-text-secondary hover:text-text-primary flex items-center gap-1"
+                className="text-[13px] text-text-secondary hover:text-text-primary flex items-center gap-1"
               >
                 <Copy size={11} />
                 <span>复制要求</span>
@@ -237,7 +237,7 @@ export function MaterialAiHub({
                 <button
                   type="button"
                   onClick={() => onOpenReshootModal(currentItem, generatedPrompt)}
-                  className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-[11px] font-medium transition-colors flex items-center gap-1 shadow-sm"
+                  className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-[13px] font-medium transition-colors flex items-center gap-1 shadow-sm"
                 >
                   <Send size={11} />
                   <span>一键填入并下发补拍</span>
@@ -249,29 +249,29 @@ export function MaterialAiHub({
 
         {/* 3. AI Smart Visual Tagging */}
         <div className="p-3.5 bg-surface-subtle border border-border-subtle rounded-xl space-y-2">
-          <div className="text-[12px] font-semibold text-text-primary flex items-center justify-between">
+          <div className="text-[13px] font-semibold text-text-primary flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <Tag size={13} className="text-text-secondary" />
               <span>视觉特征与入库标签</span>
             </div>
-            <span className="text-[10.5px] text-emerald-700 font-medium">已关联方案词簇</span>
+            <span className="text-[13px] text-emerald-700 font-medium">已关联方案词簇</span>
           </div>
 
           <div className="flex flex-wrap gap-1.5">
             {aiTags.map(tag => (
-              <span key={tag} className="px-2 py-0.5 bg-surface border border-border-default rounded text-[11px] text-text-secondary font-mono">
+              <span key={tag} className="px-2 py-0.5 bg-surface border border-border-default rounded text-[13px] text-text-secondary font-mono">
                 {tag}
               </span>
             ))}
           </div>
-          <div className="text-[10.5px] text-text-tertiary">
+          <div className="text-[13px] text-text-tertiary">
             验收通过后将自动以该标签归档至【素材中心】资产库。
           </div>
         </div>
 
         {/* 4. Instant Communication Message Templates */}
         <div className="space-y-2 pt-1 border-t border-border-subtle">
-          <div className="text-[11.5px] font-semibold text-text-secondary flex items-center gap-1">
+          <div className="text-[13px] font-semibold text-text-secondary flex items-center gap-1">
             <MessageSquare size={12} />
             <span>执行人微信/企微快捷消息：</span>
           </div>
@@ -283,7 +283,7 @@ export function MaterialAiHub({
                 `亲亲，您回传的【${task.noteTitle}】拍摄素材光线和细节特别棒，已通过验收！非常感谢配合～`,
                 '验收通过文案已复制！'
               )}
-              className="w-full text-left p-2 bg-surface hover:bg-surface-hover border border-border-default rounded-lg text-[11.5px] transition-colors group flex items-center justify-between"
+              className="w-full text-left p-2 bg-surface hover:bg-surface-hover border border-border-default rounded-lg text-[13px] transition-colors group flex items-center justify-between"
             >
               <div className="flex items-center gap-1.5 min-w-0">
                 <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
@@ -298,7 +298,7 @@ export function MaterialAiHub({
                 `亲亲，素材整体很好看！为了笔记能冲上小红书搜索推荐，需要麻烦您按指导补拍一张照片：${generatedPrompt}`,
                 '补拍沟通文案已复制！'
               )}
-              className="w-full text-left p-2 bg-surface hover:bg-surface-hover border border-border-default rounded-lg text-[11.5px] transition-colors group flex items-center justify-between"
+              className="w-full text-left p-2 bg-surface hover:bg-surface-hover border border-border-default rounded-lg text-[13px] transition-colors group flex items-center justify-between"
             >
               <div className="flex items-center gap-1.5 min-w-0">
                 <MessageSquare size={13} className="text-amber-600 shrink-0" />

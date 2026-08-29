@@ -61,7 +61,7 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  <div className="p-2 max-h-[420px] overflow-y-auto custom-scrollbar">
  {COMMAND_EXAMPLES.map(group => (
  <div key={group.category} className="mb-4">
- <div className="text-[11px] tracking-widest text-white/40 px-3 py-2">
+ <div className="text-[13px] tracking-widest text-white/40 px-3 py-2">
  {group.category}
  </div>
  <div className="px-1 space-y-1">
@@ -78,7 +78,7 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  part
  )}
  </div>
- <div className="text-[11px] font-medium text-white/40">{item.preview}</div>
+ <div className="text-[13px] font-medium text-white/40">{item.preview}</div>
  </button>
  ))}
  </div>
@@ -86,7 +86,7 @@ export const CommandDirectory: React.FC<CommandDirectoryProps> = ({ isOpen, onCl
  ))}
  </div>
  <div className="p-4 bg-surface-1/5 border-t border-white/10 text-center">
- <span className="text-[11px] text-white/40 italic">也可以在输入框自由用自然语言描述，我会尽力理解</span>
+ <span className="text-[13px] text-white/40 italic">也可以在输入框自由用自然语言描述，我会尽力理解</span>
  </div>
  </motion.div>
  );

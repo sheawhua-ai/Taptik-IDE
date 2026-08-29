@@ -106,7 +106,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
         <div className="p-5 border-b border-border-default flex justify-between items-center bg-page-bg">
           <div>
             <h3 className="text-[16px] font-bold text-text-main">核心诊断详情</h3>
-            <p className="text-[12px] text-text-tertiary mt-1">基于以下事实维度生成操盘策略，可作为审计依据</p>
+            <p className="text-[13px] text-text-tertiary mt-1">基于以下事实维度生成操盘策略，可作为审计依据</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-selected-bg rounded-xl text-text-tertiary transition-colors">
             <X size={20} />
@@ -129,7 +129,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                     <span className="text-[14px] font-bold text-text-main">{cat}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-[12px] ${hasIssue ? 'text-orange-600 font-bold' : 'text-text-tertiary'}`}>
+                    <span className={`text-[13px] ${hasIssue ? 'text-orange-600 font-bold' : 'text-text-tertiary'}`}>
                       {confirmedCount}/{catItems.length} 已确认
                     </span>
                     {hasIssue && <AlertCircle size={14} className="text-orange-500" />}
@@ -154,12 +154,12 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                                 <span className="font-bold text-text-main">{item.fact?.key}:</span>
                                 <span className="text-text-secondary max-w-[200px] text-right">{item.fact?.value}</span>
                               </div>
-                              <div className="flex justify-between items-center mt-1 text-[11px] text-text-tertiary">
+                              <div className="flex justify-between items-center mt-1 text-[13px] text-text-tertiary">
                                 <span>来源: {item.fact?.source}</span>
                                 <span>{item.fact?.time}</span>
                               </div>
                               {item.fact?.note && (
-                                <div className={`mt-1.5 p-1.5 rounded text-[11px] ${item.status === 'confirmed' ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700'}`}>
+                                <div className={`mt-1.5 p-1.5 rounded text-[13px] ${item.status === 'confirmed' ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700'}`}>
                                   {item.fact.note}
                                 </div>
                               )}
@@ -172,7 +172,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                                                      item.id === 'conversion' ? 'reply' :
                                                      item.id === 'accounts' ? 'account' : item.id;
                                     window.dispatchEvent(new CustomEvent("switch-to-knowledge", { detail: { targetModule: mappedId, action: 'ai_interview' } }));
-                                  }} className="px-2.5 py-1.5 bg-btn-main text-white text-[11px] font-bold rounded-lg hover:bg-btn-main-hover transition-colors shadow-sm flex items-center gap-1">
+                                  }} className="px-2.5 py-1.5 bg-btn-main text-white text-[13px] font-bold rounded-lg hover:bg-btn-main-hover transition-colors shadow-sm flex items-center gap-1">
                                     <Sparkles size={12} /> 开启 AI 访谈
                                   </button>
                                   <button onClick={() => {
@@ -182,7 +182,7 @@ const DiagnosisDetailDrawer = ({ onClose, items }: { onClose: () => void, items:
                                                      item.id === 'conversion' ? 'reply' :
                                                      item.id === 'accounts' ? 'account' : item.id;
                                     window.dispatchEvent(new CustomEvent("switch-to-knowledge", { detail: { targetModule: mappedId, action: 'file_mapping' } }));
-                                  }} className="px-2.5 py-1.5 bg-surface-1 border border-border-default text-text-secondary text-[11px] font-bold rounded-lg hover:bg-page-bg transition-colors shadow-sm flex items-center gap-1">
+                                  }} className="px-2.5 py-1.5 bg-surface-1 border border-border-default text-text-secondary text-[13px] font-bold rounded-lg hover:bg-page-bg transition-colors shadow-sm flex items-center gap-1">
                                     <FolderOpen size={12} /> 配置本地文件映射
                                   </button>
                                 </div>
@@ -219,15 +219,15 @@ const ExecutionCheckModal = ({ onClose, onProceed }: { onClose: () => void, onPr
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl">
                <div className="flex items-center gap-2 text-[14px] text-emerald-900"><CheckCircle size={16} className="text-emerald-500" /> 账号产能与档期</div>
-               <span className="text-[12px] font-bold text-emerald-700">已满足 (KOS可用6个)</span>
+               <span className="text-[13px] font-bold text-emerald-700">已满足 (KOS可用6个)</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl">
                <div className="flex items-center gap-2 text-[14px] text-emerald-900"><CheckCircle size={16} className="text-emerald-500" /> 内容生产能力</div>
-               <span className="text-[12px] font-bold text-emerald-700">已满足 (周期14天)</span>
+               <span className="text-[13px] font-bold text-emerald-700">已满足 (周期14天)</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-page-bg border border-border-default rounded-xl">
                <div className="flex items-center gap-2 text-[14px] text-text-secondary"><Circle size={16} className="text-text-tertiary" /> 私域承接人员配置</div>
-               <span className="text-[12px] font-bold text-text-tertiary">待确认</span>
+               <span className="text-[13px] font-bold text-text-tertiary">待确认</span>
             </div>
           </div>
         </div>
@@ -326,11 +326,11 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-border-default">
-                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[120px]">渠道</th>
-                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[100px]">内容量</th>
-                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[100px]">可用账号</th>
-                      <th className="pb-3 text-[12px] font-bold text-text-tertiary w-[120px]">单篇预估成本(元)</th>
-                      <th className="pb-3 text-[12px] font-bold text-text-tertiary">策略用途</th>
+                      <th className="pb-3 text-[13px] font-bold text-text-tertiary w-[120px]">渠道</th>
+                      <th className="pb-3 text-[13px] font-bold text-text-tertiary w-[100px]">内容量</th>
+                      <th className="pb-3 text-[13px] font-bold text-text-tertiary w-[100px]">可用账号</th>
+                      <th className="pb-3 text-[13px] font-bold text-text-tertiary w-[120px]">单篇预估成本(元)</th>
+                      <th className="pb-3 text-[13px] font-bold text-text-tertiary">策略用途</th>
                     </tr>
                   </thead>
                   <tbody className="text-[13px]">
@@ -343,7 +343,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                       <td className="py-4 text-text-secondary">
                         <input type="number" value={brandCost} onChange={e => setBrandCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-text-tertiary text-[12px]">官方背书定调</td>
+                      <td className="py-4 text-text-tertiary text-[13px]">官方背书定调</td>
                     </tr>
                     <tr className="border-b border-border-default bg-brand-light/30">
                       <td className="py-4 font-bold text-primary-900 flex items-center gap-1">KOS/员工号 <Sparkles size={12} className="text-brand-logo"/></td>
@@ -354,7 +354,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                       <td className="py-4 text-text-secondary">
                         <input type="number" value={kosCost} onChange={e => setKosCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-surface-1 border border-primary-200 text-primary-700 rounded font-bold focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-primary-700/80 text-[12px] font-medium">搜索长尾截流与私信承接</td>
+                      <td className="py-4 text-primary-700/80 text-[13px] font-medium">搜索长尾截流与私信承接</td>
                     </tr>
                     <tr className="border-b border-border-default">
                       <td className="py-4 font-bold text-text-main">KOC/素人</td>
@@ -365,7 +365,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                       <td className="py-4 text-text-secondary">
                         <input type="number" value={kocCost} onChange={e => setKocCost(Number(e.target.value))} className="w-16 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-text-tertiary text-[12px]">外围真实口碑铺设</td>
+                      <td className="py-4 text-text-tertiary text-[13px]">外围真实口碑铺设</td>
                     </tr>
                     <tr>
                       <td className="py-4 font-bold text-text-main">信息流追投</td>
@@ -374,7 +374,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                       <td className="py-4 font-bold text-text-main">
                         <input type="number" value={infoFlowBudget} onChange={e => setInfoFlowBudget(Number(e.target.value))} className="w-20 px-2 py-1 bg-page-bg border border-border-default rounded font-medium focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                       </td>
-                      <td className="py-4 text-text-tertiary text-[12px]">放大自然流优质笔记</td>
+                      <td className="py-4 text-text-tertiary text-[13px]">放大自然流优质笔记</td>
                     </tr>
                   </tbody>
                 </table>
@@ -389,7 +389,7 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                  <div className="text-[13px] text-text-tertiary mb-1">当前项目总预算 (元)</div>
                  <div className="flex items-center gap-3">
                    <input type="number" value={budget} onChange={e => {setBudget(Number(e.target.value)); setIsBudgetManual(true);}} className="w-32 px-3 py-2 bg-page-bg border border-border-default rounded-lg text-[16px] font-bold text-text-main focus:border-primary-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                   {isBudgetManual && <button onClick={handleCalculate} className="text-[12px] font-bold text-brand-logo bg-brand-light px-2 py-1 rounded">依内容量重算</button>}
+                   {isBudgetManual && <button onClick={handleCalculate} className="text-[13px] font-bold text-brand-logo bg-brand-light px-2 py-1 rounded">依内容量重算</button>}
                  </div>
                </div>
                
@@ -403,13 +403,13 @@ const ParameterAdjustmentView = ({ strategy, onBack, onCreate }: { strategy: any
                <div className="w-px h-12 bg-neutral-200 hidden"></div>
                <div className="flex-1 hidden">
                  <div className="text-[13px] text-text-tertiary mb-1">原策略建议预算</div>
-                 <div className="text-[16px] font-bold text-text-main">{strategy.metrics.budget} <span className="text-[12px] font-normal text-text-tertiary ml-1">元</span></div>
+                 <div className="text-[16px] font-bold text-text-main">{strategy.metrics.budget} <span className="text-[13px] font-normal text-text-tertiary ml-1">元</span></div>
                </div>
                <div className="w-px h-12 bg-neutral-200 hidden"></div>
                <div className="flex-1 hidden">
                  <div className="text-[13px] text-text-tertiary mb-1">差值</div>
                  <div className={`text-[16px] font-bold ${diffBudget < 0 ? 'text-orange-600' : diffBudget > 0 ? 'text-emerald-600' : 'text-text-tertiary'}`}>
-                   {diffBudget > 0 ? '+' : ''}{diffBudget} <span className="text-[12px] font-normal ml-1">元</span>
+                   {diffBudget > 0 ? '+' : ''}{diffBudget} <span className="text-[13px] font-normal ml-1">元</span>
                  </div>
                </div>
             </div>
@@ -522,12 +522,12 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
           <div className="grid grid-cols-2 gap-6">
             <div className="bg-surface-1 border border-border-default p-6 rounded-xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer group" onClick={() => setIsGenerated(true)}>
               <div className="flex justify-between items-start mb-4">
-                <span className="px-2.5 py-1 bg-hover-bg text-text-secondary text-[12px] font-bold rounded">2026-06-15</span>
-                <span className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">已结案</span>
+                <span className="px-2.5 py-1 bg-hover-bg text-text-secondary text-[13px] font-bold rounded">2026-06-15</span>
+                <span className="text-[13px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">已结案</span>
               </div>
               <h4 className="text-[16px] font-bold text-text-main mb-2 group-hover:text-brand-logo transition-colors">618 大促蓄水与转化</h4>
               <p className="text-[13px] text-text-tertiary mb-4 line-clamp-2">针对 618 节点，采用 KOC 达人铺量蓄水结合信息流强转化模型，达成 3.2 的总体 ROI。</p>
-              <div className="flex items-center gap-4 text-[12px] text-text-tertiary">
+              <div className="flex items-center gap-4 text-[13px] text-text-tertiary">
                 <span className="flex items-center gap-1"><FileText size={14}/> 86篇内容</span>
                 <span className="flex items-center gap-1"><Database size={14}/> 20,000元</span>
               </div>
@@ -535,12 +535,12 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
 
             <div className="bg-surface-1 border border-border-default p-6 rounded-xl shadow-sm hover:border-primary-300 hover:shadow-md transition-all cursor-pointer group" onClick={() => setIsGenerated(true)}>
               <div className="flex justify-between items-start mb-4">
-                <span className="px-2.5 py-1 bg-hover-bg text-text-secondary text-[12px] font-bold rounded">2026-05-01</span>
-                <span className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">已结案</span>
+                <span className="px-2.5 py-1 bg-hover-bg text-text-secondary text-[13px] font-bold rounded">2026-05-01</span>
+                <span className="text-[13px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">已结案</span>
               </div>
               <h4 className="text-[16px] font-bold text-text-main mb-2 group-hover:text-brand-logo transition-colors">新品上市长尾截流</h4>
               <p className="text-[13px] text-text-tertiary mb-4 line-clamp-2">针对幼犬主粮新品，以长尾词搜索卡位为主，强力控制单次拍摄成本，引导私域转化。</p>
-              <div className="flex items-center gap-4 text-[12px] text-text-tertiary">
+              <div className="flex items-center gap-4 text-[13px] text-text-tertiary">
                 <span className="flex items-center gap-1"><FileText size={14}/> 42篇内容</span>
                 <span className="flex items-center gap-1"><Database size={14}/> 8,000元</span>
               </div>
@@ -678,16 +678,16 @@ const StrategyView = ({ hasData }: { hasData?: boolean }) => {
                   <h4 className="text-[18px] font-bold text-text-main mb-4">{strategy.title}</h4>
                   <div className="space-y-4">
                     <div>
-                      <span className="text-[12px] font-bold text-text-tertiary block mb-1">适用条件：</span>
+                      <span className="text-[13px] font-bold text-text-tertiary block mb-1">适用条件：</span>
                       <p className="text-[13px] text-text-main">{strategy.condition}</p>
                     </div>
                     <div>
-                      <span className="text-[12px] font-bold text-text-tertiary block mb-1">为什么不是首选：</span>
+                      <span className="text-[13px] font-bold text-text-tertiary block mb-1">为什么不是首选：</span>
                       <p className="text-[13px] text-text-secondary">{strategy.whyNot}</p>
                     </div>
                     <div className="p-3 bg-page-bg rounded-xl">
-                      <span className="text-[12px] font-bold text-text-secondary block mb-1 flex items-center gap-1"><Info size={14}/> 切换建议：</span>
-                      <p className="text-[12px] text-text-secondary">{strategy.switchCondition}</p>
+                      <span className="text-[13px] font-bold text-text-secondary block mb-1 flex items-center gap-1"><Info size={14}/> 切换建议：</span>
+                      <p className="text-[13px] text-text-secondary">{strategy.switchCondition}</p>
                     </div>
                   </div>
                 </div>

@@ -77,7 +77,7 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
         <header className="flex shrink-0 items-center justify-between border-b border-border-default px-5 py-4">
           <div>
             <h2 className="text-[16px] font-semibold text-text-main">任务进展</h2>
-            <p className="mt-1 text-[10.5px] text-text-tertiary">查看领取、执行、回传和完成记录</p>
+            <p className="mt-1 text-[13px] text-text-tertiary">查看领取、执行、回传和完成记录</p>
           </div>
           <button type="button" onClick={onClose} className="rounded-lg p-2 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="关闭任务进展">
             <X size={17} />
@@ -86,8 +86,8 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
 
         <div className="shrink-0 border-b border-border-default px-5 py-3">
           <nav className="inline-flex rounded-lg bg-surface-subtle p-1" aria-label="任务进展状态">
-            <button type="button" onClick={() => setFilter('active')} className={`rounded-md px-3 py-1.5 text-[11px] font-medium ${filter === 'active' ? 'bg-neutral-950 text-white' : 'text-text-secondary'}`}>进行中</button>
-            <button type="button" onClick={() => setFilter('completed')} className={`rounded-md px-3 py-1.5 text-[11px] font-medium ${filter === 'completed' ? 'bg-neutral-950 text-white' : 'text-text-secondary'}`}>已结束</button>
+            <button type="button" onClick={() => setFilter('active')} className={`rounded-md px-3 py-1.5 text-[13px] font-medium ${filter === 'active' ? 'bg-neutral-950 text-white' : 'text-text-secondary'}`}>进行中</button>
+            <button type="button" onClick={() => setFilter('completed')} className={`rounded-md px-3 py-1.5 text-[13px] font-medium ${filter === 'completed' ? 'bg-neutral-950 text-white' : 'text-text-secondary'}`}>已结束</button>
           </nav>
         </div>
 
@@ -96,8 +96,8 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
             {projectGroups.map(([projectName, projectTasks]) => (
               <section key={projectName}>
                 <div className="mb-2 flex items-center justify-between px-1">
-                  <h3 className="truncate text-[11px] font-semibold text-text-main">{projectName}</h3>
-                  <span className="text-[9.5px] text-text-tertiary">{projectTasks.length} 项</span>
+                  <h3 className="truncate text-[13px] font-semibold text-text-main">{projectName}</h3>
+                  <span className="text-[13px] text-text-tertiary">{projectTasks.length} 项</span>
                 </div>
                 <div className="space-y-2">
                   {projectTasks.map(task => {
@@ -114,10 +114,10 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
                           <span className="mt-0.5 rounded-lg bg-surface-subtle p-2 text-text-secondary"><Icon size={14} /></span>
                           <span className="min-w-0 flex-1">
                             <span className="flex items-center gap-2">
-                              <strong className="line-clamp-1 text-[12px] font-semibold text-text-main">{task.noteTitle}</strong>
-                              <span className={`ml-auto shrink-0 rounded-md px-2 py-0.5 text-[9.5px] ${task.isMeWaiting ? 'bg-amber-50 text-amber-800' : task.status === '已完成' ? 'bg-emerald-50 text-emerald-700' : 'bg-surface-subtle text-text-secondary'}`}>{getTaskStage(task)}</span>
+                              <strong className="line-clamp-1 text-[13px] font-semibold text-text-main">{task.noteTitle}</strong>
+                              <span className={`ml-auto shrink-0 rounded-md px-2 py-0.5 text-[13px] ${task.isMeWaiting ? 'bg-amber-50 text-amber-800' : task.status === '已完成' ? 'bg-emerald-50 text-emerald-700' : 'bg-surface-subtle text-text-secondary'}`}>{getTaskStage(task)}</span>
                             </span>
-                            <span className="mt-1 flex items-center gap-2 text-[10px] text-text-tertiary">
+                            <span className="mt-1 flex items-center gap-2 text-[13px] text-text-tertiary">
                               <span>{getTaskDomain(task)}</span>
                               <span>·</span>
                               <span className="truncate">{task.waitingParty}</span>
@@ -129,13 +129,13 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
 
                         {expanded ? (
                           <div className="border-t border-border-default bg-surface-subtle px-4 py-3">
-                            <div className="flex items-start gap-2 text-[10.5px] leading-5 text-text-secondary">
+                            <div className="flex items-start gap-2 text-[13px] leading-5 text-text-secondary">
                               <CircleDot size={12} className="mt-1 shrink-0 text-text-tertiary" />
                               <span>{task.currentOccurrence}</span>
                             </div>
                             <div className="mt-3 space-y-2 border-l border-border-default pl-3">
                               {task.timelineEvents.slice().reverse().map(event => (
-                                <div key={event.id} className="text-[10px] leading-4 text-text-tertiary">
+                                <div key={event.id} className="text-[13px] leading-4 text-text-tertiary">
                                   <span>{formatChineseDate(event.time, true) || event.time}</span>
                                   <span className="mx-1.5">·</span>
                                   <span className="text-text-secondary">{event.actor} {event.action}</span>
@@ -143,11 +143,11 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
                               ))}
                             </div>
                             <div className="mt-3 flex items-center justify-between">
-                              <span className="flex items-center gap-1 text-[9.5px] text-text-tertiary"><Clock3 size={11} />{formatChineseDate(task.deadline, true) || task.deadline || '未设置截止时间'}</span>
+                              <span className="flex items-center gap-1 text-[13px] text-text-tertiary"><Clock3 size={11} />{formatChineseDate(task.deadline, true) || task.deadline || '未设置截止时间'}</span>
                               {task.isMeWaiting ? (
-                                <button type="button" onClick={() => onGoToTask(task)} className="rounded-lg bg-neutral-950 px-3 py-1.5 text-[10.5px] font-medium text-white">去处理</button>
+                                <button type="button" onClick={() => onGoToTask(task)} className="rounded-lg bg-neutral-950 px-3 py-1.5 text-[13px] font-medium text-white">去处理</button>
                               ) : task.status === '已完成' ? (
-                                <span className="flex items-center gap-1 text-[10px] text-emerald-700"><CheckCircle2 size={12} />已完成</span>
+                                <span className="flex items-center gap-1 text-[13px] text-emerald-700"><CheckCircle2 size={12} />已完成</span>
                               ) : null}
                             </div>
                           </div>
@@ -161,7 +161,7 @@ export function TaskProgressDrawer({ open, tasks, onClose, onGoToTask }: TaskPro
             {visibleTasks.length === 0 ? (
               <div className="py-20 text-center">
                 <CheckCircle2 size={26} className="mx-auto text-emerald-500" />
-                <div className="mt-3 text-[12px] font-medium text-text-main">当前没有相关记录</div>
+                <div className="mt-3 text-[13px] font-medium text-text-main">当前没有相关记录</div>
               </div>
             ) : null}
           </div>

@@ -85,7 +85,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  <div>
  <div className="flex items-center gap-2">
  <h2 className="text-[16px] font-semibold text-text-main">{schemeName}</h2>
- <span className="px-1.5 py-0.5 bg-brand-light text-brand-logo text-[10px] rounded">作业流水线</span>
+ <span className="px-1.5 py-0.5 bg-brand-light text-brand-logo text-[13px] rounded">作业流水线</span>
  </div>
  </div>
  </div>
@@ -140,11 +140,11 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  </div>
  <div>
  <h4 className="text-[17px] font-semibold text-text-main">{unit.title}</h4>
- <p className="text-[11px] text-text-tertiary uppercase tracking-tight">{unit.sub}</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-tight">{unit.sub}</p>
  </div>
  </div>
 
- <div className="bg-page-bg rounded-xl p-4 border border-border-default mb-6 italic text-[12px] text-text-tertiary flex items-start gap-3">
+ <div className="bg-page-bg rounded-xl p-4 border border-border-default mb-6 italic text-[13px] text-text-tertiary flex items-start gap-3">
  <Target size={14} className="text-brand-logo mt-0.5 shrink-0"/>
  {unit.thought}
  </div>
@@ -165,7 +165,7 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  </div>
  
  <div className="w-[180px] shrink-0 pt-2 flex flex-col justify-end">
- <button className="w-full py-3.5 bg-btn-main text-white rounded-xl text-[12px] hover:scale-[1.02] transition-transform active:scale-95 shadow-xl">
+ <button className="w-full py-3.5 bg-btn-main text-white rounded-xl text-[13px] hover:scale-[1.02] transition-transform active:scale-95 shadow-xl">
  确认入库同步
  </button>
  </div>
@@ -183,12 +183,12 @@ export const SchemeOperation: React.FC<SchemeOperationProps> = ({ schemeName, on
  <div>
  <div className="flex items-center gap-2">
  <div className="w-2 h-2 rounded-full bg-btn-main animate-pulse"/>
- <span className="text-[11px] text-text-main">流水线就绪</span>
+ <span className="text-[13px] text-text-main">流水线就绪</span>
  </div>
  </div>
  <div className="w-px h-4 bg-neutral-200"/>
  <div className="flex items-center gap-3">
- <span className="text-[11px] text-text-tertiary uppercase tracking-wider">执行效率</span>
+ <span className="text-[13px] text-text-tertiary uppercase tracking-wider">执行效率</span>
  <div className="w-24 h-1.5 bg-hover-bg rounded-full overflow-hidden">
  <div className="w-[88%] h-full bg-btn-main"/>
  </div>

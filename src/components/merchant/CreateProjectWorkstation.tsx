@@ -270,12 +270,12 @@ export function CreateProjectWorkstation({
           </div>
 
           {/* Project Summary Card */}
-          <div className="p-4 bg-surface-subtle border border-border-default rounded-lg text-left text-[12.5px] space-y-2">
+          <div className="p-4 bg-surface-subtle border border-border-default rounded-lg text-left text-[13px] space-y-2">
             <div className="flex justify-between items-center pb-2 border-b border-border-subtle">
               <span className="font-semibold text-text-primary text-[13px]">
                 {createdProjectInfo.name}
               </span>
-              <span className="text-[11px] px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded font-medium">
+              <span className="text-[13px] px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded font-medium">
                 执行中
               </span>
             </div>
@@ -341,11 +341,11 @@ export function CreateProjectWorkstation({
               <h1 className="text-[15px] font-semibold text-text-primary">
                 新建运营方案 · Agent 协同确认打法
               </h1>
-              <span className="text-[11px] px-2 py-0.5 rounded font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span className="text-[13px] px-2 py-0.5 rounded font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
                 Agent 对话中
               </span>
             </div>
-            <p className="text-[11.5px] text-text-tertiary">
+            <p className="text-[13px] text-text-tertiary">
               由 Agent 携带商家上下文驱动，在对话中生成、核对并确认运营打法方案
             </p>
           </div>
@@ -356,7 +356,7 @@ export function CreateProjectWorkstation({
           <button
             type="button"
             onClick={() => setShowContextDrawer(true)}
-            className="text-[12px] text-text-secondary hover:text-text-primary px-3 py-1.5 bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center gap-1.5 font-medium"
+            className="text-[13px] text-text-secondary hover:text-text-primary px-3 py-1.5 bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center gap-1.5 font-medium"
           >
             <Layers size={13} className="text-text-tertiary" />
             <span>查看携带上下文 (12份资料)</span>

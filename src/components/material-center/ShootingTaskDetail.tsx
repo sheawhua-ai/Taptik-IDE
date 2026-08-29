@@ -140,7 +140,7 @@ export const ShootingTaskDetail: React.FC<ShootingTaskDetailProps> = ({
           {/* Status Badge right side of title (Section III.1) */}
           <div className="flex items-center gap-3">
             <span
-              className={`px-3 py-1 rounded-lg text-[12px] font-black ${
+              className={`px-3 py-1 rounded-lg text-[13px] font-black ${
                 status === '需补拍'
                   ? 'bg-rose-50 text-danger border border-danger-light'
                   : 'bg-hover-bg text-text-secondary border border-border-default/80'
@@ -271,17 +271,17 @@ export const ShootingTaskDetail: React.FC<ShootingTaskDetailProps> = ({
                       {/* Result Tag (Section III.3: 已收集 / 需补拍 / 待拍摄) */}
                       <div>
                         {shot.status === 'completed' && (
-                          <span className="text-[12px] font-bold text-text-secondary">
+                          <span className="text-[13px] font-bold text-text-secondary">
                             已收集
                           </span>
                         )}
                         {shot.status === 'rejected' && (
-                          <span className="text-[12px] font-black text-danger">
+                          <span className="text-[13px] font-black text-danger">
                             需补拍
                           </span>
                         )}
                         {(shot.status === 'pending' || shot.status === 'uploaded') && (
-                          <span className="text-[12px] font-medium text-text-tertiary">
+                          <span className="text-[13px] font-medium text-text-tertiary">
                             待拍摄
                           </span>
                         )}
@@ -295,7 +295,7 @@ export const ShootingTaskDetail: React.FC<ShootingTaskDetailProps> = ({
 
                     {/* Reshoot reason / Prompt suggestion if any */}
                     {shot.rejectReason && (
-                      <p className="text-[12.5px] font-medium text-danger pt-0.5">
+                      <p className="text-[13px] font-medium text-danger pt-0.5">
                         {shot.rejectReason}
                       </p>
                     )}
@@ -312,7 +312,7 @@ export const ShootingTaskDetail: React.FC<ShootingTaskDetailProps> = ({
                         {onViewAsset && (
                           <button
                             onClick={() => onViewAsset(matchedAsset)}
-                            className="text-[12px] font-bold text-text-secondary hover:text-text-main underline underline-offset-2"
+                            className="text-[13px] font-bold text-text-secondary hover:text-text-main underline underline-offset-2"
                           >
                             查看素材详情
                           </button>
@@ -449,7 +449,7 @@ export const ShootingTaskDetail: React.FC<ShootingTaskDetailProps> = ({
                   </div>
                   <button
                     onClick={() => handleUploadFile(shot.id)}
-                    className="px-3 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold rounded-lg text-[12px] flex items-center gap-1.5 transition-all"
+                    className="px-3 py-1.5 bg-btn-main hover:bg-btn-main-hover text-white font-bold rounded-lg text-[13px] flex items-center gap-1.5 transition-all"
                   >
                     <Upload size={13} />
                     <span>选择文件上传</span>

@@ -25,7 +25,7 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
         <div className="p-5 border-b border-border-default flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2">
             <span
-              className={`px-2 py-0.5 text-[11px] font-bold rounded ${
+              className={`px-2 py-0.5 text-[13px] font-bold rounded ${
                 action.priority === "P0"
                   ? "bg-red-50 text-red-700 border border-red-200"
                   : "bg-blue-50 text-blue-700 border border-blue-200"
@@ -45,7 +45,7 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
           </button>
         </div>
 
-        <div className="p-5 space-y-4 text-[12.5px] overflow-y-auto max-h-[70vh] custom-scrollbar">
+        <div className="p-5 space-y-4 text-[13px] overflow-y-auto max-h-[70vh] custom-scrollbar">
           <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-1.5">
             <span className="font-semibold text-text-main block">动作目标</span>
             <p className="text-text-secondary leading-relaxed">{action.target}</p>
@@ -53,11 +53,11 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
 
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3 bg-surface-subtle rounded-xl border border-border-default">
-              <span className="font-semibold text-btn-main text-[11.5px] block mb-1">预计收益</span>
+              <span className="font-semibold text-btn-main text-[13px] block mb-1">预计收益</span>
               <span className="font-medium text-text-main">{action.expectedGain}</span>
             </div>
             <div className="p-3 bg-surface-subtle rounded-xl border border-border-default">
-              <span className="font-semibold text-text-tertiary text-[11.5px] block mb-1">建议类型</span>
+              <span className="font-semibold text-text-tertiary text-[13px] block mb-1">建议类型</span>
               <span className="font-medium text-text-main">
                 {action.actionType === "plan" ? "项目方案 / 流程策略" : "后续内容 / 选题结构"}
               </span>
@@ -76,7 +76,7 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
             <div className="space-y-1.5">
               {action.recommendedSteps.map((step, idx) => (
                 <div key={idx} className="p-2.5 bg-surface-1 rounded-lg border border-border-default flex items-center gap-2.5 text-text-secondary">
-                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[13px] font-bold flex items-center justify-center shrink-0">
                     {idx + 1}
                   </span>
                   <span>{step}</span>
@@ -87,7 +87,7 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
         </div>
 
         <div className="p-4 border-t border-border-default flex items-center justify-between bg-surface-subtle">
-          <div className="text-[12px] text-text-tertiary flex items-center gap-1.5">
+          <div className="text-[13px] text-text-tertiary flex items-center gap-1.5">
             {isApplied ? (
               <span className="text-emerald-700 font-medium flex items-center gap-1">
                 <Check size={13} className="text-emerald-600" />
@@ -101,7 +101,7 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
+              className="px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
             >
               关闭
             </button>
@@ -112,7 +112,7 @@ export function ActionDetailModal({ action, onClose, onApplyAction }: ActionDeta
                 }
                 onClose();
               }}
-              className="px-4 py-2 text-[12.5px] font-medium rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs bg-btn-main text-white hover:bg-btn-main-hover"
+              className="px-4 py-2 text-[13px] font-medium rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs bg-btn-main text-white hover:bg-btn-main-hover"
             >
               {action.actionType === "plan" ? (
                 <>

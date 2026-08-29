@@ -49,11 +49,11 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-[18px] font-extrabold text-text-main">{expert.name}</h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-purple-50 text-purple-800 border border-purple-200">
+                <span className="px-2.5 py-0.5 rounded-full text-[13px] font-extrabold bg-purple-50 text-purple-800 border border-purple-200">
                   专家角色
                 </span>
               </div>
-              <span className="text-[12px] font-bold text-text-tertiary">
+              <span className="text-[13px] font-bold text-text-tertiary">
                 当前授权范围：{scopeLabels[expert.appScope]}
               </span>
             </div>
@@ -68,7 +68,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
         <div className="flex-1 overflow-y-auto p-6 space-y-6 text-[13px]">
           {/* Mission & Core Description */}
           <div className="p-4 bg-purple-50/50 rounded-xl border border-purple-100/80 space-y-2">
-            <div className="flex items-center gap-2 text-purple-900 font-extrabold text-[12px]">
+            <div className="flex items-center gap-2 text-purple-900 font-extrabold text-[13px]">
               <Shield size={16} />
               <span>专家使命</span>
             </div>
@@ -80,8 +80,8 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
           {/* What it can do VS What it won't do automatically */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-2">
-              <span className="text-emerald-900 font-extrabold block text-[12px]">可以完成什么：</span>
-              <ul className="space-y-1.5 text-emerald-950 font-medium text-[12px]">
+              <span className="text-emerald-900 font-extrabold block text-[13px]">可以完成什么：</span>
+              <ul className="space-y-1.5 text-emerald-950 font-medium text-[13px]">
                 {expert.whatItCanDo?.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-1.5">
                     <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" />
@@ -92,8 +92,8 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
             </div>
 
             <div className="p-4 bg-rose-50/50 rounded-xl border border-danger-light space-y-2">
-              <span className="text-rose-900 font-extrabold block text-[12px]">不会自动做什么：</span>
-              <ul className="space-y-1.5 text-rose-950 font-medium text-[12px]">
+              <span className="text-rose-900 font-extrabold block text-[13px]">不会自动做什么：</span>
+              <ul className="space-y-1.5 text-rose-950 font-medium text-[13px]">
                 {expert.whatItWontDoAuto?.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-1.5">
                     <Ban size={14} className="text-danger shrink-0 mt-0.5" />
@@ -109,7 +109,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
             <h3 className="font-extrabold text-text-main text-[14px]">适用场景</h3>
             <div className="flex flex-wrap gap-2">
               {expert.applicableScenes?.map((sc, i) => (
-                <span key={i} className="px-3 py-1 bg-hover-bg text-text-main rounded-xl font-bold text-[12px]">
+                <span key={i} className="px-3 py-1 bg-hover-bg text-text-main rounded-xl font-bold text-[13px]">
                   {sc}
                 </span>
               ))}
@@ -120,7 +120,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-default pt-4">
             <div>
               <h3 className="font-extrabold text-text-main text-[13px] mb-2">输入资料需求</h3>
-              <ul className="space-y-1 text-text-secondary text-[12px]">
+              <ul className="space-y-1 text-text-secondary text-[13px]">
                 {expert.inputDocs?.map((doc, idx) => (
                   <li key={idx}>• {doc}</li>
                 ))}
@@ -128,7 +128,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
             </div>
             <div>
               <h3 className="font-extrabold text-text-main text-[13px] mb-2">输出结果定义</h3>
-              <ul className="space-y-1 text-text-secondary text-[12px]">
+              <ul className="space-y-1 text-text-secondary text-[13px]">
                 {expert.outputResults?.map((out, idx) => (
                   <li key={idx}>• {out}</li>
                 ))}
@@ -146,7 +146,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
                     <Wrench size={16} className="text-blue-600" />
                     <span className="font-extrabold text-text-main">{sk.name}</span>
                   </div>
-                  <span className="text-[11px] font-bold text-text-tertiary">{sk.oneSentenceDesc}</span>
+                  <span className="text-[13px] font-bold text-text-tertiary">{sk.oneSentenceDesc}</span>
                 </div>
               ))}
             </div>
@@ -158,7 +158,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
               <AlertTriangle size={16} />
               <span>人工确认点 (运行中中断并暂停)</span>
             </div>
-            <ul className="space-y-1 text-amber-950 font-bold text-[12px]">
+            <ul className="space-y-1 text-amber-950 font-bold text-[13px]">
               {expert.manualConfirmPoints?.map((p, i) => (
                 <li key={i}>• {p}</li>
               ))}
@@ -168,7 +168,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
           {/* Failure and Info Gap Handling */}
           <div className="p-4 bg-page-bg rounded-xl border border-border-default/80 space-y-2">
             <span className="font-extrabold text-text-main text-[13px] block">失败或信息不足时处理：</span>
-            <p className="text-text-secondary font-medium text-[12px]">
+            <p className="text-text-secondary font-medium text-[13px]">
               {expert.failureAndMissingInfoHandling}
             </p>
           </div>
@@ -180,16 +180,16 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
             </h3>
             {expert.runLogs && expert.runLogs.length > 0 ? (
               expert.runLogs.map(log => (
-                <div key={log.id} className="p-3 bg-page-bg rounded-xl border border-border-default text-[12px] space-y-1">
+                <div key={log.id} className="p-3 bg-page-bg rounded-xl border border-border-default text-[13px] space-y-1">
                   <div className="flex items-center justify-between font-extrabold text-text-main">
                     <span>{log.projectName}</span>
-                    <span className="text-text-tertiary font-bold text-[11px]">{log.timestamp}</span>
+                    <span className="text-text-tertiary font-bold text-[13px]">{log.timestamp}</span>
                   </div>
                   <p className="text-text-secondary">{log.resultSummary}</p>
                 </div>
               ))
             ) : (
-              <p className="text-text-tertiary font-bold text-[12px]">暂无最近任务记录</p>
+              <p className="text-text-tertiary font-bold text-[13px]">暂无最近任务记录</p>
             )}
           </div>
         </div>
@@ -206,7 +206,7 @@ export const ExpertDetailDrawer: React.FC<ExpertDetailDrawerProps> = ({
             <Play size={15} /> 发起任务
           </button>
 
-          <div className="flex items-center gap-2 text-[12px] font-extrabold text-text-secondary">
+          <div className="flex items-center gap-2 text-[13px] font-extrabold text-text-secondary">
             <button onClick={() => onAdjustSkills(expert)} className="hover:text-text-main px-2 py-1 bg-hover-bg rounded-lg">
               调整技能
             </button>

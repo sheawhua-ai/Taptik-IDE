@@ -26,7 +26,7 @@ export function PendingWorkbenchModal({ tasks, initialTaskId, isOpen, onClose }:
           <div className="p-4 border-b border-border-default">
             <h2 className="text-lg font-bold text-text-main flex items-center">
               待确认工作台
-              <span className="ml-2 bg-red-100 text-danger text-xs px-2 py-0.5 rounded-full font-medium">
+              <span className="ml-2 bg-red-100 text-danger text-[13px] px-2 py-0.5 rounded-full font-medium">
                 {tasks.length}
               </span>
             </h2>
@@ -43,7 +43,7 @@ export function PendingWorkbenchModal({ tasks, initialTaskId, isOpen, onClose }:
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
-                  <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+                  <span className={`text-[13px] font-medium px-1.5 py-0.5 rounded ${
                     task.type === '缺少资料' ? 'bg-amber-100 text-amber-700' :
                     task.type === '来源冲突' ? 'bg-indigo-100 text-indigo-700' :
                     'bg-red-100 text-red-700'
@@ -101,7 +101,7 @@ export function PendingWorkbenchModal({ tasks, initialTaskId, isOpen, onClose }:
                       <div className="p-4 bg-page-bg border border-border-default rounded-xl text-text-secondary text-sm leading-relaxed">
                         "{activeTask.originalEvidence}"
                       </div>
-                      <div className="mt-2 text-xs text-text-tertiary flex items-center">
+                      <div className="mt-2 text-[13px] text-text-tertiary flex items-center">
                         <FileText className="w-3.5 h-3.5 mr-1" />
                         来源文件：{activeTask.sourceFile}
                       </div>
@@ -115,26 +115,26 @@ export function PendingWorkbenchModal({ tasks, initialTaskId, isOpen, onClose }:
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {/* 来源 A */}
                       <div className="border border-indigo-100 bg-indigo-50/30 rounded-xl p-4">
-                        <div className="flex items-center text-xs font-medium text-indigo-700 mb-2">
+                        <div className="flex items-center text-[13px] font-medium text-indigo-700 mb-2">
                           <SplitSquareHorizontal className="w-4 h-4 mr-1.5" /> 来源版本 A
                         </div>
                         <div className="text-sm text-text-main mb-3 leading-relaxed">
                           "{activeTask.conflictA?.text}"
                         </div>
-                        <div className="text-xs text-text-tertiary pt-3 border-t border-indigo-100 space-y-1">
+                        <div className="text-[13px] text-text-tertiary pt-3 border-t border-indigo-100 space-y-1">
                           <div className="truncate">{activeTask.conflictA?.source}</div>
                           <div>更新于 {activeTask.conflictA?.time}</div>
                         </div>
                       </div>
                       {/* 来源 B */}
                       <div className="border border-border-default bg-hover-bg/30 rounded-xl p-4">
-                        <div className="flex items-center text-xs font-medium text-text-main mb-2">
+                        <div className="flex items-center text-[13px] font-medium text-text-main mb-2">
                           <SplitSquareHorizontal className="w-4 h-4 mr-1.5" /> 来源版本 B
                         </div>
                         <div className="text-sm text-text-main mb-3 leading-relaxed">
                           "{activeTask.conflictB?.text}"
                         </div>
-                        <div className="text-xs text-text-tertiary pt-3 border-t border-border-default space-y-1">
+                        <div className="text-[13px] text-text-tertiary pt-3 border-t border-border-default space-y-1">
                           <div className="truncate">{activeTask.conflictB?.source}</div>
                           <div>更新于 {activeTask.conflictB?.time}</div>
                         </div>

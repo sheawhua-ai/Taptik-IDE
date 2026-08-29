@@ -144,7 +144,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
             </div>
             <div>
               <h3 className="text-[14px] font-semibold text-text-primary">{getActionTitle()}</h3>
-              <p className="text-[12px] text-text-tertiary">已选择 {selectedTasks.length} 项可执行任务</p>
+              <p className="text-[13px] text-text-tertiary">已选择 {selectedTasks.length} 项可执行任务</p>
             </div>
           </div>
           <button
@@ -166,7 +166,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-semibold text-[13px]">批量操作执行完毕</div>
-                  <div className="text-[12px] text-emerald-800 mt-0.5">
+                  <div className="text-[13px] text-emerald-800 mt-0.5">
                     成功更新 <strong>{resultSummary.successCount}</strong> 项任务
                     {resultSummary.failCount > 0 && `，跳过或失败 ${resultSummary.failCount} 项`}。
                   </div>
@@ -175,9 +175,9 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
 
               {resultSummary.failedItems.length > 0 && (
                 <div className="space-y-1.5 pt-1">
-                  <div className="text-[12px] font-medium text-text-secondary">未成功项明细：</div>
+                  <div className="text-[13px] font-medium text-text-secondary">未成功项明细：</div>
                   {resultSummary.failedItems.map(item => (
-                    <div key={item.id} className="p-2 bg-surface-subtle rounded text-[11.5px] border border-border-subtle flex justify-between">
+                    <div key={item.id} className="p-2 bg-surface-subtle rounded text-[13px] border border-border-subtle flex justify-between">
                       <span className="text-text-primary truncate max-w-[240px]">{item.title}</span>
                       <span className="text-rose-600">{item.reason}</span>
                     </div>
@@ -189,16 +189,16 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
             <>
               {/* Task scope reminder */}
               <div className="p-3 bg-surface-subtle border border-border-subtle rounded-lg space-y-1.5">
-                <div className="flex items-center justify-between text-[12px]">
+                <div className="flex items-center justify-between text-[13px]">
                   <span className="text-text-secondary font-medium">覆盖方案：</span>
                   <span className="text-text-primary truncate max-w-[280px]">{projectNames.join('、') || '全部项目'}</span>
                 </div>
-                <div className="flex items-center justify-between text-[12px]">
+                <div className="flex items-center justify-between text-[13px]">
                   <span className="text-text-secondary font-medium">有效执行项：</span>
                   <span className="text-emerald-700 font-semibold">{validTasks.length} 项</span>
                 </div>
                 {skippedTasks.length > 0 && (
-                  <div className="flex items-center justify-between text-[12px] text-amber-700 pt-1 border-t border-border-subtle">
+                  <div className="flex items-center justify-between text-[13px] text-amber-700 pt-1 border-t border-border-subtle">
                     <span>已自动跳过不符合条件的项：</span>
                     <span>{skippedTasks.length} 项（已完成或状态不匹配）</span>
                   </div>
@@ -208,7 +208,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
               {/* Action Form */}
               {actionType === 'remind' && (
                 <div className="space-y-2">
-                  <label className="block text-[12.5px] font-medium text-text-primary">提醒通知文案：</label>
+                  <label className="block text-[13px] font-medium text-text-primary">提醒通知文案：</label>
                   <textarea
                     rows={3}
                     value={remindMessage}
@@ -216,7 +216,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
                     className="w-full px-3 py-2 text-[13px] bg-surface border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
                     placeholder="请输入微信或短信通知提醒内容..."
                   />
-                  <div className="text-[11.5px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     点击执行后，将通过企业微信/服务号向各执行人发送上述提醒，并在各任务记录中留痕。
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
 
               {actionType === 'change_assignee' && (
                 <div className="space-y-2">
-                  <label className="block text-[12.5px] font-medium text-text-primary">重新指派给：</label>
+                  <label className="block text-[13px] font-medium text-text-primary">重新指派给：</label>
                   <select
                     value={newAssignee}
                     onChange={(e) => setNewAssignee(e.target.value)}
@@ -241,7 +241,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
 
               {actionType === 'extend_deadline' && (
                 <div className="space-y-2">
-                  <label className="block text-[12.5px] font-medium text-text-primary">统一修改截止时间为：</label>
+                  <label className="block text-[13px] font-medium text-text-primary">统一修改截止时间为：</label>
                   <input
                     type="text"
                     value={newDeadline}
@@ -249,14 +249,14 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
                     className="w-full px-3 py-2 text-[13px] bg-surface border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
                     placeholder="例如：明天 18:00 或 2026-08-25 18:00"
                   />
-                  <div className="text-[11.5px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     执行后各任务的截止时间将同步刷新。
                   </div>
                 </div>
               )}
 
               {actionType === 'cancel_task' && (
-                <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-900 text-[12px] space-y-1">
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-900 text-[13px] space-y-1">
                   <div className="font-semibold flex items-center gap-1">
                     <AlertTriangle size={14} className="text-rose-600" />
                     请确认是否取消这 {validTasks.length} 项任务？
@@ -273,7 +273,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
           <button
             type="button"
             onClick={onClose}
-            className="px-3.5 py-1.5 text-[12.5px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
+            className="px-3.5 py-1.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
           >
             {resultSummary ? '关闭' : '取消'}
           </button>
@@ -283,7 +283,7 @@ export function BatchActionModal({ actionType, selectedTasks, onClose, onSuccess
               type="button"
               disabled={validTasks.length === 0 || isSubmitting}
               onClick={handleExecute}
-              className={`px-4 py-1.5 rounded-lg text-[12.5px] font-semibold text-white transition-colors flex items-center gap-1.5 ${
+              className={`px-4 py-1.5 rounded-lg text-[13px] font-semibold text-white transition-colors flex items-center gap-1.5 ${
                 actionType === 'cancel_task'
                   ? 'bg-rose-600 hover:bg-rose-700 disabled:opacity-50'
                   : 'bg-action-primary hover:bg-action-primary-hover disabled:opacity-50'

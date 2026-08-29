@@ -11,7 +11,7 @@ export const AccountDetails: React.FC = () => {
  <div className="flex items-center justify-between mb-8">
  <div>
  <h2 className="text-[20px] font-semibold text-text-main tracking-tight">商家账号详情</h2>
- <p className="text-[12px] text-text-tertiary uppercase tracking-wider mt-1">商家身份与配置</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-wider mt-1">商家身份与配置</p>
  </div>
  <button className="px-6 py-2.5 bg-neutral-0 border border-border-default rounded-xl text-[13px] hover:bg-page-bg flex items-center gap-2">
  <Edit3 size={18}/> 编辑资料
@@ -27,30 +27,30 @@ export const AccountDetails: React.FC = () => {
  </h3>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
  <div>
- <label className="text-[11px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">商家名称</label>
+ <label className="text-[13px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">商家名称</label>
  <p className="text-[15px] text-text-main">test shop</p>
  </div>
  <div>
- <label className="text-[11px] text-text-tertiary uppercase tracking-widest block mb-1.5">唯一 ID (UUID)</label>
+ <label className="text-[13px] text-text-tertiary uppercase tracking-widest block mb-1.5">唯一 ID (UUID)</label>
  <div className="flex items-center gap-2">
  <p className="text-[15px] font-mono text-text-tertiary">5-AD-9012-X</p>
  <button className="text-neutral-300 hover:text-brand-logo"><Copy size={14}/></button>
  </div>
  </div>
  <div>
- <label className="text-[11px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">电子邮箱</label>
+ <label className="text-[13px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">电子邮箱</label>
  <p className="text-[15px] text-text-main">test@shop.com</p>
  </div>
  <div>
- <label className="text-[11px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">联系电话</label>
+ <label className="text-[13px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">联系电话</label>
  <p className="text-[15px] text-text-main">138****0001</p>
  </div>
  <div>
- <label className="text-[11px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">所在地区</label>
+ <label className="text-[13px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">所在地区</label>
  <p className="text-[15px] text-text-main flex items-center gap-1"><MapPin size={14} className="text-neutral-300"/> 广东 广州</p>
  </div>
  <div>
- <label className="text-[11px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">创建时间</label>
+ <label className="text-[13px] text-text-tertiary uppercase tracking-widest block mb-1.5 focus:text-brand-logo">创建时间</label>
  <p className="text-[15px] text-text-main flex items-center gap-1"><Calendar size={14} className="text-neutral-300"/> 2026-03-30 10:19:45</p>
  </div>
  </div>
@@ -67,11 +67,11 @@ export const AccountDetails: React.FC = () => {
  <div className="w-10 h-10 bg-surface-1 rounded-xl flex items-center justify-center shadow-sm"><Lock size={20} className="text-text-tertiary"/></div>
  <div>
  <p className="text-[14px] text-text-main">API 访问 Token</p>
- <p className="text-[11px] text-text-tertiary uppercase tracking-tighter">用于全链路流水线数据回调</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-tighter">用于全链路流水线数据回调</p>
  </div>
  </div>
  <div className="flex gap-2">
- <button className="px-4 py-2 bg-btn-main text-white rounded-lg text-[12px] ">重置 Token</button>
+ <button className="px-4 py-2 bg-btn-main text-white rounded-lg text-[13px] ">重置 Token</button>
  <button className="p-2 bg-surface-1 border border-border-default rounded-lg text-text-tertiary hover:text-text-main"><Copy size={18}/></button>
  </div>
  </div>
@@ -80,10 +80,10 @@ export const AccountDetails: React.FC = () => {
  <div className="w-10 h-10 bg-surface-1 rounded-xl flex items-center justify-center shadow-sm"><Globe size={20} className="text-text-tertiary"/></div>
  <div>
  <p className="text-[14px] text-text-main">回调 Webhook</p>
- <p className="text-[11px] text-text-tertiary uppercase tracking-tighter">暂无配置响应地址</p>
+ <p className="text-[13px] text-text-tertiary uppercase tracking-tighter">暂无配置响应地址</p>
  </div>
  </div>
- <button className="px-4 py-2 border border-border-default text-text-main rounded-lg text-[12px] hover:bg-hover-bg text-brand-logo transition-colors">配置地址</button>
+ <button className="px-4 py-2 border border-border-default text-text-main rounded-lg text-[13px] hover:bg-hover-bg text-brand-logo transition-colors">配置地址</button>
  </div>
  </div>
  </div>
@@ -96,7 +96,7 @@ export const AccountDetails: React.FC = () => {
  <div className="relative z-10">
  <div className="flex items-center justify-between mb-8">
  <div className="w-12 h-12 bg-surface-1/10 rounded-xl flex items-center justify-center border border-white/10"><CreditCard size={24} className="text-primary-400"/></div>
- <span className="px-3 py-1 bg-btn-main text-white text-[10px] rounded-lg uppercase tracking-widest">至尊版</span>
+ <span className="px-3 py-1 bg-btn-main text-white text-[13px] rounded-lg uppercase tracking-widest">至尊版</span>
  </div>
  <h4 className="text-[20px] font-semibold mb-2">服务有效期</h4>
  <p className="text-[13px] text-white/40 font-medium mb-6">该商家当前版本为 [旗舰版]</p>
@@ -130,7 +130,7 @@ export const AccountDetails: React.FC = () => {
  <div className="w-8 h-8 rounded-lg bg-page-bg flex items-center justify-center shrink-0"><item.icon size={14} className="text-text-tertiary"/></div>
  <div>
  <p className="text-[13px] text-text-main">{item.action}</p>
- <p className="text-[11px] text-text-tertiary ">{item.time}</p>
+ <p className="text-[13px] text-text-tertiary ">{item.time}</p>
  </div>
  </div>
  ))}

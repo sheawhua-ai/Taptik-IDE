@@ -116,7 +116,7 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
               <Sparkles size={20} className="text-amber-500" />
               批量根据项目方案生成笔记
             </h2>
-            <p className="text-[12px] text-text-tertiary mt-0.5">
+            <p className="text-[13px] text-text-tertiary mt-0.5">
               基于项目目标“{project.goal.slice(0, 30)}...”和策略协议自动规划笔记排期。
             </p>
           </div>
@@ -132,7 +132,7 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
         <div className="p-6 overflow-y-auto flex-1 space-y-5 bg-surface-2">
           
           {/* Strategy Summary Banner */}
-          <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 text-[12px] text-amber-900 space-y-1.5">
+          <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 text-[13px] text-amber-900 space-y-1.5">
             <div className="font-bold text-[13px] text-amber-950 flex items-center gap-1.5">
               <Sparkles size={14} className="text-amber-600" />
               项目策略输入 (Strategy Protocol)
@@ -149,27 +149,27 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
             <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-3">
                 <h3 className="text-[14px] font-bold text-text-main">本轮项目方案配置</h3>
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                <span className="px-2.5 py-0.5 rounded-full text-[13px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
                   来自本轮运营方案设定
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-1">
-                  <span className="text-[11px] font-bold text-text-tertiary">
+                  <span className="text-[13px] font-bold text-text-tertiary">
                     方案规划生成数量
                   </span>
                   <div className="text-[18px] font-extrabold text-text-main flex items-baseline gap-1">
                     <span>{planCount}</span>
-                    <span className="text-[12px] font-bold text-text-tertiary">篇笔记</span>
+                    <span className="text-[13px] font-bold text-text-tertiary">篇笔记</span>
                   </div>
                 </div>
 
                 <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-1">
-                  <span className="text-[11px] font-bold text-text-tertiary">
+                  <span className="text-[13px] font-bold text-text-tertiary">
                     角色矩阵分布
                   </span>
-                  <div className="text-[12px] font-bold text-text-main pt-1">
+                  <div className="text-[13px] font-bold text-text-main pt-1">
                     1篇店长号/KOS + 1篇品牌主号 + {Math.max(0, planCount - 2)}篇KOC体验官
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
                 </span>
                 <button 
                   onClick={handleGenerate}
-                  className="text-[12px] font-bold text-text-secondary hover:text-text-main flex items-center gap-1"
+                  className="text-[13px] font-bold text-text-secondary hover:text-text-main flex items-center gap-1"
                 >
                   <Sparkles size={13} />
                   <span>重新生成</span>
@@ -236,7 +236,7 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
                       <div className="text-[13px] font-bold text-text-main truncate">
                         {note.title}
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-[11px] text-text-tertiary">
+                      <div className="flex items-center gap-2 mt-1 text-[13px] text-text-tertiary">
                         <span className={`px-2 py-0.5 rounded font-bold ${
                           note.accountType === "店长号/KOS" 
                             ? "bg-purple-50 text-purple-700 border border-purple-200"
@@ -251,7 +251,7 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
                       </div>
                     </div>
 
-                    <div className="text-[11px] font-bold text-text-secondary bg-hover-bg px-2.5 py-1 rounded-lg shrink-0">
+                    <div className="text-[13px] font-bold text-text-secondary bg-hover-bg px-2.5 py-1 rounded-lg shrink-0">
                       {note.plannedDate}
                     </div>
                   </div>
@@ -264,7 +264,7 @@ export function BatchNoteGeneratorModal({ project, onClose }: Props) {
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-border-default flex items-center justify-between bg-surface-1 shrink-0">
-          <span className="text-[12px] text-text-tertiary">
+          <span className="text-[13px] text-text-tertiary">
             {generatedNotes.length > 0 ? "确认后将直接向项目添加所选笔记，并创建对应发布任务。" : "准备就绪后点击生成按钮。"}
           </span>
           <div className="flex items-center gap-2">

@@ -43,12 +43,12 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
 
           <div className="grid grid-cols-2 gap-3 mb-2">
             <div className="bg-surface-1 p-4 rounded-xl border border-border-default flex flex-col gap-1 shadow-sm">
-              <span className="text-[12px] font-medium text-text-tertiary">可直接生成正文</span>
-              <span className="text-[20px] font-bold text-text-main">15 <span className="text-[12px] font-normal text-text-main/80">篇</span></span>
+              <span className="text-[13px] font-medium text-text-tertiary">可直接生成正文</span>
+              <span className="text-[20px] font-bold text-text-main">15 <span className="text-[13px] font-normal text-text-main/80">篇</span></span>
             </div>
             <div className="bg-surface-1 p-4 rounded-xl border border-border-default flex flex-col gap-1 shadow-sm">
-              <span className="text-[12px] font-medium text-text-tertiary">待生成现场快发码</span>
-              <span className="text-[20px] font-bold text-brand-logo">30 <span className="text-[12px] font-normal text-brand-logo/80">个</span></span>
+              <span className="text-[13px] font-medium text-text-tertiary">待生成现场快发码</span>
+              <span className="text-[20px] font-bold text-brand-logo">30 <span className="text-[13px] font-normal text-brand-logo/80">个</span></span>
             </div>
           </div>
 
@@ -62,7 +62,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
                   <div className="w-2 h-2 rounded-full bg-btn-main" />
                   <span className="text-[14px] font-bold text-text-main">专业号 · 3 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-text-main bg-hover-bg border border-border-default px-2 py-0.5 rounded">可生成</span>
+                <span className="text-[13px] font-bold text-text-main bg-hover-bg border border-border-default px-2 py-0.5 rounded">可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-text-tertiary font-medium">人设</div>
@@ -79,7 +79,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
                   <div className="w-2 h-2 rounded-full bg-btn-main" />
                   <span className="text-[14px] font-bold text-text-main">员工号 · 4 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-text-main bg-hover-bg border border-border-default px-2 py-0.5 rounded">可生成</span>
+                <span className="text-[13px] font-bold text-text-main bg-hover-bg border border-border-default px-2 py-0.5 rounded">可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-text-tertiary font-medium">人设</div>
@@ -96,7 +96,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
                   <div className="w-2 h-2 rounded-full bg-btn-main" />
                   <span className="text-[14px] font-bold text-text-main">KOC矩阵 · 8 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-text-main bg-hover-bg border border-border-default px-2 py-0.5 rounded">智能已分配人设，可生成</span>
+                <span className="text-[13px] font-bold text-text-main bg-hover-bg border border-border-default px-2 py-0.5 rounded">智能已分配人设，可生成</span>
               </div>
               <div className="p-4 grid grid-cols-[60px_1fr] gap-y-2 text-[13px]">
                 <div className="text-text-tertiary font-medium">人设群</div>
@@ -115,7 +115,7 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
                   <div className="w-2 h-2 rounded-full bg-btn-main" />
                   <span className="text-[14px] font-bold text-text-main">客户号 · 30 篇</span>
                 </div>
-                <span className="text-[11px] font-bold text-primary-700 bg-brand-light border border-primary-100 px-2 py-0.5 rounded">可生成快发入口</span>
+                <span className="text-[13px] font-bold text-primary-700 bg-brand-light border border-primary-100 px-2 py-0.5 rounded">可生成快发入口</span>
               </div>
               <div className="p-4 grid grid-cols-[70px_1fr] gap-y-3 text-[13px]">
                 <div className="text-text-tertiary font-medium">生成方式</div>
@@ -123,10 +123,10 @@ export const ChannelsDrawer: React.FC<{ onClose: () => void }> = ({ onClose }) =
                 <div className="text-text-tertiary font-medium">采集字段</div>
                 <div className="text-text-main">
                   <div className="flex flex-wrap gap-1.5">
-                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[12px]">身份标签</span>
-                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[12px]">体验场景</span>
-                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[12px]">关注点</span>
-                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[12px]">一句真实感受</span>
+                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[13px]">身份标签</span>
+                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[13px]">体验场景</span>
+                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[13px]">关注点</span>
+                    <span className="bg-hover-bg text-text-secondary px-2 py-0.5 rounded text-[13px]">一句真实感受</span>
                   </div>
                 </div>
               </div>

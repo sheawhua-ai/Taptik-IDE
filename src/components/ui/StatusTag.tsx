@@ -19,7 +19,7 @@ export const StatusTag: React.FC<StatusTagProps> = ({ variant = "neutral", child
     brand: outline ? "border-brand-strong text-brand-strong bg-brand-light" : "bg-brand-logo text-white",
   };
 
-  const baseClasses = "px-2.5 py-0.5 rounded-md text-[11.5px] font-bold border shrink-0 inline-flex items-center";
+  const baseClasses = "px-2.5 py-0.5 rounded-md text-[13px] font-bold border shrink-0 inline-flex items-center";
   const borderClass = outline ? "border" : "border-transparent";
   
   return (

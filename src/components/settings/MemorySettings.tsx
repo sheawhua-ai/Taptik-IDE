@@ -34,7 +34,7 @@ export const MemorySettings = () => {
  </p>
  <div className="shrink-0 text-right">
  <div className="text-[14px] text-text-main">来自对话的记忆</div>
- <div className="text-[12px] text-text-tertiary mt-1">10 小时前从对话中更新</div>
+ <div className="text-[13px] text-text-tertiary mt-1">10 小时前从对话中更新</div>
  </div>
  </div>
  </div>
@@ -84,10 +84,10 @@ export const MemorySettings = () => {
  <div className="bg-surface-1 border text-left border-border-default rounded-xl p-5 relative shadow-sm">
  <div className="flex items-center justify-between mb-4">
  <div className="flex items-center gap-3">
- <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[12px] text-text-secondary">1</div>
+ <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[13px] text-text-secondary">1</div>
  <span className="text-[14px] text-text-main">复制以下提示词到其他智能对话中</span>
  </div>
- <button className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-page-bg rounded-lg text-[12px] font-medium text-text-secondary transition-colors border border-transparent hover:border-border-default">
+ <button className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-page-bg rounded-lg text-[13px] font-medium text-text-secondary transition-colors border border-transparent hover:border-border-default">
  <Copy size={14} /> 复制
  </button>
  </div>
@@ -99,7 +99,7 @@ export const MemorySettings = () => {
 
  <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm text-left relative">
  <div className="flex items-center gap-3 mb-4">
- <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[12px] text-text-secondary">2</div>
+ <div className="w-6 h-6 rounded-full bg-hover-bg flex items-center justify-center text-[13px] text-text-secondary">2</div>
  <span className="text-[14px] text-text-main">将结果粘贴到下方，添加到TapTik记忆</span>
  </div>
  <textarea 

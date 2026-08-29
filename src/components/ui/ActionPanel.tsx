@@ -32,7 +32,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
         <div className="space-y-1 min-w-0">
           <div className="text-[14px] font-bold text-text-main">{title}</div>
           {description && (
-            <div className="text-[12.5px] text-text-secondary">
+            <div className="text-[13px] text-text-secondary">
               {description}
             </div>
           )}

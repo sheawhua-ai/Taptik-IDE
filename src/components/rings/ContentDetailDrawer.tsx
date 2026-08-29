@@ -162,7 +162,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="flex items-center gap-1.5 text-[12px] font-bold text-primary-700 bg-brand-light border border-primary-200 px-3 py-1 rounded-full shadow-sm"
+                className="flex items-center gap-1.5 text-[13px] font-bold text-primary-700 bg-brand-light border border-primary-200 px-3 py-1 rounded-full shadow-sm"
               >
                 <Bot size={14} /> 智能 已记录您的修改偏好，将用于迭代后续人设引擎
               </motion.div>
@@ -209,12 +209,12 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                         <div className={`w-2 h-2 rounded-full ${activeGroupDef.color}`} />
                         {activeGroupDef.name} 队列
                       </div>
-                      <div className="text-[11px] text-text-tertiary mt-0.5">
+                      <div className="text-[13px] text-text-tertiary mt-0.5">
                         {activeGroupDef.id === 'koc_real' ? activeGroupDef.countStr : (allDone ? '已全部分发' : activeGroupDef.countStr)}
                       </div>
                     </div>
                     {activeGroupDef.id === 'koc_real' ? (
-                      <button className="text-[11px] font-bold text-brand-logo bg-brand-light hover:bg-primary-100 px-2 py-1.5 rounded flex items-center gap-1 transition-colors">
+                      <button className="text-[13px] font-bold text-brand-logo bg-brand-light hover:bg-primary-100 px-2 py-1.5 rounded flex items-center gap-1 transition-colors">
                         <Smartphone size={12} />
                         {activeGroupDef.action1}
                       </button>
@@ -222,7 +222,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       <button 
                         onClick={() => handleBatchConfirm(activeGroupDef.id)}
                         disabled={allDone || batchLoadingGroup === activeGroupDef.id}
-                        className={`text-[11px] font-bold px-2 py-1.5 rounded flex items-center gap-1 transition-colors ${
+                        className={`text-[13px] font-bold px-2 py-1.5 rounded flex items-center gap-1 transition-colors ${
                           allDone ? 'bg-hover-bg text-text-main' : 'text-white bg-btn-main hover:bg-btn-main-hover disabled:opacity-50'
                         }`}
                       >
@@ -238,7 +238,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                   </div>
                   {activeGroupDef.action2 && !allDone && (
                     <div className="flex justify-end mt-1">
-                      <button className="text-[11px] font-medium text-text-tertiary hover:text-text-secondary flex items-center gap-1">
+                      <button className="text-[13px] font-medium text-text-tertiary hover:text-text-secondary flex items-center gap-1">
                         <Link size={12} /> {activeGroupDef.action2}
                       </button>
                     </div>
@@ -249,7 +249,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
 
             {/* Content List */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-page-bg/30">
-              <div className="text-[12px] font-bold text-text-tertiary px-1 pt-2">详情预览</div>
+              <div className="text-[13px] font-bold text-text-tertiary px-1 pt-2">详情预览</div>
               {groupItems.map(item => (
                 <div 
                   key={item.id}
@@ -265,7 +265,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
+                    <span className={`text-[13px] font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
                       item.channel === 'official' ? 'bg-brand-light text-primary-700' :
                       item.channel === 'kos' ? 'bg-brand-light text-primary-700' :
                       item.channel === 'koc_real' ? 'bg-brand-light text-primary-700' :
@@ -274,7 +274,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       {item.channel === 'koc_real' || item.channel === 'koc_general' ? <Users size={12} /> : <User size={12} />}
                       {item.channelName}
                     </span>
-                    <span className={`text-[11px] font-medium ${item.status === '已下发' ? 'text-text-main' : 'text-brand-logo'}`}>
+                    <span className={`text-[13px] font-medium ${item.status === '已下发' ? 'text-text-main' : 'text-brand-logo'}`}>
                       {item.status}
                     </span>
                   </div>
@@ -298,7 +298,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                     <div>
                       {isEditing ? null : <h2 className="text-[18px] font-bold text-text-main mb-2">{selectedContent.title}</h2>}
                       <div className="flex items-center gap-3">
-                        <span className="text-[12px] text-text-tertiary bg-hover-bg px-2 py-1 rounded-md">{selectedContent.strategy}</span>
+                        <span className="text-[13px] text-text-tertiary bg-hover-bg px-2 py-1 rounded-md">{selectedContent.strategy}</span>
                       </div>
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                     <div className="bg-page-bg rounded-xl p-4 border border-border-default">
                       <div className="flex items-center gap-1.5 text-text-tertiary mb-2">
                         <Wand2 size={14} />
-                        <span className="text-[12px] font-bold">关联条件记忆</span>
+                        <span className="text-[13px] font-bold">关联条件记忆</span>
                       </div>
                       <p className="text-[13px] text-text-main leading-relaxed font-medium">
                         {selectedContent.memory}
@@ -316,7 +316,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                     <div className="bg-page-bg rounded-xl p-4 border border-border-default">
                       <div className="flex items-center gap-1.5 text-text-tertiary mb-2">
                         <ImageIcon size={14} />
-                        <span className="text-[12px] font-bold">匹配素材库</span>
+                        <span className="text-[13px] font-bold">匹配素材库</span>
                       </div>
                       <p className="text-[13px] text-text-main leading-relaxed font-medium">
                         {selectedContent.materials}
@@ -333,10 +333,10 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       <p className="text-[13px] text-primary-800/80 leading-relaxed mb-4">{selectedContent.briefDesc}</p>
                       
                       <div className="space-y-2 bg-surface-1 rounded-lg p-3 border border-primary-100/50">
-                        <div className="text-[12px] font-bold text-text-secondary mb-2">分发与执行路径：</div>
+                        <div className="text-[13px] font-bold text-text-secondary mb-2">分发与执行路径：</div>
                         {selectedContent.briefTasks?.map((task, i) => (
                           <div key={i} className="flex items-start gap-2 text-[13px] text-text-secondary">
-                            <span className="w-4 h-4 rounded-full bg-primary-100 text-brand-logo flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
+                            <span className="w-4 h-4 rounded-full bg-primary-100 text-brand-logo flex items-center justify-center text-[13px] font-bold shrink-0 mt-0.5">{i + 1}</span>
                             {task}
                           </div>
                         ))}
@@ -348,7 +348,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                         <div className="text-[14px] font-bold text-text-main">正文预览</div>
                         {selectedContent.readyForPublish && !isEditing && (
                           <button 
-                            className="text-[12px] font-bold text-brand-logo hover:text-primary-700 bg-brand-light px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                            className="text-[13px] font-bold text-brand-logo hover:text-primary-700 bg-brand-light px-3 py-1.5 rounded-lg flex items-center gap-1.5"
                             onClick={() => {
                               setIsEditing(true);
                               setEditTitle(selectedContent.title);
@@ -362,7 +362,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                         )}
                         {isEditing && (
                           <button 
-                            className="text-[12px] font-bold text-white bg-primary-600 hover:bg-primary-700 px-4 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm"
+                            className="text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 px-4 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm"
                             onClick={() => {
                               setIsEditing(false);
                               const updated = {...selectedContent, title: editTitle, content: editContent, tags: editTags, status: '已单篇确认'};
@@ -380,7 +380,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                       {isEditing ? (
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-[12px] font-bold text-text-tertiary mb-1">标题</label>
+                            <label className="block text-[13px] font-bold text-text-tertiary mb-1">标题</label>
                             <input
                               type="text"
                               value={editTitle}
@@ -390,8 +390,8 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                           </div>
                           <div>
                             <div className="flex items-center justify-between mb-1">
-                              <label className="block text-[12px] font-bold text-text-tertiary">正文</label>
-                              <span className="text-[11px] text-text-tertiary">可选中文字进行局部 智能 修改</span>
+                              <label className="block text-[13px] font-bold text-text-tertiary">正文</label>
+                              <span className="text-[13px] text-text-tertiary">可选中文字进行局部 智能 修改</span>
                             </div>
                             <textarea
                               ref={textareaRef}
@@ -404,7 +404,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                             />
                           </div>
                           <div>
-                            <label className="block text-[12px] font-bold text-text-tertiary mb-1">话题标签</label>
+                            <label className="block text-[13px] font-bold text-text-tertiary mb-1">话题标签</label>
                             <input
                               type="text"
                               value={editTags}
@@ -418,7 +418,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                                 <Bot size={16} className="text-brand-logo" />
                                 <span className="text-[13px] font-bold text-primary-900">智能 辅助修改与自学习</span>
                               </div>
-                              <span className="text-[11px] text-brand-logo/70 bg-primary-100/50 px-2 py-0.5 rounded">您的修改将自动被 智能 记录并迭代人设模型</span>
+                              <span className="text-[13px] text-brand-logo/70 bg-primary-100/50 px-2 py-0.5 rounded">您的修改将自动被 智能 记录并迭代人设模型</span>
                             </div>
                             
                             <div className="relative">
@@ -429,7 +429,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
-                                    className="absolute left-2.5 top-2.5 flex items-center gap-1.5 bg-primary-100 text-primary-800 text-[12px] px-2 py-0.5 rounded shadow-sm max-w-[200px] overflow-hidden whitespace-nowrap z-10"
+                                    className="absolute left-2.5 top-2.5 flex items-center gap-1.5 bg-primary-100 text-primary-800 text-[13px] px-2 py-0.5 rounded shadow-sm max-w-[200px] overflow-hidden whitespace-nowrap z-10"
                                   >
                                     <span className="font-bold shrink-0">已选:</span>
                                     <span className="truncate">{selectedTextContext.text}</span>
@@ -476,7 +476,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
                             <p className="text-[13px] text-brand-logo font-medium mt-4">{selectedContent.tags}</p>
                           )}
                           <div className="absolute inset-0 bg-btn-main/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center pointer-events-none">
-                             <span className="bg-surface-1 text-text-main px-3 py-1.5 rounded-lg text-[12px] font-bold shadow-sm flex items-center gap-1">
+                             <span className="bg-surface-1 text-text-main px-3 py-1.5 rounded-lg text-[13px] font-bold shadow-sm flex items-center gap-1">
                                <Edit3 size={14} /> 点击右上角进行编辑
                              </span>
                           </div>
@@ -490,7 +490,7 @@ export const ContentDetailDrawer: React.FC<{ onClose: () => void }> = ({ onClose
               <div className="flex-1 flex flex-col items-center justify-center text-text-tertiary p-6 text-center h-full">
                 <FileText size={48} className="mb-4 text-neutral-200" />
                 <p className="text-[14px] font-medium text-text-secondary mb-1">请在左侧选择一篇内容进行审阅</p>
-                <p className="text-[12px]">运营确认修改后，智能将自动学习并优化后续生成的文案人设</p>
+                <p className="text-[13px]">运营确认修改后，智能将自动学习并优化后续生成的文案人设</p>
               </div>
             )}
           </div>

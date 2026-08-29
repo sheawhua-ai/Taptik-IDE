@@ -34,11 +34,11 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
           </div>
           <div>
             <h1 className="text-[16px] font-bold text-text-main tracking-tight">搜索词探索</h1>
-            <p className="text-[11px] text-text-tertiary font-medium">从一个目标词出发，筛选商家能够真实承接的表达与内容主题。</p>
+            <p className="text-[13px] text-text-tertiary font-medium">从一个目标词出发，筛选商家能够真实承接的表达与内容主题。</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => setMode('history')} className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] text-text-secondary hover:bg-page-bg rounded-lg">
+          <button onClick={() => setMode('history')} className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] text-text-secondary hover:bg-page-bg rounded-lg">
             <History size={14} /> 运行记录
           </button>
         </div>
@@ -91,11 +91,11 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
                     {showAdvanced && (
                       <div className="grid grid-cols-2 gap-4 mb-6">
                         <div className="space-y-1.5">
-                          <label className="text-[12px] text-text-tertiary">目标人群</label>
+                          <label className="text-[13px] text-text-tertiary">目标人群</label>
                           <input placeholder="如: 新手养宠" className="w-full px-3 py-2 text-[13px] border border-border-default rounded-lg outline-none focus:border-primary-500" />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[12px] text-text-tertiary">不可用的表达</label>
+                          <label className="text-[13px] text-text-tertiary">不可用的表达</label>
                           <input placeholder="如: 医疗化词汇" className="w-full px-3 py-2 text-[13px] border border-border-default rounded-lg outline-none focus:border-primary-500" />
                         </div>
                         <div className="col-span-2 flex gap-6 mt-2">
@@ -118,13 +118,13 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
                   </button>
 
                   <div className="flex items-center justify-center gap-6 pt-4 border-t border-border-default">
-                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-600">
+                    <div className="flex items-center gap-1.5 text-[13px] text-emerald-600">
                       <CheckCircle2 size={12} /> 商家知识: 已连接
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-600">
+                    <div className="flex items-center gap-1.5 text-[13px] text-emerald-600">
                       <CheckCircle2 size={12} /> 观察工具: 可用
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
+                    <div className="flex items-center gap-1.5 text-[13px] text-text-tertiary">
                       <Bot size={12} /> 规划引擎: Default v2.1
                     </div>
                   </div>
@@ -161,7 +161,7 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
                   <div>
                     <h2 className="text-[24px] font-extrabold text-text-main tracking-tight flex items-center gap-3">
                       "{keyword}" 探索结果
-                      <span className="px-2 py-0.5 bg-hover-bg text-text-tertiary rounded text-[11px] font-medium tracking-normal align-middle">
+                      <span className="px-2 py-0.5 bg-hover-bg text-text-tertiary rounded text-[13px] font-medium tracking-normal align-middle">
                         刚刚运行
                       </span>
                     </h2>
@@ -199,20 +199,20 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
                       <div key={i} className="bg-surface-1 rounded-xl border border-border-default shadow-sm overflow-hidden flex flex-col hover:border-primary-300 transition-colors">
                         <div className="p-5 border-b border-border-default cursor-pointer" onClick={() => setDrawer('theme')}>
                           <div className="flex items-start justify-between mb-3">
-                            <span className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded text-[11px] font-bold">可直接验证</span>
-                            <span className="text-[12px] text-text-tertiary">产品对象</span>
+                            <span className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded text-[13px] font-bold">可直接验证</span>
+                            <span className="text-[13px] text-text-tertiary">产品对象</span>
                           </div>
                           <h3 className="text-[16px] font-bold text-text-main mb-2">{keyword} 哪个牌子好</h3>
                           <p className="text-[13px] text-text-secondary line-clamp-2">推荐角度：通过实测对比展示产品A的独特成分，解答新手选择困难。</p>
                         </div>
                         <div className="p-5 bg-page-bg flex-1 space-y-4">
                            <div>
-                             <div className="text-[11px] text-text-tertiary mb-1.5 font-medium">主表达</div>
+                             <div className="text-[13px] text-text-tertiary mb-1.5 font-medium">主表达</div>
                              <div className="text-[13px] font-bold text-text-main">{keyword} 推荐平价</div>
                            </div>
                            <div>
-                             <div className="text-[11px] text-text-tertiary mb-1.5 font-medium">商家依据</div>
-                             <div className="text-[12px] text-emerald-600 flex items-start gap-1">
+                             <div className="text-[13px] text-text-tertiary mb-1.5 font-medium">商家依据</div>
+                             <div className="text-[13px] text-emerald-600 flex items-start gap-1">
                                <CheckCircle2 size={14} className="shrink-0 mt-0.5" /> 知识库中已存在竞品对比评测报告及成分说明。
                              </div>
                            </div>
@@ -230,7 +230,7 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
                   <div className="bg-surface-1 rounded-xl border border-border-default shadow-sm overflow-hidden">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-page-bg text-[12px] text-text-tertiary border-b border-border-default">
+                        <tr className="bg-page-bg text-[13px] text-text-tertiary border-b border-border-default">
                           <th className="p-4 font-medium">搜索表达</th>
                           <th className="p-4 font-medium">语义类型</th>
                           <th className="p-4 font-medium">所属主题</th>
@@ -355,7 +355,7 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
 
                    <div>
                      <h3 className="text-[13px] font-bold text-text-tertiary mb-3 uppercase tracking-wider flex items-center justify-between">
-                       证据来源 <button onClick={() => setDrawer('evidence')} className="text-brand-logo text-[12px] flex items-center gap-1 hover:underline">查看底层数据 <ArrowUpRight size={12}/></button>
+                       证据来源 <button onClick={() => setDrawer('evidence')} className="text-brand-logo text-[13px] flex items-center gap-1 hover:underline">查看底层数据 <ArrowUpRight size={12}/></button>
                      </h3>
                      <div className="bg-page-bg p-4 rounded-xl space-y-3">
                        <div className="flex gap-2 items-start">
@@ -456,7 +456,7 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
       </div>
       
       {/* Footer Edge Warning */}
-      <div className="h-10 border-t border-border-default bg-page-bg flex items-center justify-center text-[11px] text-text-tertiary shrink-0">
+      <div className="h-10 border-t border-border-default bg-page-bg flex items-center justify-center text-[13px] text-text-tertiary shrink-0">
         当前结果来自搜索联想观察与商家适配分析，不代表搜索量、排名或竞争度。候选词仍需通过项目执行验证。
       </div>
     </div>

@@ -28,7 +28,7 @@ export function NoteLedger({ project }: { project: any }) {
         <div className="bg-surface-1 rounded-xl border border-border-default  overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-surface-2 border-b border-border-default text-[12px] text-text-tertiary">
+              <tr className="bg-surface-2 border-b border-border-default text-[13px] text-text-tertiary">
                 <th className="p-4 font-medium">内容包名称 / 占位情况</th>
                 <th className="p-4 font-medium">类型</th>
                 <th className="p-4 font-medium">当前状态</th>
@@ -49,7 +49,7 @@ export function NoteLedger({ project }: { project: any }) {
                 <tr key={i} className="border-b border-border-default hover:bg-surface-2 transition-colors text-[13px]">
                   <td className="p-4">
                     <div className="font-bold text-text-main">{n.pack}</div>
-                    <div className="text-[11.5px] text-text-tertiary mt-1.5 flex items-center gap-1.5">
+                    <div className="text-[13px] text-text-tertiary mt-1.5 flex items-center gap-1.5">
                       <span className="shrink-0">{n.isConsumer && n.status === '待领取' ? '未关联' : '已领取:'}</span>
                       <span className="font-medium text-text-secondary truncate max-w-[120px]">{n.account}</span>
                     </div>
@@ -58,18 +58,18 @@ export function NoteLedger({ project }: { project: any }) {
                     {n.type}
                   </td>
                   <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-lg text-[11.5px] font-bold ${getStatusStyle(n.status)}`}>
+                    <span className={`px-2.5 py-1 rounded-lg text-[13px] font-bold ${getStatusStyle(n.status)}`}>
                       {n.status}
                     </span>
                   </td>
-                  <td className="p-4 text-[12px] text-text-secondary max-w-[200px]">
+                  <td className="p-4 text-[13px] text-text-secondary max-w-[200px]">
                     {n.assignee}
                   </td>
                   <td className="p-4">
                     {n.error ? <span className="text-danger font-bold bg-danger-light px-2 py-1 rounded border border-danger-light">{n.error}</span> : <span className="text-text-tertiary">-</span>}
                   </td>
                   <td className="p-4">
-                    <button onClick={() => setActiveNote(n)} className="px-3.5 py-1.5 bg-surface-1 border border-border-default rounded-xl text-[12px] font-bold text-text-secondary hover:bg-surface-2 hover:text-text-main  transition-all">
+                    <button onClick={() => setActiveNote(n)} className="px-3.5 py-1.5 bg-surface-1 border border-border-default rounded-xl text-[13px] font-bold text-text-secondary hover:bg-surface-2 hover:text-text-main  transition-all">
                       查看要求
                     </button>
                   </td>
@@ -109,15 +109,15 @@ export function NoteLedger({ project }: { project: any }) {
                     <div className="text-[14px] font-bold text-text-main mb-4 border-b pb-2">基本信息</div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <div className="text-[11px] text-text-tertiary mb-1">参与者/账号</div>
+                        <div className="text-[13px] text-text-tertiary mb-1">参与者/账号</div>
                         <div className="text-[13px] font-bold">{activeNote.account}</div>
                       </div>
                       <div>
-                        <div className="text-[11px] text-text-tertiary mb-1">计划发布日</div>
+                        <div className="text-[13px] text-text-tertiary mb-1">计划发布日</div>
                         <div className="text-[13px] font-bold">{activeNote.date}</div>
                       </div>
                       <div className="col-span-2">
-                        <div className="text-[11px] text-text-tertiary mb-1">使用内容包</div>
+                        <div className="text-[13px] text-text-tertiary mb-1">使用内容包</div>
                         <div className="text-[13px] font-bold text-brand-logo">{activeNote.pack}</div>
                       </div>
                     </div>
@@ -126,7 +126,7 @@ export function NoteLedger({ project }: { project: any }) {
                   <div className="bg-surface-1 p-4 rounded-xl border border-border-default">
                     <div className="flex justify-between items-center mb-4 border-b pb-2">
                       <div className="text-[14px] font-bold text-text-main">内容稿件</div>
-                      <span className={`text-[11px] px-2 py-0.5 rounded ${activeNote.contentStatus === '待审核' ? 'bg-amber-100 text-amber-700' : 'bg-hover-bg text-text-secondary'}`}>{activeNote.contentStatus}</span>
+                      <span className={`text-[13px] px-2 py-0.5 rounded ${activeNote.contentStatus === '待审核' ? 'bg-amber-100 text-amber-700' : 'bg-hover-bg text-text-secondary'}`}>{activeNote.contentStatus}</span>
                     </div>
                     {activeNote.contentStatus === '待审核' ? (
                       <div className="text-[13px] text-text-secondary">
@@ -145,23 +145,23 @@ export function NoteLedger({ project }: { project: any }) {
                     <div className="bg-surface-1 p-4 rounded-xl border border-border-default">
                       <div className="flex justify-between items-center mb-4 border-b pb-2">
                         <div className="text-[14px] font-bold text-text-main">发布数据</div>
-                        <a href="#" className="text-[12px] text-brand-logo flex items-center gap-1 hover:underline"><ExternalLink size={12}/> 查看小红书</a>
+                        <a href="#" className="text-[13px] text-brand-logo flex items-center gap-1 hover:underline"><ExternalLink size={12}/> 查看小红书</a>
                       </div>
                       <div className="grid grid-cols-4 gap-4 text-center">
                          <div>
-                           <div className="text-[11px] text-text-tertiary mb-1">阅读</div>
+                           <div className="text-[13px] text-text-tertiary mb-1">阅读</div>
                            <div className="text-[16px] font-bold">1.2k</div>
                          </div>
                          <div>
-                           <div className="text-[11px] text-text-tertiary mb-1">点赞</div>
+                           <div className="text-[13px] text-text-tertiary mb-1">点赞</div>
                            <div className="text-[16px] font-bold">45</div>
                          </div>
                          <div>
-                           <div className="text-[11px] text-text-tertiary mb-1">收藏</div>
+                           <div className="text-[13px] text-text-tertiary mb-1">收藏</div>
                            <div className="text-[16px] font-bold">12</div>
                          </div>
                          <div>
-                           <div className="text-[11px] text-text-tertiary mb-1">评论</div>
+                           <div className="text-[13px] text-text-tertiary mb-1">评论</div>
                            <div className="text-[16px] font-bold">8</div>
                          </div>
                       </div>

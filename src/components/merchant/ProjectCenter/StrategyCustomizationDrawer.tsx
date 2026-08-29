@@ -76,11 +76,11 @@ export function StrategyCustomizationDrawer({
             <div className="flex items-center gap-2">
               <SlidersHorizontal size={17} className="text-text-secondary" />
               <h2 className="text-[16px] font-semibold text-text-main">专家定制</h2>
-              <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[11px] text-text-secondary">
+              <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[13px] text-text-secondary">
                 当前 V{activeVersion?.version || 1}
               </span>
             </div>
-            <p className="mt-1 text-[12px] text-text-tertiary">调整运营逻辑并生成一个新版本。</p>
+            <p className="mt-1 text-[13px] text-text-tertiary">调整运营逻辑并生成一个新版本。</p>
           </div>
           <button onClick={onClose} className="rounded-lg p-2 text-text-tertiary hover:bg-hover-bg hover:text-text-main">
             <X size={18} />
@@ -88,7 +88,7 @@ export function StrategyCustomizationDrawer({
         </div>
 
         <div className="flex-1 space-y-5 overflow-y-auto p-6">
-          <div className="flex gap-2.5 rounded-xl border border-info/20 bg-info-light p-3.5 text-[12px] leading-relaxed text-text-secondary">
+          <div className="flex gap-2.5 rounded-xl border border-info/20 bg-info-light p-3.5 text-[13px] leading-relaxed text-text-secondary">
             <AlertCircle size={16} className="mt-0.5 shrink-0 text-info" />
             <span>保存后仅影响之后生成的笔记。已生成、待发布和已发布笔记继续绑定原策略版本，不会被改写。</span>
           </div>
@@ -100,29 +100,29 @@ export function StrategyCustomizationDrawer({
               { key: "solutionSummary", label: "内容方法", rows: 3 },
               { key: "verifyHypothesis", label: "验证目标", rows: 3 }
             ].map(field => (
-              <label key={field.key} className="space-y-1.5 text-[12px]">
+              <label key={field.key} className="space-y-1.5 text-[13px]">
                 <span className="font-medium text-text-main">{field.label}</span>
                 <textarea
                   rows={field.rows}
                   value={String(form[field.key as keyof StrategyConfiguration] || "")}
                   onChange={event => setForm(current => ({ ...current, [field.key]: event.target.value }))}
-                  className="w-full resize-none rounded-lg border border-border-default bg-surface-subtle px-3 py-2.5 text-[12.5px] leading-relaxed text-text-main outline-none transition-colors focus:border-border-strong focus:bg-surface-1"
+                  className="w-full resize-none rounded-lg border border-border-default bg-surface-subtle px-3 py-2.5 text-[13px] leading-relaxed text-text-main outline-none transition-colors focus:border-border-strong focus:bg-surface-1"
                 />
               </label>
             ))}
 
-            <label className="space-y-1.5 text-[12px]">
+            <label className="space-y-1.5 text-[13px]">
               <span className="font-medium text-text-main">目标关键词</span>
               <input
                 value={keywordText}
                 onChange={event => setKeywordText(event.target.value)}
                 placeholder="用顿号或逗号分隔"
-                className="w-full rounded-lg border border-border-default bg-surface-subtle px-3 py-2.5 text-[12.5px] text-text-main outline-none focus:border-border-strong focus:bg-surface-1"
+                className="w-full rounded-lg border border-border-default bg-surface-subtle px-3 py-2.5 text-[13px] text-text-main outline-none focus:border-border-strong focus:bg-surface-1"
               />
-              <span className="block text-[11px] text-text-tertiary">用于发布后调用关键词搜索接口，比对平台笔记 ID 和排名。</span>
+              <span className="block text-[13px] text-text-tertiary">用于发布后调用关键词搜索接口，比对平台笔记 ID 和排名。</span>
             </label>
 
-            <label className="space-y-1.5 text-[12px]">
+            <label className="space-y-1.5 text-[13px]">
               <span className="font-medium text-text-main">发布后观察周期</span>
               <div className="flex items-center gap-2">
                 <input
@@ -131,18 +131,18 @@ export function StrategyCustomizationDrawer({
                   max={90}
                   value={form.observationDays || 14}
                   onChange={event => setForm(current => ({ ...current, observationDays: Number(event.target.value) || 14 }))}
-                  className="w-24 rounded-lg border border-border-default bg-surface-subtle px-3 py-2 text-[12.5px] outline-none focus:border-border-strong focus:bg-surface-1"
+                  className="w-24 rounded-lg border border-border-default bg-surface-subtle px-3 py-2 text-[13px] outline-none focus:border-border-strong focus:bg-surface-1"
                 />
-                <span className="text-[12px] text-text-secondary">天</span>
+                <span className="text-[13px] text-text-secondary">天</span>
               </div>
             </label>
           </div>
 
           <div className="rounded-xl border border-border-default p-4">
-            <div className="mb-3 text-[12px] font-medium text-text-main">版本记录</div>
+            <div className="mb-3 text-[13px] font-medium text-text-main">版本记录</div>
             <div className="space-y-2">
               {[...versions].sort((a, b) => b.version - a.version).map(version => (
-                <div key={version.id} className="flex items-center justify-between rounded-lg bg-surface-subtle px-3 py-2 text-[11.5px]">
+                <div key={version.id} className="flex items-center justify-between rounded-lg bg-surface-subtle px-3 py-2 text-[13px]">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-text-main">V{version.version}</span>
                     <span className="text-text-secondary">{sourceLabel[version.source]}</span>
@@ -156,10 +156,10 @@ export function StrategyCustomizationDrawer({
         </div>
 
         <div className="flex shrink-0 items-center justify-between border-t border-border-default p-4">
-          <span className="text-[11.5px] text-text-tertiary">保存将创建 V{(activeVersion?.version || 0) + 1}</span>
+          <span className="text-[13px] text-text-tertiary">保存将创建 V{(activeVersion?.version || 0) + 1}</span>
           <div className="flex gap-2">
-            <button onClick={onClose} className="rounded-lg border border-border-default px-4 py-2 text-[12.5px] text-text-secondary hover:bg-hover-bg">取消</button>
-            <button onClick={save} className="flex items-center gap-1.5 rounded-lg bg-btn-main px-4 py-2 text-[12.5px] font-medium text-white hover:bg-btn-main-hover">
+            <button onClick={onClose} className="rounded-lg border border-border-default px-4 py-2 text-[13px] text-text-secondary hover:bg-hover-bg">取消</button>
+            <button onClick={save} className="flex items-center gap-1.5 rounded-lg bg-btn-main px-4 py-2 text-[13px] font-medium text-white hover:bg-btn-main-hover">
               <Check size={14} /> 保存为新版本
             </button>
           </div>

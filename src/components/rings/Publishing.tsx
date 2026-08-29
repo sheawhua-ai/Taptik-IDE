@@ -29,14 +29,14 @@ export const Publishing: React.FC = () => {
  </div>
  <div>
  <h2 className="text-[17px] font-semibold text-text-main tracking-tight">发布运营中枢</h2>
- <p className="text-[11px] text-text-tertiary">管理多账号、多平台的内容排期与发布执行</p>
+ <p className="text-[13px] text-text-tertiary">管理多账号、多平台的内容排期与发布执行</p>
  </div>
  </div>
  
  <div className="flex items-center gap-4">
  <button 
  onClick={() => setIsCalendarExpanded(!isCalendarExpanded)}
- className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] transition-all ${isCalendarExpanded ? 'bg-btn-main text-white shadow-lg shadow-primary-500/20' : 'bg-page-bg text-text-secondary hover:bg-hover-bg border border-border-default'}`}
+ className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] transition-all ${isCalendarExpanded ? 'bg-btn-main text-white shadow-lg shadow-primary-500/20' : 'bg-page-bg text-text-secondary hover:bg-hover-bg border border-border-default'}`}
  >
  <LayoutGrid size={16} />
  {isCalendarExpanded ? '收起运营日历' : '打开运营日历'}
@@ -45,7 +45,7 @@ export const Publishing: React.FC = () => {
  <div className="h-8 w-px bg-hover-bg" />
  
  <div className="flex gap-2">
- <button className="px-6 py-2 bg-btn-main text-white rounded-xl text-[12px] shadow-lg shadow-neutral-200 hover:bg-btn-main hover:tranneutral-y-[-1px] transition-all flex items-center gap-2">
+ <button className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] shadow-lg shadow-neutral-200 hover:bg-btn-main hover:tranneutral-y-[-1px] transition-all flex items-center gap-2">
  <Plus size={16}/> 新建排期
  </button>
  </div>
@@ -69,14 +69,14 @@ export const Publishing: React.FC = () => {
  </div>
  </div>
  <div className="flex items-center gap-3">
- <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-btn-main" /> <span className="text-[11px] text-text-tertiary uppercase tracking-widest">已发布</span></div>
- <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-btn-main" /> <span className="text-[11px] text-text-tertiary uppercase tracking-widest">待执行</span></div>
+ <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-btn-main" /> <span className="text-[13px] text-text-tertiary uppercase tracking-widest">已发布</span></div>
+ <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-btn-main" /> <span className="text-[13px] text-text-tertiary uppercase tracking-widest">待执行</span></div>
  </div>
  </div>
  <div className="bg-surface-1 border border-border-default rounded-[32px] shadow-sm overflow-hidden">
  <div className="grid grid-cols-7 border-b border-border-default bg-page-bg">
  {DAYS.map(d => (
- <div key={d} className="py-2.5 text-center text-[10px] text-text-tertiary uppercase tracking-[0.22em]">{d}</div>
+ <div key={d} className="py-2.5 text-center text-[13px] text-text-tertiary uppercase tracking-[0.22em]">{d}</div>
  ))}
  </div>
  <div className="grid grid-cols-7 grid-rows-5 h-[450px] divide-x divide-y divide-neutral-50">
@@ -86,7 +86,7 @@ export const Publishing: React.FC = () => {
  
  return (
  <div key={i} className="p-2 group hover:bg-page-bg/30 transition-all flex flex-col gap-1">
- <span className="text-[10px] text-text-main opacity-20">{dayNum <= 31 ? dayNum : ''}</span>
+ <span className="text-[13px] text-text-main opacity-20">{dayNum <= 31 ? dayNum : ''}</span>
  <div className="flex-1 space-y-1 overflow-y-auto no-scrollbar">
  {dayItems.map((item, idx) => (
  <div 
@@ -98,7 +98,7 @@ export const Publishing: React.FC = () => {
  'bg-page-bg border-border-default'
  }`}
  >
- <p className="text-[9px] text-text-main leading-tight truncate">{item.title}</p>
+ <p className="text-[13px] text-text-main leading-tight truncate">{item.title}</p>
  </div>
  ))}
  </div>
@@ -123,7 +123,7 @@ export const Publishing: React.FC = () => {
    </div>
    <div className="flex-1">
    <p className="text-[13px] font-bold text-primary-900">素材未提交</p>
-   <p className="text-[11px] text-brand-logo mt-1">崂山民宿素材缺失（已超时 24h）</p>
+   <p className="text-[13px] text-brand-logo mt-1">崂山民宿素材缺失（已超时 24h）</p>
    </div>
  </div>
  <button
@@ -141,7 +141,7 @@ export const Publishing: React.FC = () => {
         })
       );
    }}
-   className="px-4 py-2 bg-surface-1 text-brand-logo text-[12px] font-medium rounded-lg border border-primary-200 hover:bg-primary-100 transition-colors w-full flex items-center justify-center gap-2"
+   className="px-4 py-2 bg-surface-1 text-brand-logo text-[13px] font-medium rounded-lg border border-primary-200 hover:bg-primary-100 transition-colors w-full flex items-center justify-center gap-2"
  >
    调用副手处理 <ArrowRight size={14} />
  </button>
@@ -159,7 +159,7 @@ export const Publishing: React.FC = () => {
  </div>
  <div className="space-y-4 mt-6">
  <div className="space-y-2">
- <div className="flex justify-between text-[11px] uppercase tracking-tighter">
+ <div className="flex justify-between text-[13px] uppercase tracking-tighter">
  <span className="text-text-tertiary">图文 (60%)</span>
  <span className="text-text-tertiary">已达标</span>
  </div>
@@ -168,7 +168,7 @@ export const Publishing: React.FC = () => {
  </div>
  </div>
  <div className="space-y-2">
- <div className="flex justify-between text-[11px] uppercase tracking-tighter">
+ <div className="flex justify-between text-[13px] uppercase tracking-tighter">
  <span className="text-text-tertiary">视频 (40%)</span>
  </div>
  <div className="h-1.5 bg-surface-1/10 rounded-full overflow-hidden">
@@ -192,7 +192,7 @@ export const Publishing: React.FC = () => {
  </div>
  <div>
  <p className="text-[13px] text-text-main">Puppeteer 节点在线</p>
- <p className="text-[11px] text-text-tertiary">3 账号模拟登录中...</p>
+ <p className="text-[13px] text-text-tertiary">3 账号模拟登录中...</p>
  </div>
  </div>
  <button className="mt-6 w-full py-4 bg-page-bg text-text-secondary rounded-xl text-[13px] hover:bg-hover-bg transition-all flex items-center justify-center gap-2">
@@ -223,25 +223,25 @@ export const Publishing: React.FC = () => {
  <div className="flex-1 overflow-y-auto p-10 space-y-10">
  <div className="space-y-4">
  <div className="flex items-center justify-between">
- <span className="text-[11px] text-text-tertiary uppercase tracking-widest">排期标题</span>
- <span className={`px-2.5 py-1 rounded-lg text-[10px] uppercase ${selectedItem.status === 'published' ? 'bg-hover-bg text-text-main' : 'bg-brand-light text-brand-logo'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
+ <span className="text-[13px] text-text-tertiary uppercase tracking-widest">排期标题</span>
+ <span className={`px-2.5 py-1 rounded-lg text-[13px] uppercase ${selectedItem.status === 'published' ? 'bg-hover-bg text-text-main' : 'bg-brand-light text-brand-logo'}`}>{selectedItem.status === 'published' ? '已发布' : selectedItem.status === 'scheduled' ? '待执行' : selectedItem.status === 'delayed' ? '延迟' : '待处理'}</span>
  </div>
  <p className="text-xl text-text-main leading-tight">{selectedItem.title}</p>
  </div>
 
  <div className="grid grid-cols-2 gap-6">
  <div className="space-y-2">
- <span className="text-[11px] text-text-tertiary uppercase tracking-widest pl-1">发布账号</span>
+ <span className="text-[13px] text-text-tertiary uppercase tracking-widest pl-1">发布账号</span>
  <div className="bg-page-bg p-4 rounded-xl border border-border-default text-text-secondary">{selectedItem.account} 专业号</div>
  </div>
  <div className="space-y-2">
- <span className="text-[11px] text-text-tertiary uppercase tracking-widest pl-1">发布时间</span>
+ <span className="text-[13px] text-text-tertiary uppercase tracking-widest pl-1">发布时间</span>
  <div className="bg-page-bg p-4 rounded-xl border border-border-default text-text-secondary">{selectedItem.time}</div>
  </div>
  </div>
 
  <div className="space-y-3">
- <span className="text-[11px] text-text-tertiary uppercase tracking-widest pl-1">笔记正文</span>
+ <span className="text-[13px] text-text-tertiary uppercase tracking-widest pl-1">笔记正文</span>
  <div className="bg-page-bg p-6 rounded-2xl border border-border-default text-[14px] text-text-secondary leading-relaxed min-h-[200px]">
  {selectedItem.content}
  </div>

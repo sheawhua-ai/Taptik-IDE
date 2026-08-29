@@ -38,12 +38,12 @@ export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWork
               <div className="bg-red-50/50 rounded-xl p-4 border border-red-100 flex-1">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-semibold text-text-main">{topPriorityTask.title}</h3>
-                  <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full">
+                  <span className="px-2 py-1 text-[13px] font-medium bg-red-100 text-red-700 rounded-full">
                     {topPriorityTask.type}
                   </span>
                 </div>
                 <p className="text-sm text-text-secondary mb-2">{topPriorityTask.reason}</p>
-                <div className="text-xs text-text-tertiary mb-4 bg-surface-1 p-2 rounded border border-border-default">
+                <div className="text-[13px] text-text-tertiary mb-4 bg-surface-1 p-2 rounded border border-border-default">
                   <span className="font-medium">影响范围：</span>{topPriorityTask.impact}
                 </div>
                 <button 
@@ -87,7 +87,7 @@ export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWork
                   onClick={() => onOpenKnowledge(item)}
                 >
                   <p className="text-sm font-medium text-text-main mb-1 line-clamp-2">{item.summary}</p>
-                  <div className="flex items-center text-xs text-text-tertiary space-x-3">
+                  <div className="flex items-center text-[13px] text-text-tertiary space-x-3">
                     <span className="truncate max-w-[150px]">{item.source}</span>
                     <span className={`px-2 py-0.5 rounded-full ${item.state === '正常' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
                       {item.state}
@@ -109,7 +109,7 @@ export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWork
           </div>
           <div className="p-0">
             <table className="w-full text-left text-sm text-text-secondary">
-              <thead className="bg-page-bg text-xs text-text-tertiary border-b border-border-default">
+              <thead className="bg-page-bg text-[13px] text-text-tertiary border-b border-border-default">
                 <tr>
                   <th className="px-5 py-3 font-medium">来源名称</th>
                   <th className="px-5 py-3 font-medium">类型</th>
@@ -124,7 +124,7 @@ export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWork
                     <td className="px-5 py-3 font-medium text-text-main">{source.name}</td>
                     <td className="px-5 py-3">{source.type}</td>
                     <td className="px-5 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
+                      <span className={`px-2 py-1 rounded-full text-[13px] ${
                         source.state === '已断开' ? 'bg-red-50 text-danger' : 'bg-amber-50 text-amber-600'
                       }`}>
                         {source.state}

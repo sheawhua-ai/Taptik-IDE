@@ -71,7 +71,7 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
                       : 'bg-brand-light/80 border border-primary-100/50 text-primary-900 rounded-bl-none'
                   }`}>
                     {m.role === 'ai' && (
-                       <div className="flex items-center gap-1.5 mb-2 text-brand-logo font-bold text-[12px]">
+                       <div className="flex items-center gap-1.5 mb-2 text-brand-logo font-bold text-[13px]">
                          <Sparkles size={14} /> 操盘副手
                        </div>
                     )}
@@ -122,7 +122,7 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
               <h4 className="text-[14px] font-bold text-text-main flex items-center gap-2">
                 <Layers size={16} /> 项目流必备要素
               </h4>
-              <p className="text-[12px] text-text-tertiary mt-1">
+              <p className="text-[13px] text-text-tertiary mt-1">
                 副手将通过沟通为您补齐以下信息，以生成最合适的打法策略。
               </p>
             </div>
@@ -134,9 +134,9 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
                     <Compass size={14} className={slotsFilled >= 1 ? 'text-text-main' : ''} />
                     <span className="text-[13px] font-bold">主攻目标</span>
                   </div>
-                  {slotsFilled >= 1 && <span className="text-[10px] font-bold text-text-main bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
+                  {slotsFilled >= 1 && <span className="text-[13px] font-bold text-text-main bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
                 </div>
-                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 1 ? 'text-text-main' : ''}`}>
+                <div className={`text-[13px] mt-2 font-medium ${slotsFilled >= 1 ? 'text-text-main' : ''}`}>
                   {slotsFilled >= 1 ? '偏向自然流起量，搜索卡位辅助' : '待确认...'}
                 </div>
               </div>
@@ -147,9 +147,9 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
                     <FileText size={14} className={slotsFilled >= 2 ? 'text-text-main' : ''} />
                     <span className="text-[13px] font-bold">内容风格</span>
                   </div>
-                  {slotsFilled >= 2 && <span className="text-[10px] font-bold text-text-main bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
+                  {slotsFilled >= 2 && <span className="text-[13px] font-bold text-text-main bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
                 </div>
-                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 2 ? 'text-text-main' : ''}`}>
+                <div className={`text-[13px] mt-2 font-medium ${slotsFilled >= 2 ? 'text-text-main' : ''}`}>
                   {slotsFilled >= 2 ? '侧重素人真实体验，低营销感' : '待确认...'}
                 </div>
               </div>
@@ -160,9 +160,9 @@ export const StrategyCopilotDrawer: React.FC<{ onClose: () => void, isNewProject
                     <Sparkles size={14} className={slotsFilled >= 3 ? 'text-text-main' : ''} />
                     <span className="text-[13px] font-bold">账号配比</span>
                   </div>
-                  {slotsFilled >= 3 && <span className="text-[10px] font-bold text-text-main bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
+                  {slotsFilled >= 3 && <span className="text-[13px] font-bold text-text-main bg-neutral-200 px-1.5 py-0.5 rounded">已明确</span>}
                 </div>
-                <div className={`text-[12px] mt-2 font-medium ${slotsFilled >= 3 ? 'text-text-main' : ''}`}>
+                <div className={`text-[13px] mt-2 font-medium ${slotsFilled >= 3 ? 'text-text-main' : ''}`}>
                   {slotsFilled >= 3 ? '加大客户快发比例，减少KOS' : '待确认...'}
                 </div>
               </div>

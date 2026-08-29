@@ -51,13 +51,13 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <div className="flex bg-hover-bg p-1 rounded-xl border border-border-default">
  <button 
  onClick={() => setActiveTab('schemes')}
- className={`px-4 py-1.5 rounded-lg text-[12px] transition-all flex items-center gap-2 ${activeTab === 'schemes' ? 'bg-btn-main text-white shadow-md' : 'text-text-tertiary hover:text-text-secondary'}`}
+ className={`px-4 py-1.5 rounded-lg text-[13px] transition-all flex items-center gap-2 ${activeTab === 'schemes' ? 'bg-btn-main text-white shadow-md' : 'text-text-tertiary hover:text-text-secondary'}`}
  >
  <FileBox size={14} /> 方案管理
  </button>
  <button 
  onClick={() => setActiveTab('assets')}
- className={`px-4 py-1.5 rounded-lg text-[12px] transition-all flex items-center gap-2 ${activeTab === 'assets' ? 'bg-btn-main text-white shadow-md' : 'text-text-tertiary hover:text-text-secondary'}`}
+ className={`px-4 py-1.5 rounded-lg text-[13px] transition-all flex items-center gap-2 ${activeTab === 'assets' ? 'bg-btn-main text-white shadow-md' : 'text-text-tertiary hover:text-text-secondary'}`}
  >
  <ImageIcon size={14} /> 素材中心
  </button>
@@ -66,8 +66,8 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  
  <div className="flex items-center gap-3">
  <div className="flex bg-hover-bg p-1 rounded-xl border border-border-default text-text-tertiary">
- <button className="px-3 py-1 bg-surface-1 shadow-sm rounded-lg text-[11px] text-text-main border border-border-default/50">标准视图</button>
- <button className="px-3 py-1 rounded-lg text-[11px] hover:text-text-secondary">看板模式</button>
+ <button className="px-3 py-1 bg-surface-1 shadow-sm rounded-lg text-[13px] text-text-main border border-border-default/50">标准视图</button>
+ <button className="px-3 py-1 rounded-lg text-[13px] hover:text-text-secondary">看板模式</button>
  </div>
  </div>
  </div>
@@ -77,7 +77,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <div className="flex items-center bg-surface-1 border border-border-default focus-within:border-border-strong rounded-xl p-1.5 transition-colors">
  <div className="flex items-center gap-2 pl-3 pr-4 border-r border-border-default shrink-0">
  <Search size={16} className="text-text-secondary" />
- <span className="text-[11px] text-text-secondary font-medium">方案检索</span>
+ <span className="text-[13px] text-text-secondary font-medium">方案检索</span>
  </div>
  <input 
  value={commandValue}
@@ -86,7 +86,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  className="flex-1 bg-transparent border-none outline-none px-4 text-[13.5px] text-text-main placeholder:text-text-tertiary"
  />
  <div className="flex items-center gap-2 pr-2">
- <kbd className="px-2 py-0.5 bg-surface-subtle rounded text-[10px] text-text-tertiary border border-border-default font-normal">⌘ K</kbd>
+ <kbd className="px-2 py-0.5 bg-surface-subtle rounded text-[13px] text-text-tertiary border border-border-default font-normal">⌘ K</kbd>
  <button className="bg-btn-main hover:bg-btn-main-hover text-white w-8 h-8 flex items-center justify-center rounded-lg transition-colors">
  <Plus size={16} />
  </button>
@@ -94,13 +94,13 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  </div>
  
  <div className="flex items-center gap-3 mt-2.5 pl-2">
- <span className="text-[11px] text-text-tertiary font-normal">快捷筛选:</span>
+ <span className="text-[13px] text-text-tertiary font-normal">快捷筛选:</span>
  <div className="flex gap-2">
  {COMMAND_SUGGESTIONS.map((msg, i) => (
  <button 
  key={i} 
  onClick={() => setCommandValue(msg)}
- className="text-[11.5px] text-text-secondary hover:text-text-main hover:bg-hover-bg px-2.5 py-0.5 rounded-md border border-border-default bg-surface-1 transition-colors"
+ className="text-[13px] text-text-secondary hover:text-text-main hover:bg-hover-bg px-2.5 py-0.5 rounded-md border border-border-default bg-surface-1 transition-colors"
  >
  {msg}
  </button>
@@ -117,7 +117,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <PlusCircle size={18} className="text-brand-logo" />
  <h3 className="text-[15px] font-semibold text-text-main">业务执行方案列表</h3>
  </div>
- <button className="px-4 py-1.5 bg-btn-main text-white rounded-lg text-[12px] flex items-center gap-2">
+ <button className="px-4 py-1.5 bg-btn-main text-white rounded-lg text-[13px] flex items-center gap-2">
  <Plus size={14}/> 创建方案
  </button>
  </div>
@@ -133,9 +133,9 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <div className="flex items-center justify-between mb-6">
  <div className="flex items-center gap-4">
  <div className="flex bg-neutral-0 p-1 rounded-xl border border-border-default">
- <button className="px-4 py-1.5 bg-btn-main text-white rounded-lg text-[12px] ">进行中</button>
- <button className="px-4 py-1.5 text-text-tertiary hover:text-text-main rounded-lg text-[12px] ">已预设</button>
- <button className="px-4 py-1.5 text-text-tertiary hover:text-text-main rounded-lg text-[12px] ">已沉淀</button>
+ <button className="px-4 py-1.5 bg-btn-main text-white rounded-lg text-[13px] ">进行中</button>
+ <button className="px-4 py-1.5 text-text-tertiary hover:text-text-main rounded-lg text-[13px] ">已预设</button>
+ <button className="px-4 py-1.5 text-text-tertiary hover:text-text-main rounded-lg text-[13px] ">已沉淀</button>
  </div>
  <div className="w-px h-6 bg-neutral-200 mx-1" />
  <div className="relative">
@@ -148,7 +148,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  </div>
  </div>
  <div className="flex items-center gap-3">
- <button className="flex items-center gap-2 px-4 py-2 bg-neutral-0 border border-border-default rounded-xl text-[12px] text-text-tertiary hover:border-neutral-900 hover:text-text-main transition-all">
+ <button className="flex items-center gap-2 px-4 py-2 bg-neutral-0 border border-border-default rounded-xl text-[13px] text-text-tertiary hover:border-neutral-900 hover:text-text-main transition-all">
  <SlidersHorizontal size={14}/> 筛选排序
  </button>
  </div>
@@ -157,7 +157,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <div className="bg-neutral-0 rounded-[32px] border border-border-default shadow-sm overflow-hidden">
  <table className="w-full text-left">
  <thead>
- <tr className="bg-page-bg text-[11px] text-text-tertiary uppercase tracking-widest border-b border-border-default">
+ <tr className="bg-page-bg text-[13px] text-text-tertiary uppercase tracking-widest border-b border-border-default">
  <th className="px-8 py-5">#</th>
  <th className="px-8 py-5">方案名称</th>
  <th className="px-8 py-5">笔记规模</th>
@@ -188,7 +188,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  </td>
  <td className="px-8 py-6 text-[13px] text-text-tertiary">{scheme.updatedAt}</td>
  <td className="px-8 py-6">
- <span className={`px-2 py-0.5 text-[10px] rounded-lg ${
+ <span className={`px-2 py-0.5 text-[13px] rounded-lg ${
  scheme.status === '信息已完善' ? 'bg-hover-bg text-text-main' : 'bg-hover-bg text-text-tertiary'
  }`}>
  {scheme.status}
@@ -198,7 +198,7 @@ export const SchemeManager: React.FC<{ embedded?: boolean }> = ({ embedded }) =>
  <div className="flex items-center justify-end gap-2">
  <button 
  onClick={() => { setSelectedScheme(scheme); setIsOperationMode(true); }}
- className="px-4 py-2 bg-btn-main text-white rounded-xl text-[12px] flex items-center gap-2 hover:scale-105 transition-all shadow-md group-hover:bg-btn-main"
+ className="px-4 py-2 bg-btn-main text-white rounded-xl text-[13px] flex items-center gap-2 hover:scale-105 transition-all shadow-md group-hover:bg-btn-main"
  >
  <Workflow size={14}/> 进入作业
  </button>

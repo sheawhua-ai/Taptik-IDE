@@ -1,0 +1,34 @@
+/* Operator workspaces: calm canvas, fewer visual containers, clearer focus. */
+:root {
+  --workspace-canvas: #f4f6f8;
+  --workspace-panel: #ffffff;
+  --workspace-inset: #fafbfc;
+  --workspace-line: #e3e7eb;
+}
+
+.workspace-shell { background: var(--workspace-canvas); color: var(--color-text-primary); }
+.workspace-shell button, .workspace-shell input, .workspace-shell select, .workspace-shell textarea { border-radius: 8px; }
+.workspace-shell button { transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease; }
+.workspace-header { min-height: 68px; padding: 16px 24px; background: rgba(255, 255, 255, .96); border-color: var(--workspace-line); }
+.workspace-toolbar { min-height: 48px; padding-inline: 24px; background: rgba(255, 255, 255, .92); border-color: var(--workspace-line); }
+.workspace-sidebar { background: var(--workspace-panel); border-color: var(--workspace-line); }
+.workspace-sidebar-header { min-height: 52px; padding: 14px 16px; border-color: var(--workspace-line); }
+.workspace-stage { padding: 20px 24px; background: var(--workspace-canvas); }
+.workspace-surface { border-color: var(--workspace-line); background: var(--workspace-panel); box-shadow: 0 1px 2px rgba(20, 27, 38, .035); }
+.workspace-summary { background: var(--workspace-inset); border-color: var(--workspace-line); }
+.workspace-queue-item { border: 1px solid transparent; border-radius: 8px; padding: 12px; }
+.workspace-queue-item:hover { background: var(--workspace-inset); }
+.workspace-queue-item.is-active { background: #f8f9fa; border-color: #d8dde3; box-shadow: inset 3px 0 0 var(--color-brand-500); }
+.workspace-report { border-color: var(--workspace-line); box-shadow: none; }
+.workspace-report > section { border-color: var(--workspace-line); }
+.project-workspace-main { background: var(--workspace-canvas); }
+.material-workspace .workspace-stage { padding-top: 16px; }
+.material-workspace .workspace-filterbar { border-color: var(--workspace-line); box-shadow: none; }
+.material-workspace .workspace-material-grid { gap: 16px; }
+.review-workspace .workspace-stage { padding-top: 20px; }
+.execution-workspace .workspace-stage { padding: 20px 24px; }
+.execution-workspace .workspace-context { border-color: var(--workspace-line); box-shadow: 0 1px 2px rgba(20, 27, 38, .025); }
+
+@media (max-width: 1024px) {
+  .workspace-header, .workspace-toolbar, .workspace-stage { padding-inline: 16px; }
+}

@@ -30,18 +30,18 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
             <h2 className="text-[15px] font-black text-text-main">
               当前商家已启用的技能 ({capabilities.length})
             </h2>
-            <p className="text-[12px] font-bold text-text-tertiary mt-0.5">
+            <p className="text-[13px] font-bold text-text-tertiary mt-0.5">
               已启用的技能将在小红书运营与发布流程中由 AI 自动调用。
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-[12px] font-extrabold">
+          <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-[13px] font-extrabold">
             {enabledCount} 项正常运行
           </span>
           {needsConfigCount > 0 && (
-            <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[12px] font-extrabold">
+            <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[13px] font-extrabold">
               {needsConfigCount} 项需配置
             </span>
           )}
@@ -106,26 +106,26 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                   </h3>
 
                   {isBuiltIn ? (
-                    <span className="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">
+                    <span className="px-2 py-0.5 rounded-md text-[13px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">
                       系统内置
                     </span>
                   ) : isNeedsConfig ? (
-                    <span className="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                    <span className="px-2 py-0.5 rounded-md text-[13px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
                       需配置
                     </span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="px-2 py-0.5 rounded-md text-[13px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
                       已启用
                     </span>
                   )}
                 </div>
 
-                <p className="text-[12.5px] font-bold text-text-secondary line-clamp-2 leading-relaxed">
+                <p className="text-[13px] font-bold text-text-secondary line-clamp-2 leading-relaxed">
                   {skill.oneSentenceDesc || skill.goal || item.lastResult}
                 </p>
 
                 {isNeedsConfig && (
-                  <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-1.5 text-amber-900 text-[11.5px] font-bold">
+                  <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-1.5 text-amber-900 text-[13px] font-bold">
                     <AlertTriangle size={14} className="text-amber-600 shrink-0 mt-0.5" />
                     <span>需配置评论或数据访问通道后方可自动调用。</span>
                   </div>
@@ -136,7 +136,7 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
               <div className="pt-3 border-t border-border-default flex items-center justify-between gap-2">
                 <button
                   onClick={() => onOpenSkillDetail(skill)}
-                  className="px-3 py-1.5 text-[12px] font-extrabold text-text-secondary hover:text-text-main bg-page-bg hover:bg-hover-bg rounded-xl transition-colors flex items-center gap-1 border border-border-default/80"
+                  className="px-3 py-1.5 text-[13px] font-extrabold text-text-secondary hover:text-text-main bg-page-bg hover:bg-hover-bg rounded-xl transition-colors flex items-center gap-1 border border-border-default/80"
                 >
                   <Eye size={14} /> 查看详情
                 </button>
@@ -145,7 +145,7 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                   {isNeedsConfig && (
                     <button
                       onClick={() => alert(`请在系统设置中为【${item.name}】配置所需数据连接。`)}
-                      className="px-3 py-1.5 text-[12px] font-extrabold text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors flex items-center gap-1 border border-amber-200"
+                      className="px-3 py-1.5 text-[13px] font-extrabold text-amber-800 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors flex items-center gap-1 border border-amber-200"
                     >
                       <Settings size={13} /> 去配置
                     </button>
@@ -154,7 +154,7 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                   {!isBuiltIn && (
                     <button
                       onClick={() => onToggleDisable?.(item)}
-                      className="px-2.5 py-1.5 text-[12px] font-extrabold text-text-tertiary hover:text-danger hover:bg-danger-light rounded-xl transition-colors"
+                      className="px-2.5 py-1.5 text-[13px] font-extrabold text-text-tertiary hover:text-danger hover:bg-danger-light rounded-xl transition-colors"
                       title="从当前商家移除"
                     >
                       <Trash2 size={14} />
@@ -162,7 +162,7 @@ export const MyCapabilities: React.FC<MyCapabilitiesProps> = ({
                   )}
 
                   {isBuiltIn && (
-                    <span className="text-[11px] font-bold text-text-tertiary flex items-center gap-1 px-2 py-1 bg-page-bg rounded-lg">
+                    <span className="text-[13px] font-bold text-text-tertiary flex items-center gap-1 px-2 py-1 bg-page-bg rounded-lg">
                       <Lock size={12} /> 不可移除
                     </span>
                   )}

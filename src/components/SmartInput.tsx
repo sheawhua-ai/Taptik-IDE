@@ -125,9 +125,9 @@ export const SmartInput = forwardRef<HTMLTextAreaElement, SmartInputProps>(({
             }}
             className="absolute z-[999] w-64 bg-surface-1 border border-border-default rounded-xl shadow-2xl overflow-hidden"
           >
-            <div className="px-3 py-2 bg-page-bg border-b border-border-default text-[11px] font-bold text-text-tertiary uppercase tracking-wider flex items-center justify-between">
+            <div className="px-3 py-2 bg-page-bg border-b border-border-default text-[13px] font-bold text-text-tertiary uppercase tracking-wider flex items-center justify-between">
               <span>{menuType === '@' ? '插入变量' : '快捷指令'}</span>
-              <span className="text-[10px] text-text-tertiary bg-hover-bg px-1.5 py-0.5 rounded">Enter 确认</span>
+              <span className="text-[13px] text-text-tertiary bg-hover-bg px-1.5 py-0.5 rounded">Enter 确认</span>
             </div>
             <div className="p-1 max-h-[200px] overflow-y-auto">
               {menuItems[menuType].map((item, idx) => (

@@ -52,7 +52,7 @@ export const KOCQuestionnaireModal: React.FC<KOCQuestionnaireModalProps> = ({ no
             </div>
             <div>
               <h3 className="font-bold text-[16px] text-text-main">KOC 体验官问卷提交</h3>
-              <p className="text-[12px] text-text-tertiary">提交问卷即可根据【笔记包规则】即时生成专属笔记与拍摄任务</p>
+              <p className="text-[13px] text-text-tertiary">提交问卷即可根据【笔记包规则】即时生成专属笔记与拍摄任务</p>
             </div>
           </div>
           <button onClick={onClose} className="text-text-tertiary hover:text-text-secondary p-1 rounded-lg hover:bg-selected-bg transition-colors">

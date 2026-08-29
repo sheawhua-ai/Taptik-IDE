@@ -37,7 +37,7 @@ export default function ReverseLab() {
           <p className="text-sm text-text-tertiary mt-1">发布前自动检查广告法违禁词、平台敏感词，提供多维度质量评估。</p>
         </div>
         <div className="flex gap-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-[12px] text-emerald-700 font-bold">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-[13px] text-emerald-700 font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 模型库已更新
           </span>
         </div>
@@ -51,7 +51,7 @@ export default function ReverseLab() {
               <FileText size={18} className="text-text-tertiary" />
               待检笔记内容
             </h3>
-            <button className="text-[12px] text-text-tertiary hover:text-text-main" onClick={() => setContent('')}>清空</button>
+            <button className="text-[13px] text-text-tertiary hover:text-text-main" onClick={() => setContent('')}>清空</button>
           </div>
           
           <textarea 
@@ -101,7 +101,7 @@ export default function ReverseLab() {
                 <div className="flex items-center gap-6 p-6 bg-rose-50 border border-danger-light rounded-xl shadow-[0_4px_20px_-4px_rgba(225,29,72,0.1)]">
                   <div className="shrink-0 text-center">
                     <div className="text-[48px] font-black text-danger leading-none drop-shadow-sm">42</div>
-                    <div className="text-[12px] font-bold text-brand-logo mt-1">综合健康度</div>
+                    <div className="text-[13px] font-bold text-brand-logo mt-1">综合健康度</div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
@@ -121,7 +121,7 @@ export default function ReverseLab() {
                 <div className="flex items-center gap-6 p-6 bg-emerald-50 border border-emerald-100 rounded-xl shadow-[0_4px_20px_-4px_rgba(16,185,129,0.1)]">
                   <div className="shrink-0 text-center">
                     <div className="text-[48px] font-black text-emerald-600 leading-none drop-shadow-sm">92</div>
-                    <div className="text-[12px] font-bold text-emerald-500 mt-1">综合健康度</div>
+                    <div className="text-[13px] font-bold text-emerald-500 mt-1">综合健康度</div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
@@ -160,21 +160,21 @@ export default function ReverseLab() {
                     
                     {content.includes("绝绝子") ? (
                       <>
-                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-danger bg-surface-1 px-1">合规性(极低)</span>
-                        <span className="absolute top-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">吸引力(高)</span>
-                        <span className="absolute bottom-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">可读性(良)</span>
-                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">封面匹配(优)</span>
-                        <span className="absolute bottom-1/4 -left-12 text-[10px] font-bold text-danger bg-surface-1 px-1">爆款相似度(低)</span>
-                        <span className="absolute top-1/4 -left-10 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">人设契合(中)</span>
+                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[13px] font-bold text-danger bg-surface-1 px-1">合规性(极低)</span>
+                        <span className="absolute top-1/4 -right-10 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">吸引力(高)</span>
+                        <span className="absolute bottom-1/4 -right-10 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">可读性(良)</span>
+                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">封面匹配(优)</span>
+                        <span className="absolute bottom-1/4 -left-12 text-[13px] font-bold text-danger bg-surface-1 px-1">爆款相似度(低)</span>
+                        <span className="absolute top-1/4 -left-10 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">人设契合(中)</span>
                       </>
                     ) : (
                       <>
-                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">合规性(极高)</span>
-                        <span className="absolute top-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">吸引力(高)</span>
-                        <span className="absolute bottom-1/4 -right-10 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">可读性(优)</span>
-                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">封面匹配(优)</span>
-                        <span className="absolute bottom-1/4 -left-12 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">爆款相似度(高)</span>
-                        <span className="absolute top-1/4 -left-10 text-[10px] font-bold text-emerald-600 bg-surface-1 px-1">人设契合(高)</span>
+                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">合规性(极高)</span>
+                        <span className="absolute top-1/4 -right-10 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">吸引力(高)</span>
+                        <span className="absolute bottom-1/4 -right-10 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">可读性(优)</span>
+                        <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">封面匹配(优)</span>
+                        <span className="absolute bottom-1/4 -left-12 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">爆款相似度(高)</span>
+                        <span className="absolute top-1/4 -left-10 text-[13px] font-bold text-emerald-600 bg-surface-1 px-1">人设契合(高)</span>
                       </>
                     )}
                   </div>
@@ -187,22 +187,22 @@ export default function ReverseLab() {
                       <div className="p-3 bg-surface-1 shadow-sm rounded-xl border border-danger-light flex items-start gap-3">
                         <AlertTriangle size={16} className="text-brand-logo mt-0.5 shrink-0" />
                         <div>
-                          <span className="text-[12px] font-bold text-text-main block mb-1">广告法绝对化用语</span>
-                          <p className="text-[11px] text-text-tertiary leading-relaxed">发现「全网第一」、「绝对」等词汇，违反《广告法》第9条。强烈建议修改或使用 智能 一键合规。</p>
+                          <span className="text-[13px] font-bold text-text-main block mb-1">广告法绝对化用语</span>
+                          <p className="text-[13px] text-text-tertiary leading-relaxed">发现「全网第一」、「绝对」等词汇，违反《广告法》第9条。强烈建议修改或使用 智能 一键合规。</p>
                         </div>
                       </div>
                       <div className="p-3 bg-surface-1 shadow-sm rounded-xl border border-danger-light flex items-start gap-3">
                         <AlertTriangle size={16} className="text-brand-logo mt-0.5 shrink-0" />
                         <div>
-                          <span className="text-[12px] font-bold text-text-main block mb-1">特殊人群承诺风险</span>
-                          <p className="text-[11px] text-text-tertiary leading-relaxed">发现「孕妇都能放心闭眼入」。根据平台规范，非特殊用途化妆品不得对孕妇群体做绝对安全承诺。</p>
+                          <span className="text-[13px] font-bold text-text-main block mb-1">特殊人群承诺风险</span>
+                          <p className="text-[13px] text-text-tertiary leading-relaxed">发现「孕妇都能放心闭眼入」。根据平台规范，非特殊用途化妆品不得对孕妇群体做绝对安全承诺。</p>
                         </div>
                       </div>
                       <div className="p-3 bg-surface-1 shadow-sm rounded-xl border border-amber-100 flex items-start gap-3">
                         <AlertTriangle size={16} className="text-amber-500 mt-0.5 shrink-0" />
                         <div>
-                          <span className="text-[12px] font-bold text-text-main block mb-1">营销水军识别预警</span>
-                          <p className="text-[11px] text-text-tertiary leading-relaxed">「家人们谁懂啊」、「绝绝子」过度使用，易被小红书风控系统判定为营销水军，降低初始流量池。</p>
+                          <span className="text-[13px] font-bold text-text-main block mb-1">营销水军识别预警</span>
+                          <p className="text-[13px] text-text-tertiary leading-relaxed">「家人们谁懂啊」、「绝绝子」过度使用，易被小红书风控系统判定为营销水军，降低初始流量池。</p>
                         </div>
                       </div>
                     </>
@@ -212,7 +212,7 @@ export default function ReverseLab() {
                         <CheckCircle2 size={32} className="text-emerald-500 mb-2" />
                         <div>
                           <span className="text-[14px] font-bold text-text-main block mb-1">未发现违规项</span>
-                          <p className="text-[12px] text-text-tertiary leading-relaxed">该文案已通过 30,000+ 平台敏感词库及最新广告法筛查。客观真实，口吻自然。</p>
+                          <p className="text-[13px] text-text-tertiary leading-relaxed">该文案已通过 30,000+ 平台敏感词库及最新广告法筛查。客观真实，口吻自然。</p>
                         </div>
                       </div>
                     </>

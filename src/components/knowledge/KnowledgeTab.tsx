@@ -62,7 +62,7 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
             </button>
             {/* Simple Dropdown for Category filtering for demo */}
             <div className="absolute right-0 mt-2 w-48 bg-surface-1 border border-border-default rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 p-2">
-              <div className="text-xs font-semibold text-text-tertiary px-2 mb-2 uppercase tracking-wider">业务分类</div>
+              <div className="text-[13px] font-semibold text-text-tertiary px-2 mb-2 uppercase tracking-wider">业务分类</div>
               <button 
                 className={`w-full text-left px-2 py-1.5 text-sm rounded-md ${!selectedCategory ? 'bg-hover-bg text-text-main' : 'hover:bg-page-bg'}`}
                 onClick={() => setSelectedCategory(null)}
@@ -86,14 +86,14 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
       {selectedCategory && (
         <div className="flex items-center text-sm text-text-main bg-hover-bg px-4 py-2 rounded-lg">
           <span className="font-medium mr-2">正在查看：</span> {selectedCategory}
-          <button onClick={() => setSelectedCategory(null)} className="ml-auto text-text-tertiary hover:text-text-main text-xs">清除筛选</button>
+          <button onClick={() => setSelectedCategory(null)} className="ml-auto text-text-tertiary hover:text-text-main text-[13px]">清除筛选</button>
         </div>
       )}
 
       {/* List */}
       <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-page-bg/80 text-xs text-text-tertiary border-b border-border-default uppercase tracking-wider">
+          <thead className="bg-page-bg/80 text-[13px] text-text-tertiary border-b border-border-default uppercase tracking-wider">
             <tr>
               <th className="px-5 py-3 font-medium w-2/5">知识摘要</th>
               <th className="px-5 py-3 font-medium">类型</th>
@@ -111,10 +111,10 @@ export function KnowledgeTab({ knowledgeList, onOpenKnowledge }: KnowledgeTabPro
               >
                 <td className="px-5 py-3.5">
                   <div className="font-medium text-text-main group-hover:text-text-main transition-colors line-clamp-1">{item.summary}</div>
-                  {item.reliability && <div className="text-xs text-text-tertiary mt-0.5">{item.reliability}</div>}
+                  {item.reliability && <div className="text-[13px] text-text-tertiary mt-0.5">{item.reliability}</div>}
                 </td>
                 <td className="px-5 py-3.5">
-                  <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
+                  <span className={`px-2.5 py-1 rounded-md text-[13px] font-medium ${
                     item.type === '商家事实' ? 'bg-hover-bg text-text-main' :
                     item.type === '规则与禁区' ? 'bg-red-50 text-red-700' :
                     item.type === '经验建议' ? 'bg-indigo-50 text-indigo-700' :

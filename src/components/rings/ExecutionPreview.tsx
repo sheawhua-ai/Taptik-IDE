@@ -143,7 +143,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
       >
         {/* 1. 执行摘要卡 */}
         <div className="bg-surface-1 p-8 border-b border-border-default relative">
-          <div className="absolute top-8 right-8 flex items-center gap-1.5 px-3 py-1 bg-hover-bg text-text-main rounded-full text-[12px] font-medium border border-border-default">
+          <div className="absolute top-8 right-8 flex items-center gap-1.5 px-3 py-1 bg-hover-bg text-text-main rounded-full text-[13px] font-medium border border-border-default">
             <Sparkles size={14} /> 智能 已完成方案规划
           </div>
           <h3 className="text-[24px] font-bold text-text-main tracking-tight mb-2">
@@ -178,12 +178,12 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {/* 卡 1：项目计划 */}
               <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm">
-                <div className="text-[12px] font-semibold text-text-tertiary tracking-wider uppercase mb-3">
+                <div className="text-[13px] font-semibold text-text-tertiary tracking-wider uppercase mb-3">
                   项目计划
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <div className="text-[12px] text-text-tertiary mb-1">
+                    <div className="text-[13px] text-text-tertiary mb-1">
                       项目名称
                     </div>
                     <div className="text-[14px] font-medium text-text-main">
@@ -191,7 +191,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                     </div>
                   </div>
                   <div>
-                    <div className="text-[12px] text-text-tertiary mb-1">
+                    <div className="text-[13px] text-text-tertiary mb-1">
                       目标
                     </div>
                     <div className="text-[14px] font-medium text-text-main">
@@ -199,7 +199,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                     </div>
                   </div>
                   <div>
-                    <div className="text-[12px] text-text-tertiary mb-1">
+                    <div className="text-[13px] text-text-tertiary mb-1">
                       本轮内容规模
                     </div>
                     <div className="text-[18px] font-bold text-text-main">
@@ -210,7 +210,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 pt-3 border-t border-dashed border-border-default text-[11px] text-text-tertiary leading-relaxed">
+                <div className="mt-4 pt-3 border-t border-dashed border-border-default text-[13px] text-text-tertiary leading-relaxed">
                   这是基于当前商家阶段目标、低粉爆款信号和账号承接能力计算出的建议规模。
                 </div>
               </div>
@@ -218,12 +218,12 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
               {/* 卡 2：内容分组 */}
               <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm md:col-span-2 relative group">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-[12px] font-semibold text-text-tertiary tracking-wider uppercase">
+                  <div className="text-[13px] font-semibold text-text-tertiary tracking-wider uppercase">
                     内容分组
                   </div>
                   <button
                     onClick={() => handleCollaborate("group")}
-                    className="flex items-center gap-1 text-[12px] text-brand-logo hover:bg-brand-light px-2 py-1 rounded transition-colors"
+                    className="flex items-center gap-1 text-[13px] text-brand-logo hover:bg-brand-light px-2 py-1 rounded transition-colors"
                   >
                     调整
                   </button>
@@ -235,7 +235,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       素人避坑组{" "}
                       <span className="ml-1 text-brand-logo">8 篇</span>
                     </div>
-                    <div className="text-[11px] text-text-tertiary leading-relaxed">
+                    <div className="text-[13px] text-text-tertiary leading-relaxed">
                       用于自然流测试，强调避坑经验、真实场景、评论钩子
                     </div>
                   </div>
@@ -244,13 +244,13 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       专业科普组{" "}
                       <span className="ml-1 text-brand-logo">4 篇</span>
                     </div>
-                    <div className="text-[11px] text-text-tertiary leading-relaxed">
+                    <div className="text-[13px] text-text-tertiary leading-relaxed">
                       用于专业背书，承接信任建立和品牌表达
                     </div>
                   </div>
                 </div>
 
-                <div className="text-[12px] text-text-tertiary leading-relaxed bg-[#f8f9fa] p-3 rounded-xl">
+                <div className="text-[13px] text-text-tertiary leading-relaxed bg-[#f8f9fa] p-3 rounded-xl">
                   <strong className="text-text-secondary">为什么这样分：</strong>
                   当前自然流机会强，素人口吻更容易起量；专业号内容用于增强可信度，避免纯素人内容缺少品牌背书。
                 </div>
@@ -260,7 +260,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
             <div className="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* 自有账号定向承接 */}
               <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm">
-                <div className="text-[12px] font-semibold text-text-tertiary tracking-wider uppercase mb-4">
+                <div className="text-[13px] font-semibold text-text-tertiary tracking-wider uppercase mb-4">
                   自有账号定向承接
                 </div>
                 <div className="space-y-3">
@@ -271,7 +271,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                           A01 测评号
                         </span>
                       </div>
-                      <div className="text-[11px] text-text-tertiary">
+                      <div className="text-[13px] text-text-tertiary">
                         建议承接：测评 / 对比 / 使用体验
                       </div>
                     </div>
@@ -279,7 +279,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       <div className="text-[13px] font-bold text-brand-logo mb-1">
                         预计 3 篇
                       </div>
-                      <button className="text-[11px] text-text-tertiary hover:text-brand-logo transition-colors opacity-0 group-hover:opacity-100">
+                      <button className="text-[13px] text-text-tertiary hover:text-brand-logo transition-colors opacity-0 group-hover:opacity-100">
                         调整分配
                       </button>
                     </div>
@@ -292,7 +292,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                           A02 避坑号 (KOS)
                         </span>
                       </div>
-                      <div className="text-[11px] text-text-tertiary">
+                      <div className="text-[13px] text-text-tertiary">
                         建议承接：避坑 / 经验 / 过渡期内容
                       </div>
                     </div>
@@ -300,7 +300,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       <div className="text-[13px] font-bold text-brand-logo mb-1">
                         预计 3 篇
                       </div>
-                      <button className="text-[11px] text-text-tertiary hover:text-brand-logo transition-colors opacity-0 group-hover:opacity-100">
+                      <button className="text-[13px] text-text-tertiary hover:text-brand-logo transition-colors opacity-0 group-hover:opacity-100">
                         调整分配
                       </button>
                     </div>
@@ -313,7 +313,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                           A05 专业科普号
                         </span>
                       </div>
-                      <div className="text-[11px] text-text-tertiary">
+                      <div className="text-[13px] text-text-tertiary">
                         建议承接：科普 / 成分 / 信任背书
                       </div>
                     </div>
@@ -321,7 +321,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                       <div className="text-[13px] font-bold text-brand-logo mb-1">
                         预计 2 篇
                       </div>
-                      <button className="text-[11px] text-text-tertiary hover:text-brand-logo transition-colors opacity-0 group-hover:opacity-100">
+                      <button className="text-[13px] text-text-tertiary hover:text-brand-logo transition-colors opacity-0 group-hover:opacity-100">
                         调整分配
                       </button>
                     </div>
@@ -331,7 +331,7 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
 
               {/* 外部随机领取池 */}
               <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm flex flex-col">
-                <div className="text-[12px] font-semibold text-text-tertiary tracking-wider uppercase mb-4">
+                <div className="text-[13px] font-semibold text-text-tertiary tracking-wider uppercase mb-4">
                   外部随机领取池
                 </div>
                 <div className="flex-1 flex flex-col items-center justify-center bg-page-bg rounded-xl border border-dashed border-border-default p-6 text-center">
@@ -362,18 +362,18 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   <div className="text-[14px] font-bold text-text-main mb-1">
                     主方向：{confirmDirection}
                   </div>
-                  <div className="text-[12px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     <span className="text-text-secondary font-medium">理由：</span>
                     低粉爆款信号增强，评论需求聚集，适合当前商家自然流切入
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[12px] font-medium rounded-lg">
+                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[13px] font-medium rounded-lg">
                     当前默认
                   </div>
                   <button
                     onClick={() => handleCollaborate("direction")}
-                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>
@@ -386,18 +386,18 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   <div className="text-[14px] font-bold text-text-main mb-1">
                     内容分组：{confirmGroup}
                   </div>
-                  <div className="text-[12px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     <span className="text-text-secondary font-medium">理由：</span>
                     先拿自然流测试，再用专业号补充信任背书
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[12px] font-medium rounded-lg">
+                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[13px] font-medium rounded-lg">
                     当前默认
                   </div>
                   <button
                     onClick={() => handleCollaborate("group")}
-                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>
@@ -410,18 +410,18 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   <div className="text-[14px] font-bold text-text-main mb-1">
                     分发方式：{confirmDist}
                   </div>
-                  <div className="text-[12px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     <span className="text-text-secondary font-medium">理由：</span>
                     自有号可精确控制内容匹配，外部号适合后续随机扩散
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[12px] font-medium rounded-lg">
+                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[13px] font-medium rounded-lg">
                     当前默认
                   </div>
                   <button
                     onClick={() => handleCollaborate("dist")}
-                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>
@@ -434,18 +434,18 @@ export function ExecutionPreview({ onStart, onBack, defaultDirection = "幼犬�
                   <div className="text-[14px] font-bold text-text-main mb-1">
                     协同方式：{confirmSync}
                   </div>
-                  <div className="text-[12px] text-text-tertiary">
+                  <div className="text-[13px] text-text-tertiary">
                     <span className="text-text-secondary font-medium">理由：</span>
                     确保内容先审后发，团队成员可以在飞书同步跟进
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[12px] font-medium rounded-lg">
+                  <div className="px-4 py-1.5 bg-hover-bg text-text-tertiary text-[13px] font-medium rounded-lg">
                     当前默认
                   </div>
                   <button
                     onClick={() => handleCollaborate("sync")}
-                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[12px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-4 py-1.5 bg-surface-1 border border-border-default text-text-secondary hover:bg-page-bg hover:text-brand-logo text-[13px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     调整
                   </button>

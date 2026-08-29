@@ -399,11 +399,11 @@ export function ProjectQuestionnaireDrawer({
               <div className="flex items-center gap-2">
                 <Settings2 size={18} className="text-text-main" />
                 <h3 className="text-[16px] font-semibold text-text-main">内容包体验反馈配置</h3>
-                <span className="text-[11.5px] font-normal px-2 py-0.5 rounded bg-surface-subtle border border-border-default text-text-secondary">
+                <span className="text-[13px] font-normal px-2 py-0.5 rounded bg-surface-subtle border border-border-default text-text-secondary">
                   共 {questions.length} 道题目
                 </span>
               </div>
-              <p className="text-[12px] text-text-tertiary mt-1">
+              <p className="text-[13px] text-text-tertiary mt-1">
                 领取后约 10 秒完成；反馈与当前内容包及方案版本绑定，只影响该消费者生成的笔记。
               </p>
             </div>
@@ -424,7 +424,7 @@ export function ProjectQuestionnaireDrawer({
                 </div>
                 <div>
                   <span className="text-[13px] font-semibold text-text-main">AI 生成体验反馈项</span>
-                  <span className="text-[11.5px] text-text-tertiary ml-2">建议 3 题，全部使用一键选择</span>
+                  <span className="text-[13px] text-text-tertiary ml-2">建议 3 题，全部使用一键选择</span>
                 </div>
               </div>
               <button
@@ -435,7 +435,7 @@ export function ProjectQuestionnaireDrawer({
                     setAiRequirement(PROMPT_PRESETS[0].prompt);
                   }
                 }}
-                className="px-3 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg transition-colors flex items-center gap-1.5"
               >
                 <Wand2 size={13} className="text-text-secondary" />
                 <span>{showAiPanel ? "收起生成器" : "展开 AI 生成"}</span>
@@ -452,13 +452,13 @@ export function ProjectQuestionnaireDrawer({
               >
                 {/* Prompt Presets */}
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[11px] text-text-tertiary">常用场景：</span>
+                  <span className="text-[13px] text-text-tertiary">常用场景：</span>
                   {PROMPT_PRESETS.map((preset, pIdx) => (
                     <button
                       key={pIdx}
                       type="button"
                       onClick={() => setAiRequirement(preset.prompt)}
-                      className="px-2.5 py-1 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-secondary hover:text-text-main rounded-md text-[11.5px] font-normal transition-colors"
+                      className="px-2.5 py-1 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-secondary hover:text-text-main rounded-md text-[13px] font-normal transition-colors"
                     >
                       {preset.label}
                     </button>
@@ -472,17 +472,17 @@ export function ProjectQuestionnaireDrawer({
                     value={aiRequirement}
                     onChange={(e) => setAiRequirement(e.target.value)}
                     placeholder="请输入体验反馈需求，例如：针对幼犬换粮内容包，收集犬种月龄、换粮前困扰和实际变化..."
-                    className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-lg text-[12.5px] text-text-main placeholder:text-text-tertiary outline-none focus:border-border-strong font-normal"
+                    className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-lg text-[13px] text-text-main placeholder:text-text-tertiary outline-none focus:border-border-strong font-normal"
                   />
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-text-tertiary">
+                    <span className="text-[13px] text-text-tertiary">
                       AI 将分析行业痛点，提炼 4-5 道高质量客观选择题
                     </span>
                     <button
                       type="button"
                       disabled={isAiGenerating || !aiRequirement.trim()}
                       onClick={handleAiParse}
-                      className="px-4 py-1.5 bg-btn-main hover:bg-btn-main-hover disabled:opacity-50 text-white text-[12px] font-medium rounded-lg transition-colors flex items-center gap-1.5"
+                      className="px-4 py-1.5 bg-btn-main hover:bg-btn-main-hover disabled:opacity-50 text-white text-[13px] font-medium rounded-lg transition-colors flex items-center gap-1.5"
                     >
                       {isAiGenerating ? (
                         <>
@@ -505,7 +505,7 @@ export function ProjectQuestionnaireDrawer({
                     <div className="flex items-center justify-between border-b border-border-default pb-2">
                       <div className="flex items-center gap-2">
                         <Check size={14} className="text-emerald-600" />
-                        <span className="text-[12.5px] font-semibold text-text-main">
+                        <span className="text-[13px] font-semibold text-text-main">
                           解析完成！已生成 {aiGeneratedQuestions.length} 道题目
                         </span>
                       </div>
@@ -513,21 +513,21 @@ export function ProjectQuestionnaireDrawer({
                         <button
                           type="button"
                           onClick={handleApplyAiReplace}
-                          className="px-3 py-1 bg-btn-main hover:bg-btn-main-hover text-white text-[11.5px] font-medium rounded-md transition-colors"
+                          className="px-3 py-1 bg-btn-main hover:bg-btn-main-hover text-white text-[13px] font-medium rounded-md transition-colors"
                         >
                           替换当前反馈项
                         </button>
                         <button
                           type="button"
                           onClick={handleApplyAiAppend}
-                          className="px-3 py-1 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[11.5px] font-medium rounded-md transition-colors"
+                          className="px-3 py-1 bg-surface-subtle hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-md transition-colors"
                         >
                           追加到末尾
                         </button>
                         <button
                           type="button"
                           onClick={() => setAiGeneratedQuestions(null)}
-                          className="text-[11.5px] text-text-tertiary hover:text-text-main px-1.5"
+                          className="text-[13px] text-text-tertiary hover:text-text-main px-1.5"
                         >
                           放弃
                         </button>
@@ -536,15 +536,15 @@ export function ProjectQuestionnaireDrawer({
 
                     <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
                       {aiGeneratedQuestions.map((q, idx) => (
-                        <div key={idx} className="p-2.5 bg-surface-subtle rounded-lg border border-border-default text-[12px] space-y-1">
+                        <div key={idx} className="p-2.5 bg-surface-subtle rounded-lg border border-border-default text-[13px] space-y-1">
                           <div className="flex items-center justify-between">
                             <span className="font-medium text-text-main">{q.title}</span>
-                            <span className="text-[10.5px] text-text-tertiary">{q.type}题</span>
+                            <span className="text-[13px] text-text-tertiary">{q.type}题</span>
                           </div>
                           {q.options && (
                             <div className="flex items-center gap-1.5 flex-wrap">
                               {q.options.map((opt, oIdx) => (
-                                <span key={oIdx} className="px-2 py-0.5 bg-surface-1 border border-border-default rounded text-[11px] text-text-secondary">
+                                <span key={oIdx} className="px-2 py-0.5 bg-surface-1 border border-border-default rounded text-[13px] text-text-secondary">
                                   {opt}
                                 </span>
                               ))}
@@ -562,13 +562,13 @@ export function ProjectQuestionnaireDrawer({
           {/* Questions Editor Body */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-canvas">
             <div className="flex items-center justify-between pb-1">
-              <div className="text-[12px] text-text-tertiary">
+              <div className="text-[13px] text-text-tertiary">
                 体验反馈采用单选与多选格式，控制在 4 项以内，消费者约 10 秒即可完成。
               </div>
               <button
                 type="button"
                 onClick={handleAddQuestion}
-                className="px-3 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[12px] font-medium rounded-lg flex items-center gap-1 transition-colors shrink-0"
+                className="px-3 py-1.5 bg-surface-1 hover:bg-hover-bg border border-border-default text-text-main text-[13px] font-medium rounded-lg flex items-center gap-1 transition-colors shrink-0"
               >
                 <Plus size={14} />
                 <span>添加题目</span>
@@ -584,13 +584,13 @@ export function ProjectQuestionnaireDrawer({
                   {/* Top Bar of question */}
                   <div className="flex items-center justify-between gap-2 border-b border-border-default pb-2.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11.5px] font-medium px-2 py-0.5 bg-surface-subtle text-text-secondary rounded border border-border-default">
+                      <span className="text-[13px] font-medium px-2 py-0.5 bg-surface-subtle text-text-secondary rounded border border-border-default">
                         第 {idx + 1} 题
                       </span>
                       <select 
                         value={q.type}
                         onChange={(e) => handleUpdateField(q.id, 'type', e.target.value)}
-                        className="text-[12px] font-medium px-2.5 py-1 border border-border-default rounded-md bg-surface-1 text-text-main outline-none cursor-pointer"
+                        className="text-[13px] font-medium px-2.5 py-1 border border-border-default rounded-md bg-surface-1 text-text-main outline-none cursor-pointer"
                       >
                         <option value="单选">单选题</option>
                         <option value="多选">多选题</option>
@@ -626,12 +626,12 @@ export function ProjectQuestionnaireDrawer({
 
                   {/* Title Input */}
                   <div>
-                    <label className="block text-[11.5px] font-medium text-text-secondary mb-1">
+                    <label className="block text-[13px] font-medium text-text-secondary mb-1">
                       题干描述与引导语
                     </label>
                     <input 
                       type="text" 
-                      className="w-full px-3 py-2 text-[12.5px] font-medium text-text-main border border-border-default rounded-lg outline-none focus:border-border-strong bg-surface-1"
+                      className="w-full px-3 py-2 text-[13px] font-medium text-text-main border border-border-default rounded-lg outline-none focus:border-border-strong bg-surface-1"
                       value={q.title}
                       onChange={(e) => handleUpdateField(q.id, 'title', e.target.value)}
                       placeholder="输入题目描述，如：您的宠物目前处于什么阶段？"
@@ -641,7 +641,7 @@ export function ProjectQuestionnaireDrawer({
                   {/* Options for single / multi choice */}
                   {(q.type === '单选' || q.type === '多选') && (
                     <div className="space-y-2 pt-1">
-                      <label className="block text-[11.5px] font-medium text-text-secondary">
+                      <label className="block text-[13px] font-medium text-text-secondary">
                         选项列表
                       </label>
                       <div className="space-y-1.5">
@@ -650,7 +650,7 @@ export function ProjectQuestionnaireDrawer({
                             <div className={`w-3.5 h-3.5 border border-border-strong shrink-0 ${q.type === '单选' ? 'rounded-full' : 'rounded-xs'}`} />
                             <input 
                               type="text"
-                              className="flex-1 px-2.5 py-1 text-[12px] text-text-main bg-surface-subtle border border-border-default rounded-md outline-none focus:border-border-strong focus:bg-surface-1"
+                              className="flex-1 px-2.5 py-1 text-[13px] text-text-main bg-surface-subtle border border-border-default rounded-md outline-none focus:border-border-strong focus:bg-surface-1"
                               value={opt}
                               onChange={(e) => handleUpdateOption(q.id, oIdx, e.target.value)}
                               placeholder={`选项 ${oIdx + 1}`}
@@ -668,7 +668,7 @@ export function ProjectQuestionnaireDrawer({
                       <button
                         type="button"
                         onClick={() => handleAddOption(q.id)}
-                        className="text-[12px] text-text-secondary hover:text-text-main font-medium flex items-center gap-1 mt-1 pt-1"
+                        className="text-[13px] text-text-secondary hover:text-text-main font-medium flex items-center gap-1 mt-1 pt-1"
                       >
                         <Plus size={13} /> 添加选项
                       </button>
@@ -676,7 +676,7 @@ export function ProjectQuestionnaireDrawer({
                   )}
 
                   {/* Footer Controls of Question */}
-                  <div className="flex items-center justify-between pt-2 border-t border-border-default text-[12px]">
+                  <div className="flex items-center justify-between pt-2 border-t border-border-default text-[13px]">
                     <label className="flex items-center gap-1.5 text-text-secondary cursor-pointer font-normal">
                       <input 
                         type="checkbox" 
@@ -686,7 +686,7 @@ export function ProjectQuestionnaireDrawer({
                       />
                       <span>必填题目</span>
                     </label>
-                    <span className="text-[11px] text-text-tertiary">
+                    <span className="text-[13px] text-text-tertiary">
                       {q.type === '多选' ? '多选题' : '单选题'}
                     </span>
                   </div>
@@ -696,7 +696,7 @@ export function ProjectQuestionnaireDrawer({
 
             <button 
               onClick={handleAddQuestion}
-              className="w-full py-3 bg-surface-1 border border-dashed border-border-default rounded-xl text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg hover:text-text-main transition-colors flex items-center justify-center gap-1.5"
+              className="w-full py-3 bg-surface-1 border border-dashed border-border-default rounded-xl text-[13px] font-medium text-text-secondary hover:bg-hover-bg hover:text-text-main transition-colors flex items-center justify-center gap-1.5"
             >
               <Plus size={15} /> 增加一道问题
             </button>
@@ -704,19 +704,19 @@ export function ProjectQuestionnaireDrawer({
 
           {/* Footer */}
           <div className="p-4 border-t border-border-default bg-surface-1 flex items-center justify-between shrink-0">
-            <span className="text-[12px] text-text-tertiary">
+            <span className="text-[13px] text-text-tertiary">
               共 {questions.length} 道问题 · 保存后实时应用于项目落地页与笔记事实提取
             </span>
             <div className="flex items-center gap-2">
               <button 
                 onClick={onClose}
-                className="px-4 py-2 border border-border-default text-text-secondary text-[12.5px] font-medium rounded-lg hover:bg-hover-bg transition-colors"
+                className="px-4 py-2 border border-border-default text-text-secondary text-[13px] font-medium rounded-lg hover:bg-hover-bg transition-colors"
               >
                 取消
               </button>
               <button 
                 onClick={handleSave}
-                className="px-5 py-2 bg-btn-main text-white text-[12.5px] font-medium rounded-lg hover:bg-btn-main-hover transition-colors flex items-center gap-1.5"
+                className="px-5 py-2 bg-btn-main text-white text-[13px] font-medium rounded-lg hover:bg-btn-main-hover transition-colors flex items-center gap-1.5"
               >
                 {savedSuccess ? (
                   <>

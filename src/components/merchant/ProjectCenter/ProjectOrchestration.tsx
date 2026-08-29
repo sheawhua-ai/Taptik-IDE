@@ -41,30 +41,30 @@ export function ProjectOrchestration({ project }: { project: any }) {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-[16px] font-bold text-text-main mb-1">{b.name}</h3>
-                      <div className="text-[12px] text-text-tertiary flex items-center gap-3">
+                      <div className="text-[13px] text-text-tertiary flex items-center gap-3">
                          <span className="flex items-center gap-1"><Layers size={12}/> {b.pack}</span>
                          <span className="flex items-center gap-1"><Calendar size={12}/> {b.dateRange}</span>
                       </div>
                     </div>
-                    <div className="text-[12px] bg-hover-bg px-2 py-1 rounded text-text-secondary font-medium">
+                    <div className="text-[13px] bg-hover-bg px-2 py-1 rounded text-text-secondary font-medium">
                       下步: {b.nextCheck}
                     </div>
                   </div>
                   <div className="grid grid-cols-5 gap-4">
                      <div>
-                       <div className="text-[11px] text-text-tertiary mb-1">目标篇数</div>
+                       <div className="text-[13px] text-text-tertiary mb-1">目标篇数</div>
                        <div className="text-[15px] font-bold">{b.targetNotes}</div>
                      </div>
                      <div>
-                       <div className="text-[11px] text-text-tertiary mb-1">参与人数</div>
+                       <div className="text-[13px] text-text-tertiary mb-1">参与人数</div>
                        <div className="text-[15px] font-bold">{b.kocCount} KOC / {b.kosCount} 品牌号</div>
                      </div>
                      <div>
-                       <div className="text-[11px] text-text-tertiary mb-1">已生成/已发布</div>
+                       <div className="text-[13px] text-text-tertiary mb-1">已生成/已发布</div>
                        <div className="text-[15px] font-bold">{b.generated} / {b.published}</div>
                      </div>
                      <div>
-                       <div className="text-[11px] text-text-tertiary mb-1">异常</div>
+                       <div className="text-[13px] text-text-tertiary mb-1">异常</div>
                        <div className={`text-[15px] font-bold ${b.exceptions > 0 ? "text-danger" : ""}`}>{b.exceptions}</div>
                      </div>
                      <div className="flex justify-end items-center">
@@ -80,17 +80,17 @@ export function ProjectOrchestration({ project }: { project: any }) {
                 <div key={stage} className="bg-surface-1 rounded-xl p-6 border border-border-default ">
                    <div className="flex justify-between items-center mb-4">
                      <h3 className="text-[15px] font-bold text-text-main">{i+1}. {stage}</h3>
-                     {i === 2 && <span className="text-[12px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">进行中</span>}
+                     {i === 2 && <span className="text-[13px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">进行中</span>}
                    </div>
                    <div className="text-[13px] text-text-tertiary mb-4">目标：完成KOC素材收集与审核</div>
                    <div className="flex justify-between items-center bg-surface-2 p-4 rounded-xl border border-border-default">
                      <div className="flex gap-8">
                        <div>
-                         <div className="text-[11px] text-text-tertiary mb-1">当前进度</div>
+                         <div className="text-[13px] text-text-tertiary mb-1">当前进度</div>
                          <div className="text-[14px] font-bold">15/20</div>
                        </div>
                        <div>
-                         <div className="text-[11px] text-text-tertiary mb-1">阻断项</div>
+                         <div className="text-[13px] text-text-tertiary mb-1">阻断项</div>
                          <div className="text-[14px] font-bold text-danger">2个素材不合格</div>
                        </div>
                      </div>
@@ -135,7 +135,7 @@ export function ProjectOrchestration({ project }: { project: any }) {
                   
                   <div className="w-full space-y-4">
                      <div className="bg-surface-1 p-4 rounded-xl border border-border-default">
-                       <div className="text-[12px] text-text-tertiary mb-2">当前配置</div>
+                       <div className="text-[13px] text-text-tertiary mb-2">当前配置</div>
                        <div className="flex justify-between items-center mb-2">
                          <span className="text-[13px] font-bold text-text-main">使用内容包</span>
                          <span className="text-[13px] text-brand-logo">幼犬换粮体验包 v1</span>
@@ -193,15 +193,15 @@ function BatchDetail({ batch, onBack, onQrClick }: { batch: any, onBack: () => v
            <div className="space-y-4">
              <div className="grid grid-cols-3 gap-4 mb-4">
                <div className="bg-surface-2 p-3 rounded-lg border border-border-default">
-                 <div className="text-[11px] text-text-tertiary mb-1">每日名额</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">每日名额</div>
                  <div className="text-[18px] font-bold">5</div>
                </div>
                <div className="bg-surface-2 p-3 rounded-lg border border-border-default">
-                 <div className="text-[11px] text-text-tertiary mb-1">已完成</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">已完成</div>
                  <div className="text-[18px] font-bold text-emerald-600">10</div>
                </div>
                <div className="bg-surface-2 p-3 rounded-lg border border-border-default">
-                 <div className="text-[11px] text-text-tertiary mb-1">剩余</div>
+                 <div className="text-[13px] text-text-tertiary mb-1">剩余</div>
                  <div className="text-[18px] font-bold">5</div>
                </div>
              </div>

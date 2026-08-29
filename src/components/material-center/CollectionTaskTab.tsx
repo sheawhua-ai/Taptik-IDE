@@ -39,7 +39,7 @@ export const CollectionTaskTab: React.FC<CollectionTaskTabProps> = ({
       {/* 拍摄任务列表 Header */}
       <div className="flex items-center justify-between px-1">
         <h2 className="text-[16px] font-black text-text-main">拍摄任务总览</h2>
-        <span className="text-[12.5px] font-bold text-text-tertiary">
+        <span className="text-[13px] font-bold text-text-tertiary">
           共 {tasks.length} 个拍摄任务
         </span>
       </div>
@@ -77,7 +77,7 @@ export const CollectionTaskTab: React.FC<CollectionTaskTabProps> = ({
                 </h3>
 
                 {/* 所属项目 · 门店 · 执行人 */}
-                <p className="text-[12.5px] font-medium text-text-tertiary">
+                <p className="text-[13px] font-medium text-text-tertiary">
                   {task.projectName} · {task.store} · {task.executor}
                 </p>
 

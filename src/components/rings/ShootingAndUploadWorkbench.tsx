@@ -90,7 +90,7 @@ export function ShootingAndUploadWorkbench({ onClose }: Props) {
                     <h3 className="text-[16px] font-black text-text-main group-hover:text-text-main transition-colors">
                       {task.taskName}
                     </h3>
-                    <p className="text-[12.5px] font-medium text-text-tertiary">
+                    <p className="text-[13px] font-medium text-text-tertiary">
                       {task.projectName} · {task.store} · {task.executor}
                     </p>
                     <p

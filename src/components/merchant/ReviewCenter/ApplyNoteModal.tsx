@@ -49,7 +49,7 @@ export function ApplyNoteModal({
         {/* Header */}
         <div className="p-5 border-b border-border-default flex items-center justify-between bg-surface-1">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded">
+            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[13px] font-bold rounded">
               应用到后续笔记
             </span>
             <h3 className="text-[15px] font-semibold text-text-main truncate max-w-[300px]">
@@ -65,7 +65,7 @@ export function ApplyNoteModal({
         </div>
 
         {/* Body Content */}
-        <div className="p-5 space-y-4 text-[12.5px] overflow-y-auto max-h-[70vh] custom-scrollbar">
+        <div className="p-5 space-y-4 text-[13px] overflow-y-auto max-h-[70vh] custom-scrollbar">
           {/* 建议依据 */}
           <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-1.5">
             <span className="font-semibold text-text-main block">建议依据</span>
@@ -74,7 +74,7 @@ export function ApplyNoteModal({
 
           {/* 预期收益 */}
           <div className="p-3.5 bg-surface-subtle rounded-xl border border-border-default space-y-1">
-            <span className="font-semibold text-btn-main text-[11.5px] block">预期内容提升与收益</span>
+            <span className="font-semibold text-btn-main text-[13px] block">预期内容提升与收益</span>
             <p className="text-text-main font-medium">{action.expectedGain}</p>
           </div>
 
@@ -87,7 +87,7 @@ export function ApplyNoteModal({
                   key={idx}
                   className="p-2.5 bg-surface-1 rounded-lg border border-border-default flex items-center gap-2.5 text-text-secondary"
                 >
-                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <span className="w-4 h-4 rounded-full bg-btn-main text-white text-[13px] font-bold flex items-center justify-center shrink-0">
                     {idx + 1}
                   </span>
                   <span>{step}</span>
@@ -121,7 +121,7 @@ export function ApplyNoteModal({
                     className="accent-btn-main"
                   />
                 </div>
-                <span className="text-[11.5px] text-text-tertiary">
+                <span className="text-[13px] text-text-tertiary">
                   作为选题规范与生成提示词自动注入后续所有笔记
                 </span>
               </label>
@@ -147,7 +147,7 @@ export function ApplyNoteModal({
                     className="accent-btn-main"
                   />
                 </div>
-                <span className="text-[11.5px] text-text-tertiary">
+                <span className="text-[13px] text-text-tertiary">
                   指定给某篇草稿或待发笔记，进行直接优化
                 </span>
               </label>
@@ -155,13 +155,13 @@ export function ApplyNoteModal({
 
             {targetType === "specific_draft" && (
               <div className="pt-2 space-y-1.5">
-                <span className="text-[11.5px] text-text-tertiary block">
+                <span className="text-[13px] text-text-tertiary block">
                   选择待发笔记（已发布笔记不支持修改）：
                 </span>
                 <select
                   value={selectedDraftId}
                   onChange={(e) => setSelectedDraftId(e.target.value)}
-                  className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-xl text-[12.5px] text-text-main outline-none focus:border-btn-main transition-colors"
+                  className="w-full px-3 py-2 bg-surface-1 border border-border-default rounded-xl text-[13px] text-text-main outline-none focus:border-btn-main transition-colors"
                 >
                   {unreleasedDraftNotes.map((d) => (
                     <option key={d.id} value={d.id}>
@@ -178,13 +178,13 @@ export function ApplyNoteModal({
         <div className="p-4 border-t border-border-default flex items-center justify-end gap-2 bg-surface-subtle">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[12.5px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
+            className="px-4 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg rounded-xl transition-colors border border-border-default bg-surface-1"
           >
             取消
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 text-[12.5px] font-medium rounded-xl transition-colors flex items-center gap-1.5 bg-btn-main text-white hover:bg-btn-main-hover shadow-2xs"
+            className="px-4 py-2 text-[13px] font-medium rounded-xl transition-colors flex items-center gap-1.5 bg-btn-main text-white hover:bg-btn-main-hover shadow-2xs"
           >
             <Check size={13} />
             <span>确认应用建议</span>

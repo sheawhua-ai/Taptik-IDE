@@ -27,7 +27,7 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
  <Activity size={20} className="text-brand-logo" />
  数字员工执行进展 (Execution)
  </h3>
- <p className="text-[11px] text-text-tertiary mt-1 uppercase tracking-widest">当前 {moduleName} 队列中的自动化任务</p>
+ <p className="text-[13px] text-text-tertiary mt-1 uppercase tracking-widest">当前 {moduleName} 队列中的自动化任务</p>
  </div>
  <div className="w-10 h-10 bg-page-bg rounded-xl flex items-center justify-center text-text-tertiary">
  <Workflow size={20} />
@@ -58,12 +58,12 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
  </div>
  <div>
  <div className={`text-[13px] tracking-tight ${task.status === 'running' ? 'text-white' : 'text-text-main'}`}>{task.name}</div>
- <div className={`text-[9px] uppercase tracking-widest flex items-center gap-1.5 mt-1 ${task.status === 'running' ? 'text-text-tertiary' : 'text-text-tertiary'}`}>
+ <div className={`text-[13px] uppercase tracking-widest flex items-center gap-1.5 mt-1 ${task.status === 'running' ? 'text-text-tertiary' : 'text-text-tertiary'}`}>
  <UsersIcon size={10} /> {task.agent}
  </div>
  </div>
  </div>
- <span className={`text-[10px] font-mono ${task.status === 'running' ? 'text-primary-400' : 'text-neutral-300'}`}>{task.time}</span>
+ <span className={`text-[13px] font-mono ${task.status === 'running' ? 'text-primary-400' : 'text-neutral-300'}`}>{task.time}</span>
  </div>
  
  {task.status === 'running' && (
@@ -77,8 +77,8 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
  />
  </div>
  <div className="flex items-center justify-between mt-2">
- <span className="text-[9px] text-primary-400 uppercase">Processing...</span>
- <span className="text-[9px] text-white/40">65%</span>
+ <span className="text-[13px] text-primary-400 uppercase">Processing...</span>
+ <span className="text-[13px] text-white/40">65%</span>
  </div>
  </div>
  )}
@@ -88,13 +88,13 @@ export const DigitalEmployeeProgress: React.FC<DigitalEmployeeProgressProps> = (
 
  <div className="mt-8 pt-8 border-t border-border-default">
  <div className="flex flex-col gap-4">
- <div className="flex items-center justify-between text-[11px] text-text-tertiary tracking-tighter uppercase px-1">
+ <div className="flex items-center justify-between text-[13px] text-text-tertiary tracking-tighter uppercase px-1">
  <span>系统负载</span>
  <span className="text-text-main">Normal</span>
  </div>
  <div className="h-12 bg-btn-main rounded-xl flex items-center justify-center gap-3 cursor-pointer hover:bg-btn-main-hover transition-all shadow-lg active:scale-95 group">
  <Target size={16} className="text-brand-logo group-hover:scale-110 transition-transform" />
- <span className="text-white text-[12px] tracking-widest uppercase">部署新任务到生产线</span>
+ <span className="text-white text-[13px] tracking-widest uppercase">部署新任务到生产线</span>
  </div>
  </div>
  </div>

@@ -38,11 +38,11 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-[15px] font-semibold text-text-main">{agent.name}</h3>
-                <span className="px-1.5 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[10.5px] rounded">
+                <span className="px-1.5 py-0.5 bg-surface-subtle text-text-secondary border border-border-default text-[13px] rounded">
                   {agent.role}
                 </span>
               </div>
-              <p className="text-[11.5px] text-text-tertiary mt-0.5">执行用时: {agent.duration}</p>
+              <p className="text-[13px] text-text-tertiary mt-0.5">执行用时: {agent.duration}</p>
             </div>
           </div>
 
@@ -59,9 +59,9 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
           {/* Status & Summary */}
           <div className="p-4 bg-surface-subtle rounded-xl border border-border-default space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[12px] font-semibold text-text-tertiary">节点执行状态</span>
+              <span className="text-[13px] font-semibold text-text-tertiary">节点执行状态</span>
               <span
-                className={`px-2 py-0.5 text-[11px] font-medium rounded-md border ${
+                className={`px-2 py-0.5 text-[13px] font-medium rounded-md border ${
                   agent.status === "completed"
                     ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                     : agent.status === "running"
@@ -72,12 +72,12 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
                 {agent.statusText}
               </span>
             </div>
-            <p className="text-[12.5px] text-text-main leading-relaxed">{agent.summary}</p>
+            <p className="text-[13px] text-text-main leading-relaxed">{agent.summary}</p>
           </div>
 
           {/* Anomaly Notice if any */}
           {agent.anomalyNotice && (
-            <div className="p-4 bg-red-50 rounded-xl border border-red-200 text-[12px] text-red-800 space-y-1">
+            <div className="p-4 bg-red-50 rounded-xl border border-red-200 text-[13px] text-red-800 space-y-1">
               <span className="font-semibold flex items-center gap-1.5">
                 <AlertTriangle size={14} className="text-red-600" />
                 异常提示
@@ -91,7 +91,7 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
             <h4 className="text-[13px] font-semibold text-text-main">生成物料与数据产物</h4>
             <div className="space-y-1.5">
               {agent.outputItems.map((item, idx) => (
-                <div key={idx} className="p-2.5 bg-surface-1 rounded-lg border border-border-default text-[12px] flex items-center gap-2 text-text-secondary">
+                <div key={idx} className="p-2.5 bg-surface-1 rounded-lg border border-border-default text-[13px] flex items-center gap-2 text-text-secondary">
                   <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
                   <span>{item}</span>
                 </div>
@@ -108,14 +108,14 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
               </div>
               <button
                 onClick={handleCopyLogs}
-                className="text-[11px] text-text-tertiary hover:text-text-main flex items-center gap-1 p-1 hover:bg-hover-bg rounded"
+                className="text-[13px] text-text-tertiary hover:text-text-main flex items-center gap-1 p-1 hover:bg-hover-bg rounded"
               >
                 {copied ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                 <span>{copied ? "已复制" : "复制日志"}</span>
               </button>
             </div>
 
-            <div className="bg-neutral-900 text-neutral-200 rounded-xl p-4 font-mono text-[11.5px] leading-relaxed space-y-1.5 max-h-72 overflow-y-auto custom-scrollbar border border-neutral-800">
+            <div className="bg-neutral-900 text-neutral-200 rounded-xl p-4 font-mono text-[13px] leading-relaxed space-y-1.5 max-h-72 overflow-y-auto custom-scrollbar border border-neutral-800">
               {agent.logs.map((log, lIdx) => {
                 let color = "text-neutral-300";
                 if (log.level === "success") color = "text-emerald-400";
@@ -125,7 +125,7 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
                 return (
                   <div key={lIdx} className="flex items-start gap-2">
                     <span className="text-neutral-500 shrink-0">{log.time}</span>
-                    <span className={`px-1 py-0.2 rounded text-[10px] uppercase font-bold shrink-0 ${
+                    <span className={`px-1 py-0.2 rounded text-[13px] uppercase font-bold shrink-0 ${
                       log.level === 'success' ? 'bg-emerald-950 text-emerald-300' :
                       log.level === 'warn' ? 'bg-amber-950 text-amber-300' :
                       log.level === 'agent' ? 'bg-cyan-950 text-cyan-300' : 'bg-neutral-800 text-neutral-400'
@@ -144,7 +144,7 @@ export function AgentLogDrawer({ agent, onClose }: AgentLogDrawerProps) {
         <div className="p-4 border-t border-border-default flex justify-end shrink-0 bg-surface-1">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-btn-main text-white hover:bg-btn-main-hover rounded-xl text-[12.5px] font-medium transition-colors"
+            className="px-4 py-2 bg-btn-main text-white hover:bg-btn-main-hover rounded-xl text-[13px] font-medium transition-colors"
           >
             关闭详情
           </button>

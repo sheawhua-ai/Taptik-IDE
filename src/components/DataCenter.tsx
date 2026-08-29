@@ -57,7 +57,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-text-main mb-2">报告类型</div>
                   <div className="grid grid-cols-3 gap-2">
                     {['项目复盘', '客户汇报', '投流复盘'].map((type, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
+                      <button key={i} className={`py-2 text-[13px] font-bold rounded-lg border ${i === 0 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
                         {type}
                       </button>
                     ))}
@@ -68,7 +68,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-text-main mb-2">复盘范围</div>
                   <div className="grid grid-cols-2 gap-2">
                     {['Q2 幼犬粮推新项目', '全商家大盘', '指定账号矩阵', '指定内容批次'].map((scope, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
+                      <button key={i} className={`py-2 text-[13px] font-bold rounded-lg border ${i === 0 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
                         {scope}
                       </button>
                     ))}
@@ -79,7 +79,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-text-main mb-2">面向对象</div>
                   <div className="grid grid-cols-3 gap-2">
                     {['内部团队', '客户方', '个人复盘'].map((target, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
+                      <button key={i} className={`py-2 text-[13px] font-bold rounded-lg border ${i === 0 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
                         {target}
                       </button>
                     ))}
@@ -90,7 +90,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <div className="text-[13px] font-bold text-text-main mb-2">报告重点</div>
                   <div className="grid grid-cols-2 gap-2">
                     {['效果与结论', '问题与改进', '下一步执行建议', '投流策略调优'].map((focus, i) => (
-                      <button key={i} className={`py-2 text-[12px] font-bold rounded-lg border ${i === 0 || i === 2 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
+                      <button key={i} className={`py-2 text-[13px] font-bold rounded-lg border ${i === 0 || i === 2 ? 'bg-brand-light border-primary-200 text-primary-700' : 'bg-surface-1 border-border-default text-text-secondary hover:bg-page-bg'}`}>
                         {focus}
                       </button>
                     ))}
@@ -156,16 +156,16 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               
               <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-page-bg">
                 <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-sm">
-                  <div className="text-[11px] font-bold text-text-tertiary uppercase tracking-wider mb-2">{selectedEvidence.group}</div>
+                  <div className="text-[13px] font-bold text-text-tertiary uppercase tracking-wider mb-2">{selectedEvidence.group}</div>
                   <h4 className="text-[16px] font-bold text-text-main mb-4">{selectedEvidence.metric}：<span className="text-brand-logo">{selectedEvidence.value}</span></h4>
                   
                   <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border-default">
                     <div>
-                      <div className="text-[11px] text-text-tertiary mb-1">数据来源</div>
+                      <div className="text-[13px] text-text-tertiary mb-1">数据来源</div>
                       <div className="text-[13px] font-bold text-text-secondary">小红书自然流、投流报表</div>
                     </div>
                     <div>
-                      <div className="text-[11px] text-text-tertiary mb-1">置信度</div>
+                      <div className="text-[13px] text-text-tertiary mb-1">置信度</div>
                       <div className="text-[13px] font-bold text-text-main">极高（100% 接入真实数据）</div>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 <div>
                   <h4 className="text-[14px] font-bold text-text-main mb-4 flex items-center justify-between">
                     <span>相关笔记 {selectedEvidence.evidence}</span>
-                    <button className="text-[12px] text-brand-logo font-bold hover:text-primary-700 bg-brand-light px-3 py-1.5 rounded-lg transition-colors">
+                    <button className="text-[13px] text-brand-logo font-bold hover:text-primary-700 bg-brand-light px-3 py-1.5 rounded-lg transition-colors">
                       查看全部明细
                     </button>
                   </h4>
@@ -188,11 +188,11 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                         <div className="overflow-hidden">
                           <div className="text-[13px] font-bold text-text-main truncate mb-1">{note.title}</div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[11px] text-text-tertiary">{note.account}</span>
-                            <span className="text-[10px] font-bold text-brand-logo bg-brand-light px-1.5 py-0.5 rounded">{note.type}</span>
+                            <span className="text-[13px] text-text-tertiary">{note.account}</span>
+                            <span className="text-[13px] font-bold text-brand-logo bg-brand-light px-1.5 py-0.5 rounded">{note.type}</span>
                           </div>
                         </div>
-                        <div className="text-[12px] font-bold text-text-secondary bg-hover-bg px-2 py-1 rounded shrink-0">
+                        <div className="text-[13px] font-bold text-text-secondary bg-hover-bg px-2 py-1 rounded shrink-0">
                           {note.stat}
                         </div>
                       </div>
@@ -251,7 +251,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                         <input type="checkbox" defaultChecked={dest.checked} className="mt-0.5 rounded border-neutral-300 text-brand-logo focus:ring-primary-600" />
                         <div>
                           <div className={`text-[13px] font-bold mb-0.5 ${dest.checked ? 'text-primary-900' : 'text-text-main'}`}>{dest.title}</div>
-                          <div className={`text-[12px] ${dest.checked ? 'text-brand-logo/80' : 'text-text-tertiary'}`}>{dest.desc}</div>
+                          <div className={`text-[13px] ${dest.checked ? 'text-brand-logo/80' : 'text-text-tertiary'}`}>{dest.desc}</div>
                         </div>
                       </label>
                     ))}
@@ -396,7 +396,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
           <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
             <div>
               <h2 className="text-xl font-bold text-text-main mb-2">{selectedItem.title}</h2>
-              <div className="inline-flex px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider items-center gap-1.5 bg-brand-light text-primary-700">
+              <div className="inline-flex px-2.5 py-1 rounded-md text-[13px] font-bold uppercase tracking-wider items-center gap-1.5 bg-brand-light text-primary-700">
                 <Sparkles size={14} />
                 系统判断
               </div>
@@ -404,17 +404,17 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
             
             <div className="bg-page-bg rounded-xl p-5 border border-border-default space-y-4">
               <div>
-                <h4 className="text-[12px] font-bold text-text-main mb-1 uppercase tracking-widest">系统诊断结论</h4>
+                <h4 className="text-[13px] font-bold text-text-main mb-1 uppercase tracking-widest">系统诊断结论</h4>
                 <p className="text-[14px] text-text-secondary leading-relaxed">{selectedItem.aiJudgment || '数据表现优异，建议继续保持当前策略并适度放量。'}</p>
               </div>
               <div className="pt-4 border-t border-border-default">
-                <h4 className="text-[12px] font-bold text-text-main mb-1 uppercase tracking-widest">证据支撑</h4>
+                <h4 className="text-[13px] font-bold text-text-main mb-1 uppercase tracking-widest">证据支撑</h4>
                 <p className="text-[14px] text-text-secondary leading-relaxed">{selectedItem.evidence || '基于近 7 天 12 篇笔记的综合表现计算得出。'}</p>
               </div>
             </div>
 
             <div>
-              <h4 className="text-[12px] font-bold text-text-tertiary mb-3 uppercase tracking-widest">影响对象</h4>
+              <h4 className="text-[13px] font-bold text-text-tertiary mb-3 uppercase tracking-widest">影响对象</h4>
               <div className="flex flex-wrap items-center gap-2">
                 {(selectedItem.impacts || ['全局项目策略', 'A01 测试号', '科普类内容包']).map((imp: string, i: number) => (
                   <span key={i} className="px-3 py-1.5 bg-hover-bg text-text-secondary text-[13px] rounded-lg border border-border-default font-medium">
@@ -425,7 +425,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
             </div>
 
             <div className="bg-page-bg/80 rounded-xl p-5 border border-border-default">
-              <h4 className="text-[12px] font-bold text-text-main mb-2 uppercase tracking-widest flex items-center gap-1.5">
+              <h4 className="text-[13px] font-bold text-text-main mb-2 uppercase tracking-widest flex items-center gap-1.5">
                 <Sparkles size={14} className="text-brand-logo" /> 建议动作
               </h4>
               <p className="text-[14px] text-text-main font-medium leading-relaxed">{selectedItem.aiSuggestion || '将此组合沉淀为标准打法，并在下一轮项目中复用。'}</p>
@@ -454,7 +454,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
             >
               {selectedItem.actionText || '执行建议动作'} <ArrowRight size={16} />
             </button>
-            <div className="text-center text-[11px] text-text-tertiary font-medium pb-2">
+            <div className="text-center text-[13px] text-text-tertiary font-medium pb-2">
               执行后流向：{selectedItem.flowTo || '策略知识库'}
             </div>
             
@@ -462,7 +462,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               <input
                 type="text"
                 placeholder="告诉系统 你的判断，例如：这几篇不是内容问题..."
-                className="w-full pl-4 pr-10 py-3 bg-page-bg border border-border-default rounded-xl text-[12px] placeholder:text-text-tertiary focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/10 transition-all"
+                className="w-full pl-4 pr-10 py-3 bg-page-bg border border-border-default rounded-xl text-[13px] placeholder:text-text-tertiary focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/10 transition-all"
               />
               <button className="absolute right-2 top-1/2 -tranneutral-y-1/2 w-7 h-7 bg-btn-main text-white rounded-lg flex items-center justify-center hover:bg-btn-main-hover transition-colors">
                 <ArrowUp size={14} />
@@ -492,7 +492,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   <Sparkles size={24} className="text-primary-300" />
                 </div>
                 <div>
-                  <h3 className="text-[12px] text-white/50 font-bold uppercase tracking-widest mb-1.5">系统洞察</h3>
+                  <h3 className="text-[13px] text-white/50 font-bold uppercase tracking-widest mb-1.5">系统洞察</h3>
                   <p className="text-[16px] leading-relaxed">
                     本周私信增长主要来自“幼犬软便避坑”，但 A03 账号连续 3 天互动异常。
                   </p>
@@ -564,21 +564,21 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   </div>
                   <div className="space-y-3 mb-6">
                     <div>
-                      <div className="text-[11px] text-text-tertiary mb-1">问题</div>
+                      <div className="text-[13px] text-text-tertiary mb-1">问题</div>
                       <div className="text-[13px] text-text-secondary font-medium">{board.question}</div>
                     </div>
                     <div>
-                      <div className="text-[11px] text-text-tertiary mb-1">最近结论</div>
+                      <div className="text-[13px] text-text-tertiary mb-1">最近结论</div>
                       <div className={`text-[13px] font-bold ${board.anomaly === '无异常' ? 'text-text-tertiary' : 'text-brand-logo'}`}>{board.anomaly}</div>
                     </div>
                     <div>
-                      <div className="text-[11px] text-text-tertiary mb-1">范围</div>
-                      <div className="text-[12px] text-text-tertiary">{board.scope}</div>
+                      <div className="text-[13px] text-text-tertiary mb-1">范围</div>
+                      <div className="text-[13px] text-text-tertiary">{board.scope}</div>
                     </div>
                   </div>
                   <div className="flex items-center justify-between pt-4 border-t border-border-default">
-                    <span className="text-[11px] font-medium px-2 py-1 bg-page-bg rounded text-text-tertiary">{board.source}</span>
-                    <span className="text-[11px] text-text-tertiary">10 分钟前更新</span>
+                    <span className="text-[13px] font-medium px-2 py-1 bg-page-bg rounded text-text-tertiary">{board.source}</span>
+                    <span className="text-[13px] text-text-tertiary">10 分钟前更新</span>
                   </div>
                 </div>
               ))}
@@ -622,11 +622,11 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               </div>
               <div className="grid grid-cols-2 gap-4 pt-5 border-t border-primary-100/50">
                 <div>
-                  <div className="text-[11px] text-primary-400 mb-1">数据口径</div>
+                  <div className="text-[13px] text-primary-400 mb-1">数据口径</div>
                   <div className="text-[13px] text-primary-900 font-bold">本周｜自然流｜排除投流</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-primary-400 mb-1">建议动作</div>
+                  <div className="text-[13px] text-primary-400 mb-1">建议动作</div>
                   <div className="text-[13px] text-primary-900 font-bold">加大该方向内容排期，复刻优质素材</div>
                 </div>
               </div>
@@ -642,7 +642,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       { name: '平价烘焙横评', count: 56, width: '40%' },
                       { name: '挑食矫正', count: 28, width: '20%' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 text-[12px]">
+                      <div key={i} className="flex items-center gap-3 text-[13px]">
                         <span className="w-24 truncate text-text-secondary">{item.name}</span>
                         <div className="flex-1 h-3 bg-hover-bg rounded-full overflow-hidden">
                           <div className="h-full bg-primary-400 rounded-full" style={{ width: item.width }}></div>
@@ -663,10 +663,10 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     ].map((note, i) => (
                       <div key={i} className="flex items-center justify-between p-2.5 bg-page-bg rounded-lg border border-border-default">
                         <div className="overflow-hidden mr-2">
-                          <div className="text-[12px] font-bold text-text-main truncate">{note.title}</div>
-                          <div className="text-[10px] text-text-tertiary">{note.account}</div>
+                          <div className="text-[13px] font-bold text-text-main truncate">{note.title}</div>
+                          <div className="text-[13px] text-text-tertiary">{note.account}</div>
                         </div>
-                        <span className="text-[11px] font-bold text-brand-logo bg-brand-light px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
+                        <span className="text-[13px] font-bold text-brand-logo bg-brand-light px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
                       </div>
                     ))}
                   </div>
@@ -728,15 +728,15 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
               </div>
               <div className="grid grid-cols-3 gap-4 pt-5 border-t border-primary-100/50">
                 <div>
-                  <div className="text-[11px] text-primary-400 mb-1">口径说明</div>
+                  <div className="text-[13px] text-primary-400 mb-1">口径说明</div>
                   <div className="text-[13px] text-primary-900 font-bold">{selectedDashboard.scope || '全部数据'}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-primary-400 mb-1">关键变化</div>
+                  <div className="text-[13px] text-primary-400 mb-1">关键变化</div>
                   <div className="text-[13px] text-primary-900 font-bold">相关指标较上期提升 15%</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-primary-400 mb-1">异常项</div>
+                  <div className="text-[13px] text-primary-400 mb-1">异常项</div>
                   <div className="text-[13px] text-primary-900 font-bold">{selectedDashboard.anomaly}</div>
                 </div>
               </div>
@@ -752,7 +752,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       { name: '类目B', count: 56, width: '40%' },
                       { name: '类目C', count: 28, width: '20%' },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 text-[12px]">
+                      <div key={i} className="flex items-center gap-3 text-[13px]">
                         <span className="w-24 truncate text-text-secondary">{item.name}</span>
                         <div className="flex-1 h-3 bg-hover-bg rounded-full overflow-hidden">
                           <div className="h-full bg-primary-400 rounded-full" style={{ width: item.width }}></div>
@@ -773,10 +773,10 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     ].map((note, i) => (
                       <div key={i} className="flex items-center justify-between p-2.5 bg-page-bg rounded-lg border border-border-default">
                         <div className="overflow-hidden mr-2">
-                          <div className="text-[12px] font-bold text-text-main truncate">{note.title}</div>
-                          <div className="text-[10px] text-text-tertiary">{note.account}</div>
+                          <div className="text-[13px] font-bold text-text-main truncate">{note.title}</div>
+                          <div className="text-[13px] text-text-tertiary">{note.account}</div>
                         </div>
-                        <span className="text-[11px] font-bold text-brand-logo bg-brand-light px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
+                        <span className="text-[13px] font-bold text-brand-logo bg-brand-light px-2 py-0.5 rounded shrink-0">{note.msg} 条</span>
                       </div>
                     ))}
                   </div>
@@ -837,27 +837,27 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <h4 className="text-[15px] font-bold text-text-main">{card.conclusion}</h4>
                     </div>
                     <div className="space-y-3 mb-6">
-                      <div className="text-[12px]">
+                      <div className="text-[13px]">
                         <span className="text-text-tertiary block mb-1">数据依据</span>
                         <span className="font-medium text-text-main">{card.basis}</span>
                       </div>
-                      <div className="text-[12px]">
+                      <div className="text-[13px]">
                         <span className="text-text-tertiary block mb-1">样本覆盖范围</span>
                         <span className="font-medium text-text-main">{card.scope}</span>
                       </div>
-                      <div className="text-[12px]">
+                      <div className="text-[13px]">
                         <span className="text-text-tertiary block mb-1">AI 置信度</span>
                         <span className="font-bold text-brand-logo">{card.confidence}</span>
                       </div>
-                      <div className="text-[12px] bg-brand-light p-3 rounded-xl border border-primary-100/50">
+                      <div className="text-[13px] bg-brand-light p-3 rounded-xl border border-primary-100/50">
                         <span className="text-primary-800 font-bold block mb-1">对当前打法影响</span>
                         <span className="text-primary-700 leading-relaxed">{card.impact}</span>
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <button onClick={() => setActionConfirmPopup({title: card.conclusion, action: '立即处理'})} className="w-full py-2 bg-btn-main text-white rounded-xl text-[12px] font-bold hover:bg-btn-main-hover transition-colors">立即处理</button>
-                      <button onClick={() => setActionConfirmPopup({title: card.conclusion, action: '下轮验证'})} className="w-full py-2 bg-surface-1 border border-border-default text-text-secondary rounded-xl text-[12px] font-bold hover:bg-page-bg transition-colors">下轮验证</button>
-                      <button className="w-full py-2 text-text-tertiary hover:bg-page-bg rounded-xl text-[12px] font-bold transition-colors">保留观察</button>
+                      <button onClick={() => setActionConfirmPopup({title: card.conclusion, action: '立即处理'})} className="w-full py-2 bg-btn-main text-white rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors">立即处理</button>
+                      <button onClick={() => setActionConfirmPopup({title: card.conclusion, action: '下轮验证'})} className="w-full py-2 bg-surface-1 border border-border-default text-text-secondary rounded-xl text-[13px] font-bold hover:bg-page-bg transition-colors">下轮验证</button>
+                      <button className="w-full py-2 text-text-tertiary hover:bg-page-bg rounded-xl text-[13px] font-bold transition-colors">保留观察</button>
                     </div>
                   </div>
                 ))}
@@ -880,7 +880,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <button onClick={() => setActionConfirmPopup(null)} className="w-full text-left px-4 py-3 bg-page-bg hover:bg-brand-light hover:text-primary-700 border border-border-default hover:border-primary-200 rounded-xl text-[13px] font-bold transition-colors">提炼为我的运营方法</button>
                       <button onClick={() => setActionConfirmPopup(null)} className="w-full text-left px-4 py-3 bg-page-bg hover:bg-brand-light hover:text-primary-700 border border-border-default hover:border-primary-200 rounded-xl text-[13px] font-bold transition-colors">加入下轮项目建议</button>
                     </div>
-                    <button onClick={() => setActionConfirmPopup(null)} className="mt-4 w-full py-2 text-[12px] text-text-tertiary hover:text-text-secondary">暂不处理</button>
+                    <button onClick={() => setActionConfirmPopup(null)} className="mt-4 w-full py-2 text-[13px] text-text-tertiary hover:text-text-secondary">暂不处理</button>
                   </motion.div>
                 </div>
               )}
@@ -928,7 +928,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[12px] text-text-tertiary mb-1">面向对象</div>
+                  <div className="text-[13px] text-text-tertiary mb-1">面向对象</div>
                   <div className="text-[13px] font-bold text-text-secondary bg-hover-bg px-3 py-1 rounded-lg">内部团队</div>
                 </div>
               </div>
@@ -942,19 +942,19 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-primary-400 uppercase tracking-wider">结果</div>
+                    <div className="text-[13px] font-bold text-primary-400 uppercase tracking-wider">结果</div>
                     <div className="text-[14px] text-primary-900 font-medium">曝光超预期 20%，CPA 降低 15%。</div>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-primary-400 uppercase tracking-wider">有效动作</div>
+                    <div className="text-[13px] font-bold text-primary-400 uppercase tracking-wider">有效动作</div>
                     <div className="text-[14px] text-primary-900 font-medium">素人口吻 + 真实喂食素材组合表现最好。</div>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-brand-logo uppercase tracking-wider">主要问题</div>
+                    <div className="text-[13px] font-bold text-brand-logo uppercase tracking-wider">主要问题</div>
                     <div className="text-[14px] text-primary-900 font-medium bg-brand-light p-2 rounded border border-primary-100">达人响应慢，导致发布节奏断档。</div>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[12px] font-bold text-text-main uppercase tracking-wider">下一步</div>
+                    <div className="text-[13px] font-bold text-text-main uppercase tracking-wider">下一步</div>
                     <div className="text-[14px] text-text-main font-medium bg-hover-bg p-2 rounded border border-border-default">提高素人内容比例，提前派发素材任务。</div>
                   </div>
                 </div>
@@ -977,15 +977,15 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                     <div key={i} className="p-5 border border-border-default rounded-xl bg-surface-1 hover:border-primary-300 transition-colors shadow-sm flex flex-col justify-between">
                       <div className="mb-4">
                         <div className="flex justify-between items-start mb-2">
-                          <span className="text-[11px] font-bold text-text-tertiary bg-hover-bg px-2 py-0.5 rounded uppercase">{data.group}</span>
-                          <span className={`text-[12px] font-bold ${(data.change.includes('+') || data.change.includes('-')) && !data.change.includes('高') ? 'text-text-main' : 'text-brand-logo'}`}>{data.change}</span>
+                          <span className="text-[13px] font-bold text-text-tertiary bg-hover-bg px-2 py-0.5 rounded uppercase">{data.group}</span>
+                          <span className={`text-[13px] font-bold ${(data.change.includes('+') || data.change.includes('-')) && !data.change.includes('高') ? 'text-text-main' : 'text-brand-logo'}`}>{data.change}</span>
                         </div>
                         <div className="text-[13px] text-text-secondary mb-1">{data.metric}</div>
                         <div className="text-[20px] font-bold text-text-main">{data.value}</div>
                       </div>
                       <button 
                         onClick={() => { setSelectedEvidence(data); setIsEvidenceDrawerOpen(true); }}
-                        className="text-[12px] text-brand-logo font-bold hover:text-primary-700 flex items-center justify-between bg-brand-light/50 p-2 rounded-lg transition-colors w-full"
+                        className="text-[13px] text-brand-logo font-bold hover:text-primary-700 flex items-center justify-between bg-brand-light/50 p-2 rounded-lg transition-colors w-full"
                       >
                         {data.evidence} <ChevronRight size={14} />
                       </button>
@@ -1009,7 +1009,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                         </div>
                         <div>
                           <div className="text-[14px] font-bold text-text-main mb-1">{exp.title}</div>
-                          <div className="flex items-center gap-2 text-[11px] text-text-tertiary">
+                          <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
                             建议沉淀至：<span className="font-bold text-brand-logo bg-brand-light px-2 py-0.5 rounded">{exp.dest}</span>
                           </div>
                         </div>
@@ -1017,11 +1017,11 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       <div className="flex gap-2 shrink-0">
                         <button 
                           onClick={() => { setSelectedExperience(exp); setIsExperienceDrawerOpen(true); }}
-                          className="px-4 py-2 bg-btn-main text-white rounded-lg text-[12px] font-bold hover:bg-btn-main-hover transition-colors"
+                          className="px-4 py-2 bg-btn-main text-white rounded-lg text-[13px] font-bold hover:bg-btn-main-hover transition-colors"
                         >
                           确认沉淀
                         </button>
-                        <button className="px-4 py-2 bg-surface-1 border border-border-default text-text-secondary rounded-lg text-[12px] font-bold hover:bg-page-bg transition-colors">
+                        <button className="px-4 py-2 bg-surface-1 border border-border-default text-text-secondary rounded-lg text-[13px] font-bold hover:bg-page-bg transition-colors">
                           修改
                         </button>
                       </div>
@@ -1051,7 +1051,7 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                         </div>
                       </div>
                       <div className="text-[14px] font-bold text-text-main mb-1">{action.action}</div>
-                      <div className="text-[11px] text-text-tertiary">流向 <span className="font-medium text-text-secondary">{action.dest}</span></div>
+                      <div className="text-[13px] text-text-tertiary">流向 <span className="font-medium text-text-secondary">{action.dest}</span></div>
                     </button>
                   ))}
                 </div>
@@ -1152,8 +1152,8 @@ export const DataCenter: React.FC<DataCenterProps> = ({ dataSubNav, setDataSubNa
                       生成操盘建议
                     </button>
                     <div className="flex gap-2">
-                      <button className="flex-1 py-2.5 bg-surface-1 border border-border-default text-text-secondary text-[12px] font-bold rounded-xl shadow-sm hover:bg-page-bg">加入内容战役</button>
-                      <button className="flex-1 py-2.5 bg-surface-1 border border-border-default text-text-secondary text-[12px] font-bold rounded-xl shadow-sm hover:bg-page-bg">继续监控</button>
+                      <button className="flex-1 py-2.5 bg-surface-1 border border-border-default text-text-secondary text-[13px] font-bold rounded-xl shadow-sm hover:bg-page-bg">加入内容战役</button>
+                      <button className="flex-1 py-2.5 bg-surface-1 border border-border-default text-text-secondary text-[13px] font-bold rounded-xl shadow-sm hover:bg-page-bg">继续监控</button>
                     </div>
                   </div>
                 </div>

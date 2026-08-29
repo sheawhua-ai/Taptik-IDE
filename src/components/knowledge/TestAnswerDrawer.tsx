@@ -67,7 +67,7 @@ export function TestAnswerDrawer({ isOpen, onClose }: TestAnswerDrawerProps) {
                 <h3 className="text-sm font-semibold text-text-main mb-3">AI 最终回答</h3>
                 <div className="bg-page-bg p-4 rounded-xl text-sm text-text-main leading-relaxed border border-border-default">
                   <p>亲爱的家长您好！幼犬在换粮期间由于肠胃还在适应新配方，偶尔出现软便属于正常过渡现象。建议您采取“七日换粮法”，逐渐增加新粮比例来帮助肠胃适应。</p>
-                  <p className="mt-2 text-text-tertiary italic text-xs">（注意：这段回答运用了专业营养师人设，并避开了治疗承诺，符合品牌禁区规定。）</p>
+                  <p className="mt-2 text-text-tertiary italic text-[13px]">（注意：这段回答运用了专业营养师人设，并避开了治疗承诺，符合品牌禁区规定。）</p>
                 </div>
               </div>
 
@@ -75,7 +75,7 @@ export function TestAnswerDrawer({ isOpen, onClose }: TestAnswerDrawerProps) {
                 <h3 className="text-sm font-semibold text-text-main">调用详情与依据溯源</h3>
                 
                 {/* Warning for unconfirmed knowledge */}
-                <div className="flex items-start bg-amber-50 text-amber-800 p-3 rounded-lg border border-amber-200 text-xs">
+                <div className="flex items-start bg-amber-50 text-amber-800 p-3 rounded-lg border border-amber-200 text-[13px]">
                   <ShieldAlert className="w-4 h-4 mr-2 shrink-0 mt-0.5 text-amber-600" />
                   <span>发现 1 条相关但尚未确认的高风险知识，未用于本次回答。请在“待确认工作台”中处理后再测试。</span>
                 </div>
@@ -83,7 +83,7 @@ export function TestAnswerDrawer({ isOpen, onClose }: TestAnswerDrawerProps) {
                 <div className="bg-surface-1 border border-border-default rounded-xl overflow-hidden text-sm">
                   <div className="p-3 bg-page-bg font-medium text-text-secondary border-b border-border-default flex items-center justify-between">
                     <span>规则与禁区</span>
-                    <span className="text-xs text-text-tertiary font-normal">优先级最高</span>
+                    <span className="text-[13px] text-text-tertiary font-normal">优先级最高</span>
                   </div>
                   <div className="p-3 text-text-secondary flex items-start">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
@@ -94,7 +94,7 @@ export function TestAnswerDrawer({ isOpen, onClose }: TestAnswerDrawerProps) {
                 <div className="bg-surface-1 border border-border-default rounded-xl overflow-hidden text-sm">
                   <div className="p-3 bg-page-bg font-medium text-text-secondary border-b border-border-default flex items-center justify-between">
                     <span>经验建议</span>
-                    <span className="text-xs text-text-tertiary font-normal">次优先</span>
+                    <span className="text-[13px] text-text-tertiary font-normal">次优先</span>
                   </div>
                   <div className="p-3 text-text-secondary flex items-start">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
