@@ -6,7 +6,7 @@ import {
   ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, 
   BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, 
   PanelLeftClose, PanelLeftOpen, Upload, Target, ShieldAlert, 
-  Layers, Clock, Users, Eye, ArrowRight, Package, Send,
+  Clock, Users, Eye, Package, Send,
   HelpCircle, Image as ImageIcon, Video, Activity
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
@@ -36,19 +36,28 @@ import { AddSingleNoteModal } from "./AddSingleNoteModal";
 import { DispatchMaterialTaskModal } from "./DispatchMaterialTaskModal";
 import { formatChineseDate } from "../../utils/formatDate";
 import type { IndustryDefaults, MerchantIndustryProfile } from "../../data/industryCatalog";
+import { NewMerchantLaunchGuide, type LaunchGuideTarget } from "./NewMerchantLaunchGuide";
 
 export function ProjectCenter({ 
   setWorkflowTab, 
   hasData, 
   activeProjectId,
+  merchantName,
+  isNewMerchant,
   industryProfile,
-  industryDefaults
+  industryDefaults,
+  onNavigateLaunchGuide,
+  onFinishLaunchGuide
 }: { 
   setWorkflowTab?: (tab: string) => void; 
   hasData?: boolean; 
   activeProjectId?: string;
+  merchantName?: string;
+  isNewMerchant?: boolean;
   industryProfile?: MerchantIndustryProfile;
   industryDefaults?: IndustryDefaults;
+  onNavigateLaunchGuide?: (target: LaunchGuideTarget) => void;
+  onFinishLaunchGuide?: () => void;
 }) {
   const { 
     projects, 
@@ -132,6 +141,53 @@ export function ProjectCenter({
     }, 15000);
     return () => clearInterval(interval);
   }, [lastUpdatedTimestamp]);
+
+  const showNewMerchantLaunch = Boolean(
+    isNewMerchant &&
+    activeProjectId &&
+    industryProfile &&
+    industryDefaults &&
+    onNavigateLaunchGuide &&
+    onFinishLaunchGuide,
+  );
+
+  if (showNewMerchantLaunch) {
+    if (activeWorkbench === "create_project") {
+      return (
+        <CreateProjectWorkstation
+          industryDefaults={industryDefaults}
+          industryProfile={industryProfile}
+          onClose={() => setActiveWorkbench(null)}
+          onCreate={() => setActiveWorkbench(null)}
+        />
+      );
+    }
+
+    return (
+      <div className="h-full flex-1 overflow-y-auto bg-page-bg">
+        <div className="mx-auto max-w-[1100px] space-y-5 px-6 py-6">
+          <header className="rounded-2xl border border-border-default bg-surface-1 px-5 py-4 shadow-sm">
+            <div className="text-[13px] font-medium text-brand-logo">新商家起盘</div>
+            <h1 className="mt-1 text-[20px] font-semibold text-text-main">{merchantName || "新商家"}</h1>
+            <p className="mt-1 text-[13px] leading-6 text-text-tertiary">
+              先完成起盘准备；生成方案后，发布任务和复盘数据才会进入对应模块。
+            </p>
+          </header>
+          <React.Fragment key={activeProjectId}>
+            <NewMerchantLaunchGuide
+              merchantId={activeProjectId!}
+              merchantName={merchantName || "新商家"}
+              industryProfile={industryProfile!}
+              industryDefaults={industryDefaults!}
+              onNavigate={onNavigateLaunchGuide!}
+              onUseTemplate={() => setActiveWorkbench("create_project")}
+              onFinish={onFinishLaunchGuide!}
+            />
+          </React.Fragment>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentProject) {
     return (
@@ -545,41 +601,6 @@ export function ProjectCenter({
             {/* ======================================================== */}
             {activeTab === "概览" && (
               <div className="space-y-5">
-
-                {industryProfile && industryDefaults && (
-                  <section className="rounded-xl border border-blue-200 bg-blue-50/60 p-4">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-2 text-[13px] font-medium text-blue-700">
-                          <Layers size={14} />行业默认起盘模板
-                        </div>
-                        <h3 className="mt-1.5 text-[14px] font-semibold text-blue-950">{industryDefaults.workflowName}</h3>
-                        <div className="mt-1 text-[13px] text-blue-800">
-                          {industryProfile.primaryName}
-                          {industryProfile.secondaryNames.length > 0 ? ` · ${industryProfile.secondaryNames.join("、")}` : ""}
-                          {industryProfile.tertiaryNames.length > 0 ? ` · ${industryProfile.tertiaryNames.join("、")}` : ""}
-                        </div>
-                      </div>
-                      <button onClick={() => setActiveWorkbench("create_project")} className="rounded-lg bg-blue-700 px-3.5 py-2 text-[13px] font-medium text-white hover:bg-blue-800">
-                        使用模板创建方案
-                      </button>
-                    </div>
-                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                      {industryDefaults.workflowSteps.map((step, index) => (
-                        <React.Fragment key={step}>
-                          <span className="rounded-md border border-blue-100 bg-white/80 px-2 py-1 text-[13px] text-blue-900">{index + 1}. {step}</span>
-                          {index < industryDefaults.workflowSteps.length - 1 && <ArrowRight size={11} className="text-blue-300" />}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                    <div className="mt-3 grid gap-2 border-t border-blue-100 pt-3 text-[13px] sm:grid-cols-3">
-                      <div><span className="text-blue-600">方案模板：</span><span className="text-blue-950">{industryDefaults.planTemplates.join("、")}</span></div>
-                      <div><span className="text-blue-600">内容模板：</span><span className="text-blue-950">{industryDefaults.contentTemplates.join("、")}</span></div>
-                      <div><span className="text-blue-600">账号角色：</span><span className="text-blue-950">{industryDefaults.accountRoles.join("、")}</span></div>
-                    </div>
-                  </section>
-                )}
-
 
                 {/* 1.1 Current operating logic */}
                 <div className="space-y-4 rounded-xl border border-border-default bg-surface-1 p-5">

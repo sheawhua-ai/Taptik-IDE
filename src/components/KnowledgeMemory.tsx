@@ -58,7 +58,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
           multiple: true,
           types: [
             {
-              description: '知识库文档 (PDF, Word, Excel, Markdown, TXT)',
+              description: '本地知识资料 (PDF, Word, Excel, Markdown, TXT)',
               accept: {
                 'application/pdf': ['.pdf'],
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
@@ -214,6 +214,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
               <h1 className="text-[18px] font-semibold text-text-main tracking-tight">知识与记忆</h1>
             </div>
             <p className="text-[13px] text-text-secondary mt-0.5 flex items-center space-x-1.5">
+              <span className="font-medium text-text-main">资料保留在本地，TAPTIK 通过已授权链接读取。</span>
+              <span className="text-text-tertiary">·</span>
               <span>调用优先级：</span>
               <span className="font-medium text-text-secondary">商家已确认事实</span>
               <span className="text-text-tertiary">&gt;</span>
@@ -232,24 +234,24 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
               <Settings2 className="w-4 h-4 mr-1.5 text-text-secondary" /> 分类设置
             </button>
 
-            {/* 添加文件 - 直接弹出电脑选择文件 */}
+            {/* 链接本地文件 - 直接弹出电脑选择文件 */}
             <button 
               onClick={handlePickFiles}
               className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default hover:border-neutral-300 text-text-main rounded-xl text-[13px] font-medium hover:bg-hover-bg transition-colors shadow-2xs cursor-pointer"
               title="直接选择本地文件"
             >
               <FilePlus className="w-4 h-4 mr-1.5 text-text-secondary" />
-              <span>添加文件</span>
+              <span>链接本地文件</span>
             </button>
 
-            {/* 添加文件夹 - 直接弹出电脑选择文件夹 */}
+            {/* 链接本地文件夹 - 直接弹出电脑选择文件夹 */}
             <button 
               onClick={handlePickFolder}
               className="flex items-center px-4 py-2 bg-btn-main text-white rounded-xl text-[13px] font-medium hover:bg-btn-main-hover transition-all active:scale-95 shadow-2xs cursor-pointer"
               title="直接选择本地文件夹"
             >
               <FolderPlus className="w-4 h-4 mr-1.5 text-white" />
-              <span>添加文件夹</span>
+              <span>链接本地文件夹</span>
             </button>
           </div>
         </div>

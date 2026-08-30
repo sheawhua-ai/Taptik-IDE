@@ -25,6 +25,8 @@ export interface MerchantIndustryProfile {
 }
 
 export interface IndustryDefaults {
+  launchTemplateName: string;
+  launchDescription: string;
   workflowName: string;
   workflowSteps: string[];
   planTemplates: string[];
@@ -82,6 +84,8 @@ export const INDUSTRY_CATALOG: IndustryPrimaryOption[] = [
 
 const DEFAULTS_BY_PRIMARY: Record<string, IndustryDefaults> = {
   pet: {
+    launchTemplateName: "宠物主粮信任与试喂转化起盘方案",
+    launchDescription: "围绕真实喂养场景、专业知识补强和自有/外部账号协作，完成从首批素材到发布复盘的起盘闭环。",
     workflowName: "宠物行业信任种草流程",
     workflowSteps: ["痛点与搜索机会", "真实体验内容", "专业解释补强", "素材与体验反馈", "矩阵发布", "搜索收录与咨询复盘"],
     planTemplates: ["新品冷启动", "核心痛点搜索卡位", "KOC真实体验测评"],
@@ -89,6 +93,8 @@ const DEFAULTS_BY_PRIMARY: Record<string, IndustryDefaults> = {
     accountRoles: ["品牌主号", "店长号/KOS", "消费者KOC"]
   },
   beauty: {
+    launchTemplateName: "美妆功效证据与试用种草起盘方案",
+    launchDescription: "先建立人群与功效证据，再通过试用素材、账号矩阵和发布任务完成首轮内容验证。",
     workflowName: "美妆功效证据种草流程",
     workflowSteps: ["人群与肤质细分", "功效表达校验", "试用素材生产", "达人/用户发布", "搜索与互动观察", "功效内容复盘"],
     planTemplates: ["新品试用起盘", "功效词搜索卡位", "肤质人群内容矩阵"],
@@ -96,6 +102,8 @@ const DEFAULTS_BY_PRIMARY: Record<string, IndustryDefaults> = {
     accountRoles: ["品牌主号", "柜姐/KOS", "试用用户KOC"]
   },
   food_local: {
+    launchTemplateName: "本地到店内容与转化起盘方案",
+    launchDescription: "用场景卖点、真实到店素材和门店账号协作，串联探店发布、搜索承接与到店复盘。",
     workflowName: "本地到店决策流程",
     workflowSteps: ["本地需求洞察", "场景卖点设计", "到店体验素材", "探店内容发布", "搜索/团购承接", "到店与咨询复盘"],
     planTemplates: ["门店冷启动", "节庆节点运营", "本地搜索卡位"],
@@ -103,6 +111,8 @@ const DEFAULTS_BY_PRIMARY: Record<string, IndustryDefaults> = {
     accountRoles: ["品牌门店号", "店长/KOS", "到店体验KOC"]
   },
   maternal_baby: {
+    launchTemplateName: "母婴安全信任与口碑起盘方案",
+    launchDescription: "从成长阶段、安全合规和真实使用反馈出发，组织专业知识、内容分发与咨询口碑复盘。",
     workflowName: "母婴信任决策流程",
     workflowSteps: ["阶段与人群识别", "安全合规校验", "真实使用反馈", "专业知识补强", "内容分发", "咨询与口碑复盘"],
     planTemplates: ["新品体验计划", "成长阶段内容矩阵", "核心问题搜索卡位"],
@@ -110,6 +120,8 @@ const DEFAULTS_BY_PRIMARY: Record<string, IndustryDefaults> = {
     accountRoles: ["品牌主号", "顾问/KOS", "宝妈KOC"]
   },
   home: {
+    launchTemplateName: "家居案例内容与线索转化起盘方案",
+    launchDescription: "以户型预算、真实案例和施工素材为基础，组织设计师账号发布并承接到店、量房和咨询线索。",
     workflowName: "家居决策周期运营流程",
     workflowSteps: ["户型与预算洞察", "方案案例内容", "到店/量房线索", "施工与效果素材", "矩阵发布", "线索质量复盘"],
     planTemplates: ["门店获客", "样板案例矩阵", "装修节点搜索卡位"],

@@ -181,7 +181,7 @@ export function PendingWorkbenchModal({ tasks, initialTaskId, isOpen, onClose }:
                     <button className="px-5 py-2 text-sm font-medium text-text-secondary bg-surface-1 border border-border-default rounded-lg hover:bg-page-bg">暂不处理</button>
                     <button className="px-5 py-2 text-sm font-medium text-text-secondary bg-surface-1 border border-border-default rounded-lg hover:bg-page-bg">粘贴文本</button>
                     <button className="px-5 py-2 text-sm font-medium text-text-secondary bg-surface-1 border border-border-default rounded-lg hover:bg-page-bg">连接文件夹</button>
-                    <button className="px-5 py-2 text-sm font-medium text-white bg-btn-main rounded-lg hover:bg-btn-main-hover shadow-sm">上传资料</button>
+                    <button className="px-5 py-2 text-sm font-medium text-white bg-btn-main rounded-lg hover:bg-btn-main-hover shadow-sm">链接本地资料</button>
                   </>
                 )}
               </div>

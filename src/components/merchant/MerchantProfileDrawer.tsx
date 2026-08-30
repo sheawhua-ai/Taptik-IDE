@@ -151,7 +151,7 @@ export function MerchantProfileDrawer({
                             onClose();
                           }}
                         >
-                          前往「商家知识库」上传 <ArrowRight size={14} />
+                          前往「知识与记忆」链接本地资料 <ArrowRight size={14} />
                         </button>
                       </div>
                     </div>

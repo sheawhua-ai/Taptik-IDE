@@ -19,8 +19,15 @@ export default defineConfig(({mode}) => {
       host: '127.0.0.1',
       port: 5173,
       strictPort: true,
-      // Keep HMR enabled locally; DISABLE_HMR remains available for compatibility.
-      hmr: process.env.DISABLE_HMR !== 'true',
+      // Keep the HMR socket on the same hostname used by the browser. This avoids
+      // localhost -> 127.0.0.1 WebSocket failures in Codex's local preview pane.
+      hmr: process.env.DISABLE_HMR !== 'true'
+        ? {
+            host: 'localhost',
+            port: 5173,
+            protocol: 'ws',
+          }
+        : false,
     },
   };
 });

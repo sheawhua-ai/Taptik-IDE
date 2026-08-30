@@ -238,7 +238,7 @@ const MOCK_PROJECTS: Record<string, any> = {
       },
       {
         type: "Folder",
-        name: "本地上传资料",
+        name: "本地链接资料",
         children: [
           { type: "File", name: "通用全局规范.pdf" },
           { type: "RAG", name: "宠物标准话术.rag" },
@@ -447,7 +447,12 @@ export default function App() {
     Object.values(merchantProjects)[0] ||
     {};
   const messages = messagesMap[activeProjectId] || [];
-  const hasData = !(activeProject as any).isNew || onboardingStep >= 3;
+  const hasIndustryLaunchGuide = Boolean(
+    (activeProject as any).isNew &&
+    (activeProject as any).industryProfile &&
+    (activeProject as any).industryDefaults,
+  );
+  const hasData = !(activeProject as any).isNew || hasIndustryLaunchGuide || onboardingStep >= 3;
 
   const handleArchiveProject = (projectId: string) => {
     setMerchantProjects((prev) => {
@@ -495,6 +500,38 @@ export default function App() {
       [newMerchant.id]: newMerchant,
     }));
     setActiveProjectId(newMerchant.id);
+    setActiveNav("workflow");
+    setWorkflowTab("projects");
+  };
+
+  const handleUpdateMerchant = (merchantId: string, updates: Record<string, unknown>) => {
+    setMerchantProjects((previous) => {
+      const merchant = previous[merchantId];
+      if (!merchant) return previous;
+      return {
+        ...previous,
+        [merchantId]: {
+          ...merchant,
+          ...updates,
+          lastModified: "刚刚",
+        },
+      };
+    });
+  };
+
+  const handleFinishMerchantLaunchGuide = () => {
+    setMerchantProjects((previous) => {
+      const merchant = previous[activeProjectId];
+      if (!merchant) return previous;
+      return {
+        ...previous,
+        [activeProjectId]: {
+          ...merchant,
+          isNew: false,
+          onboardingStatus: "completed",
+        },
+      };
+    });
   };
 
   const setMessages = (setter: React.SetStateAction<Message[]>) => {
@@ -1039,9 +1076,11 @@ export default function App() {
           setActiveProjectId(id);
           setIsProjectSelectorOpen(false);
         }}
-        onArchive={handleArchiveProject}
-        onRestore={handleRestoreProject}
-        onAddMerchant={handleAddMerchant}
+        onManageMerchants={() => {
+          setIsProjectSelectorOpen(false);
+          setActiveSettingsTab("merchants");
+          setIsSettingsModalOpen(true);
+        }}
       />
 
       <CreateProjectModal
@@ -1683,6 +1722,11 @@ export default function App() {
               onboardingData={onboardingData}
               activeProjectId={activeProjectId}
               projectName={activeProject?.name || "未知项目"}
+              industryLabel={[
+                activeProject?.industryProfile?.primaryName,
+                ...(activeProject?.industryProfile?.secondaryNames || []),
+                ...(activeProject?.industryProfile?.tertiaryNames || []),
+              ].filter(Boolean).join(" · ")}
               setWorkflowTab={setWorkflowTab}
             />
 
@@ -1751,9 +1795,26 @@ export default function App() {
                       <ProjectCenter
                         hasData={hasData}
                         activeProjectId={activeProjectId}
+                        merchantName={activeProject?.name}
+                        isNewMerchant={hasIndustryLaunchGuide}
                         industryProfile={activeProject?.industryProfile}
                         industryDefaults={activeProject?.industryDefaults}
                         setWorkflowTab={setWorkflowTab as any}
+                        onFinishLaunchGuide={handleFinishMerchantLaunchGuide}
+                        onNavigateLaunchGuide={(target) => {
+                          if (target === "profile") {
+                            setActiveNav("workbench");
+                            return;
+                          }
+                          if (target === "knowledge" || target === "materials") {
+                            setActiveNav(target);
+                            return;
+                          }
+                          setActiveNav("workflow");
+                          if (target === "accounts" || target === "execution" || target === "review") {
+                            setWorkflowTab(target);
+                          }
+                        }}
                       />
                     )}
 
@@ -1881,22 +1942,30 @@ export default function App() {
       {/* Settings Modal */}
       <AnimatePresence>
         {isSettingsModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[100] bg-surface-1">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-[900px] h-[650px] bg-surface-1 rounded-xl shadow-2xl flex overflow-hidden border border-border-default relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-screen w-screen bg-surface-1 flex overflow-hidden relative"
+              role="dialog"
+              aria-modal="true"
+              aria-label="TAPTIK 设置"
             >
               <button
                 onClick={() => setIsSettingsModalOpen(false)}
-                className="absolute top-4 right-4 p-1.5 text-text-tertiary hover:text-text-main bg-hover-bg hover:bg-selected-bg rounded-full transition-colors z-10"
+                className="absolute top-4 right-5 flex h-9 w-9 items-center justify-center text-text-tertiary hover:text-text-main bg-hover-bg hover:bg-selected-bg rounded-xl transition-colors z-10"
+                aria-label="关闭设置"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
 
-              <div className="w-[200px] bg-page-bg border-r border-border-default flex flex-col py-6">
-                <div className="px-4 space-y-1 mt-4">
+              <div className="w-[240px] bg-page-bg border-r border-border-default flex flex-col py-6 shrink-0">
+                <div className="px-6 pb-5 border-b border-border-default">
+                  <div className="text-[17px] font-semibold text-text-main">TAPTIK 设置</div>
+                  <div className="mt-1 text-[13px] text-text-tertiary">账户、商家与系统配置</div>
+                </div>
+                <div className="px-4 space-y-1 mt-5 overflow-y-auto">
                   {[
                     { id: "account", name: "账户管理", icon: User },
                     { id: "merchants", name: "商家管理", icon: Store },
@@ -1929,8 +1998,9 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex-1 bg-surface-1 p-8 overflow-y-auto">
-                <h2 className="text-[20px] font-semibold text-text-main mb-8">
+              <div className="flex min-w-0 flex-1 flex-col bg-surface-1 overflow-hidden">
+                <div className="h-[72px] shrink-0 border-b border-border-default px-9 flex items-center">
+                <h2 className="text-[20px] font-semibold text-text-main">
                   {[
                     "account",
                     "merchants",
@@ -1973,13 +2043,28 @@ export default function App() {
                       ]
                     : "设置"}
                 </h2>
+                </div>
+                <div className="min-h-0 flex-1 overflow-y-auto px-9 py-7">
 
                 {activeSettingsTab === "merchants" && (
                   <div className="h-full">
-                    <p className="text-[13px] text-text-tertiary mb-6 -mt-6">
-                      作为服务商，管理下属所有商家账号及其系统权限
-                    </p>
-                    <MerchantManagement />
+                    <MerchantManagement
+                      merchants={merchantProjects}
+                      activeMerchantId={activeProjectId}
+                      onAddMerchant={(merchant) => {
+                        handleAddMerchant(merchant);
+                        setIsSettingsModalOpen(false);
+                      }}
+                      onUpdateMerchant={handleUpdateMerchant}
+                      onArchiveMerchant={handleArchiveProject}
+                      onRestoreMerchant={handleRestoreProject}
+                      onSwitchMerchant={(merchantId) => {
+                        setActiveProjectId(merchantId);
+                        setIsSettingsModalOpen(false);
+                        setActiveNav("workflow");
+                        setWorkflowTab("projects");
+                      }}
+                    />
                   </div>
                 )}
 
@@ -2117,11 +2202,12 @@ export default function App() {
                   </div>
                 )}
 
-                {activeSettingsTab !== "system" && (
+                {!["system", "merchants", "account", "memory", "personalization", "security"].includes(activeSettingsTab) && (
                   <div className="text-text-tertiary text-[13px] py-10">
                     此功能正在开发中...
                   </div>
                 )}
+                </div>
               </div>
             </motion.div>
           </div>

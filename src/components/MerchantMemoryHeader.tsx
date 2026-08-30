@@ -7,6 +7,7 @@ interface MerchantMemoryHeaderProps {
   onboardingData: any;
   activeProjectId: string;
   projectName: string;
+  industryLabel?: string;
   setWorkflowTab: (tab: any) => void;
 }
 
@@ -15,6 +16,7 @@ export function MerchantMemoryHeader({
   onboardingData,
   activeProjectId,
   projectName,
+  industryLabel,
   setWorkflowTab,
 }: MerchantMemoryHeaderProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -38,18 +40,18 @@ export function MerchantMemoryHeader({
           title="查看商家资料"
         >
           <div className="w-9 h-9 bg-btn-main rounded-lg flex items-center justify-center text-white font-bold text-[14px] group-hover:bg-btn-main-hover transition-colors shrink-0">
-            {onboardingData?.name?.[0] || '特'}
+            {projectName?.[0] || onboardingData?.name?.[0] || '商'}
           </div>
           
           <div className="flex items-center gap-4">
             <h1 className="text-[15px] font-bold text-text-main group-hover:text-brand-logo transition-colors">
-              {onboardingData?.name || '特唯普宠物食品'}
+              {projectName || onboardingData?.name || '未知商家'}
             </h1>
             
             <div className="w-px h-3 bg-neutral-300"></div>
             
             <div className="text-[13px] text-text-tertiary font-medium">
-              宠物食品 · 幼犬主粮
+              {industryLabel || '宠物食品 · 幼犬主粮'}
             </div>
 
             <ChevronRight size={14} className="text-text-tertiary group-hover:text-text-secondary transition-colors" />

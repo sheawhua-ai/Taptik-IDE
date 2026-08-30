@@ -65,6 +65,9 @@ export const CreateMerchantModal: React.FC<CreateMerchantModalProps> = ({ isOpen
       industry: industryProfile.primaryName,
       industryProfile,
       industryDefaults: getIndustryDefaults(primaryIndustryId),
+      isNew: true,
+      onboardingStatus: "new",
+      createdAt: new Date().toISOString(),
       status: "active",
       stats: { pendingLeads: 0, pendingContent: 0, profileCompleteness: 45 },
       fileTree: [],
@@ -93,7 +96,7 @@ export const CreateMerchantModal: React.FC<CreateMerchantModalProps> = ({ isOpen
           {tertiaryOptions.length > 0 && <div className="space-y-1.5"><div className="text-[13px] text-text-secondary">三级行业 <span className="text-text-tertiary">· 可多选</span></div><div className="flex flex-wrap gap-1.5">{tertiaryOptions.map(item => { const selected = tertiaryIndustryIds.includes(item.id); return <button key={item.id} type="button" onClick={() => toggleTertiary(item.id)} className={`rounded-lg border px-2.5 py-1.5 text-[13px] ${selected ? "border-blue-300 bg-blue-50 font-medium text-blue-800" : "border-border-default bg-surface-1 text-text-secondary"}`}>{item.name}</button>; })}</div></div>}
         </>
       )}
-      {defaults && <div className="rounded-lg border border-blue-100 bg-blue-50 p-3"><div className="text-[13px] font-medium text-blue-700">创建后默认启用</div><div className="mt-1 text-[13px] font-semibold text-blue-950">{defaults.workflowName}</div><div className="mt-1.5 flex flex-wrap gap-1">{defaults.planTemplates.map(item => <span key={item} className="rounded bg-white/80 px-1.5 py-0.5 text-[13px] text-blue-800">{item}</span>)}</div></div>}
+      {defaults && <div className="rounded-lg border border-blue-100 bg-blue-50 p-3"><div className="text-[13px] font-medium text-blue-700">创建后为你推荐</div><div className="mt-1 text-[13px] font-semibold text-blue-950">{defaults.launchTemplateName}</div><div className="mt-1 text-[13px] leading-5 text-blue-800">{defaults.launchDescription}</div><div className="mt-1.5 flex flex-wrap gap-1">{defaults.planTemplates.map(item => <span key={item} className="rounded bg-white/80 px-1.5 py-0.5 text-[13px] text-blue-800">{item}</span>)}</div></div>}
     </section>
   );
 

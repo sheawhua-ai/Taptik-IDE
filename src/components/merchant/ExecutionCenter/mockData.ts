@@ -76,7 +76,7 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
 💡 店长建议：肠胃特别敏感的幼犬，可以搭配少量特定多联益生菌过渡，温水泡软进食更护肠胃。大家换粮遇到什么问题，欢迎在评论区随时问我！`,
     tags: ['幼犬换粮', '科学养宠', '宠物店长日常', '养狗避坑指南'],
     complianceRisk: '广告法合规提示：文中“专利级益生菌”需凭证支持，建议采纳AI建议替换为“特定多联益生菌”。',
-    evidenceNeeded: '如有专利证书，可上传至商家知识库以解除合规警示。',
+    evidenceNeeded: '如有专利证书，可在「知识与记忆」中链接本地文件，以解除合规警示。',
     strategyContext: {
       intent: '抢占“幼犬换粮软便”搜索长尾词，建立专业店长信任',
       targetAudience: '2-6个月幼犬初次养宠人群，重点关注玻璃胃、软便困扰',

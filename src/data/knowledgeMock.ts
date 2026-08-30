@@ -107,7 +107,7 @@ export const mockSources: SourceItem[] = [
     id: "s-3",
     name: "客服合规指南",
     type: "Word",
-    deviceOrLocation: "系统上传",
+    deviceOrLocation: "本地文件链接",
     extractedCount: 8,
     pendingCount: 1,
     lastSyncTime: "2026-08-11 09:15",
