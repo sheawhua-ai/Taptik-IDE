@@ -10,8 +10,10 @@ import {
   Film,
   Tag,
   AlignLeft,
-  Info
+  Info,
+  Sparkles
 } from 'lucide-react';
+import { getMaterialCategoryLabel, getMaterialUseLabel } from './materialLabels';
 
 interface MaterialDetailDrawerProps {
   asset: MaterialAsset | null;
@@ -19,6 +21,9 @@ interface MaterialDetailDrawerProps {
   onUpdateAsset?: (updated: MaterialAsset) => void;
   manualTags?: string[];
   onManualTagsChange?: (tags: string[]) => void;
+  canCreateDerived?: boolean;
+  isOptimizationCandidate?: boolean;
+  onCreateDerived?: (asset: MaterialAsset) => void;
 }
 
 export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
@@ -26,10 +31,13 @@ export const MaterialDetailDrawer: React.FC<MaterialDetailDrawerProps> = ({
   onClose,
   onUpdateAsset,
   manualTags = [],
-  onManualTagsChange
+  onManualTagsChange,
+  canCreateDerived = false,
+  isOptimizationCandidate = false,
+  onCreateDerived
 }) => {
   if (!asset) return null;
-  return <MaterialDetailDrawerContent key={asset.id} asset={asset} onClose={onClose} onUpdateAsset={onUpdateAsset} manualTags={manualTags} onManualTagsChange={onManualTagsChange} />;
+  return <MaterialDetailDrawerContent key={asset.id} asset={asset} onClose={onClose} onUpdateAsset={onUpdateAsset} manualTags={manualTags} onManualTagsChange={onManualTagsChange} canCreateDerived={canCreateDerived} isOptimizationCandidate={isOptimizationCandidate} onCreateDerived={onCreateDerived} />;
 };
 
 const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'asset'> & { asset: MaterialAsset }> = ({
@@ -37,7 +45,10 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
   onClose,
   onUpdateAsset,
   manualTags = [],
-  onManualTagsChange
+  onManualTagsChange,
+  canCreateDerived = false,
+  isOptimizationCandidate = false,
+  onCreateDerived
 }) => {
   const manualTagSet = new Set(manualTags);
   const existingManualTags = (asset.tags ?? []).filter(tagName => manualTagSet.has(tagName));
@@ -247,14 +258,14 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
 
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px]">
               <div>
-                <span className="text-text-tertiary">素材分类:</span>{' '}
+                <span className="text-text-tertiary">图片类型:</span>{' '}
                 <span className="font-medium text-text-primary">
-                  {asset.category === 'base_component' ? '基础元件' : '发布素材'}
+                  {getMaterialCategoryLabel(asset.category)}
                 </span>
               </div>
               <div>
-                <span className="text-text-tertiary">素材用途:</span>{' '}
-                <span className="font-medium text-text-primary">{asset.materialUse}</span>
+                <span className="text-text-tertiary">图片用途:</span>{' '}
+                <span className="font-medium text-text-primary">{getMaterialUseLabel(asset.materialUse)}</span>
               </div>
               <div>
                 <span className="text-text-tertiary">当前状态:</span>{' '}
@@ -431,13 +442,25 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
         </div>
 
         {/* Drawer Footer */}
-        <div className="p-4 border-t border-border-default bg-surface-subtle flex items-center justify-end shrink-0">
+        <div className="p-4 border-t border-border-default bg-surface-subtle flex items-center justify-between gap-3 shrink-0">
+          <span className="text-[13px] text-text-tertiary">处理结果保存为新图片，不覆盖原图</span>
+          <div className="flex shrink-0 items-center gap-2">
           <button
             onClick={onClose}
             className="px-4 py-2 border border-border-default bg-surface hover:bg-surface-hover rounded text-[13px] font-medium text-text-primary"
           >
-            关闭详情
+            关闭
           </button>
+          {canCreateDerived && onCreateDerived ? (
+            <button
+              type="button"
+              onClick={() => onCreateDerived(asset)}
+              className="flex items-center gap-1.5 rounded-lg bg-btn-main px-4 py-2 text-[13px] font-medium text-white hover:bg-btn-main-hover"
+            >
+              <Sparkles size={13} />{isOptimizationCandidate ? '优化并生成新图片' : '用这张图生成新图片'}
+            </button>
+          ) : null}
+          </div>
         </div>
 
       </div>

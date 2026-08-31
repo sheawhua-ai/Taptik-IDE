@@ -1552,84 +1552,15 @@ export default function App() {
                       <User size={16} />
                       体验版
                     </div>
-                    <span className="px-3 py-1 bg-btn-main text-white hover:bg-btn-main-hover transition-colors text-[13px] rounded-lg cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setActiveNav("billing");
+                      }}
+                      className="px-3 py-1 bg-btn-main text-white hover:bg-btn-main-hover transition-colors text-[13px] rounded-lg"
+                    >
                       升级
-                    </span>
-                  </div>
-
-                  <div className="px-4 pb-3">
-                    <div className="rounded-xl border border-border-default overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-                      <div className="bg-btn-main text-white px-3 py-2 flex items-center gap-2">
-                        <div className="w-4 h-4 flex items-center justify-center shrink-0">
-                          <Logo className="w-full h-full rounded-sm" />
-                        </div>
-                        <span className="text-[13px] tracking-tight">
-                          Taptik 探索站
-                        </span>
-                        <span className="ml-auto text-[13px] bg-surface-1/20 px-1.5 py-0.5 rounded-md text-white">
-                          2期·今日结束
-                        </span>
-                      </div>
-                      <div className="p-3 bg-surface-1">
-                        <div className="text-[13px] mb-2 text-text-main">
-                          本期: 资料库 乐享知识库
-                        </div>
-                        <div className="text-[13px] text-text-tertiary space-y-0.5 mb-3">
-                          <p>每日可领 150 通用积分</p>
-                          <p>本期已领 4 天 · 累计 600 通用积分</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <button className="flex-1 bg-hover-bg text-text-tertiary text-[13px] py-1.5 rounded-lg border border-transparent cursor-not-allowed">
-                            今日已领
-                          </button>
-                          <button className="flex-1 bg-red-50 text-danger border border-red-200 hover:bg-red-100 hover:border-red-300 text-[13px] py-1.5 rounded-lg transition-colors">
-                            体验乐享 →
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="px-2 py-1 space-y-0.5">
-                    <button
-                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary group transition-colors"
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        setIsFinanceModalOpen(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-3 text-[13px] ">
-                        <Sparkles
-                          size={16}
-                          className="text-text-tertiary group-hover:text-danger"
-                        />
-                        {userRole === "merchant" ? "积分余额" : "收益中心"}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[13px] text-text-tertiary">
-                          {userRole === "merchant" ? "3,056.44" : "¥ 12,500.00"}
-                        </span>
-                        <ChevronRight size={14} className="text-text-tertiary" />
-                      </div>
-                    </button>
-                    <button
-                      className="w-full flex items-center justify-between px-3 py-2 hover:bg-page-bg rounded-lg text-text-secondary group transition-colors"
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        setIsGrowthPlanModalOpen(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-3 text-[13px] ">
-                        <CheckCircle2
-                          size={16}
-                          className="text-text-tertiary group-hover:text-danger"
-                        />
-                        成长计划
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[13px] text-text-tertiary"></span>
-                        <ChevronRight size={14} className="text-text-tertiary" />
-                      </div>
                     </button>
                   </div>
 
@@ -1913,12 +1844,7 @@ export default function App() {
         )}
         {activeNav === "billing" && (
           <div className="flex-1 flex flex-col h-full overflow-hidden bg-page-bg">
-            <div className="h-14 border-b border-border-default px-8 flex items-center justify-between shrink-0 bg-surface-1">
-              <h2 className="text-[16px] font-semibold text-text-main tracking-tight">
-                用量与计费
-              </h2>
-            </div>
-            <div className="flex-1 overflow-y-auto p-12">
+            <div className="flex-1 overflow-y-auto">
               <Billing />
             </div>
           </div>

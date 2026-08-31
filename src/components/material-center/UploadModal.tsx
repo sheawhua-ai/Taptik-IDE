@@ -178,12 +178,12 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                   className="w-full px-3 py-2 bg-surface border border-border-default rounded text-text-primary text-[13px]"
                 >
                   <option value="publish_material">发布素材 (小红书笔记素材)</option>
-                  <option value="base_component">基础元件 (抠图/Logo/色板)</option>
+                  <option value="base_component">基础图片素材（透明底产品图、Logo、色彩参考）</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-text-tertiary text-[13px] block mb-1 font-medium">素材用途</label>
+                <label className="text-text-tertiary text-[13px] block mb-1 font-medium">图片用途</label>
                 <select
                   value={materialUse}
                   onChange={(e) => setMaterialUse(e.target.value as MaterialUse)}
