@@ -2,7 +2,11 @@ import React, { useMemo, useState } from "react";
 import {
   Archive,
   ArrowRight,
+  BookOpen,
   Check,
+  CheckCircle2,
+  ChevronRight,
+  CircleAlert,
   Copy,
   Edit3,
   Eye,
@@ -20,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { buildIndustryProfile, getIndustryDefaults, INDUSTRY_CATALOG } from "../../data/industryCatalog";
+import { getMerchantCompleteness, getMerchantCompletenessItems } from "../../utils/merchantCompleteness";
 import { CreateMerchantModal } from "../merchant/CreateMerchantModal";
 import {
   MerchantIndustrySelector,
@@ -34,6 +39,7 @@ interface MerchantManagementProps {
   onArchiveMerchant: (merchantId: string) => void;
   onRestoreMerchant: (merchantId: string) => void;
   onSwitchMerchant: (merchantId: string) => void;
+  onOpenKnowledge?: () => void;
 }
 
 type MerchantFilter = "all" | "active" | "archived";
@@ -52,8 +58,8 @@ function getMerchantIndustrySelection(merchant: any): MerchantIndustrySelection 
   if (profile?.primaryId && INDUSTRY_CATALOG.some((item) => item.id === profile.primaryId)) {
     return {
       primaryIndustryId: profile.primaryId,
-      secondaryIndustryIds: profile.secondaryIds || [],
-      tertiaryIndustryIds: profile.tertiaryIds || [],
+      secondaryIndustryIds: [...(profile.secondaryIds || [])],
+      tertiaryIndustryIds: [...(profile.tertiaryIds || [])],
     };
   }
 
@@ -61,11 +67,20 @@ function getMerchantIndustrySelection(merchant: any): MerchantIndustrySelection 
     merchant.industry,
     ...(merchant.tags || []),
   ].filter(Boolean).map((item: string) => item.trim().toLowerCase()));
+  const matchesIndustryName = (candidate: string) => {
+    const normalizedCandidate = candidate.trim().toLowerCase();
+    const candidateParts = normalizedCandidate.split(/[\/|、]/).filter(Boolean);
+    return Array.from(names).some((name) => (
+      name === normalizedCandidate
+      || name.includes(normalizedCandidate)
+      || candidateParts.some((part) => name.includes(part))
+    ));
+  };
   const primaryIndustry = INDUSTRY_CATALOG.find((primary) =>
-    names.has(primary.name.toLowerCase())
+    matchesIndustryName(primary.name)
     || primary.children.some((secondary) =>
-      names.has(secondary.name.toLowerCase())
-      || secondary.children.some((tertiary) => names.has(tertiary.name.toLowerCase())),
+      matchesIndustryName(secondary.name)
+      || secondary.children.some((tertiary) => matchesIndustryName(tertiary.name)),
     ),
   );
 
@@ -74,11 +89,11 @@ function getMerchantIndustrySelection(merchant: any): MerchantIndustrySelection 
   }
 
   const secondaryIndustryIds = primaryIndustry.children
-    .filter((item) => names.has(item.name.toLowerCase()))
+    .filter((item) => matchesIndustryName(item.name))
     .map((item) => item.id);
   const tertiaryIndustryIds = primaryIndustry.children
     .flatMap((item) => item.children)
-    .filter((item) => names.has(item.name.toLowerCase()))
+    .filter((item) => matchesIndustryName(item.name))
     .map((item) => item.id);
 
   return {
@@ -112,6 +127,7 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
   onArchiveMerchant,
   onRestoreMerchant,
   onSwitchMerchant,
+  onOpenKnowledge,
 }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,6 +136,7 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [editValidationMessage, setEditValidationMessage] = useState("");
   const [qrMerchant, setQrMerchant] = useState<any | null>(null);
+  const [detailMerchantId, setDetailMerchantId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const merchantList = useMemo(
@@ -128,6 +145,9 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
   );
   const activeCount = merchantList.filter((merchant: any) => merchant.status !== "archived").length;
   const archivedCount = merchantList.length - activeCount;
+  const detailMerchant = detailMerchantId ? merchants[detailMerchantId] || null : null;
+  const detailCompletenessItems = detailMerchant ? getMerchantCompletenessItems(detailMerchant) : [];
+  const detailCompleteness = detailMerchant ? getMerchantCompleteness(detailMerchant) : 0;
   const filteredMerchants = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return merchantList.filter((merchant: any) => {
@@ -247,32 +267,33 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
         <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-page-bg/75 px-6 py-3.5 text-[13px] font-medium text-text-tertiary">
           <div className="col-span-4">商家信息</div>
           <div className="col-span-3">负责人</div>
-          <div className="col-span-2">状态与起盘</div>
+          <div className="col-span-2">状态与信息</div>
           <div className="col-span-3 text-right">管理操作</div>
         </div>
         <div className="h-full max-h-[calc(100vh-275px)] overflow-y-auto custom-scrollbar">
           {filteredMerchants.map((merchant: any) => {
             const isArchived = merchant.status === "archived";
             const isActive = merchant.id === activeMerchantId;
-            const completeness = merchant.stats?.profileCompleteness ?? (merchant.isNew ? 20 : 100);
+            const completeness = getMerchantCompleteness(merchant);
             return (
-              <div key={merchant.id} className={`grid grid-cols-12 items-center gap-4 border-b border-border-subtle px-6 py-4 last:border-b-0 ${isActive ? "bg-brand-light/25" : "hover:bg-page-bg/70"}`}>
-                <div className="col-span-4 flex min-w-0 items-center gap-3">
+              <div key={merchant.id} className={`group relative grid grid-cols-12 items-center gap-4 border-b border-border-subtle px-6 py-4 last:border-b-0 ${isActive ? "bg-brand-light/25" : "hover:bg-page-bg/70"}`}>
+                <button type="button" onClick={() => setDetailMerchantId(merchant.id)} aria-label={`查看${merchant.name}信息完整度详情`} className="absolute inset-0 z-0 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-logo" />
+                <div className="pointer-events-none relative z-10 col-span-4 flex min-w-0 items-center gap-3">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[14px] font-semibold" style={{ backgroundColor: merchant.color || "var(--surface-selected)", color: merchant.textColor || "var(--text-secondary)" }}>{merchant.initial || merchant.name?.charAt(0) || "商"}</span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2"><h4 className="truncate text-[14px] font-semibold text-text-main">{merchant.name}</h4>{isActive ? <span className="shrink-0 rounded-md bg-primary-100 px-1.5 py-0.5 text-[13px] font-medium text-brand-logo">当前空间</span> : null}</div>
                     <div className="mt-1 flex flex-wrap gap-1">{getMerchantIndustryNames(merchant).slice(0, 3).map((industryName: string) => <span key={industryName} className="rounded bg-hover-bg px-1.5 py-0.5 text-[13px] text-text-tertiary">{industryName}</span>)}</div>
                   </div>
                 </div>
-                <div className="col-span-3 min-w-0">
+                <div className="pointer-events-none relative z-10 col-span-3 min-w-0">
                   <div className="flex items-center gap-1.5 truncate text-[13px] text-text-secondary"><User size={14} className="shrink-0 text-text-tertiary" />{merchant.username || merchant.owner?.username || "待设置负责人"}</div>
                   <div className="mt-1 text-[13px] text-text-tertiary">{merchant.phone || merchant.owner?.phone || "暂无联系电话"}</div>
                 </div>
-                <div className="col-span-2">
+                <div className="pointer-events-none relative z-10 col-span-2">
                   <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] ${isArchived ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-800"}`}>{isArchived ? <Archive size={12} /> : <ShieldCheck size={12} />}{isArchived ? "已归档" : "正常运营"}</span>
-                  <div className="mt-1.5 text-[13px] text-text-tertiary">起盘完善度 {completeness}%</div>
+                  <div className="mt-1.5 text-[13px] text-text-tertiary">商家信息完善度 {completeness}%</div>
                 </div>
-                <div className="col-span-3 flex items-center justify-end gap-1.5">
+                <div className="relative z-20 col-span-3 flex items-center justify-end gap-1.5">
                   {!isArchived ? <button type="button" onClick={() => setQrMerchant(merchant)} title="员工端关注二维码" className="inline-flex h-8 items-center gap-1 rounded-lg border border-border-default px-2.5 text-[13px] text-text-secondary hover:bg-hover-bg"><QrCode size={14} />员工二维码</button> : null}
                   <button type="button" onClick={() => openEditor(merchant)} disabled={isArchived} title="编辑商家信息" className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-hover-bg hover:text-text-main disabled:opacity-30"><Edit3 size={14} /></button>
                   {isArchived ? (
@@ -288,6 +309,74 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
           {filteredMerchants.length === 0 ? <div className="flex min-h-[280px] flex-col items-center justify-center text-text-tertiary"><Store size={32} className="opacity-40" /><p className="mt-3 text-[14px]">没有找到匹配的商家</p></div> : null}
         </div>
       </div>
+
+      {detailMerchant ? (
+        <div className="fixed inset-0 z-[1150] flex justify-end bg-black/25" onClick={() => setDetailMerchantId(null)}>
+          <aside className="flex h-full w-[680px] max-w-[94vw] flex-col bg-surface-1 shadow-2xl" onClick={(event) => event.stopPropagation()} aria-label={`${detailMerchant.name}信息完整度详情`}>
+            <header className="border-b border-border-default px-6 py-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[14px] font-semibold" style={{ backgroundColor: detailMerchant.color || "var(--surface-selected)", color: detailMerchant.textColor || "var(--text-secondary)" }}>{detailMerchant.initial || detailMerchant.name?.charAt(0) || "商"}</span>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2"><h3 className="truncate text-[17px] font-semibold text-text-main">{detailMerchant.name}</h3>{detailMerchant.id === activeMerchantId ? <span className="rounded-full bg-brand-light px-2 py-0.5 text-[12px] font-medium text-brand-logo">当前空间</span> : null}</div>
+                    <p className="mt-1 text-[13px] text-text-tertiary">商家信息完整度与待补充项</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {detailMerchant.status !== "archived" ? <button type="button" onClick={() => openEditor(detailMerchant)} className="inline-flex items-center gap-1.5 rounded-lg border border-border-default px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg"><Edit3 size={14} />编辑商家信息</button> : null}
+                  <button type="button" onClick={() => setDetailMerchantId(null)} aria-label="关闭信息完整度详情" className="rounded-lg p-2 text-text-tertiary hover:bg-hover-bg hover:text-text-main"><X size={17} /></button>
+                </div>
+              </div>
+            </header>
+
+            <div className="flex-1 overflow-y-auto bg-page-bg p-6 custom-scrollbar">
+              <section className="rounded-2xl border border-border-default bg-surface-1 p-5 shadow-sm">
+                <div className="flex items-end justify-between gap-4">
+                  <div><div className="text-[13px] font-medium text-text-secondary">商家信息完善度</div><p className="mt-1 text-[12px] text-text-tertiary">完整资料会用于匹配行业方案、生成内容和任务分发。</p></div>
+                  <strong className="text-[30px] font-semibold tabular-nums text-text-main">{detailCompleteness}%</strong>
+                </div>
+                <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-surface-selected"><div className="h-full rounded-full bg-brand-logo transition-all" style={{ width: `${detailCompleteness}%` }} /></div>
+                <div className="mt-3 flex items-center justify-between text-[12px] text-text-tertiary"><span>{detailCompletenessItems.filter((item) => item.complete).length}/{detailCompletenessItems.length} 项已完成</span><span>{detailCompleteness === 100 ? "资料已完整" : "建议优先补齐必要信息"}</span></div>
+              </section>
+
+              <section className="mt-4 overflow-hidden rounded-2xl border border-border-default bg-surface-1 shadow-sm">
+                {detailCompletenessItems.map((item) => (
+                  <div key={item.id} className="flex items-start gap-3 border-b border-border-subtle px-5 py-4 last:border-b-0">
+                    <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${item.complete ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{item.complete ? <CheckCircle2 size={16} /> : <CircleAlert size={16} />}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2"><h4 className="text-[13px] font-semibold text-text-main">{item.label}</h4><span className={`rounded-full px-2 py-0.5 text-[12px] font-medium ${item.complete ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800"}`}>{item.complete ? "已完成" : `待补充 · ${item.weight}%`}</span></div>
+                      <p className="mt-1 text-[13px] leading-5 text-text-tertiary">{item.description}</p>
+                    </div>
+                    {!item.complete ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (item.action === "knowledge" && onOpenKnowledge) {
+                            setDetailMerchantId(null);
+                            onOpenKnowledge();
+                            return;
+                          }
+                          openEditor(detailMerchant);
+                        }}
+                        className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-brand-logo hover:bg-brand-light"
+                      >
+                        {item.action === "knowledge" ? <BookOpen size={14} /> : <Edit3 size={14} />}
+                        {item.action === "knowledge" ? "链接知识资料" : "立即补充"}<ChevronRight size={13} />
+                      </button>
+                    ) : null}
+                  </div>
+                ))}
+              </section>
+
+              {detailCompletenessItems.some((item) => !item.complete && item.action === "knowledge") ? (
+                <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4">
+                  <div className="flex items-start gap-2.5"><BookOpen size={17} className="mt-0.5 shrink-0 text-blue-700" /><div><div className="text-[13px] font-semibold text-blue-950">本地知识资料是生成准确内容的必要条件</div><p className="mt-1 text-[13px] leading-5 text-blue-900/75">TAPTIK 会调用当前电脑中已链接的产品资料、FAQ 和品牌约束，无需先上传到云端。</p></div></div>
+                </div>
+              ) : null}
+            </div>
+          </aside>
+        </div>
+      ) : null}
 
       <CreateMerchantModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onSuccess={(merchant) => { onAddMerchant(merchant); setIsCreateModalOpen(false); }} />
 

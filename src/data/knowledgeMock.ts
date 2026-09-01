@@ -3,13 +3,14 @@ import { KnowledgeItem, SourceItem, PendingTask } from '../types/knowledge';
 export const mockPendingTasks: PendingTask[] = [
   {
     id: "task-1",
-    title: "缺少产品利润与价格依据",
+    title: "缺成本价和限价",
     type: "缺少资料",
     reason: "缺乏高烘干粮出厂成本与最低限价，无法生成ROI建议。",
-    impact: "影响出价与分佣比例计算",
+    impact: "影响：出价和分佣算不准",
     missingWhat: "高烘干粮的阶梯发货价与最低允许限价",
     missingWhy: "当前已有多份宣传文档，但均未包含价格政策，财务数据缺失。",
-    category: "品牌与产品"
+    category: "品牌与产品",
+    impactUses: ["出价计算", "分佣测算"]
   },
   {
     id: "task-2",
@@ -31,6 +32,19 @@ export const mockPendingTasks: PendingTask[] = [
     originalEvidence: "“客服回复软便问题时可以说我们的粮能治疗软便...”",
     sourceFile: "2026-07客服聊天记录.pdf",
     category: "禁区与流转"
+  },
+  {
+    id: "task-decomposition-preview",
+    title: "《2026Q3产品手册.pdf》拆成 3 条，进了 3 个区块",
+    type: "拆解预览",
+    reason: "AI 已按各区块的用途与收录说明完成拆解，请确认归位结果。",
+    impact: "确认后，这些内容会写入知识库并供 AI 使用",
+    sourceFile: "2026Q3产品手册.pdf",
+    decompositionItems: [
+      { id: "preview-1", category: "品牌与产品", format: "事实卡", summary: "幼犬高烘干粮粗蛋白质含量为 42%。" },
+      { id: "preview-2", category: "话术与承接", format: "范例卡", summary: "介绍幼犬粮时先说明适用阶段，再说明粗蛋白含量。" },
+      { id: "preview-3", category: "禁区与流转", format: "规则卡", summary: "涉及换粮软便时，不得使用治疗、治愈等功效承诺。" }
+    ]
   }
 ];
 
@@ -47,6 +61,7 @@ export const mockKnowledgeList: KnowledgeItem[] = [
     category: "品牌与产品",
     originalEvidence: "选用 85% 肉类原料，粗蛋白质 ≥42%，不添加小麦和大豆等致敏原。",
     usageCount: 18,
+    lastUsedTime: "2 小时前",
     atomicFacts: [
       { id: "a1", content: "幼犬粮粗蛋白含量42%", status: "confirmed" },
       { id: "a2", content: "采用无粮配方", status: "confirmed" }
@@ -78,6 +93,20 @@ export const mockKnowledgeList: KnowledgeItem[] = [
     originalEvidence: "复盘显示，店长号不走低价噱头，以专业营养学视角解答疑难问题，转化率高30%。",
     reliability: "多次项目验证",
     usageCount: 8
+  },
+  {
+    id: "k-4",
+    summary: "介绍幼犬粮时先说明适用阶段，再说明粗蛋白含量。",
+    type: "商家事实",
+    source: "2026Q3产品手册.pdf",
+    scope: "指定产品: 幼犬高烘干粮",
+    validity: "长期有效",
+    updateTime: "5小时前",
+    state: "正常",
+    category: "话术与承接",
+    originalEvidence: "幼犬阶段建议结合生长需求介绍配方，并引用手册中的营养指标。",
+    usageCount: 6,
+    lastUsedTime: "5 小时前"
   }
 ];
 
@@ -101,7 +130,7 @@ export const mockSources: SourceItem[] = [
     pendingCount: 2,
     lastSyncTime: "2026-08-09 18:30",
     state: "已断开",
-    exceptionReason: "所属设备离线，暂时无法检查文件更新"
+    exceptionReason: "源文件断开了，点这里重新链接"
   },
   {
     id: "s-3",
@@ -113,5 +142,15 @@ export const mockSources: SourceItem[] = [
     lastSyncTime: "2026-08-11 09:15",
     state: "待处理",
     exceptionReason: "内容包含高风险词汇，需人工确认"
+  },
+  {
+    id: "s-4",
+    name: "8月门店话术补充.docx",
+    type: "Word",
+    deviceOrLocation: "本地上传",
+    extractedCount: 0,
+    pendingCount: 3,
+    lastSyncTime: "刚刚",
+    state: "拆解中"
   }
 ];

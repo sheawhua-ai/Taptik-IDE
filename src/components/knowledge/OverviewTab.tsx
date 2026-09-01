@@ -14,14 +14,14 @@ export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWork
   const topPriorityTask = pendingTasks[0];
   const otherTasksCount = pendingTasks.length > 1 ? pendingTasks.length - 1 : 0;
   
-  const abnormalSources = sources.filter(s => s.state !== '正常');
+  const abnormalSources = sources.filter(s => s.state === '待处理' || s.state === '已断开');
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Top Status */}
       <div className="flex items-center space-x-2 text-sm text-text-secondary bg-page-bg px-4 py-2 rounded-lg">
         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-        <span>当前商家知识正常 · <span className="text-danger font-medium">{pendingTasks.length} 项需要处理</span> · {sources.filter(s => s.state === '正常').length} 个资料来源已连接</span>
+        <span>商家资料已就绪 · <span className="text-danger font-medium">{pendingTasks.length} 项需要处理</span> · {sources.filter(s => s.state === '正常').length} 个资料来源已连接</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -44,7 +44,7 @@ export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWork
                 </div>
                 <p className="text-sm text-text-secondary mb-2">{topPriorityTask.reason}</p>
                 <div className="text-[13px] text-text-tertiary mb-4 bg-surface-1 p-2 rounded border border-border-default">
-                  <span className="font-medium">影响范围：</span>{topPriorityTask.impact}
+                  {topPriorityTask.impact}
                 </div>
                 <button 
                   onClick={() => onOpenWorkbench(topPriorityTask)}

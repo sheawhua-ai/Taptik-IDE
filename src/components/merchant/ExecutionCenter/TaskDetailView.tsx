@@ -3,7 +3,7 @@ import {
   ArrowLeft, CheckCircle2, AlertCircle, Clock, ExternalLink, 
   Send, User, Tag, Plus, Trash2, RotateCcw, AlertTriangle, 
   ChevronDown, FileText, Camera, Share2,
-  Sparkles, RefreshCw, Pin, MoreHorizontal, QrCode, Check,
+  RefreshCw, Pin, MoreHorizontal, QrCode, Check,
   Eye, Image as ImageIcon, ShieldAlert, ArrowRight, CornerDownRight,
   Info, Maximize2, X, ShieldCheck, CheckCheck, Edit3, MessageSquare,
   Layers, Users, CheckSquare, Square, FolderPlus, DownloadCloud, Sparkle, Search
@@ -782,32 +782,6 @@ export function TaskDetailView({
         {/* Column 2: Center Editor / Inspector Area (Flex-1) */}
           <div className="workspace-stage flex-1 overflow-y-auto space-y-5 bg-canvas">
           
-          {/* 当前任务只展示识别与操作所需信息；解释和判断依据按需展开。 */}
-          <div className="rounded-xl border border-[#f3d7de] bg-[#fff6f8] px-4 py-3">
-            <div className="flex items-start gap-2.5">
-              <Sparkles size={14} className="mt-0.5 shrink-0 text-[#a7475e]" />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <span className="text-[13px] font-semibold text-[#88394d]">待处理</span>
-                      <span className="text-[13px] font-semibold text-text-primary">{task.operatorActionSummary}</span>
-                    </div>
-                    <div className="mt-1 truncate text-[13px] text-text-tertiary">{task.projectName} · {task.noteTitle} · {task.targetAccount}</div>
-                  </div>
-                  <span className="shrink-0 text-[13px] text-text-tertiary">{task.deadline || '未设置截止'}</span>
-                </div>
-                <details className="mt-2 border-t border-[#efdfe3] pt-2 text-[13px] text-text-secondary">
-                  <summary className="cursor-pointer select-none font-medium text-[#88394d]">处理依据</summary>
-                  <div className="mt-2 space-y-1.5 leading-4">
-                    <p>{task.reasonForIntervention}</p>
-                    {task.confirmedFacts.slice(0, 3).map((fact, index) => <p key={`${task.id}-basis-${index}`}>· {fact}</p>)}
-                  </div>
-                </details>
-              </div>
-            </div>
-          </div>
-
           {/* === A. 笔记确认交互 (Content Review) === */}
           {isNoteWorkbench && (
             <div className="space-y-4">

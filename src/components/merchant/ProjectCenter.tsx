@@ -151,6 +151,29 @@ export function ProjectCenter({
     onFinishLaunchGuide,
   );
 
+  const completeLaunchSchemeStep = () => {
+    if (activeProjectId) {
+      const storageKey = `taptik:new-merchant-guide:${activeProjectId}`;
+      try {
+        const stored = localStorage.getItem(storageKey);
+        const currentState = stored ? JSON.parse(stored) : {};
+        const completedStepIds = Array.isArray(currentState.completedStepIds)
+          ? currentState.completedStepIds
+          : ["profile"];
+        localStorage.setItem(storageKey, JSON.stringify({
+          ...currentState,
+          templateApplied: true,
+          completedStepIds: completedStepIds.includes("scheme")
+            ? completedStepIds
+            : [...completedStepIds, "scheme"],
+        }));
+      } catch {
+        localStorage.setItem(storageKey, JSON.stringify({ completedStepIds: ["profile", "scheme"], templateApplied: true }));
+      }
+    }
+    setActiveWorkbench(null);
+  };
+
   if (showNewMerchantLaunch) {
     if (activeWorkbench === "create_project") {
       return (
@@ -158,7 +181,7 @@ export function ProjectCenter({
           industryDefaults={industryDefaults}
           industryProfile={industryProfile}
           onClose={() => setActiveWorkbench(null)}
-          onCreate={() => setActiveWorkbench(null)}
+          onCreate={completeLaunchSchemeStep}
         />
       );
     }
@@ -167,11 +190,21 @@ export function ProjectCenter({
       <div className="h-full flex-1 overflow-y-auto bg-page-bg">
         <div className="mx-auto max-w-[1100px] space-y-5 px-6 py-6">
           <header className="rounded-2xl border border-border-default bg-surface-1 px-5 py-4 shadow-sm">
-            <div className="text-[13px] font-medium text-brand-logo">新商家起盘</div>
-            <h1 className="mt-1 text-[20px] font-semibold text-text-main">{merchantName || "新商家"}</h1>
-            <p className="mt-1 text-[13px] leading-6 text-text-tertiary">
-              先完成起盘准备；生成方案后，发布任务和复盘数据才会进入对应模块。
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div className="text-[13px] font-medium text-brand-logo">新商家起盘</div>
+                <h1 className="mt-1 text-[20px] font-semibold text-text-main">{merchantName || "新商家"}</h1>
+                <p className="mt-1 text-[13px] leading-6 text-text-tertiary">当前只做起盘准备与方案创建；任务和复盘会在真实业务数据产生后自动开放。</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
+                {["起盘准备", "创建方案", "任务执行", "数据复盘"].map((stage, index) => (
+                  <React.Fragment key={stage}>
+                    <span className={`rounded-full px-2.5 py-1 font-medium ${index === 0 ? "bg-brand-logo text-white" : "bg-surface-selected text-text-tertiary"}`}>{index + 1}. {stage}</span>
+                    {index < 3 ? <ChevronRight size={12} className="text-text-tertiary" /> : null}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
           </header>
           <React.Fragment key={activeProjectId}>
             <NewMerchantLaunchGuide

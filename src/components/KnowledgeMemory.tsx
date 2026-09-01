@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { FilePlus, FolderPlus, Settings2, CheckCircle2 } from 'lucide-react';
+import { Settings2, CheckCircle2 } from 'lucide-react';
 import { OverviewTab } from './knowledge/OverviewTab';
 import { KnowledgeTab } from './knowledge/KnowledgeTab';
 import { DataSourcesTab } from './knowledge/DataSourcesTab';
@@ -9,7 +9,7 @@ import { KnowledgeDetailsDrawer } from './knowledge/KnowledgeDetailsDrawer';
 import { CategorySettingsDrawer } from './knowledge/CategorySettingsDrawer';
 
 import { mockPendingTasks, mockKnowledgeList, mockSources } from '../data/knowledgeMock';
-import { KnowledgeItem, PendingTask, SourceItem } from '../types/knowledge';
+import { KnowledgeItem, PendingTask, SourceItem, type DecompositionItem } from '../types/knowledge';
 
 function getFileType(fileName: string): 'PDF' | 'Word' | 'Excel' | '文本' {
   const lower = fileName.toLowerCase();
@@ -24,6 +24,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
   
   // Sources state to reflect newly selected local files/folders
   const [sourcesList, setSourcesList] = useState<SourceItem[]>(mockSources);
+  const [pendingTasks, setPendingTasks] = useState<PendingTask[]>(mockPendingTasks);
+  const [knowledgeList, setKnowledgeList] = useState<KnowledgeItem[]>(mockKnowledgeList);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -49,6 +51,34 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
   const [selectedKnowledge, setSelectedKnowledge] = useState<KnowledgeItem | null>(null);
   
   const [isCategorySettingsOpen, setIsCategorySettingsOpen] = useState(false);
+
+  const queueSourceForDecomposition = (source: SourceItem, itemCount = 3) => {
+    const pendingSource: SourceItem = { ...source, extractedCount: 0, pendingCount: itemCount, state: '拆解中' };
+    setSourcesList(prev => [pendingSource, ...prev]);
+    window.setTimeout(() => {
+      const templates: DecompositionItem[] = [
+        { id: `${source.id}-part-1`, category: '品牌与产品', format: '事实卡', summary: '产品成分、价格与功效边界，保留原文来源和有效期。' },
+        { id: `${source.id}-part-2`, category: '话术与承接', format: '问答卡', summary: '用户常见问题与对应回答，写清适用场景。' },
+        { id: `${source.id}-part-3`, category: '禁区与流转', format: '规则卡', summary: '不能使用的表达和对应依据，发布前需要检查。' }
+      ];
+      const decompositionItems = templates.slice(0, itemCount);
+      const uniqueCategoryCount = new Set(decompositionItems.map(item => item.category)).size;
+      const task: PendingTask = {
+        id: `decompose-${source.id}`,
+        title: `《${source.name}》拆成 ${decompositionItems.length} 条，进了 ${uniqueCategoryCount} 个区块`,
+        type: '拆解预览',
+        reason: 'AI 已按各区块的说明完成拆解和归位，等待确认。',
+        impact: '确认后写入对应知识区块',
+        sourceFile: source.name,
+        decompositionItems
+      };
+      setSourcesList(prev => prev.map(item => item.id === source.id ? { ...item, state: '待处理', pendingCount: decompositionItems.length } : item));
+      setPendingTasks(prev => [task, ...prev.filter(item => item.id !== task.id)]);
+      setInitialWorkbenchTask(task.id);
+      setIsWorkbenchOpen(true);
+      showToast(`《${source.name}》拆解完成，拆成 ${decompositionItems.length} 条，待你确认`);
+    }, 1200);
+  };
 
   // Direct File Picker Handler
   const handlePickFiles = async () => {
@@ -79,14 +109,13 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
               name: file.name,
               type: getFileType(file.name),
               deviceOrLocation: `本地路径: /${file.name}`,
-              extractedCount: Math.floor(Math.random() * 8) + 3,
-              pendingCount: 0,
+              extractedCount: 0,
+              pendingCount: 3,
               lastSyncTime: '刚刚',
-              state: '正常'
+              state: '拆解中'
             });
           }
-          setSourcesList(prev => [...addedSources, ...prev]);
-          showToast(`已直接选择并连接本地文件：${addedSources.map(s => s.name).join('、')}`);
+          addedSources.forEach(source => queueSourceForDecomposition(source));
           return;
         }
       } catch (err: any) {
@@ -110,13 +139,12 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
             name: folderName,
             type: '本地文件夹',
             deviceOrLocation: `本地目录: /${folderName}`,
-            extractedCount: Math.floor(Math.random() * 20) + 12,
-            pendingCount: 0,
+            extractedCount: 0,
+            pendingCount: 3,
             lastSyncTime: '刚刚',
-            state: '正常'
+            state: '拆解中'
           };
-          setSourcesList(prev => [newSource, ...prev]);
-          showToast(`已直接选择并连接本地文件夹："${folderName}"`);
+          queueSourceForDecomposition(newSource);
           return;
         }
       } catch (err: any) {
@@ -137,13 +165,12 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         name: file.name,
         type: getFileType(file.name),
         deviceOrLocation: `本地路径: /${(file as any).webkitRelativePath || file.name}`,
-        extractedCount: Math.floor(Math.random() * 8) + 3,
-        pendingCount: 0,
+        extractedCount: 0,
+        pendingCount: 3,
         lastSyncTime: '刚刚',
-        state: '正常'
+        state: '拆解中'
       }));
-      setSourcesList(prev => [...addedSources, ...prev]);
-      showToast(`已直接选择并连接本地文件：${files.map(f => f.name).join('、')}`);
+      addedSources.forEach(source => queueSourceForDecomposition(source));
       e.target.value = '';
     }
   };
@@ -158,13 +185,12 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         name: folderName,
         type: '本地文件夹',
         deviceOrLocation: `本地目录: /${folderName} (共 ${files.length} 个文件)`,
-        extractedCount: files.length,
-        pendingCount: 0,
+        extractedCount: 0,
+        pendingCount: 3,
         lastSyncTime: '刚刚',
-        state: '正常'
+        state: '拆解中'
       };
-      setSourcesList(prev => [newSource, ...prev]);
-      showToast(`已直接选择并连接本地文件夹："${folderName}"（包含 ${files.length} 个文件）`);
+      queueSourceForDecomposition(newSource);
       e.target.value = '';
     }
   };
@@ -177,6 +203,12 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
   const handleOpenKnowledge = (item: KnowledgeItem) => {
     setSelectedKnowledge(item);
     setIsKnowledgeDrawerOpen(true);
+  };
+
+  const handleSaveKnowledge = (updatedItem: KnowledgeItem) => {
+    setKnowledgeList(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+    setSelectedKnowledge(updatedItem);
+    showToast('知识已更新');
   };
 
   return (
@@ -217,13 +249,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
               <span className="font-medium text-text-main">资料保留在本地，TAPTIK 通过已授权链接读取。</span>
               <span className="text-text-tertiary">·</span>
               <span>调用优先级：</span>
-              <span className="font-medium text-text-secondary">商家已确认事实</span>
-              <span className="text-text-tertiary">&gt;</span>
-              <span className="font-medium text-text-secondary">规则与禁区</span>
-              <span className="text-text-tertiary">&gt;</span>
-              <span className="font-medium text-text-secondary">项目要求</span>
-              <span className="text-text-tertiary">&gt;</span>
-              <span className="font-medium text-text-secondary">经验建议</span>
+              <span className="font-medium text-text-secondary">商家确认过的事实 ＞ 规则与禁区 ＞ 项目需求 ＞ 经验建议</span>
             </p>
           </div>
           <div className="flex items-center gap-2.5">
@@ -234,25 +260,6 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
               <Settings2 className="w-4 h-4 mr-1.5 text-text-secondary" /> 分类设置
             </button>
 
-            {/* 链接本地文件 - 直接弹出电脑选择文件 */}
-            <button 
-              onClick={handlePickFiles}
-              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default hover:border-neutral-300 text-text-main rounded-xl text-[13px] font-medium hover:bg-hover-bg transition-colors shadow-2xs cursor-pointer"
-              title="直接选择本地文件"
-            >
-              <FilePlus className="w-4 h-4 mr-1.5 text-text-secondary" />
-              <span>链接本地文件</span>
-            </button>
-
-            {/* 链接本地文件夹 - 直接弹出电脑选择文件夹 */}
-            <button 
-              onClick={handlePickFolder}
-              className="flex items-center px-4 py-2 bg-btn-main text-white rounded-xl text-[13px] font-medium hover:bg-btn-main-hover transition-all active:scale-95 shadow-2xs cursor-pointer"
-              title="直接选择本地文件夹"
-            >
-              <FolderPlus className="w-4 h-4 mr-1.5 text-white" />
-              <span>链接本地文件夹</span>
-            </button>
           </div>
         </div>
 
@@ -294,8 +301,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
       <main className="flex-1 overflow-y-auto bg-page-bg/30 p-8">
         {activeTab === 'overview' && (
           <OverviewTab 
-            pendingTasks={mockPendingTasks}
-            recentlyUpdated={mockKnowledgeList.slice(0, 2)}
+            pendingTasks={pendingTasks}
+            recentlyUpdated={knowledgeList.slice(0, 2)}
             sources={sourcesList}
             onOpenWorkbench={handleOpenWorkbench}
             onOpenKnowledge={handleOpenKnowledge}
@@ -304,7 +311,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         
         {activeTab === 'knowledge' && (
           <KnowledgeTab 
-            knowledgeList={mockKnowledgeList}
+            knowledgeList={knowledgeList}
             onOpenKnowledge={handleOpenKnowledge}
           />
         )}
@@ -312,6 +319,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         {activeTab === 'sources' && (
           <DataSourcesTab 
             sources={sourcesList}
+            onPickFiles={handlePickFiles}
+            onPickFolder={handlePickFolder}
           />
         )}
       </main>
@@ -320,7 +329,7 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
       <PendingWorkbenchModal 
         isOpen={isWorkbenchOpen}
         onClose={() => setIsWorkbenchOpen(false)}
-        tasks={mockPendingTasks}
+        tasks={pendingTasks}
         initialTaskId={initialWorkbenchTask}
       />
 
@@ -328,6 +337,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
         isOpen={isKnowledgeDrawerOpen}
         onClose={() => setIsKnowledgeDrawerOpen(false)}
         item={selectedKnowledge}
+        allItems={knowledgeList}
+        onSave={handleSaveKnowledge}
       />
 
       <CategorySettingsDrawer

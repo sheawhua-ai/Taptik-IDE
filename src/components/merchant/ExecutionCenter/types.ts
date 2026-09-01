@@ -29,6 +29,15 @@ export interface UploadedAsset {
     aspectRatio: string;
     summary: string;
   };
+  /** AI 预检之后的人工验收状态；后端接入后应由素材记录持久化。 */
+  reviewStatus?: '待验收' | '已通过' | '需补拍' | '不采用';
+  reviewReason?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  reshootAiReview?: {
+    status: '待复核' | '满足' | '不满足';
+    summary: string;
+  };
 }
 
 export interface LibraryMaterialItem {
@@ -62,6 +71,7 @@ export interface MaterialSubItem {
   autoCheckResult: string;
   manualStatus: '待验收' | '已通过' | '需补拍' | '不需要';
   reshootReason?: string;
+  reshootRequirement?: string;
 }
 
 export interface TimelineEvent {

@@ -1,14 +1,26 @@
 import React from 'react';
-import { FileUp, Folder, Link as LinkIcon, RefreshCw, FileText } from 'lucide-react';
+import { FileUp, Folder, FolderPlus, RefreshCw, FileText } from 'lucide-react';
 import { SourceItem } from '../../types/knowledge';
 
 interface DataSourcesTabProps {
   sources: SourceItem[];
+  onPickFiles: () => void;
+  onPickFolder: () => void;
 }
 
-export function DataSourcesTab({ sources }: DataSourcesTabProps) {
+export function DataSourcesTab({ sources, onPickFiles, onPickFolder }: DataSourcesTabProps) {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border-default bg-surface-1 p-5 shadow-sm">
+        <div>
+          <h2 className="text-base font-semibold text-text-main">上传资料</h2>
+          <p className="mt-1 text-[13px] text-text-tertiary">上传后 AI 会自动拆解内容，按各区块的说明归位，一份文件可能被拆进多个区块</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={onPickFiles} className="flex items-center rounded-lg border border-border-default bg-surface-1 px-3.5 py-2 text-sm font-medium text-text-main hover:bg-hover-bg"><FileUp className="mr-1.5 h-4 w-4" />上传文件</button>
+          <button onClick={onPickFolder} className="flex items-center rounded-lg bg-btn-main px-3.5 py-2 text-sm font-medium text-white hover:bg-btn-main-hover"><FolderPlus className="mr-1.5 h-4 w-4" />连接文件夹</button>
+        </div>
+      </section>
       {/* List */}
       <div className="bg-surface-1 border border-border-default rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm">
@@ -58,11 +70,13 @@ export function DataSourcesTab({ sources }: DataSourcesTabProps) {
                 <td className="px-5 py-4 text-text-tertiary">{source.lastSyncTime}</td>
                 <td className="px-5 py-4">
                   <span className={`inline-flex items-center ${
-                    source.state === '正常' ? 'text-emerald-600' : 
+                    source.state === '正常' ? 'text-emerald-600' :
+                    source.state === '拆解中' ? 'text-blue-600' :
                     source.state === '已断开' ? 'text-danger' : 'text-amber-600'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full mr-2 ${
-                      source.state === '正常' ? 'bg-emerald-500' : 
+                      source.state === '正常' ? 'bg-emerald-500' :
+                      source.state === '拆解中' ? 'bg-blue-500 animate-pulse' :
                       source.state === '已断开' ? 'bg-red-500' : 'bg-amber-500'
                     }`}></span>
                     {source.state}

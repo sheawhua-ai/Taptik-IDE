@@ -6,10 +6,10 @@ import {
   CheckCircle2,
   ChevronDown,
   Circle,
-  Copy,
   ExternalLink,
   Image as ImageIcon,
   Layers,
+  Lock,
   Pencil,
   Plus,
   QrCode,
@@ -40,6 +40,8 @@ interface NewMerchantLaunchGuideProps {
   onNavigate: (target: LaunchGuideTarget) => void;
   onUseTemplate: () => void;
   onFinish: () => void;
+  publishTaskReady?: boolean;
+  reviewDataReady?: boolean;
 }
 
 interface EditableTemplate {
@@ -112,18 +114,6 @@ const GUIDE_STEPS: LaunchStep[] = [
     secondaryAction: { label: "派发素材任务", target: "execution" },
   },
   {
-    id: "accounts",
-    title: "配置自有发布账号",
-    capability: "账号资产 · 员工绑定",
-    description: "添加品牌号、店长号等自有账号并绑定发布员工。员工关注 TAPTIK 服务号后，会在员工 H5 收到发布通知；后续可扩展企微、飞书和钉钉通知。",
-    reason: "方案生成后，自有账号的发布任务可以自动找到正确的执行人。",
-    howTo: ["添加品牌号、店长号等自有账号", "让员工扫描本商家专属二维码并关注服务号", "把账号绑定到对应员工和发布设备"],
-    result: "建立商家、员工与发布账号的关系，后续任务可以自动通知正确执行人。",
-    actionLabel: "添加账号并绑定员工",
-    target: "accounts",
-    icon: UserCheck,
-  },
-  {
     id: "scheme",
     title: "创建第一份运营方案",
     capability: "方案中心",
@@ -136,6 +126,18 @@ const GUIDE_STEPS: LaunchStep[] = [
     icon: Layers,
   },
   {
+    id: "accounts",
+    title: "配置自有发布账号",
+    capability: "账号资产 · 员工绑定",
+    description: "添加品牌号、店长号等自有账号并绑定发布员工。员工关注 TAPTIK 服务号后，会在员工 H5 收到发布通知；后续可扩展企微、飞书和钉钉通知。",
+    reason: "方案生成后，自有账号的发布任务可以自动找到正确的执行人。",
+    howTo: ["添加品牌号、店长号等自有账号", "在账号资产中添加员工并生成真实邀请二维码", "员工扫码后，把账号绑定到对应员工和发布设备"],
+    result: "建立商家、员工与发布账号的关系，后续任务可以自动通知正确执行人。",
+    actionLabel: "添加账号并绑定员工",
+    target: "accounts",
+    icon: UserCheck,
+  },
+  {
     id: "publish",
     title: "了解发布任务如何生成",
     capability: "方案生成后 · 执行中心",
@@ -143,6 +145,8 @@ const GUIDE_STEPS: LaunchStep[] = [
     reason: "先完成方案，再由系统把具体内容、账号和执行人组织成可执行的发布任务。",
     howTo: ["确认方案中的发布内容和目标账号", "自有账号任务由绑定员工在 H5 领取", "外部账号使用单任务二维码执行并回传链接"],
     result: "把方案真正变成有人领取、有人发布、有链接回传且可验证的执行闭环。",
+    actionLabel: "进入执行中心",
+    target: "execution",
     availabilityNote: "出现条件：创建并确认运营方案，且方案已经生成发布内容。当前起盘阶段不会提前显示空的发布任务。",
     icon: Send,
   },
@@ -169,10 +173,6 @@ function loadGuideState(storageKey: string): PersistedGuideState {
   return { completedStepIds: ["profile"], templateApplied: false };
 }
 
-function getEmployeeFollowUrl(merchantId: string) {
-  return `https://employee.taptik.cn/follow?merchantId=${encodeURIComponent(merchantId)}`;
-}
-
 export function NewMerchantLaunchGuide({
   merchantId,
   merchantName,
@@ -181,6 +181,8 @@ export function NewMerchantLaunchGuide({
   onNavigate,
   onUseTemplate,
   onFinish,
+  publishTaskReady = false,
+  reviewDataReady = false,
 }: NewMerchantLaunchGuideProps) {
   const storageKey = `taptik:new-merchant-guide:${merchantId}`;
   const defaultTemplate = useMemo<EditableTemplate>(
@@ -200,16 +202,20 @@ export function NewMerchantLaunchGuide({
   const [isGuideCollapsed, setIsGuideCollapsed] = useState(false);
   const [isEditingTemplate, setIsEditingTemplate] = useState(false);
   const [templateDraft, setTemplateDraft] = useState<EditableTemplate>(template);
-  const [copiedFollowLink, setCopiedFollowLink] = useState(false);
 
   useEffect(() => {
     const nextState: PersistedGuideState = { completedStepIds, templateApplied, template };
     localStorage.setItem(storageKey, JSON.stringify(nextState));
   }, [completedStepIds, storageKey, template, templateApplied]);
 
-  const completedCount = completedStepIds.length;
+  const isStepAvailable = (stepId: string) => {
+    if (stepId === "publish") return completedStepIds.includes("scheme") && publishTaskReady;
+    if (stepId === "review") return completedStepIds.includes("publish") && reviewDataReady;
+    return true;
+  };
+  const completedCount = completedStepIds.filter(stepId => GUIDE_STEPS.some(step => step.id === stepId)).length;
   const progress = Math.round((completedCount / GUIDE_STEPS.length) * 100);
-  const recommendedStep = GUIDE_STEPS.find(step => !completedStepIds.includes(step.id));
+  const recommendedStep = GUIDE_STEPS.find(step => !completedStepIds.includes(step.id) && isStepAvailable(step.id));
   const industryLabel = [
     industryProfile.primaryName,
     ...industryProfile.secondaryNames,
@@ -223,9 +229,8 @@ export function NewMerchantLaunchGuide({
   };
 
   const handleStepAction = (step: LaunchStep, target = step.target) => {
-    if (!target) return;
+    if (!target || !isStepAvailable(step.id)) return;
     if (target === "scheme") {
-      setTemplateApplied(true);
       onUseTemplate();
       return;
     }
@@ -251,16 +256,6 @@ export function NewMerchantLaunchGuide({
 
   const restoreIndustryTemplate = () => {
     setTemplateDraft(defaultTemplate);
-  };
-
-  const copyEmployeeFollowLink = async () => {
-    try {
-      await navigator.clipboard.writeText(getEmployeeFollowUrl(merchantId));
-      setCopiedFollowLink(true);
-      window.setTimeout(() => setCopiedFollowLink(false), 1800);
-    } catch {
-      setCopiedFollowLink(false);
-    }
   };
 
   return (
@@ -308,7 +303,6 @@ export function NewMerchantLaunchGuide({
             <button
               type="button"
               onClick={() => {
-                setTemplateApplied(true);
                 onUseTemplate();
               }}
               className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-5 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-blue-800"
@@ -377,25 +371,27 @@ export function NewMerchantLaunchGuide({
             {GUIDE_STEPS.map((step, index) => {
               const completed = completedStepIds.includes(step.id);
               const expanded = expandedStepId === step.id;
+              const available = isStepAvailable(step.id);
               const StepIcon = step.icon;
               return (
                 <article key={step.id} className="border-b border-border-subtle last:border-b-0">
                   <button
                     type="button"
                     onClick={() => setExpandedStepId(expanded ? "" : step.id)}
-                    className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-surface-subtle"
+                    className={`flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors ${available ? "hover:bg-surface-subtle" : "bg-surface-subtle/60"}`}
                     aria-expanded={expanded}
                   >
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[13px] font-semibold ${completed ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-border-default bg-surface-1 text-text-secondary"}`}>
-                      {completed ? <Check size={14} /> : index + 1}
+                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[13px] font-semibold ${completed ? "border-emerald-200 bg-emerald-50 text-emerald-700" : available ? "border-border-default bg-surface-1 text-text-secondary" : "border-border-default bg-surface-selected text-text-tertiary"}`}>
+                      {completed ? <Check size={14} /> : available ? index + 1 : <Lock size={12} />}
                     </span>
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${completed ? "bg-emerald-50 text-emerald-700" : "bg-surface-selected text-text-secondary"}`}>
                       <StepIcon size={16} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-center gap-2">
-                        <strong className="text-[13px] font-semibold text-text-main">{step.title}</strong>
+                        <strong className={`text-[13px] font-semibold ${available ? "text-text-main" : "text-text-tertiary"}`}>{step.title}</strong>
                         <span className="text-[13px] text-text-tertiary">{step.capability}</span>
+                        {!available ? <span className="rounded-full bg-surface-selected px-2 py-0.5 text-[12px] font-medium text-text-tertiary">{step.id === "publish" ? "生成发布内容后开放" : "有发布回传后开放"}</span> : null}
                       </span>
                       <span className="mt-1 block truncate text-[13px] text-text-tertiary">完成后：{step.result}</span>
                     </span>
@@ -428,16 +424,17 @@ export function NewMerchantLaunchGuide({
                         </div>
                       ) : null}
 
-                      {step.id === "accounts" || step.id === "publish" ? (
+                      {step.id === "accounts" ? (
                         <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50/70 p-3.5">
                           <div className="grid gap-4 sm:grid-cols-[124px_1fr] sm:items-center">
-                            <div className="mx-auto rounded-xl border border-blue-100 bg-white p-2 shadow-sm">
-                              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(getEmployeeFollowUrl(merchantId))}`} alt={`${merchantName}员工端关注二维码`} className="h-[108px] w-[108px]" />
+                            <div className="mx-auto flex h-[124px] w-[124px] flex-col items-center justify-center rounded-xl border border-dashed border-blue-200 bg-white text-blue-400 shadow-sm">
+                              <QrCode size={42} />
+                              <span className="mt-2 text-[12px] font-medium">待生成</span>
                             </div>
                             <div>
-                              <div className="flex items-center gap-1.5 text-[13px] font-semibold text-blue-950"><QrCode size={15} />{merchantName} · 员工端关注二维码</div>
-                              <p className="mt-1.5 text-[13px] leading-5 text-blue-900/80">员工扫码关注 TAPTIK 服务号并绑定到本商家后，才能在员工 H5 收到本商家的素材和发布任务。该关系只需建立一次。</p>
-                              <button type="button" onClick={copyEmployeeFollowLink} className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-[13px] font-medium text-blue-800 hover:bg-blue-50">{copiedFollowLink ? <Check size={13} /> : <Copy size={13} />}{copiedFollowLink ? "已复制关注链接" : "复制关注链接"}</button>
+                              <div className="flex items-center gap-1.5 text-[13px] font-semibold text-blue-950"><QrCode size={15} />{merchantName} · 员工邀请二维码</div>
+                              <p className="mt-1.5 text-[13px] leading-5 text-blue-900/80">这里不展示模拟二维码。请先进入账号资产添加员工，后端创建邀请记录后，再展示可扫描的真实二维码。</p>
+                              <p className="mt-1 text-[12px] text-blue-800/70">二维码长期绑定员工与本商家；外部发布二维码则只对应单条任务。</p>
                             </div>
                           </div>
                         </div>
@@ -458,19 +455,23 @@ export function NewMerchantLaunchGuide({
 
                       <div className="mt-3 flex flex-wrap items-center gap-2">
                         {step.actionLabel && step.target ? (
-                          <button type="button" onClick={() => handleStepAction(step)} className="inline-flex items-center gap-1.5 rounded-lg bg-btn-main px-3 py-2 text-[13px] font-medium text-white hover:bg-btn-main-hover">
+                          <button type="button" disabled={!available} onClick={() => handleStepAction(step)} className="inline-flex items-center gap-1.5 rounded-lg bg-btn-main px-3 py-2 text-[13px] font-medium text-white hover:bg-btn-main-hover disabled:cursor-not-allowed disabled:opacity-40">
                             {step.id === "materials" ? <Upload size={13} /> : <ExternalLink size={13} />}
                             {step.actionLabel}
                           </button>
                         ) : null}
                         {step.secondaryAction ? (
-                          <button type="button" onClick={() => handleStepAction(step, step.secondaryAction?.target)} className="rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg">
+                          <button type="button" disabled={!available} onClick={() => handleStepAction(step, step.secondaryAction?.target)} className="rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg disabled:cursor-not-allowed disabled:opacity-40">
                             {step.secondaryAction.label}
                           </button>
                         ) : null}
-                        <button type="button" onClick={() => toggleStepComplete(step.id)} className="px-2 py-2 text-[13px] font-medium text-text-tertiary hover:text-text-main">
-                          {completed ? "标记为未完成" : "标记完成"}
-                        </button>
+                        {step.id !== "scheme" && step.id !== "publish" && step.id !== "review" && available ? (
+                          <button type="button" onClick={() => toggleStepComplete(step.id)} className="px-2 py-2 text-[13px] font-medium text-text-tertiary hover:text-text-main">
+                            {completed ? "标记为未完成" : "标记完成"}
+                          </button>
+                        ) : (
+                          <span className="px-2 py-2 text-[12px] text-text-tertiary">{available ? "将根据真实任务状态自动完成" : "完成前置条件后开放"}</span>
+                        )}
                       </div>
                     </div>
                   ) : null}

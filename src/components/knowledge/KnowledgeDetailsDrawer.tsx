@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, CheckCircle2, AlertCircle, Trash2, Edit3, FileText, Link } from 'lucide-react';
 import { KnowledgeItem } from '../../types/knowledge';
 
@@ -6,10 +6,29 @@ interface KnowledgeDetailsDrawerProps {
   item: KnowledgeItem | null;
   isOpen: boolean;
   onClose: () => void;
+  allItems: KnowledgeItem[];
+  onSave: (item: KnowledgeItem) => void;
 }
 
-export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetailsDrawerProps) {
+export function KnowledgeDetailsDrawer({ item, isOpen, onClose, allItems, onSave }: KnowledgeDetailsDrawerProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftSummary, setDraftSummary] = useState('');
+
+  useEffect(() => {
+    setDraftSummary(item?.summary ?? '');
+    setIsEditing(false);
+  }, [item?.id, item?.summary]);
+
   if (!isOpen || !item) return null;
+
+  const sameSourceItems = allItems.filter(candidate => candidate.id !== item.id && candidate.source === item.source);
+  const sharedCategories = Array.from(new Set([item.category, ...sameSourceItems.map(candidate => candidate.category)]));
+
+  const saveChanges = () => {
+    if (!draftSummary.trim()) return;
+    onSave({ ...item, summary: draftSummary.trim(), updateTime: '刚刚' });
+    setIsEditing(false);
+  };
 
   return (
     <>
@@ -37,7 +56,7 @@ export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetai
             </div>
             <h2 className="text-xl font-bold text-text-main leading-snug">{item.summary}</h2>
           </div>
-          <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-secondary rounded-full hover:bg-hover-bg transition-colors shrink-0 ml-4">
+          <button aria-label="关闭知识详情" onClick={onClose} className="p-2 text-text-tertiary hover:text-text-secondary rounded-full hover:bg-hover-bg transition-colors shrink-0 ml-4">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -47,7 +66,7 @@ export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetai
           
           {item.atomicFacts && item.atomicFacts.length > 0 && (
             <section>
-              <h3 className="text-sm font-semibold text-text-main mb-3">知识原子化</h3>
+              <h3 className="text-sm font-semibold text-text-main mb-3">单条事实</h3>
               <div className="space-y-2">
                 {item.atomicFacts.map(fact => (
                   <div key={fact.id} className="flex items-start bg-page-bg p-3 rounded-xl border border-border-default">
@@ -73,6 +92,15 @@ export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetai
               {item.source}
             </div>
           </section>
+
+          {sameSourceItems.length > 0 ? (
+            <section>
+              <h3 className="text-sm font-semibold text-text-main mb-3">同源引用</h3>
+              <div className="rounded-xl border border-border-default bg-page-bg p-4 text-sm text-text-secondary">
+                与 {sharedCategories.join('、')} 共用来源《{item.source.replace(/\.[^.]+$/, '')}》
+              </div>
+            </section>
+          ) : null}
 
           <div className="grid grid-cols-2 gap-6">
             <section>
@@ -100,21 +128,26 @@ export function KnowledgeDetailsDrawer({ item, isOpen, onClose }: KnowledgeDetai
           <section>
             <h3 className="text-sm font-semibold text-text-main mb-3">使用效果</h3>
             <div className="text-sm text-text-secondary bg-page-bg p-4 rounded-xl border border-border-default">
-              <div className="flex items-center justify-between mb-2">
-                <span>被 Agent 调用次数</span>
-                <span className="font-semibold text-text-main">{item.usageCount || 0} 次</span>
-              </div>
-              <div className="flex items-center justify-between text-[13px] text-text-tertiary">
-                <span>最近调用：{item.updateTime}</span>
-              </div>
+              被 AI 用过 {item.usageCount || 0} 次，最近一次 {item.lastUsedTime || item.updateTime}
             </div>
           </section>
+
+          {isEditing ? (
+            <section className="rounded-xl border border-border-default bg-page-bg p-4">
+              {sameSourceItems.length > 0 ? <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[13px] leading-5 text-amber-800">还有 {sameSourceItems.length} 条知识来自这份文件，改完请确认它们不受影响</div> : null}
+              <label htmlFor="knowledge-summary" className="block text-sm font-semibold text-text-main">正文</label>
+              <textarea id="knowledge-summary" value={draftSummary} onChange={event => setDraftSummary(event.target.value)} rows={5} className="mt-2 w-full resize-none rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-sm leading-6 outline-none focus:border-neutral-700" />
+              <label htmlFor="knowledge-source" className="mt-4 block text-sm font-semibold text-text-main">来源文件</label>
+              <input id="knowledge-source" value={item.source} readOnly aria-readonly="true" className="mt-2 w-full cursor-not-allowed rounded-lg border border-border-default bg-hover-bg px-3 py-2 text-sm text-text-tertiary" />
+              <div className="mt-4 flex justify-end gap-2"><button onClick={() => setIsEditing(false)} className="rounded-lg border border-border-default px-4 py-2 text-sm text-text-secondary">取消</button><button onClick={saveChanges} disabled={!draftSummary.trim()} className="rounded-lg bg-btn-main px-4 py-2 text-sm font-medium text-white disabled:opacity-35">保存修改</button></div>
+            </section>
+          ) : null}
         </div>
 
         {/* Footer */}
         <div className="p-6 border-t border-border-default bg-page-bg flex items-center justify-between">
           <div className="flex space-x-3">
-            <button className="flex items-center text-sm text-text-secondary hover:text-text-main font-medium">
+            <button onClick={() => setIsEditing(true)} className="flex items-center text-sm text-text-secondary hover:text-text-main font-medium">
               <Edit3 className="w-4 h-4 mr-1.5" /> 修改知识
             </button>
             <button className="flex items-center text-sm text-text-secondary hover:text-danger font-medium">

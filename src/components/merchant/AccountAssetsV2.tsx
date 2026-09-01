@@ -409,37 +409,34 @@ export const AccountAssetsV2: React.FC = () => {
 
       <div className="p-4 px-6">
         <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
-          <div className="grid grid-cols-[1.4fr_1.25fr_1.2fr_1.25fr_1fr_72px] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2 text-[13px] font-medium text-text-tertiary">
-            <span>小红书账号</span><span>角色与人设</span><span>发布员工 / 手机</span><span>排期与任务</span><span>数据采集</span><span>操作</span>
+          <div className="grid grid-cols-[1.5fr_1.15fr_1.1fr_1fr_1fr_72px] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] font-medium text-text-tertiary">
+            <span>小红书账号</span><span>账号角色</span><span>发布负责人</span><span>待处理任务</span><span>数据状态</span><span>操作</span>
           </div>
           {filteredProfiles.map(profile => {
             const schedules = scheduleMap.get(profile.nickname) || [];
             const next = schedules.find(item => !["已发布", "观察中"].includes(item.publishStatus)) || schedules[0];
             const activeTasks = schedules.filter(item => !["已发布", "观察中", "已关闭"].includes(item.publishStatus));
-            const lastNote = profile.noteMetrics[0];
             return (
-              <button key={profile.id} onClick={() => openAccount(profile)} className="grid w-full grid-cols-[1.4fr_1.25fr_1.2fr_1.25fr_1fr_72px] items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-surface-hover">
+              <button key={profile.id} onClick={() => openAccount(profile)} className="grid min-h-[68px] w-full grid-cols-[1.5fr_1.15fr_1.1fr_1fr_1fr_72px] items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-surface-hover">
                 <span className="flex min-w-0 items-center gap-2.5">
                   <img src={profile.avatarUrl} alt="" className="h-9 w-9 shrink-0 rounded-full border border-border-default object-cover" />
                   <span className="min-w-0">
                     <span className="block truncate text-[13px] font-semibold text-text-primary">{profile.nickname}</span>
-                    <span className="mt-0.5 block truncate text-[13px] text-text-tertiary">ID: {profile.xhsId} · 平台同步</span>
+                    <span className="mt-1 inline-flex rounded-md bg-surface-subtle px-1.5 py-0.5 text-[12px] text-text-tertiary">{profile.relation}</span>
                   </span>
                 </span>
                 <span className="min-w-0">
                   <span className="block truncate text-[13px] font-medium text-text-primary">{profile.matrixRole}</span>
-                  <span className="mt-0.5 block truncate text-[13px] text-text-tertiary">{profile.persona}</span>
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[13px] font-medium text-text-primary">{profile.employeeName}</span>
+                  <span className="mt-0.5 block truncate text-[12px] text-text-tertiary">{profile.employeeDept || "待分配团队"}</span>
                 </span>
                 <span>
-                  <span className="block text-[13px] font-medium text-text-primary">{profile.employeeName}<span className="ml-1 font-normal text-text-tertiary">· {profile.employeeDept}</span></span>
-                  <span className="mt-0.5 block truncate text-[13px] text-text-tertiary">{profile.publishDevice} · {profile.devicePhone || "未绑定"}</span>
-                </span>
-                <span>
-                  {next ? <><span className="block text-[13px] font-medium text-text-primary">{formatChineseDate(next.plannedDate)} · {activeTasks.length} 项任务</span><span className="mt-0.5 block truncate text-[13px] text-text-tertiary">{next.title}</span></> : <span className="text-[13px] text-text-tertiary">暂无发布安排</span>}
+                  {next ? <><span className="block text-[13px] font-semibold text-text-primary">{activeTasks.length} 项</span><span className="mt-0.5 block text-[12px] text-text-tertiary">最近 {formatChineseDate(next.plannedDate)}</span></> : <span className="text-[13px] text-text-tertiary">暂无待办</span>}
                 </span>
                 <span>
                   <span className={`inline-flex rounded-md border px-2 py-0.5 text-[13px] font-medium ${stateTone[profile.collectionState]}`}>{profile.collectionState}</span>
-                  <span className="mt-0.5 block text-[13px] text-text-tertiary">{lastNote ? `${lastNote.views?.toLocaleString() || "未获取"} 阅读` : profile.lastCollectedAt ? `${formatChineseDate(profile.lastCollectedAt, true)} 更新` : "等待首次采集"}</span>
                 </span>
                 <span className="flex items-center justify-end gap-0.5 text-[13px] font-medium text-text-secondary">管理<ChevronRight size={13} /></span>
               </button>

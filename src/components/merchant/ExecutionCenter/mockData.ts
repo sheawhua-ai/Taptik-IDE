@@ -185,6 +185,47 @@ export const INITIAL_EXECUTION_TASKS: ExecutionTask[] = [
       { id: 'e1', time: '2026-08-21 10:00', actor: '系统', action: '生成初稿' }
     ]
   },
+  {
+    id: 'task-m-waiting',
+    title: '补充幼犬换粮过程记录素材',
+    operatorCategory: 'material',
+    categoryLabel: '素材待办',
+    status: '待执行',
+    materialType: 'returned_shooting_asset',
+    projectId: 'p1',
+    projectName: '幼犬换粮搜索卡位第三轮',
+    noteId: 'ns3',
+    noteTitle: '幼犬七日换粮过程记录',
+    targetAccount: '张店长（陆家嘴店）',
+    accountType: '店长号/KOS',
+    operatorActionSummary: '等待执行者拍摄并回传素材',
+    reasonForIntervention: '素材任务已下发，执行者尚未回传。',
+    deadline: '今天 18:00',
+    deadlineLabel: '今日到期',
+    isBlocked: false,
+    waitingParty: '张店长（陆家嘴店）',
+    waitingRole: 'team',
+    isMeWaiting: false,
+    isTeamExecuting: true,
+    isSystemProcessing: false,
+    createdAt: '2026-08-21 10:30',
+    primaryActionLabel: '查看进度',
+    currentOccurrence: '任务已发送给张店长，等待拍摄和回传。',
+    confirmedFacts: ['拍摄要求与截止时间已送达执行者'],
+    nextStepAfterAction: '执行者回传后，AI 自动预检并进入待审核队列。',
+    materialSubItems: [{
+      id: 'sub-waiting-1',
+      requirement: '连续记录换粮第 1、3、7 天的进食状态与粮粒比例',
+      isRequired: true,
+      uploadedAssets: [],
+      autoCheckResult: '等待素材任务回传',
+      manualStatus: '待验收'
+    }],
+    timelineEvents: [
+      { id: 'waiting-e1', time: '2026-08-21 10:30', actor: '操盘手', action: '下发素材任务给张店长（陆家嘴店）' },
+      { id: 'waiting-e2', time: '2026-08-21 10:32', actor: '张店长（陆家嘴店）', action: '已接收任务' }
+    ]
+  },
 
   // ================= 2. 素材待办 (material) =================
   {

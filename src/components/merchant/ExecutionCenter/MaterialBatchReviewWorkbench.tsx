@@ -1,21 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  BellRing,
+  Bot,
   Check,
   CheckCircle2,
   ChevronDown,
+  ChevronRight,
+  CircleSlash2,
   Clock3,
+  Eye,
   Image as ImageIcon,
-  Layers3,
   RotateCcw,
   Search,
   Send,
   Sparkles,
-  UserRound
+  UserRound,
+  X
 } from 'lucide-react';
 import type { MaterialAsset } from '../../material-center/types';
-import type { ExecutionTask, MaterialSubItem } from './types';
+import type { ExecutionTask, MaterialSubItem, UploadedAsset } from './types';
 
-type ReviewDecision = '待判断' | '已通过' | '需补拍';
+type ReviewDecision = '待判断' | '已通过' | '需补拍' | '不采用';
+type TaskQueue = '全部' | '待执行' | '待审核';
 
 interface DraftDecision {
   decision: ReviewDecision;
@@ -27,6 +33,8 @@ interface ReviewItem {
   key: string;
   task: ExecutionTask;
   subItem: MaterialSubItem;
+  asset?: UploadedAsset;
+  assetIndex: number;
 }
 
 interface MaterialBatchReviewWorkbenchProps {
@@ -39,26 +47,50 @@ interface MaterialBatchReviewWorkbenchProps {
 }
 
 const RESHOOT_REASONS = ['主体或产品不清晰', '画面不符合要求', '存在水印或截图痕迹', '真实性表达不足'];
-const OPTIMIZE_ACTIONS = ['统一裁切为3:4', '尺寸规范化', '去除水印', '按模板贴字'];
 
-const makeKey = (taskId: string, subItemId: string) => `${taskId}:${subItemId}`;
+const makeKey = (taskId: string, subItemId: string, assetId?: string) => `${taskId}:${subItemId}:${assetId ?? 'missing'}`;
 
-const getInitialDecision = (subItem: MaterialSubItem): DraftDecision => ({
-  decision: subItem.manualStatus === '已通过' ? '已通过' : subItem.manualStatus === '需补拍' ? '需补拍' : '待判断',
-  reason: subItem.reshootReason ?? '',
-  keepAsAvailable: !subItem.isRequired
-});
+const getInitialDecision = (subItem: MaterialSubItem, asset?: UploadedAsset): DraftDecision => {
+  if (!asset) return { decision: '待判断', reason: '', keepAsAvailable: false };
+  return {
+    decision: asset.reviewStatus === '已通过' || asset.reviewStatus === '需补拍' || asset.reviewStatus === '不采用'
+      ? asset.reviewStatus
+      : subItem.manualStatus === '已通过' || subItem.manualStatus === '需补拍' || subItem.manualStatus === '不需要'
+        ? subItem.manualStatus === '不需要' ? '不采用' : subItem.manualStatus
+        : '待判断',
+    reason: asset.reviewReason ?? subItem.reshootReason ?? '',
+    keepAsAvailable: !subItem.isRequired
+  };
+};
 
-const getSubmittedCount = (task: ExecutionTask) => (
-  (task.materialSubItems ?? []).reduce((sum, item) => sum + item.uploadedAssets.length, 0)
+const getSubmissionSummary = (task: ExecutionTask) => {
+  const subItems = task.materialSubItems ?? [];
+  return {
+    requirementCount: subItems.length,
+    fulfilledCount: subItems.filter(item => item.uploadedAssets.length > 0).length,
+    assetCount: subItems.reduce((sum, item) => sum + item.uploadedAssets.length, 0)
+  };
+};
+
+const hasReturnedAssets = (task: ExecutionTask) => (task.materialSubItems ?? [])
+  .some(item => item.uploadedAssets.length > 0);
+
+const getTaskQueue = (task: ExecutionTask): Exclude<TaskQueue, '全部'> => (
+  hasReturnedAssets(task) ? '待审核' : '待执行'
+);
+
+const isTechnicalCheckPassed = (asset?: UploadedAsset) => Boolean(
+  asset?.technicalCheck.resolutionValid
+  && asset.technicalCheck.noWatermark
+  && ['正常', '良好'].includes(asset.technicalCheck.lightingQuality)
 );
 
 const toMaterialAsset = (item: ReviewItem, keepAsAvailable: boolean): MaterialAsset | null => {
-  const uploaded = item.subItem.uploadedAssets[0];
+  const uploaded = item.asset;
   if (!uploaded) return null;
   const isReserved = Boolean(item.task.noteId) && item.subItem.isRequired && !keepAsAvailable;
   return {
-    id: `MAT-ACCEPTED-${item.task.id}-${item.subItem.id}`,
+    id: `MAT-ACCEPTED-${item.task.id}-${item.subItem.id}-${uploaded.id}`,
     name: `${item.task.noteTitle} · ${item.subItem.requirement}`,
     url: uploaded.url,
     aspectRatio: '3:4',
@@ -115,29 +147,46 @@ export function MaterialBatchReviewWorkbench({
 }: MaterialBatchReviewWorkbenchProps) {
   const [selectedTaskId, setSelectedTaskId] = useState(() => tasks[0]?.id ?? '');
   const [taskQuery, setTaskQuery] = useState('');
+  const [taskQueue, setTaskQueue] = useState<TaskQueue>('全部');
   const activeTask = tasks.find(task => task.id === selectedTaskId) ?? tasks[0];
   const visibleTasks = useMemo(() => {
     const query = taskQuery.trim().toLowerCase();
-    if (!query) return tasks;
-    return tasks.filter(task => [task.title, task.targetAccount, task.projectName]
+    return tasks.filter(task => (taskQueue === '全部' || getTaskQueue(task) === taskQueue) && (!query || [task.title, task.targetAccount, task.projectName]
       .filter(Boolean)
-      .some(value => value!.toLowerCase().includes(query)));
-  }, [taskQuery, tasks]);
+      .some(value => value!.toLowerCase().includes(query))));
+  }, [taskQuery, taskQueue, tasks]);
 
   const allReviewItems = useMemo<ReviewItem[]>(() => tasks.flatMap(task => (
-    (task.materialSubItems ?? []).map(subItem => ({ key: makeKey(task.id, subItem.id), task, subItem }))
+    (task.materialSubItems ?? []).flatMap(subItem => {
+      if (subItem.uploadedAssets.length > 0) {
+        return subItem.uploadedAssets.map((asset, assetIndex) => ({
+          key: makeKey(task.id, subItem.id, asset.id),
+          task,
+          subItem,
+          asset,
+          assetIndex
+        }));
+      }
+      return subItem.isRequired ? [{
+        key: makeKey(task.id, subItem.id),
+        task,
+        subItem,
+        assetIndex: -1
+      }] : [];
+    })
   )), [tasks]);
   const reviewItems = useMemo(() => allReviewItems.filter(item => item.task.id === activeTask?.id), [activeTask?.id, allReviewItems]);
   const [decisions, setDecisions] = useState<Record<string, DraftDecision>>(() => Object.fromEntries(
-    allReviewItems.map(item => [item.key, getInitialDecision(item.subItem)])
+    allReviewItems.map(item => [item.key, getInitialDecision(item.subItem, item.asset)])
   ));
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() => new Set());
   const [sharedReason, setSharedReason] = useState(RESHOOT_REASONS[0]);
   const [replacementExecutor, setReplacementExecutor] = useState('保持原执行人');
   const [showContext, setShowContext] = useState(false);
-  const [showReshootPanel, setShowReshootPanel] = useState(false);
-  const [showBatchOptimize, setShowBatchOptimize] = useState(false);
-  const [optimizeAction, setOptimizeAction] = useState(OPTIMIZE_ACTIONS[0]);
+  const [reshootItemKey, setReshootItemKey] = useState<string | null>(null);
+  const [reshootDraftReason, setReshootDraftReason] = useState('');
+  const [previewItemKey, setPreviewItemKey] = useState<string | null>(null);
+  const [showReviewConfirmation, setShowReviewConfirmation] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const taskIds = useMemo(() => tasks.map(task => task.id).join('|'), [tasks]);
 
@@ -145,31 +194,62 @@ export function MaterialBatchReviewWorkbench({
     setSelectedTaskId(current => tasks.some(task => task.id === current) ? current : tasks[0]?.id ?? '');
     setSelectedKeys(new Set());
     setShowContext(false);
-    setShowReshootPanel(false);
-    setShowBatchOptimize(false);
-    setDecisions(current => Object.fromEntries(allReviewItems.map(item => [item.key, current[item.key] ?? getInitialDecision(item.subItem)])));
+    setReshootItemKey(null);
+    setReshootDraftReason('');
+    setPreviewItemKey(null);
+    setShowReviewConfirmation(false);
+    setNotice(null);
+    setDecisions(current => Object.fromEntries(allReviewItems.map(item => [item.key, current[item.key] ?? getInitialDecision(item.subItem, item.asset)])));
   }, [allReviewItems, taskIds, tasks]);
+
+  useEffect(() => {
+    if (!notice) return undefined;
+    const timeoutId = window.setTimeout(() => setNotice(null), 2600);
+    return () => window.clearTimeout(timeoutId);
+  }, [notice]);
 
   const counts = useMemo(() => reviewItems.reduce((result, item) => {
     const decision = decisions[item.key]?.decision ?? '待判断';
     if (decision === '已通过') result.accepted += 1;
     else if (decision === '需补拍') result.reshoot += 1;
+    else if (decision === '不采用') result.unused += 1;
     else result.pending += 1;
     return result;
-  }, { accepted: 0, reshoot: 0, pending: 0 }), [decisions, reviewItems]);
+  }, { accepted: 0, reshoot: 0, unused: 0, pending: 0 }), [decisions, reviewItems]);
 
-  const requiredPending = reviewItems.some(item => (
-    item.subItem.isRequired && (decisions[item.key]?.decision ?? '待判断') === '待判断'
-  ));
+  const missingRequiredCount = reviewItems.filter(item => item.subItem.isRequired && !item.asset).length;
+  const pendingReturnedCount = reviewItems.filter(item => item.asset && (decisions[item.key]?.decision ?? '待判断') === '待判断').length;
+  const completionBlocked = missingRequiredCount > 0 || pendingReturnedCount > 0;
+  const selectableKeys = useMemo(() => reviewItems.filter(item => Boolean(item.asset)).map(item => item.key), [reviewItems]);
+  const allSelectableSelected = selectableKeys.length > 0 && selectableKeys.every(key => selectedKeys.has(key));
+  const previewItem = previewItemKey ? reviewItems.find(item => item.key === previewItemKey) : undefined;
+  const reshootItem = reshootItemKey ? reviewItems.find(item => item.key === reshootItemKey) : undefined;
+  const activeQueue = getTaskQueue(activeTask);
+  const queueCounts = useMemo(() => ({
+    pending: tasks.filter(task => getTaskQueue(task) === '待执行').length,
+    review: tasks.filter(task => getTaskQueue(task) === '待审核').length
+  }), [tasks]);
 
   const updateDecision = (key: string, patch: Partial<DraftDecision>) => {
+    setNotice(null);
     setDecisions(current => ({
       ...current,
       [key]: { ...(current[key] ?? { decision: '待判断', reason: '', keepAsAvailable: false }), ...patch }
     }));
   };
 
+  const toggleAccepted = (key: string) => {
+    const isAccepted = decisions[key]?.decision === '已通过';
+    updateDecision(key, {
+      decision: isAccepted ? '待判断' : '已通过',
+      reason: ''
+    });
+  };
+
   const toggleSelected = (key: string) => {
+    const item = reviewItems.find(candidate => candidate.key === key);
+    if (!item?.asset) return;
+    setNotice(null);
     setSelectedKeys(current => {
       const next = new Set(current);
       if (next.has(key)) next.delete(key);
@@ -178,9 +258,8 @@ export function MaterialBatchReviewWorkbench({
     });
   };
 
-  const applyToSelection = (decision: Exclude<ReviewDecision, '待判断'>) => {
+  const applyToSelection = (decision: Exclude<ReviewDecision, '待判断' | '不采用'>) => {
     if (selectedKeys.size === 0) {
-      setNotice('请先选择素材。');
       return;
     }
     setDecisions(current => {
@@ -192,43 +271,56 @@ export function MaterialBatchReviewWorkbench({
       return next;
     });
     setSelectedKeys(new Set());
+    setNotice(null);
   };
 
-  const openReshootPanel = () => {
-    if (selectedKeys.size === 0) {
-      setNotice('请先选择需要退回的素材。');
+  const openSingleReshoot = (key: string) => {
+    setSelectedKeys(new Set());
+    setNotice(null);
+    setReshootDraftReason(decisions[key]?.reason || sharedReason);
+    setReshootItemKey(key);
+  };
+
+  const confirmSingleReshoot = () => {
+    if (!reshootItemKey) return;
+    if (!reshootDraftReason.trim()) {
+      setNotice('请填写具体的重拍要求。');
       return;
     }
-    setShowBatchOptimize(false);
-    setShowReshootPanel(true);
-  };
-
-  const confirmReshoot = () => {
-    applyToSelection('需补拍');
-    setShowReshootPanel(false);
+    updateDecision(reshootItemKey, { decision: '需补拍', reason: reshootDraftReason.trim() });
+    setReshootItemKey(null);
+    setReshootDraftReason('');
+    setNotice('已记录重拍要求；提交审核后将发给执行者。');
   };
 
   const selectAiPassed = () => {
-    setSelectedKeys(new Set(reviewItems.filter(item => {
-      const uploaded = item.subItem.uploadedAssets[0];
-      return uploaded?.technicalCheck.resolutionValid && uploaded.technicalCheck.noWatermark;
-    }).map(item => item.key)));
+    setNotice(null);
+    setSelectedKeys(new Set(reviewItems.filter(item => (
+      isTechnicalCheckPassed(item.asset)
+      && (decisions[item.key]?.decision ?? '待判断') === '待判断'
+    )).map(item => item.key)));
   };
 
-  const submitBatchOptimize = () => {
-    if (selectedKeys.size === 0) {
-      setNotice('请先选择需要修改的素材。');
-      return;
-    }
-    setNotice(`已将 ${selectedKeys.size} 张素材加入“${optimizeAction}”批量处理，完成后回到本任务继续审核。`);
-    setShowBatchOptimize(false);
-    setSelectedKeys(new Set());
+  const remindExecutor = () => {
+    const updatedTask: ExecutionTask = {
+      ...activeTask,
+      timelineEvents: [...activeTask.timelineEvents, {
+        id: `remind-${activeTask.id}-${Date.now()}`,
+        time: '刚刚',
+        actor: '操盘手',
+        action: `催促 ${activeTask.targetAccount} 尽快执行并回传素材`
+      }]
+    };
+    onTasksChange([updatedTask]);
+    setNotice(`已催促 ${activeTask.targetAccount}`);
   };
 
   const submitReview = () => {
     if (!activeTask) return;
-    if (requiredPending) {
-      setNotice('必拍素材仍有未判断项。');
+    if (completionBlocked) {
+      setNotice(missingRequiredCount > 0
+        ? `还有 ${missingRequiredCount} 项必拍素材未回传，暂时无法完成验收。`
+        : `还有 ${pendingReturnedCount} 张已回传素材未给出结论。`);
       return;
     }
 
@@ -240,11 +332,37 @@ export function MaterialBatchReviewWorkbench({
     });
 
     const materialSubItems = (activeTask.materialSubItems ?? []).map(subItem => {
-      const draft = decisions[makeKey(activeTask.id, subItem.id)] ?? getInitialDecision(subItem);
+      const reviewedAssets = subItem.uploadedAssets.map(asset => {
+        const draft = decisions[makeKey(activeTask.id, subItem.id, asset.id)] ?? getInitialDecision(subItem, asset);
+        return {
+          ...asset,
+          reviewStatus: draft.decision === '待判断' ? '待验收' : draft.decision,
+          reviewReason: draft.decision === '需补拍' ? draft.reason || sharedReason : undefined,
+          reviewedBy: '当前操盘手',
+          reviewedAt: '刚刚',
+          reshootAiReview: draft.decision === '需补拍'
+            ? { status: '待复核', summary: '等待补拍回传后，按原要求与本轮重拍要求自动复核' }
+            : undefined
+        } as UploadedAsset;
+      });
+      const assetDecisions = reviewedAssets.map(asset => asset.reviewStatus);
+      const manualStatus: MaterialSubItem['manualStatus'] = assetDecisions.includes('需补拍')
+        ? '需补拍'
+        : assetDecisions.includes('已通过')
+          ? '已通过'
+          : assetDecisions.length > 0 && assetDecisions.every(status => status === '不采用')
+            ? '不需要'
+            : subItem.manualStatus;
       return {
         ...subItem,
-        manualStatus: draft.decision === '待判断' ? '待验收' : draft.decision,
-        reshootReason: draft.decision === '需补拍' ? draft.reason || sharedReason : undefined
+        uploadedAssets: reviewedAssets,
+        manualStatus,
+        reshootReason: manualStatus === '需补拍'
+          ? reviewedAssets.find(asset => asset.reviewStatus === '需补拍')?.reviewReason || sharedReason
+          : undefined,
+        reshootRequirement: manualStatus === '需补拍'
+          ? reviewedAssets.find(asset => asset.reviewStatus === '需补拍')?.reviewReason || sharedReason
+          : undefined
       } as MaterialSubItem;
     });
     const needsReshoot = materialSubItems.some(item => item.manualStatus === '需补拍');
@@ -260,15 +378,18 @@ export function MaterialBatchReviewWorkbench({
         id: `review-${activeTask.id}-${Date.now()}`,
         time: '刚刚',
         actor: '操盘手',
-        action: needsReshoot ? '本轮审核完成，补拍项已退回原任务' : '本轮素材全部验收通过'
+        action: needsReshoot
+          ? `本轮验收完成：通过 ${counts.accepted} 张，退回补拍 ${counts.reshoot} 张，不采用 ${counts.unused} 张`
+          : `本轮验收完成：通过 ${counts.accepted} 张，不采用 ${counts.unused} 张`
       }]
     };
 
     onTasksChange([updatedTask]);
     if (acceptedAssets.length > 0) onAssetsAccepted?.(acceptedAssets);
+    setShowReviewConfirmation(false);
     setNotice(counts.reshoot > 0
-      ? `${counts.accepted} 张通过，${counts.reshoot} 张退回原任务重做。`
-      : `${counts.accepted} 张素材已通过并进入素材中心。`);
+      ? `${counts.accepted} 张通过，${counts.reshoot} 张退回补拍，${counts.unused} 张不采用。`
+      : `${counts.accepted} 张素材已入库，${counts.unused} 张不采用。`);
   };
 
   if (!activeTask) {
@@ -287,7 +408,7 @@ export function MaterialBatchReviewWorkbench({
       <header className="workspace-header flex shrink-0 items-center justify-between border-b border-border-default bg-surface-1">
         {workspaceNavigation}
         <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
-          <span>{tasks.length} 项待审核</span>
+          <span>{queueCounts.pending} 项待执行 · {queueCounts.review} 项待审核</span>
           {followUpTasks.length > 0 ? (
             <button type="button" onClick={() => onOpenFollowUp?.(followUpTasks[0])} className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 font-medium text-amber-800">待跟进 {followUpTasks.length}</button>
           ) : null}
@@ -305,12 +426,18 @@ export function MaterialBatchReviewWorkbench({
               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
               <input value={taskQuery} onChange={(event) => setTaskQuery(event.target.value)} placeholder="搜索任务或账号..." className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors" />
             </div>
+            <div className="grid grid-cols-3 rounded-lg bg-surface-subtle p-0.5" aria-label="素材任务状态筛选">
+              {(['全部', '待执行', '待审核'] as TaskQueue[]).map(queue => (
+                <button key={queue} type="button" onClick={() => setTaskQueue(queue)} className={`rounded-md px-2 py-1.5 text-[12px] font-medium ${taskQueue === queue ? 'bg-surface-1 text-text-main shadow-sm' : 'text-text-tertiary hover:text-text-main'}`}>
+                  {queue}{queue === '待执行' ? ` ${queueCounts.pending}` : queue === '待审核' ? ` ${queueCounts.review}` : ''}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
             {visibleTasks.map(task => {
               const selected = task.id === activeTask.id;
-              const requiredCount = task.materialSubItems?.length ?? 0;
-              const submittedCount = getSubmittedCount(task);
+              const submission = getSubmissionSummary(task);
               return (
                 <button
                   key={task.id}
@@ -319,8 +446,8 @@ export function MaterialBatchReviewWorkbench({
                     setSelectedTaskId(task.id);
                     setSelectedKeys(new Set());
                     setShowContext(false);
-                    setShowReshootPanel(false);
-                    setShowBatchOptimize(false);
+                    setReshootItemKey(null);
+                    setNotice(null);
                   }}
                   className={`w-full text-left px-4 py-3.5 transition-colors border-b border-border-subtle relative ${selected ? 'bg-surface-subtle' : 'bg-transparent hover:bg-hover-bg text-text-main'}`}
                 >
@@ -328,8 +455,9 @@ export function MaterialBatchReviewWorkbench({
                   <div className={`text-[13px] line-clamp-1 ${selected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>{task.title}</div>
                   <div className="mt-1.5 flex items-center justify-between text-[13px] text-text-tertiary tabular-nums">
                     <span className="flex min-w-0 items-center gap-1 truncate"><UserRound size={10} />{task.targetAccount}</span>
-                    <span className="shrink-0">已交 {submittedCount}/{requiredCount}</span>
+                    <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[12px] ${getTaskQueue(task) === '待审核' ? 'bg-amber-50 text-amber-700' : 'bg-surface-subtle text-text-secondary'}`}>{getTaskQueue(task)}</span>
                   </div>
+                  <div className="mt-1 text-right text-[12px] text-text-tertiary">{submission.fulfilledCount}/{submission.requirementCount} 项 · {submission.assetCount} 张</div>
                 </button>
               );
             })}
@@ -343,129 +471,183 @@ export function MaterialBatchReviewWorkbench({
                 <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
                   <span>{activeTask.noteId ? '笔记素材任务' : '项目级素材任务'}</span>
                   <span>·</span>
-                  <span className="truncate">{activeTask.targetAccount}</span>
-                  <span>·</span>
                   <span>{activeTask.deadline || '未设置截止'}</span>
                 </div>
                 <h2 className="mt-1 truncate text-[14px] font-semibold text-text-main">{activeTask.title}</h2>
-                <div className="mt-2 flex items-center gap-1.5 text-[13px] text-text-tertiary" aria-label="素材任务流程">
-                  {['已下发', '已领取', '已回传', '待审核'].map((step, index) => (
-                    <React.Fragment key={step}>
-                      <span className={index === 3 ? 'font-semibold text-text-main' : 'text-emerald-700'}>{step}</span>
-                      {index < 3 ? <span className="h-px w-5 bg-border-strong" /> : null}
-                    </React.Fragment>
-                  ))}
-                </div>
               </div>
-              <button type="button" onClick={() => setShowContext(current => !current)} className={`flex shrink-0 items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[13px] ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
-                任务详情 <ChevronDown size={11} className={showContext ? 'rotate-180' : ''} />
+              <button type="button" aria-expanded={showContext} onClick={() => setShowContext(current => !current)} className={`flex shrink-0 items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[13px] ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
+                执行进程 <ChevronDown size={11} className={`transition-transform ${showContext ? 'rotate-180' : ''}`} />
               </button>
             </div>
             {showContext ? (
-              <div className="mt-3 grid gap-2 rounded-lg bg-surface-subtle p-3 text-[13px] leading-4 text-text-secondary md:grid-cols-2">
+              <div className="mt-3 rounded-xl border border-border-default bg-surface-subtle p-3 text-[13px] leading-5 text-text-secondary">
+                <div className="flex items-center gap-1.5 border-b border-border-default pb-3 text-text-tertiary" aria-label="素材任务流程">
+                  {(activeQueue === '待执行' ? ['已下发', '待执行', '待回传'] : ['已下发', '已执行', '已回传', '待审核']).map((step, index, steps) => (
+                    <React.Fragment key={step}>
+                      <span className={index === steps.length - 1 ? 'font-semibold text-text-main' : 'text-emerald-700'}>{step}</span>
+                      {index < steps.length - 1 ? <span className="h-px w-6 bg-border-strong" /> : null}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div className="mt-3 grid gap-2 md:grid-cols-2">
+                <div><span className="text-text-tertiary">发给：</span>{activeTask.targetAccount}（{activeTask.accountType}）</div>
+                <div><span className="text-text-tertiary">当前处理人：</span>{activeTask.waitingParty}</div>
                 <div><span className="text-text-tertiary">处理依据：</span>{activeTask.reasonForIntervention}</div>
                 <div><span className="text-text-tertiary">下一步：</span>{activeTask.nextStepAfterAction}</div>
+                <div className="md:col-span-2 mt-1 border-l border-border-strong pl-3">{activeTask.timelineEvents.map(event => <div key={event.id} className="py-0.5"><span className="text-text-tertiary">{event.time} · {event.actor}</span>　{event.action}</div>)}</div>
+                </div>
               </div>
             ) : null}
           </div>
 
-          <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2">
+          {activeQueue === '待审核' ? <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className="mr-1 text-[13px] text-text-tertiary">已选 {selectedKeys.size}</span>
-              <button type="button" onClick={() => setSelectedKeys(new Set(reviewItems.map(item => item.key)))} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">全选</button>
-              <button type="button" onClick={selectAiPassed} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">选中预检通过</button>
-              <button type="button" onClick={() => applyToSelection('已通过')} className="rounded-lg bg-neutral-950 px-2.5 py-1.5 text-[13px] font-medium text-white">批量通过</button>
-              <button type="button" onClick={openReshootPanel} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">退回重拍</button>
-              <button type="button" onClick={() => { setShowBatchOptimize(current => !current); setShowReshootPanel(false); }} className="flex items-center gap-1 rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg"><Sparkles size={11} />批量优化</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setNotice(null);
+                  setSelectedKeys(allSelectableSelected ? new Set() : new Set(selectableKeys));
+                }}
+                disabled={selectableKeys.length === 0}
+                className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg disabled:cursor-not-allowed disabled:opacity-35"
+              >{allSelectableSelected ? '清空' : '全选'}</button>
+              <button type="button" onClick={selectAiPassed} className="rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-main hover:bg-hover-bg">选中技术预检通过</button>
+              <button type="button" onClick={() => applyToSelection('已通过')} disabled={selectedKeys.size === 0} className="rounded-lg bg-neutral-950 px-2.5 py-1.5 text-[13px] font-medium text-white disabled:cursor-not-allowed disabled:opacity-35">验收通过{selectedKeys.size > 0 ? `（${selectedKeys.size}）` : ''}</button>
+              <button type="button" disabled title="需接入素材中心 AI 编辑链路后开放" className="flex cursor-not-allowed items-center gap-1 rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] font-medium text-text-tertiary opacity-50"><Sparkles size={11} />AI 优化待接入</button>
             </div>
-            {showReshootPanel ? (
-              <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg bg-surface-subtle p-2">
-                <RotateCcw size={13} className="text-text-tertiary" />
-                <select value={sharedReason} onChange={event => setSharedReason(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[13px] text-text-secondary">
-                  {RESHOOT_REASONS.map(reason => <option key={reason}>{reason}</option>)}
-                </select>
-                <select value={replacementExecutor} onChange={event => setReplacementExecutor(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[13px] text-text-secondary">
-                  <option>保持原执行人</option><option>改派备用员工</option><option>改派备用KOC</option>
-                </select>
-                <button type="button" onClick={confirmReshoot} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[13px] text-white">确认退回要求</button>
-              </div>
-            ) : null}
-            {showBatchOptimize ? (
-              <div className="mt-2 flex items-center gap-2 rounded-lg bg-surface-subtle p-2">
-                <Layers3 size={13} className="text-text-tertiary" />
-                <select value={optimizeAction} onChange={event => setOptimizeAction(event.target.value)} className="rounded-md border border-border-default bg-surface-1 px-2 py-1.5 text-[13px] text-text-secondary">
-                  {OPTIMIZE_ACTIONS.map(action => <option key={action}>{action}</option>)}
-                </select>
-                <button type="button" onClick={submitBatchOptimize} className="rounded-md bg-neutral-950 px-3 py-1.5 text-[13px] text-white">加入处理</button>
-              </div>
-            ) : null}
-          </div>
+          </div> : null}
 
           <div className="min-h-0 flex-1 overflow-y-auto p-3.5">
-            <div className="grid gap-3 xl:grid-cols-2">
+            {activeQueue === '待执行' ? (
+              <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-border-default bg-surface-1 p-6 shadow-sm">
+                <div className="flex items-start gap-4"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-700"><Clock3 size={20} /></span><div><h3 className="text-[16px] font-semibold text-text-main">等待执行者回传素材</h3><p className="mt-1 text-[13px] leading-6 text-text-secondary">任务已发送给 {activeTask.targetAccount}。回传前无需审核，你可以催促执行或在“执行进程”中查看处理记录。</p></div></div>
+                <div className="mt-5 space-y-2">{(activeTask.materialSubItems ?? []).map((item, index) => <div key={item.id} className="flex gap-3 rounded-xl bg-surface-subtle p-3 text-[13px]"><span className="text-text-tertiary">{index + 1}</span><span className="flex-1 text-text-main">{item.requirement}</span><span className="shrink-0 text-text-tertiary">待回传</span></div>)}</div>
+                <div className="mt-5 flex items-center justify-between border-t border-border-default pt-4"><span className="text-[12px] text-text-tertiary">截止：{activeTask.deadline || '未设置'}</span><button type="button" onClick={remindExecutor} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white"><BellRing size={13} />催促执行</button></div>
+              </div>
+            ) : <div className="grid gap-3 xl:grid-cols-2">
               {reviewItems.map(item => {
-                const draft = decisions[item.key] ?? getInitialDecision(item.subItem);
-                const uploaded = item.subItem.uploadedAssets[0];
+                const draft = decisions[item.key] ?? getInitialDecision(item.subItem, item.asset);
+                const uploaded = item.asset;
                 const selected = selectedKeys.has(item.key);
-                const aiPassed = Boolean(uploaded?.technicalCheck.resolutionValid && uploaded?.technicalCheck.noWatermark);
+                const aiPassed = isTechnicalCheckPassed(uploaded);
                 return (
                   <article
                     key={item.key}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => toggleSelected(item.key)}
-                    onKeyDown={event => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        toggleSelected(item.key);
-                      }
-                    }}
-                    className={`cursor-pointer rounded-xl border bg-surface-1 p-3 transition-colors ${selected ? 'border-neutral-900 ring-1 ring-neutral-900' : 'border-border-default hover:border-border-strong'}`}
+                    className={`rounded-xl border bg-surface-1 p-3 transition-colors ${selected ? 'border-neutral-900 ring-1 ring-neutral-900' : draft.decision === '已通过' ? 'border-emerald-200 ring-1 ring-emerald-100' : 'border-border-default hover:border-border-strong'}`}
                     style={{ contentVisibility: 'auto', containIntrinsicSize: '190px' }}
                   >
                     <div className="flex gap-3">
                       <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-lg bg-surface-subtle">
-                        {uploaded ? <img src={uploaded.url} alt={item.subItem.requirement} className="h-full w-full object-cover" /> : <ImageIcon size={22} className="m-auto text-text-tertiary" />}
-                        <span className={`absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-md border ${selected ? 'border-neutral-950 bg-neutral-950 text-white' : 'border-white bg-white/90 text-transparent'}`}><Check size={12} /></span>
+                        {uploaded ? (
+                          <button type="button" onClick={() => setPreviewItemKey(item.key)} aria-label={`预览${item.subItem.requirement}`} className="group h-full w-full">
+                            <img src={uploaded.url} alt={item.subItem.requirement} className="h-full w-full object-cover" />
+                            <span className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"><Eye size={12} /></span>
+                          </button>
+                        ) : <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-text-tertiary"><ImageIcon size={22} /><span className="text-[11px]">待回传</span></div>}
+                        {uploaded ? (
+                          <button
+                            type="button"
+                            onClick={() => toggleSelected(item.key)}
+                            aria-label={`${selected ? '取消选择' : '选择'}${item.subItem.requirement}${item.assetIndex > 0 ? `第${item.assetIndex + 1}张` : ''}`}
+                            aria-pressed={selected}
+                            className={`absolute left-2 top-2 flex h-6 w-6 items-center justify-center rounded-md border shadow-sm ${selected ? 'border-neutral-950 bg-neutral-950 text-white' : 'border-white bg-white/95 text-transparent hover:text-text-tertiary'}`}
+                          ><Check size={13} /></button>
+                        ) : null}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className={`rounded-md px-2 py-1 text-[13px] ${aiPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>{aiPassed ? '预检通过' : '重点检查'}</span>
+                          <span className={`rounded-md px-2 py-1 text-[13px] ${uploaded ? aiPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800' : 'bg-surface-subtle text-text-tertiary'}`}>{uploaded ? aiPassed ? '技术预检通过' : '技术预检异常' : '必拍素材待回传'}</span>
+                          {item.assetIndex > 0 ? <span className="text-[12px] text-text-tertiary">第 {item.assetIndex + 1} 张</span> : null}
                           <span className="ml-auto text-[13px] text-text-tertiary">{uploaded?.resolution || '待回传'}</span>
                         </div>
                         <h3 className="mt-2 line-clamp-2 text-[13px] font-semibold leading-5 text-text-main">{item.subItem.requirement}</h3>
-                        <details className="mt-1 text-[13px] text-text-tertiary" onClick={event => event.stopPropagation()}>
+                        <details className="mt-1 text-[13px] text-text-tertiary">
                           <summary className="cursor-pointer select-none">预检详情</summary>
                           <p className="mt-1 leading-4">{item.subItem.autoCheckResult}</p>
                         </details>
-                        <div className="mt-2 flex gap-2">
-                          <button type="button" onClick={event => { event.stopPropagation(); updateDecision(item.key, { decision: '已通过', reason: '' }); }} className={`rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '已通过' ? 'bg-neutral-950 text-white' : 'border border-border-default text-text-secondary'}`}>通过</button>
-                          <button type="button" onClick={event => { event.stopPropagation(); updateDecision(item.key, { decision: '需补拍', reason: draft.reason || sharedReason }); }} className={`rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '需补拍' ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200' : 'border border-border-default text-text-secondary'}`}>打回</button>
-                        </div>
+                        {uploaded ? (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              aria-pressed={draft.decision === '已通过'}
+                              aria-label={draft.decision === '已通过' ? `取消验收通过：${item.subItem.requirement}` : `验收通过：${item.subItem.requirement}`}
+                              onClick={() => toggleAccepted(item.key)}
+                              className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '已通过' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200' : 'border border-border-default text-text-secondary'}`}
+                            >{draft.decision === '已通过' ? <><CheckCircle2 size={12} />已通过 <span className="ml-1 text-emerald-600/70">取消</span></> : '验收通过'}</button>
+                            <button type="button" onClick={() => openSingleReshoot(item.key)} className={`rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '需补拍' ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200' : 'border border-border-default text-text-secondary'}`}>要求重拍</button>
+                            {!item.subItem.isRequired ? <button type="button" onClick={() => updateDecision(item.key, { decision: '不采用', reason: '' })} className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '不采用' ? 'bg-surface-subtle text-text-main ring-1 ring-border-strong' : 'border border-border-default text-text-secondary'}`}><CircleSlash2 size={11} />不采用</button> : null}
+                          </div>
+                        ) : <p className="mt-2 text-[12px] leading-5 text-amber-700">该项属于必拍要求，需要执行人补充回传后才能完成验收。</p>}
                       </div>
                     </div>
-                    {draft.decision === '需补拍' ? (
-                      <input value={draft.reason} onClick={event => event.stopPropagation()} onChange={event => updateDecision(item.key, { reason: event.target.value })} placeholder="补充重拍要求" className="mt-2 w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none focus:border-border-strong" />
-                    ) : null}
+                    {draft.decision === '需补拍' ? <div className="mt-2 flex items-center gap-1.5 rounded-lg bg-rose-50 px-3 py-2 text-[12px] text-rose-700"><RotateCcw size={11} />重拍要求：{draft.reason}</div> : null}
                   </article>
                 );
               })}
-            </div>
+            </div>}
           </div>
 
-          <footer className="shrink-0 border-t border-border-default bg-surface-1 px-4 py-2 shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
+          {activeQueue === '待审核' ? <footer className="shrink-0 border-t border-border-default bg-surface-1 px-4 py-2 shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-3 text-[13px]">
                 <span className="flex items-center gap-1 text-emerald-700"><CheckCircle2 size={12} />通过 {counts.accepted}</span>
                 <span className="flex items-center gap-1 text-rose-600"><RotateCcw size={12} />打回 {counts.reshoot}</span>
+                <span className="flex items-center gap-1 text-text-secondary"><CircleSlash2 size={12} />不采用 {counts.unused}</span>
                 <span className="flex items-center gap-1 text-text-tertiary"><Clock3 size={12} />未判断 {counts.pending}</span>
               </div>
-              <span className="ml-auto text-[13px] text-text-tertiary">通过的素材入库；退回项沿原任务继续执行</span>
-              <button type="button" onClick={submitReview} disabled={requiredPending} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />提交审核</button>
+              <span className={`ml-auto text-[13px] ${completionBlocked ? 'text-amber-700' : 'text-text-tertiary'}`}>{missingRequiredCount > 0 ? `${missingRequiredCount} 项必拍素材未回传` : pendingReturnedCount > 0 ? `${pendingReturnedCount} 张已回传素材待判断` : '所有回传素材均已给出结论'}</span>
+              <button type="button" onClick={() => setShowReviewConfirmation(true)} disabled={completionBlocked} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />提交审核结果</button>
             </div>
-          </footer>
+          </footer> : null}
         </main>
       </div>
+
+      {previewItem?.asset ? (
+        <div className="fixed inset-0 z-[320] flex items-center justify-center bg-black/70 p-6" role="dialog" aria-modal="true" aria-label="素材大图预览" onClick={() => setPreviewItemKey(null)}>
+          <div className="relative flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-surface-1 shadow-2xl" onClick={event => event.stopPropagation()}>
+            <button type="button" onClick={() => setPreviewItemKey(null)} aria-label="关闭预览" className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white"><X size={17} /></button>
+            <div className="min-h-0 flex-1 bg-neutral-950 p-4"><img src={previewItem.asset.url} alt={previewItem.subItem.requirement} className="mx-auto max-h-[68vh] max-w-full object-contain" /></div>
+            <div className="grid gap-2 border-t border-border-default p-4 text-[13px] text-text-secondary md:grid-cols-3">
+              <div className="md:col-span-2"><span className="text-text-tertiary">拍摄要求：</span>{previewItem.subItem.requirement}</div>
+              <div><span className="text-text-tertiary">尺寸：</span>{previewItem.asset.resolution}</div>
+              <div className="md:col-span-3"><span className="text-text-tertiary">技术预检：</span>{previewItem.subItem.autoCheckResult}</div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {reshootItem?.asset ? (
+        <div className="fixed inset-0 z-[315] flex items-center justify-center bg-black/45 p-4" role="dialog" aria-modal="true" aria-labelledby="reshoot-title">
+          <div className="w-full max-w-xl rounded-2xl border border-border-default bg-surface-1 p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-3"><div><h3 id="reshoot-title" className="text-[16px] font-semibold text-text-main">要求重拍这张素材</h3><p className="mt-1 text-[13px] text-text-tertiary">重拍必须逐张处理，避免要求错配。</p></div><button type="button" onClick={() => setReshootItemKey(null)} aria-label="关闭重拍窗口" className="text-text-tertiary"><X size={18} /></button></div>
+            <div className="mt-4 flex gap-3 rounded-xl bg-surface-subtle p-3"><img src={reshootItem.asset.url} alt="待重拍素材" className="h-20 w-20 rounded-lg object-cover" /><div className="min-w-0 text-[13px]"><div className="text-[12px] text-text-tertiary">原拍摄要求</div><p className="mt-1 leading-5 text-text-main">{reshootItem.subItem.requirement}</p></div></div>
+            <label className="mt-4 block text-[13px] font-medium text-text-main">本次重拍要求</label>
+            <div className="mt-2 flex flex-wrap gap-2">{RESHOOT_REASONS.map(reason => <button key={reason} type="button" onClick={() => setReshootDraftReason(reason)} className="rounded-full border border-border-default px-2.5 py-1 text-[12px] text-text-secondary hover:border-border-strong">{reason}</button>)}</div>
+            <textarea value={reshootDraftReason} onChange={event => setReshootDraftReason(event.target.value)} rows={3} placeholder="说明哪里不符合、需要如何重拍" className="mt-2 w-full resize-none rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none focus:border-border-strong" />
+            <div className="mt-3 flex items-start gap-2 rounded-xl border border-violet-100 bg-violet-50 p-3 text-[12px] leading-5 text-violet-800"><Bot size={15} className="mt-0.5 shrink-0" /><span>执行者再次回传后，AI 将同时按“原拍摄要求 + 本次重拍要求”自动复核是否满足；不满足会继续标记异常，再交由你决定。</span></div>
+            <div className="mt-5 flex items-center justify-between"><select value={replacementExecutor} onChange={event => setReplacementExecutor(event.target.value)} className="rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] text-text-secondary"><option>保持原执行人</option><option>改派备用员工</option><option>改派备用KOC</option></select><div className="flex gap-2"><button type="button" onClick={() => setReshootItemKey(null)} className="rounded-lg border border-border-default px-4 py-2 text-[13px] text-text-secondary">取消</button><button type="button" onClick={confirmSingleReshoot} className="flex items-center gap-1 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white">确认重拍要求<ChevronRight size={13} /></button></div></div>
+          </div>
+        </div>
+      ) : null}
+
+      {showReviewConfirmation ? (
+        <div className="fixed inset-0 z-[310] flex items-center justify-center bg-black/45 p-4" role="dialog" aria-modal="true" aria-labelledby="material-review-confirm-title">
+          <div className="w-full max-w-md rounded-2xl border border-border-default bg-surface-1 p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-3">
+              <div><h3 id="material-review-confirm-title" className="text-[16px] font-semibold text-text-main">提交审核结果</h3><p className="mt-1 text-[13px] leading-5 text-text-tertiary">提交后，通过项立即入库；重拍要求发给执行者，任务回到待执行。</p></div>
+              <button type="button" onClick={() => setShowReviewConfirmation(false)} aria-label="关闭确认窗口" className="text-text-tertiary hover:text-text-main"><X size={18} /></button>
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="rounded-xl bg-emerald-50 p-3 text-center"><div className="text-[20px] font-semibold text-emerald-700">{counts.accepted}</div><div className="mt-1 text-[12px] text-emerald-700">通过并入库</div></div>
+              <div className="rounded-xl bg-rose-50 p-3 text-center"><div className="text-[20px] font-semibold text-rose-700">{counts.reshoot}</div><div className="mt-1 text-[12px] text-rose-700">退回补拍</div></div>
+              <div className="rounded-xl bg-surface-subtle p-3 text-center"><div className="text-[20px] font-semibold text-text-main">{counts.unused}</div><div className="mt-1 text-[12px] text-text-secondary">不采用</div></div>
+            </div>
+            <p className="mt-4 rounded-xl bg-surface-subtle p-3 text-[12px] leading-5 text-text-secondary">通过素材将进入素材中心；笔记级必拍素材会同时绑定当前笔记。补拍项继续沿原素材任务执行。</p>
+            <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setShowReviewConfirmation(false)} className="rounded-lg border border-border-default px-4 py-2 text-[13px] text-text-secondary">返回检查</button><button type="button" onClick={submitReview} className="rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white">提交审核结果</button></div>
+          </div>
+        </div>
+      ) : null}
 
       {notice ? <div className="fixed bottom-6 left-1/2 z-[300] -translate-x-1/2 rounded-xl bg-neutral-950 px-4 py-2.5 text-[13px] text-white shadow-xl">{notice}</div> : null}
     </div>

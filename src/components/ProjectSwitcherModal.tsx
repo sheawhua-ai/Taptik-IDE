@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Building2, Check, FolderKanban, Search, Settings2, X } from "lucide-react";
+import { ArrowRight, Building2, Check, Search, Settings2, X } from "lucide-react";
+import { getMerchantCompleteness } from "../utils/merchantCompleteness";
 
 interface ProjectSwitcherModalProps {
   isOpen: boolean;
@@ -86,21 +87,26 @@ export const ProjectSwitcherModal: React.FC<ProjectSwitcherModalProps> = ({
 
           <div className="min-h-[260px] flex-1 overflow-y-auto p-3 custom-scrollbar">
             {filteredMerchants.length > 0 ? (
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2">
                 {filteredMerchants.map((merchant: any) => {
                   const isActive = merchant.id === activeProjectId;
                   const industry = merchant.industryProfile?.primaryName || merchant.tags?.[0] || "未设置行业";
+                  const completeness = getMerchantCompleteness(merchant);
                   return (
-                    <button key={merchant.id} type="button" onClick={() => onSelect(merchant.id)} className={`group flex min-h-[112px] items-start gap-3 rounded-2xl border p-4 text-left transition-all ${isActive ? "border-brand-logo/35 bg-brand-light/45 shadow-sm" : "border-border-default bg-surface-1 hover:border-border-strong hover:bg-page-bg"}`}>
+                    <button key={merchant.id} type="button" onClick={() => onSelect(merchant.id)} className={`group flex min-h-[82px] w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left transition-all ${isActive ? "border-brand-logo/35 bg-brand-light/45 shadow-sm" : "border-border-default bg-surface-1 hover:border-border-strong hover:bg-page-bg"}`}>
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[14px] font-semibold" style={{ backgroundColor: merchant.color || "var(--surface-selected)", color: merchant.textColor || "var(--text-secondary)" }}>{merchant.initial || merchant.name?.charAt(0) || "商"}</span>
                       <span className="min-w-0 flex-1">
-                        <span className="flex items-start justify-between gap-2">
+                        <span className="flex items-center gap-2">
                           <strong className="truncate text-[14px] font-semibold text-text-main">{merchant.name}</strong>
-                          {isActive ? <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-medium text-brand-logo"><Check size={13} />当前</span> : <ArrowRight size={15} className="shrink-0 text-text-tertiary transition-transform group-hover:translate-x-0.5" />}
+                          {isActive ? <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-surface-1 px-2 py-0.5 text-[12px] font-medium text-brand-logo"><Check size={12} />当前</span> : null}
                         </span>
                         <span className="mt-1 block text-[13px] text-text-tertiary">{industry}</span>
-                        <span className="mt-2 flex items-center gap-1.5 text-[13px] text-text-secondary"><FolderKanban size={13} className="text-text-tertiary" />进入该商家的独立项目空间</span>
                       </span>
+                      <span className="w-44 shrink-0">
+                        <span className="flex items-center justify-between gap-3 text-[12px]"><span className="text-text-tertiary">商家信息完善度</span><strong className="font-semibold tabular-nums text-text-main">{completeness}%</strong></span>
+                        <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-surface-selected"><span className="block h-full rounded-full bg-brand-logo transition-all" style={{ width: `${Math.max(0, Math.min(100, completeness))}%` }} /></span>
+                      </span>
+                      <ArrowRight size={16} className="shrink-0 text-text-tertiary transition-transform group-hover:translate-x-0.5" />
                     </button>
                   );
                 })}
