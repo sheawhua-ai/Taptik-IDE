@@ -93,6 +93,7 @@ export interface ProjectContextType {
   createProjectNote: (projectId: string, noteData: { title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => void;
   batchGenerateProjectNotes: (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => void;
   createFullOperationsProject: (data: {
+    merchantId?: string;
     name: string;
     goal: string;
     status?: "准备中" | "进行中" | "已结束";
@@ -393,6 +394,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       return {
         id: p.id,
+        merchantId: p.merchantId,
         name: p.name,
         status: p.status,
         goal: p.goal,
@@ -737,6 +739,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Create full operations project with notes and material tasks
   const createFullOperationsProject = (data: {
+    merchantId?: string;
     name: string;
     goal: string;
     status?: "准备中" | "进行中" | "已结束";
@@ -774,7 +777,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const newStrategyVersionId = `sv_${newId}_v1`;
     const newProject: Project = {
       id: newId,
-      merchantId: "m1",
+      merchantId: data.merchantId || "m1",
       name: data.name,
       status: data.status || "进行中",
       goal: data.goal,

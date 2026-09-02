@@ -1,146 +1,93 @@
-import React from 'react';
-import { AlertCircle, CheckCircle2, ChevronRight, Info } from 'lucide-react';
-import { PendingTask, KnowledgeItem, SourceItem } from '../../types/knowledge';
+import React, { useMemo, useState } from 'react';
+import { AlertCircle, CheckCircle2, ChevronRight, ClipboardCheck, FilePlus2, Link2 } from 'lucide-react';
+import type { BusinessCategory, KnowledgeItem, PendingTask, SourceItem } from '../../types/knowledge';
+import type { KnowledgeCategoryConfig } from './CategorySettingsDrawer';
 
 interface OverviewTabProps {
   pendingTasks: PendingTask[];
-  recentlyUpdated: KnowledgeItem[];
+  knowledgeList: KnowledgeItem[];
   sources: SourceItem[];
+  categories: KnowledgeCategoryConfig[];
   onOpenWorkbench: (task: PendingTask) => void;
-  onOpenKnowledge: (item: KnowledgeItem) => void;
+  onOpenCategory: (category: BusinessCategory) => void;
+  onPickFiles: () => void;
 }
 
-export function OverviewTab({ pendingTasks, recentlyUpdated, sources, onOpenWorkbench, onOpenKnowledge }: OverviewTabProps) {
-  const topPriorityTask = pendingTasks[0];
-  const otherTasksCount = pendingTasks.length > 1 ? pendingTasks.length - 1 : 0;
-  
-  const abnormalSources = sources.filter(s => s.state === '待处理' || s.state === '已断开');
+export function OverviewTab({ pendingTasks, knowledgeList, sources, categories, onOpenWorkbench, onOpenCategory, onPickFiles }: OverviewTabProps) {
+  const [hasChecked, setHasChecked] = useState(false);
+  const abnormalSources = sources.filter(source => source.state === '待处理' || source.state === '已断开');
+
+  const missingCategories = useMemo(() => categories.filter(category => !knowledgeList.some(item => item.category === category.name)), [categories, knowledgeList]);
+  const attentionCount = pendingTasks.length + missingCategories.length + abnormalSources.length;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* Top Status */}
-      <div className="flex items-center space-x-2 text-sm text-text-secondary bg-page-bg px-4 py-2 rounded-lg">
-        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-        <span>商家资料已就绪 · <span className="text-danger font-medium">{pendingTasks.length} 项需要处理</span> · {sources.filter(s => s.state === '正常').length} 个资料来源已连接</span>
+    <div className="mx-auto max-w-7xl space-y-6 pb-12">
+      <div className="flex items-center gap-2 rounded-lg bg-page-bg px-4 py-2 text-sm text-text-secondary">
+        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+        <span>商家资料已就绪 · <span className="font-medium text-danger">{attentionCount} 项需要关注</span> · {sources.filter(source => source.state === '正常').length} 个资料来源已连接</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Card 1: 需要你处理 */}
-        <div className="bg-surface-1 rounded-xl border border-red-100 shadow-sm overflow-hidden flex flex-col">
-          <div className="p-5 border-b border-border-default bg-red-50/30">
-            <h2 className="text-lg font-bold text-text-main flex items-center">
-              <AlertCircle className="w-5 h-5 text-brand-red mr-2 text-danger" />
-              需要你处理
-            </h2>
+      <section className="flex min-h-72 flex-col items-center justify-center rounded-xl border border-border-default bg-surface-1 px-6 py-10 text-center shadow-sm">
+        <span className={`flex h-14 w-14 items-center justify-center rounded-2xl ${hasChecked ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-danger'}`}>
+          {hasChecked ? <CheckCircle2 className="h-7 w-7" /> : <ClipboardCheck className="h-7 w-7" />}
+        </span>
+        <h2 className="mt-5 text-xl font-semibold text-text-main">{hasChecked ? '知识库体检完成' : '给知识库做一次体检'}</h2>
+        <p className="mt-2 text-sm text-text-tertiary">{hasChecked ? `发现 ${attentionCount} 项需要关注，已按影响范围排好顺序。` : '看看哪些内容已经齐全，哪些还需要补充。'}</p>
+        <button onClick={() => setHasChecked(true)} className="mt-5 flex items-center rounded-lg bg-btn-main px-5 py-2.5 text-sm font-medium text-white hover:bg-btn-main-hover">
+          <ClipboardCheck className="mr-1.5 h-4 w-4" />{hasChecked ? '重新体检' : '开始体检'}
+        </button>
+      </section>
+
+      <section className="overflow-hidden rounded-xl border border-border-default bg-surface-1 shadow-sm">
+        <div className="flex items-center justify-between border-b border-border-default px-5 py-4">
+          <div>
+            <h2 className="text-base font-semibold text-text-main">需要关注</h2>
+            <p className="mt-1 text-[13px] text-text-tertiary">只列出会影响资料可用性、AI 判断或业务执行的事项。</p>
           </div>
-          <div className="p-5 flex-1 flex flex-col">
-            {topPriorityTask ? (
-              <div className="bg-red-50/50 rounded-xl p-4 border border-red-100 flex-1">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-semibold text-text-main">{topPriorityTask.title}</h3>
-                  <span className="px-2 py-1 text-[13px] font-medium bg-red-100 text-red-700 rounded-full">
-                    {topPriorityTask.type}
-                  </span>
-                </div>
-                <p className="text-sm text-text-secondary mb-2">{topPriorityTask.reason}</p>
-                <div className="text-[13px] text-text-tertiary mb-4 bg-surface-1 p-2 rounded border border-border-default">
-                  {topPriorityTask.impact}
-                </div>
-                <button 
-                  onClick={() => onOpenWorkbench(topPriorityTask)}
-                  className="w-full py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  {topPriorityTask.type === '缺少资料' ? '补充资料' : 
-                   topPriorityTask.type === '来源冲突' ? '选择有效版本' : '确认规则'}
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-text-tertiary">
-                <CheckCircle2 className="w-12 h-12 mb-2 text-emerald-100" />
-                <p>当前没有需要处理的事项</p>
-              </div>
-            )}
-            
-            {otherTasksCount > 0 && (
-              <button 
-                onClick={() => onOpenWorkbench(pendingTasks[1])}
-                className="mt-4 text-sm text-text-tertiary hover:text-text-main flex items-center justify-center w-full py-2 bg-page-bg rounded-lg transition-colors"
-              >
-                另外还有 {otherTasksCount} 项需要处理 <ChevronRight className="w-4 h-4 ml-1" />
+          <span className="rounded-full bg-red-50 px-3 py-1 text-[12px] font-medium text-danger">{attentionCount} 项</span>
+        </div>
+
+        <div className="divide-y divide-border-default">
+          {pendingTasks.map(task => (
+            <div key={task.id} className="flex items-center gap-4 px-5 py-4 hover:bg-page-bg">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700"><AlertCircle className="h-4 w-4" /></span>
+              <button onClick={() => onOpenWorkbench(task)} className="min-w-0 flex-1 text-left">
+                <span className="block text-sm font-medium text-text-main">{task.title}</span>
+                <span className="mt-1 block text-[13px] text-text-tertiary">{task.impact}</span>
               </button>
-            )}
-          </div>
-        </div>
-
-        {/* Card 2: 最近更新 */}
-        <div className="bg-surface-1 rounded-xl border border-border-default shadow-sm overflow-hidden flex flex-col">
-          <div className="p-5 border-b border-border-default flex justify-between items-center">
-            <h2 className="text-lg font-bold text-text-main">最近更新</h2>
-            <button className="text-sm text-text-main hover:text-text-main">查看全部</button>
-          </div>
-          <div className="p-0 flex-1 overflow-y-auto">
-            <div className="divide-y divide-neutral-50">
-              {recentlyUpdated.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="p-4 hover:bg-page-bg cursor-pointer transition-colors"
-                  onClick={() => onOpenKnowledge(item)}
-                >
-                  <p className="text-sm font-medium text-text-main mb-1 line-clamp-2">{item.summary}</p>
-                  <div className="flex items-center text-[13px] text-text-tertiary space-x-3">
-                    <span className="truncate max-w-[150px]">{item.source}</span>
-                    <span className={`px-2 py-0.5 rounded-full ${item.state === '正常' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {item.state}
-                    </span>
-                    <span>{item.updateTime}</span>
-                  </div>
-                </div>
-              ))}
+              <ChevronRight className="h-4 w-4 text-text-tertiary" />
+              <button onClick={() => task.type === '缺少资料' ? onPickFiles() : onOpenWorkbench(task)} className="flex shrink-0 items-center rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-sm text-text-secondary hover:bg-hover-bg">
+                {task.type === '缺少资料' ? <FilePlus2 className="mr-1.5 h-4 w-4" /> : null}{task.type === '缺少资料' ? '补充材料' : '去处理'}
+              </button>
             </div>
-          </div>
-        </div>
-      </div>
+          ))}
 
-      {/* Card 3: 资料来源状态 (Only show abnormal or recently updated) */}
-      {abnormalSources.length > 0 && (
-        <div className="bg-surface-1 rounded-xl border border-border-default shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-border-default">
-            <h2 className="text-lg font-bold text-text-main">资料来源异常</h2>
-          </div>
-          <div className="p-0">
-            <table className="w-full text-left text-sm text-text-secondary">
-              <thead className="bg-page-bg text-[13px] text-text-tertiary border-b border-border-default">
-                <tr>
-                  <th className="px-5 py-3 font-medium">来源名称</th>
-                  <th className="px-5 py-3 font-medium">类型</th>
-                  <th className="px-5 py-3 font-medium">状态</th>
-                  <th className="px-5 py-3 font-medium">异常原因</th>
-                  <th className="px-5 py-3 font-medium">最近同步</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-50">
-                {abnormalSources.map(source => (
-                  <tr key={source.id} className="hover:bg-page-bg">
-                    <td className="px-5 py-3 font-medium text-text-main">{source.name}</td>
-                    <td className="px-5 py-3">{source.type}</td>
-                    <td className="px-5 py-3">
-                      <span className={`px-2 py-1 rounded-full text-[13px] ${
-                        source.state === '已断开' ? 'bg-red-50 text-danger' : 'bg-amber-50 text-amber-600'
-                      }`}>
-                        {source.state}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-danger truncate max-w-[200px]" title={source.exceptionReason}>
-                      {source.exceptionReason}
-                    </td>
-                    <td className="px-5 py-3">{source.lastSyncTime}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {missingCategories.map(category => (
+            <div key={category.id} className="flex items-center gap-4 px-5 py-4 hover:bg-page-bg">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-hover-bg text-text-tertiary"><FilePlus2 className="h-4 w-4" /></span>
+              <button onClick={() => onOpenCategory(category.name as BusinessCategory)} className="min-w-0 flex-1 text-left">
+                <span className="block text-sm font-medium text-text-main">{category.name}还没有资料</span>
+                <span className="mt-1 block text-[13px] text-text-tertiary">可以上传资料，由 AI 按实际内容拆解和归位</span>
+              </button>
+              <ChevronRight className="h-4 w-4 text-text-tertiary" />
+              <button onClick={onPickFiles} className="flex shrink-0 items-center rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-sm text-text-secondary hover:bg-hover-bg"><FilePlus2 className="mr-1.5 h-4 w-4" />补充材料</button>
+            </div>
+          ))}
+
+          {abnormalSources.map(source => (
+            <div key={source.id} className="flex items-center gap-4 px-5 py-4 hover:bg-page-bg">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-50 text-danger"><Link2 className="h-4 w-4" /></span>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-text-main">{source.name}</span>
+                <span className="mt-1 block text-[13px] text-danger">{source.exceptionReason || source.state}</span>
+              </div>
+              <button className="shrink-0 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-sm text-text-secondary hover:bg-hover-bg">重新链接</button>
+            </div>
+          ))}
+
+          {attentionCount === 0 ? <div className="px-5 py-12 text-center text-sm text-text-tertiary">当前没有需要关注的事项</div> : null}
         </div>
-      )}
+      </section>
     </div>
   );
 }

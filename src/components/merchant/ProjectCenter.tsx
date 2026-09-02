@@ -44,6 +44,9 @@ export function ProjectCenter({
   activeProjectId,
   merchantName,
   isNewMerchant,
+  isLaunchGuideRevisit,
+  merchantScopeId,
+  showEmptyProjectCenter,
   industryProfile,
   industryDefaults,
   onNavigateLaunchGuide,
@@ -54,6 +57,9 @@ export function ProjectCenter({
   activeProjectId?: string;
   merchantName?: string;
   isNewMerchant?: boolean;
+  isLaunchGuideRevisit?: boolean;
+  merchantScopeId?: string;
+  showEmptyProjectCenter?: boolean;
   industryProfile?: MerchantIndustryProfile;
   industryDefaults?: IndustryDefaults;
   onNavigateLaunchGuide?: (target: LaunchGuideTarget) => void;
@@ -63,7 +69,7 @@ export function ProjectCenter({
     projects, 
     selectedProjectId, 
     setSelectedProjectId, 
-    currentProject, 
+    currentProject: storeCurrentProject,
     updateProject,
     unifiedState,
     createStrategyVersion,
@@ -118,6 +124,11 @@ export function ProjectCenter({
   const [previewAssetUrl, setPreviewAssetUrl] = useState<string | null>(null);
   const [activeWorkbench, setActiveWorkbench] = useState<"content" | "assets" | "publish" | "create_project" | null>(null);
   const [isLogsExpanded, setIsLogsExpanded] = useState(false);
+  const scopedProjects = merchantScopeId
+    ? projects.filter(project => project.merchantId === merchantScopeId)
+    : projects;
+  const currentProject = scopedProjects.find(project => project.id === selectedProjectId)
+    || (merchantScopeId ? scopedProjects[0] : storeCurrentProject);
 
   // Auto-refresh timestamp
   const [lastUpdatedText, setLastUpdatedText] = useState("刚刚");
@@ -178,6 +189,7 @@ export function ProjectCenter({
     if (activeWorkbench === "create_project") {
       return (
         <CreateProjectWorkstation
+          merchantId={activeProjectId}
           industryDefaults={industryDefaults}
           industryProfile={industryProfile}
           onClose={() => setActiveWorkbench(null)}
@@ -189,35 +201,60 @@ export function ProjectCenter({
     return (
       <div className="h-full flex-1 overflow-y-auto bg-page-bg">
         <div className="mx-auto max-w-[1100px] space-y-5 px-6 py-6">
-          <header className="rounded-2xl border border-border-default bg-surface-1 px-5 py-4 shadow-sm">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="text-[13px] font-medium text-brand-logo">新商家起盘</div>
-                <h1 className="mt-1 text-[20px] font-semibold text-text-main">{merchantName || "新商家"}</h1>
-                <p className="mt-1 text-[13px] leading-6 text-text-tertiary">当前只做起盘准备与方案创建；任务和复盘会在真实业务数据产生后自动开放。</p>
-              </div>
-              <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
-                {["起盘准备", "创建方案", "任务执行", "数据复盘"].map((stage, index) => (
-                  <React.Fragment key={stage}>
-                    <span className={`rounded-full px-2.5 py-1 font-medium ${index === 0 ? "bg-brand-logo text-white" : "bg-surface-selected text-text-tertiary"}`}>{index + 1}. {stage}</span>
-                    {index < 3 ? <ChevronRight size={12} className="text-text-tertiary" /> : null}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-          </header>
           <React.Fragment key={activeProjectId}>
             <NewMerchantLaunchGuide
               merchantId={activeProjectId!}
               merchantName={merchantName || "新商家"}
               industryProfile={industryProfile!}
               industryDefaults={industryDefaults!}
+              isRevisit={isLaunchGuideRevisit}
               onNavigate={onNavigateLaunchGuide!}
               onUseTemplate={() => setActiveWorkbench("create_project")}
               onFinish={onFinishLaunchGuide!}
             />
           </React.Fragment>
         </div>
+      </div>
+    );
+  }
+
+  // Workbenches
+  if (activeWorkbench === "content") return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
+  if (activeWorkbench === "assets") return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
+  if (activeWorkbench === "publish") return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} onBack={() => setActiveWorkbench(null)} fromSource="project" />;
+  if (activeWorkbench === "create_project") return <CreateProjectWorkstation merchantId={merchantScopeId || activeProjectId} industryDefaults={industryDefaults} industryProfile={industryProfile} onClose={() => setActiveWorkbench(null)} onCreate={() => setActiveWorkbench(null)} />;
+
+  if (showEmptyProjectCenter && scopedProjects.length === 0) {
+    return (
+      <div className="workspace-shell flex h-full w-full overflow-hidden bg-page-bg text-text-main">
+        <aside className="flex w-[300px] shrink-0 flex-col border-r border-border-default bg-surface-1">
+          <div className="border-b border-border-default px-5 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-[15px] font-semibold text-text-main">方案列表</h2>
+                <p className="mt-1 text-[12px] text-text-tertiary">0 个方案</p>
+              </div>
+              <button type="button" onClick={() => setActiveWorkbench("create_project")} className="flex h-8 w-8 items-center justify-center rounded-lg bg-btn-main text-white hover:bg-btn-main-hover" title="新建方案" aria-label="新建方案">
+                <Plus size={15} />
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-1 items-center justify-center px-6 text-center">
+            <p className="text-[12px] leading-5 text-text-tertiary">该商家还没有方案</p>
+          </div>
+        </aside>
+        <main className="flex min-w-0 flex-1 items-center justify-center bg-page-bg p-8">
+          <div className="max-w-sm text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-border-default bg-surface-1 text-text-tertiary shadow-sm">
+              <FileText size={24} />
+            </div>
+            <h1 className="mt-5 text-[18px] font-semibold text-text-main">还没有运营方案</h1>
+            <p className="mt-2 text-[13px] leading-6 text-text-tertiary">你已跳过新商家引导。这里不会自动放入示例方案，可以从空白开始创建第一份方案。</p>
+            <button type="button" onClick={() => setActiveWorkbench("create_project")} className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-btn-main px-5 py-2.5 text-[13px] font-semibold text-white shadow-sm hover:bg-btn-main-hover">
+              <Plus size={14} />新建方案
+            </button>
+          </div>
+        </main>
       </div>
     );
   }
@@ -230,12 +267,6 @@ export function ProjectCenter({
     );
   }
 
-  // Workbenches
-  if (activeWorkbench === "content") return <ContentReviewWorkbench onClose={() => setActiveWorkbench(null)} />;
-  if (activeWorkbench === "assets") return <ShootingAndUploadWorkbench onClose={() => setActiveWorkbench(null)} />;
-  if (activeWorkbench === "publish") return <PublishExceptionWorkbench onClose={() => setActiveWorkbench(null)} onBack={() => setActiveWorkbench(null)} fromSource="project" />;
-  if (activeWorkbench === "create_project") return <CreateProjectWorkstation industryDefaults={industryDefaults} industryProfile={industryProfile} onClose={() => setActiveWorkbench(null)} onCreate={() => setActiveWorkbench(null)} />;
-
   const pipeline = calculateProjectPipeline(currentProject.notes || []);
 
   // The plan list represents lifecycle only. Operational exceptions live in Execution Center.
@@ -245,7 +276,7 @@ export function ProjectCenter({
     return { label: "运行中", tone: "running" as const };
   };
 
-  const filteredProjects = projects.filter((p) => {
+  const filteredProjects = scopedProjects.filter((p) => {
     if (projectSearchQuery && !p.name.toLowerCase().includes(projectSearchQuery.toLowerCase())) return false;
     if (projectFilterStatus === "运行中" && p.status !== "进行中") return false;
     if (projectFilterStatus === "准备中" && p.status !== "准备中") return false;

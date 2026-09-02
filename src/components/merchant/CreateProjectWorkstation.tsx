@@ -25,12 +25,14 @@ import { ContextDrawer, DEFAULT_CONTEXT_STATE, ContextState } from './CreateProj
 import type { IndustryDefaults, MerchantIndustryProfile } from '../../data/industryCatalog';
 
 export function CreateProjectWorkstation({
+  merchantId,
   onClose,
   onCreate,
   mode = 'create',
   industryDefaults,
   industryProfile,
 }: {
+  merchantId?: string;
   onClose: () => void;
   onCreate: (project?: any) => void;
   mode?: 'create' | 'edit';
@@ -213,30 +215,86 @@ export function CreateProjectWorkstation({
   // Confirm and Create Project
   const handleConfirmAndCreateProject = () => {
     try {
-      const result = createFullOperationsProject({
+      const noteSeeds: Array<{
+        title: string;
+        accountType: 'KOC' | '店长号/KOS' | '品牌主号';
+        accountName: string;
+        contentDirection: string;
+      }> = [
+        ...strategyDraft.accountAndContentAssignment.brandAccounts.flatMap(account =>
+          Array.from({ length: account.noteCount }, (_, index) => ({
+            title: `${account.contentDirection} ${index + 1}`,
+            accountType: '品牌主号' as const,
+            accountName: account.name,
+            contentDirection: account.contentDirection,
+          })),
+        ),
+        ...strategyDraft.accountAndContentAssignment.kosAccounts.flatMap(account =>
+          Array.from({ length: account.noteCount }, (_, index) => ({
+            title: `${account.contentDirection} ${index + 1}`,
+            accountType: '店长号/KOS' as const,
+            accountName: account.name,
+            contentDirection: account.contentDirection,
+          })),
+        ),
+        ...Array.from({ length: strategyDraft.accountAndContentAssignment.kocParticipants.recruitmentCount }, (_, index) => ({
+          title: `${strategyDraft.accountAndContentAssignment.kocParticipants.contentDirection} ${index + 1}`,
+          accountType: 'KOC' as const,
+          accountName: `待招募体验者 ${index + 1}`,
+          contentDirection: strategyDraft.accountAndContentAssignment.kocParticipants.contentDirection,
+        })),
+      ];
+      const notes = noteSeeds.map((note, index) => {
+        const plannedDate = new Date(strategyDraft.startDate);
+        plannedDate.setDate(plannedDate.getDate() + Math.min(strategyDraft.cycleDays - 1, Math.floor(index / 2)));
+        return {
+          ...note,
+          plannedDate: plannedDate.toISOString().split('T')[0],
+          targetAudience: strategyDraft.promotionTarget.targetAudience,
+          coreExpression: strategyDraft.coreStrategy.contentLogic,
+          requiredMaterials: [strategyDraft.accountAndContentAssignment.kocParticipants.requiredMaterialSpecs],
+        };
+      });
+      const materialDirections = industryDefaults?.contentTemplates.length
+        ? industryDefaults.contentTemplates
+        : ['品牌与产品标准素材', '真实场景素材', '人物出镜与口播素材'];
+      const materialTasks = materialDirections.map((direction, index) => ({
+        reqs: `${direction}：画面真实、主体清楚，满足本轮内容使用要求`,
+        usageScenario: direction,
+        specs: strategyDraft.accountAndContentAssignment.kocParticipants.requiredMaterialSpecs,
+        assignee: '待派发',
+        associatedNoteIndices: notes.length ? [index % notes.length] : [],
+      }));
+
+      const projectId = createFullOperationsProject({
+        merchantId,
         name: strategyDraft.projectName,
-        targetProduct: strategyDraft.promotionTarget.targetName,
-        coreGoal: strategyDraft.coreGoalAndVerification.primaryBusinessGoal,
-        cycleDays: strategyDraft.cycleDays,
+        goal: strategyDraft.coreGoalAndVerification.primaryBusinessGoal,
+        status: '准备中',
         startDate: strategyDraft.startDate,
         endDate: strategyDraft.endDate,
-        brandNotesCount: strategyDraft.accountAndContentAssignment.brandAccounts.reduce((acc, b) => acc + b.noteCount, 0),
-        kosNotesCount: strategyDraft.accountAndContentAssignment.kosAccounts.reduce((acc, k) => acc + k.noteCount, 0),
-        kocNotesCount: strategyDraft.accountAndContentAssignment.kocParticipants.recruitmentCount,
-        hasKocQuestionnaire: strategyDraft.accountAndContentAssignment.kocParticipants.hasQuestionnaire,
-        strategyContentLogic: strategyDraft.coreStrategy.contentLogic,
+        strategyProtocol: {
+          targetAudience: strategyDraft.promotionTarget.targetAudience,
+          coreProblem: strategyDraft.coreStrategy.problemToSolve,
+          solutionSummary: strategyDraft.coreStrategy.contentLogic,
+          verifyHypothesis: strategyDraft.coreGoalAndVerification.primaryBusinessGoal,
+          continueCondition: strategyDraft.coreGoalAndVerification.successCriteria,
+          stopCondition: strategyDraft.coreGoalAndVerification.stopCriteria,
+        },
+        notes,
+        materialTasks,
       });
 
       setCreatedProjectInfo({
-        id: result.project.id,
-        name: result.project.name,
-        notesCount: result.notes.length,
-        tasksCount: result.tasks.length
+        id: projectId,
+        name: strategyDraft.projectName,
+        notesCount: notes.length,
+        tasksCount: materialTasks.length,
       });
       setIsCompleted(true);
 
       if (onCreate) {
-        onCreate(result.project);
+        onCreate({ id: projectId, name: strategyDraft.projectName });
       }
     } catch (e) {
       console.error("Failed to create project:", e);

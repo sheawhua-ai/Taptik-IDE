@@ -398,6 +398,10 @@ export default function App() {
     useState<Record<string, any>>(MOCK_PROJECTS);
   const [activeProjectId, setActiveProjectId] =
     useState<string>("project-a");
+  const [launchGuidePreviewMerchantId, setLaunchGuidePreviewMerchantId] = useState<string | null>(null);
+  const [skippedLaunchGuideIds, setSkippedLaunchGuideIds] = useState<string[]>(() =>
+    Object.keys(MOCK_PROJECTS).filter(merchantId => localStorage.getItem(`taptik:launch-guide-skipped:${merchantId}`) === "true"),
+  );
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingData, setOnboardingData] = useState<{
     strategyKeywords: { word: string; rate: string }[];
@@ -467,15 +471,19 @@ export default function App() {
     {};
   const messages = messagesMap[activeProjectId] || [];
   const activeIndustryProfile = (activeProject as any).industryProfile
-    || ((activeProject as any).isNew ? inferLegacyIndustryProfile(activeProject) : null);
+    || inferLegacyIndustryProfile(activeProject);
   const activeIndustryDefaults = (activeProject as any).industryDefaults
     || (activeIndustryProfile ? getIndustryDefaults(activeIndustryProfile.primaryId) : null);
+  const launchGuideSkipped = skippedLaunchGuideIds.includes(activeProjectId)
+    || Boolean((activeProject as any).launchGuideSkipped);
+  const canOpenLaunchGuide = Boolean(activeIndustryProfile && activeIndustryDefaults);
   const hasIndustryLaunchGuide = Boolean(
-    (activeProject as any).isNew &&
-    activeIndustryProfile &&
-    activeIndustryDefaults,
+    canOpenLaunchGuide && (
+      ((activeProject as any).isNew && !launchGuideSkipped)
+      || launchGuidePreviewMerchantId === activeProjectId
+    ),
   );
-  const hasData = !(activeProject as any).isNew || hasIndustryLaunchGuide || onboardingStep >= 3;
+  const hasData = launchGuideSkipped || !(activeProject as any).isNew || hasIndustryLaunchGuide || onboardingStep >= 3;
 
   const handleArchiveProject = (projectId: string) => {
     setMerchantProjects((prev) => {
@@ -543,6 +551,10 @@ export default function App() {
   };
 
   const handleFinishMerchantLaunchGuide = () => {
+    setLaunchGuidePreviewMerchantId(null);
+    if (launchGuideSkipped || !(activeProject as any).isNew) return;
+    localStorage.setItem(`taptik:launch-guide-skipped:${activeProjectId}`, "true");
+    setSkippedLaunchGuideIds(previous => previous.includes(activeProjectId) ? previous : [...previous, activeProjectId]);
     setMerchantProjects((previous) => {
       const merchant = previous[activeProjectId];
       if (!merchant) return previous;
@@ -550,8 +562,11 @@ export default function App() {
         ...previous,
         [activeProjectId]: {
           ...merchant,
+          industryProfile: merchant.industryProfile || activeIndustryProfile,
+          industryDefaults: merchant.industryDefaults || activeIndustryDefaults,
           isNew: false,
-          onboardingStatus: "completed",
+          onboardingStatus: "skipped",
+          launchGuideSkipped: true,
         },
       };
     });
@@ -1766,7 +1781,22 @@ export default function App() {
                   );
                 })}
               </div>
-
+              {canOpenLaunchGuide ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWorkflowTab("projects");
+                    setLaunchGuidePreviewMerchantId(activeProjectId);
+                  }}
+                  className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                    hasIndustryLaunchGuide
+                      ? "border-neutral-900 bg-neutral-900 text-white"
+                      : "border-border-default bg-surface-1 text-text-secondary hover:bg-hover-bg hover:text-text-main"
+                  }`}
+                >
+                  <BookOpen size={14} />首轮起盘指南
+                </button>
+              ) : null}
             </div>
 
             <div className="flex-1 flex w-full overflow-hidden bg-[#fafafa] relative">
@@ -1798,6 +1828,9 @@ export default function App() {
                         activeProjectId={activeProjectId}
                         merchantName={activeProject?.name}
                         isNewMerchant={hasIndustryLaunchGuide}
+                        isLaunchGuideRevisit={launchGuideSkipped || !(activeProject as any).isNew}
+                        merchantScopeId={launchGuideSkipped ? activeProjectId : undefined}
+                        showEmptyProjectCenter={launchGuideSkipped}
                         industryProfile={activeIndustryProfile || undefined}
                         industryDefaults={activeIndustryDefaults || undefined}
                         setWorkflowTab={setWorkflowTab as any}

@@ -152,6 +152,7 @@ export interface DistributionScheme {
 
 export interface Project {
   id: string;
+  merchantId?: string;
   name: string;
   status: ProjectStatus;
   goal: string;

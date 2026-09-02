@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Plus, Trash2, Lock } from 'lucide-react';
 import type { KnowledgeFormat } from '../../types/knowledge';
 
-interface KnowledgeCategoryConfig {
+export interface KnowledgeCategoryConfig {
   id: string;
   name: string;
   includes: string[];
@@ -15,9 +15,11 @@ interface KnowledgeCategoryConfig {
 interface CategorySettingsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  categories: KnowledgeCategoryConfig[];
+  onSave: (categories: KnowledgeCategoryConfig[]) => void;
 }
 
-const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
+export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
   {
     id: 'c1',
     name: '品牌与产品',
@@ -133,15 +135,23 @@ const FORMAT_TAG_PRESETS: Record<KnowledgeFormat, Pick<KnowledgeCategoryConfig, 
 
 const hasSameTags = (current: string[], preset: string[]) => current.length === preset.length && current.every((tag, index) => tag === preset[index]);
 
-export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDrawerProps) {
-  const [categories, setCategories] = useState<KnowledgeCategoryConfig[]>(DEFAULT_CATEGORIES);
-  const [activeCategoryId, setActiveCategoryId] = useState<string>(categories[0].id);
+export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCategories, onSave }: CategorySettingsDrawerProps) {
+  const [categories, setCategories] = useState<KnowledgeCategoryConfig[]>(savedCategories);
+  const [activeCategoryId, setActiveCategoryId] = useState<string>(savedCategories[0]?.id || '');
 
   const [newIncludeTag, setNewIncludeTag] = useState('');
   const [isAddingInclude, setIsAddingInclude] = useState(false);
 
   const [newAffectTag, setNewAffectTag] = useState('');
   const [isAddingAffect, setIsAddingAffect] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setCategories(savedCategories);
+    setActiveCategoryId(current => savedCategories.some(category => category.id === current) ? current : savedCategories[0]?.id || '');
+    setIsAddingInclude(false);
+    setIsAddingAffect(false);
+  }, [isOpen, savedCategories]);
 
   if (!isOpen) return null;
 
@@ -181,6 +191,12 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
         ? [...nextPreset.affects]
         : activeCategory.affects
     });
+  };
+
+  const handleSave = () => {
+    if (!canSave) return;
+    onSave(categories);
+    onClose();
   };
 
   const handleDeleteCategory = (id: string) => {
@@ -409,7 +425,7 @@ export function CategorySettingsDrawer({ isOpen, onClose }: CategorySettingsDraw
 
                 <div className="pt-6 mt-6 border-t border-border-default">
                   <p className="mb-3 text-right text-[13px] text-text-tertiary">保存后，AI 上传资料时会按这份说明自动拆解和归位。</p>
-                  <div className="flex justify-end"><button onClick={onClose} disabled={!canSave} className="px-6 py-2 bg-btn-main text-white rounded-lg text-sm font-medium hover:bg-btn-main-hover transition-colors shadow-sm disabled:cursor-not-allowed disabled:opacity-35">
+                  <div className="flex justify-end"><button onClick={handleSave} disabled={!canSave} className="px-6 py-2 bg-btn-main text-white rounded-lg text-sm font-medium hover:bg-btn-main-hover transition-colors shadow-sm disabled:cursor-not-allowed disabled:opacity-35">
                     保存修改
                   </button></div>
                 </div>

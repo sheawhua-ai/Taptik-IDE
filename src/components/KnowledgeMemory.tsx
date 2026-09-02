@@ -1,15 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Settings2, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { OverviewTab } from './knowledge/OverviewTab';
 import { KnowledgeTab } from './knowledge/KnowledgeTab';
 import { DataSourcesTab } from './knowledge/DataSourcesTab';
 import { PendingWorkbenchModal } from './knowledge/PendingWorkbenchModal';
 import { KnowledgeDetailsDrawer } from './knowledge/KnowledgeDetailsDrawer';
-import { CategorySettingsDrawer } from './knowledge/CategorySettingsDrawer';
+import { CategorySettingsDrawer, DEFAULT_CATEGORIES, type KnowledgeCategoryConfig } from './knowledge/CategorySettingsDrawer';
 
 import { mockPendingTasks, mockKnowledgeList, mockSources } from '../data/knowledgeMock';
-import { KnowledgeItem, PendingTask, SourceItem, type DecompositionItem } from '../types/knowledge';
+import { KnowledgeItem, PendingTask, SourceItem, type BusinessCategory, type DecompositionItem } from '../types/knowledge';
 
 function getFileType(fileName: string): 'PDF' | 'Word' | 'Excel' | '文本' {
   const lower = fileName.toLowerCase();
@@ -21,11 +21,18 @@ function getFileType(fileName: string): 'PDF' | 'Word' | 'Excel' | '文本' {
 
 export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'knowledge' | 'sources'>('overview');
+  const mainScrollRef = useRef<HTMLElement>(null);
   
   // Sources state to reflect newly selected local files/folders
   const [sourcesList, setSourcesList] = useState<SourceItem[]>(mockSources);
   const [pendingTasks, setPendingTasks] = useState<PendingTask[]>(mockPendingTasks);
   const [knowledgeList, setKnowledgeList] = useState<KnowledgeItem[]>(mockKnowledgeList);
+  const [categoryConfigs, setCategoryConfigs] = useState<KnowledgeCategoryConfig[]>(DEFAULT_CATEGORIES);
+  const [selectedCategory, setSelectedCategory] = useState<BusinessCategory>('品牌与产品');
+
+  useEffect(() => {
+    mainScrollRef.current?.scrollTo({ top: 0, left: 0 });
+  }, [activeTab]);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -211,6 +218,11 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
     showToast('知识已更新');
   };
 
+  const handleOpenCategory = (category: BusinessCategory) => {
+    setSelectedCategory(category);
+    setActiveTab('knowledge');
+  };
+
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden bg-surface-1 relative">
       {/* Hidden File / Folder inputs */}
@@ -240,26 +252,15 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
 
       {/* Header */}
       <header className="shrink-0 bg-surface-1 border-b border-border-default flex flex-col z-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-8 py-3.5">
+        <div className="px-8 py-3.5">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-[18px] font-semibold text-text-main tracking-tight">知识与记忆</h1>
+              <h1 className="text-[18px] font-semibold text-text-main tracking-tight">知识库</h1>
             </div>
-            <p className="text-[13px] text-text-secondary mt-0.5 flex items-center space-x-1.5">
-              <span className="font-medium text-text-main">资料保留在本地，TAPTIK 通过已授权链接读取。</span>
-              <span className="text-text-tertiary">·</span>
-              <span>调用优先级：</span>
-              <span className="font-medium text-text-secondary">商家确认过的事实 ＞ 规则与禁区 ＞ 项目需求 ＞ 经验建议</span>
-            </p>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <button 
-              onClick={() => setIsCategorySettingsOpen(true)}
-              className="flex items-center px-3.5 py-2 bg-surface-1 border border-border-default text-text-main rounded-xl text-[13px] font-medium hover:bg-hover-bg transition-colors shadow-2xs cursor-pointer"
-            >
-              <Settings2 className="w-4 h-4 mr-1.5 text-text-secondary" /> 分类设置
-            </button>
-
+            <div className="mt-0.5 text-[13px] leading-5 text-text-secondary">
+              <p className="font-medium text-text-main">集中管理资料，上传后 AI 自动拆解并归入相关板块。</p>
+              <p><span className="text-text-tertiary">调用优先级：</span><span className="font-medium text-text-secondary">商家确认过的事实 ＞ 规则与禁区 ＞ 项目需求 ＞ 经验建议</span></p>
+            </div>
           </div>
         </div>
 
@@ -268,8 +269,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
           <div className="flex items-center gap-8 h-full">
             {[
               { id: 'overview', label: '总览' },
-              { id: 'knowledge', label: '知识' },
-              { id: 'sources', label: '资料来源' },
+              { id: 'sources', label: '资料' },
+              { id: 'knowledge', label: '知识板块' },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
               return (
@@ -298,21 +299,28 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-page-bg/30 p-8">
+      <main ref={mainScrollRef} className="flex-1 overflow-y-auto bg-page-bg/30 p-8">
         {activeTab === 'overview' && (
           <OverviewTab 
             pendingTasks={pendingTasks}
-            recentlyUpdated={knowledgeList.slice(0, 2)}
+            knowledgeList={knowledgeList}
             sources={sourcesList}
+            categories={categoryConfigs}
             onOpenWorkbench={handleOpenWorkbench}
-            onOpenKnowledge={handleOpenKnowledge}
+            onOpenCategory={handleOpenCategory}
+            onPickFiles={handlePickFiles}
           />
         )}
         
         {activeTab === 'knowledge' && (
           <KnowledgeTab 
             knowledgeList={knowledgeList}
+            categories={categoryConfigs}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
             onOpenKnowledge={handleOpenKnowledge}
+            onOpenSettings={() => setIsCategorySettingsOpen(true)}
+            onPickFiles={handlePickFiles}
           />
         )}
 
@@ -344,6 +352,8 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
       <CategorySettingsDrawer
         isOpen={isCategorySettingsOpen}
         onClose={() => setIsCategorySettingsOpen(false)}
+        categories={categoryConfigs}
+        onSave={setCategoryConfigs}
       />
     </div>
   );
