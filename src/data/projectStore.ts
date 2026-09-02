@@ -126,6 +126,9 @@ export interface Note {
 import { LandingPageSettings } from './unifiedStore';
 
 export interface DistributionScheme {
+  brandTotalNotes?: number;
+  kosTotalNotes?: number;
+  kocTotalNotes?: number;
   ownAccounts: {
     brandAccountIds: string[];
     brandNotesPerAccount: number;

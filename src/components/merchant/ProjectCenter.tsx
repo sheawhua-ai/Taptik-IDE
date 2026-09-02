@@ -7,7 +7,7 @@ import {
   BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, 
   PanelLeftClose, PanelLeftOpen, Upload, Target, ShieldAlert, 
   Clock, Users, Eye, Package, Send,
-  HelpCircle, Image as ImageIcon, Video, Activity
+  HelpCircle, Image as ImageIcon, Video, Activity, Sparkles
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
 import { Project, Note } from "../../data/projectStore";
@@ -1512,13 +1512,29 @@ export function ProjectCenter({
           <div className="relative bg-surface-1 rounded-xl w-full max-w-md shadow-2xl overflow-hidden border border-border-default">
             <div className="p-4 border-b border-border-default flex justify-between items-center bg-surface-subtle">
               <div>
-                <h3 className="font-semibold text-[15px] text-text-main">新建内容或笔记</h3>
-                <p className="text-[13px] text-text-secondary mt-0.5">请选择新建或导入内容的方式</p>
+                <h3 className="font-semibold text-[15px] text-text-main">新建笔记</h3>
+                <p className="text-[13px] text-text-secondary mt-0.5">选择一种创建方式</p>
               </div>
-              <button onClick={() => setShowImportSelect(false)} className="text-text-tertiary hover:text-text-secondary p-1 rounded-lg hover:bg-hover-bg"><X size={16}/></button>
+              <button type="button" aria-label="关闭" onClick={() => setShowImportSelect(false)} className="text-text-tertiary hover:text-text-secondary p-1 rounded-lg hover:bg-hover-bg"><X size={16}/></button>
             </div>
             
             <div className="p-4 space-y-2.5">
+              <button 
+                onClick={() => { setShowImportSelect(false); setShowBatchAIGenerator(true); }}
+                className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
+              >
+                <div className="p-2.5 bg-btn-main border border-btn-main text-white rounded-lg shrink-0">
+                  <Sparkles size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
+                    <span>AI批量生成笔记</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">AI生成</span>
+                  </div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">按账号分工，一次生成本轮需要的笔记</div>
+                </div>
+              </button>
+
               <button 
                 onClick={() => { setShowImportSelect(false); setShowAddNoteModal("file"); }}
                 className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
@@ -1552,22 +1568,6 @@ export function ProjectCenter({
               </button>
 
               <button 
-                onClick={() => { setShowImportSelect(false); setShowBatchAIGenerator(true); }}
-                className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
-              >
-                <div className="p-2.5 bg-surface-subtle border border-border-default text-text-secondary rounded-lg shrink-0">
-                  <FileText size={18} />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
-                    <span>批量生成笔记</span>
-                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">方案起草</span>
-                  </div>
-                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">根据项目方案与资料库，批量起草多篇笔记</div>
-                </div>
-              </button>
-
-              <button 
                 onClick={() => { setShowImportSelect(false); setShowAddNoteModal("single"); }}
                 className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
               >
@@ -1576,7 +1576,7 @@ export function ProjectCenter({
                 </div>
                 <div className="flex-1">
                   <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
-                    <span>手动新建单篇笔记</span>
+                    <span>手动写笔记</span>
                     <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">单篇</span>
                   </div>
                   <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">手动填写标题、选择账号与设定发布排期</div>
@@ -1601,7 +1601,7 @@ export function ProjectCenter({
       {showAddNoteModal && currentProject && (
         <AddSingleNoteModal 
           project={currentProject} 
-          initialTab={showAddNoteModal} 
+          mode={showAddNoteModal}
           onClose={() => setShowAddNoteModal(null)} 
         />
       )}

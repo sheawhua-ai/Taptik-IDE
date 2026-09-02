@@ -1,287 +1,222 @@
-import React, { useState } from 'react';
-import { 
-  X, Sparkles, Check, ChevronRight, Edit2, Calendar, Users, 
-  FileText, CheckCircle2, ArrowRight
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useMemo, useState } from 'react';
+import { ArrowRight, FileText, Sparkles, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useProjectStore } from '../../context/ProjectContext';
-import { Project } from '../../data/projectStore';
+import { NoteType, Project } from '../../data/projectStore';
 
 interface Props {
   project: Project;
   onClose: () => void;
 }
 
-export function BatchNoteGeneratorModal({ project, onClose }: Props) {
-  const { batchGenerateProjectNotes } = useProjectStore();
+interface AccountPlan {
+  type: NoteType;
+  count: number;
+  accountNames: string[];
+  angle: string;
+}
 
-  const planCount = (project as any).kocCount || 10;
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [generatedNotes, setGeneratedNotes] = useState<Array<{
-    title: string;
-    accountType: "KOC" | "店长号/KOS" | "品牌主号";
-    accountName: string;
-    contentDirection: string;
-    plannedDate: string;
-    selected: boolean;
-  }>>([]);
+interface GeneratedNote {
+  title: string;
+  accountType: NoteType;
+  accountName: string;
+  contentDirection: string;
+  plannedDate: string;
+}
 
-  const handleGenerate = () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      const isWedding = project.name.includes("婚宴") || project.name.includes("酒店");
-      const isPet = project.name.includes("幼犬") || project.name.includes("宠");
+const FALLBACK_ACCOUNTS: Record<NoteType, string> = {
+  '品牌主号': '品牌官方账号',
+  '店长号/KOS': '店长号 / KOS',
+  KOC: 'KOC 体验官',
+};
 
-      const baseDate = new Date();
-      const newGenerated = Array.from({ length: planCount }).map((_, i) => {
-        const isKos = i === 0;
-        const isBrand = i === 1;
-        const type: "KOC" | "店长号/KOS" | "品牌主号" = isKos ? "店长号/KOS" : isBrand ? "品牌主号" : "KOC";
+const WRITING_ANGLES: Record<NoteType, string> = {
+  '品牌主号': '从品牌角度讲清产品或服务卖点，并补充可信的官方信息。',
+  '店长号/KOS': '从一线经验出发，回答顾客常问的问题，并给出具体建议。',
+  KOC: '从真实体验出发，记录使用或到店过程，以及前后的真实感受。',
+};
 
-        let title = "";
-        let direction = "";
+function uniqueAccountNames(project: Project, type: NoteType) {
+  return Array.from(new Set(
+    project.notes
+      .filter((note) => note.type === type)
+      .map((note) => note.participant)
+      .filter(Boolean),
+  ));
+}
 
-        if (isWedding) {
-          const weddingTitles = [
-            "【现场实拍】青岛超梦幻宴会厅试菜记录！菜品量大好看",
-            "店长视角：备婚新人最关心的5个宴会厅细节与档期",
-            "官方权威 | 2026青岛酒店婚宴最新档期与赠品政策",
-            "备婚避坑！真实新人分享婚宴场地与试菜全过程",
-            "婚礼策划师眼中的宝藏宴会厅，布场效果太惊艳了！",
-            "青岛婚宴哪家强？试过这几个硬菜才知道真实口碑",
-            "婚宴菜单名牌搭配指南，高性价比喜宴推荐",
-            "准新人看过来！教你如何优雅地与宴会厅谈赠送项目",
-            "梦幻试菜第一弹：主厨招牌菜细节测评",
-            "宴会厅灯光与舞台效果实测，绝美现场出片"
-          ];
-          const weddingDirections = ["真实试菜测评", "店长专业答疑", "品牌档期发布", "备婚体验分享", "策划师案例", "菜品实拍", "菜单攻略", "避坑指南", "主厨推荐", "灯光实测"];
-          title = weddingTitles[i % weddingTitles.length];
-          direction = weddingDirections[i % weddingDirections.length];
-        } else if (isPet) {
-          const petTitles = [
-            "幼犬换粮总是拉肚子？店长教你七日换粮法",
-            "【官方科普】幼犬肠胃敏感期如何顺利换粮？",
-            "我家金毛幼犬换粮体验，记录七天真实变化",
-            "换粮避坑指南！终于不软便了",
-            "新手养狗必看！换粮期怎么选高吸收配方",
-            "幼犬第一口粮测评：适口性与便便健康观察",
-            "不同犬种换粮注意事项，店长1v1专业指导",
-            "铲屎官亲测：打卡14天养胃好粮效果"
-          ];
-          const petDirections = ["科学换粮科普", "品牌权威指南", "真实测评分享", "体验避坑指南", "干货选粮", "适口性打卡", "专业回复", "日常打卡"];
-          title = petTitles[i % petTitles.length];
-          direction = petDirections[i % petDirections.length];
-        } else {
-          title = `${project.name} - 体验官种草笔记 #${i + 1}`;
-          direction = "产品真实测评与试用体验";
-        }
+function buildAccountPlans(project: Project): AccountPlan[] {
+  const scheme = project.distributionScheme;
+  const brandCount = scheme
+    ? scheme.brandTotalNotes ?? scheme.ownAccounts.brandAccountIds.length * scheme.ownAccounts.brandNotesPerAccount
+    : 1;
+  const kosCount = scheme
+    ? scheme.kosTotalNotes ?? scheme.ownAccounts.kosAccountIds.length * scheme.ownAccounts.kosNotesPerAccount
+    : 1;
+  let kocCount = scheme
+    ? scheme.kocTotalNotes ?? scheme.consumerKoc.recruitmentCount * scheme.consumerKoc.packagesPerPerson
+    : Math.max(0, 10 - brandCount - kosCount);
 
-        const plannedDate = new Date(baseDate.getTime() + (i * 2 + 1) * 24 * 3600 * 1000).toISOString().split('T')[0];
+  const configuredTotal = scheme?.totalPlannedNotes ?? brandCount + kosCount + kocCount;
+  const assignedTotal = brandCount + kosCount + kocCount;
+  if (configuredTotal > assignedTotal) kocCount += configuredTotal - assignedTotal;
 
-        return {
-          title,
-          accountType: type,
-          accountName: type === "店长号/KOS" ? "店长号_旗舰店" : type === "品牌主号" ? "品牌官方账号" : `KOC体验官_${i + 1}`,
-          contentDirection: direction,
-          plannedDate,
-          selected: true
-        };
-      });
-
-      setGeneratedNotes(newGenerated);
-      setIsGenerating(false);
-    }, 1000);
+  const countByType: Record<NoteType, number> = {
+    '品牌主号': brandCount,
+    '店长号/KOS': kosCount,
+    KOC: kocCount,
   };
 
-  const handleConfirm = () => {
-    const selectedList = generatedNotes.filter(n => n.selected);
-    if (selectedList.length === 0) return;
+  return (['品牌主号', '店长号/KOS', 'KOC'] as const)
+    .filter((type) => countByType[type] > 0)
+    .map((type) => {
+      const existingNames = uniqueAccountNames(project, type);
+      const configuredIds = type === '品牌主号'
+        ? scheme?.ownAccounts.brandAccountIds ?? []
+        : type === '店长号/KOS'
+          ? scheme?.ownAccounts.kosAccountIds ?? []
+          : [];
 
-    batchGenerateProjectNotes(project.id, selectedList);
+      return {
+        type,
+        count: countByType[type],
+        accountNames: existingNames.length > 0
+          ? existingNames
+          : configuredIds.length > 0
+            ? configuredIds
+            : [FALLBACK_ACCOUNTS[type]],
+        angle: WRITING_ANGLES[type],
+      };
+    });
+}
+
+function buildNotes(project: Project, plans: AccountPlan[]): GeneratedNote[] {
+  const baseDate = new Date();
+  const notes: GeneratedNote[] = [];
+
+  plans.forEach((plan) => {
+    for (let index = 0; index < plan.count; index += 1) {
+      const accountName = plan.accountNames[index % plan.accountNames.length];
+      const plannedDate = new Date(baseDate.getTime() + (notes.length + 1) * 24 * 3600 * 1000)
+        .toISOString()
+        .split('T')[0];
+      const titlePrefix = plan.type === '品牌主号'
+        ? '官方解读'
+        : plan.type === '店长号/KOS'
+          ? '一线答疑'
+          : '真实体验';
+
+      notes.push({
+        title: `${titlePrefix}｜${project.name} ${index + 1}`,
+        accountType: plan.type,
+        accountName,
+        contentDirection: plan.angle,
+        plannedDate,
+      });
+    }
+  });
+
+  return notes;
+}
+
+export function BatchNoteGeneratorModal({ project, onClose }: Props) {
+  const { batchGenerateProjectNotes } = useProjectStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const plans = useMemo(() => buildAccountPlans(project), [project]);
+  const totalCount = plans.reduce((sum, plan) => sum + plan.count, 0);
+
+  const handleConfirm = () => {
+    if (isSubmitting || totalCount === 0) return;
+    setIsSubmitting(true);
+    batchGenerateProjectNotes(project.id, buildNotes(project, plans));
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-btn-main/50 backdrop-blur-xs p-4 overflow-y-auto">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
-        className="bg-surface-1 rounded-xl shadow-2xl border border-border-default w-full max-w-3xl overflow-hidden my-auto flex flex-col max-h-[90vh]"
+        className="bg-surface-1 rounded-xl shadow-2xl border border-border-default w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[90vh]"
       >
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-1">
+        <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0">
           <div>
             <h2 className="text-[17px] font-bold text-text-main flex items-center gap-2">
-              <Sparkles size={20} className="text-amber-500" />
-              批量根据项目方案生成笔记
+              <Sparkles size={20} />
+              AI批量生成笔记
             </h2>
             <p className="text-[13px] text-text-tertiary mt-0.5">
-              基于项目目标“{project.goal.slice(0, 30)}...”和策略协议自动规划笔记排期。
+              确认账号和数量后，AI 会按不同账号的分工生成笔记。
             </p>
           </div>
-          <button 
+          <button
+            type="button"
             onClick={onClose}
+            aria-label="关闭"
             className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-5 bg-surface-2">
-          
-          {/* Strategy Summary Banner */}
-          <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 text-[13px] text-amber-900 space-y-1.5">
-            <div className="font-bold text-[13px] text-amber-950 flex items-center gap-1.5">
-              <Sparkles size={14} className="text-amber-600" />
-              项目策略输入 (Strategy Protocol)
+        <div className="p-6 overflow-y-auto flex-1 bg-page-bg/30 space-y-4">
+          <div className="bg-surface-1 border border-border-default rounded-xl p-5 flex items-center justify-between">
+            <div>
+              <p className="text-[13px] text-text-tertiary">本次共生成</p>
+              <p className="text-[24px] font-bold text-text-main mt-1">{totalCount} 篇笔记</p>
             </div>
-            <div className="grid grid-cols-2 gap-2 pt-1 text-amber-900/90">
-              <div>• 核心问题：{project.strategyProtocol?.coreProblem || "解决用户缺乏信任与场景直观落地"}</div>
-              <div>• 目标人群：{project.strategyProtocol?.targetAudience || "精准潜力意向客群"}</div>
-              <div className="col-span-2">• 打法方案：{project.strategyProtocol?.solutionSummary || "KOC真实试用测评 + 店长专业答疑"}</div>
+            <div className="w-11 h-11 rounded-xl bg-btn-main text-white flex items-center justify-center">
+              <FileText size={21} />
             </div>
           </div>
 
-          {/* Config Controls */}
-          {generatedNotes.length === 0 ? (
-            <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-border-default pb-3">
-                <h3 className="text-[14px] font-bold text-text-main">本轮项目方案配置</h3>
-                <span className="px-2.5 py-0.5 rounded-full text-[13px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                  来自本轮运营方案设定
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-1">
-                  <span className="text-[13px] font-bold text-text-tertiary">
-                    方案规划生成数量
-                  </span>
-                  <div className="text-[18px] font-extrabold text-text-main flex items-baseline gap-1">
-                    <span>{planCount}</span>
-                    <span className="text-[13px] font-bold text-text-tertiary">篇笔记</span>
-                  </div>
-                </div>
-
-                <div className="p-3.5 bg-page-bg rounded-xl border border-border-default space-y-1">
-                  <span className="text-[13px] font-bold text-text-tertiary">
-                    角色矩阵分布
-                  </span>
-                  <div className="text-[13px] font-bold text-text-main pt-1">
-                    1篇店长号/KOS + 1篇品牌主号 + {Math.max(0, planCount - 2)}篇KOC体验官
+          <div className="bg-surface-1 border border-border-default rounded-xl overflow-hidden">
+            {plans.map((plan, index) => (
+              <div
+                key={plan.type}
+                className={`p-4 ${index < plans.length - 1 ? 'border-b border-border-default' : ''}`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[14px] font-bold text-text-main">{plan.type}</span>
+                      <span className="px-2 py-0.5 rounded-md bg-surface-subtle border border-border-default text-[13px] text-text-secondary">
+                        {plan.count} 篇
+                      </span>
+                    </div>
+                    <p className="text-[13px] text-text-secondary mt-2">
+                      账号：{plan.accountNames.join('、')}
+                    </p>
+                    <p className="text-[13px] text-text-tertiary mt-1">
+                      写法：{plan.angle}
+                    </p>
                   </div>
                 </div>
               </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleGenerate}
-                  disabled={isGenerating}
-                  className="w-full py-3 bg-btn-main hover:bg-btn-main-hover text-white rounded-xl text-[13px] font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Sparkles size={16} className="animate-spin text-amber-400" />
-                      <span>正在分析项目方案并生成笔记排期...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles size={16} className="text-amber-400" />
-                      <span>确认方案，一键生成 {planCount} 篇笔记排期</span>
-                      <ArrowRight size={16} />
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          ) : (
-            /* Generated Preview Table */
-            <div className="bg-surface-1 rounded-xl border border-border-default/90 shadow-2xs overflow-hidden">
-              <div className="p-4 border-b border-border-default flex items-center justify-between bg-page-bg">
-                <span className="text-[13px] font-bold text-text-main">
-                  AI 智能拆解生成结果 (已选中 {generatedNotes.filter(n => n.selected).length} 篇)
-                </span>
-                <button 
-                  onClick={handleGenerate}
-                  className="text-[13px] font-bold text-text-secondary hover:text-text-main flex items-center gap-1"
-                >
-                  <Sparkles size={13} />
-                  <span>重新生成</span>
-                </button>
-              </div>
-
-              <div className="divide-y divide-neutral-100 max-h-[360px] overflow-y-auto">
-                {generatedNotes.map((note, idx) => (
-                  <div 
-                    key={idx}
-                    className={`p-3.5 flex items-center justify-between gap-3 transition-colors ${
-                      note.selected ? "bg-surface-1" : "bg-page-bg opacity-60"
-                    }`}
-                  >
-                    <input 
-                      type="checkbox"
-                      checked={note.selected}
-                      onChange={(e) => {
-                        const updated = [...generatedNotes];
-                        updated[idx].selected = e.target.checked;
-                        setGeneratedNotes(updated);
-                      }}
-                      className="w-4 h-4 rounded text-text-main focus:ring-neutral-900 shrink-0"
-                    />
-
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-bold text-text-main truncate">
-                        {note.title}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 text-[13px] text-text-tertiary">
-                        <span className={`px-2 py-0.5 rounded font-bold ${
-                          note.accountType === "店长号/KOS" 
-                            ? "bg-purple-50 text-purple-700 border border-purple-200"
-                            : note.accountType === "品牌主号"
-                            ? "bg-blue-50 text-blue-700 border border-blue-200"
-                            : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        }`}>
-                          {note.accountType}
-                        </span>
-                        <span>方向：{note.contentDirection}</span>
-                        <span>账号：{note.accountName}</span>
-                      </div>
-                    </div>
-
-                    <div className="text-[13px] font-bold text-text-secondary bg-hover-bg px-2.5 py-1 rounded-lg shrink-0">
-                      {note.plannedDate}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+            ))}
+          </div>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-border-default flex items-center justify-between bg-surface-1 shrink-0">
-          <span className="text-[13px] text-text-tertiary">
-            {generatedNotes.length > 0 ? "确认后将直接向项目添加所选笔记，并创建对应发布任务。" : "准备就绪后点击生成按钮。"}
-          </span>
+          <span className="text-[13px] text-text-tertiary">生成后可在笔记列表里继续修改。</span>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={onClose}
               className="px-4 py-2 border border-border-default rounded-xl text-[13px] font-bold text-text-secondary hover:bg-hover-bg transition-colors"
             >
               取消
             </button>
-            {generatedNotes.length > 0 && (
-              <button
-                onClick={handleConfirm}
-                className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors shadow-xs"
-              >
-                确认导入 {generatedNotes.filter(n => n.selected).length} 篇笔记
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={handleConfirm}
+              disabled={isSubmitting || totalCount === 0}
+              className="px-5 py-2 bg-btn-main hover:bg-btn-main-hover disabled:opacity-50 text-white rounded-xl text-[13px] font-bold transition-colors flex items-center gap-2"
+            >
+              <span>{isSubmitting ? '正在生成…' : `生成 ${totalCount} 篇笔记`}</span>
+              <ArrowRight size={15} />
+            </button>
           </div>
         </div>
       </motion.div>

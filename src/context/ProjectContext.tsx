@@ -408,6 +408,33 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           posterTitle: `${p.name} - 体验官内容投稿`,
           bannerUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop"
         },
+        distributionScheme: p.distributionScheme ? {
+          brandTotalNotes: p.distributionScheme.brandTotalNotes,
+          kosTotalNotes: p.distributionScheme.kosTotalNotes,
+          kocTotalNotes: p.distributionScheme.kocTotalNotes,
+          ownAccounts: {
+            brandAccountIds: p.distributionScheme.ownAccounts?.brandAccounts?.selectedAccountIds || [],
+            brandNotesPerAccount: p.distributionScheme.ownAccounts?.brandAccounts?.notesPerAccount || 0,
+            brandFrequency: p.distributionScheme.ownAccounts?.brandAccounts?.publishFrequency || "按排期发布",
+            brandTimeWindow: p.distributionScheme.ownAccounts?.brandAccounts?.suggestedTimeWindow || "按排期发布",
+            kosAccountIds: p.distributionScheme.ownAccounts?.kosAccounts?.selectedAccountIds || [],
+            kosNotesPerAccount: p.distributionScheme.ownAccounts?.kosAccounts?.notesPerAccount || 0,
+            kosFrequency: p.distributionScheme.ownAccounts?.kosAccounts?.publishFrequency || "按排期发布",
+            kosTimeWindow: p.distributionScheme.ownAccounts?.kosAccounts?.suggestedTimeWindow || "按排期发布"
+          },
+          consumerKoc: {
+            recruitmentCount: p.distributionScheme.consumerKoc?.recruitmentCount || 0,
+            packagesPerPerson: p.distributionScheme.consumerKoc?.packagesPerPerson || 1,
+            hasQuestionnaire: p.distributionScheme.consumerKoc?.hasQuestionnaire || false,
+            needPhotos: p.distributionScheme.consumerKoc?.needPhotos || false,
+            photoCountRange: p.distributionScheme.consumerKoc?.photoCountRange,
+            claimValidityDays: p.distributionScheme.consumerKoc?.claimValidityDays || 3,
+            observationDays: p.distributionScheme.consumerKoc?.observationDays || 14,
+            enableWechatNotice: p.distributionScheme.consumerKoc?.enableWechatNotice || false
+          },
+          totalPlannedNotes: p.distributionScheme.totalPlannedNotes || derivedNotes.length,
+          aiExplanation: p.distributionScheme.aiSuggestion
+        } : undefined,
         operationLogs: state.timelineEvents.filter(e => e.targetId === p.id || derivedNotes.some(n => n.id === e.targetId)).map(e => ({
           id: e.id,
           timestamp: e.timestamp,

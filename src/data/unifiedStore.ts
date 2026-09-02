@@ -15,6 +15,10 @@ export interface LandingPageSettings {
 }
 
 export interface DistributionScheme {
+  brandTotalNotes?: number;
+  kosTotalNotes?: number;
+  kocTotalNotes?: number;
+  totalPlannedNotes?: number;
   ownAccounts?: {
     brandAccounts?: {
       selectedAccountIds: string[];
