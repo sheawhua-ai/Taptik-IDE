@@ -138,8 +138,6 @@ export function CreateProjectWorkstation({
     confirmedDraft: StrategyDraftData = strategyDraft,
     settings: PlanCreationSettings = {
       targetKeywords: '',
-      conversionGoal: '收藏 / 关注',
-      publishFrequency: '每天 1–2 篇',
       observationDays: 14,
       needMaterials: true,
       allowIndustryFallback: true,
@@ -220,10 +218,26 @@ export function CreateProjectWorkstation({
         strategyProtocol: {
           targetAudience: activeDraft.promotionTarget.targetAudience,
           coreProblem: activeDraft.coreStrategy.problemToSolve,
-          solutionSummary: `${activeDraft.coreStrategy.contentLogic}｜站内承接：${settings.conversionGoal}｜目标关键词：${settings.targetKeywords || '未设置'}`,
+          solutionSummary: activeDraft.coreStrategy.contentLogic,
           verifyHypothesis: activeDraft.coreGoalAndVerification.primaryBusinessGoal,
           continueCondition: activeDraft.coreGoalAndVerification.successCriteria,
           stopCondition: activeDraft.coreGoalAndVerification.stopCriteria,
+          targetKeywords: settings.targetKeywords ? settings.targetKeywords.split(new RegExp('[、,,]')).map((keyword) => keyword.trim()).filter(Boolean) : [],
+          observationDays: settings.observationDays,
+          observableSignals: activeDraft.coreGoalAndVerification.observableSignals,
+          adjustmentCriteria: activeDraft.coreGoalAndVerification.adjustmentCriteria,
+          humanInTheLoop: activeDraft.humanInTheLoop,
+          hypothesesAndBasis: activeDraft.hypothesesAndBasis,
+          // —— 与新建方案槽位契约对齐（主推产品是新建必填项，不能丢）——
+          promotionTarget: {
+            targetName: activeDraft.promotionTarget.targetName,
+            targetCategory: activeDraft.promotionTarget.targetCategory,
+          },
+          promotionConfirmedFacts: activeDraft.promotionTarget.confirmedFacts,
+          unconfirmedGaps: activeDraft.promotionTarget.unconfirmedGaps,
+          auxiliaryGoals: activeDraft.coreGoalAndVerification.auxiliaryGoals,
+          rationale: activeDraft.coreStrategy.rationale,
+          collaborationMechanism: activeDraft.coreStrategy.collaborationMechanism,
         },
         distributionScheme: {
           brandTotalNotes: brandNotesTotal,
@@ -234,13 +248,13 @@ export function CreateProjectWorkstation({
             brandAccounts: {
               selectedAccountIds: activeBrandAccounts.map((account) => account.id),
               notesPerAccount: activeBrandAccounts.length ? Math.max(1, Math.round(brandNotesTotal / activeBrandAccounts.length)) : 0,
-              publishFrequency: settings.publishFrequency,
+              publishFrequency: '按排期发布',
               suggestedTimeWindow: activeBrandAccounts[0]?.timeWindow || '按排期发布',
             },
             kosAccounts: {
               selectedAccountIds: activeKosAccounts.map((account) => account.id),
               notesPerAccount: activeKosAccounts.length ? Math.max(1, Math.round(kosNotesTotal / activeKosAccounts.length)) : 0,
-              publishFrequency: settings.publishFrequency,
+              publishFrequency: '按排期发布',
               suggestedTimeWindow: activeKosAccounts[0]?.timeWindow || '按排期发布',
             },
           },

@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import {
-  ArrowRight,
   BookOpen,
   Check,
   CheckCircle2,
   ChevronDown,
   CircleDot,
-  Database,
   ExternalLink,
   Image as ImageIcon,
   Layers,
   Lock,
   RotateCcw,
   Send,
-  Sparkles,
   Store,
   UserCheck,
 } from "lucide-react";
@@ -182,14 +179,7 @@ export function NewMerchantLaunchGuide({
   const [initialState] = useState<PersistedGuideState>(() => loadGuideState(storageKey));
   const [templateApplied] = useState(initialState.templateApplied);
   const [expandedStepId, setExpandedStepId] = useState<string>(templateApplied ? "materials" : "knowledge");
-  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(false);
   const [isGuideCollapsed, setIsGuideCollapsed] = useState(false);
-
-  const industryLabel = [
-    industryProfile.primaryName,
-    ...industryProfile.secondaryNames,
-    ...industryProfile.tertiaryNames,
-  ].join(" · ");
 
   const stepStatuses: Record<LaunchStep["id"], GuideStatus> = {
     profile: "completed",
@@ -201,7 +191,6 @@ export function NewMerchantLaunchGuide({
     review: reviewDataReady ? "available" : "locked",
   };
 
-  const recommendedStep = GUIDE_STEPS.find(step => stepStatuses[step.id] === "recommended") || GUIDE_STEPS[1];
   const completedCount = Object.values(stepStatuses).filter(status => status === "completed").length;
   const progress = Math.round((completedCount / GUIDE_STEPS.length) * 100);
 
@@ -216,99 +205,6 @@ export function NewMerchantLaunchGuide({
 
   return (
     <div className="space-y-4">
-      <section className="overflow-hidden rounded-2xl border border-neutral-300 bg-surface-1 shadow-sm">
-        <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_330px]">
-          <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-neutral-950 px-2.5 py-1 text-[12px] font-medium text-white">
-              <Sparkles size={13} />新商家首轮起盘
-            </div>
-            <h2 className="mt-3 text-[20px] font-semibold text-text-main">带你完成 {merchantName} 的第一次小红书运营</h2>
-            <p className="mt-2 max-w-3xl text-[13px] leading-6 text-text-secondary">
-              按步骤补资料、定方案、备素材、发内容、看结果。系统处理重复工作，你只需确认关键信息。
-            </p>
-            <div className="mt-4 flex flex-wrap items-center gap-1.5">
-              {["了解商家", "准备知识", "制定方案", "执行发布", "复盘优化"].map((stage, index, stages) => (
-                <React.Fragment key={stage}>
-                  <span className={`rounded-lg border px-2.5 py-1.5 text-[12px] font-medium ${index === 0 ? "border-neutral-900 bg-neutral-900 text-white" : "border-border-default bg-surface-subtle text-text-secondary"}`}>{stage}</span>
-                  {index < stages.length - 1 ? <ArrowRight size={12} className="text-text-tertiary" /> : null}
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-
-          <aside className="rounded-xl border border-border-default bg-surface-subtle p-4">
-            <div className="text-[12px] font-medium text-text-tertiary">建议先做</div>
-            <div className="mt-1.5 text-[15px] font-semibold text-text-main">{recommendedStep.title}</div>
-            <p className="mt-1 text-[12px] leading-5 text-text-secondary">{recommendedStep.problemSolved}</p>
-            <button
-              type="button"
-              onClick={() => {
-                setIsGuideCollapsed(false);
-                setExpandedStepId(recommendedStep.id);
-              }}
-              className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-btn-main px-3 py-2 text-[13px] font-medium text-white hover:bg-btn-main-hover"
-            >
-              看怎么做 <ArrowRight size={13} />
-            </button>
-          </aside>
-        </div>
-
-        <div className="grid border-t border-border-default bg-surface-subtle/70 sm:grid-cols-3">
-          <div className="border-b border-border-default px-5 py-3.5 sm:border-b-0 sm:border-r">
-            <div className="flex items-center gap-1.5 text-[12px] text-text-tertiary"><Database size={13} />商家资料</div>
-            <div className="mt-1 text-[13px] font-semibold text-text-main">待补充</div>
-            <div className="mt-0.5 text-[12px] text-text-tertiary">产品、价格和品牌说法</div>
-          </div>
-          <div className="border-b border-border-default px-5 py-3.5 sm:border-b-0 sm:border-r">
-            <div className="flex items-center gap-1.5 text-[12px] text-text-tertiary"><BookOpen size={13} />行业通用知识</div>
-            <div className="mt-1 text-[13px] font-semibold text-amber-800">可直接使用</div>
-            <div className="mt-0.5 text-[12px] text-text-tertiary">商家资料不足时自动补上</div>
-          </div>
-          <div className="px-5 py-3.5">
-            <div className="flex items-center gap-1.5 text-[12px] text-text-tertiary"><CircleDot size={13} />需要你确认</div>
-            <div className="mt-1 text-[13px] font-semibold text-text-main">主推产品、目标、禁用说法</div>
-            <div className="mt-0.5 text-[12px] text-text-tertiary">这些不能用行业默认</div>
-          </div>
-        </div>
-      </section>
-
-      <section className="overflow-hidden rounded-2xl border border-border-default bg-surface-1 shadow-sm">
-        <button
-          type="button"
-          onClick={() => setIsWorkflowExpanded(current => !current)}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left hover:bg-surface-subtle"
-          aria-expanded={isWorkflowExpanded}
-        >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white"><Layers size={17} /></span>
-          <span className="min-w-0 flex-1">
-            <span className="flex flex-wrap items-center gap-2">
-              <strong className="text-[14px] font-semibold text-text-main">行业默认打法</strong>
-              <span className="rounded-full bg-surface-selected px-2 py-0.5 text-[12px] text-text-tertiary">可查看</span>
-            </span>
-            <span className="mt-1 block text-[13px] text-text-secondary">{industryDefaults.workflowName} · 适配 {industryLabel}</span>
-          </span>
-          <span className="hidden text-[12px] text-text-tertiary sm:block">查看默认流程</span>
-          <ChevronDown size={15} className={`text-text-tertiary transition-transform ${isWorkflowExpanded ? "rotate-180" : ""}`} />
-        </button>
-        {isWorkflowExpanded ? (
-          <div className="border-t border-border-default bg-surface-subtle px-5 py-4">
-            <div className="text-[13px] font-semibold text-text-main">{industryDefaults.launchTemplateName}</div>
-            <p className="mt-1 text-[13px] leading-5 text-text-secondary">{industryDefaults.launchDescription}</p>
-            <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              {industryDefaults.workflowSteps.map((step, index, steps) => (
-                <React.Fragment key={step}>
-                  <span className="rounded-lg border border-border-default bg-surface-1 px-2.5 py-1.5 text-[12px] font-medium text-text-main">{index + 1}. {step}</span>
-                  {index < steps.length - 1 ? <ArrowRight size={11} className="text-text-tertiary" /> : null}
-                </React.Fragment>
-              ))}
-            </div>
-            <div className="mt-3 rounded-lg border border-border-default bg-surface-1 px-3 py-2.5 text-[12px] leading-5 text-text-tertiary">
-              系统按这套流程生成方案。商家资料优先，缺少的内容用行业知识补充。
-            </div>
-          </div>
-        ) : null}
-      </section>
-
       <section className="overflow-hidden rounded-2xl border border-border-default bg-surface-1 shadow-sm">
         <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border-default px-5 py-4">
           <div>

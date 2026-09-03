@@ -21,6 +21,7 @@ import type { ExecutionAction } from '../../data/unifiedStore';
 import type { Note, Project } from '../../data/projectStore';
 import type { MaterialAsset } from '../material-center/types';
 import { INITIAL_EXECUTION_TASKS } from './ExecutionCenter/mockData';
+import { ExecutionEmptyState } from './ExecutionCenter/ExecutionEmptyState';
 import { MaterialBatchReviewWorkbench } from './ExecutionCenter/MaterialBatchReviewWorkbench';
 import { OperatorTaskWorkbench } from './ExecutionCenter/OperatorTaskWorkbench';
 import { TaskDetailView } from './ExecutionCenter/TaskDetailView';
@@ -32,6 +33,14 @@ type ExecutionView = 'overview' | 'workspace';
 
 interface ExecutionCenterProps {
   onAssetsAccepted?: (assets: MaterialAsset[]) => void;
+  /** 前往方案中心。空状态主 CTA 使用；未传则退回到执行概览页 */
+  onNavigateToPlan?: () => void;
+  /**
+   * 强制展示"未开始"空状态。
+   * 用于新商家（如跳过冷启动引导）场景：不自动塞入示例任务，改为引导其先建方案。
+   * 未传时仍按数据判断：一条任务都没有也会展示引导。
+   */
+  showEmptyState?: boolean;
 }
 
 interface ProjectScope {
@@ -169,7 +178,7 @@ const createDirectTask = (note: Note, project: Project, action: ExecutionAction)
   };
 };
 
-export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
+export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyState }: ExecutionCenterProps) {
   const {
     currentProject,
     executionNavTarget,
@@ -178,7 +187,8 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
     clearNoteIssue
   } = useProjectStore();
   const [tasks, setTasks] = useState<ExecutionTask[]>(INITIAL_EXECUTION_TASKS);
-  const [view, setView] = useState<ExecutionView>('overview');
+  // 默认直接进入工作台；执行概览页可通过顶部按钮进入
+  const [view, setView] = useState<ExecutionView>('workspace');
   const [domain, setDomain] = useState<DomainTab>('content');
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
@@ -412,17 +422,27 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
     : selectedTask;
 
   let workspace: React.ReactNode;
-  if (!workspaceTask) {
+  // 新商家（强制空态）：不渲染类型导航与计数，否则顶栏计数与正文「还没有数据」自相矛盾
+  if (showEmptyState) {
+    workspace = (
+      <div className="flex h-full min-h-0 flex-1 flex-col bg-page-bg">
+        <ExecutionEmptyState
+          hasStarted={false}
+          totalTasks={0}
+          onGoToPlan={onNavigateToPlan ?? (() => setView('overview'))}
+        />
+      </div>
+    );
+  } else if (!workspaceTask) {
     workspace = (
       <div className="flex h-full min-h-0 flex-1 flex-col bg-page-bg">
         <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5">{workspaceNavigation}</div>
-        <div className="flex flex-1 items-center justify-center text-center">
-          <div>
-            <CheckCircle2 size={30} className="mx-auto text-emerald-500" />
-            <div className="mt-3 text-[13px] font-semibold text-text-main">当前没有需要处理的事项</div>
-            <p className="mt-1 text-[13px] text-text-tertiary">领取、执行和历史记录可在任务进展中查看。</p>
-          </div>
-        </div>
+        <ExecutionEmptyState
+          hasStarted={scopedTasks.length > 0}
+          totalTasks={scopedTasks.filter(task => task.status === '已完成').length}
+          onGoToPlan={onNavigateToPlan ?? (() => setView('overview'))}
+          onOpenProgress={() => setProgressOpen(true)}
+        />
       </div>
     );
   } else if (domain === 'material') {
@@ -515,6 +535,9 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
             <p className="mt-1 text-[13px] leading-6 text-text-tertiary">这里只聚合需要人介入的事项。团队执行中和系统处理中的任务可在“任务进展”查看，无需重复操作。</p>
           </div>
           <div className="flex items-center gap-2">
+            <button type="button" onClick={() => setView('workspace')} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg">
+              <LayoutDashboard size={13} />返回工作台
+            </button>
             <button type="button" onClick={() => setProgressOpen(true)} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg">
               <Activity size={13} />查看任务进展 <span className="text-text-tertiary">{counts.progress}</span>
             </button>
@@ -585,7 +608,8 @@ export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
 
   return (
     <>
-      {view === 'overview' ? overview : workspace}
+      {/* 强制空态下概览页同样不暴露，避免新商家看到示例任务 */}
+      {view === 'overview' && !showEmptyState ? overview : workspace}
       <TaskProgressDrawer
         open={progressOpen}
         tasks={scopedTasks}

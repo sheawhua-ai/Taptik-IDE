@@ -1858,6 +1858,8 @@ export default function App() {
                           const nextIds = new Set(assets.map(asset => asset.id));
                           return [...assets, ...current.filter(asset => !nextIds.has(asset.id))];
                         })}
+                        onNavigateToPlan={() => setWorkflowTab("projects")}
+                        showEmptyState={launchGuideSkipped}
                       />
                     )}
 
