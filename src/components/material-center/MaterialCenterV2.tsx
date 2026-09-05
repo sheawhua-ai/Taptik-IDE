@@ -35,7 +35,7 @@ interface MaterialCenterV2Props {
   importedAssets?: MaterialAsset[];
 }
 
-type CenterView = 'available' | 'reserved' | 'optimize' | 'used' | 'archived';
+type CenterView = 'available' | 'reserved' | 'optimize' | 'backup' | 'used' | 'archived';
 interface WorkbenchSession {
   sources: MaterialAsset[];
   intent: DerivativeIntent;
@@ -71,7 +71,7 @@ const addOperatorTags = (asset: MaterialAsset): MaterialAsset => {
   return { ...asset, tags: Array.from(new Set([...(asset.tags ?? []), ...(mapping[asset.id] ?? [])])) };
 };
 
-const INITIAL_MATERIALS = INITIAL_ASSETS.filter(asset => asset.status !== 'pending_acceptance').map(addOperatorTags);
+const INITIAL_MATERIALS = INITIAL_ASSETS.map(addOperatorTags);
 
 const VIEW_CONFIG: Array<{ id: Extract<CenterView, 'available' | 'reserved' | 'optimize'>; label: string }> = [
   { id: 'available', label: '可用素材' },
@@ -128,8 +128,9 @@ export const MaterialCenterV2: React.FC<MaterialCenterV2Props> = ({ importedAsse
     samples: imageAssets.filter(asset => matchesAICluster(asset, cluster.id)).slice(0, 3)
   })).filter(cluster => cluster.count > 0), [imageAssets]);
 
-  const counts = useMemo(() => ({
+const counts = useMemo(() => ({
     available: imageAssets.filter(asset => asset.status === 'available' && !optimizationIds.has(asset.id)).length,
+    backup: imageAssets.filter(asset => asset.status === 'pending_acceptance').length,
     reserved: imageAssets.filter(asset => asset.status === 'reserved').length,
     optimize: imageAssets.filter(asset => optimizationIds.has(asset.id) && asset.status !== 'archived').length,
     used: imageAssets.filter(asset => asset.status === 'used').length,
@@ -139,7 +140,8 @@ export const MaterialCenterV2: React.FC<MaterialCenterV2Props> = ({ importedAsse
   const visibleAssets = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     return imageAssets.filter(asset => {
-      if (activeView === 'available' && (asset.status !== 'available' || optimizationIds.has(asset.id))) return false;
+if (activeView === 'available' && (asset.status !== 'available' || optimizationIds.has(asset.id))) return false;
+      if (activeView === 'backup' && asset.status !== 'pending_acceptance') return false;
       if (activeView === 'reserved' && asset.status !== 'reserved') return false;
       if (activeView === 'optimize' && (!optimizationIds.has(asset.id) || asset.status === 'archived')) return false;
       if (activeView === 'used' && asset.status !== 'used') return false;
@@ -371,7 +373,7 @@ export const MaterialCenterV2: React.FC<MaterialCenterV2Props> = ({ importedAsse
                   <div className="absolute left-0 top-9 z-30 w-[360px] rounded-xl border border-border-default bg-surface-1 p-2 shadow-lg">
                     <div className="px-2 pb-2"><div className="text-[13px] font-medium text-text-main">AI自动合并同类素材</div><p className="mt-0.5 text-[13px] text-text-tertiary">不铺开全部AI标签，只显示有素材的语义分组。</p></div>
                     <div className="space-y-1">
-                      {smartClusters.map(cluster => <button key={cluster.id} type="button" onClick={() => { setActiveTag(`ai:${cluster.id}`); setShowSmartClusters(false); }} className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-hover-bg"><div className="flex -space-x-2">{cluster.samples.map(asset => <img key={asset.id} src={asset.url} alt="" className="h-8 w-8 rounded-md border-2 border-white object-cover" />)}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between"><span className="text-[13px] font-medium text-text-main">{cluster.label}</span><span className="text-[13px] text-text-tertiary">{cluster.count}项</span></div><p className="mt-0.5 truncate text-[13px] text-text-tertiary">{cluster.description}</p></div></button>)}
+                      {smartClusters.map(cluster => <button key={cluster.id} type="button" onClick={() => { setActiveTag(`ai:${cluster.id}`); setShowSmartClusters(false); }} className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-hover-bg"><div className="min-w-0 flex-1"><div className="flex items-center justify-between"><span className="text-[13px] font-medium text-text-main">{cluster.label}</span><span className="text-[13px] text-text-tertiary">{cluster.count}项</span></div><p className="mt-0.5 truncate text-[13px] text-text-tertiary">{cluster.description}</p></div></button>)}
                     </div>
                   </div>
                 ) : null}

@@ -337,7 +337,6 @@ export function ProjectCenter({
       if (statusFilter === "异常" && uStatus !== "异常") return false;
       if (statusFilter === "待准备" && !["内容生成中", "待内容确认", "待素材", "内容已就绪", "笔记占位", "等待消费者领取", "消费者进行中"].includes(uStatus)) return false;
       if (statusFilter === "待发布" && uStatus !== "待发布" && uStatus !== "等待账号执行") return false;
-      if (statusFilter === "发布识别中" && uStatus !== "发布识别中") return false;
       if (statusFilter === "观察中" && uStatus !== "观察中") return false;
       if (statusFilter === "已完成" && uStatus !== "观察完成") return false;
       if (statusFilter === uStatus) return true;
@@ -357,7 +356,6 @@ export function ProjectCenter({
     all: allNotes.length,
     preparing: allNotes.filter(n => ["内容生成中", "待内容确认", "待素材", "内容已就绪", "笔记占位", "等待消费者领取", "消费者进行中"].includes(getUnifiedBusinessStatus(n))).length,
     pendingPublish: allNotes.filter(n => ["待发布", "等待账号执行"].includes(getUnifiedBusinessStatus(n))).length,
-    detecting: allNotes.filter(n => getUnifiedBusinessStatus(n) === "发布识别中").length,
     observing: allNotes.filter(n => getUnifiedBusinessStatus(n) === "观察中").length,
     completed: allNotes.filter(n => getUnifiedBusinessStatus(n) === "观察完成").length,
     exception: allNotes.filter(n => getUnifiedBusinessStatus(n) === "异常").length,
@@ -408,16 +406,6 @@ export function ProjectCenter({
       notes: allNotes.filter(n => n.type?.includes("矩阵")),
     },
   ];
-
-  // 矩阵全局摘要（供"按账号矩阵"视图顶部汇总条使用）
-  const matrixSummary = {
-    totalAccounts: controlledAccounts.length,
-    totalPlan: controlledAccounts.reduce((s, a) => s + a.planCount, 0),
-    totalPublished: controlledAccounts.reduce((s, a) => s + a.publishedCount, 0),
-    totalWaitingExec: controlledAccounts.reduce((s, a) => s + a.waitingExecCount, 0),
-    totalObserving: controlledAccounts.reduce((s, a) => s + a.observingCount, 0),
-    totalException: controlledAccounts.reduce((s, a) => s + a.exceptionCount, 0),
-  };
 
   // Consumer package groups for "消费者发布池"
   const consumerPackages = [
@@ -693,7 +681,7 @@ export function ProjectCenter({
                       </div>
                     </div>
                     <button onClick={() => setShowStrategyCustomization(true)} className="rounded-lg bg-btn-main px-3 py-1.5 text-[13px] font-medium text-white hover:bg-btn-main-hover">
-                      查看详情
+                      专家定制
                     </button>
                   </div>
 
@@ -904,7 +892,6 @@ export function ProjectCenter({
                         { label: "全部", count: counts.all, filter: "全部" },
                         { label: "待准备", count: counts.preparing, filter: "待准备" },
                         { label: "待发布", count: counts.pendingPublish, filter: "待发布" },
-                        { label: "发布识别中", count: counts.detecting, filter: "发布识别中" },
                         { label: "观察中", count: counts.observing, filter: "观察中" },
                         { label: "已完成", count: counts.completed, filter: "已完成" },
                         { label: "异常", count: counts.exception, filter: "异常", isAlert: counts.exception > 0 },
@@ -1041,27 +1028,6 @@ export function ProjectCenter({
                         <span className="text-[13px] text-text-tertiary">共 {controlledAccounts.length} 个账号</span>
                       </div>
 
-                      {/* 矩阵全局摘要条：一句话看清整体节奏与异常 */}
-                      <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 px-3.5 py-2.5 rounded-lg border text-[13px] ${
-                        matrixSummary.totalException > 0
-                          ? "bg-danger-light border-danger-light"
-                          : "bg-surface-subtle border-border-default"
-                      }`}>
-                        <span className="font-semibold text-text-main">
-                          {matrixSummary.totalAccounts} 个号 · 已发 {matrixSummary.totalPublished}/{matrixSummary.totalPlan}
-                        </span>
-                        <span className="text-text-secondary">
-                          待执行 {matrixSummary.totalWaitingExec} · 观察中 {matrixSummary.totalObserving}
-                        </span>
-                        {matrixSummary.totalException > 0 ? (
-                          <span className="text-danger font-semibold flex items-center gap-1">
-                            <AlertCircle size={13} /> 异常 {matrixSummary.totalException}
-                          </span>
-                        ) : (
-                          <span className="text-text-tertiary">异常 0</span>
-                        )}
-                      </div>
-
                       <div className="space-y-3">
                         {controlledAccounts.map((acc) => {
                           const isExpanded = expandedAccountIds[acc.id];
@@ -1108,26 +1074,41 @@ export function ProjectCenter({
                                 </div>
                               </div>
 
-                              {/* 行动导向状态：只突出需要操盘手关注/介入的 3 类 */}
-                              <div className="flex items-center gap-4 text-[13px] pt-1">
-                                <div className="flex items-baseline gap-1.5">
+                              {/* Quantitative Status Counters */}
+                              <div className="flex items-center gap-4 text-center text-[13px] pt-1">
+                                <div className="flex items-baseline gap-1">
+                                  <span className={`text-[14px] font-semibold tabular-nums ${acc.planCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.planCount}</span>
+                                  <span className="text-text-secondary text-[13px]">篇规划</span>
+                                </div>
+                                <div className="w-[1px] h-3 bg-border-default" />
+                                <div className="flex items-baseline gap-1">
+                                  <span className={`text-[14px] font-semibold tabular-nums ${acc.publishedCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.publishedCount}</span>
+                                  <span className="text-text-secondary text-[13px]">篇已发布</span>
+                                </div>
+                                <div className="w-[1px] h-3 bg-border-default" />
+                                <div className="flex items-baseline gap-1">
+                                  <span className={`text-[14px] font-semibold tabular-nums ${acc.queueCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.queueCount}</span>
+                                  <span className="text-text-secondary text-[13px]">篇排队中</span>
+                                </div>
+                                <div className="w-[1px] h-3 bg-border-default" />
+                                <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.waitingExecCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.waitingExecCount}</span>
-                                  <span className="text-text-secondary">篇待执行</span>
+                                  <span className="text-text-secondary text-[13px]">篇待执行</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
-                                <div className="flex items-baseline gap-1.5">
+                                <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.observingCount === 0 ? "text-text-tertiary" : "text-text-main"}`}>{acc.observingCount}</span>
-                                  <span className="text-text-secondary">篇观察中</span>
+                                  <span className="text-text-secondary text-[13px]">观察中</span>
                                 </div>
                                 <div className="w-[1px] h-3 bg-border-default" />
-                                <div className="flex items-baseline gap-1.5">
+                                <div className="flex items-baseline gap-1">
                                   <span className={`text-[14px] font-semibold tabular-nums ${acc.exceptionCount === 0 ? "text-text-tertiary" : "text-danger"}`}>{acc.exceptionCount}</span>
-                                  <span className={acc.exceptionCount > 0 ? "text-danger" : "text-text-secondary"}>篇异常</span>
+                                  <span className="text-text-secondary text-[13px]">异常</span>
                                 </div>
-                                {/* 进度与下次发布降级为右侧次要信息（去掉时分） */}
-                                <span className="text-[12px] text-text-tertiary ml-auto">
-                                  已发 {acc.publishedCount}/{acc.planCount} · 下次 {formatChineseDate(acc.nextPlannedDate)}
-                                </span>
+                                <div className="w-[1px] h-3 bg-border-default" />
+                                <div className="flex items-baseline gap-1">
+                                  <span className="text-text-secondary text-[13px]">下次发布：{formatChineseDate(acc.nextPlannedDate, true)}</span>
+                                </div>
                               </div>
 
                               {/* Expanded Recent 3 items */}
@@ -1548,22 +1529,6 @@ export function ProjectCenter({
                     <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">AI生成</span>
                   </div>
                   <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">按账号分工，一次生成本轮需要的笔记</div>
-                </div>
-              </button>
-
-              <button 
-                onClick={() => { setShowImportSelect(false); setShowAddNoteModal("file"); }}
-                className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
-              >
-                <div className="p-2.5 bg-surface-subtle border border-border-default text-text-secondary rounded-lg shrink-0">
-                  <FileSpreadsheet size={18} />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
-                    <span>批量导入 Excel / CSV</span>
-                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">批量解析</span>
-                  </div>
-                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">上传表格文件，批量解析提取笔记标题与发布计划</div>
                 </div>
               </button>
 

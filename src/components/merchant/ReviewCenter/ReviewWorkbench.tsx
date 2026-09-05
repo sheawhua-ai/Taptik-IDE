@@ -140,7 +140,7 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
     if (/话术|Skill|技能|SOP|自动应答|回复模板/i.test(`${action.category}${action.title}${action.target}`)) {
       return { label: "技能中心 · 对应 Skill", button: "前往修改 Skill", navigate: onNavigateToSkills };
     }
-    return { label: action.actionType === "note" ? "方案中心 · 后续笔记生成规则" : "方案中心 · 查看详情", button: "前往方案修改", navigate: onNavigateToPlan };
+    return { label: action.actionType === "note" ? "方案中心 · 后续笔记生成规则" : "方案中心 · 专家定制", button: "前往方案修改", navigate: onNavigateToPlan };
   };
 
   const handleOpenActionDestination = (action: SuggestedAction) => {

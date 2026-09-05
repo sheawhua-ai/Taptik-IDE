@@ -4,7 +4,17 @@ export type SourceType = 'PDF' | 'Word' | 'Excel' | '本地文件夹' | '文本'
 export type SourceState = '正常' | '拆解中' | '待处理' | '已断开';
 export type TaskType = '缺少资料' | '来源冲突' | '高风险确认' | '拆解预览';
 export type BusinessCategory = '品牌与产品' | '账号与人设' | '客户与痛点' | '内容与图文' | '禁区与流转' | '话术与承接' | '素材偏好' | '打法复盘';
-export type KnowledgeFormat = '事实卡' | '规则卡' | '范例卡' | '问答卡' | '经验卡';
+export type KnowledgeFormat = 
+  | '商家事实' 
+  | '运营规则' 
+  | '标杆范例' 
+  | '常见问答' 
+  | '打法经验' 
+  | '事实卡' 
+  | '规则卡' 
+  | '范例卡' 
+  | '问答卡' 
+  | '经验卡';
 
 export interface DecompositionItem {
   id: string;

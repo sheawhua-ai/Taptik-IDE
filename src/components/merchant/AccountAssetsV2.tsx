@@ -7,10 +7,12 @@ import {
 } from "lucide-react";
 import { useProjectStore } from "../../context/ProjectContext";
 import { formatChineseDate } from "../../utils/formatDate";
+import { EmployeeManagement } from "./EmployeeManagement";
 
 type AccountRelation = "自有品牌号" | "员工KOS" | "协作KOC";
 type CollectionState = "数据已更新" | "正在采集" | "部分数据缺失" | "采集失败" | "尚未采集";
 type DetailTab = "config" | "calendar" | "notes" | "live" | "followers" | "collection";
+type ViewMode = "accounts" | "employees";
 
 interface HistoricalNoteMetric {
   id: string;
@@ -252,6 +254,7 @@ function MetricValue({ value, suffix = "" }: { value?: number; suffix?: string }
 
 export const AccountAssetsV2: React.FC = () => {
   const { unifiedState } = useProjectStore();
+  const [viewMode, setViewMode] = useState<ViewMode>("accounts");
   const [profiles, setProfiles] = useState<AccountProfile[]>(ACCOUNT_SEEDS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detailTab, setDetailTab] = useState<DetailTab>("calendar");
@@ -327,6 +330,10 @@ export const AccountAssetsV2: React.FC = () => {
     showFeedback("运营配置已保存；平台头像和昵称仍由小红书同步");
   };
 
+  const updateAccount = (id: string, partial: Partial<AccountProfile>) => {
+    setProfiles(prev => prev.map(p => p.id === id ? { ...p, ...partial } : p));
+  };
+
   const addAccount = () => {
     const next: AccountProfile = {
       id: `account-${Date.now()}`,
@@ -358,23 +365,45 @@ export const AccountAssetsV2: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 h-full overflow-y-auto bg-canvas">
-      <div className="border-b border-border-default bg-surface px-6 py-4">
-        <div className="flex items-start justify-between gap-4">
+    <div className="flex-1 flex flex-col h-full bg-canvas">
+      <div className="border-b border-border-default bg-surface px-6 pt-4">
+        <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-[20px] font-semibold text-text-primary">账号资产</h1>
-              <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[13px] text-text-secondary">{profiles.length} 个发布账号</span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setViewMode("accounts")}
+                  className={`text-[20px] font-semibold transition-colors ${viewMode === "accounts" ? "text-text-primary" : "text-text-tertiary hover:text-text-secondary"}`}
+                >
+                  账号资产
+                </button>
+                <button
+                  onClick={() => setViewMode("employees")}
+                  className={`text-[20px] font-semibold transition-colors ${viewMode === "employees" ? "text-text-primary" : "text-text-tertiary hover:text-text-secondary"}`}
+                >
+                  商家员工
+                </button>
+              </div>
+              {viewMode === "accounts" && (
+                <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[13px] text-text-secondary">{profiles.length} 个发布账号</span>
+              )}
             </div>
-            <p className="mt-1 text-[13px] text-text-secondary">平台资料由小红书同步；Taptik 管理账号角色、发布员工与一机一号关系。</p>
+            {viewMode === "accounts" ? (
+              <p className="mt-1 text-[13px] text-text-secondary">平台资料由小红书同步；Taptik 管理账号角色、发布员工与一机一号关系。</p>
+            ) : (
+              <p className="mt-1 text-[13px] text-text-secondary">管理商家员工团队，员工点击链接绑定后即可通过手机接收并执行发布任务。</p>
+            )}
           </div>
-          <button onClick={() => { setAuthorizationStep("login"); setShowAddModal(true); }} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-action-primary-hover">
-            <Plus size={15} />加入账号
-          </button>
+          {viewMode === "accounts" && (
+            <button onClick={() => { setAuthorizationStep("login"); setShowAddModal(true); }} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-action-primary-hover">
+              <Plus size={15} />加入账号
+            </button>
+          )}
         </div>
 
-        <div className="mt-3 grid grid-cols-4 divide-x divide-border-default rounded-xl border border-border-default bg-surface-subtle">
-          {[
+        {viewMode === "accounts" && (
+          <div className="mb-4 grid grid-cols-4 divide-x divide-border-default rounded-xl border border-border-default bg-surface-subtle">
+            {[
             { label: "发布账号", value: profiles.length, suffix: "个", note: "已加入账号矩阵" },
             { label: "发布安排", value: allScheduleCount, suffix: "篇", note: "与方案账号矩阵一致" },
             { label: "当前发布任务", value: activePublishCount, suffix: "项", note: "全部为人工发布" },
@@ -385,203 +414,215 @@ export const AccountAssetsV2: React.FC = () => {
               <div className="text-[18px] font-semibold text-text-primary tabular-nums">{item.value}<span className="ml-0.5 text-[13px] font-normal text-text-secondary">{item.suffix}</span></div>
             </div>
           ))}
-        </div>
-      </div>
-
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border-default bg-surface px-6 py-2.5">
-        <div className="relative w-64">
-          <Search size={14} className="absolute left-3 top-2.5 text-text-tertiary" />
-          <input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索账号、ID或矩阵角色..." className="w-full rounded-lg border border-border-default bg-surface pl-8 pr-3 py-2 text-[13px] outline-none focus:border-border-strong" />
-        </div>
-        <div className="flex items-center gap-2">
-          <select value={relationFilter} onChange={event => setRelationFilter(event.target.value as typeof relationFilter)} className="rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] text-text-secondary outline-none">
-            <option value="all">全部账号关系</option>
-            <option value="自有品牌号">自有品牌号</option>
-            <option value="员工KOS">员工KOS</option>
-            <option value="协作KOC">协作KOC</option>
-          </select>
-          <select value={collectionFilter} onChange={event => setCollectionFilter(event.target.value as typeof collectionFilter)} className="rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] text-text-secondary outline-none">
-            <option value="all">全部采集状态</option>
-            {Object.keys(stateTone).map(state => <option key={state} value={state}>{state}</option>)}
-          </select>
-        </div>
-      </div>
-
-      <div className="p-4 px-6">
-        <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
-          <div className="grid grid-cols-[1.5fr_1.15fr_1.1fr_1fr_1fr_72px] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] font-medium text-text-tertiary">
-            <span>小红书账号</span><span>账号角色</span><span>发布负责人</span><span>待处理任务</span><span>数据状态</span><span>操作</span>
           </div>
-          {filteredProfiles.map(profile => {
-            const schedules = scheduleMap.get(profile.nickname) || [];
-            const next = schedules.find(item => !["已发布", "观察中"].includes(item.publishStatus)) || schedules[0];
-            const activeTasks = schedules.filter(item => !["已发布", "观察中", "已关闭"].includes(item.publishStatus));
-            return (
-              <button key={profile.id} onClick={() => openAccount(profile)} className="grid min-h-[68px] w-full grid-cols-[1.5fr_1.15fr_1.1fr_1fr_1fr_72px] items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-surface-hover">
-                <span className="flex min-w-0 items-center gap-2.5">
-                  <img src={profile.avatarUrl} alt="" className="h-9 w-9 shrink-0 rounded-full border border-border-default object-cover" />
-                  <span className="min-w-0">
-                    <span className="block truncate text-[13px] font-semibold text-text-primary">{profile.nickname}</span>
-                    <span className="mt-1 inline-flex rounded-md bg-surface-subtle px-1.5 py-0.5 text-[12px] text-text-tertiary">{profile.relation}</span>
-                  </span>
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-medium text-text-primary">{profile.matrixRole}</span>
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-medium text-text-primary">{profile.employeeName}</span>
-                  <span className="mt-0.5 block truncate text-[12px] text-text-tertiary">{profile.employeeDept || "待分配团队"}</span>
-                </span>
-                <span>
-                  {next ? <><span className="block text-[13px] font-semibold text-text-primary">{activeTasks.length} 项</span><span className="mt-0.5 block text-[12px] text-text-tertiary">最近 {formatChineseDate(next.plannedDate)}</span></> : <span className="text-[13px] text-text-tertiary">暂无待办</span>}
-                </span>
-                <span>
-                  <span className={`inline-flex rounded-md border px-2 py-0.5 text-[13px] font-medium ${stateTone[profile.collectionState]}`}>{profile.collectionState}</span>
-                </span>
-                <span className="flex items-center justify-end gap-0.5 text-[13px] font-medium text-text-secondary">管理<ChevronRight size={13} /></span>
-              </button>
-            );
-          })}
-          {filteredProfiles.length === 0 && <div className="px-4 py-16 text-center text-[13px] text-text-tertiary">没有符合当前条件的账号。</div>}
-        </div>
+        )}
       </div>
 
-      {selected && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/25" onClick={() => setSelectedId(null)}>
-          <div className="flex h-full w-[860px] max-w-[92vw] flex-col bg-surface shadow-2xl" onClick={event => event.stopPropagation()}>
-            <div className="border-b border-border-default px-5 py-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <img src={selected.avatarUrl} alt="" className="h-11 w-11 rounded-full border border-border-default object-cover" />
-                  <div>
-                    <div className="flex items-center gap-2"><h2 className="text-[16px] font-semibold text-text-primary">{selected.nickname}</h2><span className="rounded border border-border-default bg-surface-subtle px-1.5 py-0.5 text-[13px] text-text-secondary">{selected.relation}</span></div>
-                    <div className="mt-1 text-[13px] text-text-tertiary">ID: {selected.xhsId} · 头像与昵称由小红书同步</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => triggerCollection(selected.id)} className="flex items-center gap-1.5 rounded-lg border border-border-default px-3 py-1.5 text-[13px] font-medium text-text-secondary hover:bg-surface-hover"><RefreshCw size={13} />重新采集</button>
-                  <button onClick={() => setSelectedId(null)} className="rounded-lg p-1.5 text-text-tertiary hover:bg-surface-hover"><X size={17} /></button>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center gap-1 border-b border-border-subtle">
-                {([
-                  ["config", "运营配置", UserRound],
-                  ["calendar", "发布日历", CalendarDays],
-                  ["notes", "笔记表现", FileText],
-                  ["live", "直播表现", Radio],
-                  ["followers", "粉丝数据", Users],
-                  ["collection", "采集记录", Database]
-                ] as const).map(([id, label, Icon]) => (
-                  <button key={id} onClick={() => setDetailTab(id)} className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-[13px] font-medium ${detailTab === id ? "border-neutral-950 text-text-primary" : "border-transparent text-text-tertiary hover:text-text-secondary"}`}><Icon size={13} />{label}</button>
-                ))}
-              </div>
+      {viewMode === "employees" ? (
+        <EmployeeManagement />
+      ) : (
+        <div className="flex-1 overflow-y-auto flex flex-col">
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border-default bg-surface px-6 py-2.5">
+            <div className="relative w-64">
+              <Search size={14} className="absolute left-3 top-2.5 text-text-tertiary" />
+              <input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索账号、ID或矩阵角色..." className="w-full rounded-lg border border-border-default bg-surface pl-8 pr-3 py-2 text-[13px] outline-none focus:border-border-strong" />
             </div>
+            <div className="flex items-center gap-2">
+              <select value={relationFilter} onChange={event => setRelationFilter(event.target.value)} className="rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] text-text-secondary outline-none">
+                <option value="all">全部账号关系</option>
+                <option value="自有品牌号">自有品牌号</option>
+                <option value="员工KOS">员工KOS</option>
+                <option value="协作KOC">协作KOC</option>
+              </select>
+              <select value={collectionFilter} onChange={event => setCollectionFilter(event.target.value)} className="rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] text-text-secondary outline-none">
+                <option value="all">全部采集状态</option>
+                {Object.keys(stateTone).map(state => <option key={state} value={state}>{state}</option>)}
+              </select>
+            </div>
+          </div>
 
-            <div className="flex-1 overflow-y-auto bg-canvas p-5">
-              {detailTab === "config" && configDraft && (
-                <div className="space-y-4">
-                  <section className="rounded-xl border border-border-default bg-surface p-4">
-                    <div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2 text-[13px] font-semibold text-text-primary"><ShieldCheck size={14} />小红书平台资料</div><p className="mt-1 text-[13px] text-text-tertiary">登录小红书创作服务平台后获取，Taptik 内不可手工修改。</p></div><span className="rounded-md bg-emerald-50 px-2 py-1 text-[13px] font-medium text-emerald-700">已同步</span></div>
-                    <div className="mt-3 flex items-center gap-3 rounded-lg bg-surface-subtle p-3"><img src={selected.avatarUrl} alt="" className="h-12 w-12 rounded-full object-cover" /><div><div className="text-[13px] font-semibold text-text-primary">{selected.nickname}</div><div className="mt-0.5 text-[13px] text-text-tertiary">小红书号：{selected.xhsId}</div><div className="mt-0.5 text-[13px] text-text-tertiary">最近同步：{formatChineseDate(selected.platformProfileUpdatedAt, true) || selected.platformProfileUpdatedAt}</div></div></div>
-                  </section>
+          <div className="p-4 px-6">
+            <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
+              <div className="grid grid-cols-[1.5fr_1.15fr_1.1fr_1fr_1fr_72px] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] font-medium text-text-tertiary">
+                <span>小红书账号</span><span>账号角色</span><span>发布负责人</span><span>待处理任务</span><span>数据状态</span><span>操作</span>
+              </div>
+              {filteredProfiles.map(profile => {
+                const schedules = scheduleMap.get(profile.nickname) || [];
+                const next = schedules.find(item => !["已发布", "观察中"].includes(item.publishStatus)) || schedules[0];
+                const activeTasks = schedules.filter(item => !["已发布", "观察中", "已关闭"].includes(item.publishStatus));
+                return (
+                  <button key={profile.id} onClick={() => openAccount(profile)} className="grid min-h-[68px] w-full grid-cols-[1.5fr_1.15fr_1.1fr_1fr_1fr_72px] items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-surface-hover">
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <img src={profile.avatarUrl} alt="" className="h-9 w-9 shrink-0 rounded-full border border-border-default object-cover" />
+                      <span className="min-w-0">
+                        <span className="block truncate text-[13px] font-semibold text-text-primary">{profile.nickname}</span>
+                        <span className="mt-1 inline-flex rounded-md bg-surface-subtle px-1.5 py-0.5 text-[12px] text-text-tertiary">{profile.relation}</span>
+                      </span>
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[13px] font-medium text-text-primary">{profile.matrixRole}</span>
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[13px] font-medium text-text-primary">{profile.employeeName}</span>
+                      <span className="mt-0.5 block truncate text-[12px] text-text-tertiary">{profile.employeeDept || "待分配团队"}</span>
+                    </span>
+                    <span>
+                      {next ? <><span className="block text-[13px] font-semibold text-text-primary">{activeTasks.length} 项</span><span className="mt-0.5 block text-[12px] text-text-tertiary">最近 {formatChineseDate(next.plannedDate)}</span></> : <span className="text-[13px] text-text-tertiary">暂无待办</span>}
+                    </span>
+                    <span>
+                      <span className={`inline-flex rounded-md border px-2 py-0.5 text-[13px] font-medium ${stateTone[profile.collectionState]}`}>{profile.collectionState}</span>
+                    </span>
+                    <span className="flex items-center justify-end gap-0.5 text-[13px] font-medium text-text-secondary">管理<ChevronRight size={13} /></span>
+                  </button>
+                );
+              })}
+              {filteredProfiles.length === 0 && <div className="px-4 py-16 text-center text-[13px] text-text-tertiary">没有符合当前条件的账号。</div>}
+            </div>
+          </div>
 
-                  <section className="rounded-xl border border-border-default bg-surface p-4">
-                    <div className="flex items-start justify-between gap-4"><div><div className="text-[13px] font-semibold text-text-primary">Taptik 运营配置</div><p className="mt-1 text-[13px] text-text-tertiary">决定该账号以什么身份参与方案，以及由谁使用哪台手机完成发布。</p></div><button onClick={saveAccountConfig} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-3 py-2 text-[13px] font-medium text-white"><Save size={13} />保存配置</button></div>
-                    <div className="mt-4 grid gap-4 md:grid-cols-2">
-                      <ConfigField label="账号关系"><select value={configDraft.relation} onChange={event => setConfigDraft({ ...configDraft, relation: event.target.value as AccountRelation })} className="w-full rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] outline-none"><option>自有品牌号</option><option>员工KOS</option><option>协作KOC</option></select></ConfigField>
-                      <ConfigField label="账号角色"><input value={configDraft.matrixRole} onChange={event => setConfigDraft({ ...configDraft, matrixRole: event.target.value })} className="w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none" /></ConfigField>
-                      <div className="md:col-span-2"><ConfigField label="账号人设"><textarea value={configDraft.persona} onChange={event => setConfigDraft({ ...configDraft, persona: event.target.value })} rows={3} className="w-full resize-none rounded-lg border border-border-default px-3 py-2 text-[13px] leading-5 outline-none" /></ConfigField></div>
+          {selected && (
+            <div className="fixed inset-0 z-50 flex justify-end bg-black/25" onClick={() => setSelectedId(null)}>
+              <div className="flex h-full w-[860px] max-w-[92vw] flex-col bg-surface shadow-2xl" onClick={event => event.stopPropagation()}>
+                <div className="border-b border-border-default px-5 py-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <img src={selected.avatarUrl} alt="" className="h-11 w-11 rounded-full border border-border-default object-cover" />
+                      <div>
+                        <div className="flex items-center gap-2"><h2 className="text-[16px] font-semibold text-text-primary">{selected.nickname}</h2><span className="rounded border border-border-default bg-surface-subtle px-1.5 py-0.5 text-[13px] text-text-secondary">{selected.relation}</span></div>
+                        <div className="mt-1 text-[13px] text-text-tertiary">ID: {selected.xhsId} · 头像与昵称由小红书同步</div>
+                      </div>
                     </div>
-                    <div className="my-4 border-t border-border-subtle" />
-                    <div className="flex items-center gap-2 text-[13px] font-semibold text-text-primary"><Smartphone size={14} />发布责任与设备</div>
-                    <div className="mt-3 grid gap-4 md:grid-cols-2">
-                      <ConfigField label="发布手机"><input value={configDraft.publishDevice} onChange={event => setConfigDraft({ ...configDraft, publishDevice: event.target.value })} placeholder="例如：发布手机 A-03" className="w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none" /></ConfigField>
-                      <ConfigField label="对应手机号 / 设备标识" hint="一机只能绑定一个账号"><input value={configDraft.devicePhone} onChange={event => setConfigDraft({ ...configDraft, devicePhone: event.target.value })} placeholder="例如：186****5219" className="w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none" /></ConfigField>
-                      <ConfigField label="发布负责人" hint="同一员工可以负责多个账号"><input value={configDraft.employeeName} onChange={event => setConfigDraft({ ...configDraft, employeeName: event.target.value })} className="w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none" /></ConfigField>
-                      <ConfigField label="所属团队 / 门店"><input value={configDraft.employeeDept} onChange={event => setConfigDraft({ ...configDraft, employeeDept: event.target.value })} className="w-full rounded-lg border border-border-default px-3 py-2 text-[13px] outline-none" /></ConfigField>
-                      <div className="md:col-span-2"><ConfigField label="发布指令与回传要求"><textarea value={configDraft.publishInstruction} onChange={event => setConfigDraft({ ...configDraft, publishInstruction: event.target.value })} rows={3} className="w-full resize-none rounded-lg border border-border-default px-3 py-2 text-[13px] leading-5 outline-none" /></ConfigField></div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => triggerCollection(selected.id)} className="flex items-center gap-1.5 rounded-lg border border-border-default px-3 py-1.5 text-[13px] font-medium text-text-secondary hover:bg-surface-hover"><RefreshCw size={13} />重新采集</button>
+                      <button onClick={() => setSelectedId(null)} className="rounded-lg p-1.5 text-text-tertiary hover:bg-surface-hover"><X size={17} /></button>
                     </div>
-                    <div className="mt-4 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-[13px] leading-5 text-blue-900">系统约束：一台发布手机只能绑定一个小红书账号；同一员工可以接收并处理多个账号的发布任务。</div>
-                  </section>
-                </div>
-              )}
-
-              {detailTab === "calendar" && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between rounded-xl border border-border-default bg-surface px-4 py-3">
-                    <div><div className="text-[13px] font-semibold text-text-primary">账号发布安排</div><div className="mt-0.5 text-[13px] text-text-tertiary">与方案中的账号矩阵和笔记排期使用同一份数据。</div></div>
-                    <div className="text-right"><div className="text-[20px] font-semibold text-text-primary">{selectedSchedule.length}<span className="ml-1 text-[13px] font-normal text-text-secondary">篇</span></div><div className="text-[13px] text-text-tertiary">当前安排</div></div>
                   </div>
-                  {selectedSchedule.length === 0 ? <EmptyState icon={CalendarDays} title="暂无发布安排" detail="该账号尚未被加入任何方案的账号矩阵。" /> : (
-                    <div className="space-y-2">
-                      {selectedSchedule.map(item => (
-                        <div key={item.id} className="grid grid-cols-[90px_1fr_auto] items-center gap-4 rounded-xl border border-border-default bg-surface p-4">
-                          <div><div className="text-[15px] font-semibold text-text-primary">{formatChineseDate(item.plannedDate)}</div><div className="mt-1 text-[13px] text-text-tertiary">人工发布</div></div>
-                          <div className="min-w-0"><div className="truncate text-[13px] font-semibold text-text-primary">{item.title}</div><div className="mt-1 text-[13px] text-text-tertiary">{item.projectName}{item.platformNoteId ? ` · 平台ID ${item.platformNoteId}` : ""}</div></div>
-                          <span className={`rounded-md px-2 py-1 text-[13px] font-medium ${statusTone(item.publishStatus)}`}>{item.publishStatus}</span>
+                  <div className="mt-4 flex items-center gap-1 border-b border-border-subtle">
+                    {([
+                      ["config", "运营配置", UserRound],
+                      ["calendar", "发布日历", CalendarDays],
+                      ["notes", "笔记表现", FileText],
+                      ["live", "直播表现", Radio],
+                      ["followers", "粉丝数据", Users],
+                      ["collection", "采集日志", Activity]
+                    ] as const).map(([id, label, Icon]) => (
+                      <button key={id} onClick={() => setDetailTab(id)} className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-[13px] font-medium transition-colors ${detailTab === id ? "border-action-primary text-action-primary" : "border-transparent text-text-tertiary hover:text-text-primary"}`}><Icon size={14} />{label}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6">
+                  {detailTab === "config" && (
+                    <div className="mx-auto max-w-2xl space-y-6">
+                      <div className="rounded-xl border border-border-default bg-surface p-5">
+                        <h4 className="text-[14px] font-semibold text-text-primary">团队协作与物理设备</h4>
+                        <div className="mt-4 space-y-4">
+                          <ConfigField label="账号关系" hint="影响是否能分配任务">
+                            <select value={selected.relation} onChange={event => updateAccount(selected.id, { relation: event.target.value as any })} className="w-full rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] outline-none">
+                              <option>自有品牌号</option><option>员工KOS</option><option>协作KOC</option>
+                            </select>
+                          </ConfigField>
+                          <ConfigField label="专用物理手机" hint="一机一号规则限定">
+                            <input value={selected.publishDevice || ""} onChange={event => updateAccount(selected.id, { publishDevice: event.target.value })} placeholder="例如：设备#A012" className="w-full rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] outline-none" />
+                          </ConfigField>
+                          <ConfigField label="指定发布负责人" hint="任务将发往其手机">
+                            <select value={selected.employeeName || ""} onChange={event => updateAccount(selected.id, { employeeName: event.target.value })} className="w-full rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] outline-none">
+                              <option value="">未指定</option><option value="李晓华">李晓华 (客服组)</option><option value="王大建">王大建 (运营组)</option>
+                            </select>
+                          </ConfigField>
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl border border-border-default bg-surface p-5">
+                        <h4 className="text-[14px] font-semibold text-text-primary">账号矩阵与人设设定</h4>
+                        <div className="mt-4 space-y-4">
+                          <ConfigField label="矩阵角色" hint="方案匹配依据">
+                            <select value={selected.matrixRole} onChange={event => updateAccount(selected.id, { matrixRole: event.target.value as any })} className="w-full rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] outline-none">
+                              <option>主理人/IP</option><option>品牌官号</option><option>门店导购</option><option>素人种草</option>
+                            </select>
+                          </ConfigField>
+                          <ConfigField label="人设指令（Prompt）" hint="用于AI生成笔记时参考">
+                            <textarea value={selected.persona} onChange={event => updateAccount(selected.id, { persona: event.target.value })} placeholder="输入该账号的语气、身份背景、常见口头禅等要求..." className="min-h-[100px] w-full rounded-lg border border-border-default bg-surface p-3 text-[13px] leading-relaxed outline-none" />
+                          </ConfigField>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {detailTab === "calendar" && (
+                    <div className="space-y-4">
+                      {scheduleMap.get(selected.nickname)?.length === 0 ? <EmptyState icon={CalendarDays} title="该账号近期暂无发布安排" detail="在「发布日历」或「执行方案」中分配内容给该账号。" /> : (
+                        <div className="space-y-3">
+                          {scheduleMap.get(selected.nickname)?.map(item => (
+                            <div key={item.id} className="flex items-center gap-4 rounded-xl border border-border-default bg-surface p-4">
+                              <div><div className="text-[15px] font-semibold text-text-primary">{formatChineseDate(item.plannedDate)}</div><div className="mt-1 text-[13px] text-text-tertiary">人工发布</div></div>
+                              <div className="min-w-0"><div className="truncate text-[13px] font-semibold text-text-primary">{item.title}</div><div className="mt-1 text-[13px] text-text-tertiary">{item.projectName}{item.platformNoteId ? ` · 平台ID ${item.platformNoteId}` : ""}</div></div>
+                              <span className={`rounded-md px-2 py-1 text-[13px] font-medium ${statusTone(item.publishStatus)}`}>{item.publishStatus}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {detailTab === "notes" && (
+                    <div className="space-y-4">
+                      <DataScopeNotice profile={selected} scope="笔记表现" />
+                      <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
+                        <div className="grid grid-cols-[1.8fr_repeat(6,.6fr)] gap-2 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] text-text-tertiary"><span>笔记</span><span>阅读</span><span>点赞</span><span>收藏</span><span>评论</span><span>分享</span><span>涨粉</span></div>
+                        {selected.noteMetrics.map(note => <div key={note.id} className="grid grid-cols-[1.8fr_repeat(6,.6fr)] items-center gap-2 border-b border-border-subtle px-4 py-3 text-[13px] last:border-b-0"><span className="min-w-0"><span className="block truncate font-medium text-text-primary">{note.title}</span><span className="mt-0.5 block text-[13px] text-text-tertiary">{formatChineseDate(note.publishedAt, true)}</span></span><MetricValue value={note.views} /><MetricValue value={note.likes} /><MetricValue value={note.collects} /><MetricValue value={note.comments} /><MetricValue value={note.shares} /><MetricValue value={note.followerGain} suffix="" /></div>)}
+                        {selected.noteMetrics.length === 0 && <div className="px-4 py-12 text-center text-[13px] text-text-tertiary">尚未获取可展示的笔记数据。</div>}
+                      </div>
+                    </div>
+                  )}
+
+                  {detailTab === "live" && (
+                    <div className="space-y-4">
+                      <DataScopeNotice profile={selected} scope="直播表现" />
+                      {selected.liveSessions.length === 0 ? <EmptyState icon={Radio} title="暂无直播数据" detail="当前采集结果中没有该账号的直播场次，不以0代替。" /> : selected.liveSessions.map(session => (
+                        <div key={session.id} className="rounded-xl border border-border-default bg-surface p-4">
+                          <div className="flex items-center justify-between"><div><div className="text-[13px] font-semibold text-text-primary">{formatChineseDate(session.startedAt, true)} 直播</div><div className="mt-0.5 text-[13px] text-text-tertiary">时长 {session.duration}</div></div><Radio size={17} className="text-rose-500" /></div>
+                          <div className="mt-4 grid grid-cols-5 gap-3">{[["观看人数",session.viewers],["峰值在线",session.peakOnline],["平均停留",session.avgWatch],["互动",session.interactions],["新增粉丝",session.followerGain]].map(([label,value]) => <div key={String(label)} className="rounded-lg bg-surface-subtle p-3"><div className="text-[13px] text-text-tertiary">{label}</div><div className="mt-1 text-[14px] font-semibold text-text-primary">{typeof value === "number" ? value.toLocaleString() : value || "未获取"}</div></div>)}</div>
                         </div>
                       ))}
                     </div>
                   )}
-                </div>
-              )}
 
-              {detailTab === "notes" && (
-                <div className="space-y-4">
-                  <DataScopeNotice profile={selected} scope="笔记表现" />
-                  <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
-                    <div className="grid grid-cols-[1.8fr_repeat(6,.6fr)] gap-2 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] text-text-tertiary"><span>笔记</span><span>阅读</span><span>点赞</span><span>收藏</span><span>评论</span><span>分享</span><span>涨粉</span></div>
-                    {selected.noteMetrics.map(note => <div key={note.id} className="grid grid-cols-[1.8fr_repeat(6,.6fr)] items-center gap-2 border-b border-border-subtle px-4 py-3 text-[13px] last:border-b-0"><span className="min-w-0"><span className="block truncate font-medium text-text-primary">{note.title}</span><span className="mt-0.5 block text-[13px] text-text-tertiary">{formatChineseDate(note.publishedAt, true)}</span></span><MetricValue value={note.views} /><MetricValue value={note.likes} /><MetricValue value={note.collects} /><MetricValue value={note.comments} /><MetricValue value={note.shares} /><MetricValue value={note.followerGain} suffix="" /></div>)}
-                    {selected.noteMetrics.length === 0 && <div className="px-4 py-12 text-center text-[13px] text-text-tertiary">尚未获取可展示的笔记数据。</div>}
-                  </div>
-                </div>
-              )}
-
-              {detailTab === "live" && (
-                <div className="space-y-4">
-                  <DataScopeNotice profile={selected} scope="直播表现" />
-                  {selected.liveSessions.length === 0 ? <EmptyState icon={Radio} title="暂无直播数据" detail="当前采集结果中没有该账号的直播场次，不以0代替。" /> : selected.liveSessions.map(session => (
-                    <div key={session.id} className="rounded-xl border border-border-default bg-surface p-4">
-                      <div className="flex items-center justify-between"><div><div className="text-[13px] font-semibold text-text-primary">{formatChineseDate(session.startedAt, true)} 直播</div><div className="mt-0.5 text-[13px] text-text-tertiary">时长 {session.duration}</div></div><Radio size={17} className="text-rose-500" /></div>
-                      <div className="mt-4 grid grid-cols-5 gap-3">{[["观看人数",session.viewers],["峰值在线",session.peakOnline],["平均停留",session.avgWatch],["互动",session.interactions],["新增粉丝",session.followerGain]].map(([label,value]) => <div key={String(label)} className="rounded-lg bg-surface-subtle p-3"><div className="text-[13px] text-text-tertiary">{label}</div><div className="mt-1 text-[14px] font-semibold text-text-primary">{typeof value === "number" ? value.toLocaleString() : value || "未获取"}</div></div>)}</div>
+                  {detailTab === "followers" && (
+                    <div className="space-y-4">
+                      <DataScopeNotice profile={selected} scope="粉丝数据" />
+                      {selected.followerTotal === undefined ? <EmptyState icon={Users} title="粉丝数据未获取" detail="等待下一次采集，当前不用0代替缺失数据。" /> : (
+                        <div className="rounded-xl border border-border-default bg-surface p-5">
+                          <div className="flex items-end justify-between"><div><div className="text-[13px] text-text-tertiary">粉丝总量</div><div className="mt-1 text-[28px] font-semibold text-text-primary tabular-nums">{selected.followerTotal.toLocaleString()}</div></div><div className="rounded-lg bg-emerald-50 px-3 py-2 text-[13px] font-medium text-emerald-700"><TrendingUp size={14} className="mr-1 inline" />近30日 +{selected.followerDelta30d?.toLocaleString() || "未获取"}</div></div>
+                          <div className="mt-6 flex h-40 items-end gap-3 border-b border-border-default px-2">{selected.followerTrend.map((value,index) => { const max = Math.max(...selected.followerTrend); const min = Math.min(...selected.followerTrend); const height = 32 + ((value - min) / Math.max(1, max - min)) * 96; return <div key={index} className="flex flex-1 flex-col items-center justify-end gap-2"><div className="w-full rounded-t bg-neutral-800" style={{height}} /><span className="text-[13px] text-text-tertiary">{index + 1}周</span></div>; })}</div>
+                          <div className="mt-4 rounded-lg bg-surface-subtle p-3 text-[13px] text-text-secondary">粉丝画像、活跃时间和兴趣标签将仅在采集到对应字段时展示。</div>
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-              )}
+                  )}
 
-              {detailTab === "followers" && (
-                <div className="space-y-4">
-                  <DataScopeNotice profile={selected} scope="粉丝数据" />
-                  {selected.followerTotal === undefined ? <EmptyState icon={Users} title="粉丝数据未获取" detail="等待下一次采集，当前不用0代替缺失数据。" /> : (
-                    <div className="rounded-xl border border-border-default bg-surface p-5">
-                      <div className="flex items-end justify-between"><div><div className="text-[13px] text-text-tertiary">粉丝总量</div><div className="mt-1 text-[28px] font-semibold text-text-primary tabular-nums">{selected.followerTotal.toLocaleString()}</div></div><div className="rounded-lg bg-emerald-50 px-3 py-2 text-[13px] font-medium text-emerald-700"><TrendingUp size={14} className="mr-1 inline" />近30日 +{selected.followerDelta30d?.toLocaleString() || "未获取"}</div></div>
-                      <div className="mt-6 flex h-40 items-end gap-3 border-b border-border-default px-2">{selected.followerTrend.map((value,index) => { const max = Math.max(...selected.followerTrend); const min = Math.min(...selected.followerTrend); const height = 32 + ((value - min) / Math.max(1, max - min)) * 96; return <div key={index} className="flex flex-1 flex-col items-center justify-end gap-2"><div className="w-full rounded-t bg-neutral-800" style={{height}} /><span className="text-[13px] text-text-tertiary">{index + 1}周</span></div>; })}</div>
-                      <div className="mt-4 rounded-lg bg-surface-subtle p-3 text-[13px] text-text-secondary">粉丝画像、活跃时间和兴趣标签将仅在采集到对应字段时展示。</div>
+                  {detailTab === "collection" && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-3 gap-3">
+                        <InfoCard label="当前采集状态" value={selected.collectionState} icon={Activity} />
+                        <InfoCard label="最近成功采集" value={selected.lastCollectedAt ? formatChineseDate(selected.lastCollectedAt, true) : "尚未采集"} icon={CheckCircle2} />
+                        <InfoCard label="下次计划采集" value={selected.nextCollectionAt ? formatChineseDate(selected.nextCollectionAt, true) : "待安排"} icon={Clock3} />
+                      </div>
+                      <div className="rounded-xl border border-border-default bg-surface p-4"><div className="text-[13px] font-semibold text-text-primary">已覆盖数据</div><div className="mt-3 flex flex-wrap gap-2">{selected.coverage.length ? selected.coverage.map(item => <span key={item} className="rounded-md border border-border-default bg-surface-subtle px-2.5 py-1 text-[13px] text-text-secondary">{item}</span>) : <span className="text-[13px] text-text-tertiary">等待首次采集结果</span>}</div></div>
+                      <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
+                        <div className="grid grid-cols-[130px_110px_90px_1fr] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] text-text-tertiary"><span>时间</span><span>范围</span><span>结果</span><span>说明</span></div>
+                        {selected.collectionLogs.map(log => <div key={log.id} className="grid grid-cols-[130px_110px_90px_1fr] gap-3 border-b border-border-subtle px-4 py-3 text-[13px] last:border-b-0"><span>{formatChineseDate(log.time, true) || log.time}</span><span>{log.scope}</span><span className={log.result === "成功" ? "text-emerald-700" : log.result === "失败" ? "text-rose-700" : "text-amber-700"}>{log.result}</span><span className="text-text-secondary">{log.detail}</span></div>)}
+                      </div>
                     </div>
                   )}
                 </div>
-              )}
-
-              {detailTab === "collection" && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-3">
-                    <InfoCard label="当前采集状态" value={selected.collectionState} icon={Activity} />
-                    <InfoCard label="最近成功采集" value={selected.lastCollectedAt ? formatChineseDate(selected.lastCollectedAt, true) : "尚未采集"} icon={CheckCircle2} />
-                    <InfoCard label="下次计划采集" value={selected.nextCollectionAt ? formatChineseDate(selected.nextCollectionAt, true) : "待安排"} icon={Clock3} />
-                  </div>
-                  <div className="rounded-xl border border-border-default bg-surface p-4"><div className="text-[13px] font-semibold text-text-primary">已覆盖数据</div><div className="mt-3 flex flex-wrap gap-2">{selected.coverage.length ? selected.coverage.map(item => <span key={item} className="rounded-md border border-border-default bg-surface-subtle px-2.5 py-1 text-[13px] text-text-secondary">{item}</span>) : <span className="text-[13px] text-text-tertiary">等待首次采集结果</span>}</div></div>
-                  <div className="overflow-hidden rounded-xl border border-border-default bg-surface">
-                    <div className="grid grid-cols-[130px_110px_90px_1fr] gap-3 border-b border-border-default bg-surface-subtle px-4 py-2.5 text-[13px] text-text-tertiary"><span>时间</span><span>范围</span><span>结果</span><span>说明</span></div>
-                    {selected.collectionLogs.map(log => <div key={log.id} className="grid grid-cols-[130px_110px_90px_1fr] gap-3 border-b border-border-subtle px-4 py-3 text-[13px] last:border-b-0"><span>{formatChineseDate(log.time, true) || log.time}</span><span>{log.scope}</span><span className={log.result === "成功" ? "text-emerald-700" : log.result === "失败" ? "text-rose-700" : "text-amber-700"}>{log.result}</span><span className="text-text-secondary">{log.detail}</span></div>)}
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
-      {showAddModal && (
+{showAddModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/35 p-4" onClick={() => setShowAddModal(false)}>
           <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border-default bg-surface shadow-2xl" onClick={event => event.stopPropagation()}>
             <div className="flex items-start justify-between border-b border-border-default px-5 py-4"><div><h3 className="text-[15px] font-semibold text-text-primary">登录小红书并加入账号</h3><p className="mt-1 text-[13px] text-text-tertiary">昵称、头像和小红书号由创作服务平台返回，无需手工填写。</p></div><button onClick={() => setShowAddModal(false)} className="p-1 text-text-tertiary"><X size={17} /></button></div>

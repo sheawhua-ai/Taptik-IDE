@@ -13,11 +13,14 @@ import {
   PlanCreationSettings,
   StructuredPlanCreationFlow,
 } from './CreateProject/StructuredPlanCreationFlow';
+import { DialogueWorkbench } from './CreateProject/DialogueWorkbench';
+import { Sparkles, X } from 'lucide-react';
 
 export function CreateProjectWorkstation({
   merchantId,
   onClose,
   onCreate,
+  mode,
   industryDefaults,
   industryProfile,
 }: {
@@ -124,6 +127,9 @@ export function CreateProjectWorkstation({
   const [showContextDrawer, setShowContextDrawer] = useState<boolean>(false);
   const [contextState, setContextState] = useState<ContextState>(DEFAULT_CONTEXT_STATE);
 
+  // AI Chat Drawer
+  const [showAIChat, setShowAIChat] = useState<boolean>(false);
+
   // Creation completion info
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [createdProjectInfo, setCreatedProjectInfo] = useState<{
@@ -138,6 +144,8 @@ export function CreateProjectWorkstation({
     confirmedDraft: StrategyDraftData = strategyDraft,
     settings: PlanCreationSettings = {
       targetKeywords: '',
+      conversionGoal: '收藏 / 关注',
+      publishFrequency: '每天 1–2 篇',
       observationDays: 14,
       needMaterials: true,
       allowIndustryFallback: true,
@@ -218,26 +226,10 @@ export function CreateProjectWorkstation({
         strategyProtocol: {
           targetAudience: activeDraft.promotionTarget.targetAudience,
           coreProblem: activeDraft.coreStrategy.problemToSolve,
-          solutionSummary: activeDraft.coreStrategy.contentLogic,
+          solutionSummary: `${activeDraft.coreStrategy.contentLogic}｜站内承接：${settings.conversionGoal}｜目标关键词：${settings.targetKeywords || '未设置'}`,
           verifyHypothesis: activeDraft.coreGoalAndVerification.primaryBusinessGoal,
           continueCondition: activeDraft.coreGoalAndVerification.successCriteria,
           stopCondition: activeDraft.coreGoalAndVerification.stopCriteria,
-          targetKeywords: settings.targetKeywords ? settings.targetKeywords.split(new RegExp('[、,,]')).map((keyword) => keyword.trim()).filter(Boolean) : [],
-          observationDays: settings.observationDays,
-          observableSignals: activeDraft.coreGoalAndVerification.observableSignals,
-          adjustmentCriteria: activeDraft.coreGoalAndVerification.adjustmentCriteria,
-          humanInTheLoop: activeDraft.humanInTheLoop,
-          hypothesesAndBasis: activeDraft.hypothesesAndBasis,
-          // —— 与新建方案槽位契约对齐（主推产品是新建必填项，不能丢）——
-          promotionTarget: {
-            targetName: activeDraft.promotionTarget.targetName,
-            targetCategory: activeDraft.promotionTarget.targetCategory,
-          },
-          promotionConfirmedFacts: activeDraft.promotionTarget.confirmedFacts,
-          unconfirmedGaps: activeDraft.promotionTarget.unconfirmedGaps,
-          auxiliaryGoals: activeDraft.coreGoalAndVerification.auxiliaryGoals,
-          rationale: activeDraft.coreStrategy.rationale,
-          collaborationMechanism: activeDraft.coreStrategy.collaborationMechanism,
         },
         distributionScheme: {
           brandTotalNotes: brandNotesTotal,
@@ -248,13 +240,13 @@ export function CreateProjectWorkstation({
             brandAccounts: {
               selectedAccountIds: activeBrandAccounts.map((account) => account.id),
               notesPerAccount: activeBrandAccounts.length ? Math.max(1, Math.round(brandNotesTotal / activeBrandAccounts.length)) : 0,
-              publishFrequency: '按排期发布',
+              publishFrequency: settings.publishFrequency,
               suggestedTimeWindow: activeBrandAccounts[0]?.timeWindow || '按排期发布',
             },
             kosAccounts: {
               selectedAccountIds: activeKosAccounts.map((account) => account.id),
               notesPerAccount: activeKosAccounts.length ? Math.max(1, Math.round(kosNotesTotal / activeKosAccounts.length)) : 0,
-              publishFrequency: '按排期发布',
+              publishFrequency: settings.publishFrequency,
               suggestedTimeWindow: activeKosAccounts[0]?.timeWindow || '按排期发布',
             },
           },
@@ -377,8 +369,35 @@ export function CreateProjectWorkstation({
         industryProfile={industryProfile}
         onClose={onClose}
         onOpenContext={() => setShowContextDrawer(true)}
+        onOpenAIChat={() => setShowAIChat(true)}
         onConfirm={handleConfirmAndCreateProject}
       />
+
+      {showAIChat && (
+        <div className="fixed inset-y-0 right-0 z-50 w-[700px] bg-canvas shadow-2xl flex flex-col border-l border-border-default animate-in slide-in-from-right duration-300">
+          <div className="shrink-0 h-16 border-b border-border-default px-6 flex items-center justify-between">
+            <h2 className="text-[15px] font-semibold flex items-center gap-2">
+              <Sparkles size={16} /> AI 辅助打法调整
+            </h2>
+            <button onClick={() => setShowAIChat(false)} className="text-text-tertiary hover:text-text-main p-1.5 rounded-lg hover:bg-hover-bg">
+              <X size={16} />
+            </button>
+          </div>
+          <DialogueWorkbench
+            facts={[]}
+            questions={[]}
+            strategyDraft={strategyDraft}
+            onOpenFullContext={() => setShowContextDrawer(true)}
+            onNaturalLanguageSubmit={() => {}}
+            onConfirmAndCreate={() => {
+              handleConfirmAndCreateProject();
+              setShowAIChat(false);
+            }}
+            onUpdateStrategyDraft={setStrategyDraft}
+            industryDefaults={industryDefaults}
+          />
+        </div>
+      )}
 
       {showContextDrawer && (
         <ContextDrawer

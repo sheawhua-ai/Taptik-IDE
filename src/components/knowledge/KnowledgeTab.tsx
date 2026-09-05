@@ -106,7 +106,9 @@ export function KnowledgeTab({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base font-semibold text-text-main">{activeCategory.name}</h2>
-              <span className="rounded-md bg-hover-bg px-2 py-1 text-[12px] text-text-secondary">{activeCategory.primaryFormat}</span>
+              <span className="rounded-md bg-hover-bg px-2 py-0.5 text-[12px] font-medium text-text-secondary border border-border-default">
+                主格式：{activeCategory.primaryFormat}
+              </span>
             </div>
             <p className="mt-1 text-[13px] text-text-tertiary">{categoryCounts.get(selectedCategory) || 0} 条知识 · AI 按本板块说明自动归位</p>
           </div>

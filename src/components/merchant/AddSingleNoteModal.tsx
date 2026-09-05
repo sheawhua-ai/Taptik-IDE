@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Search, Upload, Bold, Italic, Type, List, ListOrdered, Undo, Redo, ChevronDown, Eye, Minimize2, Trash2,
   X, Plus, Link2,
   Table, Sparkles, Download, FileSpreadsheet, RefreshCw, CheckCircle2, ArrowRight
 } from 'lucide-react';
@@ -45,6 +46,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
   const [contentDirection, setContentDirection] = useState('');
   const [plannedDate, setPlannedDate] = useState(new Date().toISOString().split('T')[0]);
   const [body, setBody] = useState('');
+  const [topic, setTopic] = useState('');
   const [titleError, setTitleError] = useState('');
 
   // File Batch Import state
@@ -201,25 +203,43 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-1">
-          <div>
-            <h2 className="text-[17px] font-bold text-text-main flex items-center gap-2">
-              {mode === "file" ? <FileSpreadsheet size={20} /> : mode === "feishu" ? <Link2 size={20} /> : <Plus size={20} />}
-              {modalCopy.title}
-            </h2>
-            <p className="text-[13px] text-text-tertiary mt-0.5">
-              {modalCopy.description}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="关闭"
-            className="p-1.5 text-text-tertiary hover:text-text-main hover:bg-hover-bg rounded-lg transition-colors"
-          >
-            <X size={18} />
-          </button>
+          {mode === "single" ? (
+            <div>
+              <div className="text-[12px] text-text-tertiary mb-1">内容资产 · Note 1046</div>
+              <h2 className="text-[20px] font-bold text-text-main">
+                编辑笔记
+              </h2>
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-[17px] font-bold text-text-main flex items-center gap-2">
+                {mode === "file" ? <FileSpreadsheet size={20} /> : mode === "feishu" ? <Link2 size={20} /> : <Plus size={20} />}
+                {modalCopy.title}
+              </h2>
+              <p className="text-[13px] text-text-tertiary mt-0.5">
+                {modalCopy.description}
+              </p>
+            </div>
+          )}
+          
+          {mode === "single" ? (
+            <div className="flex items-center gap-3">
+              <button onClick={onClose} className="flex items-center gap-1.5 px-3 py-1.5 border border-border-default rounded-lg text-[13px] text-text-secondary hover:bg-surface-subtle transition-colors">
+                <Eye size={14}/> 预览
+              </button>
+              <button onClick={onClose} className="flex items-center gap-1.5 px-3 py-1.5 border border-border-default rounded-lg text-[13px] text-text-secondary hover:bg-surface-subtle transition-colors">
+                <Minimize2 size={14}/> 退出全屏
+              </button>
+              <button onClick={onClose} className="p-1.5 text-text-tertiary hover:bg-surface-subtle hover:text-text-main rounded-lg transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+          ) : (
+            <button onClick={onClose} className="p-2 text-text-tertiary hover:bg-surface-subtle hover:text-text-main rounded-lg transition-colors">
+              <X size={20} />
+            </button>
+          )}
         </div>
-
         {/* Entry Content */}
         <div className={`overflow-y-auto flex-1 bg-page-bg/30 ${mode === "single" ? "p-0" : "p-6"}`}>
 
@@ -454,14 +474,14 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
           )}
 
           {mode === "single" && (
-            <form id="manual-note-form" onSubmit={handleSingleSubmit} className="grid lg:grid-cols-[minmax(0,1fr)_300px] bg-surface-1 min-h-[520px]">
+            
+            <form id="manual-note-form" onSubmit={handleSingleSubmit} className="grid lg:grid-cols-[minmax(0,1fr)_360px] bg-surface-1 min-h-[520px]">
               <section className="p-6 lg:border-r border-border-default space-y-5">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="manual-note-title" className="text-[13px] font-bold text-text-main">
-                      笔记标题 <span className="text-text-main">*</span>
+                    <label htmlFor="manual-note-title" className="text-[14px] font-bold text-text-main">
+                      笔记标题
                     </label>
-                    <span className="text-[13px] text-text-tertiary">{title.length}/40</span>
                   </div>
                   <input
                     id="manual-note-title"
@@ -472,9 +492,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
                       setTitle(e.target.value);
                       if (titleError) setTitleError('');
                     }}
-                    placeholder="用一句话说清这篇笔记讲什么"
-                    aria-invalid={Boolean(titleError)}
-                    aria-describedby={titleError ? "manual-note-title-error" : undefined}
+                    placeholder="未命名笔记"
                     className={`w-full px-4 py-3 border rounded-xl text-[15px] font-medium outline-none bg-surface-1 transition-colors ${titleError ? "border-red-400 focus:border-red-500" : "border-border-default focus:border-neutral-500"}`}
                   />
                   {titleError ? (
@@ -484,125 +502,111 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="manual-note-body" className="text-[13px] font-bold text-text-main">笔记正文</label>
-                    <span className="text-[13px] text-text-tertiary">{body.length} 字</span>
+                    <label htmlFor="manual-note-body" className="text-[14px] font-bold text-text-main">正文内容</label>
                   </div>
-                  <textarea
-                    id="manual-note-body"
-                    rows={15}
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    placeholder={'直接写正文，可先写草稿。\n\n建议包含：用户遇到的问题、真实过程或专业建议、最后的行动引导。'}
-                    className="w-full min-h-[340px] px-4 py-3 border border-border-default rounded-xl text-[14px] leading-7 outline-none focus:border-neutral-500 bg-surface-1 resize-none"
+                  <div className="border border-border-default rounded-xl overflow-hidden focus-within:border-neutral-500 transition-colors">
+                    <div className="flex items-center gap-4 px-4 py-2 border-b border-border-default bg-surface-1 text-text-secondary">
+                      <button type="button" className="flex items-center gap-1 text-[13px] hover:text-text-main"><span className="font-medium">正文</span> <ChevronDown size={14}/></button>
+                      <button type="button" className="hover:text-text-main"><Bold size={16}/></button>
+                      <button type="button" className="hover:text-text-main"><Italic size={16}/></button>
+                      <button type="button" className="flex items-center gap-1 hover:text-text-main"><Type size={16}/><ChevronDown size={14}/></button>
+                      <button type="button" className="hover:text-text-main"><List size={16}/></button>
+                      <button type="button" className="hover:text-text-main"><ListOrdered size={16}/></button>
+                      <button type="button" className="hover:text-text-main"><Undo size={16}/></button>
+                      <button type="button" className="hover:text-text-main"><Redo size={16}/></button>
+                    </div>
+                    <textarea
+                      id="manual-note-body"
+                      rows={12}
+                      value={body}
+                      onChange={(e) => setBody(e.target.value)}
+                      placeholder={'输入笔记正文，可使用标题、加粗、颜色和列表进行排版...'}
+                      className="w-full min-h-[300px] px-4 py-4 text-[14px] leading-7 outline-none bg-surface-1 resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="manual-note-topic" className="text-[14px] font-bold text-text-main">话题</label>
+                  </div>
+                  <input
+                    id="manual-note-topic"
+                    type="text"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="#添加话题"
+                    className="w-full px-4 py-3 border border-border-default rounded-xl text-[14px] outline-none focus:border-neutral-500 bg-surface-1 transition-colors"
                   />
                 </div>
               </section>
 
-              <aside className="p-5 bg-surface-subtle/70 space-y-5">
-                <div>
-                  <h3 className="text-[14px] font-bold text-text-main">发布设置</h3>
-                  <p className="text-[13px] text-text-tertiary mt-1">先写内容，账号和时间也可以之后再调整。</p>
-                </div>
-
-                <div>
-                  <label htmlFor="manual-note-account-type" className="block text-[13px] font-bold text-text-secondary mb-1.5">账号类型</label>
-                  <select
-                    id="manual-note-account-type"
-                    value={accountType}
-                    onChange={(e) => {
-                      setAccountType(e.target.value as "KOC" | "店长号/KOS" | "品牌主号");
-                      setAccountName('');
-                      setContentDirection('');
-                    }}
-                    className="w-full px-3.5 py-2.5 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-500 bg-surface-1"
-                  >
-                    <option value="KOC">KOC 消费者共创</option>
-                    <option value="店长号/KOS">店长号 / KOS</option>
-                    <option value="品牌主号">品牌主号</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="manual-note-account" className="block text-[13px] font-bold text-text-secondary mb-1.5">执行账号</label>
-                  <input
-                    id="manual-note-account"
-                    type="text"
-                    list="manual-note-account-options"
-                    value={accountName}
-                    onChange={(e) => setAccountName(e.target.value)}
-                    placeholder="选择或输入账号"
-                    className="w-full px-3.5 py-2.5 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-500 bg-surface-1"
-                  />
-                  <datalist id="manual-note-account-options">
-                    {Array.from(new Set(project.notes.filter((note) => note.type === accountType).map((note) => note.participant))).map((name) => (
-                      <option key={name} value={name} />
-                    ))}
-                  </datalist>
-                </div>
-
-                <div>
-                  <label htmlFor="manual-note-direction" className="block text-[13px] font-bold text-text-secondary mb-1.5">内容角度</label>
-                  <div className="flex flex-wrap gap-1.5 mb-2">
-                    {CONTENT_ANGLE_OPTIONS[accountType].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setContentDirection(option)}
-                        className={`px-2.5 py-1 rounded-lg border text-[13px] transition-colors ${contentDirection === option ? "bg-btn-main border-btn-main text-white" : "bg-surface-1 border-border-default text-text-secondary hover:border-border-strong"}`}
-                      >
-                        {option}
-                      </button>
-                    ))}
+              <aside className="p-4 bg-surface-1">
+                <div className="border-[2px] border-brand-logo rounded-lg p-4 h-full flex flex-col relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[15px] font-bold text-text-main">笔记配图 <span className="text-brand-logo">0 张</span></h3>
+                    <button type="button" className="flex items-center gap-1 text-[13px] text-brand-logo font-medium hover:text-brand-strong transition-colors">
+                      <Sparkles size={14} /> 一键配图
+                    </button>
                   </div>
-                  <input
-                    id="manual-note-direction"
-                    type="text"
-                    value={contentDirection}
-                    onChange={(e) => setContentDirection(e.target.value)}
-                    placeholder="也可以自己填写"
-                    className="w-full px-3.5 py-2.5 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-500 bg-surface-1"
-                  />
-                </div>
 
-                <div>
-                  <label htmlFor="manual-note-date" className="block text-[13px] font-bold text-text-secondary mb-1.5">计划发布日期</label>
-                  <input
-                    id="manual-note-date"
-                    type="date"
-                    value={plannedDate}
-                    onChange={(e) => setPlannedDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 border border-border-default rounded-xl text-[13px] outline-none focus:border-neutral-500 bg-surface-1"
-                  />
+                  <div className="flex items-center bg-surface-subtle p-1 rounded-lg mb-4">
+                    <button type="button" className="flex-1 py-1.5 text-[13px] font-medium bg-surface-1 text-text-main rounded-md shadow-sm">方案素材</button>
+                    <button type="button" className="flex-1 py-1.5 text-[13px] font-medium text-text-secondary hover:text-text-main rounded-md">总素材库</button>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-8">
+                    <div className="flex-1 relative">
+                      <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary" />
+                      <input type="text" placeholder="按标签搜索" className="w-full pl-9 pr-3 py-1.5 text-[13px] border border-border-default rounded-lg bg-surface-1 outline-none focus:border-neutral-500" />
+                    </div>
+                    <button type="button" className="flex items-center gap-1.5 text-[13px] text-brand-logo border border-brand-logo/20 bg-brand-logo/5 px-3 py-1.5 rounded-lg whitespace-nowrap">
+                      <Upload size={14} /> 上传图片
+                    </button>
+                  </div>
+
+                  <div className="flex-1 flex items-center justify-center text-[13px] text-text-tertiary pb-10">
+                    没有符合条件的图片素材。
+                  </div>
                 </div>
               </aside>
             </form>
+
           )}
 
         </div>
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-border-default flex items-center justify-between bg-surface-1 shrink-0">
-          <span className="text-[13px] text-text-tertiary">
-            {mode === "file"
-              ? "上传后可先确认识别结果，再批量导入。"
-              : mode === "feishu"
-              ? "连接后可定时同步飞书中的笔记安排。"
-              : "保存后，这篇笔记会直接加入当前方案。"}
-          </span>
           {mode === "single" ? (
-            <div className="flex items-center gap-2">
+            <button type="button" onClick={onClose} className="flex items-center gap-1.5 text-[13px] text-text-tertiary hover:text-red-500 transition-colors">
+              <Trash2 size={16}/> 删除笔记
+            </button>
+          ) : (
+            <span className="text-[13px] text-text-tertiary">
+              {mode === "file"
+                ? "上传后可先确认识别结果，再批量导入。"
+                : mode === "feishu"
+                ? "连接后可定时同步飞书中的笔记安排。"
+                : "保存后，这篇笔记会直接加入当前方案。"}
+            </span>
+          )}
+          
+          {mode === "single" ? (
+            <div className="flex items-center gap-6">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-border-default rounded-xl text-[13px] font-bold text-text-secondary hover:bg-hover-bg transition-colors"
+                className="text-[13px] text-text-secondary hover:text-text-main transition-colors"
               >
                 取消
               </button>
               <button
                 type="submit"
                 form="manual-note-form"
-                className="px-6 py-2 bg-btn-main text-white rounded-xl text-[13px] font-bold hover:bg-btn-main-hover transition-colors shadow-xs"
+                className="flex items-center gap-2 px-5 py-2 bg-brand-logo text-white rounded-lg text-[13px] font-medium hover:bg-brand-strong transition-colors shadow-xs"
               >
+                <img src="/icons/xiaohongshu-white.svg" className="w-3.5 h-3.5" alt="" onError={(e) => e.currentTarget.style.display = 'none'} />
                 保存笔记
               </button>
             </div>

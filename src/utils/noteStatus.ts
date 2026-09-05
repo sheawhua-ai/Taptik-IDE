@@ -12,8 +12,7 @@ export type UnifiedBusinessStatus =
   | "等待账号执行"
   | "等待消费者领取"
   | "消费者进行中"
-  | "发布识别中"
-  | "观察中"
+    | "观察中"
   | "观察完成"
   | "异常";
 
@@ -108,9 +107,9 @@ export function getUnifiedBusinessStatus(note: Note): UnifiedBusinessStatus {
     return "观察中";
   }
 
-  // 4. 发布识别中
+  // 4. 等待识别（归入观察中）
   if (note.publishStatus === "已发布" && !note.publishLink) {
-    return "发布识别中";
+    return "观察中";
   }
 
   // 5. 笔记包 / 消费者KOC特有状态
@@ -177,7 +176,6 @@ export function getStatusStyleClass(status: UnifiedBusinessStatus): { bg: string
       return { bg: "bg-surface-2", text: "text-text-secondary", border: "border-border-default" };
     case "观察中":
       return { bg: "bg-info-light", text: "text-info", border: "border-info-light" };
-    case "发布识别中":
       return { bg: "bg-info-light", text: "text-info", border: "border-info-light" };
     case "待发布":
     case "等待账号执行":

@@ -135,7 +135,7 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
   const [editingMerchant, setEditingMerchant] = useState<EditingMerchantForm | null>(null);
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [editValidationMessage, setEditValidationMessage] = useState("");
-  const [qrMerchant, setQrMerchant] = useState<any | null>(null);
+  
   const [detailMerchantId, setDetailMerchantId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -224,16 +224,6 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
     setEditingMerchant(null);
   };
 
-  const copyFollowLink = async () => {
-    if (!qrMerchant) return;
-    try {
-      await navigator.clipboard.writeText(getEmployeeFollowUrl(qrMerchant.id));
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  };
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -294,7 +284,7 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
                   <div className="mt-1.5 text-[13px] text-text-tertiary">商家信息完善度 {completeness}%</div>
                 </div>
                 <div className="relative z-20 col-span-3 flex items-center justify-end gap-1.5">
-                  {!isArchived ? <button type="button" onClick={() => setQrMerchant(merchant)} title="员工端关注二维码" className="inline-flex h-8 items-center gap-1 rounded-lg border border-border-default px-2.5 text-[13px] text-text-secondary hover:bg-hover-bg"><QrCode size={14} />员工二维码</button> : null}
+                  
                   <button type="button" onClick={() => openEditor(merchant)} disabled={isArchived} title="编辑商家信息" className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-hover-bg hover:text-text-main disabled:opacity-30"><Edit3 size={14} /></button>
                   {isArchived ? (
                     <button type="button" onClick={() => onRestoreMerchant(merchant.id)} title="恢复商家" className="flex h-8 w-8 items-center justify-center rounded-lg text-amber-700 hover:bg-amber-50"><RotateCcw size={14} /></button>
@@ -451,18 +441,7 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
         </div>
       ) : null}
 
-      {qrMerchant ? (
-        <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/35 p-4" role="dialog" aria-modal="true" aria-labelledby="merchant-qr-title">
-          <div className="w-full max-w-xl overflow-hidden rounded-2xl border border-border-default bg-surface-1 shadow-2xl">
-            <header className="flex items-start justify-between border-b border-border-default px-5 py-4"><div><div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-light text-brand-logo"><QrCode size={17} /></span><h3 id="merchant-qr-title" className="text-[16px] font-semibold text-text-main">{qrMerchant.name} · 员工端关注二维码</h3></div><p className="mt-2 text-[13px] text-text-tertiary">员工扫码关注并绑定后，只接收该商家的素材与发布任务。</p></div><button type="button" onClick={() => setQrMerchant(null)} aria-label="关闭二维码" className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg"><X size={17} /></button></header>
-            <div className="grid gap-6 p-6 sm:grid-cols-[190px_1fr] sm:items-center">
-              <div className="mx-auto rounded-2xl border border-border-default bg-white p-3 shadow-sm"><img src={`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(getEmployeeFollowUrl(qrMerchant.id))}`} alt={`${qrMerchant.name}员工端关注二维码`} className="h-40 w-40" /></div>
-              <div><div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[13px] font-medium text-emerald-800"><ShieldCheck size={13} />商家专属绑定</div><ol className="mt-4 space-y-3 text-[13px] leading-5 text-text-secondary"><li className="flex gap-2"><span className="font-semibold text-text-main">1.</span>员工微信扫码，关注 TAPTIK 服务号。</li><li className="flex gap-2"><span className="font-semibold text-text-main">2.</span>确认加入“{qrMerchant.name}”员工任务空间。</li><li className="flex gap-2"><span className="font-semibold text-text-main">3.</span>绑定发布账号后，在员工 H5 接收并执行素材、发布任务。</li></ol><div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={copyFollowLink} className="inline-flex items-center gap-1.5 rounded-lg border border-border-default px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg">{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? "已复制" : "复制关注链接"}</button><a href={getEmployeeFollowUrl(qrMerchant.id)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-brand-logo hover:bg-brand-light"><ExternalLink size={14} />打开员工端</a></div></div>
-            </div>
-            <div className="flex items-start gap-2 border-t border-blue-100 bg-blue-50 px-5 py-3 text-[13px] leading-5 text-blue-900"><Users size={15} className="mt-0.5 shrink-0" /><span>该二维码用于建立“员工 ↔ 商家”关系；具体发布任务仍会按账号绑定和任务负责人单独派发。</span></div>
-          </div>
-        </div>
-      ) : null}
+      
     </div>
   );
 };

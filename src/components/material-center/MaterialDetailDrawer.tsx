@@ -5,7 +5,6 @@ import {
   Layers,
   BarChart3,
   FileCheck,
-  Edit2,
   Check,
   Film,
   Tag,
@@ -54,39 +53,21 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
   const existingManualTags = (asset.tags ?? []).filter(tagName => manualTagSet.has(tagName));
   const automaticTags = (asset.tags ?? []).filter(tagName => !manualTagSet.has(tagName));
 
-  // Editing state for Vector Description & Tags
-  const [isEditingMetadata, setIsEditingMetadata] = useState(false);
+  // Default to editable state
   const [vectorDescription, setVectorDescription] = useState(asset.vectorDescription || '');
-  const [tagsInput, setTagsInput] = useState(existingManualTags.join(', '));
-
-  // Editing state for Recognition
-  const [isEditingRecognition, setIsEditingRecognition] = useState(false);
+  const [tagsInput, setTagsInput] = useState(existingManualTags);
   const [aiSubject, setAiSubject] = useState(asset.acceptance.aiRecognition.subject);
   const [aiProduct, setAiProduct] = useState(asset.acceptance.aiRecognition.product);
   const [aiScene, setAiScene] = useState(asset.acceptance.aiRecognition.scene);
 
-  const handleSaveMetadata = () => {
+  const handleSaveAndClose = () => {
     if (onUpdateAsset) {
-      const parsedTags = tagsInput
-        .split(/[,，]/)
-        .map(t => t.trim())
-        .filter(Boolean);
-
-      onManualTagsChange?.(parsedTags);
+      onManualTagsChange?.(tagsInput);
 
       onUpdateAsset({
         ...asset,
         vectorDescription: vectorDescription.trim(),
-        tags: Array.from(new Set([...automaticTags, ...parsedTags]))
-      });
-    }
-    setIsEditingMetadata(false);
-  };
-
-  const handleSaveRecognitionEdit = () => {
-    if (onUpdateAsset) {
-      onUpdateAsset({
-        ...asset,
+        tags: Array.from(new Set([...automaticTags, ...tagsInput])),
         acceptance: {
           ...asset.acceptance,
           aiRecognition: {
@@ -100,12 +81,20 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
         }
       });
     }
-    setIsEditingRecognition(false);
+    onClose();
+  };
+
+  const TOGGLE_TAGS = ['9月新品', '门店实拍', 'KOC反馈', '高质量封面', '主粮', '宠物互动', '3D抠图'];
+
+  const toggleTag = (tag: string) => {
+    setTagsInput(current => 
+      current.includes(tag) ? current.filter(t => t !== tag) : [...current, tag]
+    );
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/30 backdrop-blur-[2px]">
-      <div className="w-[520px] max-w-full bg-surface h-full shadow-2xl border-l border-border-default flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
+    <div className="fixed inset-0 z-[150] flex justify-end bg-black/30 backdrop-blur-[2px]">
+      <div className="w-[520px] max-w-full bg-surface-1 h-full shadow-2xl border-l border-border-default flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
         
         {/* Drawer Header */}
         <div className="h-14 px-5 border-b border-border-default flex items-center justify-between shrink-0 bg-surface-subtle">
@@ -118,213 +107,126 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
               {asset.name}
             </h3>
           </div>
-
-          <button
-            onClick={onClose}
-            className="p-1.5 text-text-tertiary hover:text-text-primary rounded-md hover:bg-surface-hover transition-colors shrink-0"
+          <button 
+            onClick={onClose} 
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-surface-hover text-text-tertiary hover:text-text-primary transition-colors shrink-0"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Drawer Scrollable Body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
-
-          {/* Section 1: Preview & Dimensions */}
-          <div className="bg-surface-subtle border border-border-subtle rounded-lg p-3">
-            <div className="aspect-[4/3] bg-black/5 rounded overflow-hidden flex items-center justify-center relative">
-              {asset.fileType === 'video' ? (
-                <div className="relative w-full h-full">
-                  <img src={asset.url} alt={asset.name} className="w-full h-full object-contain" />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <span className="p-3 bg-black/60 rounded-full text-white">
-                      <Film size={24} />
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <img src={asset.url} alt={asset.name} className="w-full h-full object-contain" />
-              )}
+        {/* Drawer Body - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar">
+          
+          {/* Section 1: Preview Image */}
+          <div className="rounded-xl border border-border-default overflow-hidden bg-surface-subtle shadow-sm relative group">
+            <img 
+              src={asset.url} 
+              alt={asset.name} 
+              className="w-full h-auto object-contain max-h-[320px] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2Y4ZjlmYSIvPgo8cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNlZGYwZjIiLz4KPHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNlZGYwZjIiLz4KPC9zdmc+')] bg-repeat"
+            />
+            <div className="absolute top-3 right-3 flex gap-2">
+              <span className="px-2 py-1 rounded bg-black/60 text-white text-[12px] font-medium backdrop-blur-md">
+                {asset.aspectRatio}
+              </span>
+              <span className="px-2 py-1 rounded bg-black/60 text-white text-[12px] font-medium backdrop-blur-md">
+                {asset.resolution}
+              </span>
             </div>
+            {asset.acceptance.aiRecognition.confidenceNotice && (
+              <div className="absolute bottom-3 left-3 right-3 bg-amber-50/95 backdrop-blur-md border border-amber-200 p-2.5 rounded-lg text-[12px] text-amber-800 flex items-start gap-2 shadow-sm">
+                <Info size={14} className="mt-0.5 shrink-0" />
+                <span className="leading-snug">{asset.acceptance.aiRecognition.confidenceNotice}</span>
+              </div>
+            )}
+          </div>
 
-            <div className="mt-3 grid grid-cols-4 gap-2 text-[13px] text-text-secondary text-center pt-2 border-t border-border-subtle">
-              <div>
-                <span className="text-text-tertiary block">比例</span>
-                <span className="font-medium text-text-primary">{asset.aspectRatio}</span>
-              </div>
-              <div>
-                <span className="text-text-tertiary block">分辨率</span>
-                <span className="font-medium text-text-primary">{asset.resolution}</span>
-              </div>
-              <div>
-                <span className="text-text-tertiary block">大小</span>
-                <span className="font-medium text-text-primary">{asset.fileSize}</span>
-              </div>
-              <div>
-                <span className="text-text-tertiary block">类型</span>
-                <span className="font-medium text-text-primary">{asset.fileType.toUpperCase()}</span>
-              </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <span className="text-[12px] text-text-tertiary">文件大小</span>
+              <div className="text-[13px] font-medium text-text-primary">{asset.sizeBytes ? `${(asset.sizeBytes / 1024 / 1024).toFixed(2)} MB` : '未知'}</div>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[12px] text-text-tertiary">格式</span>
+              <div className="text-[13px] font-medium text-text-primary">{asset.fileFormat?.toUpperCase()}</div>
             </div>
           </div>
 
           {/* Section 2: One-Sentence Vector Description & Tags */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between border-b border-border-subtle pb-1.5">
-              <h4 className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5">
-                <AlignLeft size={14} className="text-text-secondary" />
-                画面描述与标签
-              </h4>
-              {!isEditingMetadata ? (
-                <button
-                  onClick={() => setIsEditingMetadata(true)}
-                  className="text-text-secondary hover:text-text-primary text-[13px] flex items-center gap-1"
-                >
-                  <Edit2 size={12} /> 编辑
-                </button>
-              ) : (
-                <button
-                  onClick={handleSaveMetadata}
-                  className="text-emerald-700 hover:text-emerald-800 font-semibold text-[13px] flex items-center gap-1"
-                >
-                  <Check size={12} /> 保存
-                </button>
-              )}
-            </div>
-
-            {isEditingMetadata ? (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-3 text-[13px]">
-                <div>
-                  <label className="text-text-tertiary block mb-1 font-medium">画面描述:</label>
-                  <textarea
-                    rows={2}
-                    value={vectorDescription}
-                    onChange={(e) => setVectorDescription(e.target.value)}
-                    placeholder="描述画面的核心特征，例如：浅黄色包装袋直立放置，右下角包含柴犬吃粮画面..."
-                    className="w-full p-2 bg-surface border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
-                  />
-                </div>
-                <div>
-                  <label className="text-text-tertiary block mb-1 font-medium">手动标签（逗号分隔）:</label>
-                  <input
-                    type="text"
-                    value={tagsInput}
-                    onChange={(e) => setTagsInput(e.target.value)}
-                    placeholder="如：主粮, 柴犬, 3D抠图"
-                    className="w-full px-2.5 py-1.5 bg-surface border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-2.5 text-[13px]">
-                <div>
-                  <span className="text-text-tertiary block mb-0.5">画面描述:</span>
-                  <p className="text-text-primary font-medium bg-surface p-2 rounded border border-border-subtle leading-relaxed">
-                    {asset.vectorDescription || '暂无描述，可点击编辑添加。'}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-text-tertiary block mb-1">手动标签:</span>
-                  <div className="flex flex-wrap gap-1">
-                    {existingManualTags.length > 0 ? (
-                      existingManualTags.map((t, idx) => (
-                        <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface border border-border-default rounded text-[13px] text-text-primary font-medium">
-                          <Tag size={10} className="text-text-tertiary" /> {t}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-text-tertiary italic">未添加手动标签</span>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <span className="text-text-tertiary block mb-1">AI自动标签:</span>
-                  <div className="flex flex-wrap gap-1">
-                    {automaticTags.length > 0 ? automaticTags.slice(0, 8).map(tagName => (
-                      <span key={tagName} className="rounded bg-surface px-2 py-0.5 text-[13px] text-text-secondary">{tagName}</span>
-                    )) : <span className="text-text-tertiary italic">暂无自动标签</span>}
-                    {automaticTags.length > 8 ? <span className="px-1 py-0.5 text-[13px] text-text-tertiary">+{automaticTags.length - 8}</span> : null}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Section 3: Basic Info */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <h4 className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5 border-b border-border-subtle pb-1.5">
-              <Info size={14} className="text-text-secondary" />
-              基础与状态信息
+              <AlignLeft size={14} className="text-text-secondary" />
+              画面描述与标签
             </h4>
-
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[13px]">
+            
+            <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle space-y-3 text-[13px]">
               <div>
-                <span className="text-text-tertiary">图片类型:</span>{' '}
-                <span className="font-medium text-text-primary">
-                  {getMaterialCategoryLabel(asset.category)}
-                </span>
+                <label className="text-text-tertiary block mb-1 font-medium">画面描述:</label>
+                <textarea
+                  rows={2}
+                  value={vectorDescription}
+                  onChange={(e) => setVectorDescription(e.target.value)}
+                  placeholder="描述画面的核心特征，例如：浅黄色包装袋直立放置，右下角包含柴犬吃粮画面..."
+                  className="w-full p-2 bg-surface-1 border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
+                />
               </div>
               <div>
-                <span className="text-text-tertiary">图片用途:</span>{' '}
-                <span className="font-medium text-text-primary">{getMaterialUseLabel(asset.materialUse)}</span>
-              </div>
-              <div>
-                <span className="text-text-tertiary">当前状态:</span>{' '}
-                <span className="font-medium text-text-primary">
-                  {asset.status === 'available' ? '可用' : asset.status === 'reserved' ? '已预留' : asset.status === 'used' ? '已使用' : asset.status === 'pending_acceptance' ? '待验收' : '已归档'}
-                </span>
-              </div>
-              <div>
-                <span className="text-text-tertiary">上传时间:</span>{' '}
-                <span className="text-text-secondary">{asset.uploadTime}</span>
+                <label className="text-text-tertiary block mb-2 font-medium">手动分类标签:</label>
+                <div className="flex flex-wrap gap-2">
+                  {TOGGLE_TAGS.map(tag => {
+                    const selected = tagsInput.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => toggleTag(tag)}
+                        className={`px-2.5 py-1.5 rounded-lg text-[13px] font-medium border ${selected ? 'bg-neutral-900 text-white border-neutral-900' : 'bg-surface-1 border-border-default text-text-secondary hover:border-border-strong'}`}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Section 4: Related Project & Note */}
-          <div className="space-y-2">
+          {/* Section 3: Business Classification */}
+          <div className="space-y-3">
             <h4 className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5 border-b border-border-subtle pb-1.5">
               <Layers size={14} className="text-text-secondary" />
-              关联项目、笔记及使用状态
+              业务分类
             </h4>
-
-            {asset.usageRelation ? (
-              <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px] space-y-1.5">
-                <div className="flex justify-between">
-                  <span className="text-text-tertiary">关联项目:</span>
-                  <span className="font-medium text-text-primary">{asset.usageRelation.projectName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-text-tertiary">关联笔记:</span>
-                  <span className="font-medium text-text-primary">{asset.usageRelation.noteTitle}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-text-tertiary">发布账号:</span>
-                  <span className="text-text-secondary">{asset.usageRelation.accountName || '未指定'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-text-tertiary">使用状态:</span>
-                  <span className={`font-semibold ${asset.usageRelation.usageState === 'used' ? 'text-text-primary' : 'text-blue-700'}`}>
-                    {asset.usageRelation.usageState === 'used' ? '已正式发布使用 (不可再二次绑定)' : '已预留至笔记草稿'}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <span className="text-[12px] text-text-tertiary">内容资产类型</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-logo"></span>
+                  <span className="text-[13px] font-medium text-text-primary">
+                    {getMaterialCategoryLabel(asset.category)}
                   </span>
                 </div>
               </div>
-            ) : (
-              <div className="text-[13px] text-text-tertiary bg-surface-subtle p-3 rounded-lg border border-border-subtle">
-                当前素材暂未绑定或预留给任何笔记草稿，处于【可用】池。
+              <div className="space-y-1">
+                <span className="text-[12px] text-text-tertiary">建议用途</span>
+                <div className="text-[13px] font-medium text-text-primary flex items-center gap-1.5">
+                  <span className="px-1.5 py-0.5 rounded-md bg-surface-subtle border border-border-default text-text-secondary leading-none">
+                    {getMaterialUseLabel(asset.materialUse)}
+                  </span>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Section 5: Performance Data */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <h4 className="text-[13px] font-semibold text-text-primary flex items-center gap-1.5 border-b border-border-subtle pb-1.5">
               <BarChart3 size={14} className="text-text-secondary" />
               封面关联表现
             </h4>
-
             {asset.performance.performanceType === 'owned_account_creator_api' && asset.performance.creatorBackend ? (
               <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px] space-y-2.5">
-                <div className="grid grid-cols-4 gap-2 text-center bg-surface p-2 rounded border border-border-subtle">
+                <div className="grid grid-cols-4 gap-2 text-center bg-surface-1 p-2 rounded border border-border-subtle">
                   <div>
                     <span className="text-text-tertiary text-[13px] block">曝光数</span>
                     <span className="font-semibold text-text-primary text-[13px]">{asset.performance.creatorBackend.exposure.toLocaleString()}</span>
@@ -342,7 +244,6 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
                     <span className="font-semibold text-emerald-700 text-[13px]">{asset.performance.creatorBackend.coverClickRate}%</span>
                   </div>
                 </div>
-
                 <div className="space-y-1 text-[13px] text-text-secondary pt-1 border-t border-border-subtle">
                   <div className="flex justify-between">
                     <span className="text-text-tertiary">后台原始指标名称:</span>
@@ -366,76 +267,48 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
           </div>
 
           {/* Section 6: Image Attributes & Recognition */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <h4 className="text-[13px] font-semibold text-text-primary flex items-center justify-between border-b border-border-subtle pb-1.5">
               <span className="flex items-center gap-1.5">
                 <FileCheck size={14} className="text-text-secondary" />
                 系统识别信息
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[13px] bg-surface border border-border-default text-text-secondary font-medium">
+              <span className="px-1.5 py-0.5 rounded text-[13px] bg-surface-1 border border-border-default text-text-secondary font-medium">
                 {asset.acceptance.aiRecognition.tag}
               </span>
             </h4>
-
+            
             {/* Editable Recognition Box */}
             <div className="bg-surface-subtle p-3 rounded-lg border border-border-subtle text-[13px] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-text-primary">视觉元素提取:</span>
-                {!isEditingRecognition ? (
-                  <button
-                    onClick={() => setIsEditingRecognition(true)}
-                    className="text-text-secondary hover:text-text-primary text-[13px] flex items-center gap-1"
-                  >
-                    <Edit2 size={12} /> 编辑修正
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSaveRecognitionEdit}
-                    className="text-emerald-700 hover:text-emerald-800 font-semibold text-[13px] flex items-center gap-1"
-                  >
-                    <Check size={12} /> 保存修正
-                  </button>
-                )}
+              <div className="space-y-2 text-[13px]">
+                <div>
+                  <label className="text-text-tertiary block mb-0.5 font-medium">主体描述:</label>
+                  <input
+                    type="text"
+                    value={aiSubject}
+                    onChange={(e) => setAiSubject(e.target.value)}
+                    className="w-full px-2 py-1.5 bg-surface-1 border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
+                  />
+                </div>
+                <div>
+                  <label className="text-text-tertiary block mb-0.5 font-medium">关联产品:</label>
+                  <input
+                    type="text"
+                    value={aiProduct}
+                    onChange={(e) => setAiProduct(e.target.value)}
+                    className="w-full px-2 py-1.5 bg-surface-1 border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
+                  />
+                </div>
+                <div>
+                  <label className="text-text-tertiary block mb-0.5 font-medium">画面场景:</label>
+                  <input
+                    type="text"
+                    value={aiScene}
+                    onChange={(e) => setAiScene(e.target.value)}
+                    className="w-full px-2 py-1.5 bg-surface-1 border border-border-default rounded text-[13px] focus:outline-none focus:border-border-strong"
+                  />
+                </div>
               </div>
-
-              {isEditingRecognition ? (
-                <div className="space-y-2 text-[13px]">
-                  <div>
-                    <label className="text-text-tertiary block mb-0.5">主体描述:</label>
-                    <input
-                      type="text"
-                      value={aiSubject}
-                      onChange={(e) => setAiSubject(e.target.value)}
-                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[13px]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-text-tertiary block mb-0.5">关联产品:</label>
-                    <input
-                      type="text"
-                      value={aiProduct}
-                      onChange={(e) => setAiProduct(e.target.value)}
-                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[13px]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-text-tertiary block mb-0.5">画面场景:</label>
-                    <input
-                      type="text"
-                      value={aiScene}
-                      onChange={(e) => setAiScene(e.target.value)}
-                      className="w-full px-2 py-1 bg-surface border border-border-default rounded text-[13px]"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[13px] text-text-secondary">
-                  <div><span className="text-text-tertiary">画面主体:</span> {asset.acceptance.aiRecognition.subject}</div>
-                  <div><span className="text-text-tertiary">关联产品:</span> {asset.acceptance.aiRecognition.product}</div>
-                  <div><span className="text-text-tertiary">场景:</span> {asset.acceptance.aiRecognition.scene}</div>
-                  <div><span className="text-text-tertiary">构图:</span> {asset.acceptance.aiRecognition.composition}</div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -444,25 +317,26 @@ const MaterialDetailDrawerContent: React.FC<Omit<MaterialDetailDrawerProps, 'ass
         {/* Drawer Footer */}
         <div className="p-4 border-t border-border-default bg-surface-subtle flex items-center justify-between gap-3 shrink-0">
           <span className="text-[13px] text-text-tertiary">处理结果保存为新图片，不覆盖原图</span>
+          
           <div className="flex shrink-0 items-center gap-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border border-border-default bg-surface hover:bg-surface-hover rounded text-[13px] font-medium text-text-primary"
-          >
-            关闭
-          </button>
-          {canCreateDerived && onCreateDerived ? (
+            {canCreateDerived && onCreateDerived ? (
+              <button
+                type="button"
+                onClick={() => onCreateDerived(asset)}
+                className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-4 py-2 text-[13px] font-medium text-text-primary hover:bg-surface-hover"
+              >
+                <Sparkles size={13} className="text-brand-logo" />
+                {isOptimizationCandidate ? '优化并生成新图片' : '用这张图生成新图片'}
+              </button>
+            ) : null}
             <button
-              type="button"
-              onClick={() => onCreateDerived(asset)}
-              className="flex items-center gap-1.5 rounded-lg bg-btn-main px-4 py-2 text-[13px] font-medium text-white hover:bg-btn-main-hover"
+              onClick={handleSaveAndClose}
+              className="px-6 py-2 bg-neutral-900 hover:bg-neutral-950 rounded-lg text-[13px] font-medium text-white shadow-sm transition-colors"
             >
-              <Sparkles size={13} />{isOptimizationCandidate ? '优化并生成新图片' : '用这张图生成新图片'}
+              保存
             </button>
-          ) : null}
           </div>
         </div>
-
       </div>
     </div>
   );

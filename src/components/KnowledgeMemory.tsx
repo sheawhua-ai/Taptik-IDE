@@ -64,9 +64,9 @@ export function KnowledgeMemory({ activeProject }: { activeProject?: any }) {
     setSourcesList(prev => [pendingSource, ...prev]);
     window.setTimeout(() => {
       const templates: DecompositionItem[] = [
-        { id: `${source.id}-part-1`, category: '品牌与产品', format: '事实卡', summary: '产品成分、价格与功效边界，保留原文来源和有效期。' },
-        { id: `${source.id}-part-2`, category: '话术与承接', format: '问答卡', summary: '用户常见问题与对应回答，写清适用场景。' },
-        { id: `${source.id}-part-3`, category: '禁区与流转', format: '规则卡', summary: '不能使用的表达和对应依据，发布前需要检查。' }
+        { id: `${source.id}-part-1`, category: '品牌与产品', format: '商家事实', summary: '产品成分、价格与功效边界，保留原文来源和有效期。' },
+        { id: `${source.id}-part-2`, category: '话术与承接', format: '常见问答', summary: '用户常见问题与对应回答，写清适用场景。' },
+        { id: `${source.id}-part-3`, category: '禁区与流转', format: '运营规则', summary: '不能使用的表达和对应依据，发布前需要检查。' }
       ];
       const decompositionItems = templates.slice(0, itemCount);
       const uniqueCategoryCount = new Set(decompositionItems.map(item => item.category)).size;

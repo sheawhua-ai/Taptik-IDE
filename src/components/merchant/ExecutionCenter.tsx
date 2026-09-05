@@ -21,7 +21,6 @@ import type { ExecutionAction } from '../../data/unifiedStore';
 import type { Note, Project } from '../../data/projectStore';
 import type { MaterialAsset } from '../material-center/types';
 import { INITIAL_EXECUTION_TASKS } from './ExecutionCenter/mockData';
-import { ExecutionEmptyState } from './ExecutionCenter/ExecutionEmptyState';
 import { MaterialBatchReviewWorkbench } from './ExecutionCenter/MaterialBatchReviewWorkbench';
 import { OperatorTaskWorkbench } from './ExecutionCenter/OperatorTaskWorkbench';
 import { TaskDetailView } from './ExecutionCenter/TaskDetailView';
@@ -29,18 +28,10 @@ import { TaskProgressDrawer } from './ExecutionCenter/TaskProgressDrawer';
 import type { ExecutionTask } from './ExecutionCenter/types';
 
 type DomainTab = 'content' | 'material' | 'publish';
-type ExecutionView = 'overview' | 'workspace';
+
 
 interface ExecutionCenterProps {
   onAssetsAccepted?: (assets: MaterialAsset[]) => void;
-  /** 前往方案中心。空状态主 CTA 使用；未传则退回到执行概览页 */
-  onNavigateToPlan?: () => void;
-  /**
-   * 强制展示"未开始"空状态。
-   * 用于新商家（如跳过冷启动引导）场景：不自动塞入示例任务，改为引导其先建方案。
-   * 未传时仍按数据判断：一条任务都没有也会展示引导。
-   */
-  showEmptyState?: boolean;
 }
 
 interface ProjectScope {
@@ -178,7 +169,7 @@ const createDirectTask = (note: Note, project: Project, action: ExecutionAction)
   };
 };
 
-export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyState }: ExecutionCenterProps) {
+export function ExecutionCenter({ onAssetsAccepted }: ExecutionCenterProps) {
   const {
     currentProject,
     executionNavTarget,
@@ -187,8 +178,7 @@ export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyS
     clearNoteIssue
   } = useProjectStore();
   const [tasks, setTasks] = useState<ExecutionTask[]>(INITIAL_EXECUTION_TASKS);
-  // 默认直接进入工作台；执行概览页可通过顶部按钮进入
-  const [view, setView] = useState<ExecutionView>('workspace');
+  
   const [domain, setDomain] = useState<DomainTab>('content');
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
@@ -269,7 +259,7 @@ export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyS
     setSelectedTaskId(task.id);
     setActiveDirectAction(action);
     setActiveTaskId(nextDomain === 'material' ? null : task.id);
-    setView('workspace');
+    
   };
 
   useEffect(() => {
@@ -365,10 +355,7 @@ export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyS
     setActiveDirectAction(undefined);
   };
 
-  const openDomain = (nextDomain: DomainTab) => {
-    switchDomain(nextDomain);
-    setView('workspace');
-  };
+  
 
   const handleNextTask = (currentTask: ExecutionTask, queue: ExecutionTask[]) => {
     if (queue.length < 2) return;
@@ -378,14 +365,7 @@ export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyS
 
   const workspaceNavigation = (
     <div className="flex shrink-0 items-center gap-1">
-      <button
-        type="button"
-        onClick={() => setView('overview')}
-        className="mr-1 flex items-center gap-1 rounded-md border border-border-default bg-surface-1 px-2 py-1 text-[13px] font-medium text-text-secondary hover:bg-hover-bg hover:text-text-main"
-      >
-        <LayoutDashboard size={11} />执行概览
-      </button>
-      <nav className="flex items-center gap-0.5 rounded-lg bg-surface-subtle p-0.5" aria-label="执行任务类型">
+<nav className="flex items-center gap-0.5 rounded-lg bg-surface-subtle p-0.5" aria-label="执行任务类型">
         {(Object.keys(domainLabel) as DomainTab[]).map(tab => (
           <button
             key={tab}
@@ -422,27 +402,17 @@ export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyS
     : selectedTask;
 
   let workspace: React.ReactNode;
-  // 新商家（强制空态）：不渲染类型导航与计数，否则顶栏计数与正文「还没有数据」自相矛盾
-  if (showEmptyState) {
-    workspace = (
-      <div className="flex h-full min-h-0 flex-1 flex-col bg-page-bg">
-        <ExecutionEmptyState
-          hasStarted={false}
-          totalTasks={0}
-          onGoToPlan={onNavigateToPlan ?? (() => setView('overview'))}
-        />
-      </div>
-    );
-  } else if (!workspaceTask) {
+  if (!workspaceTask) {
     workspace = (
       <div className="flex h-full min-h-0 flex-1 flex-col bg-page-bg">
         <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5">{workspaceNavigation}</div>
-        <ExecutionEmptyState
-          hasStarted={scopedTasks.length > 0}
-          totalTasks={scopedTasks.filter(task => task.status === '已完成').length}
-          onGoToPlan={onNavigateToPlan ?? (() => setView('overview'))}
-          onOpenProgress={() => setProgressOpen(true)}
-        />
+        <div className="flex flex-1 items-center justify-center text-center">
+          <div>
+            <CheckCircle2 size={30} className="mx-auto text-emerald-500" />
+            <div className="mt-3 text-[13px] font-semibold text-text-main">当前没有需要处理的事项</div>
+            <p className="mt-1 text-[13px] text-text-tertiary">领取、执行和历史记录可在任务进展中查看。</p>
+          </div>
+        </div>
       </div>
     );
   } else if (domain === 'material') {
@@ -487,129 +457,10 @@ export function ExecutionCenter({ onAssetsAccepted, onNavigateToPlan, showEmptyS
     workspace = noteWorkbench ? <TaskDetailView {...commonProps} /> : <OperatorTaskWorkbench {...commonProps} />;
   }
 
-  const domainCards: Array<{
-    id: DomainTab;
-    title: string;
-    description: string;
-    result: string;
-    count: number;
-    icon: React.ComponentType<{ size?: number; className?: string }>;
-    accent: string;
-  }> = [
-    {
-      id: 'content',
-      title: '处理待确认笔记',
-      description: '审核 AI 生成的标题、正文、标签和配图，只处理需要人工判断的内容。',
-      result: '完成后进入可发布内容池',
-      count: counts.content,
-      icon: FilePenLine,
-      accent: 'bg-blue-50 text-blue-700'
-    },
-    {
-      id: 'material',
-      title: '验收素材任务',
-      description: '查看员工 H5 回传的图片和视频，根据拍摄要求通过、驳回或要求补拍。',
-      result: '完成后素材回到对应笔记',
-      count: counts.material,
-      icon: ImageIcon,
-      accent: 'bg-violet-50 text-violet-700'
-    },
-    {
-      id: 'publish',
-      title: '处理发布与异常',
-      description: '处理未领取、发布超时、链接未回传和账号不可用等阻断问题。',
-      result: '完成后恢复发布与数据回传',
-      count: counts.publish,
-      icon: Send,
-      accent: 'bg-amber-50 text-amber-700'
-    }
-  ];
-
-  const overview = (
-    <div className="h-full flex-1 overflow-y-auto bg-page-bg">
-      <div className="mx-auto max-w-[1180px] space-y-5 px-6 py-6">
-        <header className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="text-[13px] font-medium text-brand-logo">任务执行</div>
-            <h1 className="mt-1 text-[22px] font-semibold text-text-main">今天先处理什么</h1>
-            <p className="mt-1 text-[13px] leading-6 text-text-tertiary">这里只聚合需要人介入的事项。团队执行中和系统处理中的任务可在“任务进展”查看，无需重复操作。</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setView('workspace')} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg">
-              <LayoutDashboard size={13} />返回工作台
-            </button>
-            <button type="button" onClick={() => setProgressOpen(true)} className="flex items-center gap-1.5 rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] font-medium text-text-secondary hover:bg-hover-bg">
-              <Activity size={13} />查看任务进展 <span className="text-text-tertiary">{counts.progress}</span>
-            </button>
-            <ProjectScopePicker projects={projects} value={selectedProjectId} onChange={setSelectedProjectId} />
-          </div>
-        </header>
-
-        {recommendedTask ? (
-          <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-white p-5 shadow-sm">
-            <div className="flex min-w-0 items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700"><AlertTriangle size={19} /></span>
-              <div className="min-w-0">
-                <div className="text-[12px] font-semibold text-amber-700">建议优先处理 · {recommendedTask.deadlineLabel || '普通'}</div>
-                <h2 className="mt-1 truncate text-[16px] font-semibold text-text-main">{recommendedTask.title}</h2>
-                <p className="mt-1 text-[13px] text-text-tertiary">{recommendedTask.projectName} · {recommendedTask.operatorActionSummary}</p>
-              </div>
-            </div>
-            <button type="button" onClick={() => openActionTask(recommendedTask)} className="inline-flex items-center gap-2 rounded-xl bg-btn-main px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-btn-main-hover">
-              {recommendedTask.primaryActionLabel} <ArrowRight size={14} />
-            </button>
-          </section>
-        ) : (
-          <section className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-900">
-            <CheckCircle2 size={22} />
-            <div><div className="text-[14px] font-semibold">当前没有需要你处理的事项</div><p className="mt-1 text-[13px] text-emerald-800/80">新任务或异常出现后会在这里提示。</p></div>
-          </section>
-        )}
-
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <div><h2 className="text-[15px] font-semibold text-text-main">按任务类型处理</h2><p className="mt-1 text-[12px] text-text-tertiary">选择一类工作后，再进入对应专项工作台。</p></div>
-          </div>
-          <div className="grid gap-3 lg:grid-cols-3">
-            {domainCards.map(card => {
-              const DomainIcon = card.icon;
-              return (
-                <article key={card.id} className="flex min-h-[210px] flex-col rounded-2xl border border-border-default bg-surface-1 p-5 shadow-sm">
-                  <div className="flex items-start justify-between gap-3">
-                    <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.accent}`}><DomainIcon size={19} /></span>
-                    <span className="text-[24px] font-semibold tabular-nums text-text-main">{card.count}</span>
-                  </div>
-                  <h3 className="mt-4 text-[15px] font-semibold text-text-main">{card.title}</h3>
-                  <p className="mt-1.5 flex-1 text-[13px] leading-5 text-text-tertiary">{card.description}</p>
-                  <div className="mt-3 border-t border-border-subtle pt-3">
-                    <p className="text-[12px] text-text-tertiary">结果：{card.result}</p>
-                    <button type="button" onClick={() => openDomain(card.id)} className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-semibold text-text-main hover:text-brand-logo">进入处理 <ArrowRight size={13} /></button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-border-default bg-surface-1 p-5 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div><h2 className="text-[15px] font-semibold text-text-main">正在流转的任务</h2><p className="mt-1 text-[12px] text-text-tertiary">这些事项已有执行方，只需关注进度和异常。</p></div>
-            <button type="button" onClick={() => setProgressOpen(true)} className="text-[13px] font-medium text-text-secondary hover:text-text-main">查看全部</button>
-          </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-xl bg-surface-subtle p-4"><div className="flex items-center gap-2 text-[13px] text-text-secondary"><Users size={15} />团队 / 员工执行中</div><div className="mt-2 text-[22px] font-semibold tabular-nums text-text-main">{flowCounts.team}</div></div>
-            <div className="rounded-xl bg-surface-subtle p-4"><div className="flex items-center gap-2 text-[13px] text-text-secondary"><Cpu size={15} />系统处理中</div><div className="mt-2 text-[22px] font-semibold tabular-nums text-text-main">{flowCounts.system}</div></div>
-            <div className="rounded-xl bg-surface-subtle p-4"><div className="flex items-center gap-2 text-[13px] text-text-secondary"><Clock3 size={15} />逾期或阻断</div><div className={`mt-2 text-[22px] font-semibold tabular-nums ${flowCounts.risk ? 'text-amber-700' : 'text-text-main'}`}>{flowCounts.risk}</div></div>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
 
   return (
     <>
-      {/* 强制空态下概览页同样不暴露，避免新商家看到示例任务 */}
-      {view === 'overview' && !showEmptyState ? overview : workspace}
+      {workspace}
       <TaskProgressDrawer
         open={progressOpen}
         tasks={scopedTasks}

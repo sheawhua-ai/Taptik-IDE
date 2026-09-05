@@ -34,20 +34,13 @@ function getWorkbenchMode(task: ExecutionTask, initialAction?: ExecutionAction):
 }
 
 function getAnomalyOptions(task: ExecutionTask) {
-  if (task.anomalyType === 'publish_overdue') {
-    return ['再次通知发布人', '重新发送笔记包', '更换发布人或账号', '调整发布时间', '补录已发布链接', '本轮不再继续'];
-  }
-  if (task.anomalyType === 'executor_account_unavailable') {
-    return ['更换发布人或账号', '等待账号恢复并调整排期', '重新发送登录与发布指引', '本轮不再继续'];
-  }
-  if (task.anomalyType === 'data_sync_auth_expired') {
-    return ['重新扫码授权', '补录已发布链接', '仅保留本地记录'];
-  }
-  if (task.anomalyType === 'material_reshoot_overdue') {
-    return ['再次通知执行人', '更换执行人', '调整补拍截止', '本轮不再继续'];
-  }
-  return ['再次通知执行人', '重新下发任务', '更换执行人', '本轮不再继续'];
+  return [
+    '人工确认已发布',
+    '发送催办',
+    '中止发布'
+  ];
 }
+
 
 function ManualPublishFlow({ task }: { task: ExecutionTask }) {
   const steps = ['内容就绪', '已通知', '已领取', '待发布', '已回传'];
@@ -77,63 +70,50 @@ export function OperatorTaskWorkbench({
   onUpdateTask,
   onNextTask
 }: OperatorTaskWorkbenchProps) {
-  const mode = getWorkbenchMode(task, initialAction);
-  const isMaterialFollowUp = task.anomalyType === 'material_reshoot_overdue';
-  const isPublishWorkbench = !isMaterialFollowUp && (task.operatorCategory === 'publish' || mode === 'publish_confirm' || mode === 'handle_publish_error');
-  const [showContext, setShowContext] = useState(false);
-  const [draftTitle, setDraftTitle] = useState(task.draftTitle || task.noteTitle || '');
+  const [mode, setMode] = useState<WorkbenchMode>(() => getWorkbenchMode(task, initialAction));
+  const [feedback, setFeedback] = useState('');
+  
+  // State for content edit
+  const [draftTitle, setDraftTitle] = useState(task.draftTitle || '');
   const [draftBody, setDraftBody] = useState(task.draftBody || '');
   const [tags, setTags] = useState<string[]>(task.tags || []);
-  const [newTag, setNewTag] = useState('');
+  
+  // State for material selection
+  const [libraryMaterials] = useState<LibraryMaterialItem[]>(getProjectLibraryMaterials());
   const [selectedMaterials, setSelectedMaterials] = useState<LibraryMaterialItem[]>(task.selectedMaterialAssets || []);
-  const [materialItems, setMaterialItems] = useState<MaterialSubItem[]>(task.materialSubItems || []);
-  const [taskRequirement, setTaskRequirement] = useState(task.materialSubItems?.[0]?.requirement || '补齐笔记所需的真实使用场景与产品细节素材');
-  const [assignee, setAssignee] = useState(MOCK_STAFF_MEMBERS[0]?.name || '待指定');
-  const [taskDeadline, setTaskDeadline] = useState('明天 18:00');
+  
+  // State for material tasks
+  const [taskRequirement, setTaskRequirement] = useState(task.reasonForIntervention || '');
+  const [assignee, setAssignee] = useState(MOCK_STAFF_MEMBERS[0].name);
+  const [taskDeadline, setTaskDeadline] = useState('今天 18:00');
+  
+  // State for publish
   const [publishUrl, setPublishUrl] = useState(task.returnedData?.publishUrl || '');
-  const [resolution, setResolution] = useState(() => getAnomalyOptions(task)[0]);
+  
+  // State for anomalies
+  const [resolution, setResolution] = useState(getAnomalyOptions(task)[0]);
   const [resolutionNote, setResolutionNote] = useState('');
   const [replacementPublisher, setReplacementPublisher] = useState('备用KOC_小丸子');
-  const [agentQuestion, setAgentQuestion] = useState('');
-  const [agentAnswer, setAgentAnswer] = useState('');
-  const [feedback, setFeedback] = useState('');
+  
+  // Sidebar logic
   const [queueQuery, setQueueQuery] = useState('');
 
+  const isMaterialFollowUp = task.operatorCategory === 'material' && task.materialType !== 'matched_library_asset';
+  
+  const queue = useMemo(() => categoryQueue.filter(item => {
+    if (initialAction === 'handle_publish_error' || task.operatorCategory === 'anomaly') {
+      return item.isAnomaly;
+    }
+    return item.operatorCategory === task.operatorCategory;
+  }), [categoryQueue, task.operatorCategory, initialAction, task.isAnomaly]);
+  
   useEffect(() => {
-    setShowContext(false);
-    setDraftTitle(task.draftTitle || task.noteTitle || '');
-    setDraftBody(task.draftBody || '');
-    setTags(task.tags || []);
-    setNewTag('');
-    setSelectedMaterials(task.selectedMaterialAssets || []);
-    setMaterialItems(task.materialSubItems || []);
-    setTaskRequirement(task.materialSubItems?.[0]?.requirement || '补齐笔记所需的真实使用场景与产品细节素材');
-    setAssignee(MOCK_STAFF_MEMBERS[0]?.name || '待指定');
-    setTaskDeadline('明天 18:00');
-    setPublishUrl(task.returnedData?.publishUrl || '');
+    setMode(getWorkbenchMode(task, initialAction));
     setResolution(getAnomalyOptions(task)[0]);
     setResolutionNote('');
-    setReplacementPublisher('备用KOC_小丸子');
-    setAgentQuestion('');
-    setAgentAnswer('');
-  }, [task.id]);
+  }, [task, initialAction]);
 
-  const libraryMaterials = useMemo(() => {
-    return getProjectLibraryMaterials(task.projectId).slice(0, 6);
-  }, [task.projectId]);
 
-  const queue = categoryQueue.filter(item =>
-    item.status !== '已完成' &&
-    item.status !== '已取消' &&
-    (!isMaterialFollowUp || item.anomalyType === 'material_reshoot_overdue') &&
-    (mode === 'progress' ? !item.isMeWaiting : item.isMeWaiting)
-  );
-  const filteredQueue = queue.filter(item => {
-    const query = queueQuery.trim().toLowerCase();
-    return !query || [item.noteTitle, item.targetAccount, item.projectName]
-      .filter(Boolean)
-      .some(value => value!.toLowerCase().includes(query));
-  });
   const isComplete = task.status === '已完成';
 
   const showFeedback = (message: string) => {
@@ -155,36 +135,67 @@ export function OperatorTaskWorkbench({
       waitingParty: '已完成',
       timelineEvents: [
         ...task.timelineEvents,
-        { id: `done-${Date.now()}`, time: '刚刚', actor: '操盘手', action: message }
+        { id: `finish-${Date.now()}`, time: '刚刚', actor: '操盘手', action: message }
       ]
     });
-    showFeedback(message);
+    if (onNextTask) {
+      showFeedback(`${message}，准备进入下一个任务`);
+      window.setTimeout(onNextTask, 600);
+    } else {
+      showFeedback(`${message}，全部处理完毕`);
+    }
   };
 
+  const toggleMaterial = (material: LibraryMaterialItem) => {
+    setSelectedMaterials(previous => previous.some(item => item.id === material.id)
+      ? previous.filter(item => item.id !== material.id)
+      : [...previous, material]
+    );
+  };
+
+  const [materialItems, setMaterialItems] = useState(task.materialSubItems || []);
+  const updateMaterialStatus = (id: string, newStatus: MaterialSubItem['manualStatus'], reason?: string) => {
+    setMaterialItems(prev => prev.map(item => item.id === id ? { ...item, manualStatus: newStatus, reshootReason: reason } : item));
+  };
+  
   const resolveAnomaly = () => {
     const isPublishAnomaly = task.anomalyType === 'publish_overdue' || task.anomalyType === 'executor_account_unavailable';
-    if (resolution === '补录已发布链接') {
-      if (!publishUrl.trim()) {
-        showFeedback('请先填写小红书笔记链接');
-        return;
-      }
-      completeTask({ returnedData: { ...(task.returnedData || {}), publishUrl }, isAnomaly: false, isBlocked: false }, '已补录发布链接并进入数据回传');
-      return;
-    }
+    
     if (!isPublishAnomaly) {
       completeTask({ anomalyReason: `${resolution}${resolutionNote ? `：${resolutionNote}` : ''}`, isAnomaly: false, isBlocked: false }, '已确认异常处理方案');
       return;
     }
+    
+    if (resolution === '人工确认已发布') {
+      onUpdateTask({
+        ...task,
+        status: '执行中',
+        actionType: undefined,
+        operatorCategory: 'publish',
+        categoryLabel: '发布与回传',
+        isAnomaly: false,
+        anomalyReason: undefined,
+        isBlocked: false,
+        isMeWaiting: false,
+        isTeamExecuting: true,
+        publishStage: '已回传',
+        currentOccurrence: '操盘手已人工确认发布成功。',
+        returnedData: {
+           ...task.returnedData,
+           publishUrl: task.returnedData?.publishUrl || 'https://xhslink.com/manual-confirm'
+        },
+        timelineEvents: [
+          ...task.timelineEvents,
+          { id: `resolved-${Date.now()}`, time: '刚刚', actor: '操盘手', action: '人工确认已发布' }
+        ]
+      });
+      showFeedback('已确认该任务发布成功');
+      return;
+    }
 
-    const stopped = resolution === '本轮不再继续';
-    const changedPublisher = resolution.includes('更换');
-    const nextPublisher = changedPublisher ? replacementPublisher : task.targetAccount;
-    const actionMessage = changedPublisher
-      ? `已更换发布人：${nextPublisher}`
-      : resolution === '再次通知发布人'
-      ? `已再次通知发布人：${task.targetAccount}`
-      : resolution;
-
+    const stopped = resolution === '中止发布';
+    const actionMessage = resolution;
+    
     onUpdateTask({
       ...task,
       actionType: undefined,
@@ -198,65 +209,39 @@ export function OperatorTaskWorkbench({
       isTeamExecuting: !stopped,
       isSystemProcessing: false,
       waitingRole: stopped ? 'completed' : 'team',
-      waitingParty: stopped ? '本轮已停止' : nextPublisher,
+      waitingParty: stopped ? '本轮已停止' : task.targetAccount,
       publishStage: stopped ? task.publishStage : '待发布',
       currentOccurrence: stopped
-        ? '操盘手已决定本轮不再继续发布。'
-        : `${actionMessage}，任务已恢复到执行动态，等待手动发布与链接回传。`,
+        ? '已中止该发布任务，该笔记重新释放回待领取笔记池。'
+        : `已发送催办，等待账号所有者操作。`,
       timelineEvents: [
         ...task.timelineEvents,
         { id: `resolved-${Date.now()}`, time: '刚刚', actor: '操盘手', action: actionMessage }
       ]
     });
-    showFeedback(stopped ? '本轮发布任务已停止' : `${actionMessage}，已恢复执行`);
+    showFeedback(stopped ? '已中止发布并释放笔记名额' : `已发送催办提醒`);
   };
 
-  const toggleMaterial = (material: LibraryMaterialItem) => {
-    setSelectedMaterials(previous => previous.some(item => item.id === material.id)
-      ? previous.filter(item => item.id !== material.id)
-      : [...previous, material]);
-  };
-
-  const updateMaterialStatus = (id: string, status: MaterialSubItem['manualStatus']) => {
-    setMaterialItems(previous => previous.map(item => item.id === id ? { ...item, manualStatus: status } : item));
-  };
-
-  const renderContentWorkbench = () => (
-    <div className="space-y-4">
-      {task.complianceRisk && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 flex gap-2.5 text-[13px] text-amber-900">
-          <ShieldCheck size={16} className="shrink-0 mt-0.5" />
-          <div><strong>确认前需处理：</strong>{task.complianceRisk}</div>
-        </div>
-      )}
-      <label className="block space-y-1.5">
-        <span className="text-[13px] font-medium text-text-secondary">标题</span>
-        <input value={draftTitle} onChange={event => setDraftTitle(event.target.value)} className="w-full rounded-xl border border-border-default bg-surface-1 px-3.5 py-2.5 text-[13px] text-text-main outline-none focus:border-border-strong" />
-      </label>
-      <label className="block space-y-1.5">
-        <span className="text-[13px] font-medium text-text-secondary">正文</span>
-        <textarea value={draftBody} onChange={event => setDraftBody(event.target.value)} rows={12} className="w-full resize-none rounded-xl border border-border-default bg-surface-1 px-3.5 py-3 text-[13px] leading-6 text-text-main outline-none focus:border-border-strong" />
-      </label>
-      <div className="space-y-2">
-        <div className="text-[13px] font-medium text-text-secondary">标签</div>
-        <div className="flex flex-wrap gap-2">
-          {tags.map(tag => (
-            <button key={tag} onClick={() => setTags(tags.filter(item => item !== tag))} className="rounded-lg border border-border-default bg-surface-subtle px-2.5 py-1.5 text-[13px] text-text-secondary">#{tag} ×</button>
-          ))}
-          <div className="flex items-center gap-1">
-            <input value={newTag} onChange={event => setNewTag(event.target.value)} placeholder="新增标签" className="w-24 rounded-lg border border-border-default px-2.5 py-1.5 text-[13px] outline-none" />
-            <button onClick={() => { if (newTag.trim()) { setTags([...tags, newTag.trim()]); setNewTag(''); } }} className="rounded-lg bg-surface-subtle border border-border-default px-2.5 py-1.5 text-[13px]">添加</button>
-          </div>
-        </div>
-      </div>
-      <PrimaryAction
-        label="确认内容并继续"
-        hint="确认后重新检查素材完整度；素材齐全才会进入待发笔记池。"
-        disabled={!draftTitle.trim() || !draftBody.trim() || tags.length === 0}
-        onClick={() => completeTask({ draftTitle, draftBody, tags }, '已确认内容，进入下一项完整度检查')}
-      />
-    </div>
-  );
+  const filteredQueue = queue.filter(item => {
+    // 隐藏未领取的任务（例如待领取且没有 assignee 的情况）
+    if (item.publishStage === '待领取' || !item.assignee?.name) {
+      return false;
+    }
+    const query = queueQuery.trim().toLowerCase();
+    return !query || [item.noteTitle, item.targetAccount, item.projectName]
+      .filter(Boolean)
+      .some(value => value!.toLowerCase().includes(query));
+  }).sort((a, b) => {
+    const score = (label: string | undefined) => {
+      if (label === '已逾期') return 4;
+      if (label === '今日到期') return 3;
+      if (label === '即将到期') return 2;
+      return 1;
+    };
+    return score(b.deadlineLabel) - score(a.deadlineLabel);
+  });
+  
+  const isPublishWorkbench = mode === 'publish_confirm' || mode === 'handle_publish_error';
 
   const renderMaterialSelection = () => (
     <div className="space-y-4">
@@ -374,57 +359,59 @@ export function OperatorTaskWorkbench({
         <div className="flex justify-between"><span className="text-text-tertiary">发布方式</span><strong>{task.publishType || '账号手动发布'}</strong></div>
         <div className="flex justify-between"><span className="text-text-tertiary">发布计划</span><strong>{formatChineseDate(task.publishContent?.scheduleTime || task.deadline, true) || task.publishContent?.scheduleTime || task.deadline || '待确认'}</strong></div>
       </div>
-      <label className="block space-y-1.5">
-        <span className="text-[13px] font-medium text-text-secondary">小红书笔记链接</span>
-        <input value={publishUrl} onChange={event => setPublishUrl(event.target.value)} placeholder="粘贴发布后的笔记链接" className="w-full rounded-xl border border-border-default bg-surface-1 px-3.5 py-2.5 text-[13px] outline-none focus:border-border-strong" />
-      </label>
       <PrimaryAction
-        label="确认发布结果"
-        hint="确认后系统提取平台笔记 ID，进入关键词收录与发布后数据回传。"
-        disabled={!publishUrl.trim()}
-        onClick={() => completeTask({ returnedData: { ...(task.returnedData || {}), publishUrl } }, '已确认发布链接并进入数据回传')}
+        label="推送通知提醒执行"
+        hint="系统将向发布账号发送执行通知提醒，任务继续处于执行中，等待其最终操作回传。"
+        disabled={false}
+        onClick={() => {
+            onUpdateTask({
+                ...task,
+                timelineEvents: [
+                    ...task.timelineEvents,
+                    { id: `remind-${Date.now()}`, time: '刚刚', actor: '操盘手', action: `催促 ${task.publisherName || task.targetAccount} 尽快执行发布` }
+                ]
+            });
+            showFeedback(`已向 ${task.publisherName || task.targetAccount} 推送提醒`);
+        }}
       />
     </div>
   );
+  const renderAnomaly = () => {
+    const finalOptions = getAnomalyOptions(task);
+    
+    let buttonLabel = '确认操作';
+    let hint = '';
+    if (resolution === '人工确认已发布') {
+      buttonLabel = '确认已发布';
+      hint = '人工确认后将直接进入已回传状态并流转至下一步。';
+    } else if (resolution === '发送催办') {
+      buttonLabel = '确认发送催办';
+      hint = '系统将通过已绑定的微信或企微向账号所有者下发催办指令。';
+    } else if (resolution === '中止发布') {
+      buttonLabel = '确认中止并释放';
+      hint = '中止后，该用户已领取的任务将被回收，释放后供其他人再次领取。';
+    }
 
-  const renderAnomaly = () => (
+    return (
     <div className="space-y-4 max-w-2xl">
-      <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3 text-[13px] text-rose-800">
-        <AlertTriangle size={15} className="mt-0.5 shrink-0" />
-        <span className="line-clamp-2">{task.anomalyReason || task.currentOccurrence}</span>
-      </div>
       <div className="space-y-2">
-        {getAnomalyOptions(task).map(option => (
+        {finalOptions.map(option => (
           <button key={option} onClick={() => setResolution(option)} className={`w-full rounded-xl border p-3 text-left text-[13px] ${resolution === option ? 'border-neutral-900 bg-surface-subtle' : 'border-border-default bg-surface-1'}`}>
             <span className={`mr-2 inline-flex h-4 w-4 items-center justify-center rounded-full border ${resolution === option ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-border-strong'}`}>{resolution === option && <Check size={10} />}</span>
             {option}
           </button>
         ))}
       </div>
-      {resolution.includes('更换') && (task.anomalyType === 'publish_overdue' || task.anomalyType === 'executor_account_unavailable') && (
-        <label className="block space-y-1.5 rounded-xl border border-border-default bg-surface-1 p-3">
-          <span className="text-[13px] font-medium text-text-secondary">选择新的发布人</span>
-          <select value={replacementPublisher} onChange={event => setReplacementPublisher(event.target.value)} className="w-full rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] outline-none focus:border-border-strong">
-            <option value="备用KOC_小丸子">备用KOC_小丸子</option>
-            <option value="静安店李店长">静安店李店长</option>
-            <option value="操盘手代发">操盘手代发</option>
-          </select>
-        </label>
-      )}
-      {resolution === '补录已发布链接' ? (
-        <label className="block space-y-1.5 rounded-xl border border-border-default bg-surface-1 p-3">
-          <span className="text-[13px] font-medium text-text-secondary">已发布的小红书笔记链接</span>
-          <input value={publishUrl} onChange={event => setPublishUrl(event.target.value)} placeholder="粘贴链接后完成回传" className="w-full rounded-lg border border-border-default bg-surface-1 px-3 py-2 text-[13px] outline-none focus:border-border-strong" />
-        </label>
-      ) : null}
+      
       <textarea value={resolutionNote} onChange={event => setResolutionNote(event.target.value)} rows={4} placeholder="补充处理说明（选填）" className="w-full rounded-xl border border-border-default bg-surface-1 px-3.5 py-3 text-[13px] outline-none" />
       <PrimaryAction
-        label={resolution === '补录已发布链接' ? '确认链接并完成回传' : task.anomalyType === 'publish_overdue' ? '确认并继续人工发布' : '确认处理方案'}
-        hint="操作会写入任务进程；后续仍由执行人手动完成小红书发布。"
+        label={buttonLabel}
+        hint={hint}
         onClick={resolveAnomaly}
       />
     </div>
   );
+  };
 
   const renderProgress = () => (
     <div className="space-y-4 max-w-2xl">
@@ -456,7 +443,7 @@ export function OperatorTaskWorkbench({
         </div>
       </div>
     );
-    if (mode === 'edit_content') return renderContentWorkbench();
+    if (mode === 'edit_content') return renderWorkbench();
     if (mode === 'replace_material') return renderMaterialSelection();
     if (mode === 'create_material_task') return renderCreateMaterialTask();
     if (mode === 'review_material' || mode === 'view_material_task') return renderMaterialReview();
@@ -471,8 +458,6 @@ export function OperatorTaskWorkbench({
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">{workspaceNavigation ?? <button onClick={onBack} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="返回执行中心"><ArrowLeft size={17} /></button>}</div>
           <div className="flex items-center gap-2">
-            {task.deadline && <span className="hidden md:flex items-center gap-1 text-[13px] text-text-tertiary"><Clock size={13} />{formatChineseDate(task.deadline, true) || task.deadline}</span>}
-            <button onClick={() => setShowContext(!showContext)} className={`rounded-lg border px-3 py-1.5 text-[13px] font-medium flex items-center gap-1.5 ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default bg-surface-1 text-text-secondary'}`}><Info size={14} />{mode === 'progress' ? '任务详情' : '判断依据'}</button>
           </div>
         </div>
       </header>
@@ -496,9 +481,18 @@ export function OperatorTaskWorkbench({
                 <button key={item.id} onClick={() => onSelectTask(item)} className={`w-full text-left px-4 py-3.5 transition-colors border-b border-border-subtle relative ${selected ? 'bg-surface-subtle' : 'bg-transparent hover:bg-hover-bg text-text-main'}`}>
                   {selected && <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-logo" />}
                   <div className={`text-[13px] line-clamp-1 ${selected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>{item.noteTitle}</div>
-                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[13px] text-text-tertiary tabular-nums">
-                    <span className="truncate">{item.targetAccount}</span>
-                    <span className="shrink-0">{formatChineseDate(item.deadline, true) || item.deadline || '待排期'}</span>
+                  
+                  {/* METADATA LINE: Task Format, Assignee, Anomaly, Stalled Duration */}
+                  <div className="mt-2 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[12px] text-text-tertiary">
+                      <span className={`shrink-0 rounded px-1.5 py-0.5 font-medium ${item.accountType === '品牌主号' ? 'bg-blue-50 text-blue-700' : item.accountType === 'KOC' ? 'bg-amber-50 text-amber-700' : 'bg-purple-50 text-purple-700'}`}>
+                        {item.accountType || '未知账号'}
+                      </span>
+                      <span className="truncate">
+                        领取人：{item.assignee?.name || '未知'}
+                      </span>
+                    </div>
+
                   </div>
                 </button>
               );
@@ -525,54 +519,40 @@ export function OperatorTaskWorkbench({
                 {isPublishWorkbench ? <ManualPublishFlow task={task} /> : null}
               </section>
             ) : (
-              <section className="workspace-surface workspace-context rounded-xl border border-border-default bg-surface-1 px-4 py-3">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 text-[13px] text-text-tertiary"><span>{task.projectName}</span><span>·</span><span className="truncate">{task.noteTitle}</span><span>·</span><span>{task.targetAccount}</span></div>
-                    <div className="mt-1.5 text-[14px] font-semibold text-text-main">{task.operatorActionSummary}</div>
+              <section className="workspace-surface workspace-context rounded-xl border border-border-default bg-surface-1 p-4 mb-2">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-[16px] font-bold text-text-main truncate">{task.noteTitle}</h3>
+                    <div className="mt-1 flex items-center gap-2 text-[13px] text-text-tertiary">
+                      <span>所属项目：{task.projectName}</span>
+                    </div>
                   </div>
-                  <span className={`rounded-md px-2 py-1 text-[13px] font-medium ${task.isBlocked ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-surface-subtle text-text-secondary border border-border-default'}`}>{task.isBlocked ? '待介入' : '待处理'}</span>
+                  <button className="shrink-0 rounded bg-brand-logo px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-brand-logo/90">查看笔记详情</button>
                 </div>
-                {isPublishWorkbench ? <ManualPublishFlow task={task} /> : null}
+                <div className="mt-4 rounded-lg bg-surface-subtle p-3">
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    <div>
+                      <div className="text-[12px] text-text-tertiary">账号/领取人</div>
+                      <div className="mt-1 text-[13px] font-medium text-text-main">{task.assignee?.name || task.targetAccount || '未知'}</div>
+                    </div>
+                    <div>
+                      <div className="text-[12px] text-text-tertiary">认领/分配时间</div>
+                      <div className="mt-1 text-[13px] font-medium text-text-main">{task.assignee?.claimTime || task.assignee?.assignedTime || '未知'}</div>
+                    </div>
+                    {task.deadline && (
+                      <div>
+                        <div className="text-[12px] text-text-tertiary">最晚发布时间</div>
+                        <div className="mt-1 text-[13px] font-medium text-text-main">{task.deadline}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </section>
             )}
             {renderWorkbench()}
           </div>
         </main>
 
-        {showContext && (
-          <aside className="w-[340px] shrink-0 overflow-y-auto border-l border-border-default bg-surface-1 p-4 hidden md:block">
-            <div className="flex items-center justify-between"><h2 className="text-[13px] font-semibold text-text-main">{mode === 'progress' ? '任务信息与记录' : '判断依据与协助'}</h2><button onClick={() => setShowContext(false)} className="p-1 text-text-tertiary"><X size={15} /></button></div>
-            <div className="mt-4 space-y-4">
-              <section className="rounded-xl bg-surface-subtle p-3">
-                <div className="text-[13px] font-medium text-text-tertiary">介入原因</div>
-                <p className="mt-2 text-[13px] leading-5 text-text-secondary">{task.reasonForIntervention}</p>
-                <div className="mt-2 flex items-start gap-2 border-t border-border-default pt-2 text-[13px] text-text-tertiary"><ArrowRight size={12} className="mt-0.5 shrink-0" /><span>{task.nextStepAfterAction}</span></div>
-              </section>
-              <section>
-                <div className="text-[13px] font-medium text-text-tertiary">系统已确认</div>
-                <div className="mt-2 space-y-2">{task.confirmedFacts.map((fact, index) => <div key={index} className="flex gap-2 text-[13px] leading-5 text-text-secondary"><CheckCircle2 size={13} className="mt-1 shrink-0 text-emerald-600" /><span>{fact}</span></div>)}</div>
-              </section>
-              {task.strategyContext && (
-                <section className="rounded-xl bg-surface-subtle p-3">
-                  <div className="text-[13px] font-medium text-text-tertiary">方案上下文</div>
-                  <div className="mt-2 text-[13px] leading-5 text-text-secondary">{task.strategyContext.intent}</div>
-                  <div className="mt-2 flex flex-wrap gap-1">{task.strategyContext.searchKeywords.map(keyword => <span key={keyword} className="rounded bg-surface-1 border border-border-default px-1.5 py-0.5 text-[13px] text-text-tertiary">{keyword}</span>)}</div>
-                </section>
-              )}
-              <section>
-                <div className="text-[13px] font-medium text-text-tertiary">Agent 与操作记录</div>
-                <div className="mt-2 space-y-2">{task.timelineEvents.slice(-4).map(event => <div key={event.id} className="text-[13px] leading-4 text-text-tertiary"><span className="mr-1">{formatChineseDate(event.time, true) || event.time}</span><strong className="font-medium text-text-secondary">{event.actor}</strong> · {event.action}</div>)}</div>
-              </section>
-              {mode !== 'progress' && <section className="rounded-xl border border-border-default p-3">
-                <div className="flex items-center gap-1.5 text-[13px] font-medium text-text-main"><Bot size={14} />向 Agent 追问</div>
-                {agentAnswer && <div className="mt-2 rounded-lg bg-surface-subtle p-2.5 text-[13px] leading-5 text-text-secondary">{agentAnswer}</div>}
-                <textarea value={agentQuestion} onChange={event => setAgentQuestion(event.target.value)} rows={3} placeholder="询问判断依据，不会自动执行操作" className="mt-2 w-full resize-none rounded-lg border border-border-default px-2.5 py-2 text-[13px] outline-none" />
-                <button onClick={() => { if (agentQuestion.trim()) { setAgentAnswer(`已结合当前笔记、方案上下文和系统检查进行分析：${task.reasonForIntervention}。最终仍需由操盘手确认。`); setAgentQuestion(''); } }} className="mt-2 flex items-center gap-1 rounded-lg bg-neutral-950 px-3 py-1.5 text-[13px] text-white"><Send size={11} />发送</button>
-              </section>}
-            </div>
-          </aside>
-        )}
       </div>
 
       {feedback && <div className="fixed bottom-5 left-1/2 z-[300] -translate-x-1/2 rounded-xl bg-neutral-950 px-4 py-2.5 text-[13px] text-white shadow-xl">{feedback}</div>}

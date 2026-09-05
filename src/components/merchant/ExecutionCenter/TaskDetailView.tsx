@@ -489,29 +489,6 @@ export function TaskDetailView({
     }
   };
 
-  const handleSaveDraft = () => {
-    const updated: ExecutionTask = {
-      ...task,
-      draftTitle,
-      draftBody,
-      tags,
-      selectedCoverUrl,
-      selectedMaterialAssets,
-      generatedMaterialTasks,
-      timelineEvents: [
-        ...task.timelineEvents,
-        {
-          id: `evt-${Date.now()}`,
-          time: '刚刚',
-          actor: '操盘手',
-          action: '保存正文、标签与素材方案草稿'
-        }
-      ]
-    };
-    onUpdateTask(updated);
-    showToast('草稿已保存');
-  };
-
   // === Material Actions ===
   const handleAcceptMaterialSubItem = (itemId: string) => {
     if (!task.materialSubItems) return;
@@ -707,26 +684,7 @@ export function TaskDetailView({
           </button>
         )}
 
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={handleSaveDraft}
-            className="px-3 py-1.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover border border-border-default rounded-lg transition-colors"
-          >
-            保存草稿
-          </button>
 
-          {onNextTask && (
-            <button
-              type="button"
-              onClick={onNextTask}
-              className="px-3.5 py-1.5 text-[13px] font-medium text-text-primary bg-surface-subtle hover:bg-surface-hover border border-border-default rounded-lg transition-colors flex items-center gap-1.5"
-            >
-              <span>查看下一项</span>
-              <ArrowRight size={14} className="text-text-secondary" />
-            </button>
-          )}
-        </div>
       </div>
 
       {/* Main Content Area: 3-column Layout */}
@@ -1176,7 +1134,7 @@ export function TaskDetailView({
               {/* Action Bar */}
               <div className="p-4 bg-surface-subtle border border-border-default rounded-xl flex items-center justify-between">
                 <div className="text-[13px] text-text-secondary">
-                  确认定稿将自动锁定文案与素材，并转入<strong>素材待办与发布核销</strong>流转。
+                  确认定稿将自动锁定文案与素材，后续可进行内容分发。
                 </div>
                 <button
                   type="button"
@@ -1184,7 +1142,7 @@ export function TaskDetailView({
                   className="px-4 py-2 bg-action-primary hover:bg-action-primary-hover text-white rounded-lg text-[13px] font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
                 >
                   <Check size={15} />
-                  <span>确认笔记并进入素材待办</span>
+                  <span>确认笔记</span>
                 </button>
               </div>
 

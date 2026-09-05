@@ -219,7 +219,7 @@ export function MaterialBatchReviewWorkbench({
 
   const missingRequiredCount = reviewItems.filter(item => item.subItem.isRequired && !item.asset).length;
   const pendingReturnedCount = reviewItems.filter(item => item.asset && (decisions[item.key]?.decision ?? '待判断') === '待判断').length;
-  const completionBlocked = missingRequiredCount > 0 || pendingReturnedCount > 0;
+  const completionBlocked = false;
   const selectableKeys = useMemo(() => reviewItems.filter(item => Boolean(item.asset)).map(item => item.key), [reviewItems]);
   const allSelectableSelected = selectableKeys.length > 0 && selectableKeys.every(key => selectedKeys.has(key));
   const previewItem = previewItemKey ? reviewItems.find(item => item.key === previewItemKey) : undefined;
@@ -408,7 +408,6 @@ export function MaterialBatchReviewWorkbench({
       <header className="workspace-header flex shrink-0 items-center justify-between border-b border-border-default bg-surface-1">
         {workspaceNavigation}
         <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
-          <span>{queueCounts.pending} 项待执行 · {queueCounts.review} 项待审核</span>
           {followUpTasks.length > 0 ? (
             <button type="button" onClick={() => onOpenFollowUp?.(followUpTasks[0])} className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 font-medium text-amber-800">待跟进 {followUpTasks.length}</button>
           ) : null}
@@ -465,40 +464,6 @@ export function MaterialBatchReviewWorkbench({
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-3">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
-                  <span>{activeTask.noteId ? '笔记素材任务' : '项目级素材任务'}</span>
-                  <span>·</span>
-                  <span>{activeTask.deadline || '未设置截止'}</span>
-                </div>
-                <h2 className="mt-1 truncate text-[14px] font-semibold text-text-main">{activeTask.title}</h2>
-              </div>
-              <button type="button" aria-expanded={showContext} onClick={() => setShowContext(current => !current)} className={`flex shrink-0 items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[13px] ${showContext ? 'border-neutral-900 bg-neutral-950 text-white' : 'border-border-default text-text-secondary hover:bg-hover-bg'}`}>
-                执行进程 <ChevronDown size={11} className={`transition-transform ${showContext ? 'rotate-180' : ''}`} />
-              </button>
-            </div>
-            {showContext ? (
-              <div className="mt-3 rounded-xl border border-border-default bg-surface-subtle p-3 text-[13px] leading-5 text-text-secondary">
-                <div className="flex items-center gap-1.5 border-b border-border-default pb-3 text-text-tertiary" aria-label="素材任务流程">
-                  {(activeQueue === '待执行' ? ['已下发', '待执行', '待回传'] : ['已下发', '已执行', '已回传', '待审核']).map((step, index, steps) => (
-                    <React.Fragment key={step}>
-                      <span className={index === steps.length - 1 ? 'font-semibold text-text-main' : 'text-emerald-700'}>{step}</span>
-                      {index < steps.length - 1 ? <span className="h-px w-6 bg-border-strong" /> : null}
-                    </React.Fragment>
-                  ))}
-                </div>
-                <div className="mt-3 grid gap-2 md:grid-cols-2">
-                <div><span className="text-text-tertiary">发给：</span>{activeTask.targetAccount}（{activeTask.accountType}）</div>
-                <div><span className="text-text-tertiary">当前处理人：</span>{activeTask.waitingParty}</div>
-                <div><span className="text-text-tertiary">处理依据：</span>{activeTask.reasonForIntervention}</div>
-                <div><span className="text-text-tertiary">下一步：</span>{activeTask.nextStepAfterAction}</div>
-                <div className="md:col-span-2 mt-1 border-l border-border-strong pl-3">{activeTask.timelineEvents.map(event => <div key={event.id} className="py-0.5"><span className="text-text-tertiary">{event.time} · {event.actor}</span>　{event.action}</div>)}</div>
-                </div>
-              </div>
-            ) : null}
-          </div>
 
           {activeQueue === '待审核' ? <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -576,7 +541,6 @@ export function MaterialBatchReviewWorkbench({
                               className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '已通过' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200' : 'border border-border-default text-text-secondary'}`}
                             >{draft.decision === '已通过' ? <><CheckCircle2 size={12} />已通过 <span className="ml-1 text-emerald-600/70">取消</span></> : '验收通过'}</button>
                             <button type="button" onClick={() => openSingleReshoot(item.key)} className={`rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '需补拍' ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200' : 'border border-border-default text-text-secondary'}`}>要求重拍</button>
-                            {!item.subItem.isRequired ? <button type="button" onClick={() => updateDecision(item.key, { decision: '不采用', reason: '' })} className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-medium ${draft.decision === '不采用' ? 'bg-surface-subtle text-text-main ring-1 ring-border-strong' : 'border border-border-default text-text-secondary'}`}><CircleSlash2 size={11} />不采用</button> : null}
                           </div>
                         ) : <p className="mt-2 text-[12px] leading-5 text-amber-700">该项属于必拍要求，需要执行人补充回传后才能完成验收。</p>}
                       </div>
@@ -593,11 +557,10 @@ export function MaterialBatchReviewWorkbench({
               <div className="flex items-center gap-3 text-[13px]">
                 <span className="flex items-center gap-1 text-emerald-700"><CheckCircle2 size={12} />通过 {counts.accepted}</span>
                 <span className="flex items-center gap-1 text-rose-600"><RotateCcw size={12} />打回 {counts.reshoot}</span>
-                <span className="flex items-center gap-1 text-text-secondary"><CircleSlash2 size={12} />不采用 {counts.unused}</span>
                 <span className="flex items-center gap-1 text-text-tertiary"><Clock3 size={12} />未判断 {counts.pending}</span>
               </div>
-              <span className={`ml-auto text-[13px] ${completionBlocked ? 'text-amber-700' : 'text-text-tertiary'}`}>{missingRequiredCount > 0 ? `${missingRequiredCount} 项必拍素材未回传` : pendingReturnedCount > 0 ? `${pendingReturnedCount} 张已回传素材待判断` : '所有回传素材均已给出结论'}</span>
-              <button type="button" onClick={() => setShowReviewConfirmation(true)} disabled={completionBlocked} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />提交审核结果</button>
+              <span className="ml-auto text-[13px] text-text-tertiary">未验收的素材将自动放入素材中心【备选库】板块</span>
+              <button type="button" onClick={() => setShowReviewConfirmation(true)} disabled={completionBlocked} className="flex items-center gap-1.5 rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-35"><Send size={12} />完成审核并流转</button>
             </div>
           </footer> : null}
         </main>
@@ -635,16 +598,15 @@ export function MaterialBatchReviewWorkbench({
         <div className="fixed inset-0 z-[310] flex items-center justify-center bg-black/45 p-4" role="dialog" aria-modal="true" aria-labelledby="material-review-confirm-title">
           <div className="w-full max-w-md rounded-2xl border border-border-default bg-surface-1 p-5 shadow-2xl">
             <div className="flex items-start justify-between gap-3">
-              <div><h3 id="material-review-confirm-title" className="text-[16px] font-semibold text-text-main">提交审核结果</h3><p className="mt-1 text-[13px] leading-5 text-text-tertiary">提交后，通过项立即入库；重拍要求发给执行者，任务回到待执行。</p></div>
+              <div><h3 id="material-review-confirm-title" className="text-[16px] font-semibold text-text-main">确认完成本次审核？</h3><p className="mt-1 text-[13px] leading-5 text-text-tertiary">通过素材将准备完成并进入待发布；需补拍项将自动回到执行任务中。</p></div>
               <button type="button" onClick={() => setShowReviewConfirmation(false)} aria-label="关闭确认窗口" className="text-text-tertiary hover:text-text-main"><X size={18} /></button>
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-emerald-50 p-3 text-center"><div className="text-[20px] font-semibold text-emerald-700">{counts.accepted}</div><div className="mt-1 text-[12px] text-emerald-700">通过并入库</div></div>
               <div className="rounded-xl bg-rose-50 p-3 text-center"><div className="text-[20px] font-semibold text-rose-700">{counts.reshoot}</div><div className="mt-1 text-[12px] text-rose-700">退回补拍</div></div>
-              <div className="rounded-xl bg-surface-subtle p-3 text-center"><div className="text-[20px] font-semibold text-text-main">{counts.unused}</div><div className="mt-1 text-[12px] text-text-secondary">不采用</div></div>
             </div>
             <p className="mt-4 rounded-xl bg-surface-subtle p-3 text-[12px] leading-5 text-text-secondary">通过素材将进入素材中心；笔记级必拍素材会同时绑定当前笔记。补拍项继续沿原素材任务执行。</p>
-            <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setShowReviewConfirmation(false)} className="rounded-lg border border-border-default px-4 py-2 text-[13px] text-text-secondary">返回检查</button><button type="button" onClick={submitReview} className="rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white">提交审核结果</button></div>
+            <div className="mt-5 flex justify-end gap-2"><button type="button" onClick={() => setShowReviewConfirmation(false)} className="rounded-lg border border-border-default px-4 py-2 text-[13px] text-text-secondary">返回检查</button><button type="button" onClick={submitReview} className="rounded-lg bg-neutral-950 px-4 py-2 text-[13px] font-semibold text-white">确认流转</button></div>
           </div>
         </div>
       ) : null}

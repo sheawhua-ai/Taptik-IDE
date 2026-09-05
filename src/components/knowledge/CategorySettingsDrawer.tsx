@@ -26,7 +26,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['品牌定位', '产品信息', '价格政策', '核心卖点', '功效边界'],
     affects: ['选题策划', '内容生成', '素材匹配', '商务报价'],
     isDefault: true,
-    primaryFormat: '事实卡',
+    primaryFormat: '商家事实',
     purpose: { stores: '产品成分、价格、功效边界', usedFor: '写笔记时引用产品事实', excludes: '用户猜测、营销口号、没来源的数据' }
   },
   {
@@ -35,7 +35,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['账号定位', '人设标签', '内容语气', '引流路径', '账号禁区'],
     affects: ['选题策划', '内容生成', '账号分配', '评论私信'],
     isDefault: true,
-    primaryFormat: '问答卡',
+    primaryFormat: '常见问答',
     purpose: { stores: '账号身份、表达方式、常见提问', usedFor: '写内容时保持账号口吻', excludes: '临时情绪、未经确认的人设判断' }
   },
   {
@@ -44,7 +44,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['目标客群', '核心需求', '购买顾虑', '使用场景', '真实反馈'],
     affects: ['选题策划', '内容生成', '素材匹配', '转化承接'],
     isDefault: true,
-    primaryFormat: '经验卡',
+    primaryFormat: '打法经验',
     purpose: { stores: '用户问题、购买顾虑、真实反馈', usedFor: '判断内容先解决哪个问题', excludes: '没有样本支撑的用户猜测' }
   },
   {
@@ -53,7 +53,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['内容结构', '标题模式', '封面规范', '图文规则', '案例模板'],
     affects: ['笔记生成', '视觉生成', '内容审核', '发布执行'],
     isDefault: true,
-    primaryFormat: '范例卡',
+    primaryFormat: '标杆范例',
     purpose: { stores: '已验证的内容结构、标题和图文范例', usedFor: '生成笔记和视觉时参考', excludes: '没有结论的零散截图' }
   },
   {
@@ -62,7 +62,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['禁用表达', '合规边界', '审核规则', '例外处理', '责任节点'],
     affects: ['发布前检查', '素材审核', '风险提醒', '任务流转'],
     isDefault: true,
-    primaryFormat: '规则卡',
+    primaryFormat: '运营规则',
     purpose: { stores: '平台禁区、合规要求和任务流转规则', usedFor: '发布与审核前检查风险', excludes: '没有依据的个人提醒' }
   },
   {
@@ -71,7 +71,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['评论回复', '私信话术', '咨询问题', '异议处理', '下一步动作'],
     affects: ['评论回复', '私信承接', '线索转化', '客服培训'],
     isDefault: true,
-    primaryFormat: '问答卡',
+    primaryFormat: '常见问答',
     purpose: { stores: '用户问题、标准回答和承接动作', usedFor: '评论、私信和咨询回复', excludes: '未经确认的临时说法' }
   },
   {
@@ -80,7 +80,7 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['拍摄要求', '构图偏好', '色彩风格', '禁用画面', '参考素材'],
     affects: ['素材任务', '素材筛选', '视觉生成', '素材审核'],
     isDefault: true,
-    primaryFormat: '范例卡',
+    primaryFormat: '标杆范例',
     purpose: { stores: '偏好的拍摄、画面和视觉范例', usedFor: '下发素材任务与审核回传', excludes: '与品牌无关的通用审美' }
   },
   {
@@ -89,20 +89,34 @@ export const DEFAULT_CATEGORIES: KnowledgeCategoryConfig[] = [
     includes: ['执行动作', '效果数据', '复盘结论', '适用条件', '下轮建议'],
     affects: ['方案制定', '选题策略', '执行调整', '复盘报告'],
     isDefault: true,
-    primaryFormat: '经验卡',
+    primaryFormat: '打法经验',
     purpose: { stores: '做过的动作、结果数据和复盘结论', usedFor: '下一轮方案与执行调整', excludes: '只有感受、没有结果的记录' }
   }
 ];
 
-const FORMAT_OPTIONS: Array<{ value: KnowledgeFormat; description: string }> = [
-  { value: '事实卡', description: '一条一个事实，带来源和有效期' },
-  { value: '规则卡', description: '一行一条，写清禁止什么、依据是什么' },
-  { value: '范例卡', description: '成对收录好例子和坏例子' },
-  { value: '问答卡', description: '一问一答，写清适用场景' },
-  { value: '经验卡', description: '动作 + 数据 + 结论' }
+export function normalizeKnowledgeFormat(format: string): KnowledgeFormat {
+  if (format === '事实卡') return '商家事实';
+  if (format === '规则卡') return '运营规则';
+  if (format === '范例卡') return '标杆范例';
+  if (format === '问答卡') return '常见问答';
+  if (format === '经验卡') return '打法经验';
+  return (format as KnowledgeFormat) || '商家事实';
+}
+
+const FORMAT_OPTIONS: Array<{ value: KnowledgeFormat; label: string; description: string }> = [
+  { value: '商家事实', label: '商家事实', description: '一条一个明确事实，带来源依据与有效期限（如产品参数、价格、功效资质）' },
+  { value: '运营规则', label: '运营规则', description: '一行一条明确红线，写清禁止项、合规依据与流转责任' },
+  { value: '标杆范例', label: '标杆范例', description: '收录爆款与正反向标杆案例，用于内容生成与审核对照' },
+  { value: '常见问答', label: '常见问答', description: '一问一答标准口径，写清适用场景、客群与承接动作' },
+  { value: '打法经验', label: '打法经验', description: '执行动作 + 核心数据 + 复盘结论，用于下一轮方案调优' }
 ];
 
-const PURPOSE_PLACEHOLDERS: Record<KnowledgeFormat, KnowledgeCategoryConfig['purpose']> = {
+const PURPOSE_PLACEHOLDERS: Record<string, KnowledgeCategoryConfig['purpose']> = {
+  商家事实: { stores: '产品成分、价格、功效边界', usedFor: '写笔记时引用产品事实', excludes: '用户猜测、营销口号、没来源的数据' },
+  运营规则: { stores: '平台禁用词、审核规则、流转要求', usedFor: '发布前检查内容是否合规', excludes: '没有依据的提醒、个人偏好' },
+  标杆范例: { stores: '好标题与坏标题、通过与驳回案例', usedFor: '生成内容时参考表达方式', excludes: '没有结论的单独截图' },
+  常见问答: { stores: '用户问题、标准回答、适用场景', usedFor: '评论和私信回复', excludes: '没有确认的临时说法' },
+  打法经验: { stores: '执行动作、结果数据、复盘结论', usedFor: '下一轮方案和内容调整', excludes: '只有感受、没有结果的记录' },
   事实卡: { stores: '产品成分、价格、功效边界', usedFor: '写笔记时引用产品事实', excludes: '用户猜测、营销口号、没来源的数据' },
   规则卡: { stores: '平台禁用词、审核规则、流转要求', usedFor: '发布前检查内容是否合规', excludes: '没有依据的提醒、个人偏好' },
   范例卡: { stores: '好标题与坏标题、通过与驳回案例', usedFor: '生成内容时参考表达方式', excludes: '没有结论的单独截图' },
@@ -110,7 +124,27 @@ const PURPOSE_PLACEHOLDERS: Record<KnowledgeFormat, KnowledgeCategoryConfig['pur
   经验卡: { stores: '执行动作、结果数据、复盘结论', usedFor: '下一轮方案和内容调整', excludes: '只有感受、没有结果的记录' }
 };
 
-const FORMAT_TAG_PRESETS: Record<KnowledgeFormat, Pick<KnowledgeCategoryConfig, 'includes' | 'affects'>> = {
+const FORMAT_TAG_PRESETS: Record<string, Pick<KnowledgeCategoryConfig, 'includes' | 'affects'>> = {
+  商家事实: {
+    includes: ['核心信息', '数值口径', '适用范围', '有效期', '来源依据'],
+    affects: ['内容生成', '事实引用', '素材匹配']
+  },
+  运营规则: {
+    includes: ['允许事项', '禁止事项', '判断依据', '适用范围', '例外处理'],
+    affects: ['发布前检查', '素材审核', '风险提醒']
+  },
+  标杆范例: {
+    includes: ['正向案例', '反向案例', '标题范例', '图文范例', '结果说明'],
+    affects: ['内容生成', '视觉生成', '内容审核']
+  },
+  常见问答: {
+    includes: ['用户问题', '标准回答', '适用场景', '承接动作', '升级条件'],
+    affects: ['评论回复', '私信承接', '客服培训']
+  },
+  打法经验: {
+    includes: ['执行动作', '结果数据', '复盘结论', '适用条件', '下轮建议'],
+    affects: ['方案制定', '执行调整', '复盘报告']
+  },
   事实卡: {
     includes: ['核心信息', '数值口径', '适用范围', '有效期', '来源依据'],
     affects: ['内容生成', '事实引用', '素材匹配']
@@ -164,14 +198,14 @@ export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCateg
 
   const handleAddCategory = () => {
     const id = `custom-${Date.now()}`;
-    const preset = FORMAT_TAG_PRESETS['事实卡'];
+    const preset = FORMAT_TAG_PRESETS['商家事实'];
     const next: KnowledgeCategoryConfig = {
       id,
       name: '新分类',
       includes: [...preset.includes],
       affects: [...preset.affects],
       isDefault: false,
-      primaryFormat: '事实卡',
+      primaryFormat: '商家事实',
       purpose: { stores: '', usedFor: '', excludes: '' }
     };
     setCategories(prev => [...prev, next]);
@@ -180,8 +214,10 @@ export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCateg
 
   const handleFormatChange = (nextFormat: KnowledgeFormat) => {
     if (!activeCategory) return;
-    const previousPreset = FORMAT_TAG_PRESETS[activeCategory.primaryFormat];
-    const nextPreset = FORMAT_TAG_PRESETS[nextFormat];
+    const normalizedCurrent = normalizeKnowledgeFormat(activeCategory.primaryFormat);
+    const normalizedNext = normalizeKnowledgeFormat(nextFormat);
+    const previousPreset = FORMAT_TAG_PRESETS[normalizedCurrent] || FORMAT_TAG_PRESETS['商家事实'];
+    const nextPreset = FORMAT_TAG_PRESETS[normalizedNext] || FORMAT_TAG_PRESETS['商家事实'];
     updateActiveCategory({
       primaryFormat: nextFormat,
       includes: activeCategory.includes.length === 0 || hasSameTags(activeCategory.includes, previousPreset.includes)
@@ -309,16 +345,28 @@ export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCateg
                 </div>
 
                 <div>
-                  <label className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-text-main">主格式{activeCategory.isDefault ? <Lock className="h-3.5 w-3.5 text-text-tertiary" /> : null}</label>
+                  <div className="flex items-baseline justify-between mb-2">
+                    <label className="flex items-center gap-1.5 text-sm font-semibold text-text-main">
+                      主要沉淀格式（业务形态）
+                      {activeCategory.isDefault ? <Lock className="h-3.5 w-3.5 text-text-tertiary" /> : null}
+                    </label>
+                    <span className="text-[12px] text-text-tertiary">用于标准化团队录入与 AI 提取</span>
+                  </div>
                   <select
-                    value={activeCategory.primaryFormat}
+                    value={normalizeKnowledgeFormat(activeCategory.primaryFormat)}
                     disabled={activeCategory.isDefault}
                     onChange={(event) => handleFormatChange(event.target.value as KnowledgeFormat)}
-                    className="w-full rounded-xl border border-border-default bg-surface-1 px-4 py-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-hover-bg disabled:text-text-tertiary"
+                    className="w-full rounded-xl border border-border-default bg-surface-1 px-4 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-hover-bg disabled:text-text-tertiary focus:border-neutral-400"
                   >
-                    {FORMAT_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.value}</option>)}
+                    {FORMAT_OPTIONS.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label} （{option.description.slice(0, 24)}...）
+                      </option>
+                    ))}
                   </select>
-                  <p className="mt-1.5 text-[13px] text-text-tertiary">{FORMAT_OPTIONS.find(option => option.value === activeCategory.primaryFormat)?.description}</p>
+                  <p className="mt-1.5 text-[13px] text-text-tertiary">
+                    {FORMAT_OPTIONS.find(option => option.value === normalizeKnowledgeFormat(activeCategory.primaryFormat))?.description}
+                  </p>
                 </div>
 
                 <div>
@@ -334,7 +382,7 @@ export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCateg
                         <input
                           value={activeCategory.purpose[row.key]}
                           onChange={(event) => updateActiveCategory({ purpose: { ...activeCategory.purpose, [row.key]: event.target.value } })}
-                          placeholder={PURPOSE_PLACEHOLDERS[activeCategory.primaryFormat][row.key]}
+                          placeholder={PURPOSE_PLACEHOLDERS[normalizeKnowledgeFormat(activeCategory.primaryFormat)]?.[row.key] || ''}
                           className="min-w-0 flex-1 border-0 border-b border-border-default bg-transparent px-1 py-1.5 text-sm text-text-main outline-none focus:border-neutral-700"
                         />
                       </label>

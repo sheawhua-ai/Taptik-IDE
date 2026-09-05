@@ -69,29 +69,6 @@ export interface StrategyConfiguration {
   stopCondition?: string;
   targetKeywords: string[];
   observationDays?: number;
-  // —— 结构化扩展（与新建方案 strategyProtocol 对齐，向后兼容可选）——
-  observableSignals?: string[];      // 可观察的验证信号
-  adjustmentCriteria?: string;       // 何时调整打法
-  /** 推广对象（与新建方案 promotionTarget 对齐；主推产品是新建必填项） */
-  promotionTarget?: {
-    targetName?: string;             // 主推产品 / 服务
-    targetCategory?: string;         // 所属品类
-  };
-  /** 推广对象级已确认事实（可追溯来源，与「假设与依据」区分） */
-  promotionConfirmedFacts?: Array<{ label: string; detail: string; source: string }>;
-  unconfirmedGaps?: string[];        // 待确认缺口
-  auxiliaryGoals?: string[];         // 辅助观察项
-  rationale?: string;                // 选择此打法的原因
-  collaborationMechanism?: string;   // 账号与动作协同机制
-  humanInTheLoop?: {                 // 人在环路
-    systemAutomated: string[];
-    operatorRequired: string[];
-  };
-  hypothesesAndBasis?: {             // 假设与依据
-    confirmedFacts: Array<{ id: string; text: string; source: string }>;
-    pendingHypotheses: Array<{ id: string; text: string; basis: string; status: string }>;
-    missingItemsToTrack: Array<{ id: string; text: string; impact: string }>;
-  };
 }
 
 export interface StrategyVersion {

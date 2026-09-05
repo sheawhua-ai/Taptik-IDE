@@ -41,9 +41,9 @@ export const mockPendingTasks: PendingTask[] = [
     impact: "确认后，这些内容会写入知识库并供 AI 使用",
     sourceFile: "2026Q3产品手册.pdf",
     decompositionItems: [
-      { id: "preview-1", category: "品牌与产品", format: "事实卡", summary: "幼犬高烘干粮粗蛋白质含量为 42%。" },
-      { id: "preview-2", category: "话术与承接", format: "范例卡", summary: "介绍幼犬粮时先说明适用阶段，再说明粗蛋白含量。" },
-      { id: "preview-3", category: "禁区与流转", format: "规则卡", summary: "涉及换粮软便时，不得使用治疗、治愈等功效承诺。" }
+      { id: "preview-1", category: "品牌与产品", format: "商家事实", summary: "幼犬高烘干粮粗蛋白质含量为 42%。" },
+      { id: "preview-2", category: "话术与承接", format: "标杆范例", summary: "介绍幼犬粮时先说明适用阶段，再说明粗蛋白含量。" },
+      { id: "preview-3", category: "禁区与流转", format: "运营规则", summary: "涉及换粮软便时，不得使用治疗、治愈等功效承诺。" }
     ]
   }
 ];

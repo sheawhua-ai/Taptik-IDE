@@ -107,6 +107,8 @@ export interface StrategyContext {
 
 export type AnomalyType = 
   | 'overdue_unclaimed'
+  | 'claim_stalled'
+  | 'task_package_stalled'
   | 'material_reshoot_overdue'
   | 'publish_overdue'
   | 'unverified_publish_link'
@@ -132,6 +134,26 @@ export interface ExecutionTask {
   /** 操盘手主动从笔记发起的具体操作；普通待办可根据分类推导。 */
   actionType?: ExecutionAction;
   isAnomaly?: boolean;
+  // New specific fields for the Operator Workbench 2.0 Exceptions flow
+  taskFormat?: '笔记包' | '任务包' | '自有指定';
+  assignee?: {
+    name?: string;
+    claimTime?: string;
+    assignedTime?: string;
+    wechat?: string;
+  };
+  milestones?: {
+    questionnaire?: { status: '待填写' | '已完成'; time?: string };
+    photo?: { status: '待上传' | '已上传'; time?: string };
+    noteFinalized?: boolean;
+    publish?: { status: '待发布' | '已发布'; time?: string };
+  };
+  quota?: {
+    claimed: number;
+    total: number;
+  };
+  stalledDurationText?: string;
+
   anomalyType?: AnomalyType;
   anomalyReason?: string;
   
