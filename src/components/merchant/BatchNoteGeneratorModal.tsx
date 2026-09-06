@@ -26,13 +26,13 @@ interface GeneratedNote {
 
 const FALLBACK_ACCOUNTS: Record<NoteType, string> = {
   '品牌主号': '品牌官方账号',
-  '店长号/KOS': '店长号 / KOS',
+  '员工号/KOS': '员工号 / KOS',
   KOC: 'KOC 体验官',
 };
 
 const WRITING_ANGLES: Record<NoteType, string> = {
   '品牌主号': '从品牌角度讲清产品或服务卖点，并补充可信的官方信息。',
-  '店长号/KOS': '从一线经验出发，回答顾客常问的问题，并给出具体建议。',
+  '员工号/KOS': '从一线经验出发，回答顾客常问的问题，并给出具体建议。',
   KOC: '从真实体验出发，记录使用或到店过程，以及前后的真实感受。',
 };
 
@@ -63,17 +63,17 @@ function buildAccountPlans(project: Project): AccountPlan[] {
 
   const countByType: Record<NoteType, number> = {
     '品牌主号': brandCount,
-    '店长号/KOS': kosCount,
+    '员工号/KOS': kosCount,
     KOC: kocCount,
   };
 
-  return (['品牌主号', '店长号/KOS', 'KOC'] as const)
+  return (['品牌主号', '员工号/KOS', 'KOC'] as const)
     .filter((type) => countByType[type] > 0)
     .map((type) => {
       const existingNames = uniqueAccountNames(project, type);
       const configuredIds = type === '品牌主号'
         ? scheme?.ownAccounts.brandAccountIds ?? []
-        : type === '店长号/KOS'
+        : type === '员工号/KOS'
           ? scheme?.ownAccounts.kosAccountIds ?? []
           : [];
 
@@ -102,7 +102,7 @@ function buildNotes(project: Project, plans: AccountPlan[]): GeneratedNote[] {
         .split('T')[0];
       const titlePrefix = plan.type === '品牌主号'
         ? '官方解读'
-        : plan.type === '店长号/KOS'
+        : plan.type === '员工号/KOS'
           ? '一线答疑'
           : '真实体验';
 

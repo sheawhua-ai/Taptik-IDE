@@ -83,13 +83,17 @@ export interface StrategyDraftData {
     targetName: string; // 推广品牌、产品、服务或主题
     targetCategory: string;
     targetAudience: string;
+    audience_tags?: string[];
     confirmedFacts: Array<{ label: string; detail: string; source: string }>;
     unconfirmedGaps: string[];
   };
 
   // 2. 核心目标与验证方式 (唯一主要业务目标)
   coreGoalAndVerification: {
-    primaryBusinessGoal: string; // 唯一主要业务目标
+    primaryBusinessGoal: string;
+    primary_goal?: string;
+    target_keywords?: string[];
+    undertake_channels?: string[]; // 唯一主要业务目标
     observableSignals: string[];  // 可观察的验证信号
     successCriteria: string;      // 本周期结束后如何判断继续
     adjustmentCriteria: string;   // 何时需调整打法
@@ -100,7 +104,14 @@ export interface StrategyDraftData {
   // 3. 核心打法 (3-5句话清晰说明逻辑)
   coreStrategy: {
     problemToSolve: string;
+    core_problem_structured?: {
+      stage?: string;
+      symptom_tags?: string[];
+      barrier?: string;
+      consequence?: string;
+    };
     contentLogic: string;
+    method_cards?: string[];
     rationale: string;
     collaborationMechanism: string;
   };

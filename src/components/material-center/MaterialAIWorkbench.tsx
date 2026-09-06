@@ -49,14 +49,14 @@ const RECIPES = [
 ];
 
 const NOTE_ROWS = [
-  { id: 'note-1', title: '幼犬换粮总是软便？店长教你避坑七日换粮法', account: '店长号·陆家嘴店', slots: ['封面', '问题场景', '产品细节', '换粮步骤'], matched: 3 },
+  { id: 'note-1', title: '幼犬换粮总是软便？店长教你避坑七日换粮法', account: '员工号·陆家嘴店', slots: ['封面', '问题场景', '产品细节', '换粮步骤'], matched: 3 },
   { id: 'note-2', title: '我家金毛换粮体验，记录七天便便变化', account: '体验官·汪汪队', slots: ['封面', '体验过程', '结果反馈'], matched: 2 },
   { id: 'note-3', title: '官方科普：幼犬肠胃敏感期如何顺利换粮', account: '品牌官方号', slots: ['封面', '成分说明', '喂养建议'], matched: 3 }
 ];
 
 const TEMPLATE_GROUPS = [
   { id: 'real', name: '真实体验组', description: '人物/宠物大图＋短标题', score: '近30天点击率高于基准 18%' },
-  { id: 'expert', name: '专业解释组', description: '产品细节＋步骤信息', score: '适合店长号与品牌号' },
+  { id: 'expert', name: '专业解释组', description: '产品细节＋步骤信息', score: '适合员工号与品牌号' },
   { id: 'contrast', name: '前后对比组', description: '双图对照＋结果型标题', score: '适合体验记录类内容' }
 ];
 

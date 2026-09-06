@@ -422,7 +422,7 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
     projectNames: ["特唯普上海静安店 (张店长)"],
     targetObjective: "content_strategy",
     targetObjectiveLabel: "内容策略 & 矩阵爆文",
-    goalDescription: "复盘 8 月份针对幼犬换粮期打法的内容表现，评估店长号与矩阵号协同效益",
+    goalDescription: "复盘 8 月份针对幼犬换粮期打法的内容表现，评估员工号与矩阵号协同效益",
     status: "analyzing",
     statusText: "分析中",
     updatedAt: "刚刚",
@@ -629,7 +629,7 @@ export const INITIAL_REVIEW_TASKS: ReviewTask[] = [
       strategicGuidelines: [
         {
           title: "建立‘实测视频 + 顾问答疑’双轮驱动",
-          detail: "店长号专注高信任度实测内容，矩阵号负责长尾搜索词覆盖。",
+          detail: "员工号专注高信任度实测内容，矩阵号负责长尾搜索词覆盖。",
           actionSteps: ["下发脚本模板", "建立每日私信复盘机制"],
         },
       ],

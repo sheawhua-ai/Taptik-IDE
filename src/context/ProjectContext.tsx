@@ -90,8 +90,8 @@ export interface ProjectContextType {
   clearNoteIssue: (projectId: string, noteId: string) => void;
 
   // New Actions for Notes, Materials, and Landing Pages
-  createProjectNote: (projectId: string, noteData: { title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => void;
-  batchGenerateProjectNotes: (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => void;
+  createProjectNote: (projectId: string, noteData: { title: string; accountType: "KOC" | "员工号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => void;
+  batchGenerateProjectNotes: (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "员工号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => void;
   createFullOperationsProject: (data: {
     merchantId?: string;
     name: string;
@@ -104,7 +104,7 @@ export interface ProjectContextType {
     strategyProtocol?: any;
     notes: Array<{
       title: string;
-      accountType: "KOC" | "店长号/KOS" | "品牌主号";
+      accountType: "KOC" | "员工号/KOS" | "品牌主号";
       accountName: string;
       contentDirection: string;
       plannedDate: string;
@@ -540,7 +540,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Add single project note
-  const createProjectNote = (projectId: string, noteData: { title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => {
+  const createProjectNote = (projectId: string, noteData: { title: string; accountType: "KOC" | "员工号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }) => {
     setState(prev => {
       const activeStrategyVersionId = prev.strategyVersions.find(version => version.projectId === projectId && version.status === "active")?.id;
       const newSlotId = `ns_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
@@ -594,7 +594,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Batch generate project notes from strategy
-  const batchGenerateProjectNotes = (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "店长号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => {
+  const batchGenerateProjectNotes = (projectId: string, generatedList: Array<{ title: string; accountType: "KOC" | "员工号/KOS" | "品牌主号"; accountName: string; contentDirection: string; plannedDate: string; body?: string }>) => {
     setState(prev => {
       const activeStrategyVersionId = prev.strategyVersions.find(version => version.projectId === projectId && version.status === "active")?.id;
       const newSlots: NoteSlot[] = [];
@@ -777,7 +777,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     distributionScheme?: DistributionScheme;
     notes: Array<{
       title: string;
-      accountType: "KOC" | "店长号/KOS" | "品牌主号";
+      accountType: "KOC" | "员工号/KOS" | "品牌主号";
       accountName: string;
       contentDirection: string;
       plannedDate: string;
@@ -814,7 +814,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       strategyProtocol: data.strategyProtocol || {
         targetAudience: "目标种草与搜索客户群体",
         coreProblem: "真实案例不足及搜索卡位缺失",
-        solutionSummary: "KOC试用体验 + 店长号专业科普指导",
+        solutionSummary: "KOC试用体验 + 员工号专业科普指导",
         verifyHypothesis: "真实体验内容能否显著提升咨询与搜索转化",
         continueCondition: "爆文率>15%",
         stopCondition: "爆文率<3%"

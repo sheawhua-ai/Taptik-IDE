@@ -98,7 +98,7 @@ export function TestAnswerDrawer({ isOpen, onClose }: TestAnswerDrawerProps) {
                   </div>
                   <div className="p-3 text-text-secondary flex items-start">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" />
-                    店长号使用专业解释加真实案例，比单纯促销更容易产生咨询。
+                    员工号使用专业解释加真实案例，比单纯促销更容易产生咨询。
                   </div>
                 </div>
               </div>

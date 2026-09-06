@@ -30,7 +30,7 @@ export interface ContextProduct {
 export interface ContextAccount {
   id: string;
   name: string;
-  type: "品牌主号" | "店长号/KOS" | "合作KOC";
+  type: "品牌主号" | "员工号/KOS" | "合作KOC";
   fans: string;
   included: boolean;
 }
@@ -73,9 +73,9 @@ export const DEFAULT_CONTEXT_STATE: ContextState = {
   accounts: [
     { id: "acc_1", name: "特唯普宠物官方旗舰店", type: "品牌主号", fans: "12.8w", included: true },
     { id: "acc_2", name: "特唯普品牌官方号", type: "品牌主号", fans: "5.4w", included: true },
-    { id: "acc_3", name: "店长号_陆家嘴旗舰店", type: "店长号/KOS", fans: "8,900", included: true },
-    { id: "acc_4", name: "店长号_徐家汇概念店", type: "店长号/KOS", fans: "6,200", included: true },
-    { id: "acc_5", name: "店长号_朝阳大悦城店", type: "店长号/KOS", fans: "5,100", included: true },
+    { id: "acc_3", name: "员工号_陆家嘴旗舰店", type: "员工号/KOS", fans: "8,900", included: true },
+    { id: "acc_4", name: "员工号_徐家汇概念店", type: "员工号/KOS", fans: "6,200", included: true },
+    { id: "acc_5", name: "员工号_朝阳大悦城店", type: "员工号/KOS", fans: "5,100", included: true },
   ],
   docs: [
     { id: "doc_1", title: "幼犬科学换粮7天过渡法与排便对照指南.pdf", type: "专业知识", updatedAt: "2026-08-10", included: true },
@@ -94,7 +94,7 @@ export const DEFAULT_CONTEXT_STATE: ContextState = {
   historyProjects: [
     { id: "h_1", title: "幼犬软便调理搜索卡位项目（7月）", period: "14天", result: "爆文率 18.5%，搜索排名 Top3", included: true },
     { id: "h_2", title: "成犬冻干主粮春季上新矩阵测试", period: "30天", result: "累计带来 420+ 私信咨询", included: true },
-    { id: "h_3", title: "线下门店店长号同城引流试验期", period: "7天", result: "完成 5 家门店客资承接闭环", included: true },
+    { id: "h_3", title: "线下门店员工号同城引流试验期", period: "7天", result: "完成 5 家门店客资承接闭环", included: true },
   ]
 };
 

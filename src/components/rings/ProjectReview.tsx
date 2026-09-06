@@ -38,8 +38,8 @@ const INITIAL_DECISIONS: DecisionCard[] = [
     evidenceData: {
       sampleNotesCount: 12,
       notesList: [
-        { title: "幼犬换粮软便别慌！3天过渡法", publishTime: "2026-07-18", engagement: "赞 420 | 藏 180", source: "KOS店长号01" },
-        { title: "店长实拍：小狗吃完不软便的秘诀", publishTime: "2026-07-15", engagement: "赞 310 | 藏 140", source: "KOS店长号02" }
+        { title: "幼犬换粮软便别慌！3天过渡法", publishTime: "2026-07-18", engagement: "赞 420 | 藏 180", source: "KOS员工号01" },
+        { title: "店长实拍：小狗吃完不软便的秘诀", publishTime: "2026-07-15", engagement: "赞 310 | 藏 140", source: "KOS员工号02" }
       ],
       commentSamples: [
         "请问 3 个月金毛换这款粮需要几天过渡？",
@@ -62,7 +62,7 @@ const INITIAL_DECISIONS: DecisionCard[] = [
       sampleNotesCount: 15,
       notesList: [
         { title: "防软便粮开箱测评（白底封面）", publishTime: "2026-07-10", engagement: "赞 45 | 藏 12", source: "品牌官号" },
-        { title: "金毛幼犬进食实拍（场景封面）", publishTime: "2026-07-12", engagement: "赞 520 | 藏 260", source: "KOS店长号" }
+        { title: "金毛幼犬进食实拍（场景封面）", publishTime: "2026-07-12", engagement: "赞 520 | 藏 260", source: "KOS员工号" }
       ],
       commentSamples: [
         "这个碗好可爱，求链接！",

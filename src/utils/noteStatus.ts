@@ -123,7 +123,7 @@ export function getUnifiedBusinessStatus(note: Note): UnifiedBusinessStatus {
   }
 
   // 6. 等待账号执行 (自有账号已下发H5但尚未确认完成)
-  if (note.publishStatus === "待发布" && (note.type === "店长号/KOS" || note.type === "品牌主号")) {
+  if (note.publishStatus === "待发布" && (note.type === "员工号/KOS" || note.type === "品牌主号")) {
     return "等待账号执行";
   }
 

@@ -72,7 +72,7 @@ export function ReviewOverviewTab({
       before: "¥24.8",
       change: "-22.5%",
       isGood: true,
-      note: "自然搜索与店长号降本明显",
+      note: "自然搜索与员工号降本明显",
     },
   ];
 

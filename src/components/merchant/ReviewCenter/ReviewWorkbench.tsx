@@ -56,7 +56,7 @@ function DistributionChart({ sampleCount }: { sampleCount: number }) {
 
 const QUESTION_TITLES: Record<string, string> = {
   "rev-task-1": "哪些门店打法值得复制到下一轮？",
-  "rev-task-2": "店长号与KOC协同是否提升了换粮内容表现？",
+  "rev-task-2": "员工号与KOC协同是否提升了换粮内容表现？",
   "rev-task-3": "华东门店获客差异来自内容还是数据缺口？",
   "rev-task-4": "核心搜索词卡位是否有效，下一轮应该继续攻哪些词？"
 };

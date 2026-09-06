@@ -1,14 +1,11 @@
-import re
-
-with open("src/components/merchant/ExecutionCenter/OperatorTaskWorkbench.tsx", "r") as f:
+with open("src/components/merchant/CreateProject/types.ts", "r") as f:
     code = f.read()
 
-# For the manual confirmation, we just keep the category as 'publish' and '发布与回传'
-# The UI will re-render or shift it based on publishStage === '已回传' anyway.
-code = code.replace("operatorCategory: 'progress',", "operatorCategory: 'publish',")
-code = code.replace("categoryLabel: '任务跟进',", "categoryLabel: '发布与回传',")
+code = code.replace("problemToSolve: string;", "problemToSolve: string;\n    core_problem_structured?: {\n      stage?: string;\n      symptom_tags?: string[];\n      barrier?: string;\n      consequence?: string;\n    };")
+code = code.replace("contentLogic: string;", "contentLogic: string;\n    method_cards?: string[];")
+code = code.replace("primaryBusinessGoal: string;", "primaryBusinessGoal: string;\n    primary_goal?: string;\n    target_keywords?: string[];\n    undertake_channels?: string[];")
 
-with open("src/components/merchant/ExecutionCenter/OperatorTaskWorkbench.tsx", "w") as f:
+with open("src/components/merchant/CreateProject/types.ts", "w") as f:
     f.write(code)
 
 print("Patched types")

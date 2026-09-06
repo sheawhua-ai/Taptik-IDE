@@ -85,7 +85,7 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
               <div>
                 <div className="text-[13px] text-text-tertiary font-normal mb-1">内容方法概要</div>
                 <div className="text-text-main bg-surface-subtle p-3 rounded-lg border border-border-default leading-relaxed">
-                  {protocol?.solutionSummary || "KOC真实体验测评 + 店长号专业科普指导 + 品牌号承接与评论区私信引导"}
+                  {protocol?.solutionSummary || "KOC真实体验测评 + 员工号专业科普指导 + 品牌号承接与评论区私信引导"}
                 </div>
               </div>
 
@@ -112,7 +112,7 @@ export function StrategyProtocolDrawer({ project, onClose }: StrategyProtocolDra
                     <span className="font-medium text-text-main">2 篇 · 信任承接与官方答疑</span>
                   </div>
                   <div className="flex items-center justify-between p-2.5 bg-surface-subtle rounded-lg border border-border-default">
-                    <span className="font-normal text-text-secondary">店长号 / KOS</span>
+                    <span className="font-normal text-text-secondary">员工号 / KOS</span>
                     <span className="font-medium text-text-main">5 篇 · 门店实景科普与避坑指导</span>
                   </div>
                   <div className="flex items-center justify-between p-2.5 bg-surface-subtle rounded-lg border border-border-default">

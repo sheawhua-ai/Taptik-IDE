@@ -1,7 +1,7 @@
 // TapTik Unified Project & Task Data Store
 
 export type ProjectStatus = "准备中" | "进行中" | "已结束";
-export type NoteType = "KOC" | "店长号/KOS" | "品牌主号";
+export type NoteType = "KOC" | "员工号/KOS" | "品牌主号";
 export type ContentStatus = "待生成" | "待确认" | "已确认";
 export type MaterialStatus = "无需素材" | "待收集" | "待验收" | "已齐";
 export type PublishStatus = "未安排" | "待领取" | "待发布" | "已发布" | "发布异常";
@@ -188,14 +188,14 @@ export const INITIAL_PROJECTS: Project[] = [
     id: "p1",
     name: "幼犬换粮搜索卡位第三轮",
     status: "进行中",
-    goal: "验证“换粮软便”真实测评与店长号专业解释能否提升有效咨询与转化线索",
+    goal: "验证“换粮软便”真实测评与员工号专业解释能否提升有效咨询与转化线索",
     startDate: "2024-03-01",
     endDate: "2024-03-20",
     budget: "5,000元",
     strategyProtocol: {
       targetAudience: "3-6个月幼犬初次换粮腹泻软便的铲屎官",
       coreProblem: "换粮内容有收藏但咨询少，缺乏专业解释与信任闭环",
-      solutionSummary: "KOC真实体验测评 + 店长号专业科普指导 + 评论区私信引导",
+      solutionSummary: "KOC真实体验测评 + 员工号专业科普指导 + 评论区私信引导",
       verifyHypothesis: "真实换粮过程与店长专业解答组合能否带来+30%有效线索",
       continueCondition: "高意向咨询比例>15%且加微率>20%",
       stopCondition: "爆文率<5%或出现产品客诉纠纷"
@@ -203,7 +203,7 @@ export const INITIAL_PROJECTS: Project[] = [
     operationLogs: [
       { id: "l1", timestamp: "2024-03-01 10:00", operator: "系统AI", action: "项目初始化", detail: "已自动生成20篇笔记草案与素材分发需求" },
       { id: "l2", timestamp: "2024-03-02 14:30", operator: "张操盘", action: "确认本轮方案", detail: "调整预算为5,000元，确认20篇笔记排期" },
-      { id: "l3", timestamp: "2024-03-05 09:15", operator: "系统AI", action: "生成内容包", detail: "店长号与KOC第一批稿件已整理完毕" }
+      { id: "l3", timestamp: "2024-03-05 09:15", operator: "系统AI", action: "生成内容包", detail: "员工号与KOC第一批稿件已整理完毕" }
     ],
     notes: [
       {
@@ -212,8 +212,8 @@ export const INITIAL_PROJECTS: Project[] = [
         projectName: "幼犬换粮搜索卡位第三轮",
         batchName: "第一批爆发",
         title: "幼犬换粮总是拉肚子？店长教你避坑七日换粮法",
-        participant: "店长号_陆家嘴店",
-        type: "店长号/KOS",
+        participant: "员工号_陆家嘴店",
+        type: "员工号/KOS",
         contentDirection: "科学换粮科普",
         plannedDate: "2024-03-05",
         contentStatus: "待确认",
@@ -233,7 +233,7 @@ export const INITIAL_PROJECTS: Project[] = [
           id: "iss-1",
           type: "warning",
           message: "文中“专利级益生菌”缺乏具体资料凭证，需操盘手确认",
-          impactScope: "影响 1 篇店长号笔记合规发布",
+          impactScope: "影响 1 篇员工号笔记合规发布",
           nextStepActionText: "确认待审内容",
           targetWorkbench: "content"
         },
@@ -383,7 +383,7 @@ export const INITIAL_PROJECTS: Project[] = [
     strategyProtocol: {
       targetAudience: "家有3-12个月幼犬、注重营养配比的宠物主",
       coreProblem: "新品缺乏市场声量与初期真实评价积淀",
-      solutionSummary: "20位精准KOC免费试用 + 店长号答疑 + 爆文拆解推广",
+      solutionSummary: "20位精准KOC免费试用 + 员工号答疑 + 爆文拆解推广",
       verifyHypothesis: "KOC真实试用反馈能否建立初始口碑与搜索占位",
       continueCondition: "KOC完稿率>90%且爆文率>10%",
       stopCondition: "招募进度不足50%或产品发货延迟"

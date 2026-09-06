@@ -14,14 +14,14 @@ export const mockProjects: Project[] = [
     merchantId: "m1",
     name: "幼犬换粮搜索卡位第三轮",
     status: "进行中",
-    goal: "验证“换粮软便”真实测评与店长号专业解释能否提升有效咨询与转化线索",
+    goal: "验证“换粮软便”真实测评与员工号专业解释能否提升有效咨询与转化线索",
     startDate: "2024-03-01",
     endDate: "2024-03-20",
     budget: "5,000元",
     strategyProtocol: {
       targetAudience: "3-6个月幼犬初次换粮腹泻软便的铲屎官",
       coreProblem: "换粮内容有收藏但咨询少，缺乏专业解释与信任闭环",
-      solutionSummary: "KOC真实体验测评 + 店长号专业科普指导 + 评论区私信引导",
+      solutionSummary: "KOC真实体验测评 + 员工号专业科普指导 + 评论区私信引导",
       verifyHypothesis: "真实换粮过程与店长专业解答组合能否带来+30%有效线索",
       continueCondition: "高意向咨询比例>15%且加微率>20%",
       stopCondition: "爆文率<5%或出现产品客诉纠纷"
@@ -82,7 +82,7 @@ export const mockStrategyVersions: StrategyVersion[] = [
     status: "active",
     configuration: {
       ...mockProjects[0].strategyProtocol,
-      solutionSummary: "KOC真实七日换粮记录 + 店长号专业科普指导 + 评论区私信承接",
+      solutionSummary: "KOC真实七日换粮记录 + 员工号专业科普指导 + 评论区私信承接",
       targetKeywords: ["幼犬换粮软便", "幼犬换粮方法"],
       observationDays: 14
     },
@@ -112,7 +112,7 @@ export const mockStrategyVersions: StrategyVersion[] = [
 export const mockRounds: Round[] = [{ id: "r1", projectId: "p1", name: "第一批爆发" }];
 
 export const mockNoteSlots: NoteSlot[] = [
-  { id: "ns1", projectId: "p1", roundId: "r1", accountType: "店长号/KOS", accountName: "店长号_陆家嘴店", contentDirection: "科学换粮科普", plannedDate: "2024-03-05" },
+  { id: "ns1", projectId: "p1", roundId: "r1", accountType: "员工号/KOS", accountName: "员工号_陆家嘴店", contentDirection: "科学换粮科普", plannedDate: "2024-03-05" },
   { id: "ns2", projectId: "p1", roundId: "r1", accountType: "KOC", accountName: "小红薯_汪汪队", contentDirection: "真实测评分享", plannedDate: "2024-03-06" },
   { id: "ns3", projectId: "p1", roundId: "r1", accountType: "品牌主号", accountName: "品牌官方旗舰店", contentDirection: "品牌权威科普", plannedDate: "2024-03-04" },
   { id: "ns4", projectId: "p1", roundId: "r1", accountType: "KOC", accountName: "小红薯_咪咪猫", contentDirection: "避坑干货", plannedDate: "2024-03-05" },
@@ -141,7 +141,7 @@ export const mockNoteSlots: NoteSlot[] = [
     id: "ns6",
     projectId: "p1",
     roundId: "r1",
-    accountType: "店长号/KOS",
+    accountType: "员工号/KOS",
     accountName: "待匹配 门店KOS",
     contentDirection: "规定的写作框架：门店接诊常见换粮误区解答",
     plannedDate: "2024-03-15",
@@ -224,7 +224,7 @@ export const mockConsumerExperienceFeedbacks: ConsumerExperienceFeedback[] = [
 ];
 
 export const mockPublishTasks: PublishTask[] = [
-  { id: "pt1", noteSlotId: "ns1", assignee: "店长号_陆家嘴店", status: "待发布" },
+  { id: "pt1", noteSlotId: "ns1", assignee: "员工号_陆家嘴店", status: "待发布" },
   { id: "pt2", noteSlotId: "ns2", assignee: "小红薯_汪汪队", status: "未安排" },
   { id: "pt3", noteSlotId: "ns3", assignee: "品牌官方旗舰店", status: "已发布", publishUrl: "https://www.xiaohongshu.com/explore/65f123456789a" },
   { id: "pt4", noteSlotId: "ns4", assignee: "小红薯_咪咪猫", status: "已回传链接", publishUrl: "https://www.xiaohongshu.com/explore/65f987654321b" }
@@ -276,7 +276,7 @@ export const mockReviewAdjustmentProposals: ReviewAdjustmentProposal[] = [
     id: "review-adjust-p1-1",
     projectId: "p1",
     sourcePublishedNoteIds: ["pn1"],
-    summary: "店长号的步骤型科普带来更高质量咨询，建议提高后续店长号内容占比，并强化七日换粮过程证据。",
+    summary: "员工号的步骤型科普带来更高质量咨询，建议提高后续员工号内容占比，并强化七日换粮过程证据。",
     changedFields: ["主体配比", "内容证据要求"],
     status: "pending",
     createdAt: "2024-03-18 10:00"
@@ -297,7 +297,7 @@ export const mockIssues: Issue[] = [
     status: "open",
     resolutionConditions: "修改文案或提供凭证",
     message: "文中“专利级益生菌”缺乏具体资料凭证",
-    impactScope: "影响 1 篇店长号笔记发布"
+    impactScope: "影响 1 篇员工号笔记发布"
   },
   {
     id: "iss-2",

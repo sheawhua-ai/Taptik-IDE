@@ -125,7 +125,7 @@ export interface NoteSlot {
   id: string;
   projectId: string;
   roundId: string;
-  accountType: "KOC" | "店长号/KOS" | "品牌主号";
+  accountType: "KOC" | "员工号/KOS" | "品牌主号";
   accountName: string;
   contentDirection: string;
   plannedDate: string;

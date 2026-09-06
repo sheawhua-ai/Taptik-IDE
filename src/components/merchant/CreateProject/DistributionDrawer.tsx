@@ -73,18 +73,18 @@ interface DistributionDrawerProps {
 // 初始排期 18 篇笔记
 const INITIAL_SCHEDULE_NOTES: ScheduleNote[] = [
   { id: "note_1", day: 1, dateStr: "8月19日 (周一)", accountName: "特唯普品牌官方号", accountType: "brand", title: "室内宠臭根源与复合生物酶除臭原理", keywordCluster: "宠物除臭", intent: "权威科普", status: "executing", assignedRole: "原理解释/产品标准" },
-  { id: "note_2", day: 2, dateStr: "8月20日 (周二)", accountName: "店长号_陆家嘴旗舰店", accountType: "store", title: "陆家嘴店实测：多猫家庭除味喷雾体验", keywordCluster: "猫砂除味", intent: "到店体验", status: "executed", assignedRole: "本地场景/到店服务" },
+  { id: "note_2", day: 2, dateStr: "8月20日 (周二)", accountName: "员工号_陆家嘴旗舰店", accountType: "store", title: "陆家嘴店实测：多猫家庭除味喷雾体验", keywordCluster: "猫砂除味", intent: "到店体验", status: "executed", assignedRole: "本地场景/到店服务" },
   { id: "note_3", day: 3, dateStr: "8月21日 (周三)", accountName: "KOS_小张(徐家汇店)", accountType: "kos", title: "养猫3年老手总结：猫砂盆去味误区避坑", keywordCluster: "猫砂除味", intent: "真实体验", status: "pending", assignedRole: "细分痛点/真实使用" },
   { id: "note_4", day: 4, dateStr: "8月22日 (周四)", accountName: "特唯普品牌官方号", accountType: "brand", title: "宠物环境安全清洁国标解释与选购指南", keywordCluster: "宠物环境清洁", intent: "标准解答", status: "pending", assignedRole: "原理解释/产品标准" },
-  { id: "note_5", day: 5, dateStr: "8月23日 (周五)", accountName: "店长号_徐家汇概念店", accountType: "store", title: "徐家汇店客诉解密：养宠家庭异味来源分类", keywordCluster: "宠物除臭", intent: "顾客问答", status: "pending", assignedRole: "本地场景/到店服务" },
+  { id: "note_5", day: 5, dateStr: "8月23日 (周五)", accountName: "员工号_徐家汇概念店", accountType: "store", title: "徐家汇店客诉解密：养宠家庭异味来源分类", keywordCluster: "宠物除臭", intent: "顾客问答", status: "pending", assignedRole: "本地场景/到店服务" },
   { id: "note_6", day: 6, dateStr: "8月24日 (周六)", accountName: "KOS_小李(朝阳大悦城)", accountType: "kos", title: "周末带狗回家异味重？店员教你10秒除臭", keywordCluster: "宠物除臭", intent: "生活场景", status: "pending", assignedRole: "细分痛点/真实使用" },
   { id: "note_7", day: 7, dateStr: "8月25日 (周日)", accountName: "特唯普健康宠物馆", accountType: "brand", title: "幼犬幼猫家庭环境除菌与除味双重保障", keywordCluster: "幼犬除味技巧", intent: "养宠指南", status: "pending", assignedRole: "原理解释/产品标准" },
-  { id: "note_8", day: 8, dateStr: "8月26日 (周一)", accountName: "店长号_陆家嘴旗舰店", accountType: "store", title: "上海宠物用品店服务实录：现场除臭对比", keywordCluster: "上海宠物用品店", intent: "到店攻略", status: "pending", assignedRole: "本地场景/到店服务" },
+  { id: "note_8", day: 8, dateStr: "8月26日 (周一)", accountName: "员工号_陆家嘴旗舰店", accountType: "store", title: "上海宠物用品店服务实录：现场除臭对比", keywordCluster: "上海宠物用品店", intent: "到店攻略", status: "pending", assignedRole: "本地场景/到店服务" },
   { id: "note_9", day: 9, dateStr: "8月27日 (周二)", accountName: "KOS_小张(徐家汇店)", accountType: "kos", title: "下雨天室内狗尿味大？亲测除味喷雾喷湿毯", keywordCluster: "宠物除臭", intent: "真实痛点", status: "pending", assignedRole: "细分痛点/真实使用" },
   { id: "note_10", day: 10, dateStr: "8月28日 (周三)", accountName: "特唯普品牌官方号", accountType: "brand", title: "宠物除臭剂活性成分分析与抑菌持久度测试", keywordCluster: "宠物除臭", intent: "实验展示", status: "pending", assignedRole: "原原理与成分测试" },
-  { id: "note_11", day: 11, dateStr: "8月29日 (周四)", accountName: "店长号_徐家汇概念店", accountType: "store", title: "徐家汇宠物友好门店探店：宠物除臭好物试用", keywordCluster: "上海宠物用品店", intent: "到店体验", status: "pending", assignedRole: "本地场景/到店服务" },
+  { id: "note_11", day: 11, dateStr: "8月29日 (周四)", accountName: "员工号_徐家汇概念店", accountType: "store", title: "徐家汇宠物友好门店探店：宠物除臭好物试用", keywordCluster: "上海宠物用品店", intent: "到店体验", status: "pending", assignedRole: "本地场景/到店服务" },
   { id: "note_12", day: 12, dateStr: "8月30日 (周五)", accountName: "KOS_小李(朝阳大悦城)", accountType: "kos", title: "养猫打工人晚上回家开门不再有猫砂味", keywordCluster: "猫砂除味", intent: "生活体验", status: "pending", assignedRole: "细分痛点/真实使用" },
-  { id: "note_13", day: 13, dateStr: "8月31日 (周六)", accountName: "店长号_陆家嘴旗舰店", accountType: "store", title: "周末带宠物来陆家嘴店免费体验环境除臭", keywordCluster: "上海宠物用品店", intent: "本地活动", status: "pending", assignedRole: "本地场景/到店服务" },
+  { id: "note_13", day: 13, dateStr: "8月31日 (周六)", accountName: "员工号_陆家嘴旗舰店", accountType: "store", title: "周末带宠物来陆家嘴店免费体验环境除臭", keywordCluster: "上海宠物用品店", intent: "本地活动", status: "pending", assignedRole: "本地场景/到店服务" },
   { id: "note_14", day: 14, dateStr: "9月1日 (周日)", accountName: "特唯普健康宠物馆", accountType: "brand", title: "换季宠物异味高发期全屋清洁避坑方案", keywordCluster: "宠物环境清洁", intent: "季节指南", status: "pending", assignedRole: "原理解释/产品标准" },
 ];
 
@@ -218,7 +218,7 @@ export function DistributionDrawer({
       if (isXuJiaHuiQA) {
         newDiffs = [
           {
-            entity: "店长号_徐家汇概念店",
+            entity: "员工号_徐家汇概念店",
             before: "2篇，包含1篇到店探店产品测评",
             after: "2篇，全部调整为【门店顾客常见异味问题解答】",
             tag: "内容方向"
@@ -571,7 +571,7 @@ export function DistributionDrawer({
 
               {/* Account 3 */}
               <div
-                onClick={() => handleSelectAccount("store_1", "店长号_陆家嘴旗舰店", 4, 5)}
+                onClick={() => handleSelectAccount("store_1", "员工号_陆家嘴旗舰店", 4, 5)}
                 className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "store_1"
                     ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
@@ -586,7 +586,7 @@ export function DistributionDrawer({
                       门店号
                     </span>
                     <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "store_1" ? "text-white" : "text-text-main"}`}>
-                      店长号_陆家嘴旗舰店
+                      员工号_陆家嘴旗舰店
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
@@ -608,7 +608,7 @@ export function DistributionDrawer({
 
               {/* Account 4 */}
               <div
-                onClick={() => handleSelectAccount("store_2", "店长号_徐家汇概念店", 2, 3)}
+                onClick={() => handleSelectAccount("store_2", "员工号_徐家汇概念店", 2, 3)}
                 className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 relative ${
                   selectedContext.id === "store_2"
                     ? "bg-btn-main text-white border-neutral-900 shadow-md ring-2 ring-neutral-900"
@@ -623,7 +623,7 @@ export function DistributionDrawer({
                       门店号
                     </span>
                     <h3 className={`text-[13.5px] font-black mt-1.5 ${selectedContext.id === "store_2" ? "text-white" : "text-text-main"}`}>
-                      店长号_徐家汇概念店
+                      员工号_徐家汇概念店
                     </h3>
                   </div>
                   <span className={`px-2.5 py-1 text-[13px] font-extrabold rounded-lg ${
@@ -1053,7 +1053,7 @@ export function DistributionDrawer({
                 </p>
                 <div className="p-3 bg-page-bg rounded-xl border border-border-default space-y-1 font-mono text-[13px]">
                   <div><strong>任务编号：</strong> TASK-20260819-011</div>
-                  <div><strong>绑定账号：</strong> 店长号_徐家汇概念店</div>
+                  <div><strong>绑定账号：</strong> 员工号_徐家汇概念店</div>
                   <div><strong>当前状态：</strong> 素材拍摄与文案撰写中</div>
                   <div><strong>内容主题：</strong> 徐家汇店客诉解密：养宠家庭异味来源</div>
                 </div>

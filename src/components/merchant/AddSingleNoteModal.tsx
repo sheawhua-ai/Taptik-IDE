@@ -29,9 +29,9 @@ const MODAL_COPY = {
   },
 } as const;
 
-const CONTENT_ANGLE_OPTIONS: Record<"KOC" | "店长号/KOS" | "品牌主号", string[]> = {
+const CONTENT_ANGLE_OPTIONS: Record<"KOC" | "员工号/KOS" | "品牌主号", string[]> = {
   KOC: ["真实体验", "使用测评", "避坑分享"],
-  "店长号/KOS": ["专业答疑", "场景建议", "到店服务"],
+  "员工号/KOS": ["专业答疑", "场景建议", "到店服务"],
   "品牌主号": ["产品科普", "品牌信息", "活动发布"],
 };
 
@@ -41,7 +41,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
 
   // Single Note Form state
   const [title, setTitle] = useState('');
-  const [accountType, setAccountType] = useState<"KOC" | "店长号/KOS" | "品牌主号">("KOC");
+  const [accountType, setAccountType] = useState<"KOC" | "员工号/KOS" | "品牌主号">("KOC");
   const [accountName, setAccountName] = useState('');
   const [contentDirection, setContentDirection] = useState('');
   const [plannedDate, setPlannedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -54,7 +54,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
   const [importedFile, setImportedFile] = useState<File | null>(null);
   const [parsedNotes, setParsedNotes] = useState<Array<{
     title: string;
-    accountType: "KOC" | "店长号/KOS" | "品牌主号";
+    accountType: "KOC" | "员工号/KOS" | "品牌主号";
     accountName: string;
     contentDirection: string;
     plannedDate: string;
@@ -69,7 +69,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
   const [feishuStatus, setFeishuStatus] = useState<"idle" | "connecting" | "connected">("idle");
   const [feishuNotes, setFeishuNotes] = useState<Array<{
     title: string;
-    accountType: "KOC" | "店长号/KOS" | "品牌主号";
+    accountType: "KOC" | "员工号/KOS" | "品牌主号";
     accountName: string;
     contentDirection: string;
     plannedDate: string;
@@ -87,7 +87,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
     createProjectNote(project.id, {
       title,
       accountType,
-      accountName: accountName || (accountType === "KOC" ? "KOC体验官" : accountType === "店长号/KOS" ? "店长号" : "品牌官方号"),
+      accountName: accountName || (accountType === "KOC" ? "KOC体验官" : accountType === "员工号/KOS" ? "员工号" : "品牌官方号"),
       contentDirection: contentDirection || "常规种草内容",
       plannedDate,
       body
@@ -121,8 +121,8 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
         },
         {
           title: `【${file.name.replace(/\.[^/.]+$/, "")}】店长答疑：备婚新人最关注的宴会厅档期`,
-          accountType: "店长号/KOS" as const,
-          accountName: "店长号_旗舰店",
+          accountType: "员工号/KOS" as const,
+          accountName: "员工号_旗舰店",
           contentDirection: "专业档期答疑",
           plannedDate: new Date(Date.now() + 172800000).toISOString().split('T')[0],
           selected: true
@@ -174,7 +174,7 @@ export function AddSingleNoteModal({ project, onClose, mode }: Props) {
         },
         {
           title: "飞书同步 - 官方店长一对一档期解答",
-          accountType: "店长号/KOS",
+          accountType: "员工号/KOS",
           accountName: "飞书表单-KOS_店长",
           contentDirection: "官方回复答疑",
           plannedDate: new Date(Date.now() + 259200000).toISOString().split('T')[0],

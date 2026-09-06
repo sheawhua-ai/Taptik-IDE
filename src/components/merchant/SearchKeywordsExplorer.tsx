@@ -406,7 +406,7 @@ export function SearchKeywordsExplorer({ activeProject }: Props) {
                          <select className="w-full bg-page-bg border border-border-default rounded-xl p-3 text-[13px]">
                            <option>KOC + 品牌号</option>
                            <option>仅 KOC</option>
-                           <option>仅店长号</option>
+                           <option>仅员工号</option>
                          </select>
                        </div>
                      </div>

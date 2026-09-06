@@ -90,7 +90,7 @@ const DEFAULTS_BY_PRIMARY: Record<string, IndustryDefaults> = {
     workflowSteps: ["痛点与搜索机会", "真实体验内容", "专业解释补强", "素材与体验反馈", "矩阵发布", "搜索收录与咨询复盘"],
     planTemplates: ["新品冷启动", "核心痛点搜索卡位", "KOC真实体验测评"],
     contentTemplates: ["七日体验记录", "专业成分解读", "常见问题避坑"],
-    accountRoles: ["品牌主号", "店长号/KOS", "消费者KOC"]
+    accountRoles: ["品牌主号", "员工号/KOS", "消费者KOC"]
   },
   beauty: {
     launchTemplateName: "美妆功效证据与试用种草起盘方案",

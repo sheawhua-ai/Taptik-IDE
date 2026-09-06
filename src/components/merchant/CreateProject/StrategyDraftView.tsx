@@ -311,8 +311,8 @@ export function StrategyDraftView({
               <div className="p-3.5 bg-surface-subtle border border-border-subtle rounded-lg space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[13px] px-1.5 py-0.2 bg-blue-100 text-blue-900 rounded font-semibold">店长号/KOS矩阵</span>
-                    <span className="font-semibold text-text-primary">5家核心门店店长号 (上海、北京、广州、成都)</span>
+                    <span className="text-[13px] px-1.5 py-0.2 bg-blue-100 text-blue-900 rounded font-semibold">员工号/KOS矩阵</span>
+                    <span className="font-semibold text-text-primary">5家核心门店员工号 (上海、北京、广州、成都)</span>
                   </div>
                   <div className="font-semibold text-text-primary">共 5 篇 (每店1篇)</div>
                 </div>

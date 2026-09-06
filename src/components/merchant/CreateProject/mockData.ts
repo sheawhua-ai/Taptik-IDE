@@ -23,8 +23,8 @@ export const INITIAL_CARRIED_FACTS: FactItem[] = [
   {
     id: 'fact_3',
     category: 'account',
-    title: '可用账号资产：2个官方品牌号 + 5个线下核心商圈店长号',
-    detail: '品牌旗舰店(12.8w粉)、官方号(5.4w粉)；店长号涵盖上海陆家嘴、徐家汇、北京朝阳、广州天河、成都春熙店',
+    title: '可用账号资产：2个官方品牌号 + 5个线下核心商圈员工号',
+    detail: '品牌旗舰店(12.8w粉)、官方号(5.4w粉)；员工号涵盖上海陆家嘴、徐家汇、北京朝阳、广州天河、成都春熙店',
     sourceType: 'account_assets',
     sourceName: '账号资产中心 · 已授权正常',
     status: 'confirmed'
@@ -84,8 +84,8 @@ export const INITIAL_PRIORITIZED_QUESTIONS: MissingInfoItem[] = [
     question: '本次打法的项目周期与可用执行资源范围？',
     whyNeeded: '周期与人员直接制约发布篇数与素材拍摄排期，避免设定超出产能的脱节计划。',
     suggestedAnswers: [
-      '14天标准周期（2周）：品牌号2篇 + 店长号5篇 + KOC 10篇',
-      '7天紧凑冲刺（1周）：店长号与品牌号协同发布',
+      '14天标准周期（2周）：品牌号2篇 + 员工号5篇 + KOC 10篇',
+      '7天紧凑冲刺（1周）：员工号与品牌号协同发布',
       '21天完整换粮周期（3周）：包含真实宠主长周期反馈'
     ],
     resolved: false
@@ -97,7 +97,7 @@ export const INITIAL_PRIORITIZED_QUESTIONS: MissingInfoItem[] = [
     whyNeeded: '消费者参与需要生成体验官招募落地页、问卷收集与素材回传审核流程。',
     suggestedAnswers: [
       '需要招募 10 名 3-6个月幼犬真实宠主填写问卷并提供真实排便照片',
-      '仅使用内部品牌号和店长号，暂不需要外部KOC',
+      '仅使用内部品牌号和员工号，暂不需要外部KOC',
       '由门店直接邀请 5 名熟客老会员打卡'
     ],
     resolved: false
@@ -144,7 +144,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
       adjustmentCriteria: '若发布 5 天后搜索收录率 < 30%，及时调整笔记标题的关键词长尾组合与头图对比样式。',
       stopCriteria: '若发生严重的成分负面舆情或平台重大规则违规阻断，立即暂停相关笔记发布并启动应急核查。',
       auxiliaryGoals: [
-        '店长号平均单篇互动量达到 50+ 次',
+        '员工号平均单篇互动量达到 50+ 次',
         '沉淀不少于 15 组无版权争议的高清实拍素材'
       ]
     },
@@ -154,7 +154,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
       problemToSolve: '新手宠主在幼犬换粮阶段搜索高频但缺乏信任，传统品牌软文硬广转化率低且易被平台判定同质化。',
       contentLogic: '以“真实宠主7天过渡排便实测”建立痛点共鸣，配合“线下店长顾问专业答疑与配比指导”提供权威解法，形成公域搜索卡位与同城门店到店体验的信任闭环。',
       rationale: '历史复盘证实“实测打卡 + 顾问答疑”转化率 (6.8%) 显著高于纯官方图文 (2.1%)，且更符合小红书搜索收录偏好。',
-      collaborationMechanism: '品牌号负责品牌官方质检与成分背书；店长号认领同城真实答疑；真实KOC回传吃粮与便便成型照片支撑内容事实。'
+      collaborationMechanism: '品牌号负责品牌官方质检与成分背书；员工号认领同城真实答疑；真实KOC回传吃粮与便便成型照片支撑内容事实。'
     },
 
     // 4. 内容与账号分工
@@ -174,7 +174,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
       kosAccounts: [
         {
           id: 'kos_1',
-          name: '店长号_陆家嘴旗舰店',
+          name: '员工号_陆家嘴旗舰店',
           storeName: '上海陆家嘴店',
           roleInProject: '专业顾问答疑与同城到店领样',
           contentDirection: '幼犬便便成型对照表 & 线下换粮常见误区盘点',
@@ -184,7 +184,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
         },
         {
           id: 'kos_2',
-          name: '店长号_徐家汇概念店',
+          name: '员工号_徐家汇概念店',
           storeName: '上海徐家汇店',
           roleInProject: '专业顾问答疑与同城到店领样',
           contentDirection: '挑食幼犬如何无痛换粮？3大实操喂养技巧',
@@ -194,7 +194,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
         },
         {
           id: 'kos_3',
-          name: '店长号_朝阳大悦城店',
+          name: '员工号_朝阳大悦城店',
           storeName: '北京朝阳店',
           roleInProject: '专业顾问答疑与同城到店领样',
           contentDirection: '换粮拉稀软便应急处理指南（附家长食谱调整）',
@@ -204,7 +204,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
         },
         {
           id: 'kos_4',
-          name: '店长号_天河城形象店',
+          name: '员工号_天河城形象店',
           storeName: '广州天河店',
           roleInProject: '专业顾问答疑与同城到店领样',
           contentDirection: '如何看懂幼犬粮配料表第一位？鲜肉与肉粉区别',
@@ -214,7 +214,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
         },
         {
           id: 'kos_5',
-          name: '店长号_春熙路体验店',
+          name: '员工号_春熙路体验店',
           storeName: '成都春熙店',
           roleInProject: '专业顾问答疑与同城到店领样',
           contentDirection: '幼犬长肉不长膘实操记录：2kg鲜肉粮喂养日记',
@@ -257,7 +257,7 @@ export const GENERATE_DEFAULT_STRATEGY = (userGoal?: string, userCycleDays: numb
     hypothesesAndBasis: {
       confirmedFacts: [
         { id: 'cf_1', text: '无谷鲜肉幼犬粮具备 SGS 质检报告，粗蛋白≥38%', source: '【产品资料】质检中心' },
-        { id: 'cf_2', text: '5家核心门店店长号均已接入且处于在线授权状态', source: '【账号资产】授权中心' },
+        { id: 'cf_2', text: '5家核心门店员工号均已接入且处于在线授权状态', source: '【账号资产】授权中心' },
         { id: 'cf_3', text: '严禁宣传治愈软便拉稀，仅能使用改善、温和过渡', source: '【知识与记忆】合规规范' }
       ],
       pendingHypotheses: [
@@ -375,12 +375,12 @@ export const GENERATE_PROPOSAL_FROM_COMMAND = (
       ],
       impactScope: {
         affectedNotesCount: 5,
-        affectedAccounts: ['5家门店店长号'],
+        affectedAccounts: ['5家门店员工号'],
         affectedSchedule: '素材交付截止时间延长 1 天缓冲期',
         taskChanges: {
           added: ['生成《店长手机随手拍实用技巧卡》'],
           removed: ['取消 3 个高难度棚拍物料任务'],
-          modified: ['降低店长号素材验收标准至“清晰无反光”即可']
+          modified: ['降低员工号素材验收标准至“清晰无反光”即可']
         },
         hasConflictWithFacts: false
       }

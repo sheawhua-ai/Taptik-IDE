@@ -143,10 +143,7 @@ export function CreateProjectWorkstation({
   const handleConfirmAndCreateProject = (
     confirmedDraft: StrategyDraftData = strategyDraft,
     settings: PlanCreationSettings = {
-      targetKeywords: '',
-      conversionGoal: '收藏 / 关注',
-      publishFrequency: '每天 1–2 篇',
-      observationDays: 14,
+      targetKeywords: [],
       needMaterials: true,
       allowIndustryFallback: true,
     },
@@ -161,7 +158,7 @@ export function CreateProjectWorkstation({
       setStrategyDraft(activeDraft);
       const noteSeeds: Array<{
         title: string;
-        accountType: 'KOC' | '店长号/KOS' | '品牌主号';
+        accountType: 'KOC' | '员工号/KOS' | '品牌主号';
         accountName: string;
         contentDirection: string;
       }> = [
@@ -176,7 +173,7 @@ export function CreateProjectWorkstation({
         ...activeDraft.accountAndContentAssignment.kosAccounts.flatMap(account =>
           Array.from({ length: account.noteCount }, (_, index) => ({
             title: `${account.contentDirection} ${index + 1}`,
-            accountType: '店长号/KOS' as const,
+            accountType: '员工号/KOS' as const,
             accountName: account.name,
             contentDirection: account.contentDirection,
           })),
@@ -226,7 +223,7 @@ export function CreateProjectWorkstation({
         strategyProtocol: {
           targetAudience: activeDraft.promotionTarget.targetAudience,
           coreProblem: activeDraft.coreStrategy.problemToSolve,
-          solutionSummary: `${activeDraft.coreStrategy.contentLogic}｜站内承接：${settings.conversionGoal}｜目标关键词：${settings.targetKeywords || '未设置'}`,
+          solutionSummary: `${activeDraft.coreStrategy.contentLogic}｜目标关键词：${settings.targetKeywords || '未设置'}`,
           verifyHypothesis: activeDraft.coreGoalAndVerification.primaryBusinessGoal,
           continueCondition: activeDraft.coreGoalAndVerification.successCriteria,
           stopCondition: activeDraft.coreGoalAndVerification.stopCriteria,
@@ -240,13 +237,13 @@ export function CreateProjectWorkstation({
             brandAccounts: {
               selectedAccountIds: activeBrandAccounts.map((account) => account.id),
               notesPerAccount: activeBrandAccounts.length ? Math.max(1, Math.round(brandNotesTotal / activeBrandAccounts.length)) : 0,
-              publishFrequency: settings.publishFrequency,
+              publishFrequency: '每天 1 篇',
               suggestedTimeWindow: activeBrandAccounts[0]?.timeWindow || '按排期发布',
             },
             kosAccounts: {
               selectedAccountIds: activeKosAccounts.map((account) => account.id),
               notesPerAccount: activeKosAccounts.length ? Math.max(1, Math.round(kosNotesTotal / activeKosAccounts.length)) : 0,
-              publishFrequency: settings.publishFrequency,
+              publishFrequency: '每天 1 篇',
               suggestedTimeWindow: activeKosAccounts[0]?.timeWindow || '按排期发布',
             },
           },
@@ -257,7 +254,7 @@ export function CreateProjectWorkstation({
             needPhotos: settings.needMaterials,
             photoCountRange: settings.needMaterials ? '2-4张' : undefined,
             claimValidityDays: 3,
-            observationDays: settings.observationDays,
+            observationDays: 14,
             enableWechatNotice: false,
           },
           aiSuggestion: `账号数量由操盘手确认并锁定。知识调用：商家知识优先${settings.allowIndustryFallback ? '，缺失时使用行业通用方法补齐' : ''}。`,

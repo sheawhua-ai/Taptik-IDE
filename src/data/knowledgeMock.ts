@@ -82,15 +82,15 @@ export const mockKnowledgeList: KnowledgeItem[] = [
   },
   {
     id: "k-3",
-    summary: "店长号使用专业解释加真实案例，比单纯促销更容易产生咨询。",
+    summary: "员工号使用专业解释加真实案例，比单纯促销更容易产生咨询。",
     type: "经验建议",
     source: "Q2转化复盘报告.docx",
-    scope: "指定账号: 店长号",
+    scope: "指定账号: 员工号",
     validity: "项目结束后失效",
     updateTime: "3天前",
     state: "正常",
     category: "打法复盘",
-    originalEvidence: "复盘显示，店长号不走低价噱头，以专业营养学视角解答疑难问题，转化率高30%。",
+    originalEvidence: "复盘显示，员工号不走低价噱头，以专业营养学视角解答疑难问题，转化率高30%。",
     reliability: "多次项目验证",
     usageCount: 8
   },

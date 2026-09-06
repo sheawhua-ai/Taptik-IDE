@@ -234,7 +234,7 @@ export function AnomalyAiHub({
             <span>预防类似阻断建议</span>
           </div>
           <div className="text-[13px] text-text-secondary leading-relaxed">
-            建议在【账号配置】中为该项目设置 1-2 个常备备用店长号，当主号出现异常时系统可自动降级流转。
+            建议在【账号配置】中为该项目设置 1-2 个常备备用员工号，当主号出现异常时系统可自动降级流转。
           </div>
         </div>
 

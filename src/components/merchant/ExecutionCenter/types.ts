@@ -163,7 +163,7 @@ export interface ExecutionTask {
   noteId?: string;
   noteTitle: string;
   targetAccount: string;
-  accountType: '品牌主号' | '店长号/KOS' | 'KOC' | '外部达人';
+  accountType: '品牌主号' | '员工号/KOS' | 'KOC' | '外部达人';
   
   // Operator action definition
   operatorActionSummary: string; // 操盘手需要完成的动作

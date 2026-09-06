@@ -122,17 +122,17 @@ export function DialogueWorkbench({
               {
                 moduleName: '素材拍摄需求',
                 before: '每篇笔记需 3-5 张专业相机棚拍物料 (总计约 25 张棚拍需求)',
-                after: '专职摄影仅承接品牌主号 1 组官方精品图，店长号与KOC采用手机真实纪实拍摄规范'
+                after: '专职摄影仅承接品牌主号 1 组官方精品图，员工号与KOC采用手机真实纪实拍摄规范'
               }
             ],
             impactScope: {
               affectedNotesCount: 5,
-              affectedAccounts: ['5家门店店长号'],
+              affectedAccounts: ['5家门店员工号'],
               affectedSchedule: '素材交付截止时间延长 1 天缓冲期',
               taskChanges: {
                 added: ['自动生成《店长手机随手拍实用技巧卡》'],
                 removed: ['取消 3 个高难度棚拍物料待办'],
-                modified: ['降低店长号素材验收标准至“清晰无反光”即可']
+                modified: ['降低员工号素材验收标准至“清晰无反光”即可']
               },
               hasConflictWithFacts: false
             }
@@ -141,12 +141,12 @@ export function DialogueWorkbench({
           proposal = {
             id: `prop_${Date.now()}`,
             userPrompt: text,
-            aiInterpretation: '将 5 家门店店长号的集中发布排期错开至周五晚间至周日，以匹配同城宠主周末到店咨询与领样高峰',
+            aiInterpretation: '将 5 家门店员工号的集中发布排期错开至周五晚间至周日，以匹配同城宠主周末到店咨询与领样高峰',
             diffSummary: [
               {
-                moduleName: '店长号发布排期',
-                before: '5家门店店长号统一在周二、周三工作日发布',
-                after: '5家门店店长号分别按同城商圈客流错开在周五晚间 (18:00)、周六 (11:00/16:00) 与周日 (14:00/19:00)'
+                moduleName: '员工号发布排期',
+                before: '5家门店员工号统一在周二、周三工作日发布',
+                after: '5家门店员工号分别按同城商圈客流错开在周五晚间 (18:00)、周六 (11:00/16:00) 与周日 (14:00/19:00)'
               }
             ],
             impactScope: {
@@ -156,7 +156,7 @@ export function DialogueWorkbench({
               taskChanges: {
                 added: ['为各店长生成周末排期提醒日历'],
                 removed: [],
-                modified: ['更新 5 篇店长号待发布笔记计划时间']
+                modified: ['更新 5 篇员工号待发布笔记计划时间']
               },
               hasConflictWithFacts: false
             }

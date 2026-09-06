@@ -380,7 +380,7 @@ export function ProjectCenter({
     {
       id: "kos_1",
       name: "特唯普上海静安店 (张店长)",
-      type: "员工KOS / 店长号",
+      type: "员工KOS / 员工号",
       persona: "门店专家、换粮经验与日常答疑",
       planCount: 6,
       publishedCount: 3,
@@ -702,7 +702,7 @@ export function ProjectCenter({
 
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border border-border-default px-3.5 py-3 text-[13px]">
                     <span className="text-text-tertiary">发布计划结构</span>
-                    {(["品牌主号", "店长号/KOS", "KOC"] as const).map(accountType => (
+                    {(["品牌主号", "员工号/KOS", "KOC"] as const).map(accountType => (
                       <span key={accountType} className="text-text-secondary">
                         {accountType} <strong className="font-semibold text-text-main">{projectSlots.filter(slot => slot.accountType === accountType).length}</strong>
                       </span>
