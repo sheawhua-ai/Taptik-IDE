@@ -545,11 +545,14 @@ export const AccountAssetsV2: React.FC = () => {
                             <textarea value={selected.persona} onChange={event => updateAccount(selected.id, { persona: event.target.value })} placeholder="输入该账号的语气、身份背景、常见口头禅等要求..." className="min-h-[100px] w-full rounded-lg border border-border-default bg-surface p-3 text-[13px] leading-relaxed outline-none" />
                           </ConfigField>
                           
-                          <div className="pt-2">
-                            <span className="flex items-center justify-between gap-2 text-[13px] font-medium text-text-secondary mb-2">
-                              <span>适合的内容模板 (可多选)</span>
-                              <span className="font-normal text-text-tertiary">来自商家知识库 - 内容与图文</span>
-                            </span>
+                          <div className="pt-3 border-t border-border-default mt-2">
+                            <div className="mb-2">
+                              <span className="flex items-center justify-between gap-2 text-[13px] font-semibold text-text-main">
+                                <span>圈定可用内容模板 (Agent 路由边界)</span>
+                                <span className="font-normal text-[12px] text-text-tertiary">来自商家知识库 - 内容与图文</span>
+                              </span>
+                              <p className="text-[12px] text-text-tertiary mt-1">勾选后，AI 在生成方案和创作内容时，将仅在该账号被允许的模板池内自主决策或供人工下发。</p>
+                            </div>
                             <div className="flex flex-wrap gap-2">
                               {['沉浸式开箱体验', '痛点解答科普风', '干货测评红黑榜', '剧情反转种草'].map(tmpl => {
                                 const selectedTemplates = (selected as any).contentTemplates || [];

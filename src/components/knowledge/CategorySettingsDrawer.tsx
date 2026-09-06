@@ -348,19 +348,19 @@ export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCateg
                   <div className="flex items-baseline justify-between mb-2">
                     <label className="flex items-center gap-1.5 text-sm font-semibold text-text-main">
                       主要沉淀格式（业务形态）
-                      {activeCategory.isDefault ? <Lock className="h-3.5 w-3.5 text-text-tertiary" /> : null}
+                      
                     </label>
                     <span className="text-[12px] text-text-tertiary">用于标准化团队录入与 AI 提取</span>
                   </div>
                   <select
                     value={normalizeKnowledgeFormat(activeCategory.primaryFormat)}
-                    disabled={activeCategory.isDefault}
+                    
                     onChange={(event) => handleFormatChange(event.target.value as KnowledgeFormat)}
-                    className="w-full rounded-xl border border-border-default bg-surface-1 px-4 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-hover-bg disabled:text-text-tertiary focus:border-neutral-400"
+                    className="w-full rounded-xl border border-border-default bg-surface-1 px-4 py-2.5 text-sm outline-none focus:border-neutral-400"
                   >
                     {FORMAT_OPTIONS.map(option => (
                       <option key={option.value} value={option.value}>
-                        {option.label} （{option.description.slice(0, 24)}...）
+                        {option.label}
                       </option>
                     ))}
                   </select>
@@ -369,27 +369,7 @@ export function CategorySettingsDrawer({ isOpen, onClose, categories: savedCateg
                   </p>
                 </div>
 
-                <div>
-                  <label className="mb-3 block text-sm font-semibold text-text-main">用途与收录说明</label>
-                  <div className="space-y-3 rounded-xl border border-border-default bg-surface-1 p-4">
-                    {([
-                      { key: 'stores', label: '这个区块存' },
-                      { key: 'usedFor', label: '用于' },
-                      { key: 'excludes', label: '不收' }
-                    ] as const).map(row => (
-                      <label key={row.key} className="flex items-center gap-3 text-sm text-text-secondary">
-                        <span className="w-20 shrink-0">{row.label}</span>
-                        <input
-                          value={activeCategory.purpose[row.key]}
-                          onChange={(event) => updateActiveCategory({ purpose: { ...activeCategory.purpose, [row.key]: event.target.value } })}
-                          placeholder={PURPOSE_PLACEHOLDERS[normalizeKnowledgeFormat(activeCategory.primaryFormat)]?.[row.key] || ''}
-                          className="min-w-0 flex-1 border-0 border-b border-border-default bg-transparent px-1 py-1.5 text-sm text-text-main outline-none focus:border-neutral-700"
-                        />
-                      </label>
-                    ))}
-                    <p className="pl-[92px] text-[12px] leading-5 text-text-tertiary">这一行帮 AI 判断内容该去别的区块，写清楚能少串块</p>
-                  </div>
-                </div>
+
 
                 <div>
                   <div className="mb-3">
