@@ -46,7 +46,6 @@ export function TargetAudienceBuilder({ value, onChange, audienceTags = EMPTY_TA
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <label className="block text-[13px] font-semibold">目标人群 *</label>
-        {audienceTags.length > 0 && <span className="text-[11px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1"><Sparkles size={10} />来自上轮复盘数据预选</span>}
       </div>
       
       <div className="rounded-xl border border-border-default bg-surface-1 p-4 space-y-3">

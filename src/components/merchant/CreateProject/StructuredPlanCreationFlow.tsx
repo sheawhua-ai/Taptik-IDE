@@ -362,7 +362,7 @@ export function StructuredPlanCreationFlow({
 
                 
                   <section className="rounded-xl border border-border-default bg-surface-1 p-5 space-y-5">
-                    <div className="flex items-center justify-between"><div><h2 className="text-[16px] font-semibold">账号与分发</h2></div><div className="inline-flex items-center gap-1 text-[12px] text-text-secondary"><Lock size={13} />已锁定规则</div></div>
+                    <div className="flex items-center justify-between"><div><h2 className="text-[16px] font-semibold">账号与分发</h2></div></div>
                     
                     
                     <div className="divide-y divide-border-default rounded-xl border border-border-default">
@@ -419,10 +419,10 @@ export function StructuredPlanCreationFlow({
                               </div>
                               <div className="pt-3 border-t border-border-default">
                                 <div className="text-[12px] font-semibold text-text-secondary mb-2 flex items-center justify-between">
-                                  <span>下发内容模板策略</span>
+                                  <span>内容模板</span>
                                 </div>
                                 <select className="w-full bg-surface-1 border border-border-default rounded-lg px-2 py-2 text-[12px] outline-none text-text-main font-medium">
-                                  <option value="">🤖 交由 AI 结合「{primaryGoal}」目标自主路由</option>
+                                  <option value="">交由 AI 结合「{primaryGoal}」目标自主路由</option>
                                   <option disabled>────── 账号预设知识库模板 ──────</option>
                                   <option value="template-1">模板：科普评测风 (适合成分党)</option>
                                   <option value="template-2">模板：开箱体验风 (适合新手)</option>
