@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, Search, Calendar, AlertTriangle, CheckCircle2, History, 
-  MoreHorizontal, FileText, Check, ChevronRight, X,
+  MoreHorizontal, FileText, Check, ChevronRight, RefreshCw, X,
   ExternalLink, QrCode, FileSpreadsheet, Trash2, Camera, User, 
   BarChart2, Lightbulb, Link2, ChevronDown, ChevronUp, AlertCircle, 
   PanelLeftClose, PanelLeftOpen, Upload, Target, ShieldAlert, 
@@ -86,7 +86,7 @@ export function ProjectCenter({
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("全部");
   const [projectSearchQuery, setProjectSearchQuery] = useState("");
-  const [projectFilterStatus, setProjectFilterStatus] = useState<"全部" | "运行中" | "准备中" | "已归档">("全部");
+  const [projectFilterStatus, setProjectFilterStatus] = useState<"全部" | "进行中" | "已结束" | "已归档">("全部");
 
   // Expanded accounts in By Account View
   const [expandedAccountIds, setExpandedAccountIds] = useState<Record<string, boolean>>({
@@ -271,16 +271,15 @@ export function ProjectCenter({
 
   // The plan list represents lifecycle only. Operational exceptions live in Execution Center.
   const getProjectLifecycleState = (project: Project) => {
-    if (project.status === "已结束") return { label: "已归档", tone: "archived" as const };
+    if (project.status === "已归档") return { label: "已归档", tone: "archived" as const };
+    if (project.status === "已结束") return { label: "已结束", tone: "idle" as const };
     if (project.status === "准备中") return { label: "准备中", tone: "idle" as const };
-    return { label: "运行中", tone: "running" as const };
+    return { label: "进行中", tone: "running" as const };
   };
 
   const filteredProjects = scopedProjects.filter((p) => {
     if (projectSearchQuery && !p.name.toLowerCase().includes(projectSearchQuery.toLowerCase())) return false;
-    if (projectFilterStatus === "运行中" && p.status !== "进行中") return false;
-    if (projectFilterStatus === "准备中" && p.status !== "准备中") return false;
-    if (projectFilterStatus === "已归档" && p.status !== "已结束") return false;
+    if (projectFilterStatus !== "全部" && p.status !== projectFilterStatus) return false;
     return true;
   });
   const currentLifecycleState = getProjectLifecycleState(currentProject);
@@ -474,7 +473,7 @@ export function ProjectCenter({
               </div>
 
               <div className="flex gap-1.5 pt-1">
-                {(["全部", "运行中", "准备中", "已归档"] as const).map((status) => (
+                {(["全部", "进行中", "已结束", "已归档"] as const).map((status) => (
                   <button
                     key={status}
                     onClick={() => setProjectFilterStatus(status)}
@@ -545,40 +544,44 @@ export function ProjectCenter({
       {/* RIGHT: Main Project Workspace */}
       <div className="project-workspace-main flex-1 flex flex-col min-w-0 bg-page-bg overflow-hidden">
         
-        {/* Header Bar */}
-        <div className="workspace-header bg-surface-1 border-b border-border-default shrink-0 flex items-start justify-between">
-          <div className="flex items-start gap-3.5">
+        {/* Workspace Header & Tabs */}
+        <div className="px-6 bg-surface-1 border-b border-border-default flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-7">
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
                 title="展开方案列表"
-                className="mt-0.5 w-7 h-7 flex items-center justify-center border border-border-default rounded-lg text-text-secondary hover:text-text-main hover:bg-surface-subtle transition-colors"
+                className="w-7 h-7 flex items-center justify-center border border-border-default rounded-lg text-text-secondary hover:text-text-main hover:bg-surface-subtle transition-colors -ml-2"
               >
                 <PanelLeftOpen size={15} />
               </button>
             )}
-            <div>
-              <div className="flex items-center gap-2.5 mb-1">
-                <h1 className="text-[17px] font-semibold text-text-main">{currentProject.name}</h1>
-                <span className={`rounded-md px-2 py-0.5 text-[13px] font-medium ${
-                  currentLifecycleState.tone === "running" ? "bg-info-light text-info" :
-                  "bg-surface-selected text-text-secondary"
-                }`}>
-                  {currentLifecycleState.label}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 text-[13px] text-text-secondary">
-                <span className="flex items-center gap-1.5"><Calendar size={13} className="text-text-tertiary" /> {formatChineseDate(currentProject.startDate)} 至 {formatChineseDate(currentProject.endDate)}</span>
-                <span className="text-border-strong">|</span>
-                <span className="truncate max-w-[min(48vw,680px)] text-text-tertiary" title={currentProject.goal}>
-                  目标：{currentProject.goal || "验证真实换粮体验与店长专业解释能否提高有效咨询"}
-                </span>
-              </div>
+            
+            <div className="flex gap-7 text-[13px] font-medium">
+              {(["概览", "内容与素材"] as const).map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-3 relative font-medium ${activeTab === tab ? "text-text-main" : "text-text-secondary hover:text-text-main"}`}
+                >
+                  {tab}
+                  {activeTab === tab && (
+                    <motion.div layoutId="projectCenterTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-logo" />
+                  )}
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <button 
+              className="px-3 py-1.5 rounded-lg border border-border-default bg-surface-1 hover:bg-surface-subtle flex items-center gap-1.5 text-[12px] text-text-secondary hover:text-text-main transition-colors"
+              onClick={() => setShowLandingPage(true)}
+            >
+              <QrCode size={13} />
+              <span>落地页设置</span>
+            </button>
+
             {/* Actions in More Menu */}
             <div className="relative">
               <button 
@@ -591,33 +594,45 @@ export function ProjectCenter({
               {showMoreMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
-                  <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1.5 text-[13px]">
-                    <button 
-                      className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium" 
-                      onClick={() => {
-                        setShowMoreMenu(false);
-                        setFeedbackContentPackage(allNotes.find(note => note.isNotePackage) || null);
-                        setShowProjectQuestionnaire(true);
-                      }}
-                    >
-                      <FileText size={14} className="text-text-tertiary" />
-                      <span>内容包体验反馈</span>
-                    </button>
-                    <button 
-                      className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium" 
-                      onClick={() => { setShowMoreMenu(false); setShowLandingPage(true); }}
-                    >
-                      <QrCode size={14} className="text-text-tertiary" />
-                      <span>落地页推广设置</span>
-                    </button>
-                    <button 
-                      className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium" 
-                      onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}
-                    >
-                      <History size={14} className="text-text-tertiary" />
-                      <span>操作记录</span>
-                    </button>
-                    <div className="my-1 border-t border-border-default" />
+                  <div className="absolute right-0 top-full mt-1.5 w-40 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1.5 text-[13px]">
+                    {(currentProject.status === "已结束" || currentProject.status === "已归档") ? (
+                      <button 
+                        className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
+                        onClick={() => { setShowMoreMenu(false); updateProject(currentProject.id, { status: "进行中" }); }}
+                      >
+                        <RefreshCw size={14} className="text-brand-600" />
+                        <span className="text-brand-600">重启方案</span>
+                      </button>
+                    ) : (
+                      <>
+                        <button 
+                          className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
+                          onClick={() => {
+                            setShowMoreMenu(false);
+                            setFeedbackContentPackage(allNotes.find(note => note.isNotePackage) || null);
+                            setShowProjectQuestionnaire(true);
+                          }}
+                        >
+                          <FileText size={14} className="text-text-tertiary" />
+                          <span>体验反馈问卷</span>
+                        </button>
+                        <button 
+                          className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
+                          onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}
+                        >
+                          <History size={14} className="text-text-tertiary" />
+                          <span>操作记录</span>
+                        </button>
+                        <div className="my-1 border-t border-border-default" />
+                        <button 
+                          onClick={() => { setShowMoreMenu(false); updateProject(currentProject.id, { status: "已结束" }); }}
+                          className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
+                        >
+                          <CheckCircle2 size={14} className="text-text-tertiary" />
+                          <span>结束方案</span>
+                        </button>
+                      </>
+                    )}
                     <button 
                       onClick={() => { setShowMoreMenu(false); setShowArchiveConfirm(true); }}
                       className="w-full text-left px-3.5 py-2 hover:bg-danger-light text-danger flex items-center gap-2 font-medium"
@@ -632,29 +647,7 @@ export function ProjectCenter({
           </div>
         </div>
 
-        {/* Level-2 Primary Tabs: Exactly 2 Tabs */}
-        <div className="px-6 bg-surface-1 border-b border-border-default flex items-center justify-between text-[13px] font-medium shrink-0">
-          <div className="flex gap-7">
-            {(["概览", "内容与素材"] as const).map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-3 relative font-medium ${activeTab === tab ? "text-text-main" : "text-text-secondary hover:text-text-main"}`}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <motion.div layoutId="projectCenterTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-logo" />
-                )}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2 text-[13px] text-text-tertiary">
-            <span>更新时间：{lastUpdatedText}</span>
-          </div>
-        </div>
-
-        {/* Main View Area */}
+      {/* Main View Area */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-[1100px] mx-auto p-6 space-y-5">
             
@@ -1463,7 +1456,7 @@ export function ProjectCenter({
               </button>
               <button
                 onClick={() => {
-                  updateProject(currentProject.id, { status: "已结束" });
+                  updateProject(currentProject.id, { status: "已归档" });
                   setShowArchiveConfirm(false);
                 }}
                 className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[13px] font-medium transition-colors"

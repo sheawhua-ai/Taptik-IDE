@@ -1,6 +1,6 @@
 // TapTik Unified Project & Task Data Store
 
-export type ProjectStatus = "准备中" | "进行中" | "已结束";
+export type ProjectStatus = "准备中" | "进行中" | "已结束" | "已归档";
 export type NoteType = "KOC" | "员工号/KOS" | "品牌主号";
 export type ContentStatus = "待生成" | "待确认" | "已确认";
 export type MaterialStatus = "无需素材" | "待收集" | "待验收" | "已齐";
