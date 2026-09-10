@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import type { MaterialAsset } from '../../material-center/types';
 import type { ExecutionTask, MaterialSubItem, UploadedAsset } from './types';
+import { ResizableSidebar } from '../ResizableSidebar';
 
 type ReviewDecision = '待判断' | '已通过' | '需补拍' | '不采用';
 type TaskQueue = '全部' | '待执行' | '待审核';
@@ -395,7 +396,7 @@ export function MaterialBatchReviewWorkbench({
   if (!activeTask) {
     return (
       <div className="workspace-shell execution-workspace flex h-full min-h-0 flex-col bg-page-bg">
-        <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5">{workspaceNavigation}</div>
+        <div className="shrink-0 border-b border-border-default bg-surface-1 px-4 py-2">{workspaceNavigation}</div>
         <div className="flex flex-1 items-center justify-center text-center">
           <div><CheckCircle2 size={28} className="mx-auto text-emerald-500" /><div className="mt-3 text-[13px] font-medium text-text-main">没有待审核素材任务</div></div>
         </div>
@@ -415,15 +416,14 @@ export function MaterialBatchReviewWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="workspace-sidebar w-[320px] shrink-0 overflow-hidden border-r border-border-default bg-surface-1 flex flex-col">
-          <div className="workspace-sidebar-header space-y-3 border-b border-border-default">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[15px] font-semibold text-text-main">素材任务</h2>
-              <span className="text-[13px] text-text-tertiary">{visibleTasks.length} 项</span>
-            </div>
-            <div className="relative">
+        <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIssidebaropen} isCollapsible={false}>
+          <div className="workspace-sidebar-header border-b border-border-default p-3">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
               <input value={taskQuery} onChange={(event) => setTaskQuery(event.target.value)} placeholder="搜索任务或账号..." className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors" />
+              </div>
+              <button onClick={() => setIsSidebarOpen(false)} title="收起侧边栏" className="w-7 h-7 shrink-0 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"><PanelLeftClose size={16} /></button>
             </div>
             <div className="grid grid-cols-3 rounded-lg bg-surface-subtle p-0.5" aria-label="素材任务状态筛选">
               {(['全部', '待执行', '待审核'] as TaskQueue[]).map(queue => (
@@ -433,7 +433,7 @@ export function MaterialBatchReviewWorkbench({
               ))}
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
+          <div className="flex-1 overflow-y-auto custom-scrollbar w-full">
             {visibleTasks.map(task => {
               const selected = task.id === activeTask.id;
               const submission = getSubmissionSummary(task);
@@ -461,7 +461,7 @@ export function MaterialBatchReviewWorkbench({
               );
             })}
           </div>
-        </aside>
+        </ResizableSidebar>
 
         <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
 

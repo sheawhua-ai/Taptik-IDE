@@ -18,6 +18,7 @@ import { ContentAiHub } from './aiPanels/ContentAiHub';
 import { MaterialAiHub } from './aiPanels/MaterialAiHub';
 import { PublishAiHub } from './aiPanels/PublishAiHub';
 import { AnomalyAiHub } from './aiPanels/AnomalyAiHub';
+import { ResizableSidebar } from '../ResizableSidebar';
 
 interface TaskDetailViewProps {
   task: ExecutionTask;
@@ -672,7 +673,7 @@ export function TaskDetailView({
       )}
 
       {/* Top Header Bar */}
-      <div className="workspace-header min-h-13 bg-surface border-b border-border-default flex items-center justify-between gap-4 shrink-0">
+      <div className="workspace-header py-2 px-4 bg-surface border-b border-border-default flex items-center justify-between gap-4 shrink-0">
         {workspaceNavigation ?? (
           <button
             type="button"
@@ -691,12 +692,8 @@ export function TaskDetailView({
       <div className="flex-1 flex min-h-0 overflow-hidden">
         
         {/* Column 1: Left Queue Sidebar */}
-        <div className="workspace-sidebar w-[320px] border-r border-border-default bg-surface flex flex-col shrink-0">
-          <div className="workspace-sidebar-header border-b border-border-subtle bg-surface space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[15px] font-semibold text-text-main">待处理笔记</h2>
-              <span className="text-[13px] text-text-tertiary">{filteredNoteQueue.length} 项</span>
-            </div>
+        <ResizableSidebar side="left" defaultWidth={320} className="workspace-sidebar">
+          <div className="workspace-sidebar-header border-b border-border-subtle bg-surface py-3 pl-3 pr-12">
             <div className="relative">
               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
               <input
@@ -707,7 +704,7 @@ export function TaskDetailView({
               />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
+          <div className="flex-1 overflow-y-auto custom-scrollbar w-full">
             {filteredNoteQueue.map(({ task: queueTask, displayTask }) => {
               const qTask = displayTask;
               const isCurrent = getNoteQueueKey(qTask) === getNoteQueueKey(task);
@@ -735,7 +732,7 @@ export function TaskDetailView({
               <div className="px-4 py-10 text-center text-[13px] leading-5 text-text-tertiary">当前项目没有待处理笔记</div>
             ) : null}
           </div>
-        </div>
+        </ResizableSidebar>
 
         {/* Column 2: Center Editor / Inspector Area (Flex-1) */}
           <div className="workspace-stage flex-1 overflow-y-auto space-y-5 bg-canvas">
@@ -1472,9 +1469,11 @@ export function TaskDetailView({
         </div>
 
         {/* Column 3: Task-Specific AI Coordination Hub */}
-        {isNoteWorkbench ? (
-          <ContentAiHub
-            task={task}
+        <ResizableSidebar side="right" defaultWidth={320} minWidth={280} maxWidth={500} borderClass="border-border-default">
+          <div className="w-full h-full flex flex-col relative overflow-hidden bg-surface">
+            {isNoteWorkbench ? (
+              <ContentAiHub
+                task={task}
             draftTitle={draftTitle}
             setDraftTitle={setDraftTitle}
             draftBody={draftBody}
@@ -1548,7 +1547,8 @@ export function TaskDetailView({
             showToast={showToast}
           />
         ) : null}
-
+          </div>
+        </ResizableSidebar>
       </div>
 
       {/* Reshoot Reason Input Modal */}

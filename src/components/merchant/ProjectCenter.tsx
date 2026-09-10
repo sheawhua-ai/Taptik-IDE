@@ -86,7 +86,7 @@ export function ProjectCenter({
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("全部");
   const [projectSearchQuery, setProjectSearchQuery] = useState("");
-  const [projectFilterStatus, setProjectFilterStatus] = useState<"全部" | "进行中" | "已结束" | "已归档">("全部");
+  const [projectFilterStatus, setProjectFilterStatus] = useState<"进行中" | "已结束">("进行中");
 
   // Expanded accounts in By Account View
   const [expandedAccountIds, setExpandedAccountIds] = useState<Record<string, boolean>>({
@@ -259,13 +259,6 @@ export function ProjectCenter({
     );
   }
 
-  if (!currentProject) {
-    return (
-      <div className="flex-1 flex items-center justify-center text-text-tertiary bg-page-bg text-[14px]">
-        请选择左侧方案或新建方案
-      </div>
-    );
-  }
 
   const pipeline = calculateProjectPipeline(currentProject.notes || []);
 
@@ -279,7 +272,8 @@ export function ProjectCenter({
 
   const filteredProjects = scopedProjects.filter((p) => {
     if (projectSearchQuery && !p.name.toLowerCase().includes(projectSearchQuery.toLowerCase())) return false;
-    if (projectFilterStatus !== "全部" && p.status !== projectFilterStatus) return false;
+    if (projectFilterStatus === "进行中" && p.status !== "进行中" && p.status !== "准备中") return false;
+    if (projectFilterStatus === "已结束" && p.status !== "已结束") return false;
     return true;
   });
   const currentLifecycleState = getProjectLifecycleState(currentProject);
@@ -440,100 +434,106 @@ export function ProjectCenter({
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="workspace-sidebar bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden"
           >
-            <div className="workspace-sidebar-header border-b border-border-default space-y-3 w-[320px] shrink-0">
-              <div className="flex justify-between items-center">
-                <h2 className="text-[15px] font-semibold text-text-main">方案列表</h2>
-                <div className="flex items-center gap-1">
-                  <button 
-                    onClick={() => setActiveWorkbench("create_project")}
-                    className="w-7 h-7 rounded-lg bg-btn-main text-white flex items-center justify-center hover:bg-btn-main-hover transition-colors"
-                    title="新建方案"
-                  >
-                    <Plus size={14} />
-                  </button>
-                  <button 
-                    onClick={() => setIsSidebarOpen(false)} 
-                    title="收起方案列表" 
-                    className="w-7 h-7 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"
-                  >
-                    <PanelLeftClose size={16} />
-                  </button>
+            <div className="workspace-sidebar-header border-b border-border-default w-[320px] shrink-0">
+              <div className="flex items-center gap-2 p-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
+                  <input 
+                    type="text" 
+                    placeholder="搜索方案..." 
+                    value={projectSearchQuery}
+                    onChange={(e) => setProjectSearchQuery(e.target.value)}
+                    className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+                  />
                 </div>
+                <button 
+                  onClick={() => setIsSidebarOpen(false)} 
+                  title="收起侧边栏" 
+                  className="w-7 h-7 shrink-0 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"
+                >
+                  <PanelLeftClose size={16} />
+                </button>
               </div>
               
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
-                <input 
-                  type="text" 
-                  placeholder="搜索方案..." 
-                  value={projectSearchQuery}
-                  onChange={(e) => setProjectSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
-                />
+              <div className="flex items-center justify-between pb-3 px-3">
+                <div className="flex gap-1.5">
+                  {(["进行中", "已结束"] as const).map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => setProjectFilterStatus(status)}
+                      className={`px-2.5 py-1 text-[13px] rounded-md font-medium transition-colors ${
+                        projectFilterStatus === status 
+                          ? "bg-btn-main text-white" 
+                          : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+                <button 
+                  onClick={() => setActiveWorkbench("create_project")}
+                  className="w-7 h-7 rounded-lg bg-btn-main text-white flex items-center justify-center hover:bg-btn-main-hover transition-colors shrink-0 shadow-2xs"
+                  title="新建方案"
+                >
+                  <Plus size={14} />
+                </button>
               </div>
 
-              <div className="flex gap-1.5 pt-1">
-                {(["全部", "进行中", "已结束", "已归档"] as const).map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setProjectFilterStatus(status)}
-                    className={`px-2.5 py-1 text-[13px] rounded-md font-medium transition-colors ${
-                      projectFilterStatus === status 
-                        ? "bg-btn-main text-white" 
-                        : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
-                    }`}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
             </div>
-
-            <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
-              {filteredProjects.map((proj) => {
-                const lifecycleState = getProjectLifecycleState(proj);
-                const version = unifiedState.strategyVersions.find(item => item.projectId === proj.id && item.status === "active");
-                const planNoteCount = unifiedState.noteSlots.filter(slot => slot.projectId === proj.id).length;
-                const statusText = `${planNoteCount} 篇发布计划${version ? ` · 策略 V${version.version}` : ""}`;
-
-                const isSelected = selectedProjectId === proj.id;
-
-                return (
-                  <button
-                    key={proj.id}
-                    onClick={() => setSelectedProjectId(proj.id)}
-                    className={`w-full text-left px-4 py-3.5 transition-colors border-b border-border-subtle relative ${
-                      isSelected 
-                        ? "bg-surface-subtle" 
-                        : "bg-transparent hover:bg-hover-bg text-text-main"
-                    }`}
-                  >
-                    {isSelected && (
-                      <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-logo" />
-                    )}
-                    <div className={`text-[13px] line-clamp-1 ${isSelected ? 'font-semibold text-text-main' : 'font-medium text-text-main'}`}>
-                      {proj.name}
+            
+            <div className="flex-1 overflow-y-auto">
+              {filteredProjects.length === 0 ? (
+                <div className="flex flex-1 items-center justify-center p-6 text-center">
+                  <p className="text-[13px] leading-5 text-text-tertiary">没有符合条件的方案</p>
+                </div>
+              ) : (
+                <div className="flex flex-col">
+                  {filteredProjects.map((project) => (
+                    <div 
+                      key={project.id}
+                      onClick={() => {
+                        setSelectedProjectId(project.id);
+                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                      }}
+                      className={`group relative cursor-pointer border-b border-border-subtle p-4 transition-colors hover:bg-surface-hover ${
+                        project.id === activeProjectId ? 'bg-brand-50/50' : ''
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0 pr-4">
+                          <h3 className={`truncate text-[14px] font-semibold ${
+                            project.id === activeProjectId ? 'text-brand-700' : 'text-text-main'
+                          }`}>
+                            {project.name}
+                          </h3>
+                          <div className="mt-1 flex items-center gap-2 text-[12px] text-text-tertiary">
+                            <span className="truncate">{project.target}</span>
+                          </div>
+                        </div>
+                        {project.pendingCount > 0 && (
+                          <span className="mt-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                            {project.pendingCount}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="mt-3 flex items-center gap-2">
+                        <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
+                          project.status === '执行' 
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                            : project.status === '草案'
+                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                            : 'bg-surface-subtle text-text-secondary border border-border-default'
+                        }`}>
+                          {project.status}
+                        </span>
+                        <span className="text-[11px] text-text-tertiary truncate">
+                          {project.stage}
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-1 flex items-center gap-1.5 text-[13px] text-text-tertiary tabular-nums">
-                      <span>{formatChineseDate(proj.startDate)}</span>
-                      <span>—</span>
-                      <span>{formatChineseDate(proj.endDate)}</span>
-                    </div>
-                    <div className="mt-2 flex items-center gap-2 text-[13px] min-w-0">
-                      <span className={`shrink-0 rounded-md px-1.5 py-0.5 font-medium ${
-                        lifecycleState.tone === "running" ? "bg-info-light text-info" :
-                        "bg-surface-selected text-text-secondary"
-                      }`}>
-                        {lifecycleState.label}
-                      </span>
-                      <span className="truncate text-text-tertiary" title={statusText}>{statusText}</span>
-                    </div>
-                  </button>
-                );
-              })}
-              {filteredProjects.length === 0 && (
-                <div className="px-5 py-10 text-center text-[13px] text-text-tertiary">
-                  当前筛选下没有方案
+                  ))}
                 </div>
               )}
             </div>
@@ -541,115 +541,48 @@ export function ProjectCenter({
         )}
       </AnimatePresence>
 
-      {/* RIGHT: Main Project Workspace */}
-      <div className="project-workspace-main flex-1 flex flex-col min-w-0 bg-page-bg overflow-hidden">
-        
-        {/* Workspace Header & Tabs */}
-        <div className="px-6 bg-surface-1 border-b border-border-default flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-7">
+      <div className="h-full flex-1 overflow-y-auto bg-page-bg flex flex-col">
+
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-default bg-surface-1 shrink-0">
+          <div className="flex items-center gap-3">
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                title="展开方案列表"
-                className="w-7 h-7 flex items-center justify-center border border-border-default rounded-lg text-text-secondary hover:text-text-main hover:bg-surface-subtle transition-colors -ml-2"
+                className="p-1.5 rounded-lg text-text-tertiary hover:bg-hover-bg hover:text-text-main transition-colors"
+                title="展开侧边栏"
               >
-                <PanelLeftOpen size={15} />
+                <PanelLeftOpen size={18} />
               </button>
             )}
-            
-            <div className="flex gap-7 text-[13px] font-medium">
+            {currentProject && <h2 className="text-[16px] font-semibold text-text-main">{currentProject.name}</h2>}
+          </div>
+          
+          {currentProject && (
+            <div className="flex items-center bg-surface-subtle p-1 rounded-lg border border-border-default">
               {(["概览", "内容与素材"] as const).map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-3 relative font-medium ${activeTab === tab ? "text-text-main" : "text-text-secondary hover:text-text-main"}`}
+                  className={`px-4 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                    activeTab === tab
+                      ? "bg-surface-1 text-text-main shadow-xs border border-border-default"
+                      : "text-text-secondary hover:text-text-main"
+                  }`}
                 >
                   {tab}
-                  {activeTab === tab && (
-                    <motion.div layoutId="projectCenterTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-logo" />
-                  )}
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button 
-              className="px-3 py-1.5 rounded-lg border border-border-default bg-surface-1 hover:bg-surface-subtle flex items-center gap-1.5 text-[12px] text-text-secondary hover:text-text-main transition-colors"
-              onClick={() => setShowLandingPage(true)}
-            >
-              <QrCode size={13} />
-              <span>落地页设置</span>
-            </button>
-
-            {/* Actions in More Menu */}
-            <div className="relative">
-              <button 
-                onClick={() => setShowMoreMenu(!showMoreMenu)}
-                title="更多操作"
-                className="w-8 h-8 border border-border-default text-text-secondary hover:text-text-main rounded-lg hover:bg-surface-subtle transition-colors flex items-center justify-center bg-surface-1"
-              >
-                <MoreHorizontal size={15} />
-              </button>
-              {showMoreMenu && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
-                  <div className="absolute right-0 top-full mt-1.5 w-40 bg-surface-1 border border-border-default rounded-xl shadow-lg z-50 py-1.5 text-[13px]">
-                    {(currentProject.status === "已结束" || currentProject.status === "已归档") ? (
-                      <button 
-                        className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
-                        onClick={() => { setShowMoreMenu(false); updateProject(currentProject.id, { status: "进行中" }); }}
-                      >
-                        <RefreshCw size={14} className="text-brand-600" />
-                        <span className="text-brand-600">重启方案</span>
-                      </button>
-                    ) : (
-                      <>
-                        <button 
-                          className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
-                          onClick={() => {
-                            setShowMoreMenu(false);
-                            setFeedbackContentPackage(allNotes.find(note => note.isNotePackage) || null);
-                            setShowProjectQuestionnaire(true);
-                          }}
-                        >
-                          <FileText size={14} className="text-text-tertiary" />
-                          <span>体验反馈问卷</span>
-                        </button>
-                        <button 
-                          className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
-                          onClick={() => { setShowMoreMenu(false); setShowOperationLogs(true); }}
-                        >
-                          <History size={14} className="text-text-tertiary" />
-                          <span>操作记录</span>
-                        </button>
-                        <div className="my-1 border-t border-border-default" />
-                        <button 
-                          onClick={() => { setShowMoreMenu(false); updateProject(currentProject.id, { status: "已结束" }); }}
-                          className="w-full text-left px-3.5 py-2 hover:bg-surface-subtle flex items-center gap-2 text-text-main font-medium"
-                        >
-                          <CheckCircle2 size={14} className="text-text-tertiary" />
-                          <span>结束方案</span>
-                        </button>
-                      </>
-                    )}
-                    <button 
-                      onClick={() => { setShowMoreMenu(false); setShowArchiveConfirm(true); }}
-                      className="w-full text-left px-3.5 py-2 hover:bg-danger-light text-danger flex items-center gap-2 font-medium"
-                    >
-                      <Trash2 size={14} />
-                      <span>归档项目</span>
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          )}
         </div>
-
-      {/* Main View Area */}
-        <div className="flex-1 overflow-y-auto">
+        {!currentProject ? (
+          <div className="h-full flex items-center justify-center text-text-tertiary text-[14px]">
+            请选择左侧方案或新建方案
+          </div>
+        ) : (
           <div className="max-w-[1100px] mx-auto p-6 space-y-5">
+
+
             
             {/* ======================================================== */}
             {/* 1. 概览 TAB                                             */}
@@ -669,12 +602,12 @@ export function ProjectCenter({
                         </span>
                       </h3>
                       <div className="mt-1 text-[13px] text-text-tertiary">
-                        {activeStrategyVersion?.source === "expert_adjustment" ? "专家定制版本" : activeStrategyVersion?.source === "review_applied" ? "复盘建议应用版本" : "首次方案生成版本"}
-                        {activeStrategyVersion?.effectiveFrom ? ` · ${formatChineseDate(activeStrategyVersion.effectiveFrom, true)} 起生效` : ""}
+                        {activeStrategyVersion?.source === "review_applied" ? "复盘建议应用版本 · " : activeStrategyVersion?.source === "initial" ? "首次方案生成版本 · " : ""}
+                        {activeStrategyVersion?.effectiveFrom ? `${formatChineseDate(activeStrategyVersion.effectiveFrom, true)} 起生效` : ""}
                       </div>
                     </div>
                     <button onClick={() => setShowStrategyCustomization(true)} className="rounded-lg bg-btn-main px-3 py-1.5 text-[13px] font-medium text-white hover:bg-btn-main-hover">
-                      专家定制
+                      编辑
                     </button>
                   </div>
 
@@ -1235,8 +1168,9 @@ export function ProjectCenter({
             )}
 
           </div>
-        </div>
+        )}
       </div>
+
 
       {/* ======================================================== */}
       {/* DRAWERS & MODALS                                         */}

@@ -15,7 +15,7 @@ interface StrategyCustomizationDrawerProps {
 
 const sourceLabel: Record<StrategyVersion["source"], string> = {
   initial: "首次方案生成",
-  expert_adjustment: "专家定制",
+  expert_adjustment: "编辑",
   review_applied: "复盘建议已应用"
 };
 
@@ -75,7 +75,7 @@ export function StrategyCustomizationDrawer({
           <div>
             <div className="flex items-center gap-2">
               <SlidersHorizontal size={17} className="text-text-secondary" />
-              <h2 className="text-[16px] font-semibold text-text-main">专家定制</h2>
+              <h2 className="text-[16px] font-semibold text-text-main">编辑</h2>
               <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[13px] text-text-secondary">
                 当前 V{activeVersion?.version || 1}
               </span>

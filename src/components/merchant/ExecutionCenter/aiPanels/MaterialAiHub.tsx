@@ -63,7 +63,7 @@ export function MaterialAiHub({
   const aiTags = ['#幼犬实拍', '#颗粒细节特写', '#自然采光', '#真实种草场景', '#无水印合规'];
 
   return (
-    <div className="w-80 border-l border-border-default bg-surface flex flex-col shrink-0">
+    <div className="w-full h-full bg-surface flex flex-col shrink-0">
       
       {/* Header */}
       <div className="p-3.5 border-b border-border-default bg-surface-subtle flex items-center justify-between">

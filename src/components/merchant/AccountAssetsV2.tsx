@@ -10,7 +10,7 @@ import { formatChineseDate } from "../../utils/formatDate";
 import { EmployeeManagement } from "./EmployeeManagement";
 
 type AccountRelation = "自有品牌号" | "员工KOS" | "协作KOC";
-type CollectionState = "数据已更新" | "正在采集" | "部分数据缺失" | "采集失败" | "尚未采集";
+type CollectionState = "数据已获取" | "采集失败";
 type DetailTab = "config" | "calendar" | "notes" | "live" | "followers" | "collection";
 type ViewMode = "accounts" | "employees";
 
@@ -119,7 +119,7 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     employeeName: "林晓雯",
     employeeDept: "品牌运营组",
     publishInstruction: "发布前核对产品批次与检测报告；评论区专业问题在 30 分钟内转交营养顾问。",
-    collectionState: "数据已更新",
+    collectionState: "数据已获取",
     lastCollectedAt: "2026-08-25 10:30",
     nextCollectionAt: "2026-08-25 12:30",
     coverage: ["笔记表现", "直播表现", "粉丝数据"],
@@ -154,7 +154,7 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     employeeName: "陆佳怡",
     employeeDept: "陆家嘴门店",
     publishInstruction: "按发布任务完成店内实拍；收到指令后 2 小时内发布并回传笔记链接。",
-    collectionState: "部分数据缺失",
+    collectionState: "采集失败",
     lastCollectedAt: "2026-08-25 09:40",
     nextCollectionAt: "2026-08-25 13:40",
     coverage: ["笔记表现", "粉丝数据"],
@@ -185,7 +185,7 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
     employeeName: "周婧",
     employeeDept: "KOC 协作组",
     publishInstruction: "由协作负责人通知领取内容包的 KOC；只提醒节点，不改写消费者真实体验。",
-    collectionState: "正在采集",
+    collectionState: "数据已获取",
     lastCollectedAt: "2026-08-25 08:15",
     nextCollectionAt: "2026-08-25 12:15",
     coverage: ["公开笔记表现", "公开粉丝趋势"],
@@ -234,11 +234,8 @@ const ACCOUNT_SEEDS: AccountProfile[] = [
 ];
 
 const stateTone: Record<CollectionState, string> = {
-  "数据已更新": "bg-emerald-50 text-emerald-700 border-emerald-200",
-  "正在采集": "bg-blue-50 text-blue-700 border-blue-200",
-  "部分数据缺失": "bg-amber-50 text-amber-800 border-amber-200",
+  "数据已获取": "bg-emerald-50 text-emerald-700 border-emerald-200",
   "采集失败": "bg-rose-50 text-rose-700 border-rose-200",
-  "尚未采集": "bg-surface-subtle text-text-secondary border-border-default"
 };
 
 const statusTone = (status: string) => {
@@ -255,6 +252,7 @@ function MetricValue({ value, suffix = "" }: { value?: number; suffix?: string }
 export const AccountAssetsV2: React.FC = () => {
   const { unifiedState } = useProjectStore();
   const [viewMode, setViewMode] = useState<ViewMode>("accounts");
+  const [addEmployeeTrigger, setAddEmployeeTrigger] = useState(0);
   const [profiles, setProfiles] = useState<AccountProfile[]>(ACCOUNT_SEEDS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detailTab, setDetailTab] = useState<DetailTab>("calendar");
@@ -291,7 +289,7 @@ export const AccountAssetsV2: React.FC = () => {
 
   const allScheduleCount = unifiedState.noteSlots.filter(slot => !slot.accountName.startsWith("待匹配")).length;
   const activePublishCount = unifiedState.publishTasks.filter(task => !["已发布", "已关闭"].includes(task.status)).length;
-  const incompleteCollectionCount = profiles.filter(item => item.collectionState !== "数据已更新").length;
+  const incompleteCollectionCount = profiles.filter(item => item.collectionState !== "数据已获取").length;
 
   const filteredProfiles = profiles.filter(profile => {
     const matchesQuery = !query.trim() || `${profile.nickname}${profile.xhsId}${profile.matrixRole}`.toLowerCase().includes(query.trim().toLowerCase());
@@ -309,7 +307,7 @@ export const AccountAssetsV2: React.FC = () => {
   };
 
   const triggerCollection = (accountId: string) => {
-    setProfiles(previous => previous.map(item => item.id === accountId ? { ...item, collectionState: "正在采集" } : item));
+    setProfiles(previous => previous.map(item => item.id === accountId ? { ...item, collectionState: "数据已获取" } : item));
     showFeedback("已加入数据采集队列");
   };
 
@@ -350,7 +348,7 @@ export const AccountAssetsV2: React.FC = () => {
       employeeName: "待分配",
       employeeDept: "",
       publishInstruction: "待配置发布提醒与回传要求。",
-      collectionState: "正在采集",
+      collectionState: "数据已获取",
       nextCollectionAt: "首次采集队列中",
       coverage: [],
       noteMetrics: [],
@@ -384,48 +382,32 @@ export const AccountAssetsV2: React.FC = () => {
                   商家员工
                 </button>
               </div>
-              {viewMode === "accounts" && (
-                <span className="rounded-md border border-border-default bg-surface-subtle px-2 py-0.5 text-[13px] text-text-secondary">{profiles.length} 个发布账号</span>
-              )}
+              
             </div>
-            {viewMode === "accounts" ? (
-              <p className="mt-1 text-[13px] text-text-secondary">平台资料由小红书同步；Taptik 管理账号角色、发布员工与一机一号关系。</p>
-            ) : (
-              <p className="mt-1 text-[13px] text-text-secondary">管理商家员工团队，员工点击链接绑定后即可通过手机接收并执行发布任务。</p>
-            )}
+            
           </div>
-          {viewMode === "accounts" && (
-            <button onClick={() => { setAuthorizationStep("login"); setShowAddModal(true); }} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-action-primary-hover">
+          {viewMode === "accounts" ? (
+            <button onClick={() => { setAuthorizationStep("login"); setShowAddModal(true); }} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-action-primary-hover">
               <Plus size={15} />加入账号
+            </button>
+          ) : (
+            <button onClick={() => setAddEmployeeTrigger(prev => prev + 1)} className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-action-primary-hover">
+              <Plus size={15} />添加员工
             </button>
           )}
         </div>
 
-        {viewMode === "accounts" && (
-          <div className="mb-4 grid grid-cols-4 divide-x divide-border-default rounded-xl border border-border-default bg-surface-subtle">
-            {[
-            { label: "发布账号", value: profiles.length, suffix: "个", note: "已加入账号矩阵" },
-            { label: "发布安排", value: allScheduleCount, suffix: "篇", note: "与方案账号矩阵一致" },
-            { label: "当前发布任务", value: activePublishCount, suffix: "项", note: "全部为人工发布" },
-            { label: "数据待补齐", value: incompleteCollectionCount, suffix: "个", note: "包含采集中与失败" }
-          ].map(item => (
-            <div key={item.label} className="flex items-center justify-between gap-3 px-4 py-2.5">
-              <div><div className="text-[13px] text-text-tertiary">{item.label}</div><div className="mt-0.5 text-[13px] text-text-tertiary">{item.note}</div></div>
-              <div className="text-[18px] font-semibold text-text-primary tabular-nums">{item.value}<span className="ml-0.5 text-[13px] font-normal text-text-secondary">{item.suffix}</span></div>
-            </div>
-          ))}
-          </div>
-        )}
+        
       </div>
 
       {viewMode === "employees" ? (
-        <EmployeeManagement />
+        <EmployeeManagement addTrigger={addEmployeeTrigger} />
       ) : (
         <div className="flex-1 overflow-y-auto flex flex-col">
-          <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border-default bg-surface px-6 py-2.5">
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border-default bg-surface px-6 py-2">
             <div className="relative w-64">
               <Search size={14} className="absolute left-3 top-2.5 text-text-tertiary" />
-              <input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索账号、ID或矩阵角色..." className="w-full rounded-lg border border-border-default bg-surface pl-8 pr-3 py-2 text-[13px] outline-none focus:border-border-strong" />
+              <input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索账号、ID或矩阵角色..." className="w-full rounded-lg border border-border-default bg-surface pl-8 pr-3 py-1.5 text-[13px] outline-none focus:border-border-strong" />
             </div>
             <div className="flex items-center gap-2">
               <select value={relationFilter} onChange={event => setRelationFilter(event.target.value)} className="rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] text-text-secondary outline-none">
@@ -435,7 +417,7 @@ export const AccountAssetsV2: React.FC = () => {
                 <option value="协作KOC">协作KOC</option>
               </select>
               <select value={collectionFilter} onChange={event => setCollectionFilter(event.target.value)} className="rounded-lg border border-border-default bg-surface px-3 py-2 text-[13px] text-text-secondary outline-none">
-                <option value="all">全部采集状态</option>
+                <option value="all">数据状态</option>
                 {Object.keys(stateTone).map(state => <option key={state} value={state}>{state}</option>)}
               </select>
             </div>
@@ -635,7 +617,7 @@ export const AccountAssetsV2: React.FC = () => {
                     <div className="space-y-4">
                       <div className="grid grid-cols-3 gap-3">
                         <InfoCard label="当前采集状态" value={selected.collectionState} icon={Activity} />
-                        <InfoCard label="最近成功采集" value={selected.lastCollectedAt ? formatChineseDate(selected.lastCollectedAt, true) : "尚未采集"} icon={CheckCircle2} />
+                        <InfoCard label="最近成功采集" value={selected.lastCollectedAt ? formatChineseDate(selected.lastCollectedAt, true) : "采集失败"} icon={CheckCircle2} />
                         <InfoCard label="下次计划采集" value={selected.nextCollectionAt ? formatChineseDate(selected.nextCollectionAt, true) : "待安排"} icon={Clock3} />
                       </div>
                       <div className="rounded-xl border border-border-default bg-surface p-4"><div className="text-[13px] font-semibold text-text-primary">已覆盖数据</div><div className="mt-3 flex flex-wrap gap-2">{selected.coverage.length ? selected.coverage.map(item => <span key={item} className="rounded-md border border-border-default bg-surface-subtle px-2.5 py-1 text-[13px] text-text-secondary">{item}</span>) : <span className="text-[13px] text-text-tertiary">等待首次采集结果</span>}</div></div>

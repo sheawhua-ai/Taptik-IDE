@@ -7,6 +7,7 @@ import type { ExecutionAction } from '../../../data/unifiedStore';
 import type { ExecutionTask, LibraryMaterialItem, MaterialSubItem } from './types';
 import { getProjectLibraryMaterials, MOCK_STAFF_MEMBERS } from './materialMockData';
 import { formatChineseDate } from '../../../utils/formatDate';
+import { ResizableSidebar } from '../ResizableSidebar';
 
 interface OperatorTaskWorkbenchProps {
   task: ExecutionTask;
@@ -96,6 +97,7 @@ export function OperatorTaskWorkbench({
   const [replacementPublisher, setReplacementPublisher] = useState('备用KOC_小丸子');
   
   // Sidebar logic
+  const [isSidebarOpen, setIssidebaropen] = useState(true);
   const [queueQuery, setQueueQuery] = useState('');
 
   const isMaterialFollowUp = task.operatorCategory === 'material' && task.materialType !== 'matched_library_asset';
@@ -454,25 +456,24 @@ export function OperatorTaskWorkbench({
 
   return (
     <div className="workspace-shell execution-workspace flex h-full min-h-0 flex-1 flex-col bg-canvas">
-      <header className="workspace-header shrink-0 border-b border-border-default bg-surface-1 px-4 py-2.5 flex items-center">
+      <header className="workspace-header shrink-0 border-b border-border-default bg-surface-1 px-4 py-2 flex items-center">
         <div className="flex-1 w-full min-w-0 flex items-center">
           {workspaceNavigation ?? <button onClick={onBack} className="rounded-lg p-1.5 text-text-tertiary hover:bg-hover-bg hover:text-text-main" aria-label="返回执行中心"><ArrowLeft size={17} /></button>}
         </div>
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="workspace-sidebar hidden w-[320px] shrink-0 overflow-hidden border-r border-border-default bg-surface-1 lg:flex lg:flex-col">
-          <div className="workspace-sidebar-header space-y-3 border-b border-border-default">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[15px] font-semibold text-text-main">{mode === 'progress' ? '执行进展' : isMaterialFollowUp ? '待跟进素材任务' : '待处理发布任务'}</h2>
-              <span className="text-[13px] text-text-tertiary">{filteredQueue.length} 项</span>
-            </div>
-            <div className="relative">
+        <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIssidebaropen} isCollapsible={false} className="hidden lg:flex lg:flex-col">
+          <div className="workspace-sidebar-header border-b border-border-default p-3">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
               <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
               <input value={queueQuery} onChange={(event) => setQueueQuery(event.target.value)} placeholder="搜索笔记或账号..." className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors" />
+              </div>
+              <button onClick={() => setIssidebaropen(false)} title="收起侧边栏" className="w-7 h-7 shrink-0 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"><PanelLeftClose size={16} /></button>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar w-[320px]">
+          <div className="flex-1 overflow-y-auto custom-scrollbar w-full">
             {filteredQueue.map(item => {
               const selected = item.id === task.id;
               return (
@@ -496,7 +497,7 @@ export function OperatorTaskWorkbench({
               );
             })}
           </div>
-        </aside>
+        </ResizableSidebar>
 
         <main className="workspace-stage min-w-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-4xl space-y-4">

@@ -291,7 +291,7 @@ export const MerchantManagement: React.FC<MerchantManagementProps> = ({
                   ) : (
                     <button type="button" onClick={() => onArchiveMerchant(merchant.id)} disabled={isActive && activeCount <= 1} title="归档商家" className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-amber-50 hover:text-amber-700 disabled:opacity-30"><Archive size={14} /></button>
                   )}
-                  {!isArchived && !isActive ? <button type="button" onClick={() => onSwitchMerchant(merchant.id)} title="进入商家空间" className="flex h-8 w-8 items-center justify-center rounded-lg bg-btn-main text-white hover:bg-btn-main-hover"><ArrowRight size={14} /></button> : null}
+                  
                 </div>
               </div>
             );

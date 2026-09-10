@@ -154,7 +154,8 @@ import { ProjectAssets } from "./components/rings/ProjectAssets";
 
 import { SubagentChat } from "./components/SubagentChat";
 import { ExecutionQueue } from "./components/ExecutionQueue";
-import { MerchantMemoryHeader } from "./components/MerchantMemoryHeader";
+import { MerchantProfileDrawer } from "./components/merchant/MerchantProfileDrawer";
+import { FileUser } from "lucide-react";
 import { ProjectSwitcherModal } from "./components/ProjectSwitcherModal";
 import { CreateProjectModal } from "./components/CreateProjectModal";
 
@@ -417,6 +418,7 @@ export default function App() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isMerchantManagementOpen, setIsMerchantManagementOpen] = useState(false);
+  const [isMerchantProfileOpen, setIsMerchantProfileOpen] = useState(false);
   const [activeSettingsTab, setActiveSettingsTab] = useState("system");
 
   useEffect(() => {
@@ -1586,25 +1588,7 @@ export default function App() {
                     18616306063
                   </p>
                 </div>
-                <div className="hidden xl:flex items-center gap-1 shrink-0">
-                  <button
-                    className="text-text-tertiary hover:text-text-main p-1.5 rounded-md relative"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-btn-main rounded-full border border-white" />
-                    <Bell size={16} />
-                  </button>
-                  <button
-                    className="text-text-tertiary hover:text-text-main p-1.5 rounded-md"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Link2 size={16} />
-                  </button>
-                </div>
+                
               </>
             )}
           </div>
@@ -1732,18 +1716,11 @@ export default function App() {
         {/* 专注模式切换器 (仅在工作流模式显示) */}
         {activeNav === "workflow" && (
           <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-surface-1">
-            {/* 商家记忆固定区域 */}
-            <MerchantMemoryHeader
-              hasData={hasData}
-              onboardingData={onboardingData}
-              activeProjectId={activeProjectId}
+            <MerchantProfileDrawer
+              isOpen={isMerchantProfileOpen}
+              onClose={() => setIsMerchantProfileOpen(false)}
               projectName={activeProject?.name || "未知项目"}
-              industryLabel={[
-                activeIndustryProfile?.primaryName,
-                ...(activeIndustryProfile?.secondaryNames || []),
-                ...(activeIndustryProfile?.tertiaryNames || []),
-              ].filter(Boolean).join(" · ")}
-              setWorkflowTab={setWorkflowTab}
+              onboardingData={onboardingData}
             />
 
             {/* 顶部导航与专注模式 */}
@@ -1781,22 +1758,33 @@ export default function App() {
                   );
                 })}
               </div>
-              {canOpenLaunchGuide ? (
+              <div className="flex items-center gap-3">
+                {canOpenLaunchGuide && workflowTab === "projects" ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWorkflowTab("projects");
+                      setLaunchGuidePreviewMerchantId(activeProjectId);
+                    }}
+                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[13px] font-medium transition-colors ${
+                      hasIndustryLaunchGuide
+                        ? "border-neutral-900 bg-neutral-900 text-white"
+                        : "border-border-default bg-surface-1 text-text-secondary hover:bg-hover-bg hover:text-text-main"
+                    }`}
+                  >
+                    <BookOpen size={14} />首轮起盘指南
+                  </button>
+                ) : null}
                 <button
                   type="button"
-                  onClick={() => {
-                    setWorkflowTab("projects");
-                    setLaunchGuidePreviewMerchantId(activeProjectId);
-                  }}
-                  className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[13px] font-medium transition-colors ${
-                    hasIndustryLaunchGuide
-                      ? "border-neutral-900 bg-neutral-900 text-white"
-                      : "border-border-default bg-surface-1 text-text-secondary hover:bg-hover-bg hover:text-text-main"
-                  }`}
+                  onClick={() => setIsMerchantProfileOpen(true)}
+                  className="p-1.5 rounded-lg text-text-tertiary hover:text-text-main hover:bg-surface-hover transition-colors flex items-center gap-1"
+                  title="商家画像"
                 >
-                  <BookOpen size={14} />首轮起盘指南
+                  <FileUser size={16} />
+                  <span className="text-[13px]">商家画像</span>
                 </button>
-              ) : null}
+              </div>
             </div>
 
             <div className="flex-1 flex w-full overflow-hidden bg-[#fafafa] relative">

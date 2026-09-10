@@ -31,7 +31,7 @@ export function AnomalyAiHub({
   };
 
   return (
-    <div className="w-80 border-l border-border-default bg-surface flex flex-col shrink-0">
+    <div className="w-full h-full bg-surface flex flex-col shrink-0">
       
       {/* Header */}
       <div className="p-3.5 border-b border-border-default bg-surface-subtle flex items-center justify-between">

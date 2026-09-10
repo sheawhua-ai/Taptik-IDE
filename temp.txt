@@ -1,12 +1,300 @@
-The `ExecutionTask` interface in `src/components/merchant/ExecutionCenter/types.ts` is missing the following specific fields required for the new logic, as per your instructions:
+            setFeedbackContentPackage(null);
+          }}
+        />
+      )}
 
-1. **任务形态 (Task Format)**: Missing a dedicated field for `笔记包` | `任务包` | `自有指定`. Currently, it uses `publishType` ('自有员工发布', 'KOS店长发布', 'KOC协作发布').
-2. **领取人/被指派员工及时间**: Needs `assigneeName` (领取人/被指派员工), `claimTime` (扫码领取时间/员工打开任务时间).
-3. **问卷状态与时间 (Questionnaire)**: Missing `questionnaireStatus` and `questionnaireTime`.
-4. **素材提交状态与时间 (Photos)**: Missing `photoMaterialStatus` and `photoMaterialTime`.
-5. **笔记成稿状态**: Missing `noteFinalizedStatus`.
-6. **额度占用 (Quota)**: Missing quota information (e.g., `quota: { claimed: number, total: number }`).
+      {/* Project Assets Drawer */}
+      {showAssetsDrawer && currentProject && (
+        <div className="fixed inset-0 z-[150] flex justify-end">
+          <div className="absolute inset-0 bg-btn-main/40 backdrop-blur-xs transition-opacity" onClick={() => setShowAssetsDrawer(false)} />
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 220 }}
+            className="relative w-full max-w-[640px] bg-surface-1 h-full shadow-2xl flex flex-col z-10 border-l border-border-default"
+          >
+            <div className="p-5 border-b border-border-default bg-surface-1 flex justify-between items-center shrink-0">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[16px] font-semibold text-text-main">方案已归集素材</h2>
+                  <span className="px-2 py-0.5 bg-surface-subtle border border-border-default text-text-secondary text-[13px] font-medium rounded-md">
+                    5件已回传
+                  </span>
+                </div>
+                <div className="text-[13px] text-text-tertiary mt-0.5 truncate max-w-[480px]">
+                  {currentProject.name}
+                </div>
+              </div>
+              <button onClick={() => setShowAssetsDrawer(false)} className="p-2 text-text-tertiary hover:text-text-main rounded-xl hover:bg-hover-bg transition-colors">
+                <X size={18} />
+              </button>
+            </div>
 
-The current `publishStage` ('待通知' | '待领取' | '待发布' | '已回传' | '识别中' | '观察中') might partially cover publish/return status, but doesn't track specific times or the detailed task package intermediate steps (questionnaire, photo).
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  {
+                    id: 'al1',
+                    title: '幼犬吃粮高清大头照',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '员工a',
+                    time: '10分钟前',
+                    noteRef: '幼犬换粮避坑指南'
+                  },
+                  {
+                    id: 'al2',
+                    title: '金毛第3天换粮便便与产品合影',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '卡卡',
+                    time: '1小时前',
+                    noteRef: '金毛换粮7天打卡笔记包'
+                  },
+                  {
+                    id: 'al3',
+                    title: '店长出镜讲解15s高清视频帧',
+                    category: 'video',
+                    url: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '张店长',
+                    time: '3小时前',
+                    noteRef: '【官方科普】幼犬肠胃敏感期'
+                  },
+                  {
+                    id: 'al4',
+                    title: '试用装开箱体验特写',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop',
+                    aiStatus: 'AI预检通过',
+                    uploader: '员工b',
+                    time: '昨天',
+                    noteRef: '【KOC问卷笔记包】软便打卡'
+                  },
+                  {
+                    id: 'al5',
+                    title: '宠物品类核心成分授权认证卡',
+                    category: 'image',
+                    url: 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=600&auto=format&fit=crop',
+                    aiStatus: '通用素材',
+                    uploader: '商家自行上传',
+                    time: '2天前',
+                    noteRef: '通用项目素材'
+                  }
+                ].map(asset => (
+                  <div key={asset.id} className="bg-surface-subtle rounded-xl border border-border-default overflow-hidden group hover:shadow-md transition-all flex flex-col">
+                    <div 
+                      onClick={() => setPreviewAssetUrl(asset.url)}
+                      className="relative h-36 bg-surface-subtle overflow-hidden cursor-pointer"
+                    >
+                      <img src={asset.url} alt={asset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 text-white text-[13px] font-bold rounded-md backdrop-blur-xs flex items-center gap-1">
+                        {asset.category === 'video' ? <Video size={10} /> : <ImageIcon size={10} />}
+                        {asset.category === 'video' ? '视频' : '照片'}
+                      </span>
+                      <span className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-500 text-white text-[13px] font-bold rounded-md shadow-xs">
+                        {asset.aiStatus}
+                      </span>
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[13px] font-semibold text-text-main truncate mb-0.5">{asset.title}</div>
+                        <div className="text-[13px] text-text-tertiary truncate">关联: {asset.noteRef}</div>
+                      </div>
+                      <div className="pt-2 mt-2 border-t border-border-default flex items-center justify-between text-[13px] text-text-secondary">
+                        <span>{asset.uploader}</span>
+                        <span>{asset.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
-Should I add these exact fields to the `ExecutionTask` interface in `types.ts` and populate them in `mockData.ts` to proceed?
+      {/* Archive Project Confirm Modal */}
+      {showArchiveConfirm && currentProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-btn-main/40 backdrop-blur-xs p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-surface-1 rounded-xl shadow-xl border border-border-default max-w-md w-full p-6 text-center space-y-4"
+          >
+            <div className="w-10 h-10 bg-surface-subtle text-danger rounded-xl flex items-center justify-center mx-auto border border-border-default">
+              <AlertTriangle size={20} />
+            </div>
+            <div>
+              <h3 className="text-[15px] font-semibold text-text-main">归档项目确认</h3>
+              <p className="text-[13px] text-text-secondary mt-1.5 leading-relaxed font-normal">
+                确认归档“<span className="font-medium text-text-main">{currentProject.name}</span>”吗？归档后项目数据与笔记将被安全保留。
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowArchiveConfirm(false)}
+                className="px-4 py-2 border border-border-default text-text-secondary hover:bg-surface-subtle rounded-lg text-[13px] font-medium transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => {
+                  updateProject(currentProject.id, { status: "已归档" });
+                  setShowArchiveConfirm(false);
+                }}
+                className="px-4 py-2 bg-btn-main hover:bg-btn-main-hover text-white rounded-lg text-[13px] font-medium transition-colors"
+              >
+                确认归档
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Operation Logs Modal */}
+      {showOperationLogs && currentProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-btn-main/30 backdrop-blur-xs" onClick={() => setShowOperationLogs(false)} />
+          <div className="relative bg-surface-1 rounded-xl w-full max-w-lg shadow-2xl overflow-hidden border border-border-default">
+            <div className="p-4 border-b border-border-default flex justify-between items-center bg-surface-subtle">
+              <h3 className="font-semibold text-[15px] text-text-main flex items-center gap-2">
+                <History size={16} /> 操作历史记录
+              </h3>
+              <button onClick={() => setShowOperationLogs(false)} className="text-text-tertiary hover:text-text-secondary"><X size={16}/></button>
+            </div>
+            <div className="p-4 max-h-[400px] overflow-y-auto space-y-2.5 text-[13px]">
+              {currentProject.operationLogs.map((log) => (
+                <div key={log.id} className="p-3 bg-surface-subtle rounded-lg border border-border-default space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-text-main">{log.action}</span>
+                    <span className="text-[13px] text-text-tertiary">{formatChineseDate(log.timestamp, true)}</span>
+                  </div>
+                  <div className="text-text-secondary text-[13px] font-normal">{log.detail}</div>
+                  <div className="text-[13px] text-text-tertiary">操作人: {log.operator}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import / Create Select Modal */}
+      {showImportSelect && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-btn-main/30 backdrop-blur-xs" onClick={() => setShowImportSelect(false)} />
+          <div className="relative bg-surface-1 rounded-xl w-full max-w-md shadow-2xl overflow-hidden border border-border-default">
+            <div className="p-4 border-b border-border-default flex justify-between items-center bg-surface-subtle">
+              <div>
+                <h3 className="font-semibold text-[15px] text-text-main">新建笔记</h3>
+                <p className="text-[13px] text-text-secondary mt-0.5">选择一种创建方式</p>
+              </div>
+              <button type="button" aria-label="关闭" onClick={() => setShowImportSelect(false)} className="text-text-tertiary hover:text-text-secondary p-1 rounded-lg hover:bg-hover-bg"><X size={16}/></button>
+            </div>
+            
+            <div className="p-4 space-y-2.5">
+              <button 
+                onClick={() => { setShowImportSelect(false); setShowBatchAIGenerator(true); }}
+                className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
+              >
+                <div className="p-2.5 bg-btn-main border border-btn-main text-white rounded-lg shrink-0">
+                  <Sparkles size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
+                    <span>AI批量生成笔记</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">AI生成</span>
+                  </div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">按账号分工，一次生成本轮需要的笔记</div>
+                </div>
+              </button>
+
+              <button 
+                onClick={() => { setShowImportSelect(false); setShowAddNoteModal("feishu"); }}
+                className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
+              >
+                <div className="p-2.5 bg-surface-subtle border border-border-default text-text-secondary rounded-lg shrink-0">
+                  <Link2 size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
+                    <span>关联飞书多维表格</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">云端同步</span>
+                  </div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">粘贴表格 URL，自动导入并同步笔记任务</div>
+                </div>
+              </button>
+
+              <button 
+                onClick={() => { setShowImportSelect(false); setShowAddNoteModal("single"); }}
+                className="w-full p-3.5 text-left bg-surface-1 border border-border-default hover:border-border-strong hover:bg-surface-subtle rounded-xl flex items-start gap-3.5 transition-all group"
+              >
+                <div className="p-2.5 bg-surface-subtle border border-border-default text-text-secondary rounded-lg shrink-0">
+                  <Plus size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[13.5px] font-medium text-text-main flex items-center justify-between">
+                    <span>手动写笔记</span>
+                    <span className="text-[13px] text-text-secondary bg-surface-subtle border border-border-default px-2 py-0.5 rounded font-normal">单篇</span>
+                  </div>
+                  <div className="text-[13px] text-text-tertiary mt-0.5 font-normal">手动填写标题、选择账号与设定发布排期</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Project Workstation (AI Agent Driven) */}
+      {activeWorkbench === "create_project" && (
+        <CreateProjectWorkstation 
+          industryDefaults={industryDefaults}
+          industryProfile={industryProfile}
+          onClose={() => setActiveWorkbench(null)} 
+          onCreate={() => setActiveWorkbench(null)} 
+        />
+      )}
+
+      {/* Note Import / Creation Modal */}
+      {showAddNoteModal && currentProject && (
+        <AddSingleNoteModal 
+          project={currentProject} 
+          mode={showAddNoteModal}
+          onClose={() => setShowAddNoteModal(null)} 
+        />
+      )}
+
+      {/* Batch Generator Modal */}
+      {showBatchAIGenerator && currentProject && (
+        <BatchNoteGeneratorModal 
+          project={currentProject} 
+          onClose={() => setShowBatchAIGenerator(false)} 
+        />
+      )}
+
+      {/* Dispatch Material Task Modal */}
+      {showDispatchModal && currentProject && (
+        <DispatchMaterialTaskModal
+          project={currentProject}
+          onClose={() => setShowDispatchModal(false)}
+        />
+      )}
+
+      {/* Material Asset Preview Lightbox */}
+      {previewAssetUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4" onClick={() => setPreviewAssetUrl(null)}>
+          <div className="relative max-w-3xl max-h-[85vh] bg-surface-1 rounded-xl overflow-hidden shadow-2xl p-2 border border-border-default" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setPreviewAssetUrl(null)} className="absolute top-3 right-3 z-10 p-1.5 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors">
+              <X size={16} />
+            </button>
+            <img src={previewAssetUrl} alt="素材原图预览" className="max-h-[80vh] w-auto object-contain rounded-lg" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

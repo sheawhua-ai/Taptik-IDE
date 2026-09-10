@@ -40,7 +40,7 @@ const MOCK_EMPLOYEES: Employee[] = [
   },
 ];
 
-export function EmployeeManagement() {
+export function EmployeeManagement({ addTrigger = 0 }: { addTrigger?: number }) {
   const [employees, setEmployees] = useState<Employee[]>(MOCK_EMPLOYEES);
   const [search, setSearch] = useState("");
   const [bindingEmployee, setBindingEmployee] = useState<Employee | null>(null);
@@ -57,6 +57,12 @@ export function EmployeeManagement() {
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [editTags, setEditTags] = useState("");
+
+  React.useEffect(() => {
+    if (addTrigger > 0) {
+      handleAddEmployee();
+    }
+  }, [addTrigger]);
 
   const filtered = employees.filter((emp) =>
     emp.name.includes(search) || emp.phone.includes(search) || emp.tags.some(t => t.includes(search))
@@ -117,13 +123,7 @@ export function EmployeeManagement() {
         </div>
         <div className="flex items-center gap-3">
           
-          <button
-            onClick={handleAddEmployee}
-            className="flex items-center gap-1.5 rounded-lg bg-action-primary px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-action-primary-hover"
-          >
-            <Plus size={15} />
-            添加员工
-          </button>
+          
         </div>
       </div>
 

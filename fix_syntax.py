@@ -1,14 +1,6 @@
-import re
+lines = open("debug_review.txt").readlines()
 
-with open("src/components/merchant/CreateProject/StructuredPlanCreationFlow.tsx", "r") as f:
-    code = f.read()
-
-bad_snippet = """                      <p className="text-[13px] text-text-main leading-relaxed relative z-10">
-                        {draft.coreStrategy.problemToSolve || '当前运营在【搜索卡位】环节存在明显瓶颈。具体表现为：收录率低、内容同质化严重，导致整体转化率偏低，需要重点优化。'}
-                      </p>
-                    </div>"""
-
-code = code.replace(bad_snippet, "")
-
-with open("src/components/merchant/CreateProject/StructuredPlanCreationFlow.tsx", "w") as f:
-    f.write(code)
+with open("debug_review_part.txt", "w") as f:
+    for i in range(275, 360):
+        if i < len(lines):
+            f.write(f"{i+1}: {lines[i]}")
