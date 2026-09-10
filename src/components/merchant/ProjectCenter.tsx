@@ -34,7 +34,7 @@ import { LandingPageSettingsModal } from "./LandingPageSettingsModal";
 import { BatchNoteGeneratorModal } from "./BatchNoteGeneratorModal";
 import { AddSingleNoteModal } from "./AddSingleNoteModal";
 import { DispatchMaterialTaskModal } from "./DispatchMaterialTaskModal";
-import { formatChineseDate } from "../../utils/formatDate";
+import { formatChineseDate, formatProjectCreatedAt } from "../../utils/formatDate";
 import type { IndustryDefaults, MerchantIndustryProfile } from "../../data/industryCatalog";
 import { NewMerchantLaunchGuide, type LaunchGuideTarget } from "./NewMerchantLaunchGuide";
 
@@ -507,9 +507,6 @@ export function ProjectCenter({
                           }`}>
                             {project.name}
                           </h3>
-                          <div className="mt-1 flex items-center gap-2 text-[12px] text-text-tertiary">
-                            <span className="truncate">{project.target}</span>
-                          </div>
                         </div>
                         {project.pendingCount > 0 && (
                           <span className="mt-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
@@ -518,18 +515,18 @@ export function ProjectCenter({
                         )}
                       </div>
                       
-                      <div className="mt-3 flex items-center gap-2">
+                      <div className="mt-3 flex items-center justify-between">
                         <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
-                          project.status === '执行' 
+                          project.status === '进行中' 
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                            : project.status === '草案'
-                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                            : project.status === '准备中'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
                             : 'bg-surface-subtle text-text-secondary border border-border-default'
                         }`}>
                           {project.status}
                         </span>
-                        <span className="text-[11px] text-text-tertiary truncate">
-                          {project.stage}
+                        <span className="text-[12px] text-text-tertiary font-normal shrink-0">
+                          {formatProjectCreatedAt(project.createdAt || project.startDate)}
                         </span>
                       </div>
                     </div>
@@ -580,7 +577,7 @@ export function ProjectCenter({
             请选择左侧方案或新建方案
           </div>
         ) : (
-          <div className="max-w-[1100px] mx-auto p-6 space-y-5">
+          <div className={`w-full mx-auto p-6 space-y-5 ${activeTab === "内容与素材" ? "max-w-[1440px]" : "max-w-[1100px]"}`}>
 
 
             

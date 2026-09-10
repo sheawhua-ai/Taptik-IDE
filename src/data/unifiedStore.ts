@@ -50,6 +50,7 @@ export interface Project {
   id: string;
   merchantId: string;
   name: string;
+  createdAt?: string;
   status: "准备中" | "进行中" | "已结束";
   goal: string;
   startDate: string;

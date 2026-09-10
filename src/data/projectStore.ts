@@ -157,6 +157,7 @@ export interface Project {
   id: string;
   merchantId?: string;
   name: string;
+  createdAt?: string;
   status: ProjectStatus;
   goal: string;
   startDate: string;
@@ -187,6 +188,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: "p1",
     name: "幼犬换粮搜索卡位第三轮",
+    createdAt: "2026-03-03 14:30",
     status: "进行中",
     goal: "验证“换粮软便”真实测评与员工号专业解释能否提升有效咨询与转化线索",
     startDate: "2024-03-01",
@@ -375,6 +377,7 @@ export const INITIAL_PROJECTS: Project[] = [
   {
     id: "p2",
     name: "春季宠物新品体验官招募",
+    createdAt: "2026-03-02 10:15",
     status: "准备中",
     goal: "招募20位真实KOC试用春季换粮新品并集中输出测评与笔记",
     startDate: "2024-04-01",

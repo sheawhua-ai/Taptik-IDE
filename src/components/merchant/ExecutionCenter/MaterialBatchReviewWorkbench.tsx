@@ -15,7 +15,8 @@ import {
   Send,
   Sparkles,
   UserRound,
-  X
+  X,
+  PanelLeftClose
 } from 'lucide-react';
 import type { MaterialAsset } from '../../material-center/types';
 import type { ExecutionTask, MaterialSubItem, UploadedAsset } from './types';
@@ -189,6 +190,7 @@ export function MaterialBatchReviewWorkbench({
   const [previewItemKey, setPreviewItemKey] = useState<string | null>(null);
   const [showReviewConfirmation, setShowReviewConfirmation] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const taskIds = useMemo(() => tasks.map(task => task.id).join('|'), [tasks]);
 
   useEffect(() => {
@@ -416,7 +418,7 @@ export function MaterialBatchReviewWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIssidebaropen} isCollapsible={false}>
+        <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false}>
           <div className="workspace-sidebar-header border-b border-border-default p-3">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">

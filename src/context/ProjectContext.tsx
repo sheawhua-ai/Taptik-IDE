@@ -396,6 +396,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         id: p.id,
         merchantId: p.merchantId,
         name: p.name,
+        createdAt: p.createdAt || (p.id === "p1" ? "2026-03-03 14:30" : "2026-03-02 10:15"),
         status: p.status,
         goal: p.goal,
         startDate: p.startDate,

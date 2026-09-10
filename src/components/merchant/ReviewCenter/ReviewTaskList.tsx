@@ -41,10 +41,6 @@ export function ReviewTaskList({
       if (!matchTitle && !matchProjects) return false;
     }
 
-    if (statusFilter === "分析中" && t.status !== "analyzing") return false;
-    if (statusFilter === "已完成" && t.status !== "completed") return false;
-    if (statusFilter === "数据不足" && t.status !== "exception") return false;
-
     if (scopeFilter === "单方案" && t.mode !== "single") return false;
     if (scopeFilter === "多方案" && t.mode !== "multi") return false;
 
@@ -75,35 +71,19 @@ export function ReviewTaskList({
             <PanelLeftClose size={16} />
           </button>
         </div>
-        {/* Filters */}
+        {/* Filters: 单方案 / 多方案 & 新建复盘 */}
         <div className="flex items-center justify-between pt-0.5">
-          <div className="flex flex-wrap items-center gap-1.5 flex-1">
-            {["全部", "分析中", "已完成"].map((st) => (
-              <button
-                key={st}
-                onClick={() => setStatusFilter(st)}
-                className={`px-2 py-1 text-[13px] rounded-md font-medium transition-colors ${
-                  statusFilter === st
-                    ? "bg-btn-main text-white"
-                    : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
-                }`}
-              >
-                {st}
-              </button>
-            ))}
-            
-            <div className="w-px h-4 bg-border-default mx-0.5"></div>
-            
-            {["全部范围", "单方案", "多方案"].map((sc) => {
-              const active = (sc === "全部范围" && scopeFilter === "全部") || scopeFilter === sc;
+          <div className="flex items-center gap-1.5">
+            {(["单方案", "多方案"] as const).map((sc) => {
+              const active = scopeFilter === sc;
               return (
                 <button
                   key={sc}
-                  onClick={() => setScopeFilter(sc === "全部范围" ? "全部" : sc)}
-                  className={`px-2 py-1 text-[13px] rounded-md font-medium transition-colors ${
+                  onClick={() => setScopeFilter(active ? "全部" : sc)}
+                  className={`px-2.5 py-1 text-[13px] rounded-md font-medium transition-colors ${
                     active
-                      ? "bg-surface-1 text-text-primary shadow-sm border border-border-default"
-                      : "text-text-tertiary hover:text-text-main hover:bg-surface-subtle"
+                      ? "bg-btn-main text-white"
+                      : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
                   }`}
                 >
                   {sc}
@@ -114,7 +94,7 @@ export function ReviewTaskList({
           
           <button
             onClick={onOpenCreateModal}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-btn-main text-white text-[13px] font-medium hover:bg-btn-main-hover transition-colors shadow-2xs shrink-0 ml-2"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-btn-main text-white text-[13px] font-medium hover:bg-btn-main-hover transition-colors shadow-2xs shrink-0"
             title="新建复盘任务"
           >
             <Plus size={13} strokeWidth={2.5} />

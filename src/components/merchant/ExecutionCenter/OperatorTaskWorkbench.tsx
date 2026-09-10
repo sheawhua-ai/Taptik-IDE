@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle, ArrowLeft, ArrowRight, Bot, Camera, Check,
-  CheckCircle2, Clock, Info, Search, Send, ShieldCheck, X
+  CheckCircle2, Clock, Info, Search, Send, ShieldCheck, X, PanelLeftClose
 } from 'lucide-react';
 import type { ExecutionAction } from '../../../data/unifiedStore';
 import type { ExecutionTask, LibraryMaterialItem, MaterialSubItem } from './types';

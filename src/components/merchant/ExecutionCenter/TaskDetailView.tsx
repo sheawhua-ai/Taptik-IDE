@@ -6,7 +6,7 @@ import {
   RefreshCw, Pin, MoreHorizontal, QrCode, Check,
   Eye, Image as ImageIcon, ShieldAlert, ArrowRight, CornerDownRight,
   Info, Maximize2, X, ShieldCheck, CheckCheck, Edit3, MessageSquare,
-  Layers, Users, CheckSquare, Square, FolderPlus, DownloadCloud, Sparkle, Search
+  Layers, Users, CheckSquare, Square, FolderPlus, DownloadCloud, Sparkle, Search, PanelLeftClose
 } from 'lucide-react';
 import { 
   ExecutionTask, MaterialSubItem, SelectionAIProposal, SelectionTargetType, 
@@ -179,6 +179,7 @@ export function TaskDetailView({
 
   // Toast feedback
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [queueQuery, setQueueQuery] = useState('');
   const visibleNoteQueue = useMemo(() => {
     const groups = new Map<string, ExecutionTask[]>();
@@ -692,16 +693,19 @@ export function TaskDetailView({
       <div className="flex-1 flex min-h-0 overflow-hidden">
         
         {/* Column 1: Left Queue Sidebar */}
-        <ResizableSidebar side="left" defaultWidth={320} className="workspace-sidebar">
-          <div className="workspace-sidebar-header border-b border-border-subtle bg-surface py-3 pl-3 pr-12">
-            <div className="relative">
-              <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
-              <input
-                value={queueQuery}
-                onChange={(event) => setQueueQuery(event.target.value)}
-                placeholder="搜索笔记或账号..."
-                className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
-              />
+        <ResizableSidebar side="left" defaultWidth={320} className="workspace-sidebar" isOpen={isLeftSidebarOpen} onOpenChange={setIsLeftSidebarOpen} isCollapsible={false}>
+          <div className="workspace-sidebar-header border-b border-border-subtle bg-surface p-3">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+                <input
+                  value={queueQuery}
+                  onChange={(event) => setQueueQuery(event.target.value)}
+                  placeholder="搜索笔记或账号..."
+                  className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+                />
+              </div>
+              <button onClick={() => setIsLeftSidebarOpen(false)} title="收起侧边栏" className="w-7 h-7 shrink-0 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"><PanelLeftClose size={16} /></button>
             </div>
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar w-full">
