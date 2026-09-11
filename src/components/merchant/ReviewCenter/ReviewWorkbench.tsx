@@ -126,11 +126,16 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
 
   if (!currentTask || !meta || !dataSummary) return (
     <div className="workspace-shell review-workspace relative flex h-full flex-1 overflow-hidden bg-surface-base">
-      <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false}>
+      <ResizableSidebar side="left" defaultWidth={320} minWidth={240} maxWidth={520} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false} hideWhenClosed={true} storageKey="review_center_sidebar_width">
         <ReviewTaskList tasks={tasks} selectedTaskId="" onSelectTask={setSelectedTaskId} onOpenCreateModal={() => setIsCreateModalOpen(true)} onRequestDelete={setDeleteTaskId} onCloseSidebar={() => setIsSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} scopeFilter={scopeFilter} setScopeFilter={setScopeFilter} />
       </ResizableSidebar>
       <div className="flex flex-1 flex-col bg-page-bg">
-        <div className="flex items-center px-6 py-4 border-b border-border-default bg-surface-1 shrink-0 h-[61px]">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-border-default bg-surface-1 shrink-0 h-[61px]">
+          {!isSidebarOpen && (
+            <button onClick={() => setIsSidebarOpen(true)} className="p-1.5 rounded-lg text-text-tertiary hover:bg-hover-bg hover:text-text-main transition-colors shrink-0" title="展开侧边栏">
+              <PanelLeftOpen size={18} />
+            </button>
+          )}
           <h2 className="text-[16px] font-semibold text-text-main">复盘报告</h2>
         </div>
         <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
@@ -331,7 +336,7 @@ export function ReviewWorkbench({ onNavigateToExecution, onNavigateToPlan, onNav
 
   return (
     <div className="workspace-shell review-workspace relative flex h-full flex-1 overflow-hidden bg-surface-base">
-      <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false} hideWhenClosed={true}>
+      <ResizableSidebar side="left" defaultWidth={320} minWidth={240} maxWidth={520} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false} hideWhenClosed={true} storageKey="review_center_sidebar_width">
         <ReviewTaskList tasks={tasks} selectedTaskId={selectedTaskId} onSelectTask={setSelectedTaskId} onOpenCreateModal={() => setIsCreateModalOpen(true)} onRequestDelete={setDeleteTaskId} onCloseSidebar={() => setIsSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} scopeFilter={scopeFilter} setScopeFilter={setScopeFilter} />
       </ResizableSidebar>
 

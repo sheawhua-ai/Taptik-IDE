@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, GripVertical } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from 'lucide-react';
 
 interface ResizableSidebarProps {
   side: 'left' | 'right';
@@ -13,6 +13,7 @@ interface ResizableSidebarProps {
   hideWhenClosed?: boolean;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  storageKey?: string;
 }
 
 export function ResizableSidebar({
@@ -26,7 +27,8 @@ export function ResizableSidebar({
   isCollapsible = true,
   isOpen: controlledIsOpen,
   onOpenChange,
-  hideWhenClosed = false
+  hideWhenClosed = false,
+  storageKey
 }: ResizableSidebarProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(true);
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
@@ -34,15 +36,45 @@ export function ResizableSidebar({
     if (controlledIsOpen === undefined) setInternalIsOpen(val);
     if (onOpenChange) onOpenChange(val);
   };
-  const [width, setWidth] = useState(defaultWidth);
+
+  const [width, setWidth] = useState<number>(() => {
+    if (storageKey && typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          const parsed = parseInt(saved, 10);
+          if (!isNaN(parsed) && parsed >= minWidth && parsed <= maxWidth) {
+            return parsed;
+          }
+        }
+      } catch {
+        // ignore localStorage errors
+      }
+    }
+    return defaultWidth;
+  });
+
   const [isDragging, setIsDragging] = useState(false);
-  
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const startDrag = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
   }, []);
+
+  const handleResetWidth = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWidth(defaultWidth);
+    if (storageKey && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(storageKey, String(defaultWidth));
+      } catch {
+        // ignore
+      }
+    }
+  }, [defaultWidth, storageKey]);
 
   useEffect(() => {
     if (!isDragging) return;
@@ -50,7 +82,7 @@ export function ResizableSidebar({
     const handleMouseMove = (e: MouseEvent) => {
       if (!sidebarRef.current) return;
       
-      let newWidth;
+      let newWidth: number;
       if (side === 'left') {
         const sidebarRect = sidebarRef.current.getBoundingClientRect();
         newWidth = e.clientX - sidebarRect.left;
@@ -59,8 +91,15 @@ export function ResizableSidebar({
         newWidth = sidebarRect.right - e.clientX;
       }
       
-      if (newWidth >= minWidth && newWidth <= maxWidth) {
-        setWidth(newWidth);
+      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
+      setWidth(clampedWidth);
+
+      if (storageKey && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(storageKey, String(Math.round(clampedWidth)));
+        } catch {
+          // ignore
+        }
       }
     };
 
@@ -70,8 +109,6 @@ export function ResizableSidebar({
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    
-    // Add a class to body to prevent text selection and show resizing cursor globally
     document.body.classList.add('cursor-col-resize', 'select-none');
 
     return () => {
@@ -79,15 +116,15 @@ export function ResizableSidebar({
       document.removeEventListener('mouseup', handleMouseUp);
       document.body.classList.remove('cursor-col-resize', 'select-none');
     };
-  }, [isDragging, side, minWidth, maxWidth]);
+  }, [isDragging, side, minWidth, maxWidth, storageKey]);
 
   if (!isOpen) {
     if (hideWhenClosed) return null;
     return (
-      <div className={`shrink-0 flex items-start p-2 ${side === 'left' ? 'border-r' : 'border-l'} ${borderClass} bg-surface`}>
+      <div className={`shrink-0 flex items-start p-2 ${side === 'left' ? 'border-r' : 'border-l'} ${borderClass} bg-surface-1`}>
         <button 
           onClick={() => setIsOpen(true)}
-          className="p-1.5 rounded-lg text-text-tertiary hover:text-text-main hover:bg-surface-hover transition-colors"
+          className="p-1.5 rounded-lg text-text-tertiary hover:text-text-main hover:bg-hover-bg transition-colors"
           title={side === 'left' ? '展开左侧边栏' : '展开右侧边栏'}
         >
           {side === 'left' ? <PanelLeftOpen size={16} /> : <PanelRightOpen size={16} />}
@@ -97,37 +134,65 @@ export function ResizableSidebar({
   }
 
   return (
-    <div 
-      ref={sidebarRef}
-      className={`relative shrink-0 flex flex-col bg-surface ${side === 'left' ? 'border-r' : 'border-l'} ${borderClass} ${className}`}
-      style={{ width: `${width}px` }}
-    >
-      {/* Sidebar Content */}
-      <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden h-full">
-        {/* Toggle Button */}
-        {isCollapsible && (
-          <button 
-            onClick={() => setIsOpen(false)}
-            className={`absolute top-3 z-10 p-1.5 rounded-lg bg-surface/80 backdrop-blur-sm text-text-tertiary hover:text-text-main hover:bg-surface-hover transition-colors ${side === 'left' ? 'right-2' : 'left-2'}`}
-            title={side === 'left' ? '收起左侧边栏' : '收起右侧边栏'}
-          >
-            {side === 'left' ? <PanelLeftClose size={16} /> : <PanelRightClose size={16} />}
-          </button>
-        )}
-        
-        {/* Content Wrapper */}
-        <div className="w-full h-full flex flex-col">
-          {children}
+    <>
+      {/* Barrier overlay when actively dragging to avoid losing events to iframes/inputs */}
+      {isDragging && (
+        <div className="fixed inset-0 z-[99999] cursor-col-resize select-none bg-transparent" />
+      )}
+
+      <div 
+        ref={sidebarRef}
+        className={`relative shrink-0 flex flex-col bg-surface-1 ${side === 'left' ? 'border-r' : 'border-l'} ${borderClass} ${className}`}
+        style={{ width: `${width}px` }}
+      >
+        {/* Sidebar Content */}
+        <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden h-full w-full">
+          {/* Toggle Button */}
+          {isCollapsible && (
+            <button 
+              onClick={() => setIsOpen(false)}
+              className={`absolute top-3 z-10 p-1.5 rounded-lg bg-surface-1/80 backdrop-blur-sm text-text-tertiary hover:text-text-main hover:bg-hover-bg transition-colors ${side === 'left' ? 'right-2' : 'left-2'}`}
+              title={side === 'left' ? '收起左侧边栏' : '收起右侧边栏'}
+            >
+              {side === 'left' ? <PanelLeftClose size={16} /> : <PanelRightClose size={16} />}
+            </button>
+          )}
+          
+          {/* Content Wrapper */}
+          <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+            {children}
+          </div>
+        </div>
+
+        {/* Resize Handle */}
+        <div 
+          className={`absolute top-0 bottom-0 w-4 cursor-col-resize flex items-center justify-center group z-40 select-none transition-colors ${
+            side === 'left' ? '-right-2' : '-left-2'
+          }`}
+          onMouseDown={startDrag}
+          onDoubleClick={handleResetWidth}
+          title="按住拖拽调节宽度，双击恢复默认"
+        >
+          {/* Subtle vertical indicator line */}
+          <div 
+            className={`absolute inset-y-0 w-[2px] transition-colors pointer-events-none ${
+              side === 'left' ? 'right-[7px]' : 'left-[7px]'
+            } ${
+              isDragging 
+                ? 'bg-neutral-900 opacity-100' 
+                : 'bg-transparent group-hover:bg-neutral-400/80'
+            }`} 
+          />
+          {/* Central grip pill */}
+          <div 
+            className={`w-1 h-7 rounded-full transition-all pointer-events-none ${
+              isDragging 
+                ? 'bg-neutral-900 opacity-100 scale-y-110' 
+                : 'bg-border-strong opacity-0 group-hover:opacity-100 group-hover:bg-text-secondary'
+            }`} 
+          />
         </div>
       </div>
-
-      {/* Resize Handle */}
-      <div 
-        className={`absolute top-0 bottom-0 w-3 cursor-col-resize flex items-center justify-center group hover:bg-brand-500/10 active:bg-brand-500/20 z-50 ${side === 'left' ? '-right-1.5' : '-left-1.5'}`}
-        onMouseDown={startDrag}
-      >
-        <div className={`w-[2px] h-8 bg-border-strong rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${isDragging ? 'opacity-100 bg-brand-500' : ''}`} />
-      </div>
-    </div>
+    </>
   );
 }

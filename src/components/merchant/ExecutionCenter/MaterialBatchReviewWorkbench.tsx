@@ -418,7 +418,7 @@ export function MaterialBatchReviewWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false}>
+        <ResizableSidebar side="left" defaultWidth={320} minWidth={240} maxWidth={520} isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} isCollapsible={false} storageKey="execution_material_sidebar_width">
           <div className="workspace-sidebar-header border-b border-border-default p-3">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">

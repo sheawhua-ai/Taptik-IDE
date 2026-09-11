@@ -37,6 +37,7 @@ import { DispatchMaterialTaskModal } from "./DispatchMaterialTaskModal";
 import { formatChineseDate, formatProjectCreatedAt } from "../../utils/formatDate";
 import type { IndustryDefaults, MerchantIndustryProfile } from "../../data/industryCatalog";
 import { NewMerchantLaunchGuide, type LaunchGuideTarget } from "./NewMerchantLaunchGuide";
+import { ResizableSidebar } from "./ResizableSidebar";
 
 export function ProjectCenter({ 
   setWorkflowTab, 
@@ -424,119 +425,119 @@ export function ProjectCenter({
   return (
     <div className="workspace-shell project-workspace h-full w-full flex bg-page-bg text-text-main relative overflow-hidden font-sans">
       
-      {/* LEFT: Collapsible Project List */}
-      <AnimatePresence initial={false}>
-        {isSidebarOpen && (
-          <motion.div 
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 320, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="workspace-sidebar bg-surface-1 border-r border-border-default flex flex-col shrink-0 z-10 overflow-hidden"
-          >
-            <div className="workspace-sidebar-header border-b border-border-default w-[320px] shrink-0">
-              <div className="flex items-center gap-2 p-3">
-                <div className="relative flex-1">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
-                  <input 
-                    type="text" 
-                    placeholder="搜索方案..." 
-                    value={projectSearchQuery}
-                    onChange={(e) => setProjectSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
-                  />
-                </div>
-                <button 
-                  onClick={() => setIsSidebarOpen(false)} 
-                  title="收起侧边栏" 
-                  className="w-7 h-7 shrink-0 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"
-                >
-                  <PanelLeftClose size={16} />
-                </button>
-              </div>
-              
-              <div className="flex items-center justify-between pb-3 px-3">
-                <div className="flex gap-1.5">
-                  {(["进行中", "已结束"] as const).map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => setProjectFilterStatus(status)}
-                      className={`px-2.5 py-1 text-[13px] rounded-md font-medium transition-colors ${
-                        projectFilterStatus === status 
-                          ? "bg-btn-main text-white" 
-                          : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
-                      }`}
-                    >
-                      {status}
-                    </button>
-                  ))}
-                </div>
-                <button 
-                  onClick={() => setActiveWorkbench("create_project")}
-                  className="w-7 h-7 rounded-lg bg-btn-main text-white flex items-center justify-center hover:bg-btn-main-hover transition-colors shrink-0 shadow-2xs"
-                  title="新建方案"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-
+      {/* LEFT: Resizable & Collapsible Project List */}
+      <ResizableSidebar
+        side="left"
+        defaultWidth={320}
+        minWidth={240}
+        maxWidth={520}
+        isOpen={isSidebarOpen}
+        onOpenChange={setIsSidebarOpen}
+        isCollapsible={false}
+        hideWhenClosed={true}
+        storageKey="project_center_sidebar_width"
+        className="workspace-sidebar bg-surface-1"
+      >
+        <div className="workspace-sidebar-header border-b border-border-default w-full shrink-0">
+          <div className="flex items-center gap-2 p-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" size={14} />
+              <input 
+                type="text" 
+                placeholder="搜索方案..." 
+                value={projectSearchQuery}
+                onChange={(e) => setProjectSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 bg-surface-subtle border border-border-default rounded-lg text-[13px] outline-none focus:bg-surface-1 focus:border-border-strong transition-colors"
+              />
             </div>
-            
-            <div className="flex-1 overflow-y-auto">
-              {filteredProjects.length === 0 ? (
-                <div className="flex flex-1 items-center justify-center p-6 text-center">
-                  <p className="text-[13px] leading-5 text-text-tertiary">没有符合条件的方案</p>
-                </div>
-              ) : (
-                <div className="flex flex-col">
-                  {filteredProjects.map((project) => (
-                    <div 
-                      key={project.id}
-                      onClick={() => {
-                        setSelectedProjectId(project.id);
-                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                      }}
-                      className={`group relative cursor-pointer border-b border-border-subtle p-4 transition-colors hover:bg-surface-hover ${
-                        project.id === activeProjectId ? 'bg-brand-50/50' : ''
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0 pr-4">
-                          <h3 className={`truncate text-[14px] font-semibold ${
-                            project.id === activeProjectId ? 'text-brand-700' : 'text-text-main'
-                          }`}>
-                            {project.name}
-                          </h3>
-                        </div>
-                        {project.pendingCount > 0 && (
-                          <span className="mt-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
-                            {project.pendingCount}
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="mt-3 flex items-center justify-between">
-                        <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
-                          project.status === '进行中' 
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                            : project.status === '准备中'
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                            : 'bg-surface-subtle text-text-secondary border border-border-default'
-                        }`}>
-                          {project.status}
-                        </span>
-                        <span className="text-[12px] text-text-tertiary font-normal shrink-0">
-                          {formatProjectCreatedAt(project.createdAt || project.startDate)}
-                        </span>
-                      </div>
+            <button 
+              onClick={() => setIsSidebarOpen(false)} 
+              title="收起侧边栏" 
+              className="w-7 h-7 shrink-0 rounded-lg hover:bg-hover-bg flex items-center justify-center text-text-secondary"
+            >
+              <PanelLeftClose size={16} />
+            </button>
+          </div>
+          
+          <div className="flex items-center justify-between pb-3 px-3">
+            <div className="flex gap-1.5">
+              {(["进行中", "已结束"] as const).map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setProjectFilterStatus(status)}
+                  className={`px-2.5 py-1 text-[13px] rounded-md font-medium transition-colors ${
+                    projectFilterStatus === status 
+                      ? "bg-btn-main text-white" 
+                      : "bg-surface-subtle text-text-secondary hover:bg-hover-bg border border-border-default"
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+            <button 
+              onClick={() => setActiveWorkbench("create_project")}
+              className="w-7 h-7 rounded-lg bg-btn-main text-white flex items-center justify-center hover:bg-btn-main-hover transition-colors shrink-0 shadow-2xs"
+              title="新建方案"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          {filteredProjects.length === 0 ? (
+            <div className="flex flex-1 items-center justify-center p-6 text-center">
+              <p className="text-[13px] leading-5 text-text-tertiary">没有符合条件的方案</p>
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              {filteredProjects.map((project) => (
+                <div 
+                  key={project.id}
+                  onClick={() => {
+                    setSelectedProjectId(project.id);
+                    if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                  }}
+                  className={`group relative cursor-pointer border-b border-border-subtle p-4 transition-colors hover:bg-surface-hover ${
+                    project.id === activeProjectId ? 'bg-brand-50/50' : ''
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0 pr-4">
+                      <h3 className={`truncate text-[14px] font-semibold ${
+                        project.id === activeProjectId ? 'text-brand-700' : 'text-text-main'
+                      }`}>
+                        {project.name}
+                      </h3>
                     </div>
-                  ))}
+                    {project.pendingCount > 0 && (
+                      <span className="mt-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                        {project.pendingCount}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
+                      project.status === '进行中' 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                        : project.status === '准备中'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                        : 'bg-surface-subtle text-text-secondary border border-border-default'
+                    }`}>
+                      {project.status}
+                    </span>
+                    <span className="text-[12px] text-text-tertiary font-normal shrink-0">
+                      {formatProjectCreatedAt(project.createdAt || project.startDate)}
+                    </span>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </div>
+      </ResizableSidebar>
 
       <div className="h-full flex-1 overflow-y-auto bg-page-bg flex flex-col">
 

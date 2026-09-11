@@ -463,7 +463,7 @@ export function OperatorTaskWorkbench({
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <ResizableSidebar side="left" defaultWidth={320} isOpen={isSidebarOpen} onOpenChange={setIssidebaropen} isCollapsible={false} className="hidden lg:flex lg:flex-col">
+        <ResizableSidebar side="left" defaultWidth={320} minWidth={240} maxWidth={520} isOpen={isSidebarOpen} onOpenChange={setIssidebaropen} isCollapsible={false} storageKey="execution_center_sidebar_width" className="hidden lg:flex lg:flex-col">
           <div className="workspace-sidebar-header border-b border-border-default p-3">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">

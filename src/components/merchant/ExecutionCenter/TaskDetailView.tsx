@@ -693,7 +693,7 @@ export function TaskDetailView({
       <div className="flex-1 flex min-h-0 overflow-hidden">
         
         {/* Column 1: Left Queue Sidebar */}
-        <ResizableSidebar side="left" defaultWidth={320} className="workspace-sidebar" isOpen={isLeftSidebarOpen} onOpenChange={setIsLeftSidebarOpen} isCollapsible={false}>
+        <ResizableSidebar side="left" defaultWidth={320} minWidth={240} maxWidth={520} className="workspace-sidebar" isOpen={isLeftSidebarOpen} onOpenChange={setIsLeftSidebarOpen} isCollapsible={false} storageKey="task_detail_left_sidebar_width">
           <div className="workspace-sidebar-header border-b border-border-subtle bg-surface p-3">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -1473,7 +1473,7 @@ export function TaskDetailView({
         </div>
 
         {/* Column 3: Task-Specific AI Coordination Hub */}
-        <ResizableSidebar side="right" defaultWidth={320} minWidth={280} maxWidth={500} borderClass="border-border-default">
+        <ResizableSidebar side="right" defaultWidth={320} minWidth={280} maxWidth={560} borderClass="border-border-default" storageKey="task_detail_right_sidebar_width">
           <div className="w-full h-full flex flex-col relative overflow-hidden bg-surface">
             {isNoteWorkbench ? (
               <ContentAiHub
